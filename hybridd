@@ -1,0 +1,20 @@
+#!/bin/sh
+OLDPATH=$PATH
+WHEREAMI=`pwd`
+export PATH=$WHEREAMI/node/bin:"$PATH"
+NODEINST=`which node`
+
+cd lib
+if [ -z "$@" ]; then
+	echo
+	echo "Starting hybridd..."
+	echo " [i] using node executable $NODEINST"
+	node hybridd.js
+	echo
+	echo "Stopped hybridd."
+	echo
+else
+	node hcmd.js $@
+fi
+
+PATH=$OLDPATH

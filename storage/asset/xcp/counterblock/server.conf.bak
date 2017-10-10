@@ -1,0 +1,9 @@
+[Default]
+backend-user=rpc
+backend-password=FvKVxKgaiVTSjj
+counterparty-password=1234
+rpc-host=0.0.0.0
+socketio-host=0.0.0.0
+socketio-chat-host=0.0.0.0
+redis-enable-apicache=0
+armory-utxsvr-enable=0

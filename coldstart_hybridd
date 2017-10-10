@@ -1,0 +1,35 @@
+#!/bin/sh
+
+NODEARCH=`uname -m`
+OLDPATH=$PATH
+WHEREAMI=`pwd`
+
+if [ ! -d "$WHEREAMI/nodejs-runtime" ]; then
+  git clone https://github.com/internetofcoins/nodejs-runtime
+fi
+
+if [ ! -L "$WHEREAMI/node" ]; then
+  ln -s "./nodejs-runtime/$NODEARCH" "$WHEREAMI/node"
+fi
+
+export PATH=$WHEREAMI/node/bin:"$PATH"
+NODEINST=`which node`
+
+cd views
+./compileviews.sh
+cd ..
+
+cd lib
+if [ -z "$@" ]; then
+	echo
+	echo "Starting hybridd..."
+	echo " [i] using node executable $NODEINST"
+	node hybridd.js
+	echo
+	echo "Stopped hybridd."
+	echo
+else
+	node hcmd.js $@
+fi
+
+PATH=$OLDPATH
