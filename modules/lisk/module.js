@@ -49,13 +49,13 @@ function exec(properties) {
       // set up REST API connection
       if(typeof target.user != 'undefined' && typeof target.pass != 'undefined') {
         var options_auth={user:target.user,password:target.pass};
-        global.hybridd.asset[target.name].link = new Client(options_auth);
-      } else { global.hybridd.asset[target.name].link = new Client(); }    
+        global.hybridd.asset[target.symbol].link = new Client(options_auth);
+      } else { global.hybridd.asset[target.symbol].link = new Client(); }    
 			// set up init probe command to check if Altcoin RPC is responding and connected
 			subprocesses.push('func("lisk","link",{target:'+jstr(target)+',command:["api/blocks/getStatus"]})');
 			subprocesses.push('func("lisk","post",{target:'+jstr(target)+',command:["init"],data:data,data})');
       subprocesses.push('pass( (data != null && typeof data.success!="undefined" && data.success ? 1 : 0) )');      
-      subprocesses.push('logs(1,"module lisk: "+(data?"connected":"failed connection")+" to ['+target.name+'] host '+target.host+':'+target.port+'",data)');      
+      subprocesses.push('logs(1,"module lisk: "+(data?"connected":"failed connection")+" to ['+target.symbol+'] host '+target.host+'",data)');      
 		break;
 		case 'test':
       subprocesses.push('time(0)');
@@ -145,7 +145,7 @@ function post(properties) {
       case 'init':
         // set asset fee for Lisk transactions
         if(typeof postdata.fee!='undefined' && postdata.fee) {
-          global.hybridd.asset[target.name].fee = fromInt(postdata.fee,factor);
+          global.hybridd.asset[target.symbol].fee = fromInt(postdata.fee,factor);
         }
       break;
 			case 'status':
@@ -229,10 +229,10 @@ function postOLD(properties) {
 					postdata = collage;
 					// on init, report back to stdout
 					if(properties.command[1] == 'init') {
-						console.log(' [i] module lisk: connected to ['+target.name+'] host '+target.host+':'+target.port);
+						console.log(' [i] module lisk: connected to ['+target.symbol+'] host '+target.host+':'+target.port);
 					}
 				} else {
-					console.log(' [!] module lisk: failed connection to ['+target.name+'] host '+target.host+':'+target.port);
+					console.log(' [!] module lisk: failed connection to ['+target.symbol+'] host '+target.host+':'+target.port);
 					global.hybridd.proc[parentID].err = 1;
 				}		
 			break;
@@ -298,13 +298,13 @@ function link(properties) {
 	var processID = properties.processID;
 	var target = properties.target;
 	var command = properties.command;
-	if(DEBUG) { console.log(' [D] module lisk: sending REST call to ['+target.name+'] -> '+JSON.stringify(command)); }
+	if(DEBUG) { console.log(' [D] module lisk: sending REST call to ['+target.symbol+'] -> '+JSON.stringify(command)); }
 	// separate method and arguments
 	var mainpath = (typeof target.path == 'undefined'?'':'/'+target.path);
 	var method = command.shift();
 	var params = command.shift();
-	var queryurl = target.host+':'+target.port+mainpath+'/'+method;
-  var restAPI = global.hybridd.asset[target.name].link;
+	var queryurl = target.host+mainpath+'/'+method;
+  var restAPI = global.hybridd.asset[target.symbol].link;
   // do a GET or PUT/POST based on the command input
   var args = {};
   if(typeof params!='undefined') {
@@ -329,7 +329,7 @@ function link(properties) {
       var postresult = restAPI.get(queryurl,args,function(data,response){restaction({processID:processID,data:data});});
   }
 	postresult.on('error', function(err){
-    console.log(err);
+    //console.log(err);
     scheduler.stop(processID,{err:1});
 	});
 }

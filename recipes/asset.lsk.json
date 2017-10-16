@@ -1,0 +1,11 @@
+{
+  "symbol":"lsk",
+  "name":"Lisk",
+  "module":"lisk",
+  "mode":"lisk",
+  "factor":8,
+  "host":"https://login.lisk.io",
+  "host2":"https://liskworld.info",
+  "host3":"https://lisknode.grumlin.com",
+  "cache":15000
+}

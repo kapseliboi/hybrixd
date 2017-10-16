@@ -48,13 +48,13 @@ function exec(properties) {
       // set up REST API connection
       if(typeof target.user != 'undefined' && typeof target.pass != 'undefined') {
         var options_auth={user:target.user,password:target.pass};
-        global.hybridd.asset[target.name].link = new Client(options_auth);
-      } else { global.hybridd.asset[target.name].link = new Client(); }    
+        global.hybridd.asset[target.symbol].link = new Client(options_auth);
+      } else { global.hybridd.asset[target.symbol].link = new Client(); }    
 			// set up init probe command to check if RPC and block explorer are responding and connected
 			subprocesses.push('func("electrum","link",{target:'+jstr(target)+',command:["version"]})');
       // TODO: check block explorer here too!
       subprocesses.push('pass( (data != null && typeof data.result=="string" && data.result.indexOf(".")>-1 ? 1 : 0) )');      
-      subprocesses.push('logs(1,"module electrum: "+(data?"connected":"failed connection")+" to ['+target.name+'] host '+target.host+':'+target.port+'")');      
+      subprocesses.push('logs(1,"module electrum: "+(data?"connected":"failed connection")+" to ['+target.symbol+'] host '+target.host+'")');      
 		break;
 		case 'status':
 			// set up init probe command to check if Altcoin RPC is responding and connected
@@ -144,14 +144,14 @@ function link(properties) {
 	var processID = properties.processID;
 	var target = properties.target;
 	var command = properties.command;
-	if(DEBUG) { console.log(' [D] module electrum: sending REST call to ['+target.name+'] -> '+jstr(command)); }
+	if(DEBUG) { console.log(' [D] module electrum: sending REST call to ['+target.symbol+'] -> '+jstr(command)); }
 	// separate method and arguments
 	if(typeof target.path == 'undefined') { target.path = ''; }
 	var mainpath = '/'+target.path;
 	var args = {};
 	// separate method and arguments
 	// launch the asynchronous rest functions and store result in global.hybridd.proc[processID]
-	var queryurl = target.host+':'+target.port+mainpath;
+	var queryurl = target.host+mainpath;
 	// DEBUG: if(DEBUG) { console.log(' [D] query: '+queryurl); }
 	var method = command.shift();
 	var params = command.shift();
@@ -166,7 +166,7 @@ function link(properties) {
 		headers:{"Content-Type": "application/json"} 
 	}
 	//if(DEBUG) { console.log(' [D] ARGS: '+jstr(args)); }
-  var restAPI = global.hybridd.asset[target.name].link;
+  var restAPI = global.hybridd.asset[target.symbol].link;
 	var postresult = restAPI.post(queryurl, args,  function(data, response) { restaction({processID:processID,data:data}); });
 	postresult.on('error', function(err){
     scheduler.stop(processID,{err:1});
