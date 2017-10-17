@@ -1,49 +1,18 @@
-/******************************************************************
-LOGIN STYLING
-******************************************************************/
-
 body {
-  background-color: #002833;
-  background: linear-gradient(#1e3035,#142023);
-}
-
-#login_container {
-  color: #FFF;
-  text-align: center;
-  margin-top: 8%; 
-  padding-top: 3em; 
-  max-width: 240px; 
-  display: inline-block;
-}
-
-#login_container .pure-button {
-  margin-top: 10px;
-  display: block;
-  font-size: 0.9em;
-}
-
-.pure-form .input-label {
-  font-size: 0.8em;
-  text-align: left;
-  color: white;
-  width: 100%;
-  margin: 4px 0;
-  opacity: 0.8;
-}
-
-.pure-form input {
-  margin-bottom: 8px; 
-  width: 100%;
-  font-size: 0.9em;
+  background-color: #333;
 }
 
 .disabled {
   opacity: 0.5;
 }
 
+#login_container {
+  color: #FFF;
+  text-align: center;
+}
+
 #loginform {
   display: inline-block;
-  width: 100%;
 }
 
 #inputUserID {
@@ -54,41 +23,53 @@ body {
   color: #000000;
 }
 
-#login_container  #loginbutton {
-  height: 3.5em;
-  line-height: 3.3em;
-  font-size: 1.1em;
+#loginbutton {
   padding: 0;
+  height: 4em;
+  width: 13em;
+  margin-left: -0.12em;
+  display: inline-block;
+  text-align: center;
+}
+
+#generatebutton {
+  background: rgb(28, 184, 65);
+  width: 13em;
+  margin-left: -0.12em;
+  margin-top: 8px;
+}
+
+#helpbutton {
+  background: rgb(202, 60, 60);
+  width: 13em;
+  margin-left: -0.12em;
+  margin-top: 8px;
 }
 
 #loginbuttoncontent {
   display: inline-block;
-  height: 3.5em;
+  margin-top: -0.65em;
+  margin-right: -0.65em;
 }
 
 #loginwrap {
   display:inline-block;
+  margin-right: -0.5em;
+  margin-left: 1em;
   vertical-align: middle;
-  margin-left: 3em;
 }
 
 #combinatorwrap {
   display: inline-block;
   vertical-align: middle;
+  transform: scale(0.5,0.5);
   border-radius: 100%;
-  background-color: rgba(256,256,256,0.3);
-  width: 18px;
-  height: 18px;
+  background-color: rgba(120,120,200,0.5);
+  width: 85px;
+  height: 85px;
   margin: auto;
   -webkit-transition: all 0.5s ease;
-  transition: all 0.5s ease;
-  margin-left: 1.5em; 
-  opacity: 0;
-  transform: scale(1.5);
-}
-
-#combinator, #arc0, #arc1, #arc2, #arc3 {
-  transition: ease-in all 0.5s;
+  transition: all 0.5s ease;   
 }
 
 #combinator {
@@ -96,49 +77,51 @@ body {
   background-color: transparent;
   position: relative;
   margin: auto;
+  width: 80px;
+  margin-left: -0.5px;
 }
 
 #arc0 {
   border-radius: 50%;
-  border: 1px solid;
-  height: 4px;
-  width: 4px;
-  top: 6px;
-  left: 6px;
+  border: 2px solid;
+  height: 20px;
+  width: 20px;
+  top: 30px;
+  left: 30px;
   position: absolute;
 }
 
 #arc1 {
   border-radius: 50%;
-  border: 1px solid;
-  height: 16px;
-  width: 16px;
+  border: 2px solid;
+  height: 81px;
+  width: 80px;
   position: absolute;
 }
 
 #arc2 {
   border-radius: 50%;
-  border-left: 1px solid;
-  border-right: 1px solid;
-  border-top: 1px solid transparent;
-  border-bottom: 1px solid transparent;
-  height: 8px;
-  width: 8px;
-  top: 4px;
-  left: 4px;
+  border-left: 2px solid;
+  border-right: 2px solid;
+  border-top: 2px solid transparent;  
+  border-bottom: 2px solid transparent;  
+  height: 40px;
+  width: 40px;
+  top: 20px;
+  left: 20px;
   position: absolute;
 }
 
 #arc3 {
   border-radius: 50%;
-  border-left: 1px solid;
-  border-right: 1px solid;
-  border-top: 1px solid transparent;
-  border-bottom: 1px solid transparent;
-  height: 12px;
-  width: 12px;
-  top: 2px;
-  left: 2px;
+  border-left: 4px solid;
+  border-right: 4px solid;
+  border-top: 4px solid transparent;  
+  border-bottom: 4px solid transparent;    
+  height: 60px;
+  width: 60px;
+  top: 8px;
+  left: 8px;
   position: absolute;
 }
 
