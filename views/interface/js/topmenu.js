@@ -7,4 +7,11 @@
 					}
 					document.getElementById('toggleMenubar').addEventListener('click', function (e) { togglemenubar(); });
 					//document.getElementById('tuckedMenulist').addEventListener('click', function (e) { togglemenubar(); });
+          
+          var output = '<span class="tooltiptext">Work in progress</span>';
+          var disabledMenuItems = document.getElementsByClassName('disabled');
+          
+          for (var i = 0; i < disabledMenuItems.length; i++) {
+            disabledMenuItems[i].innerHTML += output;
+          }
 				})(this, this.document);
