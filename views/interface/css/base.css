@@ -504,7 +504,12 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 .content > .assets-main .pure-table td, .content > .assets-main .pure-table th  {
 	border-left: none;
-	padding: 0.3em 0.5em;
+	padding: 0.5em;
+}
+
+.content > .assets-main .pure-table th {
+	font-weight: 400;
+	color: #777;
 }
 
 .content > .assets-main .pure-table tr {
@@ -520,7 +525,8 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 
 .content > .assets-main .asset {
 	text-transform: uppercase;
-	font-size: 1.25em;
+	font-size: 1.1em;
+	font-weight: 600;
 }
 
 .content > .assets-main .balance .progress-radial {
@@ -530,6 +536,10 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 .content > .assets-main .actions {
 	max-width: 12em;
 	text-align: right;
+}
+
+.content > .assets-main .actions .pure-button {
+	margin-left: 5px;
 }
 
 #qrcode { display: inline-block; }
