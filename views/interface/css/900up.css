@@ -1,0 +1,27 @@
+/******************************************************************
+TABLET LANDSCAPE STYLING: 900px and up
+******************************************************************/
+
+@media (min-width: 900px) {
+
+  /*****************************************************************/
+  /* CONTENT */
+  
+  .content > .databox {
+    width: 49.2%;
+    margin: 0.5%;
+  }
+  
+  /*****************************************************************/
+  /* DASHBOARD */
+  
+  .content > .dashboard-transactions, .content > .dashboard-chat {
+    margin-left: 0;
+    margin-right: 0.5%;
+  }
+
+  .content > .dashboard-trade, .content > .dashboard-apps {
+    margin-left: 0.5%;
+    margin-right: 0;
+  }
+}

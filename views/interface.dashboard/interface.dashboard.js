@@ -102,50 +102,5 @@ init.interface.dashboard = function(args) {
         }
       });
 		});
-
-		// element: NETWORK
-		var element = {};
-		element.transactions = '.dashboard-transactions';
-		$(element.transactions+' .spinner-loader').fadeOut('slow', function() {
-			var output = '<div style="text-align: center; margin-left: auto; margin-right: auto; width: 30%; color: #CCC;">'+svg['cogs']+'<br><br>WORK IN PROGRESS</div>';
-			$(element.transactions+' > .data').html(output);	// insert new data into DOM
-      $(element.transactions+' > .data #path4155').attr('style','fill: #CCC');
-      /*
-			var cur_step = next_step();
-			// DEBUG alert('Network step: '+cur_step);
-			$.ajax({ url: path+zchan(usercrypto,cur_step,'a'), success: function(object){
-				object = zchan_obj(usercrypto,cur_step,object);
-				var output = '<p>A little example of dynamic data appearing!</p>';
-				output+='<table class="pure-table pure-table-striped"><thead><tr><th>asset</th><th>balance</th></tr></thead><tbody>';
-				for (var entry in object.data) {
-          output+='<tr><td>'+entry+'</td><td>0</td></tr>';
-        }
-				output+='</tbody></table>';
-				$(element.transactions+' > .data').html(output);	// insert new data into DOM
-			} });
-      */
-		});
-
-		element.trade = '.dashboard-trade';
-		$(element.trade+' .spinner-loader').fadeOut('slow', function() {
-			var output = '<div style="text-align: center; margin-left: auto; margin-right: auto; width: 30%; color: #CCC;">'+svg['cogs']+'<br><br>WORK IN PROGRESS</div>';
-			$(element.trade+' > .data').html(output);	// insert new data into DOM
-      $(element.trade+' > .data #path4155').attr('style','fill: #CCC');
-		});
-		
-		element.chat = '.dashboard-chat';
-		$(element.chat+' .spinner-loader').fadeOut('slow', function() {
-			var output = '<div style="text-align: center; margin-left: auto; margin-right: auto; width: 30%; color: #CCC;">'+svg['cogs']+'<br><br>WORK IN PROGRESS</div>';
-			$(element.chat+' > .data').html(output);	// insert new data into DOM
-      $(element.chat+' > .data #path4155').attr('style','fill: #CCC');
-		});
-		
-		element.apps = '.dashboard-apps';
-		$(element.apps+' .spinner-loader').fadeOut('slow', function() {
-			var output = '<div style="text-align: center; margin-left: auto; margin-right: auto; width: 30%; color: #CCC;">'+svg['cogs']+'<br><br>WORK IN PROGRESS</div>';
-			$(element.apps+' > .data').html(output);	// insert new data into DOM
-      $(element.apps+' > .data #path4155').attr('style','fill: #CCC');
-		});
-
 	});
 }
