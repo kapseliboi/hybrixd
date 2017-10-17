@@ -1,10 +1,6 @@
 // hy_login.js - contains javascript for login, encryption and session authentication
 
 $(document).ready(function() {
-  
-  new customAlert();
-  alert('<div style="font-size: 4em; background: #000; color: yellow; border-radius: 8px;">⚠</div><br><u>WARNING: Do not store large value in this wallet!!!</u><br><br>We\'re making every effort towards a secure design, and do not store any wallet file or data on this computer. Regardless, we cannot guarantee the security of your cryptocurrency in this stage of the project!<br><br>',
-        {title: '', button: 'Understood'});
 
   // handle login click
   var clicked = 0;
@@ -23,6 +19,7 @@ $(document).ready(function() {
         $('#arc0').css('background-color',$('#combinator').css('color'));
         $('#generatebutton').attr('disabled','disabled');
         $('#helpbutton').attr('disabled','disabled');
+        $('#combinatorwrap').css('opacity',1);
         rotate_login(0);
         setTimeout(function() { main( userid,passcode ); },1000);
 		  } else {
@@ -37,11 +34,6 @@ $(document).ready(function() {
 init.login = function(args) {
 	//console.log('init.login called with args: '+JSON.stringify(args));	
 	// do nothing	
-}
-
-function helpbutton() {
-  alert('Welcome to this Internet of Coins node.<br><br>To sign in, you need to enter an account code and password that are both 16 characters long.<br><br>If you don\'t have sign in credentials yet, you can generate them by clicking on the NEW ACCOUNT button, and the new credentials will be filled in for you.<br><br>',
-        {title: '', button: 'Close'});
 }
 
 function checkfields() {
@@ -70,82 +62,6 @@ function validate_passwd(userid,passwd) {
   var hxid = base32ToHex(userid).toLowerCase();
   var entr = passwd.toUpperCase();
   return (DJB2.hash(hxid.substr(0,12)+entr).substr(4,4)==hxid.substr(16,4).toUpperCase()?true:false); 
-}
-
-// animation (init)
-function animate_login() {
-  $('#arc0').css('background-color',$('#combinator').css('color'));
-  if ( blink('arc0') && rotate_login(0) && dial_login(0) ) {
-	  // return true to confirm animation is running
-	  return true;
-	}
-}
-
-// animation (blink)
-function blink(target) {
-  var el = document.getElementById(target);
-  if (el != null && typeof el.style!='undefined') {
-    if(typeof el.style.visibility!='undefined' && el.style.visibility=='hidden') {
-      el.style.visibility='visible';
-    } else {
-      el.style.visibility='hidden';
-    }
-  }
-  setTimeout("blink('"+target+"')",400);
-  return true;
-}
-
-// animation (rotation)
-function rotate_login(turn) {
-  var el = document.getElementById('arc3');
-  var bgcl = $('#combinator').css('background-color');
-  //alert(bgcl);
-  if (el != null) {  
-    if (el.style['border-left']=='4px solid '+bgcl) {
-      el.style['border-left']='4px solid';
-      el.style['border-right']='4px solid';
-      el.style['border-top']='4px solid '+bgcl;
-      el.style['border-bottom']='4px solid '+bgcl;
-    } else {
-      el.style['border-left']='4px solid '+bgcl;
-      el.style['border-right']='4px solid '+bgcl;
-      el.style['border-top']='4px solid';
-      el.style['border-bottom']='4px solid';
-    }
-  }
-  if ( turn==0 ) { turn = 1; } else { turn = 0; }
-  setTimeout("rotate_login("+turn+")",1500);
-  return true;
-}
-
-function dial_login(turn) {
-  var el = document.getElementById('arc2');
-  var bgcl = $('#combinator').css('background-color');
-  if (turn==0) {
-    el.style['border-left']='2px solid';
-    el.style['border-top']='2px solid '+bgcl;
-    el.style['border-right']='2px solid '+bgcl;
-    el.style['border-bottom']='2px solid '+bgcl;
-  } 
-  if (turn==1) {
-    el.style['border-left']='2px solid';
-    el.style['border-top']='2px solid';
-    el.style['border-right']='2px solid '+bgcl;
-    el.style['border-bottom']='2px solid '+bgcl;
-  }
-  if (turn==2) {
-    el.style['border-left']='2px solid';
-    el.style['border-top']='2px solid';
-    el.style['border-right']='2px solid';
-    el.style['border-bottom']='2px solid '+bgcl;
-  }
-  if (turn==3) {
-    el.style['border-left']='2px solid';
-    el.style['border-top']='2px solid';
-    el.style['border-right']='2px solid';
-    el.style['border-bottom']='2px solid';
-  }
-  return true;
 }
 
 function main(userid,passcode) {
