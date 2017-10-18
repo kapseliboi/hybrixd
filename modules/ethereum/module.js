@@ -35,9 +35,9 @@ function exec(properties) {
 	// decode our serialized properties
 	var processID = properties.processID;
 	var target = properties.target;
+  var base = target.symbol.split('.')[0];     // in case of token fallback to base asset
 	var mode  = target.mode;
 	var factor = (typeof target.factor != 'undefined'?target.factor:null);
-  var fee = (typeof target.fee != 'undefined'?target.fee:null);
 	var subprocesses = [];	
 	// set request to what command we are performing
 	global.hybridd.proc[processID].request = properties.command;
@@ -73,7 +73,13 @@ function exec(properties) {
 		break;
 		case 'fee':
       // directly return fee, post-processing not required!
-      subprocesses.push('stop(0,"'+padFloat(fee,factor)+'")');
+      if(!isToken(target.symbol)) {
+        var fee = (typeof target.fee!='undefined'?target.fee:null);
+      } else {
+        var fee = (typeof global.hybridd.asset[base].fee != 'undefined'?global.hybridd.asset[base].fee*1.5:null);
+        factor = (typeof global.hybridd.asset[base].factor != 'undefined'?global.hybridd.asset[base].factor:null);
+      }
+      subprocesses.push('stop(('+jstr(fee)+'!=null && '+jstr(factor)+'!=null?0:1),'+(fee!=null && factor!=null?'"'+padFloat(fee,factor)+'"':null)+')');
 		break;
 		case 'balance':
       if(sourceaddr) {
@@ -83,7 +89,6 @@ function exec(properties) {
           var symbol = target.symbol.split('.')[0];
           // DEPRECATED: var encoded = '0x'+abi.simpleEncode('balanceOf(address):(uint256)',sourceaddr).toString('hex'); // returns the encoded binary (as a Buffer) data to be sent
           var encoded = global.hybridd.asset[symbol].dcode.encode({'func':'balanceOf(address):(uint256)','address':sourceaddr}); // returns the encoded binary (as a Buffer) data to be sent
-          var command = [{"to":target.contract,"data":encoded},"pending"];
           subprocesses.push('func("ethereum","link",{target:'+jstr(target)+',command:["eth_call",[{"to":"'+target.contract+'","data":"'+encoded+'"},"pending"]]})'); // send token balance ABI query
         }
         subprocesses.push('stop((data!=null && typeof data.result!="undefined"?0:1),(data!=null && typeof data.result!="undefined"? fromInt(hex2dec.toDec(data.result),'+factor+') :null))');
@@ -167,6 +172,7 @@ function post(properties) {
 // data returned by this connector is stored in a process superglobal -> global.hybridd.process[processID]
 function link(properties) {
   var target = properties.target;
+  var base = target.symbol.split('.')[0];     // in case of token fallback to base asset
   // decode our serialized properties
   var processID = properties.processID;
   var command = properties.command;
@@ -177,21 +183,19 @@ function link(properties) {
   var params = command.shift();
   // launch the asynchronous rest functions and store result in global.hybridd.proc[processID]
   // do a GET or PUT/POST based on the command input
-  var args = {};
   if(typeof params=='string') { try { params = JSON.parse(params); } catch(e) {} }
-  args = {
+  var args = {
       headers:{'Content-Type':'application/json'},
       data:{"jsonrpc":"2.0","method":method,"params":params,"id":Math.floor(Math.random()*10000)}
   }
   // construct the APIqueue object
-  var symbol = target.symbol.split('.')[0];     // in case of token fallback to base asset
   APIqueue.add({ 'method':'POST',
-                 'link':'asset["'+symbol+'"]',  // make sure APIqueue can use initialized API link
-                 'url':(typeof target.host!='undefined'?target.host:global.hybridd.asset[symbol].host),  // in case of token fallback to base asset hostname
+                 'link':'asset["'+base+'"]',  // make sure APIqueue can use initialized API link
+                 'host':(typeof target.host!='undefined'?target.host:global.hybridd.asset[base].host),  // in case of token fallback to base asset hostname
                  'args':args,
-                 'throttle':(typeof target.throttle!='undefined'?target.throttle:global.hybridd.asset[symbol].throttle),  // in case of token fallback to base asset throttle
+                 'throttle':(typeof target.throttle!='undefined'?target.throttle:global.hybridd.asset[base].throttle),  // in case of token fallback to base asset throttle
                  'pid':processID,
-                 'target':symbol });
+                 'target':target.symbol });
 }
 
 function isToken(symbol) {

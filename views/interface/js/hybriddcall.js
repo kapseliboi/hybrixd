@@ -93,22 +93,19 @@
 				}
         
         fromInt = function(input,factor) {
-          f = Number(factor);
-          x = new Decimal(String(input));
+          var f = Number(factor);
+          var x = new Decimal(String(input));
           return x.times((f>1?'0.'+new Array(f).join('0'):'')+'1');
         }
 
         toInt = function(input,factor) {
-          f = Number(factor);
-          x = new Decimal(String(input));
+          var f = Number(factor);
+          var x = new Decimal(String(input));
           return x.times('1'+(f>1?new Array(f+1).join('0'):''));
         }
 
         formatFloat = function(n) {
-          if(Number(n) > 0) {
-            n = String(n).replace(/0+$/, '');
-          } else { n = '0'; }
-          return n;
+          return String(Number(n));
         }
         
 				// activate (deterministic) code from a string
@@ -182,7 +179,7 @@
 						return c;
 					}
 					// return deterministic seed
-					return UrlBase64.Encode( xorEntropyMix( nacl.to_hex(GL.usercrypto.user_keys.boxPk), xorEntropyMix(asset, xorEntropyMix(salt,nacl.to_hex(GL.usercrypto.user_keys.boxSk)) ) ) ).slice(0, -2);
+					return UrlBase64.Encode( xorEntropyMix( nacl.to_hex(GL.usercrypto.user_keys.boxPk), xorEntropyMix(asset.split('.')[0], xorEntropyMix(salt,nacl.to_hex(GL.usercrypto.user_keys.boxSk)) ) ) ).slice(0, -2);
 				}
 
 
@@ -209,7 +206,7 @@
           var varsmain = {properties:properties,element:element,postfunction:postfunction,waitfunction:waitfunction};          
           $.ajax({url: urlrequest, timeout: 30000,
 					  success: function(encobject){
-              object = (reqmethod ? zchan_obj(usercrypto,step,encobject) : ychan_obj(usercrypto,step,encobject));
+              var object = (reqmethod ? zchan_obj(usercrypto,step,encobject) : ychan_obj(usercrypto,step,encobject));
               if(object === false) {	// quick and dirty retry function for bad connections (TODO! OPTIMIZE!)
                 console.log('Retrying call no: '+step);
                 hybriddcall(properties,element,postfunction,waitfunction);

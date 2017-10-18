@@ -53,7 +53,7 @@ init.interface.dashboard = function(args) {
                   // create 5 asset elements
                   for (i = 0; i < 5; i++) {
                     if(typeof balance.asset[i] !== 'undefined') {
-                      output+='<div onclick="fetchview(\'interface.assets\',{user_keys: pass_args.user_keys, nonce: pass_args.nonce, asset:\''+balance.asset[i]+'\'});" class="balance"><h5>'+balance.asset[i]+'</h5><div class="divider"></div><h3 class="balance-'+balance.asset[i]+'">'+progressbar()+'</h3></div>';
+                      output+='<div onclick="fetchview(\'interface.assets\',{user_keys: pass_args.user_keys, nonce: pass_args.nonce, asset:\''+balance.asset[i]+'\'});" class="balance"><h5>'+balance.asset[i]+'</h5><div class="divider"></div><h3 class="balance-'+balance.asset[i].replace(/\./g,'-')+'">'+progressbar()+'</h3></div>';
                     }
                   }
                   $('.dashboard-balances > .data').html(output);	// insert new data into DOM
@@ -66,7 +66,7 @@ init.interface.dashboard = function(args) {
                     function(i) {
                       if(typeof balance.asset[i] != 'undefined') {
                         if(typeof assets.addr[balance.asset[i]] != 'undefined') {
-                          var element = '.dashboard-balances > .data > .balance > .balance-'+balance.asset[i];
+                          var element = '.dashboard-balances > .data > .balance > .balance-'+balance.asset[i].replace(/\./g,'-');
                           hybriddcall({r:'a/'+balance.asset[i]+'/balance/'+assets.addr[balance.asset[i]],z:0},element,function(object){if(typeof object.data=='string') { object.data = formatFloat(object.data); } return object;});
                           // DEBUG: console.log('ASSET CALL: a/'+balance.asset[i]+'/balance/'+assets.addr[balance.asset[i]]);
                         }

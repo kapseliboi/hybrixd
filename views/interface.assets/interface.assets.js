@@ -148,12 +148,12 @@ init.interface.assets = function(args) {
       setTimeout(
         function(j) {      
           if(typeof balance.asset[j] !== 'undefined') {
-            var element = '.assets-main > .data .balance-'+balance.asset[j];
+            var element = '.assets-main > .data .balance-'+balance.asset[j].replace(/\./g,'-');
             if((balance.lasttx[j]+60000)<(new Date).getTime()) {
               hybriddcall({r:'a/'+balance.asset[j]+'/balance/'+assets.addr[balance.asset[j]],z:0},element,
                 function(object){
                   if(typeof object.data=='string') { object.data = formatFloat(object.data); }
-                  var assetbuttons = '.assets-main > .data .assetbuttons-'+balance.asset[j];
+                  var assetbuttons = '.assets-main > .data .assetbuttons-'+balance.asset[j].replace(/\./g,'-');
                   if(object.data!=null && !isNaN(object.data)){
                     $(assetbuttons).delay(1000).removeClass('disabled');
                   } else {
@@ -200,7 +200,8 @@ init.interface.assets = function(args) {
             balance.asset[i] = entry;
             balance.amount[i] = 0;
             balance.lasttx[i] = 0;
-            output+='<tr><td class="asset asset-'+balance.asset[i]+'">'+entry+'</td><td><div class="balance balance-'+balance.asset[i]+'">'+progressbar()+'</div></td><td class="actions"><div class="assetbuttons-'+balance.asset[i]+' disabled">';
+            var element=balance.asset[i].replace(/\./g,'-');
+            output+='<tr><td class="asset asset-'+element+'">'+entry+'</td><td><div class="balance balance-'+element+'">'+progressbar()+'</div></td><td class="actions"><div class="assetbuttons-'+element+' disabled">';
             output+='<a onclick=\'fill_send("'+balance.asset[i]+'",$(".assets-main > .data .balance-'+entry+'").html());\' href="#action-send" class="pure-button pure-button-primary" role="button" data-toggle="modal">Send</a>';
             output+='<a onclick=\'fill_recv("'+balance.asset[i]+'",$(".assets-main > .data .balance-'+entry+'").html());\' href="#action-receive" class="pure-button pure-button-secondary" role="button" data-toggle="modal">Receive</a>';
             output+='<a href="#action-advanced" class="pure-button pure-button-grey" role="button" data-toggle="modal">Advanced</a>';

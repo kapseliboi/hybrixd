@@ -87,7 +87,7 @@ function exec(properties) {
     case 'balance':
       // define the source address/wallet
       var sourceaddr = (typeof properties.command[1] != 'undefined'?properties.command[1]:'');
-      if(sourceaddr) {     
+      if(sourceaddr) {
         subprocesses.push('func("lisk","link",{target:'+jstr(target)+',command:["api/accounts/getBalance?address='+sourceaddr+'"]})'); // send balance query
         subprocesses.push('stop((typeof data.balance!="undefined"?0:1),fromInt(data.balance,'+factor+'))');
       } else {
