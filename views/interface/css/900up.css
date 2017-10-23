@@ -8,13 +8,13 @@ TABLET LANDSCAPE STYLING: 900px and up
   /* CONTENT */
   
   .content > .databox {
-    width: 49.2%;
+    width: 49.1%;
     margin: 0.5%;
   }
   
   /*****************************************************************/
-  /* DASHBOARD */
-  
+  /* DASHBOARD */ 
+
   .content > .dashboard-transactions, .content > .dashboard-chat {
     margin-left: 0;
     margin-right: 0.5%;
@@ -23,5 +23,14 @@ TABLET LANDSCAPE STYLING: 900px and up
   .content > .dashboard-trade, .content > .dashboard-apps {
     margin-left: 0.5%;
     margin-right: 0;
+  }
+
+  /*****************************************************************/
+  /* ASSETS */
+
+  .content > .assets-main .actions .pure-button {
+    display: inline-block;
+    float: none;
+    width: auto;
   }
 }
