@@ -9,7 +9,11 @@ init.interface.assets = function(args) {
   
   // modal helper functions
   fill_send = function(asset,balance) {
-    var spendable = formatFloat(toInt(balance).minus(toInt(assets.fees[asset])));
+    if(!isToken(asset)) {
+      var spendable = formatFloat(toInt(balance).minus(toInt(assets.fees[asset])));
+    } else {
+      var spendable = formatFloat(toInt(balance));
+    }
     if(spendable<0) { spendable=0; }
     $('#action-send .modal-send-currency').html(asset.toUpperCase());
     $('#action-send .modal-send-currency').attr('asset',asset);
@@ -17,7 +21,7 @@ init.interface.assets = function(args) {
     $('#modal-send-target').val('');
     $('#modal-send-amount').val('');
     $('#action-send .modal-send-addressfrom').html(assets.addr[asset]);
-    $('#action-send .modal-send-networkfee').html(String(assets.fees[asset]).replace(/0+$/, '')+' '+asset.toUpperCase());
+    $('#action-send .modal-send-networkfee').html(String(assets.fees[asset]).replace(/0+$/, '')+' '+asset.split('.')[0].toUpperCase());
     check_tx();
   }
   fill_recv = function(asset,balance) {
@@ -81,7 +85,7 @@ init.interface.assets = function(args) {
             var unspent = object.data;
             var p = passdata;
             if(typeof unspent!='undefined' && typeof unspent.change!='undefined') { unspent.change = toInt(unspent.change,assets.fact[p.asset]); }
-            storage.Get(assets.modehashes[ assets.mode[p.asset] ], function(dcode) {
+            storage.Get(assets.modehashes[ assets.mode[p.asset].split('.')[0] ], function(dcode) {
               deterministic = activate( LZString.decompressFromEncodedURIComponent(dcode) );
               setTimeout(function() {
                 if(typeof deterministic!='object' || deterministic=={}) {
@@ -90,6 +94,7 @@ init.interface.assets = function(args) {
                 } else {
                   try {
                     var transaction = deterministic.transaction({
+                      mode:assets.mode[p.asset],
                       source:p.source_address,
                       target:p.target_address,
                       amount:toInt(p.amount,assets.fact[p.asset]),
@@ -97,7 +102,8 @@ init.interface.assets = function(args) {
                       factor:assets.fact[p.asset],
                       keys:assets.keys[p.asset],
                       seed:assets.seed[p.asset],
-                      unspent:unspent
+                      unspent:unspent,
+                      contract:assets.cntr[p.asset]
                     });
                     if(typeof transaction!='undefined') {
                       // DEBUG: logger(transaction);

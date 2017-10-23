@@ -76,7 +76,7 @@ function exec(properties) {
       if(!isToken(target.symbol)) {
         var fee = (typeof target.fee!='undefined'?target.fee:null);
       } else {
-        var fee = (typeof global.hybridd.asset[base].fee != 'undefined'?global.hybridd.asset[base].fee*1.5:null);
+        var fee = (typeof global.hybridd.asset[base].fee != 'undefined'?global.hybridd.asset[base].fee*2.465:null);
         factor = (typeof global.hybridd.asset[base].factor != 'undefined'?global.hybridd.asset[base].factor:null);
       }
       subprocesses.push('stop(('+jstr(fee)+'!=null && '+jstr(factor)+'!=null?0:1),'+(fee!=null && factor!=null?'"'+padFloat(fee,factor)+'"':null)+')');
@@ -88,7 +88,7 @@ function exec(properties) {
         } else {
           var symbol = target.symbol.split('.')[0];
           // DEPRECATED: var encoded = '0x'+abi.simpleEncode('balanceOf(address):(uint256)',sourceaddr).toString('hex'); // returns the encoded binary (as a Buffer) data to be sent
-          var encoded = global.hybridd.asset[symbol].dcode.encode({'func':'balanceOf(address):(uint256)','address':sourceaddr}); // returns the encoded binary (as a Buffer) data to be sent
+          var encoded = global.hybridd.asset[symbol].dcode.encode({'func':'balanceOf(address):(uint256)','vars':['address'],'address':sourceaddr}); // returns the encoded binary (as a Buffer) data to be sent
           subprocesses.push('func("ethereum","link",{target:'+jstr(target)+',command:["eth_call",[{"to":"'+target.contract+'","data":"'+encoded+'"},"pending"]]})'); // send token balance ABI query
         }
         subprocesses.push('stop((data!=null && typeof data.result!="undefined"?0:1),(data!=null && typeof data.result!="undefined"? fromInt(hex2dec.toDec(data.result),'+factor+') :null))');
@@ -114,11 +114,11 @@ function exec(properties) {
         subprocesses.push('stop(1,"Error: missing address!")');
       }
     break;
-      //if(sourceaddr) {
-      //  subprocesses.push('func("blockexplorer","exec",{target:'+jstr( modules.getsource(mode) )+',command:["unspent","'+sourceaddr+'"'+(properties.command[2]?',"'+properties.command[2]+'"':'')+']})');
-      //} else {
-      //}
-    break;
+		case 'contract':
+      // directly return factor, post-processing not required!
+      var contract = (typeof target.contract != 'undefined'?target.contract:null);
+      subprocesses.push('stop(0,"'+contract+'")');
+		break;
 		case 'history':
 		break;
 		default:
@@ -201,282 +201,6 @@ function link(properties) {
 function isToken(symbol) {
   return (symbol.indexOf('.')!==-1?1:0);
 }
-
-function tokenABI() {
-  return [
-            {
-              "constant": true,
-              "inputs": [],
-              "name": "name",
-              "outputs": [
-                {
-                  "name": "",
-                  "type": "string"
-                }
-              ],
-              "payable": false,
-              "type": "function"
-            },
-            {
-              "constant": false,
-              "inputs": [
-                {
-                  "name": "_spender",
-                  "type": "address"
-                },
-                {
-                  "name": "_value",
-                  "type": "uint256"
-                }
-              ],
-              "name": "approve",
-              "outputs": [
-                {
-                  "name": "success",
-                  "type": "bool"
-                }
-              ],
-              "payable": false,
-              "type": "function"
-            },
-            {
-              "constant": true,
-              "inputs": [],
-              "name": "totalSupply",
-              "outputs": [
-                {
-                  "name": "",
-                  "type": "uint256"
-                }
-              ],
-              "payable": false,
-              "type": "function"
-            },
-            {
-              "constant": false,
-              "inputs": [
-                {
-                  "name": "_from",
-                  "type": "address"
-                },
-                {
-                  "name": "_to",
-                  "type": "address"
-                },
-                {
-                  "name": "_value",
-                  "type": "uint256"
-                }
-              ],
-              "name": "transferFrom",
-              "outputs": [
-                {
-                  "name": "success",
-                  "type": "bool"
-                }
-              ],
-              "payable": false,
-              "type": "function"
-            },
-            {
-              "constant": true,
-              "inputs": [],
-              "name": "decimals",
-              "outputs": [
-                {
-                  "name": "",
-                  "type": "uint8"
-                }
-              ],
-              "payable": false,
-              "type": "function"
-            },
-            {
-              "constant": true,
-              "inputs": [],
-              "name": "version",
-              "outputs": [
-                {
-                  "name": "",
-                  "type": "string"
-                }
-              ],
-              "payable": false,
-              "type": "function"
-            },
-            {
-              "constant": true,
-              "inputs": [
-                {
-                  "name": "_owner",
-                  "type": "address"
-                }
-              ],
-              "name": "balanceOf",
-              "outputs": [
-                {
-                  "name": "balance",
-                  "type": "uint256"
-                }
-              ],
-              "payable": false,
-              "type": "function"
-            },
-            {
-              "constant": true,
-              "inputs": [],
-              "name": "symbol",
-              "outputs": [
-                {
-                  "name": "",
-                  "type": "string"
-                }
-              ],
-              "payable": false,
-              "type": "function"
-            },
-            {
-              "constant": false,
-              "inputs": [
-                {
-                  "name": "_to",
-                  "type": "address"
-                },
-                {
-                  "name": "_value",
-                  "type": "uint256"
-                }
-              ],
-              "name": "transfer",
-              "outputs": [
-                {
-                  "name": "success",
-                  "type": "bool"
-                }
-              ],
-              "payable": false,
-              "type": "function"
-            },
-            {
-              "constant": false,
-              "inputs": [
-                {
-                  "name": "_spender",
-                  "type": "address"
-                },
-                {
-                  "name": "_value",
-                  "type": "uint256"
-                },
-                {
-                  "name": "_extraData",
-                  "type": "bytes"
-                }
-              ],
-              "name": "approveAndCall",
-              "outputs": [
-                {
-                  "name": "success",
-                  "type": "bool"
-                }
-              ],
-              "payable": false,
-              "type": "function"
-            },
-            {
-              "constant": true,
-              "inputs": [
-                {
-                  "name": "_owner",
-                  "type": "address"
-                },
-                {
-                  "name": "_spender",
-                  "type": "address"
-                }
-              ],
-              "name": "allowance",
-              "outputs": [
-                {
-                  "name": "remaining",
-                  "type": "uint256"
-                }
-              ],
-              "payable": false,
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "name": "_initialAmount",
-                  "type": "uint256"
-                },
-                {
-                  "name": "_tokenName",
-                  "type": "string"
-                },
-                {
-                  "name": "_decimalUnits",
-                  "type": "uint8"
-                },
-                {
-                  "name": "_tokenSymbol",
-                  "type": "string"
-                }
-              ],
-              "type": "constructor"
-            },
-            {
-              "payable": false,
-              "type": "fallback"
-            },
-            {
-              "anonymous": false,
-              "inputs": [
-                {
-                  "indexed": true,
-                  "name": "_from",
-                  "type": "address"
-                },
-                {
-                  "indexed": true,
-                  "name": "_to",
-                  "type": "address"
-                },
-                {
-                  "indexed": false,
-                  "name": "_value",
-                  "type": "uint256"
-                }
-              ],
-              "name": "Transfer",
-              "type": "event"
-            },
-            {
-              "anonymous": false,
-              "inputs": [
-                {
-                  "indexed": true,
-                  "name": "_owner",
-                  "type": "address"
-                },
-                {
-                  "indexed": true,
-                  "name": "_spender",
-                  "type": "address"
-                },
-                {
-                  "indexed": false,
-                  "name": "_value",
-                  "type": "uint256"
-                }
-              ],
-              "name": "Approval",
-              "type": "event"
-            },
-          ];
-}
-
 
 
 /* CONTRACT CALL EXAMPLE:

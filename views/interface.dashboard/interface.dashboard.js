@@ -21,8 +21,6 @@ init.interface.dashboard = function(args) {
       $.ajax({ url: path+zchan(GL.usercrypto,GL.cur_step,'a'),
         success: function(object){
           object = zchan_obj(GL.usercrypto,GL.cur_step,object);
-          //var callstates = [];
-
 
           // initialize all assets
           if( assets.count==0 ) { for (var entry in object.data) { assets.count++; } }
@@ -44,10 +42,10 @@ init.interface.dashboard = function(args) {
                 // get and initialize deterministic encryption routines for assets
                 // timeout used to avoid double downloading of deterministic routines
                 var defer = (assets.init.indexOf(passdata[entry].split('.')[0])==-1?0:3000);
+                assets.init.push(passdata[entry].split('.')[0]);
                 setTimeout(function(entry,passdata) {
                   init_asset(entry,passdata[entry]);
                 },(100*i)+defer,entry,passdata);
-                assets.init.push(passdata[entry].split('.')[0]);
                 // if all assets inits are called run 
                 if(i==assets.count) {
                   // create 5 asset elements
