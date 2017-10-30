@@ -58,6 +58,7 @@ init.interface.assets = function(args) {
       }
   }
 
+/*  DEPRECATED
   send_tx = function(properties) {
     $('#action-send .pure-button-send').addClass('pure-button-disabled').removeClass('pure-button-primary');
     if(send_active==false) {
@@ -146,6 +147,8 @@ init.interface.assets = function(args) {
       },3000);
     }
   }
+*/
+
   ui_assets = function(properties) {
     var i = properties.i;
     var balance = properties.balance;
@@ -155,7 +158,7 @@ init.interface.assets = function(args) {
         function(j) {      
           if(typeof balance.asset[j] !== 'undefined') {
             var element = '.assets-main > .data .balance-'+balance.asset[j].replace(/\./g,'-');
-            if((balance.lasttx[j]+60000)<(new Date).getTime()) {
+            if((balance.lasttx[j]+120000)<(new Date).getTime()) {
               hybriddcall({r:'a/'+balance.asset[j]+'/balance/'+assets.addr[balance.asset[j]],z:0},element,
                 function(object){
                   if(typeof object.data=='string') { object.data = formatFloat(object.data); }

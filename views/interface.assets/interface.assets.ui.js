@@ -1,3 +1,23 @@
+// User interface transformations
+UItransform = {
+  txStart : function() {
+        $('#action-send .pure-button-send').addClass('pure-button-disabled').removeClass('pure-button-primary');
+        $('#action-send').css('opacity', '0.7');
+      },
+  txStop : function() {
+        $('#action-send .pure-button-send').removeClass('pure-button-disabled').addClass('pure-button-primary');
+      },
+  txHideModal : function() {
+        $('#action-send').modal('hide').css('opacity', '1');        
+      },      
+  setBalance : function(element,setBalance) {
+        $(element).html(setBalance);
+      },
+  deductBalance : function(element,newBalance) {
+        $(element).html('<span style="color:#D77;">'+String(newBalance))+'</span>';
+      }
+}
+
 // main asset management code
 $(document).ready( function(){
   // fill advanced modal with work-in-progress icon
@@ -5,10 +25,21 @@ $(document).ready( function(){
   $('#advancedmodal').html(output);	// insert new data into DOM
 
   // attached buttons and actions
-  $('#send-transfer').click(function() { send_tx(); });
-
-  // are we sending a transaction?
-  send_active=false;
+  $('#send-transfer').click(function() {
+    if ($("#send-transfer").hasClass("disabled")) {
+      // UItransform. Cannot send; please fill in text fields.
+    } else {
+      // send transfer
+      var symbol = $('#action-send .modal-send-currency').attr('asset');
+      sendTransaction({
+        element:'.assets-main > .data .balance-'+symbol.replace(/\./g,'-'),
+        asset:symbol,
+        amount:Number($("#modal-send-amount").val().replace(/\,/g,'.')),
+        source:String($('#action-send .modal-send-addressfrom').html()).trim(),
+        target:String($('#modal-send-target').val()).trim()
+      });
+    }
+  });
 
   // elements: MAIN
   $('.assets-main .spinner-loader').fadeOut('slow', function() {
@@ -31,8 +62,8 @@ $(document).ready( function(){
           balance.lasttx[i] = 0;
           var element=balance.asset[i].replace(/\./g,'-');
           output+='<tr><td class="asset asset-'+element+'">'+entry+'</td><td><div class="balance balance-'+element+'">'+progressbar()+'</div></td><td class="actions"><div class="assetbuttons-'+element+' disabled">';
-          output+='<a onclick=\'fill_send("'+balance.asset[i]+'",$(".assets-main > .data .balance-'+entry+'").html());\' href="#action-send" class="pure-button pure-button-primary" role="button" data-toggle="modal">Send</a>';
-          output+='<a onclick=\'fill_recv("'+balance.asset[i]+'",$(".assets-main > .data .balance-'+entry+'").html());\' href="#action-receive" class="pure-button pure-button-secondary" role="button" data-toggle="modal">Receive</a>';
+          output+='<a onclick=\'fill_send("'+balance.asset[i]+'",$(".assets-main > .data .balance-'+element+'").html());\' href="#action-send" class="pure-button pure-button-primary" role="button" data-toggle="modal">Send</a>';
+          output+='<a onclick=\'fill_recv("'+balance.asset[i]+'",$(".assets-main > .data .balance-'+element+'").html());\' href="#action-receive" class="pure-button pure-button-secondary" role="button" data-toggle="modal">Receive</a>';
           output+='<a href="#action-advanced" class="pure-button pure-button-grey" role="button" data-toggle="modal">Advanced</a>';
           output+='</div></td></tr>';
           i++;

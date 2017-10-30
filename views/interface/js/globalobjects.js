@@ -4,16 +4,18 @@ Zcache = {};                    // browser cache objects in which all must be co
 
 intervals = {};   // stores timing intervals
 
-assets = {};      // list of assets
-assets.count = 0; // amount of assets
-assets.init = [];
-assets.mode = {}; // mode of assets
-assets.modehashes = {}; // mode hashes
-assets.seed = {}; // cryptoseeds of assets
-assets.keys = {}; // keys of assets
-assets.addr = {}; // public addresses of assets
-assets.fact = {}; // factor of assets
-assets.fees = {}; // fees of assets
+assets = {
+  count : 0,       // amount of assets
+  init  : [],      // initialization status
+  mode  : {},      // mode of assets
+  modehashes : {}, // mode hashes
+  seed  : {},      // cryptoseeds of assets
+  keys  : {},      // keys of assets
+  addr  : {},      // public addresses of assets
+  cntr  : {},      // stored contract pointer, location or address
+  fact  : {},      // factor of assets
+  fees  : {}       // fees of assets
+};
 
 //
 // global functions
