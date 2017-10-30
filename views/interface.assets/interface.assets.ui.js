@@ -6,6 +6,7 @@ UItransform = {
       },
   txStop : function() {
         $('#action-send .pure-button-send').removeClass('pure-button-disabled').addClass('pure-button-primary');
+        $('#action-send').css('opacity', '1');
       },
   txHideModal : function() {
         $('#action-send').modal('hide').css('opacity', '1');        

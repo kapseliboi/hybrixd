@@ -1,7 +1,7 @@
 module.exports = {
     "env": {
         "browser": true,
-        "es6": true,
+        "es6": false,
         "node": true
     },
     "extends": "eslint:recommended",
@@ -188,7 +188,7 @@ module.exports = {
         "operator-linebreak": "error",
         "padded-blocks": "error",
         "padding-line-between-statements": "error",
-        "prefer-arrow-callback": "error",
+        "prefer-arrow-callback": "off",
         "prefer-const": "error",
         "prefer-destructuring": "off",
         "prefer-numeric-literals": "error",
