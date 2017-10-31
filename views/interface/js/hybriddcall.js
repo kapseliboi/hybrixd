@@ -104,6 +104,7 @@
           return x.times('1'+(f>1?new Array(f+1).join('0'):''));
         }
 
+        /* TO BE DEPRECATED */
         formatFloat = function(n) {
           return String(Number(n));
         }

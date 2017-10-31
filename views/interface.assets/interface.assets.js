@@ -10,9 +10,9 @@ init.interface.assets = function(args) {
   // modal helper functions
   fill_send = function(asset,balance) {
     if(!isToken(asset)) {
-      var spendable = formatFloat(toInt(balance).minus(toInt(assets.fees[asset])));
+      var spendable = toInt(balance).minus(toInt(assets.fees[asset]));
     } else {
-      var spendable = formatFloat(toInt(balance));
+      var spendable = toInt(balance);
     }
     if(spendable<0) { spendable=0; }
     $('#action-send .modal-send-currency').html(asset.toUpperCase());

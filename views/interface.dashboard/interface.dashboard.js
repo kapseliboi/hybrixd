@@ -65,7 +65,7 @@ init.interface.dashboard = function(args) {
                       if(typeof balance.asset[i] != 'undefined') {
                         if(typeof assets.addr[balance.asset[i]] != 'undefined') {
                           var element = '.dashboard-balances > .data > .balance > .balance-'+balance.asset[i].replace(/\./g,'-');
-                          hybriddcall({r:'a/'+balance.asset[i]+'/balance/'+assets.addr[balance.asset[i]],z:0},element,function(object){if(typeof object.data=='string') { object.data = formatFloat(object.data); } return object;});
+                          hybriddcall({r:'a/'+balance.asset[i]+'/balance/'+assets.addr[balance.asset[i]],z:0},element,function(object){if(typeof object.data=='string') { object.data = UItransform.formatFloat(object.data); } return object;});
                           // DEBUG: console.log('ASSET CALL: a/'+balance.asset[i]+'/balance/'+assets.addr[balance.asset[i]]);
                         }
                       }

@@ -1,5 +1,8 @@
 // User interface transformations
 UItransform = {
+  formatFloat : function(n) {       // not being used yet!
+        return String(Number(n));
+      },
   txStart : function() {
         $('#action-send .pure-button-send').addClass('pure-button-disabled').removeClass('pure-button-primary');
         $('#action-send').css('opacity', '0.7');
