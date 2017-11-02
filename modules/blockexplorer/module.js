@@ -249,7 +249,7 @@ function link(properties) {
   var request = (properties.request!='undefined' ?properties.request:'GET');
   var nopath = (properties.nopath!='undefined' && properties.nopath?true:false);
 	var command = properties.command;
-  console.log(' [.] module blockexplorer: sending '+mode+' query for ['+target.name+'] -> '+command.join(' '));
+  console.log(' [.] module blockexplorer: sending '+mode+' query for ['+target.symbol+'] -> '+command.join(' '));
 	var queryurl = target.host+':'+target.port+'/';
   if(!nopath) {
     queryurl = queryurl + (typeof target.path != 'undefined' && target.path?target.path+'/':'');

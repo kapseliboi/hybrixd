@@ -68,7 +68,7 @@ $(document).ready( function(){
           output+='<tr><td class="asset asset-'+element+'">'+entry+'</td><td><div class="balance balance-'+element+'">'+progressbar()+'</div></td><td class="actions"><div class="assetbuttons-'+element+' disabled">';
           output+='<a onclick=\'fill_send("'+balance.asset[i]+'",$(".assets-main > .data .balance-'+element+'").html());\' href="#action-send" class="pure-button pure-button-primary" role="button" data-toggle="modal">Send</a>';
           output+='<a onclick=\'fill_recv("'+balance.asset[i]+'",$(".assets-main > .data .balance-'+element+'").html());\' href="#action-receive" class="pure-button pure-button-secondary" role="button" data-toggle="modal">Receive</a>';
-          output+='<a href="#action-advanced" class="pure-button pure-button-grey" role="button" data-toggle="modal">Advanced</a>';
+          output+='<a href="#action-advanced" class="pure-button pure-button-grey" role="button">Advanced</a>';
           output+='</div></td></tr>';
           i++;
         }

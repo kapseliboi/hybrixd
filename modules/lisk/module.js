@@ -313,14 +313,16 @@ function link(properties) {
       type='PUT';
       args = {
           headers:{'Content-Type':'application/json','version':version,'port':1,'nethash':nethash},
-          data:JSON.stringify(params)
+          data:JSON.stringify(params),
+          path:method
       }
       //var postresult = restAPI.put(queryurl,args,function(data,response){restaction({processID:processID,data:data});});
     } else {
       type='POST';
       args = {
           headers:{'Content-Type':'application/json','version':version,'port':1,'nethash':nethash},
-          data:{'transaction':params}
+          data:{'transaction':params},
+          path:method
       }
       // DEBUG: console.log(' ##### POST '+queryurl+' '+jstr(args)+' nh:'+nethash);
       //var postresult = restAPI.post(queryurl,args,function(data,response){restaction({processID:processID,data:data});});

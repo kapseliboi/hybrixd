@@ -35,7 +35,8 @@ sendTransaction = function(properties) {
             deterministic = activate( LZString.decompressFromEncodedURIComponent(dcode) );
             setTimeout(function() {
               if(typeof deterministic!='object' || deterministic=={}) {
-                alert(lang.alertError,lang.modalSendTxErrorDcode);
+                // alert(lang.alertError,lang.modalSendTxErrorDcode);
+                alert('Sorry, the transaction could not be generated! Deterministic code could not be initialized!');
                 UItransform.setBalance(p.element,p.balorig);
               } else {
                 try {
@@ -69,7 +70,8 @@ sendTransaction = function(properties) {
                         UItransform.txStop();
                         UItransform.setBalance(p.element,p.balorig);                        
                         logger('Error sending transaction: '+object.data);
-                        alert(lang.alertError,lang.modalSendTxFailed+'\n'+object.data);
+                        //alert(lang.alertError,lang.modalSendTxFailed+'\n'+object.data);
+                        alert('The transaction could not be sent by the hybridd node! Please try again. ');
                       }
                     });
                   } else {
