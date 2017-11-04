@@ -166,5 +166,5 @@ function link(properties) {
                  'throttle':(typeof target.throttle!=='undefined'?target.throttle:global.hybridd.asset[base].throttle),  // in case of token fallback to base asset throttle
                  'pid':processID,
                  'target':target.symbol });
-  }    
+}    
 

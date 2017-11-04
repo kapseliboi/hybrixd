@@ -299,8 +299,8 @@ function link(properties) {
 	var processID = properties.processID;
 	var command = properties.command;
 	if(DEBUG) { console.log(' [D] module lisk: sending REST call for ['+target.symbol+'] -> '+JSON.stringify(command)); }
-	// separate method and arguments
-	var method = command.shift();
+	// separate path and arguments
+	var upath = command.shift();
 	var params = command.shift();
   var args = {};
   // do a GET or PUT/POST based on the command input
@@ -309,12 +309,12 @@ function link(properties) {
     if(typeof params==='string') { try { params = JSON.parse(params); } catch(e) {} }
     var nethash = (typeof properties.nethash!='undefined'?properties.nethash:'');
     var version = '0.9.9';
-    if(method.substr(0,4)=='api/') {
+    if(upath.substr(0,4)=='api/') {
       type='PUT';
       args = {
           headers:{'Content-Type':'application/json','version':version,'port':1,'nethash':nethash},
           data:JSON.stringify(params),
-          path:method
+          path:upath
       }
       //var postresult = restAPI.put(queryurl,args,function(data,response){restaction({processID:processID,data:data});});
     } else {
@@ -322,14 +322,14 @@ function link(properties) {
       args = {
           headers:{'Content-Type':'application/json','version':version,'port':1,'nethash':nethash},
           data:{'transaction':params},
-          path:method
+          path:upath
       }
       // DEBUG: console.log(' ##### POST '+queryurl+' '+jstr(args)+' nh:'+nethash);
       //var postresult = restAPI.post(queryurl,args,function(data,response){restaction({processID:processID,data:data});});
     }
   } else {
     type = 'GET';
-    args = { path:method }
+    args = { path:upath }
   }
   
   // construct the APIqueue object
