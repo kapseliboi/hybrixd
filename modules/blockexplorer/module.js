@@ -248,11 +248,12 @@ function link(properties) {
   var type = 'GET'; // for now everything is GET
   //var nopath = (properties.nopath!='undefined' && properties.nopath?true:false);
 	var command = properties.command;
+  console.log(' [.] module blockexplorer: sending query ['+target.id+'] -> '+command.join(' '));
+
   var upath = command.shift();
 	var params = command.shift();
   var args = {};
 
-  console.log(' [.] module blockexplorer: sending '+mode+' query for ['+target.id+'] -> '+command.join(' '));
 	if(DEBUG) { console.log(' [D] query to: '+queryurl); }
   // if POST -- FIXME
   /* var args = {
