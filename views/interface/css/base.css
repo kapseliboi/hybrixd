@@ -43,19 +43,19 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   background: transparent;
 }
 .custom-menu-wrapper {
-	overflow: visible;
-	margin: 0.4em auto 2.5em auto;
-	white-space: nowrap;
-	position: relative;
-	height: 3.2em;
+  overflow: visible;
+  margin: 0.4em auto 2.5em auto;
+  white-space: nowrap;
+  position: relative;
+  height: 3.2em;
   width: 100%;
 }
 
 .custom-menu {
-	display: block;
-	width: auto;
-	vertical-align: middle;
-	-webkit-font-smoothing: antialiased;
+  display: block;
+  width: auto;
+  vertical-align: middle;
+  -webkit-font-smoothing: antialiased;
 }
 
 .custom-menu .pure-menu-item {
@@ -91,7 +91,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 
 .custom-menu .pure-menu-link:hover,
 .custom-menu .pure-menu-heading:hover {
-	background-color: transparent;
+  background-color: transparent;
 }
 
 .custom-menu-top {
@@ -113,7 +113,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   padding-right: 0; 
 }
 
-.custom-menu-toggle {	
+.custom-menu-toggle { 
   width: 44px;
   height: 44px;
   display: block;
@@ -123,39 +123,39 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 .custom-menu-toggle .bar {
-	background-color: white;
-	display: block;
-	width: 20px;
-	height: 2px;
-	border-radius: 100px;
-	position: absolute;
-	top: 22px;
-	right: 12px;
-	-webkit-transition: all 0.5s;
-	-moz-transition: all 0.5s;
-	-ms-transition: all 0.5s;
-	transition: all 0.5s;
+  background-color: white;
+  display: block;
+  width: 20px;
+  height: 2px;
+  border-radius: 100px;
+  position: absolute;
+  top: 22px;
+  right: 12px;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -ms-transition: all 0.5s;
+  transition: all 0.5s;
 }
 
 .custom-menu-toggle .bar:first-child {
-	-webkit-transform: translateY(-6px);
-	-moz-transform: translateY(-6px);
-	-ms-transform: translateY(-6px);
-	transform: translateY(-6px);
+  -webkit-transform: translateY(-6px);
+  -moz-transform: translateY(-6px);
+  -ms-transform: translateY(-6px);
+  transform: translateY(-6px);
 }
 
 .custom-menu-toggle.x .bar {
-	-webkit-transform: rotate(45deg);
-	-moz-transform: rotate(45deg);
-	-ms-transform: rotate(45deg);
-	transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 
 .custom-menu-toggle.x .bar:first-child {
-	-webkit-transform: rotate(-45deg);
-	-moz-transform: rotate(-45deg);
-	-ms-transform: rotate(-45deg);
-	transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  transform: rotate(-45deg);
 }
 
 .custom-menu-bottom {
@@ -165,23 +165,23 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 .custom-menu-screen {
-	background-color: rgba(0, 0, 0, 0.5);
-	-webkit-transition: all 0.5s;
-	-moz-transition: all 0.5s;
-	-ms-transition: all 0.5s;
-	transition: all 0.5s;
-	min-height: 3em;
-	width: 100%;
-	position: absolute;
-	top: 0;
-	z-index: -1;
+  background-color: rgba(0, 0, 0, 0.5);
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -ms-transition: all 0.5s;
+  transition: all 0.5s;
+  min-height: 3em;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  z-index: -1;
 }
 
 .custom-menu-tucked .custom-menu-screen {
-	-webkit-transform: translateY(-44px);
-	-moz-transform: translateY(-44px);
-	-ms-transform: translateY(-44px);
-	transform: translateY(-44px);
+  -webkit-transform: translateY(-44px);
+  -moz-transform: translateY(-44px);
+  -ms-transform: translateY(-44px);
+  transform: translateY(-44px);
 }
 
 .pure-menu-list {
@@ -201,16 +201,16 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   overflow: hidden;
   opacity: 0;
 }
-	
+  
 .pure-menu-horizontal.pure-menu-scrollable {
   overflow: visible;
   padding: 0;
   white-space: normal;
-  /*width: 100%; WARNING: ENABLING THIS BREAKS LOGOUT FUNCTION*/
+  /* width: 100%; # this will break logout */
 }
 
 .custom-menu .pure-menu-link:hover, .custom-menu .pure-menu-heading:hover {
-	text-shadow: 0px 0px 5px #FFF;
+  text-shadow: 0px 0px 5px #FFF;
 }
 
 .custom-menu .pure-menu-link.selected {
@@ -230,7 +230,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 .custom-menu-brand {
-	padding: 0;
+  padding: 0;
 }
 
 /* menu tooltip */
@@ -258,11 +258,12 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   display: inline-block;
   margin-right: 0.5em;
   vertical-align: text-bottom;
+  margin-bottom: 2px;
 }
 
 #user-icon > svg {
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
   fill: rgba(256, 256, 256, .5) !important;
 } 
 
@@ -285,6 +286,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 
 #topmenu-logout {
   display: none;
+  vertical-align: middle;
 }
 
 .topmenu-logout-inline {
@@ -304,11 +306,9 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 
 .content {
   text-align: center;
-  margin-left: auto;
-  margin-right: auto;
   -webkit-transition: display: 2s, width 2s, height 2s, -webkit-transform 2s; /* Safari */
   transition: display: 2s, width 2s, height 2s, transform 2s;
-  margin-top: 3.5em;
+  margin: 3.5em auto;
   padding-top: 2.5em;
   padding-bottom: 2.5em;
   width: 90%;
@@ -321,9 +321,9 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   display: inline-block;
   vertical-align: top;
   text-align: left;
-  background: #F5F5F5;
+  background: white;
   border-radius: 6px;
-  border: 1px #b2d1d8 solid;
+  border: 1px rgba(178,209,216,0.7) solid;
   margin: 0.5%;
   padding: 0px;
   width: 100%;
@@ -338,19 +338,19 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 .content > .databox h2 {
-	margin: 0;
-	color: #222;
-	font-size: 1.2em;
+  margin: 0;
+  color: #222;
+  font-size: 1.2em;
   padding: 15px;
 }
 
 .content > .databox .data {
-	transition: opacity 1000ms;
+  transition: opacity 1000ms;
   padding: 0 15px 15px;
 }
 
 .content > .databox .spinner {
-	display: block; 
+  display: block; 
   padding-top: 2.5em; 
   text-align: center;
 }
@@ -371,95 +371,94 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 .content > .wide {
-	width: 90%;
-	min-width: 320px;
+  width: 90%;
 }
 
 .pure-table {
-	width: 100%;
-	background: #FFF;
+  width: 100%;
+  background: #FFF;
 }
 
 .modal {
-	min-width: 200px;
-	width: 480px;
-	margin-left: -240px;
+  min-width: 200px;
+  width: 480px;
+  margin-left: -240px;
 }
 
 @media (max-height: 608px) {
-	.modal {
-		height: 100%;
-		border: none;
-		box-shadow: none;
+  .modal {
+    height: 100%;
+    border: none;
+    box-shadow: none;
     width: 320px;
     margin-left: -160px;
-	}  
-	.modal.fade.in{
-		top: 3;
-		background: transparent;
-	}
-	.modal-content {
-		margin-bottom: 30px;
-		background: #FFF;
-		border: 1px solid rgba(0, 0, 0, 0.3);
-		border-radius: 5px;		
-	}
-	.modal-open {
-		overflow-y: hidden;
-	}
+  }  
+  .modal.fade.in{
+    top: 3;
+    background: transparent;
+  }
+  .modal-content {
+    margin-bottom: 30px;
+    background: #FFF;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 5px;   
+  }
+  .modal-open {
+    overflow-y: hidden;
+  }
 }
 
 /*****************************************************************/
 /* DASHBOARD */
 
 .content > .dashboard-balances {
-	background: #EFF !important;
-	background: linear-gradient(#EFF,#FCFCFC,#FCFCFC,#FFFFFF) !important;
-	min-height: 12.5em;
+  background: #F0F6F7 !important;
+  background: linear-gradient(#EFF,#FCFCFC,#FCFCFC,#FFFFFF) !important;
+  /*background: linear-gradient(#E1EDEF,#F0F6F7) !important;*/
+  min-height: 12.5em;
   margin-top: 0.2em;
 }
 
 .content > .dashboard-transactions {
-	background: #EFD !important;
-	background: linear-gradient(#EFD,#FCFCFC,#FCFCFC,#FFFFFF) !important;
+  background: #EFD !important;
+  background: linear-gradient(#EFD,#FCFCFC,#FCFCFC,#FFFFFF) !important;
   margin: 0.5%;
 }
 
 .content > .dashboard-trade {
-	background: #EFE !important;
-	background: linear-gradient(#EFE,#FCFCFC,#FCFCFC,#FFFFFF) !important;
+  background: #EFE !important;
+  background: linear-gradient(#EFE,#FCFCFC,#FCFCFC,#FFFFFF) !important;
   margin: 0.5%;
 }
 
 .content > .dashboard-chat {
-	background: #FEF !important;
-	background: linear-gradient(#FEF,#FCFCFC,#FCFCFC,#FFFFFF) !important;
+  background: #FEF !important;
+  background: linear-gradient(#FEF,#FCFCFC,#FCFCFC,#FFFFFF) !important;
   margin: 0.5%;
 }
 
 .content > .dashboard-apps {
-	background: #FFC !important;
-	background: linear-gradient(#FFC,#FCFCFC,#FCFCFC,#FFFFFF) !important;
+  background: #FFC !important;
+  background: linear-gradient(#FFC,#FCFCFC,#FCFCFC,#FFFFFF) !important;
   margin: 0.5%;
 }
 
 .content > .dashboard-stats {
-	background: #FDC !important;
-	background: linear-gradient(#FDC,#FCFCFC,#FCFCFC,#FFFFFF) !important;
+  background: #FDC !important;
+  background: linear-gradient(#FDC,#FCFCFC,#FCFCFC,#FFFFFF) !important;
 }
 
 .content > .dashboard-balances .balance {
-	display: inline-block; 
-  min-width: 90px; 
+  display: inline-block; 
+  min-width: 50%; 
   padding: 12px; 
   text-align: center;
-	vertical-align: top;
-	margin-left: 3%;
-	margin-right: 3%;
-	padding-top: 0;
-	padding-bottom: 0;
-	border-radius: 0.5em;
-	cursor: pointer; cursor: hand;
+  vertical-align: top;
+  margin: 0 0 1.5em;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-radius: 0.5em;
+  cursor: pointer; cursor: hand;
   -webkit-transition: all 1s ease;
   transition: all 1s ease;
 }
@@ -468,17 +467,24 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
     background: rgba(178,209,216,0.2);
 }
 .content > .dashboard-balances .balance h5 {
-	text-transform: uppercase;
+  text-transform: uppercase;
+  margin: 0.2em 0.2em;
 }
 .content > .dashboard-balances .balance h3 {
-	font-size: 1.5em;
+  font-size: 1.0em;
+  font-weight: 300;
+  margin: 0.2em 0.2em;
+}
+
+.content > .dashboard-balances .balance h3 .balance-end {
+  font-size: .8em;
 }
 
 /*****************************************************************/
 /* ASSETS */
 
 .content > .assets-main {
-	background: #FFF !important;
+  background: #FFF !important;
   border: none;
 }
 
@@ -491,7 +497,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 .content > .assets-main .spinner {
-	margin-top: 7em;
+  margin-top: 7em;
 }
 
 .pure-table thead {
@@ -499,13 +505,13 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 .content > .assets-main .pure-table td, .content > .assets-main .pure-table th  {
-	border-left: none;
-	padding: 0.6em;
+  border-left: none;
+  padding: 0.6em;
 }
 
 .content > .assets-main .pure-table th {
-	font-weight: 400;
-	color: #777;
+  font-weight: 400;
+  color: #777;
   text-transform: uppercase;
   font-size: 0.7em;
   letter-spacing: 2px;
@@ -514,7 +520,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 .content > .assets-main .pure-table tr {
-	border: 1px solid transparent;
+  border: 1px solid transparent;
   border-top: 1px solid rgba(178,209,216,0.5);
   border-bottom: 1px solid rgba(178,209,216,0.5);
   -webkit-transition: all 1s ease;
@@ -522,7 +528,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 /*.content > .assets-main .pure-table tbody tr:hover {
-	border: 1px solid #5AF !important;
+  border: 1px solid #5AF !important;
 }*/
 
 .pure-table-striped tr:nth-child(2n-1) td {
@@ -530,22 +536,22 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 .content > .assets-main .asset {
-	text-transform: uppercase;
-	font-size: 1.1em;
-	font-weight: 600;
+  text-transform: uppercase;
+  font-size: 1.1em;
+  font-weight: 600;
 }
 
 .content > .assets-main .balance .progress-radial {
-	text-align: left;
+  text-align: left;
 }
 
 .content > .assets-main .actions {
-	max-width: 12em;
-	text-align: right;
+  max-width: 12em;
+  text-align: right;
 }
 
 .content > .assets-main .actions .pure-button {
-	margin-left: 5px;
+  margin-left: 5px;
   line-height: 2.7em;
   height: 4em;
   display: block;

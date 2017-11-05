@@ -17,7 +17,7 @@ $(document).ready(function() {
 });  
 
 function helpbutton() {
-  alert('<h2>Welcome to this Internet of Coins node</h2><br>To sign in, you need to enter an account code and password that are both 16 characters long.<br><br>If you don\'t have sign in credentials yet, you can generate them by clicking on the "+ Create a new account" button, and the new credentials will be filled in for you.<br><br>',
+  alert('<h2>Welcome to this Internet of Coins node</h2><br><h3>I already have an account</h3>To sign in, you need to enter an account code and password that are both 16 characters long.<br><br><h3>I\'m new, I need a new account </h3>If you don\'t have sign in credentials yet, you can generate them by clicking on the "+ Create a new account" button, and the new credentials will be filled in for you.<br><br>',
         {title: '', button: 'Close'});
 }
 
@@ -42,9 +42,9 @@ function checkfields() {
 function animate_login() {
   $('#arc0').css('background-color',$('#combinator').css('color'));
   if ( blink('arc0') && rotate_login(0) && dial_login(0) ) {
-	  // return true to confirm animation is running
-	  return true;
-	}
+    // return true to confirm animation is running
+    return true;
+  }
 }
 
 // animation (blink)
