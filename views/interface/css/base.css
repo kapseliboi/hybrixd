@@ -2,13 +2,6 @@
 BASE STYLING
 ******************************************************************/
 
-body {
-  background: linear-gradient(#e5eff2,#cce0e5);
-  -webkit-box-sizing: border-box; 
-  -moz-box-sizing: border-box;  
-  box-sizing: border-box;  
-}
-
 a:focus, a:active, 
 button::-moz-focus-inner,
 input[type="reset"]::-moz-focus-inner,
@@ -37,20 +30,21 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 .divider {
-  display: inline-block; width: 3em; border-top: 1px solid #CCF;
+  display: inline-block; width: 3em; border-top: 1px solid #b2d1d8;
   min-height: 3px;
   margin-top: 3px;
+  width: 100%;
 }
 
 /*****************************************************************/
 /* TOP MENU */
 
 .custom-menu-bg {
-  background: #002833;
+  background: transparent;
 }
 .custom-menu-wrapper {
 	overflow: visible;
-	margin: 0 auto 2.5em auto;
+	margin: 0.4em auto 2.5em auto;
 	white-space: nowrap;
 	position: relative;
 	height: 3.2em;
@@ -91,7 +85,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 
 .custom-menu .pure-menu-link,
 .custom-menu .pure-menu-heading {
-	color: #EEE;
+  color: #EEE;
   font-weight: 600;
 }
 
@@ -101,31 +95,31 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 .custom-menu-top {
-	position: relative;
-	padding-top: .6em;
+  position: relative;
+  padding-top: .6em;
   padding-bottom: .6em;
 }
 
 .custom-menu-brand {
-	display: block;
-	text-align: center;
-	position: relative;
+  display: block;
+  text-align: center;
+  position: relative;
 }
 
 .custom-menu-brand img {
   height: 2em;
-  margin-top: 0;
+  margin-top: 0em;
   padding-left: 0;
   padding-right: 0; 
 }
 
 .custom-menu-toggle {	
-	width: 44px;
-	height: 44px;
-	display: block;
-	position: absolute;
-	top: 3px;
-	right: 0;
+  width: 44px;
+  height: 44px;
+  display: block;
+  position: absolute;
+  top: 3px;
+  right: 0;
 }
 
 .custom-menu-toggle .bar {
@@ -192,7 +186,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 
 .pure-menu-list {
   transition: all 0.5s ease;
-  background-color: rgba(0, 40, 51, 0.9);
+  background-color: #1e2035;
   width: 100%;
 }
 
@@ -226,7 +220,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 
 .custom-menu .disabled {
   cursor: not-allowed;
-  color: rgba(256, 256, 256, .4);
+  color: rgba(256, 256, 256, .3);
   text-shadow: none;
   position: relative;
 }
@@ -240,35 +234,21 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 /* menu tooltip */
-.custom-menu .disabled .tooltiptext {
+.custom-menu .disabled #tooltip {
   visibility: hidden;
-  font-size: 0.8em;
-  opacity: 0;
-  background-color: #4c93a6;
+  background-color: #9fabad;
   color: white;
-  text-align: center;
-  padding: 5px 8px;
-  border-radius: 6px;
   position: absolute;
-  z-index: 1;
-  top: 36px;
+  top: 39px;
   left: -20px;
-  transition: ease-in all 200ms;
-  font-weight: 300;
+  padding: 8px;
 }
 
-.custom-menu .disabled .tooltiptext::after  {
-  content: " ";
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: transparent transparent #4c93a6 transparent;
+.custom-menu .disabled #tooltip::after  {
+  border-color: transparent transparent #9fabad transparent;
 }
 
-.custom-menu .disabled:hover .tooltiptext{
+.custom-menu .disabled:hover #tooltip{
   visibility: visible;
   opacity: 0.8;
 }
@@ -283,16 +263,17 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 #user-icon > svg {
   width: 18px;
   height: 18px;
-  fill: #4c93a6 !important;
+  fill: rgba(256, 256, 256, .5) !important;
 } 
 
 #userID {
   display:inline-block;
   height: 3.2em;
-  color: #4c93a6;
+  color: rgba(256, 256, 256, .5);
   margin-top: 0.7em;
   margin-right: 0;
   margin-bottom: -0.7em;
+  letter-spacing: 1px;
 }
 
 #topmenu-right {
@@ -318,38 +299,37 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 .container {
-	text-align: left;
+  text-align: left;
 }
 
 .content {
-	text-align: center;
-	margin-left: auto;
-	margin-right: auto;
-	-webkit-transition: display: 2s, width 2s, height 2s, -webkit-transform 2s; /* Safari */
-	transition: display: 2s, width 2s, height 2s, transform 2s;
-	margin-top: -2.5em;
-	padding-top: 2.5em;
-	padding-bottom: 2.5em;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  -webkit-transition: display: 2s, width 2s, height 2s, -webkit-transform 2s; /* Safari */
+  transition: display: 2s, width 2s, height 2s, transform 2s;
+  margin-top: 3.5em;
+  padding-top: 2.5em;
+  padding-bottom: 2.5em;
   width: 90%;
+  background: white;
+  border-radius: 6px;
+  padding: 1.8em;
 }
 
 .content > .databox {
-	display: inline-block;
-	vertical-align: top;
-	text-align: left;
-	background: #F5F5F5;
-	border-radius: 6px;
-	border: 1px #b2d1d8 solid;
-	margin: 0.5%;
-	padding: 0px;
-	width: 100%;
-	min-height: 12em;
-	box-shadow: 0px 0px 7px rgba(128,128,128,0.2);
-	-webkit-transition: all 2s ease;
-	transition: all 2s ease;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;   
-  box-sizing: border-box;
+  display: inline-block;
+  vertical-align: top;
+  text-align: left;
+  background: #F5F5F5;
+  border-radius: 6px;
+  border: 1px #b2d1d8 solid;
+  margin: 0.5%;
+  padding: 0px;
+  width: 100%;
+  min-height: 12em;
+  -webkit-transition: all 2s ease;
+  transition: all 2s ease;
 }
 
 .content > .databox.wide {
@@ -359,7 +339,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 
 .content > .databox h2 {
 	margin: 0;
-	color: #005166;
+	color: #222;
 	font-size: 1.2em;
   padding: 15px;
 }
@@ -436,6 +416,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 	background: #EFF !important;
 	background: linear-gradient(#EFF,#FCFCFC,#FCFCFC,#FFFFFF) !important;
 	min-height: 12.5em;
+  margin-top: 0.2em;
 }
 
 .content > .dashboard-transactions {
@@ -468,7 +449,10 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 .content > .dashboard-balances .balance {
-	display: inline-block; min-width: 64px; padding: 12px; text-align: center;
+	display: inline-block; 
+  min-width: 90px; 
+  padding: 12px; 
+  text-align: center;
 	vertical-align: top;
 	margin-left: 3%;
 	margin-right: 3%;
@@ -476,12 +460,12 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 	padding-bottom: 0;
 	border-radius: 0.5em;
 	cursor: pointer; cursor: hand;
-    -webkit-transition: all 1s ease;
-    transition: all 1s ease;
+  -webkit-transition: all 1s ease;
+  transition: all 1s ease;
 }
 
 .content > .dashboard-balances .balance:hover {
-    background: rgba(200,200,255,0.1);
+    background: rgba(178,209,216,0.2);
 }
 .content > .dashboard-balances .balance h5 {
 	text-transform: uppercase;
@@ -494,33 +478,55 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 /* ASSETS */
 
 .content > .assets-main {
-	background: #EFF !important;
-	background: linear-gradient(#EFF,#FCFCFC,#FCFCFC,#FFFFFF) !important;
-	min-height: 25em;
+	background: #FFF !important;
+  border: none;
+}
+
+.content > .assets-main > h2 {
+  padding: 0px 15px 15px 0;
+}
+
+.content > .assets-main .data {
+  padding:0;
 }
 
 .content > .assets-main .spinner {
 	margin-top: 7em;
 }
+
+.pure-table thead {
+  background: transparent;
+}
+
 .content > .assets-main .pure-table td, .content > .assets-main .pure-table th  {
 	border-left: none;
-	padding: 0.5em;
+	padding: 0.6em;
 }
 
 .content > .assets-main .pure-table th {
 	font-weight: 400;
 	color: #777;
+  text-transform: uppercase;
+  font-size: 0.7em;
+  letter-spacing: 2px;
+  border: none;
+  padding: 1em .5em;
 }
 
 .content > .assets-main .pure-table tr {
-	border: 1px solid #CCC;
-	border-bottom: 1px none #CCC;
-    -webkit-transition: all 1s ease;
-    transition: all 1s ease;
+	border: 1px solid transparent;
+  border-top: 1px solid rgba(178,209,216,0.5);
+  border-bottom: 1px solid rgba(178,209,216,0.5);
+  -webkit-transition: all 1s ease;
+  transition: all 1s ease;
 }
 
-.content > .assets-main .pure-table tbody tr:hover {
+/*.content > .assets-main .pure-table tbody tr:hover {
 	border: 1px solid #5AF !important;
+}*/
+
+.pure-table-striped tr:nth-child(2n-1) td {
+  background-color: rgba(178,209,216,0.3);
 }
 
 .content > .assets-main .asset {
@@ -540,6 +546,13 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 
 .content > .assets-main .actions .pure-button {
 	margin-left: 5px;
+  line-height: 2.7em;
+  height: 4em;
+  display: block;
+  width: 50px;
+  float: right;
+  clear: both;
+  font-size: 0.7em;
 }
 
 #qrcode { display: inline-block; }

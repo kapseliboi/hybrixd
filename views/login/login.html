@@ -5,13 +5,12 @@
       <small style="color: yellow; font-style: italic;">alpha version 0.22: "teeny tiny token"</small><br><br><br>
       <form id="loginform" class="pure-form">
 		    <p class="input-label">Account ID</p>
-        <input name="userid" type="text" id="inputUserID" class="form-control" placeholder="enter account ID" required autofocus onkeydown="checkfields();" oninput="checkfields();" onpaste="checkfields();" oncut="checkfields();" />
+        <input name="userid" type="text" id="inputUserID" class="form-control" placeholder="Enter account ID" required autofocus onkeydown="checkfields();" oninput="checkfields();" onpaste="checkfields();" oncut="checkfields();" />
         <p  class="input-label">Password</p>
-		    <input name="passcode" type="password" id="inputPasscode" class="form-control" placeholder="enter password here" required  onkeydown="checkfields();" oninput="checkfields();" onpaste="checkfields();" oncut="checkfields();" />
-        <br/><br/>
+		    <input name="passcode" type="password" id="inputPasscode" class="form-control" placeholder="Enter password" required  onkeydown="checkfields();" oninput="checkfields();" onpaste="checkfields();" oncut="checkfields();" />
         <a id="loginbutton" class="click pure-button pure-button-primary">
           <div id="loginbuttoncontent">
-            <div id="loginwrap">Sign in</div>
+            <div id="loginwrap">Log in</div>
             <div id="combinatorwrap">
               <div id="combinator">
                 <div id="arc1" class="click"></div>
@@ -22,10 +21,11 @@
             </div>
           </div>
         </a>
-        <a id="generatebutton" class="pure-button pure-button-secondary" onclick="PRNG.seeder.restart(); document.getElementById('newaccountmodal').style.display = 'block';">
-          <span>Create a new account</span>
+        <!--<div>-->
+        <a id="generatebutton" onclick="PRNG.seeder.restart(); document.getElementById('newaccountmodal').style.display = 'block';">
+          <span><strong>+</strong> Create a new account</span>
         </a>
-        <a id="helpbutton" class="pure-button pure-button-error" onclick="helpbutton();">
+        <a id="helpbutton" onclick="helpbutton();">
           <span>Help</span>
         </a>
 	    </form>

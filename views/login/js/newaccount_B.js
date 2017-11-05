@@ -153,7 +153,7 @@ function finalizeAccount(userid,passwd,entropy) {
         We cannot help you recover the keys, so they are <u>your responsibility</u>!\
         Have a lot of fun using Internet of Coins!\
         <br /><small><br /><span style="font-size: 1em;">⚠</span> WARNING: This wallet is stil in alpha!<br />Do not yet store large amounts of value on it!</small>',
-    {title: '', button: 'Close'},
+    {title: '', button: 'I\'ve written down my login details'},
     function(){
       confirm('Did you write down your login details and put them in a safe place? If not, you will get new login credentials.',function(result) {
           if(!result) {
