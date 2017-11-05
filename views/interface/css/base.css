@@ -206,7 +206,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   overflow: visible;
   padding: 0;
   white-space: normal;
-  width: 100%;
+  /*width: 100%; WARNING: ENABLING THIS BREAKS LOGOUT FUNCTION*/
 }
 
 .custom-menu .pure-menu-link:hover, .custom-menu .pure-menu-heading:hover {

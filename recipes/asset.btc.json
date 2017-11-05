@@ -6,5 +6,6 @@
   "factor":8,
   "fee":0.00075,
   "host":"http://127.0.0.1:8338",
-  "cache":60000
+  "cache":60000,
+  "throttle":10
 }

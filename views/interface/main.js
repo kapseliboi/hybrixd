@@ -54,6 +54,7 @@ hy_content += addscript('./js/modal.js');           // pretty modal boxes
 hy_content += addscript('./js/clipboard.js');       // copy-to-clipboard functionality
 hy_content += addscript('./js/qrcode.js');          // create QR-code functionality
 hy_content += addscript('./js/storage.js');         // browser-side storage (localforage)
+hy_content += addscript('./js/transaction.js');     // deterministic transaction generator
 
 // SVG
 hy_content += '<script>';

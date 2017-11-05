@@ -9,16 +9,22 @@ init.interface.assets = function(args) {
   
   // modal helper functions
   fill_send = function(asset,balance) {
-    var spendable = formatFloat(toInt(balance).minus(toInt(assets.fees[asset])));
-    if(spendable<0) { spendable=0; }
-    $('#action-send .modal-send-currency').html(asset.toUpperCase());
-    $('#action-send .modal-send-currency').attr('asset',asset);
-    $('#action-send .modal-send-balance').html(formatFloat(spendable));
-    $('#modal-send-target').val('');
-    $('#modal-send-amount').val('');
-    $('#action-send .modal-send-addressfrom').html(assets.addr[asset]);
-    $('#action-send .modal-send-networkfee').html(String(assets.fees[asset]).replace(/0+$/, '')+' '+asset.toUpperCase());
-    check_tx();
+    if(balance && balance!=='?') {
+      if(!isToken(asset)) {
+        var spendable = toInt(balance).minus(toInt(assets.fees[asset]));
+      } else {
+        var spendable = toInt(balance);
+      }
+      if(spendable<0) { spendable=0; }
+      $('#action-send .modal-send-currency').html(asset.toUpperCase());
+      $('#action-send .modal-send-currency').attr('asset',asset);
+      $('#action-send .modal-send-balance').html(formatFloat(spendable));
+      $('#modal-send-target').val('');
+      $('#modal-send-amount').val('');
+      $('#action-send .modal-send-addressfrom').html(assets.addr[asset]);
+      $('#action-send .modal-send-networkfee').html(String(assets.fees[asset]).replace(/0+$/, '')+' '+asset.split('.')[0].toUpperCase());
+      check_tx();
+    }
   }
   fill_recv = function(asset,balance) {
     $('#action-receive .modal-receive-currency').html(asset.toUpperCase());
@@ -54,92 +60,6 @@ init.interface.assets = function(args) {
       }
   }
 
-  send_tx = function(properties) {
-    $('#action-send .pure-button-send').addClass('pure-button-disabled').removeClass('pure-button-primary');
-    if(send_active==false) {
-      send_active=true;
-      $('#action-send').css('opacity', '0.7');
-      var p = {};
-      p.asset = $('#action-send .modal-send-currency').attr('asset');
-      for(var j=0;j<balance.asset.length;j++) { // block balance updating for transacting asset
-        if(balance.asset[j]==p.asset) { balance.lasttx[j] = (new Date).getTime(); }
-      }
-      p.amount = Number($("#modal-send-amount").val());
-      p.fee = Number(assets.fees[p.asset]);
-      p.source_address = String($('#action-send .modal-send-addressfrom').html()).trim();
-      p.target_address = String($('#modal-send-target').val()).trim();
-      p.element = '.assets-main > .data .balance-'+p.asset;
-      p.balorig = $(p.element).html();
-      p.balance = toInt(p.balorig).minus(toInt(p.amount).plus(toInt(p.fee)));
-      // instantly deduct hypothetical amount from balance in GUI
-      $(p.element).html('<span style="color:#D77;">'+String(p.balance))+'</span>';
-      // send call to perform transaction
-      if(typeof assets.fact[p.asset]!='undefined') {
-        hybriddcall({r:'a/'+p.asset+'/unspent/'+p.source_address+'/'+String(toInt(p.amount).plus(toInt(p.fee))),z:1,pass:p},0, function(object,passdata) {
-          // DEBUG: logger(JSON.stringify(object));
-          if(typeof object.data!='undefined' && !object.err) {
-            var unspent = object.data;
-            var p = passdata;
-            if(typeof unspent!='undefined' && typeof unspent.change!='undefined') { unspent.change = toInt(unspent.change,assets.fact[p.asset]); }
-            storage.Get(assets.modehashes[ assets.mode[p.asset] ], function(dcode) {
-              deterministic = activate( LZString.decompressFromEncodedURIComponent(dcode) );
-              setTimeout(function() {
-                if(typeof deterministic!='object' || deterministic=={}) {
-                  alert('Error: Deterministic code was not properly initialized! Please ask the Internet of Coins developers to fix this.');
-                  $(p.element).html(p.balorig); // restore original amount
-                } else {
-                  try {
-                    var transaction = deterministic.transaction({
-                      source:p.source_address,
-                      target:p.target_address,
-                      amount:toInt(p.amount,assets.fact[p.asset]),
-                      fee:toInt(p.fee,assets.fact[p.asset]),
-                      factor:assets.fact[p.asset],
-                      keys:assets.keys[p.asset],
-                      seed:assets.seed[p.asset],
-                      unspent:unspent
-                    });
-                    if(typeof transaction!='undefined') {
-                      // DEBUG: logger(transaction);
-                      hybriddcall({r:'a/'+p.asset+'/push/'+transaction,z:1,pass:p},null, function(object,passdata) {
-                        var p = passdata;
-                        if(typeof object.data!='undefined' && object.error==0) {
-                          // now deduct real amount from balance in GUI
-                          $(p.element).html(String(p.balance));
-                          // push function returns TXID
-                          console.log('Node sent transaction ID: '+object.data);
-                          // DEBUG: console.log('p.element: '+p.element); console.log('p.balance: '+p.balance);
-                        } else {
-                          alert('Sorry, but the node told us the transaction failed!<br /><br />'+object.data);
-                          $(p.element).html(p.balorig); // restore original amount
-                        }
-                      });
-                    } else {
-                      alert('The transaction deterministic calculation failed!  Please ask the Internet of Coins developers to fix this.');
-                      $(p.element).html(p.balorig); // restore original amount
-                    }  
-                  } catch(e) {
-                    alert('Sorry, the transaction could not be generated! Please ask the Internet of Coins developers to fix this.<br /><br />'+e);
-                    $(p.element).html(p.balorig); // restore original amount
-                  }
-                }
-              },500);
-            });
-          } else {
-            alert('Sorry, the node did not send us data about unspents for making the transaction! Maybe there was a network problem. Please simply try again.');
-          }
-        });
-      } else {
-        alert('Transaction failed. Assets were not yet completely initialized. Please try again in a moment.');
-      }
-      setTimeout(function() {
-        send_active=false;
-        // restore button, hide modal
-        $('#action-send').modal('hide').css('opacity', '1');
-        $('#action-send .pure-button-send').removeClass('pure-button-disabled').addClass('pure-button-primary');
-      },3000);
-    }
-  }
   ui_assets = function(properties) {
     var i = properties.i;
     var balance = properties.balance;
@@ -149,15 +69,17 @@ init.interface.assets = function(args) {
         function(j) {      
           if(typeof balance.asset[j] !== 'undefined') {
             var element = '.assets-main > .data .balance-'+balance.asset[j].replace(/\./g,'-');
-            if((balance.lasttx[j]+60000)<(new Date).getTime()) {
+            if((balance.lasttx[j]+120000)<(new Date).getTime()) {
               hybriddcall({r:'a/'+balance.asset[j]+'/balance/'+assets.addr[balance.asset[j]],z:0},element,
                 function(object){
                   if(typeof object.data=='string') { object.data = formatFloat(object.data); }
                   var assetbuttons = '.assets-main > .data .assetbuttons-'+balance.asset[j].replace(/\./g,'-');
                   if(object.data!=null && !isNaN(object.data)){
                     $(assetbuttons).delay(1000).removeClass('disabled');
+                    $(assetbuttons+' a').attr('data-toggle', 'modal');
                   } else {
                     $(assetbuttons).addClass('disabled');
+                    $(assetbuttons+' a').removeAttr('data-toggle');
                   }
                   return object;
                 }

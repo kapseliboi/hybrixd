@@ -104,8 +104,13 @@
           return x.times('1'+(f>1?new Array(f+1).join('0'):''));
         }
 
+        /* TO BE DEPRECATED */
         formatFloat = function(n) {
           return String(Number(n));
+        }
+
+        isToken = function(symbol) {
+          return (symbol.indexOf('.')!==-1?1:0);
         }
         
 				// activate (deterministic) code from a string
@@ -134,6 +139,8 @@
                 hybriddcall({r:'a/'+entry+'/factor',c:GL.usercrypto,s:loop_step,z:0},0, function(object) { if(typeof object.data!='undefined') { assets.fact[entry]=object.data; } });
                 var loop_step = next_step();
                 hybriddcall({r:'a/'+entry+'/fee',c:GL.usercrypto,s:loop_step,z:0},0, function(object) { if(typeof object.data!='undefined') { assets.fees[entry]=object.data; } });
+                var loop_step = next_step();
+                hybriddcall({r:'a/'+entry+'/contract',c:GL.usercrypto,s:loop_step,z:0},0, function(object) { if(typeof object.data!='undefined') { assets.cntr[entry]=object.data; } });
                 return true;
               } else {
                 storage.Del(assets.modehashes[mode]);
@@ -154,6 +161,8 @@
                       hybriddcall({r:'a/'+entry+'/factor',c:GL.usercrypto,s:loop_step,z:0},0, function(object) { if(typeof object.data!='undefined') { assets.fact[entry]=object.data; } });
                       var loop_step = next_step();
                       hybriddcall({r:'a/'+entry+'/fee',c:GL.usercrypto,s:loop_step,z:0},0, function(object) { if(typeof object.data!='undefined') { assets.fees[entry]=object.data; } });
+                      var loop_step = next_step();
+                      hybriddcall({r:'a/'+entry+'/contract',c:GL.usercrypto,s:loop_step,z:0},0, function(object) { if(typeof object.data!='undefined') { assets.cntr[entry]=object.data; } });
                     }
                   }
                 );

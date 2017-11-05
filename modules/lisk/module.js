@@ -294,53 +294,54 @@ function postOLD(properties) {
 
 // data returned by this connector is stored in a process superglobal -> global.hybridd.process[processID]
 function link(properties) {
-	// decode our serialized properties
-	var processID = properties.processID;
 	var target = properties.target;
+  var base = target.symbol.split('.')[0];     // in case of token fallback to base asset
+	var processID = properties.processID;
 	var command = properties.command;
-	if(DEBUG) { console.log(' [D] module lisk: sending REST call to ['+target.symbol+'] -> '+JSON.stringify(command)); }
-	// separate method and arguments
-	var mainpath = (typeof target.path == 'undefined'?'':'/'+target.path);
-	var method = command.shift();
+	if(DEBUG) { console.log(' [D] module lisk: sending REST call for ['+target.symbol+'] -> '+JSON.stringify(command)); }
+	// separate path and arguments
+	var upath = command.shift();
 	var params = command.shift();
-	var queryurl = target.host+mainpath+'/'+method;
-  var restAPI = global.hybridd.asset[target.symbol].link;
-  // do a GET or PUT/POST based on the command input
   var args = {};
-  if(typeof params!='undefined') {
-    if(typeof params=='string') { try { params = JSON.parse(params); } catch(e) {} }
+  // do a GET or PUT/POST based on the command input
+  var type;
+  if(typeof params!=='undefined') {
+    if(typeof params==='string') { try { params = JSON.parse(params); } catch(e) {} }
     var nethash = (typeof properties.nethash!='undefined'?properties.nethash:'');
     var version = '0.9.9';
-    if(method.substr(0,4)=='api/') {
+    if(upath.substr(0,4)=='api/') {
+      type='PUT';
       args = {
           headers:{'Content-Type':'application/json','version':version,'port':1,'nethash':nethash},
-          data:JSON.stringify(params)
+          data:JSON.stringify(params),
+          path:upath
       }
-      var postresult = restAPI.put(queryurl,args,function(data,response){restaction({processID:processID,data:data});});
+      //var postresult = restAPI.put(queryurl,args,function(data,response){restaction({processID:processID,data:data});});
     } else {
+      type='POST';
       args = {
           headers:{'Content-Type':'application/json','version':version,'port':1,'nethash':nethash},
-          data:{'transaction':params}
+          data:{'transaction':params},
+          path:upath
       }
       // DEBUG: console.log(' ##### POST '+queryurl+' '+jstr(args)+' nh:'+nethash);
-      var postresult = restAPI.post(queryurl,args,function(data,response){restaction({processID:processID,data:data});});
+      //var postresult = restAPI.post(queryurl,args,function(data,response){restaction({processID:processID,data:data});});
     }
   } else {
-      var postresult = restAPI.get(queryurl,args,function(data,response){restaction({processID:processID,data:data});});
+    type = 'GET';
+    args = { path:upath }
   }
-	postresult.on('error', function(err){
-    //console.log(err);
-    scheduler.stop(processID,{err:1});
-	});
-}
+  
+  // construct the APIqueue object
+  APIqueue.add({ 'method':type,
+                 'link':'asset["'+base+'"]',  // make sure APIqueue can use initialized API link
+                 'host':(typeof target.host!=='undefined'?target.host:global.hybridd.asset[base].host),  // in case of token fallback to base asset hostname
+                 'args':args,
+                 'throttle':(typeof target.throttle!=='undefined'?target.throttle:global.hybridd.asset[base].throttle),  // in case of token fallback to base asset throttle
+                 'pid':processID,
+                 'target':target.symbol });  
 
-function restaction(properties) {
-  var data = properties.data;
-  if(data.code<0) { var err=1; } else { var err=data['code']; }
-  try { data = JSON.parse(data); } catch(e) {}
-  scheduler.stop(properties.processID,{err:err,data:data});
 }
-
 
 
 // TESTING
