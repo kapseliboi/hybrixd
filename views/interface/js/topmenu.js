@@ -10,8 +10,10 @@
           
           var output = '<span id="tooltip">Work in progress</span>';
           var disabledMenuItems = document.getElementsByClassName('disabled');
-          
           for (var i = 0; i < disabledMenuItems.length; i++) {
             disabledMenuItems[i].innerHTML += output;
           }
+				
 				})(this, this.document);
+
+		  

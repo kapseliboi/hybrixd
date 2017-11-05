@@ -41,7 +41,7 @@ DESKTOP STYLING: 1200px and up
     margin-top: 0;
   }
 
-  .custom-menu-toggle {	
+  .custom-menu-toggle { 
     display: none;
   }
 
@@ -51,19 +51,19 @@ DESKTOP STYLING: 1200px and up
   
   .custom-menu-bottom .pure-menu-link {
     opacity: 1;
-		-webkit-transform: translateX(0);
-		-moz-transform: translateX(0);
-		-ms-transform: translateX(0);
-		transform: translateX(0);
-	}
+    -webkit-transform: translateX(0);
+    -moz-transform: translateX(0);
+    -ms-transform: translateX(0);
+    transform: translateX(0);
+  }
 
-	.custom-menu-bottom.custom-menu-tucked .pure-menu-link {
-		-webkit-transform: translateX(0);
-		-moz-transform: translateX(0);
-		-ms-transform: translateX(0);
-		transform: translateX(0);
-		opacity: 1;
-	}
+  .custom-menu-bottom.custom-menu-tucked .pure-menu-link {
+    -webkit-transform: translateX(0);
+    -moz-transform: translateX(0);
+    -ms-transform: translateX(0);
+    transform: translateX(0);
+    opacity: 1;
+  }
   
   .custom-menu .pure-menu-link {
     padding: .6em 1em 17px; 
@@ -87,6 +87,10 @@ DESKTOP STYLING: 1200px and up
     top: 0;
     right: 0;
     text-align: right;
+  }
+
+  #user-icon {
+    margin-bottom: 0px;
   }
 
   #userID {
@@ -145,7 +149,4 @@ DESKTOP STYLING: 1200px and up
   /*****************************************************************/
   /* ASSETS */
 
-  .assets-main h2 {
-    display:none;
-  }
 }

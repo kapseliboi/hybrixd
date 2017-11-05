@@ -16,6 +16,7 @@
   font-family:arial;
   border-radius:5px;
   width:550px;
+  max-width:550px;
   font-size:1em;
   display:none;
   position:fixed;
@@ -34,20 +35,20 @@
 
 @media (min-width:321px) {
   .customalert {
-  	top:5%;
-  	left:50%;
+    top:5%;
+    left:50%;
   }
 }
 
 @media (min-height:480px) {
-	.customalert{
+  .customalert{
     top:20%
   }
 }
 
 @media (max-width:550px) {
   .customalert {
-  	margin-left:-50vw
+    margin-left:-50vw
   }
 }
 
@@ -69,8 +70,14 @@
 
 .customalert h2 {
   font-size: 1.2em;
-  margin: 0;
+  margin: 0.3em;
   color: #222;
+}
+
+.customalert h3 {
+  margin: 0.3em;
+  color: #042023;
+  font-size: 1em;
 }
 
 .customalert .body {
@@ -78,14 +85,69 @@
   font-size:1em;
 }
 
+.customalert .body .login-credentials {
+  border-radius: 8px;
+  color: #555;
+  border: #CCC 1px solid;
+  padding: 5px 15px;
+  background: #EEE;
+}
+
+.customalert .body .login-credentials table {
+  margin: 0 auto;
+}
+
+.customalert .body .login-credentials table td {
+  min-width: 8em;
+  text-align: right;
+  font-size: 0.8em;
+  padding: 12px;
+  vertical-align: text-top;
+  font-weight: 600;
+}
+
+.customalert .body .login-credentials table td.credential {
+  color: #000;
+  letter-spacing: 1px;
+  font-family: monospace;
+  font-size: 1.5em;
+  overflow-wrap: break-word;
+  text-align: left;
+  overflow-wrap: break-word;
+  display: block;
+  max-width: 17.5em;
+  font-weight: 300;
+  word-break: break-all;
+}
+
+@media (min-width: 600px) { 
+  .customalert .body .login-credentials table td.credential {
+    font-size: 1.3em;
+  }
+}
+
+.customalert .body .alpha-warning {
+  color: indianred;
+  font-weight: 600;
+  font-size: 0.9em;
+  display: inline-block;
+  padding: 8px 18px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
 .customalert .footer {
   padding: 0 10px 10px;
   font-size: 0.9em
 }
 
+.customalert .footer .pure-button {
+  margin: 4px;
+}
+
 @media (max-width: 62em) {
-  .customalert {
-  	width: 320px
-  	margin-left:-172px;
+  .customalert {    
+    width: 94%;
+    margin-left: -47%;
   }
 }

@@ -1,5 +1,5 @@
 <div class="databox assets-main wide">
-	<h2>Assets</h2>
+	<h2>My Assets</h2>
 	<div class="data" style="text-align: center;">
 		<div class="spinner"><div class="spinner-loader">...</div></div>
 	</div>
@@ -18,12 +18,12 @@
 				<label for="target" style="text-align: left; padding-left: 1.2em;">Send to</label>
 				<input id="modal-send-target" type="text" placeholder="enter target address" class="inline" style="width: 26em;" onkeydown = "check_tx();" oninput = "check_tx();" onpaste = "check_tx();" oncut = "check_tx();">
 				<label for="amount" style="text-align: left; padding-left: 1.2em;">Send amount</label>
-				<input id="modal-send-amount" type="text" placeholder="enter quantity" class="inline" style="width: 21em;" onkeydown = "check_tx();" oninput = "check_tx();" onpaste = "check_tx();" oncut = "check_tx();"><div onclick='$("#modal-send-amount").val( $("#action-send .modal-send-balance").html() ); check_tx();' style="width: 4.5em; margin-left: 0.5em;" class="pure-button pure-button-small pure-button-warning" aria-hidden="true">MAX</div>
+				<input id="modal-send-amount" type="text" placeholder="enter quantity" class="inline" onkeydown = "check_tx();" oninput = "check_tx();" onpaste = "check_tx();" oncut = "check_tx();"><div onclick='$("#modal-send-amount").val( $("#action-send .modal-send-balance").html() ); check_tx();' class="pure-button pure-button-small pure-button-warning max-amount-button" aria-hidden="true">MAX</div>
 			</form>
 			<div style="font-size: 0.75em; min-height: 1.75em;">(Network fee 
 			<div class="bold modal-send-networkfee" style="display: inline-block; color: grey; word-wrap: break-word;">...</div>)</div>
-			<p>From address<br>
-			<div class="bold modal-send-addressfrom" style="font-size: 0.75em; color: grey; min-height: 3em; word-wrap: break-word;">...</div></p>
+			<span style="padding: .8em 0 .3em 0; display:block;">From address:<span><br>
+			<div class="bold modal-send-addressfrom" style="font-size: 0.75em; color: grey; min-height: 3em; word-wrap: break-word;">...</div>
 		</div>
 		<div class="modal-footer">
 			<button class="pure-button" data-dismiss="modal" aria-hidden="true">Cancel</button>
@@ -39,7 +39,7 @@
 		</div>
 		<div class="modal-body">
 			<p>To receive <span class="modal-receive-currency"></span> transactions, deposit to this address<br><div id="qrcode"></div></p>
-			<div class="bold modal-receive-addressfrom" style="font-size: 1.10em; min-height: 3em; word-wrap: break-word; margin-bottom: 1em;">...</div>
+			<div class="bold modal-receive-addressfrom" style="font-size: 0.9em; min-height: 3em; word-wrap: break-word; margin-bottom: 1em;">...</div>
 			<button id="modal-receive-button" data-clipboard-text="?" class="pure-button pure-button-xsmall pure-button-warning" aria-hidden="true">Copy to clipboard</button>
 			<div style="height: 1em;"></div>
 			<!--<p>Status of incoming transaction</p>-->
