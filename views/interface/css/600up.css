@@ -19,8 +19,8 @@ TABLET PORTRAIT STYLING: 600px and up
  /* ASSETS */
 
 .content > .assets-main .actions .pure-button {
-	font-size: 1em;
-	width: 150px;
+	font-size: 0.9em;
+	width: 78px;
 	line-height: 1em;
 	height: 2.5em;
 }

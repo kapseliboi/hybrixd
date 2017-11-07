@@ -297,7 +297,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 /* CONTENT */
 
 .modal-body {
-  font-size: 0.5em;
+  font-size: 1em;
 }
 
 .container {
@@ -385,7 +385,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   margin-left: -240px;
 }
 
-@media (max-height: 608px) {
+/*@media (max-height: 608px) {
   .modal {
     height: 100%;
     border: none;
@@ -406,7 +406,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   .modal-open {
     overflow-y: hidden;
   }
-}
+}*/
 
 /*****************************************************************/
 /* DASHBOARD */
@@ -559,6 +559,84 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   float: right;
   clear: both;
   font-size: 0.7em;
+  padding: 0.8em 1.5em;
+}
+
+.content > .assets-main .actions .advanced-button {
+  width: 125px;
+  padding: 0.8em 0.9em;
+}
+
+.content > .assets-main .actions .advanced-button .advanced-icon {
+  display: inline-block;
+  padding: 0 7px 0px 0px;
+  vertical-align: top;
+  margin-top: -4px;
+}
+
+.content > .assets-main .actions .advanced-button .advanced-icon svg {
+  width: 14px;
+}
+
+#action-send .modal-body p {
+  margin: 0 0 .5em 0;
+}
+#action-send .pure-form {
+  margin: 22px 0 -22px 0;
+}
+
+#action-send .modal-body .pure-form #modal-send-amount {
+  width: 76%;
+}
+
+#action-send .modal-body .pure-form .max-amount-button {
+  width: 20%;
+  margin-left: 0.5em;
+  vertical-align: top;
+  height: 44px;
+  display: inline-block;
+  margin-top: 3px;
+  min-width: unset;
+  padding: .7em 0;
+}
+
+#action-send .modal-send-addressfrom-wrap {
+  display:block; 
+  text-align: left;
+}
+
+#action-send label {
+  text-align: left;
+  text-transform: uppercase;
+  font-size: .6em;
+  letter-spacing: 1px;
+  color: #666;
+  margin: .25em 0px .25em 2px;
+  display: block;
+  text-align: left;
+}
+
+#action-send .modal-send-addressfrom, #action-receive .modal-receive-addressfrom {
+  font-size: 1.2em; 
+  word-wrap: break-word; 
+  margin-bottom: .2em;
+  padding: 13px 10px;
+  font-family: monospace;
+  font-weight: 300;
+  background: rgba(178,209,216,0.4);
+  border: 1px solid rgba(178,209,216,0.4);
+  border-radius: 6px;
+}
+
+#action-send .modal-send-addressfrom {
+  margin-top: 5px;
+}
+
+#action-receive .copied {
+  transition: all 1s ease;
+  font-size: .7em;
+  color: rgba(178,209,216,1);
+  height: 1em
 }
 
 #qrcode { display: inline-block; }

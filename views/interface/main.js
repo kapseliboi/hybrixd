@@ -62,6 +62,7 @@ hy_content += 'svg={};';
 hy_content += addsvg('./svg/cogs.svg','cogs');
 hy_content += addsvg('./svg/user.svg','user');
 hy_content += addsvg('./svg/logout.svg','logout');
+hy_content += addsvg('./svg/advanced.svg','advanced');
 hy_content += '$("#user-icon").html(svg[\'user\']);';
 hy_content += '$("#topmenu-logout").html(svg[\'logout\']);';
 hy_content += '</script>';
