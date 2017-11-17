@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="15px" height="15px" viewBox="0 0 15 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop-asset-view" transform="translate(-836.000000, -80.000000)" fill-rule="nonzero" fill="#55C08C">
+            <g id="Group">
+                <g transform="translate(795.000000, 80.000000)">
+                    <path d="M52.2680288,8.23918269 L52.2680288,6.76006611 L49.2399339,6.76006611 L49.2399339,3.73197115 L47.7608173,3.73197115 L47.7608173,6.76006611 L44.7327224,6.76006611 L44.7327224,8.23918269 L47.7608173,8.23918269 L47.7608173,11.2672776 L49.2399339,11.2672776 L49.2399339,8.23918269 L52.2680288,8.23918269 Z M48.5,0 C52.6548978,0 56,3.34510216 56,7.5 C56,11.6548978 52.6548978,15 48.5,15 C44.3451022,15 41,11.6548978 41,7.5 C41,3.34510216 44.3451022,1.33440267e-15 48.5,0 Z" id="Shape"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

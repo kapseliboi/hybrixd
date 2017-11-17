@@ -13,6 +13,15 @@ init.interface.assets = function(args) {
   };
   
   // modal helper functions
+  fill_actions = function(asset,balance) {
+    $('#action-actions #ModalLabel').html(asset.toUpperCase());
+    $('#action-actions .balance').html(balance.toUpperCase());
+    var output = '';
+    output+='<a onclick=\'fill_send("'+asset+'","'+balance+'");\' href="#action-send" class="pure-button pure-button-primary" role="button" data-dismiss="modal" data-toggle="modal">Send</a>';
+    output+='<a onclick=\'fill_recv("'+asset+'","'+balance+'");\' href="#action-receive" class="pure-button pure-button-secondary" role="button" data-dismiss="modal" data-toggle="modal">Receive</a>';
+    output+='<a href="#action-advanced" class="pure-button pure-button-grey advanced-button" role="button" data-dismiss="modal" data-toggle="modal"><div class="advanced-icon">'+svg['advanced']+'</div>Advanced</a>';
+    $('#action-actions .buttons').html(output); 
+  }
   fill_send = function(asset,balance) {
     if(balance && balance!=='?') {
       if(!isToken(asset)) {

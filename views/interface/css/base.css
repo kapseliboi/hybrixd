@@ -314,7 +314,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   width: 90%;
   background: white;
   border-radius: 6px;
-  padding: 1.8em;
+  padding: 1em;
 }
 
 .content > .databox {
@@ -490,6 +490,13 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 
 .content > .assets-main > h2 {
   padding: 0px 15px 15px 0;
+  display:inline-block;
+}
+
+.content > .assets-main > .edit-assets {
+  display:inline-block;
+  float:right;
+  font-size: 0.8em;
 }
 
 .content > .assets-main .data {
@@ -513,7 +520,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   font-weight: 400;
   color: #777;
   text-transform: uppercase;
-  font-size: 0.7em;
+  font-size: 0.65em;
   letter-spacing: 2px;
   border: none;
   padding: 1em .5em;
@@ -531,14 +538,45 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   border: 1px solid #5AF !important;
 }*/
 
-.pure-table-striped tr:nth-child(2n-1) td {
-  background-color: rgba(178,209,216,0.3);
+.pure-table-striped tr:nth-child(2n-1), .pure-table-striped tr:nth-child(2n-1) td {
+  background-color: #E8F1F3;
 }
+
+.pure-table-striped tr th {
+  background: #FFFFFF;
+}
+
 
 .content > .assets-main .asset {
   text-transform: uppercase;
-  font-size: 1.1em;
+  font-size: 0.65em;
   font-weight: 600;
+}
+
+.content > .assets-main .icon-title {
+  display: none;
+}
+
+.content > .assets-main .asset, .content > .assets-main .icon {
+  display: block;
+  text-align: center;
+  width: 60px;
+}
+
+.content > .assets-main .pure-table .asset {
+  padding-top: 0.2em;
+}
+.content > .assets-main .pure-table .icon {
+  padding-bottom: 0em;
+}
+
+.content > .assets-main .icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.content > .assets-main .balance {
+  font-size: 0.9em;
 }
 
 .content > .assets-main .balance .progress-radial {
@@ -550,16 +588,19 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   text-align: right;
 }
 
+.content > .assets-main .actions .assetbuttons {
+  display: none;
+}
+
 .content > .assets-main .actions .pure-button {
   margin-left: 5px;
   line-height: 2.7em;
-  height: 4em;
+  height: 3.5em;
   display: block;
-  width: 50px;
   float: right;
   clear: both;
-  font-size: 0.7em;
-  padding: 0.8em 1.5em;
+  font-size: 0.8em;
+  padding: .5em;
 }
 
 .content > .assets-main .actions .advanced-button {
@@ -567,27 +608,33 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   padding: 0.8em 0.9em;
 }
 
-.content > .assets-main .actions .advanced-button .advanced-icon {
+.pure-button .advanced-icon, .pure-button .actions-icon {
   display: inline-block;
   padding: 0 7px 0px 0px;
-  vertical-align: top;
+  vertical-align: middle;
   margin-top: -4px;
 }
 
-.content > .assets-main .actions .advanced-button .advanced-icon svg {
+.pure-button .actions-icon svg {
   width: 14px;
 }
 
 #action-send .modal-body p {
   margin: 0 0 .5em 0;
 }
+
 #action-send .pure-form {
   margin: 22px 0 -22px 0;
 }
 
-#action-send .modal-body .pure-form #modal-send-amount {
-  width: 76%;
+#action-actions .modal-body .buttons .pure-button {
+  display: block;
+  margin: .5em;
+  width: 175px;
+  margin: .5em auto;
 }
+
+#action-actions .modal-body .buttons .pure-button
 
 #action-send .modal-body .pure-form .max-amount-button {
   width: 20%;

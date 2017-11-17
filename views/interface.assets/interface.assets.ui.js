@@ -59,16 +59,19 @@ $(document).ready( function(){
         var output = '';
         // create asset table
         output+='<table class="pure-table pure-table-striped"><thead>';
-        output+='<tr><th>Asset</th><th>Balance</th><th class="actions"></th></tr></thead><tbody>';
+        output+='<tr><th class="icon-title"></th><th class="asset-title">Asset</th><th>Balance</th><th class="actions"></th></tr></thead><tbody>';
         for (var entry in object.data) {
           balance.asset[i] = entry;
           balance.amount[i] = 0;
           balance.lasttx[i] = 0;
           var element=balance.asset[i].replace(/\./g,'-');
-          output+='<tr><td class="asset asset-'+element+'">'+entry+'</td><td><div class="balance balance-'+element+'">'+progressbar()+'</div></td><td class="actions"><div class="assetbuttons-'+element+' disabled">';
+          output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-'+element+'">'+entry+'</td><td><div class="balance balance-'+element+'">'+progressbar()+'</div></td><td class="actions"><div class="assetbuttons assetbuttons-'+element+' disabled">';
           output+='<a onclick=\'fill_send("'+balance.asset[i]+'",$(".assets-main > .data .balance-'+element+'").html());\' href="#action-send" class="pure-button pure-button-primary" role="button" data-toggle="modal" disabled="disabled">Send</a>';
           output+='<a onclick=\'fill_recv("'+balance.asset[i]+'",$(".assets-main > .data .balance-'+element+'").html());\' href="#action-receive" class="pure-button pure-button-secondary" role="button" data-toggle="modal" disabled="disabled">Receive</a>';
-          output+='<a href="#action-advanced" class="pure-button pure-button-grey advanced-button" role="button" disabled="disabled"><div class="advanced-icon">'+svg['advanced']+'</div>Advanced</a>';
+          output+='<a href="#action-advanced" class="pure-button pure-button-grey advanced-button" role="button" disabled="disabled"><div class="advanced-icon">'+svg['advanced']+'</div><span class="advanced-label">Advanced<span></a>';
+          output+='</div>'
+          output+='<div class="assetbutton-mobile assetbuttons-'+element+' disabled">'
+          output+='<a onclick=\'fill_actions("'+balance.asset[i]+'",$(".assets-main > .data .balance-'+element+'").html());\' href="#action-actions" class="pure-button pure-button-grey actions-button" role="button" data-toggle="modal" disabled="disabled"><div class="actions-icon">'+svg['actions']+'</div>Actions</a>';
           output+='</div></td></tr>';
           i++;
         }

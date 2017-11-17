@@ -18,9 +18,34 @@ TABLET PORTRAIT STYLING: 600px and up
 /*****************************************************************/
  /* ASSETS */
 
+.content > .assets-main .actions .assetbuttons {
+  display: block;
+}
+
+.content > .assets-main .actions .assetbutton-mobile {
+  display: none;
+}
+
+.content > .assets-main .actions .assetbuttons .advanced-label {
+	display: none;
+}
+.content > .assets-main .actions  .assetbuttons .pure-button .advanced-icon {
+	padding: 0;
+}
+
+.content > .assets-main .actions  .assetbuttons .pure-button .advanced-icon svg {
+  padding-top: 2px;
+  width: 18px;
+  height:18px;
+}
+
 .content > .assets-main .actions .pure-button {
-	font-size: 0.9em;
-	width: 78px;
-	line-height: 1em;
-	height: 2.5em;
+  font-size: 0.8em;
+  width: fit-content;
+  line-height: 1em;
+  height: 3em;
+  min-width: 10px;
+  padding: 1.1em .8em;
+  display: inline-block;
+  float: none;
 }

@@ -1,5 +1,6 @@
 <div class="databox assets-main wide">
-	<h2>My Assets</h2>
+	<h2>My Assets</h2> 
+	<div class="edit-assets">Edit assets</div>
 	<div class="data" style="text-align: center;">
 		<div class="spinner"><div class="spinner-loader">...</div></div>
 	</div>
@@ -26,8 +27,8 @@
 				<label for="target"">Send to</label>
 				<input id="modal-send-target" type="text" placeholder="enter target address" class="inline" onkeydown = "check_tx();" oninput = "check_tx();" onpaste = "check_tx();" oncut = "check_tx();">
 				<label for="amount"">Send amount</label>
-				<input id="modal-send-amount" type="text" placeholder="enter quantity" class="inline" onkeydown = "check_tx();" oninput = "check_tx();" onpaste = "check_tx();" oncut = "check_tx();">
-				<div onclick='$("#modal-send-amount").val( $("#action-send .modal-send-balance").html() ); check_tx();' class="pure-button pure-button-small pure-button-warning max-amount-button" aria-hidden="true">MAX</div>
+				<input id="modal-send-amount" type="text" placeholder="enter quantity" class="inline" onkeydown = "check_tx();" oninput = "check_tx();" onpaste = "check_tx();" oncut = "check_tx();" style="width: 74%;">
+				<div onclick='$("#modal-send-amount").val( $("#action-send .modal-send-balance").html() ); check_tx();' class="pure-button pure-button-small pure-button-warning max-amount-button" aria-hidden="true" style="vertical-align: top;">MAX</div>
 			</form>
 			
 		</div>
@@ -80,6 +81,24 @@
 	</div>
 </div>
 
+<div id="action-actions" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+	<div class="modal-content">
+		<div class="modal-header">
+			<h2 id="ModalLabel"></h2>
+		</div>
+
+		<div class="modal-body">
+			<p>
+				Your balance: <span class="balance"></span>
+			</p>
+			<div class="buttons"></div>
+        </div>
+        
+		<div class="modal-footer">
+			<button class="pure-button pure-button-grey" data-dismiss="modal" aria-hidden="true">Close</button>
+		</div>
+	</div>
+</div>
 
 <div id="action-example" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
 	<div class="modal-content">
