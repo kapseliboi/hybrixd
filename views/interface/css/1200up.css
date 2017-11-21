@@ -118,10 +118,6 @@ DESKTOP STYLING: 1200px and up
   /*****************************************************************/
   /* CONTENT */
 
-  .modal-body {
-    font-size: 1em;
-  }
-
   .content {
     max-width: 1600px;
     margin-top: -2.4em;
@@ -148,5 +144,14 @@ DESKTOP STYLING: 1200px and up
 
   /*****************************************************************/
   /* ASSETS */
+
+  .content .pure-table .actions .assetbuttons .pure-button .advanced-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .content .pure-table .pure-table .asset, .content .pure-table .pure-table .balance {
+    font-size: 1em;
+  }
 
 }

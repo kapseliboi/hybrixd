@@ -2,7 +2,12 @@ init.interface.assets = function(args) {
   topmenuset('assets');  // top menu UI change
   clearInterval(intervals); // clear all active intervals
 
-  clipb_success = function() { console.log('Data copied to clipboard.'); $('#action-receive .modal-receive-addressfrom').pulse({times: 5, duration: 250}) };
+  clipb_success = function() { 
+    console.log('Data copied to clipboard.'); 
+    $('#action-receive .copied').html('Address copied to clipboard.');
+    $('#action-receive .copied').fadeTo( "fast" , 1);
+    $('#action-receive .copied').delay(1000).fadeTo( "fast" , 0);
+  };
   clipb_fail = function(err) {
     alert("This browser cannot automatically copy to the clipboard! \n\nPlease select the text manually, and press CTRL+C to \ncopy it to your clipboard.\n");
   };
@@ -77,6 +82,7 @@ init.interface.assets = function(args) {
                   var assetbuttons = '.assets-main > .data .assetbuttons-'+balance.asset[i].replace(/\./g,'-');
                   if(object.data!=null && !isNaN(object.data)){
                     $(assetbuttons).delay(1000).removeClass('disabled');
+                    $(assetbuttons+' a').removeAttr('disabled');
                     $(assetbuttons+' a').attr('data-toggle', 'modal');
                     $(element).attr('amount',object.data);
                   } else {

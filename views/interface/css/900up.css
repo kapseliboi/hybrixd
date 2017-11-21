@@ -7,9 +7,17 @@ TABLET LANDSCAPE STYLING: 900px and up
   /*****************************************************************/
   /* CONTENT */
   
+  .content {
+    padding: 1.8em;
+  }
+
   .content > .databox {
     width: 49.1%;
     margin: 0.5%;
+  }
+  
+  .button-label {
+    display: inline;
   }
   
   /*****************************************************************/
@@ -37,9 +45,33 @@ TABLET LANDSCAPE STYLING: 900px and up
   /*****************************************************************/
   /* ASSETS */
 
-  .content > .assets-main .actions .pure-button {
+  .content .pure-table .icon-title {
+    display: table-cell;
+  }
+
+  .content .pure-table .asset, .content .pure-table .icon {
+    display: table-cell;
+    text-align: left;
+    font-size: .9em;
+    width: 30px;
+    padding: .6em;
+  }
+
+  .content .pure-table .icon svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .content .pure-table .actions .pure-button {
+    font-size: .9em;
     display: inline-block;
     float: none;
     width: auto;
+    padding: 1.1em 1em;
   }
+
+  .content .pure-table .actions .assetbuttons .pure-button .advanced-icon {
+    padding-right: 0.5em;
+  }
+
 }

@@ -37,6 +37,9 @@ $(document).ready( function(){
   var output = '<div style="text-align: center; margin-left: auto; margin-right: auto; width: 30%; color: #CCC;">'+svg['cogs']+'</div>';
   $('#advancedmodal').html(output);	// insert new data into DOM
 
+  // add icon
+  $('.manage-icon').html(svg['edit']);
+
   // attached buttons and actions
   $('#send-transfer').click(function() {
     if ($("#send-transfer").hasClass("disabled")) {

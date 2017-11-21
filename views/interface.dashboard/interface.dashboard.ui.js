@@ -4,10 +4,9 @@ UItransform = {
     var balance = String(Number(n));
     var length = balance.length;
     
-    if (balance[0] == "0") { var start = 1 } else { var start = 0 }
-    var output = balance.slice(start, 10);
+    var output = balance.slice(0, 10);
     if (length > 10) {
-      var output = balance.slice(start, 9);
+      var output = balance.slice(0, 9);
       output += "<span class='balance-end'>&hellip;</span>"  
     }
     return output;
@@ -17,6 +16,9 @@ UItransform = {
 // do stuff the dashboard should do...
 $(document).ready( function(){
   
+  // add icon
+  $('.manage-icon').html(svg['edit']);
+
   // element: NETWORK
   var element = {};
   element.transactions = '.dashboard-transactions';
