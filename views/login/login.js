@@ -28,7 +28,27 @@ $(document).ready(function() {
       }
 		}
   });  
-   
+
+  // enable signin button on CTRL-S
+  $(document).keydown(function(e) {
+
+      var key = undefined;
+      var possible = [ e.key, e.keyIdentifier, e.keyCode, e.which ];
+
+      while (key === undefined && possible.length > 0)
+      {
+          key = possible.pop();
+      }
+
+      if (key && (key == '115' || key == '83' ) && (e.ctrlKey || e.metaKey) && !(e.altKey))
+      {
+          e.preventDefault();
+          $('#loginbutton').removeAttr('disabled');
+          return false;
+      }
+      return true;
+  }); 
+
 });
 
 init.login = function(args) {
