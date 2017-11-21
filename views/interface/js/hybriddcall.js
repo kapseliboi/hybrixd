@@ -296,9 +296,12 @@
                 error: function(object){
                   $(this.vars.element).html('?');
                   if(typeof this.vars.postfunction == 'function') {
-                    var pass = (typeof this.vars.properties.pass!='undefined'?this.vars.properties.pass:null);
+                    var pass;
+                    if(typeof this.vars.properties!=='undefined') {
+                      pass = (typeof this.vars.properties.pass!=='undefined'?this.vars.properties.pass:null);
+                    } else { pass = null; }
                     this.vars.postfunction(object,pass);
-                  }
+                  }                  
 							  }.bind({vars:varsproc}),
 							});
 						}

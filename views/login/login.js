@@ -7,12 +7,7 @@ $(document).ready(function() {
   $('.click').click(function () {
 		if ( ! clicked ) {
 		  var userid = $('#inputUserID').val().toUpperCase();		
-		  var passcode = $('#inputPasscode').val();		
-		  // DEBUG FOR TESTING ONLY REMOVE FOR PRODUCTION!
-		  /*if ( userid.length == 0 && passcode.length == 0 ) {
-		    userid='1234567890123456';
-		    passcode='1234567890123456';
-		  }*/
+		  var passcode = $('#inputPasscode').val();
 		  if ( userid.length == 16 && (passcode.length == 16 || passcode.length == 48) ) {
 			  clicked = 1;
 			  session_step = 0;

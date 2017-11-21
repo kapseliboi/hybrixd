@@ -34,20 +34,20 @@ hy_content += fs.readFileSync('./css/1800up.css');		// custom styling for Intern
 hy_content += '</style>';
 
 // JS
-hy_content += addscript('../../lib/crypto/urlbase64.js');	// URL safe base 64 encoding
+hy_content += addscript('../../lib/crypto/urlbase64.js');	    // URL safe base 64 encoding
 hy_content += addscript('../../lib/crypto/decimal-light.js');	// arbitrary length decimals
-hy_content += addscript('../../lib/crypto/hex2dec.js');	// arbitrary length decimals
+hy_content += addscript('../../lib/crypto/hex2dec.js');	      // arbitrary length decimals
 
 hy_content += '<script>';
 hy_content += 'pass_args = {};';
 hy_content += 'init.interface = function(args) {';
 hy_content += 'pass_args = args;';							        // pass args along DOM to toplevel buttons
-hy_content += "fetchview('interface.dashboard',args);";	// default: fetch dashboard view (pass session variables)
 hy_content += fs.readFileSync('./js/globalobjects.js');	// global objects/functions
 hy_content += fs.readFileSync('./js/topmenu.js');			  // responsive top menu
 hy_content += fs.readFileSync('./js/hybriddcall.js');		// autonomous calls to hybridd
+hy_content += fs.readFileSync('./interface.js');	      // finally, take action
 hy_content += '}'+"\n";
-hy_content += fs.readFileSync('./js/topmenuset.js');	// resets state of top menu
+hy_content += fs.readFileSync('./js/topmenuset.js');	  // resets state of top menu
 hy_content += '</script>';
 
 hy_content += addscript('./js/modal.js');           // pretty modal boxes

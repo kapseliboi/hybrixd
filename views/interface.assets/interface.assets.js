@@ -8,7 +8,9 @@ init.interface.assets = function(args) {
   };
   
   // modal helper functions
-  fill_send = function(asset,balance) {
+  fill_send = function(asset) {
+    var element = '.assets-main > .data .balance-'+asset.replace(/\./g,'-');
+    var balance = $(element).attr('amount');
     if(balance && balance!=='?') {
       if(!isToken(asset)) {
         var spendable = toInt(balance).minus(toInt(assets.fees[asset]));
@@ -26,7 +28,7 @@ init.interface.assets = function(args) {
       check_tx();
     }
   }
-  fill_recv = function(asset,balance) {
+  fill_recv = function(asset) {
     $('#action-receive .modal-receive-currency').html(asset.toUpperCase());
     // after getting address from hybridd, set data-clipboard-text to contain it
     $('#action-receive .modal-receive-addressfrom').html(assets.addr[asset]);
@@ -60,26 +62,27 @@ init.interface.assets = function(args) {
       }
   }
 
+  // fill asset elements
   ui_assets = function(properties) {
-    var i = properties.i;
-    var balance = properties.balance;
-    // fill asset elements
-    for (j = 0; j < i; j++) {
+    var i;
+    for (i = 0; i < GL.assetsActive.length; i++) {
       setTimeout(
-        function(j) {      
-          if(typeof balance.asset[j] !== 'undefined') {
-            var element = '.assets-main > .data .balance-'+balance.asset[j].replace(/\./g,'-');
-            if((balance.lasttx[j]+120000)<(new Date).getTime()) {
-              hybriddcall({r:'a/'+balance.asset[j]+'/balance/'+assets.addr[balance.asset[j]],z:0},element,
+        function(i) {      
+          if(typeof balance.asset[i] !== 'undefined') {
+            var element = '.assets-main > .data .balance-'+balance.asset[i].replace(/\./g,'-');
+            if((balance.lasttx[i]+120000)<(new Date).getTime()) {
+              hybriddcall({r:'a/'+balance.asset[i]+'/balance/'+assets.addr[balance.asset[i]],z:0},element,
                 function(object){
-                  if(typeof object.data=='string') { object.data = formatFloat(object.data); }
-                  var assetbuttons = '.assets-main > .data .assetbuttons-'+balance.asset[j].replace(/\./g,'-');
+                  if(typeof object.data=='string') { object.data = UItransform.formatFloat(object.data); }
+                  var assetbuttons = '.assets-main > .data .assetbuttons-'+balance.asset[i].replace(/\./g,'-');
                   if(object.data!=null && !isNaN(object.data)){
                     $(assetbuttons).delay(1000).removeClass('disabled');
                     $(assetbuttons+' a').attr('data-toggle', 'modal');
+                    $(element).attr('amount',object.data);
                   } else {
                     $(assetbuttons).addClass('disabled');
                     $(assetbuttons+' a').removeAttr('data-toggle');
+                    $(element).attr('amount','?');
                   }
                   return object;
                 }
@@ -87,7 +90,7 @@ init.interface.assets = function(args) {
             }
           }
         }
-      ,j*500,j);
+      ,i*500,i);
     }
   }
 }
