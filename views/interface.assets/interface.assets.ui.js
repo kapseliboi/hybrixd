@@ -2,7 +2,7 @@
 UItransform = {
   formatFloat : function(n) {
     var balance = '?';
-    if(!NaN(n)) { balance = String(Number(n)); }
+    if(!isNaN(n)) { balance = String(Number(n)); }
     var length = balance.length;
     if (balance[0] === "0") { var start = 1 } else { var start = 0 }
     var output = balance.slice(start, 10);
@@ -56,7 +56,7 @@ $(document).ready( function(){
       });
     }
   });
-
+      
   // elements: MAIN
   $('.assets-main .spinner-loader').fadeOut('slow', function() {
     balance = {}
@@ -72,7 +72,7 @@ $(document).ready( function(){
         activeAssetsObj[GL.assetsActive[i]] = GL.assetmodes[GL.assetsActive[i]];
       }
     }
-              
+
     var i = 0;
     var output = '';
     // create asset table

@@ -13,25 +13,40 @@ init.interface.assets = function(args) {
   };
   
   // modal helper functions
-  manage_assets = function() {
-    var output = '';
-    output+='<table class="pure-table pure-table-striped"><tbody>';
-    output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-btc">BTC</td><td class="full-name">Bitcoin</td>';
-    output+='<td class="actions"><div class="assetbuttons assetbuttons-btc"><a onclick="generate_manage_button(\'btc\',1);" class="pure-button pure-button-error" role="button"><div class="actions-icon">'+svg['remove']+'</div>Remove</a></div></td></tr>';
-    output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-eth">ETH</td><td class="full-name">Ethereum</td>';
-    output+='<td class="actions"><div class="assetbuttons assetbuttons-eth"><a onclick="generate_manage_button(\'eth\',1);" class="pure-button pure-button-error" role="button"><div class="actions-icon">'+svg['remove']+'</div>Remove</a></div></td></tr>';
-    output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-lsk">LSK</td><td class="full-name">Lisk</td>';
-    output+='<td class="actions"><div class="assetbuttons assetbuttons-lsk"><a onclick="generate_manage_button(\'lsk\',1);" class="pure-button pure-button-error" role="button"><div class="actions-icon">'+svg['remove']+'</div>Remove</a></div></td></tr>';
+  manageAssets = function manageAssets() {
+    renderManageAssetsList(GL.assetnames);
+  }
+  renderManageAssetsList = function renderManageAssetsList(list,search) {
+    if(typeof search !== 'undefined') {
+      search = search.toLowerCase();
+    }
+    GL.assetSelect = [];
+    for(var entry in GL.assetnames) {
+      if(GL.assetsActive.indexOf(entry) === -1) {
+        GL.assetSelect[entry] = false;
+      } else {
+        GL.assetSelect[entry] = true;
+      }
+    }    
+    var output = '<table class="pure-table pure-table-striped"><tbody>';
+    var element;
+    for (var entry in list) {
+      element = entry.replace('.','-');
+      output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-btc">'+entry.toUpperCase()+'</td><td class="full-name">'+list[entry]+'</td>';
+      output+='<td class="actions"><div class="assetbuttons assetbuttons-'+element+'">'+renderManageButton(element,(GL.assetSelect[entry]?1:0))+'</div></td></tr>';
+    }
     output+='</tbody></table>';
     $('#manage-assets .data').html(output); // insert new data into DOM
   }
-  generate_manage_button = function(asset,state) {
-    if (state == '0') {
-      $('#manage-assets .assetbuttons-'+asset).html('<a onclick="generate_manage_button(\''+asset+'\',1);" class="pure-button pure-button-error" role="button"><div class="actions-icon">'+svg['remove']+'</div>Remove</a>');
-    } else if (state == '1') {
-      $('#manage-assets .assetbuttons-'+asset).html('<a onclick="generate_manage_button(\''+asset+'\',0);" class="pure-button pure-button-success" role="button"><div class="actions-icon">'+svg['add']+'</div>Add</a>');
-    }
+  renderManageButton = function renderManageButton(asset,active) {
+    return '<a onclick="changeManageButton(\''+asset+'\','+(active?0:1)+');" class="pure-button '+(active?'pure-button-error selectedAsset':'pure-button-success')+'" role="button"><div class="actions-icon">'+(active?svg['remove']:svg['add'])+'</div>'+(active?'Remove':'Add')+'</a>';
   }
+  changeManageButton = function changeManageButton(asset,active) {
+    $('#manage-assets .assetbuttons-'+asset).html( renderManageButton(asset,active) );
+    console.log('#manage-assets .assetbuttons-'+asset);
+    console.log(renderManageButton(asset,active));
+  }
+  
   fill_actions = function(asset,balance) {
     $('#action-actions #ModalLabel').html(asset.toUpperCase());
     $('#action-actions .balance').html(balance.toUpperCase());

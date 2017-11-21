@@ -225,7 +225,7 @@
                 // we get back the processID in object.data
                 //  now we load the proc and check if complete, else little CSS
                 //  pie/circle signifies how many % done!
-                if( isNaN($(this.vars.element).html()) ) {
+                if( $(this.vars.element).html()==='?' ) {
                   var size = $(this.vars.element+' .progress-radial').attr('size');
                   $(this.vars.element).html(progressbar(size));
                 }
@@ -284,7 +284,7 @@
                       if(object.data == null) { object.data = '?'; }
                       if(object.data == 0) { object.data = '0'; }
                     } else { object.data = '?' }                                
-                    if( isNaN($(this.vars.element).html()) ) {
+                    if( $(this.vars.element).html()==='?' ) {
                       $(element+' .progress-radial').fadeOut('slow', function() {
                         $(element).html(object.data);
                       });
