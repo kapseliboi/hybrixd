@@ -30,7 +30,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 .divider {
-  display: inline-block; width: 3em; border-top: 1px solid #b2d1d8;
+  display: inline-block; width: 3em; border-top: 1px solid #B3E5FC;
   min-height: 3px;
   margin-top: 3px;
   width: 100%;
@@ -362,7 +362,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   text-align: left;
   background: white;
   border-radius: 6px;
-  border: 1px rgba(178,209,216,0.7) solid;
+  border: none;
   margin: 0.5%;
   padding: 0px;
   width: 100%;
@@ -382,10 +382,12 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 
 .content > .databox > .databox-header > h2 {
   margin: 0;
-  color: #222;
-  font-size: 1.2em;
+  color: #555;
+  font-size: 0.7em;
   padding: 0px;
   display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .content > .databox .data {
@@ -481,39 +483,23 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 
 .content > .dashboard-balances {
   background: #F0F6F7 !important;
-  background: linear-gradient(#EFF,#FCFCFC,#FCFCFC,#FFFFFF) !important;
-  /*background: linear-gradient(#E1EDEF,#F0F6F7) !important;*/
-  min-height: 12.5em;
+  background: linear-gradient(#81D4FA,#42A5F5) !important;
+  min-height: 11em;
   margin-top: 0.2em;
 }
 
-.content > .dashboard-transactions {
-  background: #EFD !important;
-  background: linear-gradient(#EFD,#FCFCFC,#FCFCFC,#FFFFFF) !important;
+.content > .dashboard-transactions, .content > .dashboard-trade, .content > .dashboard-chat, .content > .dashboard-apps {
+  background: #EEE !important;
   margin: 0.5%;
+  /*background: linear-gradient(#EFD,#FCFCFC,#FCFCFC,#FFFFFF) !important;*/
+  /*background: linear-gradient(#EFE,#FCFCFC,#FCFCFC,#FFFFFF) !important;*/
+  /*background: linear-gradient(#FEF,#FCFCFC,#FCFCFC,#FFFFFF) !important;*/
+  /*background: linear-gradient(#FFC,#FCFCFC,#FCFCFC,#FFFFFF) !important;*/
+  /*background: linear-gradient(#FDC,#FCFCFC,#FCFCFC,#FFFFFF) !important;*/
 }
 
-.content > .dashboard-trade {
-  background: #EFE !important;
-  background: linear-gradient(#EFE,#FCFCFC,#FCFCFC,#FFFFFF) !important;
-  margin: 0.5%;
-}
-
-.content > .dashboard-chat {
-  background: #FEF !important;
-  background: linear-gradient(#FEF,#FCFCFC,#FCFCFC,#FFFFFF) !important;
-  margin: 0.5%;
-}
-
-.content > .dashboard-apps {
-  background: #FFC !important;
-  background: linear-gradient(#FFC,#FCFCFC,#FCFCFC,#FFFFFF) !important;
-  margin: 0.5%;
-}
-
-.content > .dashboard-stats {
-  background: #FDC !important;
-  background: linear-gradient(#FDC,#FCFCFC,#FCFCFC,#FFFFFF) !important;
+.content > .dashboard-balances > .databox-header h2 {
+  color: #E1F5FE;
 }
 
 .content > .dashboard-balances .balance {
@@ -535,10 +521,12 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
     background: rgba(178,209,216,0.2);
 }
 .content > .dashboard-balances .balance h5 {
+  color: #FFF;
   text-transform: uppercase;
   margin: 0.2em 0.2em;
 }
 .content > .dashboard-balances .balance h3 {
+  color: #01579B;
   font-size: 1.0em;
   font-weight: 300;
   margin: 0.2em 0.2em;
@@ -566,6 +554,13 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 .content > .assets-main {
   background: #FFF !important;
   border: none;
+}
+
+.content > .assets-main > .databox-header > h2 {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 1.2em;
+  color: #222;
 }
 
 .content > .assets-main .data {
