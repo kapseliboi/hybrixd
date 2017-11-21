@@ -16,6 +16,10 @@ TABLET LANDSCAPE STYLING: 900px and up
     margin: 0.5%;
   }
   
+  .button-label {
+    display: inline;
+  }
+  
   /*****************************************************************/
   /* DASHBOARD */ 
 
@@ -41,11 +45,11 @@ TABLET LANDSCAPE STYLING: 900px and up
   /*****************************************************************/
   /* ASSETS */
 
-  .content > .assets-main .icon-title {
+  .content .pure-table .icon-title {
     display: table-cell;
   }
 
-  .content > .assets-main .pure-table .asset, .content > .assets-main  .pure-table .icon {
+  .content .pure-table .asset, .content .pure-table .icon {
     display: table-cell;
     text-align: left;
     font-size: .9em;
@@ -53,12 +57,12 @@ TABLET LANDSCAPE STYLING: 900px and up
     padding: .6em;
   }
 
-  .content > .assets-main .icon svg {
+  .content .pure-table .icon svg {
     width: 28px;
     height: 28px;
   }
 
-  .content > .assets-main .actions .pure-button {
+  .content .pure-table .actions .pure-button {
     font-size: .9em;
     display: inline-block;
     float: none;
@@ -66,12 +70,8 @@ TABLET LANDSCAPE STYLING: 900px and up
     padding: 1.1em 1em;
   }
 
-  .content > .assets-main .actions  .assetbuttons .pure-button .advanced-icon {
+  .content .pure-table .actions .assetbuttons .pure-button .advanced-icon {
     padding-right: 0.5em;
-  }
-
-  .content > .assets-main .actions .assetbuttons .advanced-label {
-    display: inline-block;
   }
 
 }

@@ -28,6 +28,9 @@ $(document).ready( function(){
   var output = '<div style="text-align: center; margin-left: auto; margin-right: auto; width: 30%; color: #CCC;">'+svg['cogs']+'</div>';
   $('#advancedmodal').html(output);	// insert new data into DOM
 
+  // add icon
+  $('.manage-icon').html(svg['edit']);
+
   // attached buttons and actions
   $('#send-transfer').click(function() {
     if ($("#send-transfer").hasClass("disabled")) {
@@ -68,7 +71,7 @@ $(document).ready( function(){
           output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-'+element+'">'+entry+'</td><td><div class="balance balance-'+element+'">'+progressbar()+'</div></td><td class="actions"><div class="assetbuttons assetbuttons-'+element+' disabled">';
           output+='<a onclick=\'fill_send("'+balance.asset[i]+'",$(".assets-main > .data .balance-'+element+'").html());\' href="#action-send" class="pure-button pure-button-primary" role="button" data-toggle="modal" disabled="disabled">Send</a>';
           output+='<a onclick=\'fill_recv("'+balance.asset[i]+'",$(".assets-main > .data .balance-'+element+'").html());\' href="#action-receive" class="pure-button pure-button-secondary" role="button" data-toggle="modal" disabled="disabled">Receive</a>';
-          output+='<a href="#action-advanced" class="pure-button pure-button-grey advanced-button" role="button" disabled="disabled"><div class="advanced-icon">'+svg['advanced']+'</div><span class="advanced-label">Advanced<span></a>';
+          output+='<a href="#action-advanced" class="pure-button pure-button-grey advanced-button" role="button" disabled="disabled"><div class="advanced-icon">'+svg['advanced']+'</div><span class="button-label">Advanced</span></a>';
           output+='</div>'
           output+='<div class="assetbutton-mobile assetbuttons-'+element+' disabled">'
           output+='<a onclick=\'fill_actions("'+balance.asset[i]+'",$(".assets-main > .data .balance-'+element+'").html());\' href="#action-actions" class="pure-button pure-button-grey actions-button" role="button" data-toggle="modal" disabled="disabled"><div class="actions-icon">'+svg['actions']+'</div>Actions</a>';

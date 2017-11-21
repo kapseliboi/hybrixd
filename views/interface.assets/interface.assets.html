@@ -1,12 +1,33 @@
 <div class="databox assets-main wide">
-	<h2>My Assets</h2> 
-	<div class="edit-assets">Edit assets</div>
+	<div class="databox-header">
+		<h2>My assets</h2>
+		<div class="manage-button">
+	  	<a onclick='manage_assets();' href="#manage-assets" role="button" data-toggle="modal"><span class="manage-icon"></span>Manage</a>
+		</div>
+	</div>
 	<div class="data" style="text-align: center;">
 		<div class="spinner"><div class="spinner-loader">...</div></div>
 	</div>
 </div>
 	
 <!-- modals -->
+<div id="manage-assets" class="modal hide fade wide" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+	<div class="modal-content">
+		<div class="modal-header">
+			<h2 id="ModalLabel">Add or delete assets to your wallet</h2>
+			<form class="pure-form pure-form-stacked">
+				<input id="search-assets" type="text" placeholder="search" class="inline" onkeydown = "" oninput = "" onpaste = "" oncut = "">
+			</form>
+		</div>
+		<div class="modal-body">
+			<div class="data"></div>
+		</div>
+		<div class="modal-footer">
+			<button class="pure-button pure-button-primary" data-dismiss="modal" aria-hidden="true">Save changes</button>
+		</div>
+	</div>
+</div>
+
 <div id="action-send" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
 	<div class="modal-content">
 		<div class="modal-header">

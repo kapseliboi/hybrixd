@@ -8,6 +8,20 @@ init.interface.dashboard = function(args) {
   topmenuset('dashboard');  // top menu UI change
   clearInterval(intervals); // clear all active intervals
   
+  // modal helper functions
+  manage_favourites = function() {
+    var output = '';
+    output+='<table class="pure-table pure-table-striped"><tbody>';
+    output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-btc">BTC</td><td class="full-name">Bitcoin</td>';
+    output+='<td class="actions"><div class="assetbuttons assetbuttons-btc"><a onclick="" class="pure-button pure-button-grey button-unfavourite" role="button"><div class="actions-icon">'+svg['star-o']+'</div>Remove star</a></div></td></tr>';
+    output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-eth">ETH</td><td class="full-name">Ethereum</td>';
+    output+='<td class="actions"><div class="assetbuttons assetbuttons-eth"><a onclick="" class="pure-button pure-button-warning button-favourite" role="button"><div class="actions-icon">'+svg['star']+'</div>Add star</a></div></td></tr>';
+    output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-lsk">LSK</td><td class="full-name">Lisk</td>';
+    output+='<td class="actions"><div class="assetbuttons assetbuttons-lsk"><a onclick="" class="pure-button pure-button-warning button-favourite" role="button"><div class="actions-icon">'+svg['star']+'</div>Add star</a></div></td></tr>';
+    output+='</tbody></table>';
+    $('#manage-favourites .data').html(output); // insert new data into DOM
+  }
+
 	// do stuff the dashboard should do...
 	$(document).ready( function(){
 

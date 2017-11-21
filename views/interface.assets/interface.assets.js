@@ -13,6 +13,26 @@ init.interface.assets = function(args) {
   };
   
   // modal helper functions
+  manage_assets = function() {
+    var output = '';
+    output+='<table class="pure-table pure-table-striped"><tbody>';
+    output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-btc">BTC</td><td class="full-name">Bitcoin</td>';
+    output+='<td class="actions"><div class="assetbuttons assetbuttons-btc"><a onclick="generate_asset_button(\'btc\',1);" class="pure-button pure-button-error" role="button"><div class="actions-icon">'+svg['remove']+'</div>Remove</a></div></td></tr>';
+    output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-eth">ETH</td><td class="full-name">Ethereum</td>';
+    output+='<td class="actions"><div class="assetbuttons assetbuttons-eth"><a onclick="generate_asset_button(\'eth\',1);" class="pure-button pure-button-error" role="button"><div class="actions-icon">'+svg['remove']+'</div>Remove</a></div></td></tr>';
+    output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-lsk">LSK</td><td class="full-name">Lisk</td>';
+    output+='<td class="actions"><div class="assetbuttons assetbuttons-lsk"><a onclick="generate_asset_button(\'lsk\',1);" class="pure-button pure-button-error" role="button"><div class="actions-icon">'+svg['remove']+'</div>Remove</a></div></td></tr>';
+    output+='</tbody></table>';
+    $('#manage-assets .data').html(output); // insert new data into DOM
+    generate_asset_button('btc','add');
+  }
+  generate_asset_button = function(asset,state) {
+    if (state == '0') {
+      $('#manage-assets .assetbuttons-'+asset).html('<a onclick="generate_asset_button(\''+asset+'\',1);" class="pure-button pure-button-error" role="button"><div class="actions-icon">'+svg['remove']+'</div>Remove</a>');
+    } else if (state == '1') {
+      $('#manage-assets .assetbuttons-'+asset).html('<a onclick="generate_asset_button(\''+asset+'\',0);" class="pure-button pure-button-success" role="button"><div class="actions-icon">'+svg['add']+'</div>Add</a>');
+    }
+  }
   fill_actions = function(asset,balance) {
     $('#action-actions #ModalLabel').html(asset.toUpperCase());
     $('#action-actions .balance').html(balance.toUpperCase());

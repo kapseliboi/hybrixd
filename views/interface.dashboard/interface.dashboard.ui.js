@@ -16,6 +16,9 @@ UItransform = {
 // do stuff the dashboard should do...
 $(document).ready( function(){
   
+  // add icon
+  $('.manage-icon').html(svg['edit']);
+
   // element: NETWORK
   var element = {};
   element.transactions = '.dashboard-transactions';
