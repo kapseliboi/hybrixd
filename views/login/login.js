@@ -24,7 +24,6 @@ $(document).ready(function() {
         setTimeout(function() { main( userid,passcode ); },1000);
 		  } else {
         checkfields();
-        helpbutton();
       }
 		}
   });  
@@ -54,23 +53,6 @@ $(document).ready(function() {
 init.login = function(args) {
 	//console.log('init.login called with args: '+JSON.stringify(args));	
 	// do nothing	
-}
-
-function checkfields() {
-  var userid=String($('#inputUserID').val());
-  var passwd=String($('#inputPasscode').val());
-  if(userid.length==16 && (passwd.length==16 || passwd.length == 48) && userid!=passwd && validate_userid(userid) && validate_passwd(userid,passwd)) {        
-    $('#generatebutton').attr('disabled','disabled');
-    $('#loginbutton').removeAttr('disabled');
-  } else {
-    if(userid.length>0) {
-      $('#inputUserID').css('text-transform','uppercase');
-    } else {
-      $('#inputUserID').css('text-transform','');
-    }
-    $('#loginbutton').attr('disabled','disabled');
-    $('#generatebutton').removeAttr('disabled');
-  }
 }
 
 function validate_userid(userid) {

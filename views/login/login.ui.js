@@ -1,22 +1,50 @@
 $(document).ready(function() {
   
   new customAlert();
-  alert('<div class="alert-header">⚠</div><br><h2>WARNING: Do not store large value in this wallet!!!</h2><br>We\'re making every effort towards a secure design, and do not store any wallet file or data on this computer. Regardless, we cannot guarantee the security of your cryptocurrency in this stage of the project!<br><br>',
+  alert('<div class="alert-header">⚠</div><br><h2>WARNING: Do not store large value in this wallet!</h2><br>We\'re making every effort towards a secure design, and do not store any wallet file or data on this computer. Regardless, we cannot guarantee the security of your cryptocurrency in this stage of the project!<br><br>',
         {title: '', button: 'Yes, I understand'});
+
+  // tooltips
+  var output = '<span id="tooltip">It looks like you haven\'t filled in the correct credentials yet. Please check them and try again.</span>';
+  $('#loginbutton').after(output); 
+
+  $('#loginbutton').click(function () { 
+    if ( $('#loginbutton').hasClass('disabled') ) {
+      $('#tooltip').fadeTo(50,1);
+      $('#loginform input[type=text], #loginform input[type=password]').css( 'border-color', 'orangered' )
+    }
+  } );
 });  
 
 function helpbutton() {
-  alert('Welcome to this Internet of Coins node.<br><br>To sign in, you need to enter an account code and password that are both 16 characters long.<br><br>If you don\'t have sign in credentials yet, you can generate them by clicking on the NEW ACCOUNT button, and the new credentials will be filled in for you.<br><br>',
+  alert('<h2>Welcome to this Internet of Coins node</h2><br><h3>I already have an account</h3>To sign in, you need to enter an account code and password that are both 16 characters long.<br><br><h3>I\'m new, I need a new account </h3>If you don\'t have sign in credentials yet, you can generate them by clicking on the "+ Create a new account" button, and the new credentials will be filled in for you.<br><br>',
         {title: '', button: 'Close'});
+}
+
+function checkfields() {
+  var userid=String($('#inputUserID').val());
+  var passwd=String($('#inputPasscode').val());
+  if(userid.length==16 && (passwd.length==16 || passwd.length == 48) && userid!=passwd && validate_userid(userid) && validate_passwd(userid,passwd)) {
+    $('#loginbutton').removeClass('disabled');
+    $('#tooltip').css('opacity', 0);
+    $('#loginform input[type=text], #loginform input[type=password]').css( 'border-color', 'transparent' );
+  } else {
+    if(userid.length>0) {
+      $('#inputUserID').css('text-transform','uppercase');
+    } else {
+      $('#inputUserID').css('text-transform','');
+    }
+    $('#loginbutton').addClass('disabled');
+  }
 }
 
 // animation (init)
 function animate_login() {
   $('#arc0').css('background-color',$('#combinator').css('color'));
   if ( blink('arc0') && rotate_login(0) && dial_login(0) ) {
-	  // return true to confirm animation is running
-	  return true;
-	}
+    // return true to confirm animation is running
+    return true;
+  }
 }
 
 // animation (blink)

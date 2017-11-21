@@ -3,4 +3,24 @@ TABLET PORTRAIT STYLING: 600px and up
 ******************************************************************/
 
 @media (min-width: 600px) {
+
+/*****************************************************************/
+ /* DASHBOARD */
+
+.content > .dashboard-balances .balance {
+  margin: 0 3%;
+  min-width: 25%;
+}
+.content > .dashboard-balances .balance h5, .content > .dashboard-balances .balance h3 {
+  margin: 0.8em 0.2em;
+}
+
+/*****************************************************************/
+ /* ASSETS */
+
+.content > .assets-main .actions .pure-button {
+	font-size: 1em;
+	width: 150px;
+	line-height: 1em;
+	height: 2.5em;
 }

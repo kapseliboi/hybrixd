@@ -120,7 +120,7 @@ PRNG = {}
 };
 
 function generateAccount(entropy) {
-  confirm('Do you want a medium or high security wallet? A medium security wallet has a much shorter password, which is easier to remember. \
+  confirm('<h3>Choose your level of security</h3> Do you want a medium or high security wallet? <br><br> A medium security wallet has a much shorter password, which is easier to remember. \
            However, we do advise not to store more than a month\'s wage worth of value in a medium security wallet.\
            High security wallets have a very long password, making them more secure.',function(mediumlevel) {
             if(mediumlevel) {
@@ -147,25 +147,22 @@ function generateAccount(entropy) {
 }
 
 function finalizeAccount(userid,passwd,entropy) {
-  alert('<h3>New Account Created</h3>Your account has been created. Please <u>write down</u> these login details and put them in a safe place. If you lose them, you can <u>never ever</u> log into your wallet again! \
-        <br/><br/><div style="border-radius: 8px;color: #555;border: #CCC 1px solid;padding: 12px;background: #EEE;">\
-        <table style="margin-left:25%;width:90%;"><tbody><tr><td style="min-width:4em;padding-bottom:1em;">Account ID</td><td style="padding-bottom:1em;"><b style="color:#080;">'+userid+'</b></td></tr><tr><td>Password</td><td><b style="color:#A33;width: 12em;display: block;overflow-wrap: break-word;">'+passwd+'</b></td></tr></tbody></table></div><br/> \
-        We cannot help you recover the keys, so they are <u>your responsibility</u>!\
-        Have a lot of fun using Internet of Coins!\
-        <br /><small><br /><span style="font-size: 1em;">⚠</span> WARNING: This wallet is stil in alpha!<br />Do not yet store large amounts of value on it!</small>',
-    {title: '', button: 'Close'},
+  alert('<h2>Your account has been created!</h2> Please <u>write down</u> these login details and put them in a safe place. If you lose them, you can <u>never ever</u> log into your wallet again! <br/><br/> \
+    <div class="login-credentials"><table><tbody><tr style="border-bottom: 1px solid #ccc;"><td>Account ID: </td><td class="credential">'+userid+'</td></tr><tr><td>Password: </td><td class="credential">'+passwd+'</td></tr></tbody></table></div> \
+    <br/>We cannot help you recover the keys, so they are <u>your responsibility</u>! <br/>Have a lot of fun using Internet of Coins! <br /> <span class="alpha-warning"><span style="font-size: 1em;">⚠</span> WARNING: This wallet is stil in alpha.<br />Do not yet store large amounts of value on it!</span> <br>',
+    {title: '', button: 'Continue'},
     function(){
-      confirm('Did you write down your login details and put them in a safe place? If not, you will get new login credentials.',function(result) {
+      confirm('<h3>Your account has been created!</h3> Did you write down your login details and put them in a safe place? If not, you will get new login credentials.',function(result) {
           if(!result) {
             generateAccount(entropy);
           }
         },
         {
           'done':{
-            'text':'Yes'
+            'text':'Yes, continue to login'
           },
           'cancel':{
-            'text':'No',
+            'text':'No, I need new credentials',
             'default':true
           }
         });

@@ -2,43 +2,123 @@
 LOGIN STYLING
 ******************************************************************/
 
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;   
+  box-sizing: border-box;
+}
+
 body {
   background-color: #002833;
-  background: linear-gradient(#1e3035,#142023);
+  background: linear-gradient(#1e2035,#042023);
+  font-family: Verdana, Geneva, sans-serif;
+}
+
+/* tooltip */
+#tooltip {
+  font-size: 0.7em;
+  display: block;
+  text-align: center;
+  padding: 12px;
+  border-radius: 6px;
+  position: relative;
+  z-index: 1;
+  transition: ease-in all 200ms;
+  font-weight: 300;
+  background-color: white;
+  color: #888;
+  opacity: 0;
+}
+
+#tooltip::after  {
+  content: " ";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -8px;
+  border-width: 8px;
+  border-style: solid;
+  border-color: transparent transparent white transparent;
+}
+
+#login_container  #tooltip {
+  font-size: 0.7em;
+  margin: -24px auto 0;
+  width: 80%;
 }
 
 #login_container {
+  width: 90%;
+  max-width: 280px; 
   color: #FFF;
   text-align: center;
   margin-top: 8%; 
   padding-top: 3em; 
-  max-width: 240px; 
   display: inline-block;
 }
 
+#login_container .logo {
+  display: block;
+  margin: -50px auto 0;
+}
+
+.pure-form .input-label {
+  font-size: 0.6em;
+  text-align: left;
+  color: rgba(255,255,255,0.80);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  width: 100%;
+  margin: 6px 0;
+  font-weight: 300;
+}
+
+.pure-form input[type=password], .pure-form input[type=email], 
+.pure-form input[type=url], .pure-form input[type=date], 
+.pure-form input[type=month], .pure-form input[type=time], 
+.pure-form input[type=datetime], .pure-form input[type=datetime-local], 
+.pure-form input[type=week], .pure-form input[type=tel], 
+.pure-form input[type=color], .pure-form input[type=number], 
+.pure-form input[type=search], .pure-form input[type=text], 
+.pure-form select, .pure-form textarea {
+  background: rgba(255,255,255,0.10);
+  border: 0px;
+  box-shadow: none;
+  margin-bottom: 22px; 
+  border-radius: 3px;
+  width: 100%;
+  padding: 0.7em 0.8em;
+  font-size: 1em;
+  color: white !important;
+  letter-spacing: 1px;
+  font-weight: 300;
+  border: 1px solid transparent;
+}
+
+.pure-form input[type=text]:focus, .pure-form input[type=password]:focus {
+  border: 1px solid rgb(66, 184, 221);
+}
+
+::-webkit-input-placeholder { letter-spacing: 0px; color: rgba(256,256,256,.6); }
+::-moz-placeholder { letter-spacing: 0px; color: rgba(256,256,256,.6); }
+:-ms-input-placeholder { letter-spacing: 0px; color: rgba(256,256,256,.6); }
+:-moz-placeholder { letter-spacing: 0px; color: rgba(256,256,256,.6); }
+
 #login_container .pure-button {
-  margin-top: 10px;
+  margin: 10px 0;
   display: block;
   font-size: 0.9em;
 }
 
-.pure-form .input-label {
-  font-size: 0.8em;
-  text-align: left;
-  color: white;
-  width: 100%;
-  margin: 4px 0;
-  opacity: 0.8;
+.disabled, .pure-button[disabled] {
+  opacity: 0.6;
+  cursor: default;
+  box-shadow: none;
+  background-image: none;
 }
 
-.pure-form input {
-  margin-bottom: 8px; 
-  width: 100%;
-  font-size: 0.9em;
-}
-
-.disabled {
-  opacity: 0.5;
+.disabled:hover, .pure-button[disabled]:hover {
+  background-image: none;
 }
 
 #loginform {
@@ -46,19 +126,8 @@ body {
   width: 100%;
 }
 
-#inputUserID {
-  color: #000000;
-}
-
-#inputPasscode {
-  color: #000000;
-}
-
 #login_container  #loginbutton {
-  height: 3.5em;
-  line-height: 3.3em;
-  font-size: 1.1em;
-  padding: 0;
+  margin: 15px 0 30px;
 }
 
 #loginbuttoncontent {
@@ -77,8 +146,8 @@ body {
   vertical-align: middle;
   border-radius: 100%;
   background-color: rgba(256,256,256,0.3);
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   margin: auto;
   -webkit-transition: all 0.5s ease;
   transition: all 0.5s ease;
@@ -140,6 +209,22 @@ body {
   top: 2px;
   left: 2px;
   position: absolute;
+}
+
+#login_container #generatebutton,  #login_container #helpbutton {
+  display: block;
+  font-size: 0.9em;
+  color: #677E85;
+  margin: 0.5em 0 1.8em;
+  font-weight: 600;
+}
+#login_container #generatebutton:hover {  
+  color: #69F0AE;
+  cursor: pointer;
+}
+#login_container #helpbutton:hover {
+  color: white;
+  cursor: pointer;
 }
 
 

@@ -79,13 +79,55 @@
 
 .modal-body {
   position: relative;
-  max-height: 400px;
+  /*max-height: 400px;*/
   padding: 15px;
   /*overflow-y: auto;*/
 }
 
 .modal-form {
   margin-bottom: 0;
+}
+
+.modal-body .pure-form input[type=password], 
+.modal-body .pure-form input[type=email], 
+.modal-body .pure-form input[type=url], 
+.modal-body .pure-form input[type=date], 
+.modal-body .pure-form input[type=month], 
+.modal-body .pure-form input[type=time], 
+.modal-body .pure-form input[type=datetime], 
+.modal-body .pure-form input[type=datetime-local], 
+.modal-body .pure-form input[type=week], 
+.modal-body .pure-form input[type=tel], 
+.modal-body .pure-form input[type=color], 
+.modal-body .pure-form input[type=number], 
+.modal-body .pure-form input[type=search], 
+.modal-body .pure-form input[type=text], 
+.modal-body .pure-form select, 
+.modal-body .pure-form textarea {
+  border: 1px solid rgba(178,209,216,1);
+  background: rgba(178,209,216,0.1);
+  color: #000 !important;
+}
+
+::-webkit-input-placeholder { letter-spacing: 0px; color: #888; }
+::-moz-placeholder { letter-spacing: 0px; color: #888; }
+:-ms-input-placeholder { letter-spacing: 0px; color: #888; }
+:-moz-placeholder { letter-spacing: 0px; color: #888; }
+
+.modal-body .pure-form #modal-send-amount {
+  width: 20em;
+
+}
+
+.modal-body .pure-form .max-amount-button {
+  width: 5.5em;
+  margin-left: 0.5em;
+  vertical-align: top;
+  height: 45px;
+  display: inline-block;
+  margin-top: 3px;
+  min-width: unset;
+  padding: .7em 0;
 }
 
 .modal-footer {

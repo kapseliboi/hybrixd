@@ -9,7 +9,7 @@ DESKTOP STYLING: 1200px and up
   
   .custom-menu-wrapper {
     width: 90%;
-    max-width: 1800px;
+    max-width: 1600px;
   }
 
   .custom-menu {
@@ -23,17 +23,25 @@ DESKTOP STYLING: 1200px and up
     opacity: 1;
     overflow: visible;
   }
+
+  .pure-menu-horizontal.pure-menu-scrollable {
+    width: auto;
+    padding: 0;
+  }
   
   .pure-menu-list {
     background-color: transparent;
   }
 
-  .custom-menu-brand img {
-    margin-top: 0;
-    padding-right: 1em;
+  .custom-menu-top {
+    padding-left: 1em;
   }
 
-  .custom-menu-toggle {	
+  .custom-menu-brand img {
+    margin-top: 0;
+  }
+
+  .custom-menu-toggle { 
     display: none;
   }
 
@@ -43,33 +51,33 @@ DESKTOP STYLING: 1200px and up
   
   .custom-menu-bottom .pure-menu-link {
     opacity: 1;
-		-webkit-transform: translateX(0);
-		-moz-transform: translateX(0);
-		-ms-transform: translateX(0);
-		transform: translateX(0);
-	}
+    -webkit-transform: translateX(0);
+    -moz-transform: translateX(0);
+    -ms-transform: translateX(0);
+    transform: translateX(0);
+  }
 
-	.custom-menu-bottom.custom-menu-tucked .pure-menu-link {
-		-webkit-transform: translateX(0);
-		-moz-transform: translateX(0);
-		-ms-transform: translateX(0);
-		transform: translateX(0);
-		opacity: 1;
-	}
+  .custom-menu-bottom.custom-menu-tucked .pure-menu-link {
+    -webkit-transform: translateX(0);
+    -moz-transform: translateX(0);
+    -ms-transform: translateX(0);
+    transform: translateX(0);
+    opacity: 1;
+  }
   
   .custom-menu .pure-menu-link {
     padding: .6em 1em 17px; 
   }
   
   .custom-menu .pure-menu-link.selected {
-    background: #e5eff2;
-    color: #005166;
+    background: #FFF;
+    color: #000;
     border-radius: 4px 4px 0px 0px;
     font-weight: 600;
   }
   .custom-menu .pure-menu-link.selected:hover {
-    background: #e5eff2;
-    color: #005166;
+    background: #FFF;
+    color: #000;
     border-radius: 4px 4px 0px 0px;
   }
 
@@ -81,11 +89,15 @@ DESKTOP STYLING: 1200px and up
     text-align: right;
   }
 
+  #user-icon {
+    margin-bottom: 0px;
+  }
+
   #userID {
-    color: #4c93a6;
-    margin-top: 1em;
+    margin-top: 1.5em;
     margin-right: 2.5em;
     height: auto;
+    font-size: 0.8em;
   }
 
   #topmenu-logout {
@@ -111,11 +123,12 @@ DESKTOP STYLING: 1200px and up
   }
 
   .content {
-    margin-top: -3em;
+    max-width: 1600px;
+    margin-top: -2.4em;
   }
 
   .content > .databox {
-    width: 23.9%;
+    width: 23.8%;
     margin: 0.5%;
   }
   
@@ -129,4 +142,11 @@ DESKTOP STYLING: 1200px and up
   .content > .dashboard-apps {
     margin-right: 0;
   }
+
+  .content > .dashboard-balances .balance {
+  } 
+
+  /*****************************************************************/
+  /* ASSETS */
+
 }
