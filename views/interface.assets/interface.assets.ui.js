@@ -1,10 +1,10 @@
 // User interface transformations
 UItransform = {
   formatFloat : function(n) {
-    var balance = String(Number(n));
+    var balance = '?';
+    if(!NaN(n)) { balance = String(Number(n)); }
     var length = balance.length;
-    
-    if (balance[0] == "0") { var start = 1 } else { var start = 0 }
+    if (balance[0] === "0") { var start = 1 } else { var start = 0 }
     var output = balance.slice(start, 10);
     if (length > 10) {
       var output = balance.slice(start, 9);
