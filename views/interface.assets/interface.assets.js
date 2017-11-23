@@ -11,6 +11,38 @@ init.interface.assets = function(args) {
   clipb_fail = function(err) {
     alert("This browser cannot automatically copy to the clipboard! \n\nPlease select the text manually, and press CTRL+C to \ncopy it to your clipboard.\n");
   };
+
+  //
+  // attached modal buttons and actions
+  //
+  
+  $('#send-transfer').click(function() {
+    if ($("#send-transfer").hasClass("disabled")) {
+      // cannot send transaction
+    } else {
+      // send transfer
+      var symbol = $('#action-send .modal-send-currency').attr('asset');
+      sendTransaction({
+        element:'.assets-main > .data .balance-'+symbol.replace(/\./g,'-'),
+        asset:symbol,
+        amount:Number($("#modal-send-amount").val().replace(/\,/g,'.')),
+        source:String($('#action-send .modal-send-addressfrom').html()).trim(),
+        target:String($('#modal-send-target').val()).trim()
+      });
+    }
+  });
+
+  $('#save-assetlist').click(function() {
+    var array = [];
+    for(var entry in GL.assetnames) {
+      if(GL.assetSelect[entry]) {
+        array.push(entry);
+      }
+    }
+    storage.Set( nacl.to_hex(GL.usercrypto.user_keys.boxPk)+'.assets.list.user' , JSON.stringify(array) );
+    GL.assetsActive = array;
+    displayAssets();
+  });
   
   // modal helper functions
   manageAssets = function manageAssets() {
@@ -42,9 +74,12 @@ init.interface.assets = function(args) {
     return '<a onclick="changeManageButton(\''+asset+'\','+(active?0:1)+');" class="pure-button '+(active?'pure-button-error selectedAsset':'pure-button-success')+'" role="button"><div class="actions-icon">'+(active?svg['remove']:svg['add'])+'</div>'+(active?'Remove':'Add')+'</a>';
   }
   changeManageButton = function changeManageButton(asset,active) {
+    if(active) {
+      GL.assetSelect[asset] = true;
+    } else {
+      GL.assetSelect[asset] = false;
+    }
     $('#manage-assets .assetbuttons-'+asset).html( renderManageButton(asset,active) );
-    console.log('#manage-assets .assetbuttons-'+asset);
-    console.log(renderManageButton(asset,active));
   }
   
   fill_actions = function(asset,balance) {

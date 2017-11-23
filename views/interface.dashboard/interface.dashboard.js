@@ -62,7 +62,7 @@ function displayAssets() {
       }
 
       if(GL.assetsDash == null || typeof GL.assetsDash !== 'object') {
-        GL.assetsDash = ["btc","eth"];
+        GL.assetsDash = GL.assetsActive;
       }
     
       // initialize all assets
