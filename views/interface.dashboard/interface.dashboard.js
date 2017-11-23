@@ -96,11 +96,12 @@ function displayAssets() {
               init_asset(entry,GL.assetmodes[entry]);
             },(100*i)+defer,entry);
             // if all assets inits are called run 
-            if(i==GL.assetsActive.length) {
+            if(i===GL.assetsActive.length) {
               // create asset elements that are selected to show in dashboard
-              for (i = 0; i < GL.assetsActive.length; i++) {
-                if(GL.assetsDash.indexOf(GL.assetsActive[i])!==-1 && typeof balance.asset[i] !== 'undefined') {
-                  output+='<div onclick="fetchview(\'interface.assets\',{user_keys: pass_args.user_keys, nonce: pass_args.nonce, asset:\''+balance.asset[i]+'\'});" class="balance"><h5>'+balance.asset[i]+'</h5><div class="divider"></div><h3 class="balance-'+balance.asset[i].replace(/\./g,'-')+'">'+progressbar()+'</h3></div>';
+              var j;
+              for (j = 0; j < GL.assetsActive.length; j++) {
+                if(GL.assetsDash.indexOf(GL.assetsActive[j])!==-1 && typeof balance.asset[j] !== 'undefined') {
+                  output+='<div onclick="fetchview(\'interface.assets\',{user_keys: pass_args.user_keys, nonce: pass_args.nonce, asset:\''+balance.asset[j]+'\'});" class="balance"><h5>'+balance.asset[j]+'</h5><div class="divider"></div><h3 class="balance-'+balance.asset[j].replace(/\./g,'-')+'">'+progressbar()+'</h3></div>';
                 }
               }
               $('.dashboard-balances > .data').html(output);	// insert new data into DOM

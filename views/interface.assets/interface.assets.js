@@ -37,6 +37,7 @@ init.interface.assets = function(args) {
     for(var entry in GL.assetnames) {
       if(GL.assetSelect[entry]) {
         array.push(entry);
+        init_asset(entry,GL.assetmodes[entry]);
       }
     }
     storage.Set( nacl.to_hex(GL.usercrypto.user_keys.boxPk)+'.assets.list.user' , JSON.stringify(array) );

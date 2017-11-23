@@ -128,7 +128,7 @@
           var mode = fullmode.split('.')[0];
           // if the deterministic code is already cached client-side
           if(typeof assets.modehashes[mode]!='undefined') {
-            storage.Get(assets.modehashes[mode], function(dcode) {
+            storage.Get(assets.modehashes[mode]+'.LOCAL', function(dcode) {
               if(dcode) {
                 deterministic = activate( LZString.decompressFromEncodedURIComponent(dcode) );
                 assets.mode[entry] = fullmode;
@@ -143,7 +143,7 @@
                 hybriddcall({r:'a/'+entry+'/contract',c:GL.usercrypto,s:loop_step,z:0},0, function(object) { if(typeof object.data!='undefined') { assets.cntr[entry]=object.data; } });
                 return true;
               } else {
-                storage.Del(assets.modehashes[mode]);
+                storage.Del(assets.modehashes[mode]+'.LOCAL');
               }
               // in case of no cache request code from server
               if(!dcode) { // || typeof assets.mode[entry]=='undefined') {
@@ -151,7 +151,7 @@
                   function(object) {
                     if(typeof object.error != 'undefined' && object.error == 0) {
                       // decompress and make able to run the deterministic routine
-                      storage.Set(assets.modehashes[mode],object.data)
+                      storage.Set(assets.modehashes[mode]+'.LOCAL',object.data)
                       deterministic = activate( LZString.decompressFromEncodedURIComponent(object.data) );
                       assets.mode[entry] = fullmode; 
                       assets.seed[entry] = deterministic_seed_generator(entry);
