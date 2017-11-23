@@ -45,6 +45,10 @@ init.interface.assets = function(args) {
     displayAssets();
   });
   
+  $('#search-assets').on('change keydown paste input', function(){
+    renderManageAssetsList(GL.assetnames,$('#search-assets').text());
+  });
+  
   // modal helper functions
   manageAssets = function manageAssets() {
     renderManageAssetsList(GL.assetnames);

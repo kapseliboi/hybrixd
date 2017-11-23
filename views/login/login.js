@@ -4,7 +4,22 @@ $(document).ready(function() {
 
   // handle login click
   var clicked = 0;
-  $('.click').click(function () {
+  $('.click').click( handleLogin(clicked) );  
+
+  $('#inputUserID').keypress(function(e) {
+    if (e.keyCode == 13) {
+      $('#inputPasscode').focus();
+    }
+  });
+
+  $('#inputPasscode').keypress(function(e) {
+    if (e.keyCode == 13) {
+      $('#loginbutton').focus();
+      handleLogin(clicked);
+    }
+  });
+  
+  function handleLogin(clicked) {
 		if ( ! clicked ) {
 		  var userid = $('#inputUserID').val().toUpperCase();		
 		  var passcode = $('#inputPasscode').val();
@@ -17,13 +32,11 @@ $(document).ready(function() {
         $('#combinatorwrap').css('opacity',1);
         rotate_login(0);
         setTimeout(function() { main( userid,passcode ); },1000);
-		  } else {
-        checkfields();
       }
 		}
-  });  
+  }  
 
-  // enable signin button on CTRL-S
+  // for legacy wallets enable signin button on CTRL-S
   $(document).keydown(function(e) {
 
       var key = undefined;
@@ -41,7 +54,7 @@ $(document).ready(function() {
           return false;
       }
       return true;
-  }); 
+  });
 
 });
 
@@ -72,7 +85,6 @@ function main(userid,passcode) {
 	//DEBUG: console.log('user_pubkey:'+user_pubkey+'('+user_pubkey.length+')/nonce:'+nonce);
   do_login(user_keys,nonce);
 	continue_session(user_keys,nonce,userid);
-	
 }
 
 function next_step() {
