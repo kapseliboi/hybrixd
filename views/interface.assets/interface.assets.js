@@ -46,7 +46,13 @@ init.interface.assets = function(args) {
   });
   
   $('#search-assets').on('change keydown paste input', function(){
-    renderManageAssetsList(GL.assetnames,$('#search-assets').text());
+    var searchval = $('#search-assets').val();
+    // delay the search by 1 second to avoid many multiple spawns of renderManageAssetsList
+    setTimeout( function(searchval) {
+      if(searchval === $('#search-assets').val()) {
+        renderManageAssetsList(GL.assetnames,searchval);
+      }
+    },1000,searchval);
   });
   
   // modal helper functions
@@ -68,9 +74,11 @@ init.interface.assets = function(args) {
     var output = '<table class="pure-table pure-table-striped"><tbody>';
     var element;
     for (var entry in list) {
-      element = entry.replace('.','-');
-      output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-btc">'+entry.toUpperCase()+'</td><td class="full-name">'+list[entry]+'</td>';
-      output+='<td class="actions"><div class="assetbuttons assetbuttons-'+element+'">'+renderManageButton(element,(GL.assetSelect[entry]?1:0))+'</div></td></tr>';
+      if(typeof search === 'undefined' || entry.toLowerCase().indexOf(search) !== -1 || list[entry].toLowerCase().indexOf(search) !== -1 ) {
+        element = entry.replace('.','-');
+        output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-btc">'+entry.toUpperCase()+'</td><td class="full-name">'+list[entry]+'</td>';
+        output+='<td class="actions"><div class="assetbuttons assetbuttons-'+element+'">'+renderManageButton(element,(GL.assetSelect[entry]?1:0))+'</div></td></tr>';
+      }
     }
     output+='</tbody></table>';
     $('#manage-assets .data').html(output); // insert new data into DOM

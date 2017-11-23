@@ -2,24 +2,7 @@
 
 $(document).ready(function() {
 
-  // handle login click
-  var clicked = 0;
-  $('.click').click( handleLogin(clicked) );  
-
-  $('#inputUserID').keypress(function(e) {
-    if (e.keyCode == 13) {
-      $('#inputPasscode').focus();
-    }
-  });
-
-  $('#inputPasscode').keypress(function(e) {
-    if (e.keyCode == 13) {
-      $('#loginbutton').focus();
-      handleLogin(clicked);
-    }
-  });
-  
-  function handleLogin(clicked) {
+  var handleLogin = function handleLogin(clicked) {
 		if ( ! clicked ) {
 		  var userid = $('#inputUserID').val().toUpperCase();		
 		  var passcode = $('#inputPasscode').val();
@@ -36,6 +19,23 @@ $(document).ready(function() {
 		}
   }  
 
+  // handle login click
+  var clicked = 0;
+  $('#loginbutton').click( function() { handleLogin(clicked); });
+
+  $('#inputUserID').keypress(function(e) {
+    if (e.keyCode == 13) {
+      $('#inputPasscode').focus();
+    }
+  });
+
+  $('#inputPasscode').keypress(function(e) {
+    if (e.keyCode == 13) {
+      $('#loginbutton').focus();
+      handleLogin(clicked);
+    }
+  });
+  
   // for legacy wallets enable signin button on CTRL-S
   $(document).keydown(function(e) {
 
