@@ -67,15 +67,34 @@
   top: 5%;
   left: 50%;
   height: fit-content;
-  max-height: 90%;
+  height: 90%;
   width: 90%;
   margin-left: -45%;
   max-width: 100vw;
+  -webkit-transition: none;
+     -moz-transition: none;
+       -o-transition: none;
+          transition: none;
 }
 
 .modal.fade.in.wide h2 {
   font-size: 1.2em;
   text-align: left;
+}
+
+.modal.fade.in.wide .modal-header {
+  position: fixed;
+  top: 49px;
+  left: 85px;
+  z-index: 12345;
+  background: white;
+  width: 89.6%;
+}
+
+.modal.fade.in.wide .modal-footer {
+  position: fixed;
+  bottom: 35px;
+  width: 89.6%;
 }
 
 .modal-header {

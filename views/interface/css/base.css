@@ -30,7 +30,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 .divider {
-  display: inline-block; width: 3em; border-top: 1px solid #B3E5FC;
+  display: inline-block; width: 3em; border-top: 1px solid rgba(178,209,216,0.5);
   min-height: 3px;
   margin-top: 3px;
   width: 100%;
@@ -362,7 +362,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   text-align: left;
   background: white;
   border-radius: 6px;
-  border: none;
+  border: 1px solid rgba(178,209,216,0.5);
   margin: 0.5%;
   padding: 0px;
   width: 100%;
@@ -482,24 +482,18 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 /* DASHBOARD */
 
 .content > .dashboard-balances {
-  background: #F0F6F7 !important;
-  background: linear-gradient(#81D4FA,#42A5F5) !important;
+  background: #E8F7Fa;
   min-height: 11em;
   margin-top: 0.2em;
 }
 
 .content > .dashboard-transactions, .content > .dashboard-trade, .content > .dashboard-chat, .content > .dashboard-apps {
-  background: #EEE !important;
+  background: #F5F5F5 !important;
   margin: 0.5%;
-  /*background: linear-gradient(#EFD,#FCFCFC,#FCFCFC,#FFFFFF) !important;*/
   /*background: linear-gradient(#EFE,#FCFCFC,#FCFCFC,#FFFFFF) !important;*/
   /*background: linear-gradient(#FEF,#FCFCFC,#FCFCFC,#FFFFFF) !important;*/
   /*background: linear-gradient(#FFC,#FCFCFC,#FCFCFC,#FFFFFF) !important;*/
   /*background: linear-gradient(#FDC,#FCFCFC,#FCFCFC,#FFFFFF) !important;*/
-}
-
-.content > .dashboard-balances > .databox-header h2 {
-  color: #E1F5FE;
 }
 
 .content > .dashboard-balances .balance {
@@ -521,7 +515,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
     background: rgba(178,209,216,0.2);
 }
 .content > .dashboard-balances .balance h5 {
-  color: #FFF;
+  color: #000;
   text-transform: uppercase;
   margin: 0.2em 0.2em;
 }
@@ -651,8 +645,43 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   padding: 0.8em 0.9em;
 }
 
+.content > #manage-assets .modal-header form { 
+  text-align: left;
+}
+
 .content > #manage-assets .modal-header input {
   margin: 0;
+  width: 600px;
+}
+
+.clearable{
+  position: relative;
+  display: inline-block;
+}
+.clearable input[type=text]{
+  padding-right: 24px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.clearable__clear{
+  display:none;
+  position: absolute;
+  right: 15px;
+  top: 12px;
+  padding: 1px 4px;
+  font-style: normal;
+  font-size: .9em;
+  user-select: none;
+  cursor: pointer;
+  background: #bbb;
+  border-radius: 50px;
+  width: 20px;
+  height: 20px;
+  color: white;
+  font-weight: 600;
+}
+.clearable input::-ms-clear {  /* Remove IE default X */
+  display: none;
 }
 
 .pure-button .advanced-icon, .pure-button .actions-icon {
