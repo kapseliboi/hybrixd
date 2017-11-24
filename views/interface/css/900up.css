@@ -74,4 +74,8 @@ TABLET LANDSCAPE STYLING: 900px and up
     padding-right: 0.5em;
   }
 
+  .content > #manage-assets .modal-header input {
+    width: 600px;
+  }
+
 }

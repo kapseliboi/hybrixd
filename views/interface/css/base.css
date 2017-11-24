@@ -582,7 +582,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 .content .pure-table .asset, .content .pure-table .icon {
   display: block;
   text-align: center;
-  width: 50px;
+  width: 65px;
 }
 
 .content .pure-table .asset {
@@ -651,7 +651,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 
 .content > #manage-assets .modal-header input {
   margin: 0;
-  width: 600px;
+  width: 300px;
 }
 
 .clearable{
