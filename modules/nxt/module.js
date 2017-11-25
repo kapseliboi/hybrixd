@@ -87,33 +87,30 @@ function exec(properties) {
       if(!isToken(target.symbol)) {
         var fee = (typeof target.fee!='undefined'?target.fee:null);
       } else {
-        //var fee = (typeof global.hybridd.asset[base].fee != 'undefined'?global.hybridd.asset[base].fee*2.465:null);
-        //factor = (typeof global.hybridd.asset[base].factor != 'undefined'?global.hybridd.asset[base].factor:null);
+        var fee = (typeof global.hybridd.asset[base].fee != 'undefined'?global.hybridd.asset[base].fee:null);
+        factor = (typeof global.hybridd.asset[base].factor != 'undefined'?global.hybridd.asset[base].factor:null);
       }
       subprocesses.push('stop(('+jstr(fee)+'!=null && '+jstr(factor)+'!=null?0:1),'+(fee!=null && factor!=null?'"'+padFloat(fee,factor)+'"':null)+')');
 		break;
 		case 'balance':
       if(sourceaddr) {
         if(!isToken(target.symbol)) {
-          subprocesses.push('func("nxt","link",{target:'+jstr(target)+',command:["eth_getBalance",["'+sourceaddr+'","latest"]]})'); // send balance query
+          subprocesses.push('func("nxt","link",{target:'+jstr(target)+',command:["getBalance",["account='+sourceaddr+'"]]})'); // send balance query
+          subprocesses.push('stop((data!==null && typeof data.unconfirmedBalanceNQT!=="undefined"?0:1),(data!==null && typeof data.unconfirmedBalanceNQT!=="undefined"? padFloat( fromInt(data.unconfirmedBalanceNQT,'+factor+'),'+factor+') :null))');
         } else {
-          var symbol = target.symbol.split('.')[0];
-          // DEPRECATED: var encoded = '0x'+abi.simpleEncode('balanceOf(address):(uint256)',sourceaddr).toString('hex'); // returns the encoded binary (as a Buffer) data to be sent
-          var encoded = global.hybridd.asset[symbol].dcode.encode({'func':'balanceOf(address):(uint256)','vars':['address'],'address':sourceaddr}); // returns the encoded binary (as a Buffer) data to be sent
-          subprocesses.push('func("nxt","link",{target:'+jstr(target)+',command:["eth_call",[{"to":"'+target.contract+'","data":"'+encoded+'"},"pending"]]})'); // send token balance ABI query
+          subprocesses.push('func("nxt","link",{target:'+jstr(target)+',command:["getAccount",["account='+sourceaddr+'","includeAssets=true","includeCurrencies=true"]]})'); // send balance query
+          subprocesses.push('func("nxt","post",{target:'+jstr(target)+',command:["balance"],data:data})');
         }
-        subprocesses.push('stop((data!=null && typeof data.result!="undefined"?0:1),(data!=null && typeof data.result!="undefined"? fromInt(hex2dec.toDec(data.result),'+factor+') :null))');
       } else {
         subprocesses.push('stop(1,"Error: missing address!")');
       }
 		break;
 		case 'push':
-      // {"requestType": "broadcastTransaction", "transactionBytes": response.transactionBytes}
       var deterministic_script = (typeof properties.command[1] != 'undefined'?properties.command[1]:false);
       if(deterministic_script) {
-        subprocesses.push('func("nxt","link",{target:'+jstr(target)+',command:["eth_sendRawTransaction",["'+deterministic_script+'"]]})');
-        // returns: { "id":1, "jsonrpc": "2.0", "result": "0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331" }
-        subprocesses.push('stop((typeof data.result!="undefined"?0:1),(typeof data.result!="undefined"?data.result:null))');
+        subprocesses.push('func("nxt","link",{target:'+jstr(target)+',command:["broadcastTransaction",["transactionBytes='+deterministic_script+'"]]})');
+        // returns: { "requestProcessingTime": 4, "fullHash": "3a304584f20cf3d2cbbdd9698ff9a166427005ab98fbe9ca4ad6253651ee81f1", "transaction": "15200507403046301754" }
+        subprocesses.push('stop((typeof data.transaction==="undefined"?1:0),(typeof data.transaction==="undefined"?null:data.transaction))');
       } else {
         subprocesses.push('stop(1,"Missing or badly formed deterministic transaction!")');
       }
@@ -121,7 +118,7 @@ function exec(properties) {
     // NXT has no concept of unspents, instead we have to prepare an unsigned transaction here
     // this is then returned to the deterministic library in the browser for signing, and pushing (broadcast)
 		case 'unspent':
-      var amount = properties.command[2];
+      var amount = Number(properties.command[2]);
       var targetaddr = properties.command[3];
       var publicKey = properties.command[4];
       if(sourceaddr) {
@@ -130,12 +127,23 @@ function exec(properties) {
         } else {
           if(targetaddr) {
             if(publicKey) {
-              subprocesses.push('func("nxt","link",{target:'+jstr(target)+',command:["sendMoney",["recipient='+targetaddr+'","publicKey='+publicKey+'","amountNQT='+toInt(amount,factor)+'","feeNQT='+toInt(fee,factor)+'","deadline=600","doNotSign=1","broadcast=false"] ]})');
-              subprocesses.push('logs(1,jstr(data),data)');
-              subprocesses.push('stop(0,{"transaction":data})');
+              publicKey = '"publicKey='+publicKey+'"';
             } else {
+              publicKey = '"publicKey="+data.publicKey';
+              subprocesses.push('func("nxt","link",{target:'+jstr(target)+',command:["getAccount",["account='+sourceaddr+'"]]})'); // send balance query
+              subprocesses.push('test((typeof data.publicKey!=="undefined" && data.publicKey),2,1,data)');
               subprocesses.push('stop(1,"Error: missing NXT public key!")');
             }
+            if(!isToken(target.symbol)) {
+              amount -= fee;  // with NXT the unspent function is a transaction preparation, so must subtract the fee
+              subprocesses.push('func("nxt","link",{target:'+jstr(target)+',command:["sendMoney",["recipient='+targetaddr+'",'+publicKey+',"amountNQT='+toInt(amount,factor)+'","feeNQT='+toInt(fee,factor)+'","deadline=300","doNotSign=1","broadcast=false"] ]})');
+            } else {
+              var fee = (typeof global.hybridd.asset[base].fee != 'undefined'?global.hybridd.asset[base].fee:null);
+              var feefactor = (typeof global.hybridd.asset[base].factor != 'undefined'?global.hybridd.asset[base].factor:null);
+              amount -= fee;  // with NXT the unspent function is a transaction preparation, so must subtract the fee
+              subprocesses.push('func("nxt","link",{target:'+jstr(target)+',command:["transferAsset",["recipient='+targetaddr+'","asset='+target.contract+'",'+publicKey+',"quantityQNT='+toInt(amount,factor)+'","feeNQT='+toInt(fee,feefactor)+'","deadline=300","doNotSign=1","broadcast=false"] ]})');
+            }
+            subprocesses.push('stop((typeof data.errorCode==="undefined"?0:data.errorCode),(typeof data.errorCode==="undefined"?data:null))');
           } else {
             subprocesses.push('stop(1,"Error: missing target address!")');
           }
@@ -146,7 +154,7 @@ function exec(properties) {
     break;
 		case 'contract':
       // directly return factor, post-processing not required!
-      var contract = (typeof target.contract != 'undefined'?target.contract:null);
+      var contract = (typeof target.contract !== 'undefined'?target.contract:null);
       subprocesses.push('stop(0,"'+contract+'")');
 		break;
 		case 'history':
@@ -185,9 +193,21 @@ function post(properties) {
         collage.supply = null;
         collage.difficulty = null;
         collage.testmode = null;
-        collage.version = (typeof postdata.result=='string' ? postdata.result : null);
+        collage.version = (typeof postdata.result==='string' ? postdata.result : null);
         postdata = collage;
 			break;
+      case 'balance':
+        var balance = 0;
+        if(typeof postdata.unconfirmedAssetBalances!=='undefined' && Array.isArray(postdata.unconfirmedAssetBalances)) {
+          //subprocesses.push('stop((data===null || typeof data.assetBalances==="undefined"?1:0),(data===null || typeof data.assetBalances==="undefined"?data.assetBalances:[]))');
+          for (var i = 0; i < postdata.unconfirmedAssetBalances.length; i++) {
+            if(postdata.unconfirmedAssetBalances[i].asset === target.contract) {
+              balance+=postdata.assetBalances[i].balanceQNT;
+            }
+          }
+        }
+        postdata = padFloat(fromInt(balance,factor),factor);
+      break;
 			default:
 				success = false;		
 		}
@@ -218,7 +238,6 @@ function link(properties) {
         data:params.join('&')+'&random='+Math.random(),
         path:upath
     }
-    console.log(args);
   } else {
     type = 'GET';
     var upath = '?requestType='+method+(typeof params==='undefined'?'':'&'+params)+'&random='+Math.random();
@@ -236,5 +255,3 @@ function link(properties) {
                  'pid':processID,
                  'target':target.symbol });
 }
-
-
