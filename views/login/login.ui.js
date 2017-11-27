@@ -1,9 +1,5 @@
-$(document).ready(function() {
-  
+$(document).ready(function() {  
   new customAlert();
-  alert('<div class="alert-header">⚠</div><br><h2>WARNING: Do not store large value in this wallet!</h2><br>We\'re making every effort towards a secure design, and do not store any wallet file or data on this computer. Regardless, we cannot guarantee the security of your cryptocurrency in this stage of the project!<br><br>',
-        {title: '', button: 'Yes, I understand'});
-
   // tooltips
   var output = '<span id="tooltip">It looks like you haven\'t filled in the correct credentials yet. Please check them and try again.</span>';
   $('#loginbutton').after(output); 
@@ -15,6 +11,11 @@ $(document).ready(function() {
     }
   } );
 });  
+
+function alertbutton() {
+  alert('<div class="alert-header">⚠</div><br><h2>WARNING: Do not store large value in this wallet!</h2><br>We\'re making every effort towards a secure design, and do not store any wallet file or data on this computer. Regardless, we cannot guarantee the security of your cryptocurrency in this stage of the project!<br><br>',
+        {title: '', button: 'Yes, I understand'});
+}
 
 function helpbutton() {
   alert('<h2>Welcome to this Internet of Coins node</h2><br><h3>I already have an account</h3>To sign in, you need to enter an account code and password that are both 16 characters long.<br><br><h3>I\'m new, I need a new account </h3>If you don\'t have sign in credentials yet, you can generate them by clicking on the "+ Create a new account" button, and the new credentials will be filled in for you.<br><br>',

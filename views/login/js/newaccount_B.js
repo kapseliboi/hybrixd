@@ -122,24 +122,24 @@ PRNG = {}
 function generateAccount(entropy) {
   confirm('<h3>Choose your level of security</h3> Do you want a medium or high security wallet? <br><br> A medium security wallet has a much shorter password, which is easier to remember. \
            However, we do advise not to store more than a month\'s wage worth of value in a medium security wallet.\
-           High security wallets have a very long password, making them more secure.',function(mediumlevel) {
-            if(mediumlevel) {
-              var offset=Math.floor(Math.random() * (511-40))
-              var passwd=hexToBase32(entropy.substr(offset+20,20));              
-            } else {
+           High security wallets have a very long password, making them more secure.',function(highlevel) {
+            if(highlevel) {
               var offset=Math.floor(Math.random() * (511-100))
               var passwd=hexToBase32(entropy.substr(offset+20,60));              
+            } else {
+              var offset=Math.floor(Math.random() * (511-40))
+              var passwd=hexToBase32(entropy.substr(offset+20,20));              
             }
             console.log( DJB2.hash(entropy.substr(offset,12).toLowerCase()+passwd.toUpperCase()).substr(4,4) );
             var userid=hexToBase32( entropy.substr(offset,12)+DJB2.hash(entropy.substr(offset,12).toUpperCase()).substr(0,4)+DJB2.hash(entropy.substr(offset,12).toLowerCase()+passwd.toUpperCase()).substr(4,4) );
             finalizeAccount(userid,passwd,entropy);
     },
     {
-      'done':{
+      'cancel':{
         'text':'Medium',
         'default':true
       },
-      'cancel':{
+      'done':{
         'text':'High',
         'default':false
       }
@@ -152,18 +152,19 @@ function finalizeAccount(userid,passwd,entropy) {
     <br/>We cannot help you recover the keys, so they are <u>your responsibility</u>! <br/>Have a lot of fun using Internet of Coins! <br /> <span class="alpha-warning"><span style="font-size: 1em;">⚠</span> WARNING: This wallet is stil in alpha.<br />Do not yet store large amounts of value on it!</span> <br>',
     {title: '', button: 'Continue'},
     function(){
-      confirm('<h3>Your account has been created!</h3> Did you write down your login details and put them in a safe place? If not, you will get new login credentials.',function(result) {
-          if(!result) {
+      confirm('<h3>Your account has been created!</h3> Did you write down your login details and put them in a safe place? If not, you will get new login credentials.',function(redo) {
+          if(redo) {
             generateAccount(entropy);
           }
         },
         {
-          'done':{
-            'text':'Yes, continue to login'
-          },
           'cancel':{
-            'text':'No, I need new credentials',
+            'text':'&nbsp;Yes, continue to login ',
             'default':true
+          },
+          'done':{
+            'text':' No, I need new credentials ',
+            'default':false
           }
         });
     });

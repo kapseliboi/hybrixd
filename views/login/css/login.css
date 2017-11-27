@@ -127,7 +127,7 @@ body {
 }
 
 #login_container  #loginbutton {
-  margin: 15px 0 30px;
+  margin: 5px 0 30px;
 }
 
 #loginbuttoncontent {
@@ -211,12 +211,19 @@ body {
   position: absolute;
 }
 
-#login_container #generatebutton,  #login_container #helpbutton {
+#login_container #generatebutton,  #login_container #helpbutton,  #login_container #alertbutton {
   display: block;
   font-size: 0.9em;
   color: #677E85;
   margin: 0.5em 0 1.8em;
   font-weight: 600;
+}
+#login_container #alertbutton {  
+  color: #A06969;
+}
+#login_container #alertbutton:hover {  
+  color: #F06969;
+  cursor: pointer;
 }
 #login_container #generatebutton:hover {  
   color: #69F0AE;

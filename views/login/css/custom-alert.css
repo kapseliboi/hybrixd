@@ -31,7 +31,7 @@
   -moz-box-sizing: border-box;  
   box-sizing: border-box; 
   padding:20px;
-  overflow-y:scroll;
+  overflow-y:auto;
 }
 
 @media (min-width:321px) {
