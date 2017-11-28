@@ -1,13 +1,40 @@
 // User interface transformations
 UItransform = {
   formatFloat : function(n) {
-    var balance = String(Number(n));
-    var length = balance.length;
-    
-    var output = balance.slice(0, 10);
-    if (length > 10) {
-      var output = balance.slice(0, 9);
-      output += "<span class='balance-end'>&hellip;</span>"  
+    if(isNaN(n)) {
+      output = '?';
+    } else {
+      var balance = String(Number(n));
+      if (balance === "0") {
+        output = '0';
+      } else {
+        var maxlen = 5;   // amount of significant digits
+        var output = '';
+        var zeros = 0;
+        var i;
+        var size_open = '<span style="font-size: 0.75em;">';
+        var size_stop = '</span>';
+        if (balance[0] === "0") {
+          output+='<span style="color: grey;">'+size_open;
+          for(i = 0; i < balance.length && i <= maxlen; i+=1) {
+            if (balance[i] === "0" || balance[i] === ".") {
+              zeros += 1;
+              if(balance[i] === ".") {
+                output += size_stop+balance.substr(i, 1)+size_open;
+              } else {
+                output += balance.substr(i, 1);
+              }
+            } else {
+              i = balance.length;
+            }
+          }
+          output+=size_stop+'</span>';
+        }
+        output += balance.substr(zeros,(i > maxlen?maxlen:i));
+        if ((balance.length-zeros) > maxlen) {
+          output += '<span class="balance-end" style="color: grey;">&hellip;</span>'; 
+        }
+      }
     }
     return output;
   }
