@@ -41,12 +41,6 @@
   }
 }
 
-@media (min-height:480px) {
-  .customalert{
-    top:20%
-  }
-}
-
 @media (max-width:550px) {
   .customalert {
     margin-left:-50vw
