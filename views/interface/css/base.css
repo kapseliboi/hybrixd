@@ -451,6 +451,13 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   margin-left: -240px;
 }
 
+@media (max-width: 600px) {
+  .modal {
+    margin-left: -45%;
+    width: 90%;
+  }
+}
+
 .button-label {
   display: none;
 }
@@ -520,7 +527,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   margin: 0.2em 0.2em;
 }
 .content > .dashboard-balances .balance h3 {
-  color: #01579B;
+  color: #222;
   font-size: 1.0em;
   font-weight: 300;
   margin: 0.2em 0.2em;
@@ -767,7 +774,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 #action-receive .copied {
   transition: all 1s ease;
   font-size: .7em;
-  color: rgba(178,209,216,1);
+  color: #1376DB;
   height: 1em
 }
 
