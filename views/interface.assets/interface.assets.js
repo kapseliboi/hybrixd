@@ -45,14 +45,20 @@ init.interface.assets = function(args) {
     displayAssets();
   });
   
+  GL.searchingactive = false;
+  GL.searchval = '';
   $('#search-assets').on('change keydown paste input', function(){
-    var searchval = $('#search-assets').val();
-    // delay the search by 1 second to avoid many multiple spawns of renderManageAssetsList
-    setTimeout( function(searchval) {
-      if(searchval === $('#search-assets').val()) {
-        renderManageAssetsList(GL.assetnames,searchval);
-      }
-    },1000,searchval);
+    if(!GL.searchingactive) {
+      GL.searchingactive = true;
+      // delay the search to avoid many multiple spawns of renderManageAssetsList
+      setTimeout( function() {
+        if($('#search-assets').val()!==GL.searchval) {
+          renderManageAssetsList(GL.assetnames,$('#search-assets').val());
+          GL.searchval = $('#search-assets').val();
+        }
+        GL.searchingactive = false;
+      },250);
+    }
   });
   
   // modal helper functions
@@ -175,12 +181,13 @@ init.interface.assets = function(args) {
                     $(assetbuttons+' a').removeAttr('disabled');
                     $(assetbuttons+' a').attr('data-toggle', 'modal');
                     $(element).attr('amount',object.data);
+                    object.data = UItransform.formatFloat(object.data);
                   } else {
                     $(assetbuttons).addClass('disabled');
                     $(assetbuttons+' a').removeAttr('data-toggle');
                     $(element).attr('amount','?');
+                    object.data = '?';
                   }
-                  object.data = UItransform.formatFloat(object.data);
                   return object;
                 }
               );

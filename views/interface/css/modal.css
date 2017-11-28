@@ -91,7 +91,7 @@
 
 .modal.fade.in.wide .modal-body {
   height: 72%;
-  overflow: scroll;
+  overflow-y: auto;
 }
 
 .modal.fade.in.wide .modal-footer {
