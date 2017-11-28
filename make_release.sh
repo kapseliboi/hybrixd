@@ -36,6 +36,7 @@ $UGLIFY lib/functions.js > $OUTPATH/lib/functions.js
 $UGLIFY lib/APIqueue.js > $OUTPATH/lib/APIqueue.js
 $UGLIFY lib/network.js > $OUTPATH/lib/network.js
 $UGLIFY lib/proc.js > $OUTPATH/lib/proc.js
+$UGLIFY lib/list.js > $OUTPATH/lib/list.js
 $UGLIFY lib/prototypes.js > $OUTPATH/lib/prototypes.js
 $UGLIFY lib/scheduler.js > $OUTPATH/lib/scheduler.js
 $UGLIFY lib/hcmd.js > $OUTPATH/lib/hcmd.js
@@ -53,6 +54,7 @@ cp -R modules/deterministic $OUTPATH/modules/
 cp -R modules/electrum $OUTPATH/modules/
 cp -R modules/lisk $OUTPATH/modules/
 cp -R modules/ethereum $OUTPATH/modules/
+cp -R modules/nxt $OUTPATH/modules/
 
 cp -R scripts $OUTPATH/
 
@@ -68,6 +70,7 @@ $UGLIFY views/index/hy_connect.js > $OUTPATH/views/index/hy_connect.js
 mkdir -p $OUTPATH/views/interface/js
 cp views/interface/main.js $OUTPATH/views/interface/
 cp views/interface/*.html $OUTPATH/views/interface/
+$UGLIFY views/interface/interface.js > $OUTPATH/views/interface/interface.js
 $UGLIFY views/interface/js/clipboard.js > $OUTPATH/views/interface/js/clipboard.js
 $UGLIFY views/interface/js/globalobjects.js > $OUTPATH/views/interface/js/globalobjects.js
 $UGLIFY views/interface/js/hybriddcall.js > $OUTPATH/views/interface/js/hybriddcall.js
