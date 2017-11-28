@@ -3,7 +3,7 @@
 $(document).ready(function() {
 
   var handleLogin = function handleLogin(clicked) {
-		if ( ! clicked ) {
+		if (!$('#loginbutton').hasClass('disabled') && !clicked ) {
 		  var userid = $('#inputUserID').val().toUpperCase();		
 		  var passcode = $('#inputPasscode').val();
 		  if ( userid.length == 16 && (passcode.length == 16 || passcode.length == 48) ) {
