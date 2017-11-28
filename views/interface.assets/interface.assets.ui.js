@@ -99,12 +99,12 @@ displayAssets = function displayAssets() {
     balance.lasttx[i] = 0;
     var element=balance.asset[i].replace(/\./g,'-');
     output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-'+element+'">'+entry+'</td><td><div class="balance balance-'+element+'">'+progressbar()+'</div></td><td class="actions"><div class="assetbuttons assetbuttons-'+element+' disabled">';
-    output+='<a onclick=\'fill_send("'+entry+'",$(".assets-main > .data .balance-'+element+'").html());\' href="#action-send" class="pure-button pure-button-primary" role="button" data-toggle="modal" disabled="disabled">Send</a>';
-    output+='<a onclick=\'fill_recv("'+entry+'",$(".assets-main > .data .balance-'+element+'").html());\' href="#action-receive" class="pure-button pure-button-secondary" role="button" data-toggle="modal" disabled="disabled">Receive</a>';
+    output+='<a onclick=\'fill_send("'+entry+'");\' href="#action-send" class="pure-button pure-button-primary" role="button" data-toggle="modal" disabled="disabled">Send</a>';
+    output+='<a onclick=\'fill_recv("'+entry+'");\' href="#action-receive" class="pure-button pure-button-secondary" role="button" data-toggle="modal" disabled="disabled">Receive</a>';
     output+='<a href="#action-advanced" class="pure-button pure-button-grey advanced-button" role="button" disabled="disabled"><div class="advanced-icon">'+svg['advanced']+'</div><span class="button-label">Advanced</span></a>';
     output+='</div>'
     output+='<div class="assetbutton-mobile assetbuttons-'+element+' disabled">'
-    output+='<a onclick=\'fill_actions("'+entry+'",$(".assets-main > .data .balance-'+element+'").html());\' href="#action-actions" class="pure-button pure-button-grey actions-button" role="button" data-toggle="modal" disabled="disabled"><div class="actions-icon">'+svg['actions']+'</div>Actions</a>';
+    output+='<a onclick=\'fill_actions("'+entry+'");\' href="#action-actions" class="pure-button pure-button-grey actions-button" role="button" data-toggle="modal" disabled="disabled"><div class="actions-icon">'+svg['actions']+'</div>Actions</a>';
     output+='</div></td></tr>';
     i++;
   }

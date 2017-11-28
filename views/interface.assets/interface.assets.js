@@ -65,20 +65,24 @@ init.interface.assets = function(args) {
   
   // modal helper functions
   manageAssets = function manageAssets() {
+    GL.assetSelect = [];
     renderManageAssetsList(GL.assetnames);
   }
   renderManageAssetsList = function renderManageAssetsList(list,search) {
     if(typeof search !== 'undefined') {
       search = search.toLowerCase();
     }
-    GL.assetSelect = [];
     for(var entry in GL.assetnames) {
       if(GL.assetsActive.indexOf(entry) === -1) {
-        GL.assetSelect[entry] = false;
+        if(typeof GL.assetSelect[entry]==='undefined') {
+          GL.assetSelect[entry] = false;
+        }
       } else {
-        GL.assetSelect[entry] = true;
+        if(typeof GL.assetSelect[entry]==='undefined') {
+          GL.assetSelect[entry] = true;
+        }
       }
-    }    
+    }
     var output = '<table class="pure-table pure-table-striped"><tbody>';
     var element;
     for (var entry in list) {
@@ -103,12 +107,13 @@ init.interface.assets = function(args) {
     $('#manage-assets .assetbuttons-'+element).html( renderManageButton(element,asset,active) );
   }
   
-  fill_actions = function(asset,balance) {
+  fill_actions = function(asset) {
+    var element = '.assets-main > .data .balance-'+asset.replace(/\./g,'-');
     $('#action-actions #ModalLabel').html(asset.toUpperCase());
-    $('#action-actions .balance').html(balance.toUpperCase());
+    $('#action-actions .balance').html($(element).html().toUpperCase());
     var output = '';
-    output+='<a onclick=\'fill_send("'+asset+'","'+balance+'");\' href="#action-send" class="pure-button pure-button-primary" role="button" data-dismiss="modal" data-toggle="modal">Send</a>';
-    output+='<a onclick=\'fill_recv("'+asset+'","'+balance+'");\' href="#action-receive" class="pure-button pure-button-secondary" role="button" data-dismiss="modal" data-toggle="modal">Receive</a>';
+    output+='<a onclick=\'fill_send("'+asset+'");\' href="#action-send" class="pure-button pure-button-primary" role="button" data-dismiss="modal" data-toggle="modal">Send</a>';
+    output+='<a onclick=\'fill_recv("'+asset+'");\' href="#action-receive" class="pure-button pure-button-secondary" role="button" data-dismiss="modal" data-toggle="modal">Receive</a>';
     output+='<a href="#action-advanced" class="pure-button pure-button-grey advanced-button" role="button" data-dismiss="modal" data-toggle="modal"><div class="advanced-icon">'+svg['advanced']+'</div>Advanced</a>';
     $('#action-actions .buttons').html(output); 
   }
