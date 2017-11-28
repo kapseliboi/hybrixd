@@ -33,6 +33,7 @@ init.interface.assets = function(args) {
   });
 
   $('#save-assetlist').click(function() {
+    // push selected assets to active stack
     var array = [];
     for(var entry in GL.assetnames) {
       if(GL.assetSelect[entry]) {
@@ -40,8 +41,9 @@ init.interface.assets = function(args) {
         init_asset(entry,GL.assetmodes[entry]);
       }
     }
-    storage.Set( nacl.to_hex(GL.usercrypto.user_keys.boxPk)+'.assets.list.user' , JSON.stringify(array) );
     GL.assetsActive = array;
+    // store selected assets
+    storage.Set( nacl.to_hex(GL.usercrypto.user_keys.boxPk)+'.assets.list.user' , JSON.stringify(array) );
     displayAssets();
   });
   
@@ -83,22 +85,22 @@ init.interface.assets = function(args) {
       if(typeof search === 'undefined' || entry.toLowerCase().indexOf(search) !== -1 || list[entry].toLowerCase().indexOf(search) !== -1 ) {
         element = entry.replace('.','-');
         output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-btc">'+entry.toUpperCase()+'</td><td class="full-name">'+list[entry]+'</td>';
-        output+='<td class="actions"><div class="assetbuttons assetbuttons-'+element+'">'+renderManageButton(element,(GL.assetSelect[entry]?1:0))+'</div></td></tr>';
+        output+='<td class="actions"><div class="assetbuttons assetbuttons-'+element+'">'+renderManageButton(element,entry,(GL.assetSelect[entry]?1:0))+'</div></td></tr>';
       }
     }
     output+='</tbody></table>';
     $('#manage-assets .data').html(output); // insert new data into DOM
   }
-  renderManageButton = function renderManageButton(asset,active) {
-    return '<a onclick="changeManageButton(\''+asset+'\','+(active?0:1)+');" class="pure-button '+(active?'pure-button-error selectedAsset':'pure-button-success')+'" role="button"><div class="actions-icon">'+(active?svg['remove']:svg['add'])+'</div>'+(active?'Remove':'Add')+'</a>';
+  renderManageButton = function renderManageButton(element,asset,active) {
+    return '<a onclick="changeManageButton(\''+element+'\',\''+asset+'\','+(active?0:1)+');" class="pure-button '+(active?'pure-button-error selectedAsset':'pure-button-success')+'" role="button"><div class="actions-icon">'+(active?svg['remove']:svg['add'])+'</div>'+(active?'Remove':'Add')+'</a>';
   }
-  changeManageButton = function changeManageButton(asset,active) {
+  changeManageButton = function changeManageButton(element,asset,active) {
     if(active) {
       GL.assetSelect[asset] = true;
     } else {
       GL.assetSelect[asset] = false;
     }
-    $('#manage-assets .assetbuttons-'+asset).html( renderManageButton(asset,active) );
+    $('#manage-assets .assetbuttons-'+element).html( renderManageButton(element,asset,active) );
   }
   
   fill_actions = function(asset,balance) {
@@ -126,7 +128,7 @@ init.interface.assets = function(args) {
       $('#modal-send-target').val('');
       $('#modal-send-amount').val('');
       $('#action-send .modal-send-addressfrom').html(assets.addr[asset]);
-      $('#action-send .modal-send-networkfee').html(String(assets.fees[asset]).replace(/0+$/, '')+' '+asset.split('.')[0].toUpperCase());
+      $('#action-send .modal-send-networkfee').html(formatFloat(assets.fees[asset])+' '+asset.split('.')[0].toUpperCase());
       check_tx();
     }
   }
