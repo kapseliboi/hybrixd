@@ -113,13 +113,6 @@
   bottom: 0;
 }
 
-@media (max-width: 600px) {
-  .modal {
-    margin-left: -45%;
-    width: 90%;
-  }
-}
-
 @media (min-width: 600px) and (min-height: 600px) {
   .modal.fade.in.wide {
     top: 5%;
