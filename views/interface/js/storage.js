@@ -22,7 +22,7 @@ var storage = (function() {
       }
     },
 
-    Get : function (storekey,postfunction) {
+    Get : function (storekey, postfunction) {
       localforage.getItem(storekey).then(function(value) {
         if(typeof postfunction == 'function') {
           postfunction(value);

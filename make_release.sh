@@ -80,6 +80,7 @@ $UGLIFY views/interface/js/qrcode.js > $OUTPATH/views/interface/js/qrcode.js
 $UGLIFY views/interface/js/topmenu.js > $OUTPATH/views/interface/js/topmenu.js
 $UGLIFY views/interface/js/topmenuset.js > $OUTPATH/views/interface/js/topmenuset.js
 $UGLIFY views/interface/js/transaction.js > $OUTPATH/views/interface/js/transaction.js
+$UGLIFY views/interface/js/sha256.js > $OUTPATH/views/interface/js/sha256.js
 
 mkdir -p $OUTPATH/views/interface/css
 $CSSMIN views/interface/css/modal.css > $OUTPATH/views/interface/css/modal.css

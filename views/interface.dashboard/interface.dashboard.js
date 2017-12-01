@@ -32,14 +32,12 @@ init.interface.dashboard = function(args) {
 
       // query storage for active assets
       if(typeof GL.assetsActive === 'undefined') {
-        storage.Get( nacl.to_hex(GL.usercrypto.user_keys.boxPk)+'.assets.list.user' , function(list) {
-          try { list = JSON.parse(list); } catch (err) { list = null; }
-          GL.assetsActive = list;
+        storage.Get( userStorageKey('ff00-0033') , function(crypted) {
+          GL.assetsActive = userDecode(crypted);
           // query storage for dash assets
           if(typeof GL.assetsDash === 'undefined') {
-            storage.Get( nacl.to_hex(GL.usercrypto.user_keys.boxPk)+'.assets.dash.user' , function(list) {
-              try { list = JSON.parse(list); } catch (err) { list = null; }
-              GL.assetsDash = list;
+            storage.Get( userStorageKey('ff00-0034') , function(crypted) {
+              GL.assetsDash = userDecode(crypted);
               // init asset display
               displayAssets();
             });
@@ -93,7 +91,7 @@ function displayAssets() {
             var defer = (assets.init.indexOf(GL.assetmodes[entry].split('.')[0])==-1?0:3000);
             assets.init.push(GL.assetmodes[entry].split('.')[0]);
             setTimeout(function(entry,passdata) {
-              init_asset(entry,GL.assetmodes[entry]);
+              initAsset(entry,GL.assetmodes[entry]);
             },(100*i)+defer,entry);
             // if all assets inits are called run 
             if(i===GL.assetsActive.length) {

@@ -38,12 +38,12 @@ init.interface.assets = function(args) {
     for(var entry in GL.assetnames) {
       if(GL.assetSelect[entry]) {
         array.push(entry);
-        init_asset(entry,GL.assetmodes[entry]);
+        initAsset(entry,GL.assetmodes[entry]);
       }
     }
     GL.assetsActive = array;
     // store selected assets
-    storage.Set( nacl.to_hex(GL.usercrypto.user_keys.boxPk)+'.assets.list.user' , JSON.stringify(array) );
+    storage.Set(  userStorageKey('ff00-0033') , userEncode(array) );
     displayAssets();
   });
   

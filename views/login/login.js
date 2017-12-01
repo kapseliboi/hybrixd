@@ -204,8 +204,7 @@ function do_login(user_keys,nonce) {
 }
 
 function generate_keys(secret,salt) {
-	// normalise strings with stringtolower and stringtoupper
-	//alert(secret.toUpperCase()+'/'+salt.toLowerCase());
+	// we normalise strings with stringtolower and stringtoupper
 
 	// Key Seed I
 	// create bitArrays from secret and salt
