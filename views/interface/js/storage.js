@@ -16,7 +16,7 @@ var storage = (function() {
     var loop_step = next_step();
     hybriddcall({r:'s/storage/meta/'+storekey,c:GL.usercrypto,s:loop_step,z:0},0, function(object) {
       var meta = object.data;
-      if(typeof meta==='undefined' || meta===null) {
+      if(typeof meta==='undefined' || meta===null || meta==='null') {
         meta = {time:0,hash:null}
       }
       localforage.getItem(storekey+'.meta').then(function(localmeta) {
@@ -28,10 +28,16 @@ var storage = (function() {
           if(meta.time>localmeta.time) {
             var loop_step = next_step();
             hybriddcall({r:'s/storage/get/'+storekey,c:GL.usercrypto,s:loop_step,z:0},0, function(object) {
-              if(typeof postfunction === 'function') {
-                postfunction(object.data);
-              }
-              if(typeof object.data!=='undefined' && object.data!==null) {
+              if(typeof object.data==='undefined' || object.data===null || object.data==='null') {
+                localforage.getItem(storekey).then(function(value) {
+                  if(typeof postfunction === 'function') {
+                    postfunction(value);
+                  }
+                });
+              } else {
+                if(typeof postfunction === 'function') {
+                 postfunction(object.data);
+                }
                 try {
                   localforage.setItem(storekey, object.data);
                   localforage.setItem(storekey+'.meta',{time:Date.now(),hash:DJB2.hash(JSON.stringify(object.data))});
@@ -44,24 +50,26 @@ var storage = (function() {
           // remote is older
           } else {
             localforage.getItem(storekey).then(function(value) {
-              postfunction(value);
+              if(typeof postfunction === 'function') {
+                postfunction(value);
+              }
               var loop_step = next_step();
-                console.log('VALUE : '+value);
               hybriddcall({r:'s/storage/set/'+storekey+'/'+value,c:GL.usercrypto,s:loop_step,z:0},0, function(object) {
                 // add to proof of work queue
-                console.log('SHOULD DO PROOF OF WORK HERE...');
+                console.log('TODO: proof of work for data retention...');
               });
             });
           }
         // no changes between remote and local
         } else {
           localforage.getItem(storekey).then(function(value) {
+              console.log(' VAL4: '+value);
             if(typeof postfunction === 'function') {
               postfunction(value);
             }
             if(meta.res!=='undefined' && meta.res===0) {
               // add to proof of work queue
-              console.log('SHOULD DO PROOF OF WORK HERE...');
+              console.log('TODO: proof of work for data retention...');
             }
           });
         }
@@ -72,18 +80,14 @@ var storage = (function() {
 	var storage = {
 
     Set : function (storekey, storevalue) {
-      try {
-        localforage.setItem(storekey, storevalue);
-        localforage.setItem(storekey+'.meta',{time:Date.now(),hash:DJB2.hash(JSON.stringify(storevalue))});
-        if(storekey.substr(-6)==='-LOCAL') {
-          setTimeout(function() {
-            Sync(storekey);
-          },2000);
-        }
-        return true;
-      } catch(e) {
-        return false;
+      localforage.setItem(storekey, storevalue);
+      localforage.setItem(storekey+'.meta',{time:Date.now(),hash:DJB2.hash(JSON.stringify(storevalue))});
+      if(storekey.substr(-6)!=='-LOCAL') {
+        setTimeout(function(storekey) {
+          Sync(storekey);
+        },2000,storekey);
       }
+      return true;
     },
 
     Get : function (storekey, postfunction) {
@@ -94,6 +98,7 @@ var storage = (function() {
       } else {
         Sync(storekey, function(value) { postfunction(value); });
       }
+      return true;
     },
 
     Del : function (storekey) {
@@ -103,8 +108,9 @@ var storage = (function() {
       } catch(e) {
         return false;
       }
-    },
+    }
     
+    /*
     Idx : function (postfunction) {
       localforage.keys().then(function(value) {
         if(typeof postfunction === 'function') {
@@ -116,6 +122,7 @@ var storage = (function() {
         }
       });
     }
+    */
     
   }
 
