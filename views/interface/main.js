@@ -37,6 +37,7 @@ hy_content += '</style>';
 hy_content += addscript('../../lib/crypto/urlbase64.js');	    // URL safe base 64 encoding
 hy_content += addscript('../../lib/crypto/decimal-light.js');	// arbitrary length decimals
 hy_content += addscript('../../lib/crypto/hex2dec.js');	      // arbitrary length decimals
+hy_content += addscript('../../lib/crypto/proof.js');	        // proof-of-work library
 
 hy_content += '<script>';
 hy_content += 'pass_args = {};';
