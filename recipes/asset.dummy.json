@@ -2,10 +2,10 @@
   "symbol":"dummy",
   "name":"Dummycoin (test coin for Internet of Coins)",
   "module":"dummycoin",
-  "mode":"bitcoinjslib.bitcoin",
+  "mode":"dummycoin",
   "factor":8,
   "fee":0.15,
-  "host":"http://127.0.0.1:8338",
+  "host":"none",
   "cache":10000,
   "throttle":10
 }

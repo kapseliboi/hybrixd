@@ -82,7 +82,7 @@ function exec(properties) {
     break;
 		case 'unspent':
       if(sourceaddr) {
-        subprocesses.push('stop(1,"Error: missing address!")');
+        subprocesses.push('stop(0,[{"amount":"100.00000000","txid":"ba62059329d6ca73aed11c367c0459f43ab671b47c061a6e9a92995e8b764a7d","txn":1}])');
       } else {
         subprocesses.push('stop(1,"Error: missing address!")');
       }
