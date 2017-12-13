@@ -21,8 +21,9 @@ var storage = (function() {
       }
       localforage.getItem(storekey+'.meta').then(function(localmeta) {
         // difference detected
-        var meta = this.meta;
         if(localmeta===null) { localmeta = {time:0,hash:0}; }
+        var meta = this.meta;
+        // DEBUG: logger(' KEY: '+storekey+' HASHES: '+meta.hash+' '+localmeta.hash);        
         if(meta.hash!==localmeta.hash) {
           // remote is newer
           if(meta.time>localmeta.time) {
@@ -40,7 +41,7 @@ var storage = (function() {
                 }
                 try {
                   localforage.setItem(storekey, object.data);
-                  localforage.setItem(storekey+'.meta',{time:Date.now(),hash:DJB2.hash(JSON.stringify(object.data))});
+                  localforage.setItem(storekey+'.meta',{time:Date.now(),hash:DJB2.hash(object.data)});
                   return true;
                 } catch(e) {
                   return false;
@@ -63,7 +64,6 @@ var storage = (function() {
         // no changes between remote and local
         } else {
           localforage.getItem(storekey).then(function(value) {
-              console.log(' VAL4: '+value);
             if(typeof postfunction === 'function') {
               postfunction(value);
             }
@@ -81,7 +81,7 @@ var storage = (function() {
 
     Set : function (storekey, storevalue) {
       localforage.setItem(storekey, storevalue);
-      localforage.setItem(storekey+'.meta',{time:Date.now(),hash:DJB2.hash(JSON.stringify(storevalue))});
+      localforage.setItem(storekey+'.meta',{time:Date.now(),hash:DJB2.hash(storevalue)});
       if(storekey.substr(-6)!=='-LOCAL') {
         setTimeout(function(storekey) {
           Sync(storekey);
