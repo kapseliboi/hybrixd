@@ -290,7 +290,7 @@
                   if(object.progress < 1 && object.stopped == null) {
                     $(element+' .progress-radial').attr('proc-data',object.data);
                     // check again in X milliseconds
-                    setTimeout( function(element,procobj,postfunction,waitfunction,cnt) { hybriddproc(element,procobj,postfunction,waitfunction,cnt); } ,(cnt*1000), element,procobj,postfunction,waitfunction,cnt);
+                    setTimeout( function(element,procobj,postfunction,waitfunction,cnt) { hybriddproc(element,procobj,postfunction,waitfunction,cnt); } ,(cnt*3000), element,procobj,postfunction,waitfunction,cnt);
                     if(typeof waitfunction == 'function') {
                       var pass = (typeof procobj.properties.pass!='undefined'?procobj.properties.pass:null);                      
                       waitfunction(object,pass);
