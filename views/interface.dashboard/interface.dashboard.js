@@ -23,8 +23,6 @@ init.interface.dashboard = function(args) {
 
     // element: TOP ACCOUNT BALANCES
     // functions: display account balances, and cache the deterministic encryption routines
-    $('.dashboard-balances .spinner-loader').fadeOut('slow', function() {
-
       balance = {};
       balance.asset = [];
       balance.amount = [];
@@ -48,7 +46,6 @@ init.interface.dashboard = function(args) {
       } else {
         displayAssets();
       }
-    });
   });
 }
 
@@ -109,7 +106,9 @@ function displayAssets() {
                     : acc.str;
                 return {i: acc.i + 1, str: str};
               }
-              $('.dashboard-balances > .data').html(starredBalancesHTML);// insert new data into DOM
+              $('.dashboard-balances .spinner-loader').fadeOut('slow', function() {
+                $('.dashboard-balances > .data').html(starredBalancesHTML)// insert new data into DOM
+              })
             }
           }
 
