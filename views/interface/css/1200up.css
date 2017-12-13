@@ -6,7 +6,7 @@ DESKTOP STYLING: 1200px and up
 
   /*****************************************************************/
   /* TOP MENU */
-  
+
   .custom-menu-wrapper {
     width: 90%;
     max-width: 1600px;
@@ -28,7 +28,7 @@ DESKTOP STYLING: 1200px and up
     width: auto;
     padding: 0;
   }
-  
+
   .pure-menu-list {
     background-color: transparent;
   }
@@ -41,14 +41,14 @@ DESKTOP STYLING: 1200px and up
     margin-top: 0;
   }
 
-  .custom-menu-toggle { 
+  .custom-menu-toggle {
     display: none;
   }
 
   .custom-menu-bottom {
     border-top: none;
   }
-  
+
   .custom-menu-bottom .pure-menu-link {
     opacity: 1;
     -webkit-transform: translateX(0);
@@ -64,11 +64,11 @@ DESKTOP STYLING: 1200px and up
     transform: translateX(0);
     opacity: 1;
   }
-  
+
   .custom-menu .pure-menu-link {
-    padding: .6em 1em 17px; 
+    padding: .6em 1em 17px;
   }
-  
+
   .custom-menu .pure-menu-link.selected {
     background: #FFF;
     color: #000;
@@ -107,14 +107,32 @@ DESKTOP STYLING: 1200px and up
     margin-bottom: 1px;
     margin-top: -1px;
     margin-right: 0.5em;
-    cursor: pointer; 
+    cursor: pointer;
     cursor: hand;
   }
 
   .topmenu-logout-inline {
     display: none;
   }
-  
+
+  /* Yes, this is redundant, but as long we work with JQuery, which is the problem atm, we do this with css */
+  #topmenu-assets {
+    cursor: not-allowed;
+    color: rgba(256, 256, 256, .3);
+    text-shadow: none;
+    position: relative;
+    transition: none;
+  }
+  #topmenu-assets.active {
+    cursor: pointer;
+    color: #EEE;
+    text-shadow: none;
+    position: relative;
+  }
+  #topmenu-assets.active:hover {
+  text-shadow: 0px 0px 5px #FFF;
+}
+
   /*****************************************************************/
   /* CONTENT */
 
@@ -127,10 +145,10 @@ DESKTOP STYLING: 1200px and up
     width: 23.8%;
     margin: 0.5%;
   }
-  
+
   /*****************************************************************/
   /* DASHBOARD */
-  
+
   .content > .dashboard-transactions {
     margin-left: 0;
   }
@@ -140,7 +158,7 @@ DESKTOP STYLING: 1200px and up
   }
 
   .content > .dashboard-balances .balance {
-  } 
+  }
 
   /*****************************************************************/
   /* ASSETS */

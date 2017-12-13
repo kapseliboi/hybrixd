@@ -32,7 +32,7 @@ UItransform = {
         }
         output += balance.substr(zeros,(i > maxlen?maxlen:i));
         if ((balance.length-zeros) > maxlen) {
-          output += '<span class="balance-end" style="color: grey;">&hellip;</span>'; 
+          output += '<span class="balance-end" style="color: grey;">&hellip;</span>';
         }
       }
     }
@@ -47,8 +47,8 @@ UItransform = {
         $('#action-send').css('opacity', '1');
       },
   txHideModal : function() {
-        $('#action-send').modal('hide').css('opacity', '1');        
-      },      
+        $('#action-send').modal('hide').css('opacity', '1');
+      },
   setBalance : function(element,setBalance) {
         $(element).html(setBalance);
       },
@@ -58,22 +58,23 @@ UItransform = {
 }
 
 $(".clearable").each(function() {
-  
+
   var $inp = $(this).find("input:text"),
       $cle = $(this).find(".clearable__clear");
 
   $inp.on("input", function(){
     $cle.toggle(!!this.value);
   });
-  
+
   $cle.on("touchstart click", function(e) {
     e.preventDefault();
     $inp.val("").trigger("input");
   });
-  
+
 });
 
 displayAssets = function displayAssets() {
+  console.log('passing', pass_args)
   balance = {}
   balance.asset = [];
   balance.amount = [];
@@ -125,7 +126,7 @@ $(document).ready( function(){
 
   // add icon
   $('.manage-icon').html(svg['edit']);
-      
+
   // elements: MAIN
   $('.assets-main .spinner-loader').fadeOut('slow', function() {
     displayAssets();

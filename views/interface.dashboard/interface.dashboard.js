@@ -1,9 +1,9 @@
 init.interface.dashboard = function(args) {
- 
+
   $("#userID").html(args.userid); // set user ID field in top bar
   topmenuset('dashboard');  // top menu UI change
   clearInterval(intervals); // clear all active intervals
-  
+
   // modal helper functions
   manage_favourites = function() {
     var output = '';
@@ -54,7 +54,6 @@ init.interface.dashboard = function(args) {
 }
 
 function displayAssets() {
-
       if(GL.assetsActive == null || typeof GL.assetsActive !== 'object') {
         GL.assetsActive = ["btc","eth"];
       }
@@ -62,7 +61,14 @@ function displayAssets() {
       if(GL.assetsDash == null || typeof GL.assetsDash !== 'object') {
         GL.assetsDash = GL.assetsActive;
       }
-    
+
+      // Below code does not work properly when GL.assetsActive has not been initialized properly. For now, this fix:
+      // User can only go to Assets view when GL.assetsActive has been populated.
+      $('#topmenu-assets').click(function () {
+        fetchview('interface.assets',pass_args);
+      })
+  $('#topmenu-assets').addClass('active')
+
       // initialize all assets
       hybriddcall({r:'/s/deterministic/hashes',z:1},null,
         function(object,passdata){
@@ -76,9 +82,9 @@ function displayAssets() {
               activeAssetsObj[GL.assetsActive[i]] = GL.assetmodes[GL.assetsActive[i]];
             }
           }
-        
+
           var output = '';
-          
+
           var i = 0;
           for (var entry in activeAssetsObj) {
             // load assets and balances into arrays
@@ -93,7 +99,7 @@ function displayAssets() {
             setTimeout(function(entry,passdata) {
               initAsset(entry,GL.assetmodes[entry]);
             },(100*i)+defer,entry);
-            // if all assets inits are called run 
+            // if all assets inits are called run
             if(i===GL.assetsActive.length) {
               // create asset elements that are selected to show in dashboard
               var j;
@@ -105,7 +111,7 @@ function displayAssets() {
               $('.dashboard-balances > .data').html(output);	// insert new data into DOM
             }
           }
-          
+
           var getBalances = function (balance,assets) {
             for (i = 0; i < GL.assetsActive.length; i++) {
               if(GL.assetsDash.indexOf(GL.assetsActive[i])!==-1 && typeof balance.asset[i] !== 'undefined') {
@@ -137,12 +143,12 @@ function displayAssets() {
                   assetsloaded = false;
                 }
               }
-              if(assetsloaded) {                          
+              if(assetsloaded) {
                 getBalances(balance,assets);
                 clearInterval(loadinterval);
               }
             }
-          ,500);          
+          ,500);
         }
       );
 
