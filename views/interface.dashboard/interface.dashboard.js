@@ -1,9 +1,9 @@
 init.interface.dashboard = function(args) {
- 
+
   $("#userID").html(args.userid); // set user ID field in top bar
   topmenuset('dashboard');  // top menu UI change
   clearInterval(intervals); // clear all active intervals
-  
+
   // modal helper functions
   manage_favourites = function() {
     var output = '';
@@ -18,12 +18,12 @@ init.interface.dashboard = function(args) {
     $('#manage-favourites .data').html(output); // insert new data into DOM
   }
 
-	// do stuff the dashboard should do...
-	$(document).ready( function(){
+  // do stuff the dashboard should do...
+  $(document).ready( function(){
 
-		// element: TOP ACCOUNT BALANCES
-		// functions: display account balances, and cache the deterministic encryption routines
-		$('.dashboard-balances .spinner-loader').fadeOut('slow', function() {
+    // element: TOP ACCOUNT BALANCES
+    // functions: display account balances, and cache the deterministic encryption routines
+    $('.dashboard-balances .spinner-loader').fadeOut('slow', function() {
 
       balance = {};
       balance.asset = [];
@@ -34,10 +34,12 @@ init.interface.dashboard = function(args) {
       if(typeof GL.assetsActive === 'undefined') {
         storage.Get( userStorageKey('ff00-0033') , function(crypted) {
           GL.assetsActive = userDecode(crypted);
+          ;
+          ;
           // query storage for dash assets
-          if(typeof GL.assetsDash === 'undefined') {
+          if(typeof GL.assetsStarred === 'undefined') {
             storage.Get( userStorageKey('ff00-0034') , function(crypted) {
-              GL.assetsDash = userDecode(crypted);
+              GL.assetsStarred = userDecode(crypted);
               // init asset display
               displayAssets();
             });
@@ -46,23 +48,25 @@ init.interface.dashboard = function(args) {
       } else {
         displayAssets();
       }
-
-		});
-
-	});
-
+    });
+  });
 }
 
 function displayAssets() {
 
-      if(GL.assetsActive == null || typeof GL.assetsActive !== 'object') {
-        GL.assetsActive = ["btc","eth"];
-      }
+  if(GL.assetsActive == null || typeof GL.assetsActive !== 'object') {
+    GL.assetsActive = ["btc","eth"];
+  }
 
-      if(GL.assetsDash == null || typeof GL.assetsDash !== 'object') {
-        GL.assetsDash = GL.assetsActive;
-      }
-    
+  // Assets active in Dashboard
+  if(GL.assetsStarred === null || typeof GL.assetsStarred !== 'object') {
+    var initAssetsStarred = GL.assetsActive.map((asset) => ({id: asset, starred: false}));
+
+    GL.assetsStarred = initAssetsStarred;
+
+    storage.Set(userStorageKey('ff00-0034'), userEncode(initAssetsStarred));
+  }
+
       // initialize all assets
       hybriddcall({r:'/s/deterministic/hashes',z:1},null,
         function(object,passdata){
@@ -76,9 +80,9 @@ function displayAssets() {
               activeAssetsObj[GL.assetsActive[i]] = GL.assetmodes[GL.assetsActive[i]];
             }
           }
-        
+
           var output = '';
-          
+
           var i = 0;
           for (var entry in activeAssetsObj) {
             // load assets and balances into arrays
@@ -93,34 +97,42 @@ function displayAssets() {
             setTimeout(function(entry,passdata) {
               initAsset(entry,GL.assetmodes[entry]);
             },(100*i)+defer,entry);
-            // if all assets inits are called run 
+            // if all assets inits are called run
             if(i===GL.assetsActive.length) {
               // create asset elements that are selected to show in dashboard
-              var j;
-              for (j = 0; j < GL.assetsActive.length; j++) {
-                if(GL.assetsDash.indexOf(GL.assetsActive[j])!==-1 && typeof balance.asset[j] !== 'undefined') {
-                  output+='<div onclick="fetchview(\'interface.assets\',{user_keys: pass_args.user_keys, nonce: pass_args.nonce, asset:\''+balance.asset[j]+'\'});" class="balance"><h5>'+balance.asset[j]+'</h5><div class="divider"></div><h3 class="balance-'+balance.asset[j].replace(/\./g,'-')+'">'+progressbar()+'</h3></div>';
-                }
+              var starredBalancesHTML = GL.assetsStarred.reduce(mkHtmlForStarredAssets, {i: 0, str: ''}).str
+
+              function mkHtmlForStarredAssets (acc, asset) {
+                var index = acc.i;
+                var str = asset.starred
+                    ? acc.str + '<div onclick="fetchview(\'interface.assets\',{user_keys: pass_args.user_keys, nonce: pass_args.nonce, asset:\'' + balance.asset[index] + '\'});" class="balance"><h5>'+balance.asset[index] + '</h5><div class="divider"></div><h3 class="balance balance-' + balance.asset[index].replace(/\./g,'-')+'">' + progressbar()+'</h3></div>'
+                    : acc.str;
+                return {i: acc.i + 1, str: str};
               }
-              $('.dashboard-balances > .data').html(output);	// insert new data into DOM
+              $('.dashboard-balances > .data').html(starredBalancesHTML);// insert new data into DOM
             }
           }
-          
-          var getBalances = function (balance,assets) {
-            for (i = 0; i < GL.assetsActive.length; i++) {
-              if(GL.assetsDash.indexOf(GL.assetsActive[i])!==-1 && typeof balance.asset[i] !== 'undefined') {
-                setTimeout(
-                  function(i) {
-                    if(typeof assets.addr[balance.asset[i]] != 'undefined') {
-                      var element = '.dashboard-balances > .data > .balance > .balance-'+balance.asset[i].replace(/\./g,'-');
-                      hybriddcall({r:'a/'+balance.asset[i]+'/balance/'+assets.addr[balance.asset[i]],z:0},element,function(object){if(typeof object.data=='string') { object.data = UItransform.formatFloat(object.data); } return object;});
-                      // DEBUG: console.log('ASSET CALL: a/'+balance.asset[i]+'/balance/'+assets.addr[balance.asset[i]]);
-                    }
-                  }
-                ,i*500,i)
-              }
-            }
+
+          var getBalances = function (balance, assets) {
+            // This would depend on the viewpath --> Why would you want to load all of a users'
+            // assets when you only display starred ones?
+            var assetsToCheck = true ? 'assetsActive' : 'assetsStarred';
+            GL[assetsToCheck].forEach(function (asset) {
+              var i = balance.asset.indexOf(asset);
+              var element = '.dashboard-balances > .data > .balance > .balance-' + balance.asset[i].replace(/\./g, '-');
+
+              setTimeout(function () {
+                hybriddcall({r: 'a/' + balance.asset[i] + '/balance/' + assets.addr[balance.asset[i]], z: 0}, element, function (object) {
+                  if(typeof object.data === 'string') {
+                    object.data = UItransform.formatFloat(object.data);
+                        }
+                  return object;
+                })
+              }, 500);
+              // DEBUG: console.log('ASSET CALL: a/'+balance.asset[i]+'/balance/'+assets.addr[balance.asset[i]]);
+            })
           }
+
           // regularly fill 5 asset elements with balances
           intervals = setInterval(
             function() {
@@ -137,12 +149,12 @@ function displayAssets() {
                   assetsloaded = false;
                 }
               }
-              if(assetsloaded) {                          
+              if(assetsloaded) {
                 getBalances(balance,assets);
                 clearInterval(loadinterval);
               }
             }
-          ,500);          
+          ,500);
         }
       );
 

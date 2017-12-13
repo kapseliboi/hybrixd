@@ -2,8 +2,8 @@ init.interface.assets = function(args) {
   topmenuset('assets');  // top menu UI change
   clearInterval(intervals); // clear all active intervals
 
-  clipb_success = function() { 
-    console.log('Data copied to clipboard.'); 
+  clipb_success = function() {
+    console.log('Data copied to clipboard.');
     $('#action-receive .copied').html('Address copied to clipboard.');
     $('#action-receive .copied').fadeTo( "fast" , 1);
     $('#action-receive .copied').delay(1000).fadeTo( "fast" , 0);
@@ -15,7 +15,7 @@ init.interface.assets = function(args) {
   //
   // attached modal buttons and actions
   //
-  
+
   $('#send-transfer').click(function() {
     if ($("#send-transfer").hasClass("disabled")) {
       // cannot send transaction
@@ -42,11 +42,22 @@ init.interface.assets = function(args) {
       }
     }
     GL.assetsActive = array;
+
+    var newAssetsToStar = GL.assetsActive.filter(function (asset) {
+      var foundOrUndefinedId = GL.assetsStarred.find(function (starred) {
+        return starred.id === asset;
+      })
+      return foundOrUndefinedId === undefined;
+    })
+
+    GL.assetsStarred = GL.assetsStarred.concat(newAssetsToStar.map((asset) => ({id: asset, starred: false})));
+
     // store selected assets
     storage.Set(  userStorageKey('ff00-0033') , userEncode(array) );
+    storage.Set(  userStorageKey('ff00-0034') , userEncode(GL.assetsStarred) );
     displayAssets();
   });
-  
+
   GL.searchingactive = false;
   GL.searchval = '';
   $('#search-assets').on('change keydown paste input', function(){
@@ -62,7 +73,7 @@ init.interface.assets = function(args) {
       },250);
     }
   });
-  
+
   // modal helper functions
   manageAssets = function manageAssets() {
     GL.assetSelect = [];
@@ -106,7 +117,29 @@ init.interface.assets = function(args) {
     }
     $('#manage-assets .assetbuttons-'+element).html( renderManageButton(element,asset,active) );
   }
-  
+
+  setStarredAssetClass = function(i, isStarred) {
+    var id = '#' + GL.assetsStarred[i]['id'].replace(/\./g, '_');
+    $(id).children('svg').toggleClass('starred', isStarred);
+  }
+
+  toggle_star = function(i) {
+    var isStarred = GL.assetsStarred[i]['starred'] = !GL.assetsStarred[i]['starred'];
+
+    storage.Get(userStorageKey('ff00-0034'), function (assetsStarred) {
+      var newAssetsStarred = userDecode(assetsStarred).map(function (asset) {
+        var sameOrModifiedStarredAsset = asset.id === GL.assetsStarred[i]['id']
+            ? {id: GL.assetsStarred[i]['id'], starred: isStarred}
+            : asset
+        return sameOrModifiedStarredAsset;
+      })
+      storage.Set(userStorageKey('ff00-0034'), userEncode(newAssetsStarred));
+    });
+
+    setStarredAssetClass(i, isStarred);
+    // storage.Set(userStorageKey('ff00-0034'), userEncode(initAssetsStarred));
+  }
+
   fill_actions = function(asset) {
     var element = '.assets-main > .data .balance-'+asset.replace(/\./g,'-');
     $('#action-actions #ModalLabel').html(asset.toUpperCase());
@@ -115,7 +148,7 @@ init.interface.assets = function(args) {
     output+='<a onclick=\'fill_send("'+asset+'");\' href="#action-send" class="pure-button pure-button-primary" role="button" data-dismiss="modal" data-toggle="modal">Send</a>';
     output+='<a onclick=\'fill_recv("'+asset+'");\' href="#action-receive" class="pure-button pure-button-secondary" role="button" data-dismiss="modal" data-toggle="modal">Receive</a>';
     output+='<a href="#action-advanced" class="pure-button pure-button-grey advanced-button" role="button" data-dismiss="modal" data-toggle="modal"><div class="advanced-icon">'+svg['advanced']+'</div>Advanced</a>';
-    $('#action-actions .buttons').html(output); 
+    $('#action-actions .buttons').html(output);
   }
   fill_send = function(asset) {
     var element = '.assets-main > .data .balance-'+asset.replace(/\./g,'-');
@@ -176,7 +209,7 @@ init.interface.assets = function(args) {
     var i;
     for (i = 0; i < GL.assetsActive.length; i++) {
       setTimeout(
-        function(i) {      
+        function(i) {
           if(typeof balance.asset[i] !== 'undefined') {
             var element = '.assets-main > .data .balance-'+balance.asset[i].replace(/\./g,'-');
             if((balance.lasttx[i]+120000)<(new Date).getTime()) {

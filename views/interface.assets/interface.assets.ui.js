@@ -32,7 +32,7 @@ UItransform = {
         }
         output += balance.substr(zeros,(i > maxlen?maxlen:i));
         if ((balance.length-zeros) > maxlen) {
-          output += '<span class="balance-end" style="color: grey;">&hellip;</span>'; 
+          output += '<span class="balance-end" style="color: grey;">&hellip;</span>';
         }
       }
     }
@@ -47,8 +47,8 @@ UItransform = {
         $('#action-send').css('opacity', '1');
       },
   txHideModal : function() {
-        $('#action-send').modal('hide').css('opacity', '1');        
-      },      
+        $('#action-send').modal('hide').css('opacity', '1');
+      },
   setBalance : function(element,setBalance) {
         $(element).html(setBalance);
       },
@@ -58,19 +58,19 @@ UItransform = {
 }
 
 $(".clearable").each(function() {
-  
+
   var $inp = $(this).find("input:text"),
       $cle = $(this).find(".clearable__clear");
 
   $inp.on("input", function(){
     $cle.toggle(!!this.value);
   });
-  
+
   $cle.on("touchstart click", function(e) {
     e.preventDefault();
     $inp.val("").trigger("input");
   });
-  
+
 });
 
 displayAssets = function displayAssets() {
@@ -92,13 +92,16 @@ displayAssets = function displayAssets() {
   var output = '';
   // create asset table
   output+='<table class="pure-table pure-table-striped"><thead>';
-  output+='<tr><th class="icon-title"></th><th class="asset-title">Asset</th><th>Balance</th><th class="actions"></th></tr></thead><tbody>';
+  output+='<tr><th class="icon-title"></th><th class="asset-title">Asset</th><th></th><th>Balance</th><th class="actions"></th></tr></thead><tbody>';
   for (var entry in activeAssetsObj) {
     balance.asset[i] = entry;
     balance.amount[i] = 0;
     balance.lasttx[i] = 0;
     var element=balance.asset[i].replace(/\./g,'-');
-    output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-'+element+'">'+entry+'</td><td><div class="balance balance-'+element+'">'+progressbar()+'</div></td><td class="actions"><div class="assetbuttons assetbuttons-'+element+' disabled">';
+    // var starActiveClass = isStarred ? ' active' : '';
+
+    // var starIsToggled=storage.Get(userStorageKey('ff00-0033'));
+    output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-'+element+'">'+entry+'</td><td class="star"><a id="' + GL.assetsStarred[i]['id'].replace(/\./g, '_') + '" onclick=\'toggle_star(' + i + ')\' href="#toggle_star" role="button">'+ svg['star'] + '</a></td><td><div class="balance balance-'+element+'">'+progressbar()+'</div></td><td class="actions"><div class="assetbuttons assetbuttons-'+element+' disabled">';
     output+='<a onclick=\'fill_send("'+entry+'");\' href="#action-send" class="pure-button pure-button-primary" role="button" data-toggle="modal" disabled="disabled">Send</a>';
     output+='<a onclick=\'fill_recv("'+entry+'");\' href="#action-receive" class="pure-button pure-button-secondary" role="button" data-toggle="modal" disabled="disabled">Receive</a>';
     output+='<a href="#action-advanced" class="pure-button pure-button-grey advanced-button" role="button" disabled="disabled"><div class="advanced-icon">'+svg['advanced']+'</div><span class="button-label">Advanced</span></a>';
@@ -115,6 +118,11 @@ displayAssets = function displayAssets() {
     ui_assets({i:i,balance:balance,path:path});
   },30000,path);
   $('.assets-main > .data').html(output);	// insert new data into DOM
+
+  // render starred assets svgs
+  for (var i=0; i < GL.assetsStarred.length; i++) {
+    setStarredAssetClass(i, GL.assetsStarred[i]['starred']);
+  }
 }
 
 // main asset management code
@@ -125,7 +133,7 @@ $(document).ready( function(){
 
   // add icon
   $('.manage-icon').html(svg['edit']);
-      
+
   // elements: MAIN
   $('.assets-main .spinner-loader').fadeOut('slow', function() {
     displayAssets();
