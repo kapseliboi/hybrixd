@@ -23,8 +23,6 @@ init.interface.dashboard = function(args) {
 
     // element: TOP ACCOUNT BALANCES
     // functions: display account balances, and cache the deterministic encryption routines
-    $('.dashboard-balances .spinner-loader').fadeOut('slow', function() {
-
       balance = {};
       balance.asset = [];
       balance.amount = [];
@@ -48,7 +46,6 @@ init.interface.dashboard = function(args) {
       } else {
         displayAssets();
       }
-    });
   });
 }
 
@@ -100,7 +97,12 @@ function displayAssets() {
             // if all assets inits are called run
             if(i===GL.assetsActive.length) {
               // create asset elements that are selected to show in dashboard
-              var starredBalancesHTML = GL.assetsStarred.reduce(mkHtmlForStarredAssets, {i: 0, str: ''}).str
+              var hasStarredAssets = GL.assetsStarred.reduce(function (b, asset) {
+                return asset.starred ? asset.starred : b;
+              }, false)
+
+              var starredAssetsHTML = GL.assetsStarred.reduce(mkHtmlForStarredAssets, {i: 0, str: ''}).str
+              var noStarredAssetsHTML = '<div class="no-starred-message">No starred assets found. Your favorite assets will be displayed here</div>'
 
               function mkHtmlForStarredAssets (acc, asset) {
                 var index = acc.i;
@@ -109,7 +111,12 @@ function displayAssets() {
                     : acc.str;
                 return {i: acc.i + 1, str: str};
               }
-              $('.dashboard-balances > .data').html(starredBalancesHTML);// insert new data into DOM
+
+              $('.dashboard-balances .spinner-loader').fadeOut('slow', function () {
+                $('.dashboard-balances > .data').html(hasStarredAssets
+                                                      ? starredAssetsHTML
+                                                      : noStarredAssetsHTML)// insert new data into DOM
+              })
             }
           }
 
