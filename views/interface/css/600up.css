@@ -11,13 +11,6 @@ TABLET PORTRAIT STYLING: 600px and up
   margin: 0 3%;
   min-width: 25%;
 }
-.content > .dashboard-balances .balance h5 {
-  margin: 1.5em 0.2em 0.1em;
-}
-
-.content > .dashboard-balances .balance h3 {
-  margin: 0.8em 0.2em 0.1em;
-}
 
 /*****************************************************************/
  /* ASSETS */
