@@ -133,6 +133,11 @@ DESKTOP STYLING: 1200px and up
   text-shadow: 0px 0px 5px #FFF;
 }
 
+  #topmenu-assets.active.selected {
+    color: #000;
+  }
+
+
   /*****************************************************************/
   /* CONTENT */
 
