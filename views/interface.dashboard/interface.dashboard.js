@@ -64,6 +64,14 @@ function displayAssets() {
     storage.Set(userStorageKey('ff00-0034'), userEncode(initAssetsStarred));
   }
 
+  // Below code does not work properly when GL.assetsActive has not been initialized properly. For now, this fix:
+  // User can only go to Assets view when GL.assetsActive has been populated.
+  $('#topmenu-assets').click(function () {
+    fetchview('interface.assets',pass_args);
+  })
+
+  $('#topmenu-assets').addClass('active');
+
       // initialize all assets
       hybriddcall({r:'/s/deterministic/hashes',z:1},null,
         function(object,passdata){
@@ -135,7 +143,7 @@ function displayAssets() {
                         }
                   return object;
                 })
-              }, 500);
+              }, i*500);
               // DEBUG: console.log('ASSET CALL: a/'+balance.asset[i]+'/balance/'+assets.addr[balance.asset[i]]);
             })
           }
