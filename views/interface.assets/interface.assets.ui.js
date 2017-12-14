@@ -98,7 +98,7 @@ displayAssets = function displayAssets() {
     balance.amount[i] = 0;
     balance.lasttx[i] = 0;
     var element=balance.asset[i].replace(/\./g,'-');
-    var starActiveId = typeof GL.assetsStarred[i] === undefined ? '' : GL.assetsStarred[i]['id'].replace(/\./g, '_');
+    var starActiveId = typeof GL.assetsStarred[i] === 'undefined' ? '' : GL.assetsStarred[i]['id'].replace(/\./g, '_');
 
     // var starIsToggled=storage.Get(userStorageKey('ff00-0033'));
     output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-'+element+'">'+entry+'</td><td class="star"><a id="' + starActiveId + '" onclick=\'toggle_star(' + i + ')\' href="#toggle_star" role="button">'+ svg['star'] + '</a></td><td><div class="balance balance-'+element+'">'+progressbar()+'</div></td><td class="actions"><div class="assetbuttons assetbuttons-'+element+' disabled">';
