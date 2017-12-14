@@ -2,7 +2,7 @@
 /* BUTTON STYLING */
 
 .pure-button {
-  /*margin: 2px;*/
+  margin: 2px;
   box-shadow: inset 0px 2px 0px 0px rgba(255,254,255,0.43);
   padding: 0.7em 1.5em;
   border-radius: 4px;
