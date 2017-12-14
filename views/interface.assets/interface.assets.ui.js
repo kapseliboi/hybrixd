@@ -74,7 +74,6 @@ $(".clearable").each(function() {
 });
 
 displayAssets = function displayAssets() {
-  console.log('passing', pass_args)
   balance = {}
   balance.asset = [];
   balance.amount = [];
