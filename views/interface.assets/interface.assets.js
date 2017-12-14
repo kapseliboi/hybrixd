@@ -37,6 +37,7 @@ init.interface.assets = function(args) {
     var array = [];
     for(var entry in GL.assetnames) {
       if(GL.assetSelect[entry]) {
+        console.log(entry)
         array.push(entry);
         initAsset(entry,GL.assetmodes[entry]);
       }
@@ -50,7 +51,12 @@ init.interface.assets = function(args) {
       return foundOrUndefinedId === undefined;
     })
 
-    GL.assetsStarred = GL.assetsStarred.concat(newAssetsToStar.map((asset) => ({id: asset, starred: false})));
+    GL.assetsStarred = GL.assetsActive.map(function (asset) {
+      var foundOrUndefinedId = GL.assetsStarred.find(function (starred) {
+        return asset === starred.id;
+      })
+      return foundOrUndefinedId === undefined ? {id: asset, starred: false} : foundOrUndefinedId;
+    })
 
     // store selected assets
     storage.Set(  userStorageKey('ff00-0033') , userEncode(array) );
