@@ -97,11 +97,16 @@ displayAssets = function displayAssets() {
     balance.asset[i] = entry;
     balance.amount[i] = 0;
     balance.lasttx[i] = 0;
+
+    var maybeAsset = GL.assetsStarred.find(function (starred) {
+      return starred.id === balance.asset[i]
+    })
+
     var element=balance.asset[i].replace(/\./g,'-');
-    var starActiveId = typeof GL.assetsStarred[i] === 'undefined' ? '' : GL.assetsStarred[i]['id'].replace(/\./g, '_');
+    var maybeStarActive = maybeAsset === undefined ? '' : ' id="' + maybeAsset['id'].replace(/\./g, '_') + '" onclick=toggle_star(' + i + ') '
 
     // var starIsToggled=storage.Get(userStorageKey('ff00-0033'));
-    output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-'+element+'">'+entry+'</td><td class="star"><a id="' + starActiveId + '" onclick=\'toggle_star(' + i + ')\' href="#toggle_star" role="button">'+ svg['star'] + '</a></td><td><div class="balance balance-'+element+'">'+progressbar()+'</div></td><td class="actions"><div class="assetbuttons assetbuttons-'+element+' disabled">';
+    output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-'+element+'">'+entry+'</td><td class="star"><a' + maybeStarActive + 'role="button">'+ svg['star'] + '</a></td><td><div class="balance balance-'+element+'">'+progressbar()+'</div></td><td class="actions"><div class="assetbuttons assetbuttons-'+element+' disabled">';
     output+='<a onclick=\'fill_send("'+entry+'");\' href="#action-send" class="pure-button pure-button-primary" role="button" data-toggle="modal" disabled="disabled">Send</a>';
     output+='<a onclick=\'fill_recv("'+entry+'");\' href="#action-receive" class="pure-button pure-button-secondary" role="button" data-toggle="modal" disabled="disabled">Receive</a>';
     output+='<a href="#action-advanced" class="pure-button pure-button-grey advanced-button" role="button" disabled="disabled"><div class="advanced-icon">'+svg['advanced']+'</div><span class="button-label">Advanced</span></a>';
