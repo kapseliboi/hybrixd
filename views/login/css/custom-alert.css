@@ -27,9 +27,9 @@
   box-shadow:0 0 10px 0 rgba(0,0,0,0.3);
   -webkit-box-shadow:0 0 10px 0 rgba(0,0,0,0.3);
   margin-left:-275px;
-  -webkit-box-sizing: border-box; 
-  -moz-box-sizing: border-box;  
-  box-sizing: border-box; 
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
   padding:20px;
   overflow-y:auto;
 }
@@ -57,9 +57,9 @@
 }
 
 .customalert .alert-header {
-  font-size: 4em; 
-  background: linear-gradient(#1e2035,#042023); 
-  color: yellow; 
+  font-size: 4em;
+  background: linear-gradient(#1e2035,#042023);
+  color: yellow;
   border-radius: 8px;
 }
 
@@ -93,10 +93,9 @@
 }
 
 .customalert .body .login-credentials table td {
-  min-width: 8em;
   text-align: right;
   font-size: 0.8em;
-  padding: 12px;
+  padding: 12px
   vertical-align: text-top;
   font-weight: 600;
 }
@@ -115,7 +114,7 @@
   word-break: break-all;
 }
 
-@media (min-width: 600px) { 
+@media (min-width: 600px) {
   .customalert .body .login-credentials table td.credential {
     font-size: 1.3em;
   }
@@ -141,8 +140,23 @@
 }
 
 @media (max-width: 62em) {
-  .customalert {    
+  .customalert {
     width: 94%;
     margin-left: -47%;
+  }
+}
+
+@media (max-width: 30em) {
+  .customalert {
+    width: 94%;
+    margin: auto 3%;
+  }
+
+  .customalert .body .login-credentials {
+    padding: 0;
+  }
+
+  .customalert .body .login-credentials table td {
+    padding: 6px;
   }
 }
