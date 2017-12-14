@@ -34,7 +34,7 @@
   overflow-y:auto;
 }
 
-@media (min-width:321px) {
+@media (min-width:30em) {
   .customalert {
     top:5%;
     left:50%;
@@ -95,7 +95,7 @@
 .customalert .body .login-credentials table td {
   text-align: right;
   font-size: 0.8em;
-  padding: 12px
+  padding: 12px;
   vertical-align: text-top;
   font-weight: 600;
 }
@@ -154,9 +154,5 @@
 
   .customalert .body .login-credentials {
     padding: 0;
-  }
-
-  .customalert .body .login-credentials table td {
-    padding: 6px;
   }
 }
