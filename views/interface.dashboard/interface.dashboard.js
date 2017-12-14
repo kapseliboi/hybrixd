@@ -110,7 +110,7 @@ function displayAssets() {
               }, false)
 
               var starredAssetsHTML = GL.assetsStarred.reduce(mkHtmlForStarredAssets, {i: 0, str: ''}).str
-              var noStarredAssetsHTML = '<div class="no-starred-message">No starred assets found. Your favorite assets will be displayed here</div>'
+              var noStarredAssetsHTML = '<div class="no-starred-message">No starred assets found. Your favorite assets will be displayed here.</div>'
 
               function mkHtmlForStarredAssets (acc, asset) {
                 var index = acc.i;
