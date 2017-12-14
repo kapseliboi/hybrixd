@@ -25,6 +25,7 @@ $UGLIFY lib/crypto/nacl.js > $OUTPATH/lib/crypto/nacl.js
 $UGLIFY lib/crypto/sjcl.js > $OUTPATH/lib/crypto/sjcl.js
 $UGLIFY lib/crypto/urlbase64.js > $OUTPATH/lib/crypto/urlbase64.js
 $UGLIFY lib/crypto/hashDJB2.js > $OUTPATH/lib/crypto/hashDJB2.js
+$UGLIFY lib/crypto/proof.js > $OUTPATH/lib/crypto/proof.js
 
 cp lib/asset.js $OUTPATH/lib/asset.js
 cp lib/source.js $OUTPATH/lib/source.js
@@ -51,9 +52,12 @@ $UGLIFY lib/xauth.js > $OUTPATH/lib/xauth.js
 mkdir -p $OUTPATH/modules
 cp -R modules/blockexplorer $OUTPATH/modules/
 cp -R modules/deterministic $OUTPATH/modules/
+cp -R modules/storage $OUTPATH/modules/
+
+cp -R modules/dummycoin $OUTPATH/modules/
 cp -R modules/electrum $OUTPATH/modules/
-cp -R modules/lisk $OUTPATH/modules/
 cp -R modules/ethereum $OUTPATH/modules/
+cp -R modules/lisk $OUTPATH/modules/
 cp -R modules/nxt $OUTPATH/modules/
 
 cp -R scripts $OUTPATH/
@@ -68,6 +72,7 @@ cp views/index/jquery-1.12.4.min.js $OUTPATH/views/index
 $UGLIFY views/index/hy_connect.js > $OUTPATH/views/index/hy_connect.js
 
 mkdir -p $OUTPATH/views/interface/js
+cp views/favicon.ico $OUTPATH/views/
 cp views/interface/main.js $OUTPATH/views/interface/
 cp views/interface/*.html $OUTPATH/views/interface/
 $UGLIFY views/interface/interface.js > $OUTPATH/views/interface/interface.js
