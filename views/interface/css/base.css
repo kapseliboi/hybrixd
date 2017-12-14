@@ -583,6 +583,16 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   margin-top: 7em;
 }
 
+.content > .assets-main svg{
+  -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+  filter: grayscale(100%);
+}
+
+.content > .assets-main .starred{
+  -webkit-filter: none; /* Safari 6.0 - 9.0 */
+  filter: none;
+}
+
 .content .pure-table .asset {
   text-transform: uppercase;
   font-size: 0.65em;
