@@ -69,6 +69,7 @@ cp views/compileviews.sh $OUTPATH/views/compileviews.sh
 cp views/*.html $OUTPATH/views/
 cp views/index/main.js $OUTPATH/views/index/
 cp views/index/jquery-1.12.4.min.js $OUTPATH/views/index
+cp views/index/snow.js $OUTPATH/views/index
 $UGLIFY views/index/hy_connect.js > $OUTPATH/views/index/hy_connect.js
 
 mkdir -p $OUTPATH/views/interface/js

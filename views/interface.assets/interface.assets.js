@@ -37,7 +37,6 @@ init.interface.assets = function(args) {
     var array = [];
     for(var entry in GL.assetnames) {
       if(GL.assetSelect[entry]) {
-        console.log(entry)
         array.push(entry);
         initAsset(entry,GL.assetmodes[entry]);
       }

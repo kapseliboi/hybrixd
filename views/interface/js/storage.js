@@ -57,7 +57,7 @@ var storage = (function() {
               var loop_step = next_step();
               hybriddcall({r:'s/storage/set/'+storekey+'/'+value,c:GL.usercrypto,s:loop_step,z:0},0, function(object) {
                 // add to proof of work queue
-                console.log('TODO: after remote store, proof of work for data retention...');
+                //console.log('TODO: after remote store, proof of work for data retention...');
               });
             });
           }
@@ -69,7 +69,7 @@ var storage = (function() {
             }
             if(meta.res!=='undefined' && meta.res===0) {
               // add to proof of work queue
-              console.log('TODO: after local get, proof of work for data retention...');
+              //console.log('TODO: after local get, proof of work for data retention...');
             }
           });
         }
