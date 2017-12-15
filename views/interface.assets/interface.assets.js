@@ -221,6 +221,8 @@ init.interface.assets = function(args) {
             if((balance.lasttx[i]+120000)<(new Date).getTime()) {
               hybriddcall({r:'a/'+balance.asset[i]+'/balance/'+assets.addr[balance.asset[i]],z:0},element,
                 function(object){
+                  console.log('i', i)
+                  console.log(balance.asset)
                   var assetbuttons = '.assets-main > .data .assetbuttons-'+balance.asset[i].replace(/\./g,'-');
                   if(object.data!==null && !isNaN(object.data)){
                     $(assetbuttons).delay(1000).removeClass('disabled');
