@@ -1,0 +1,11 @@
+{
+  "symbol":"bch",
+  "name":"Bitcoin Cash",
+  "module":"electrum",
+  "mode":"bitcoinjslib.bitcoin",
+  "factor":8,
+  "fee":0.001,
+  "host":"http://127.0.0.1:8348",
+  "cache":60000,
+  "throttle":10
+}
