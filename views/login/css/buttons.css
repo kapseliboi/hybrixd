@@ -3,40 +3,43 @@
 
 .pure-button {
   margin: 2px;
-  box-shadow: inset 0px 2px 0px 0px rgba(255,254,255,0.43);
+  box-shadow: inset 0px -2px 0px 0px rgba(255,254,255,0.43);
   padding: 0.7em 1.5em;
   border-radius: 4px;
   height: 3em;
   line-height: 1.5em;
   display: inline-block;
   min-width: 100px;
-}
-
-.pure-button-grey,
-.pure-button-error,
-.pure-button-success,
-.pure-button-warning,
-.pure-button-secondary {
+  background: #B5C0C8;
   color: white;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 
 .pure-button-success {
-  background: rgb(28, 184, 65); /* this is a green */
-}
-
-.pure-button-error {
-  background: rgb(202, 60, 60); /* this is a maroon */
+  background: #3ACE6C; /* this is a green */
 }
 
 .pure-button-warning {
-  background: rgb(223, 117, 20); /* this is an orange */
+  background: #FFD012; /* this is an orange */
+}
+
+.pure-button-error {
+  background: #FF6D4A; /* this is a maroon */
+}
+
+.pure-button-primary {
+  background: #4DA1FF; /* this is a light blue */
 }
 
 .pure-button-secondary {
-  background: rgb(66, 184, 221); /* this is a light blue */
+  background: #47C2E9; /* this is a light blue */
 }
 
-.pure-button-grey {
-  background: rgb(190, 190, 220); /* this is a darker grey */
+.pure-button-misc {
+  background: #7174D8; /* this is a darker grey */
 }
+
+.pure-button-neutral {
+  background: #B5C0C8; /* this is a darker grey */
+}
+
+

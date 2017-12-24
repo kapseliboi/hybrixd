@@ -12,10 +12,10 @@ UItransform = {
         var output = '';
         var zeros = 0;
         var i;
-        var size_open = '<span style="font-size: 0.75em;">';
+        var size_open = '<span>';
         var size_stop = '</span>';
         if (balance[0] === "0") {
-          output+='<span style="color: grey;">'+size_open;
+          output+='<span>'+size_open;
           for(i = 0; i < balance.length && i <= maxlen; i+=1) {
             if (balance[i] === "0" || balance[i] === ".") {
               zeros += 1;
@@ -32,7 +32,7 @@ UItransform = {
         }
         output += balance.substr(zeros,(i > maxlen?maxlen:i));
         if ((balance.length-zeros) > maxlen) {
-          output += '<span class="balance-end" style="color: grey;">&hellip;</span>';
+          output += '<span>&hellip;</span>';
         }
       }
     }

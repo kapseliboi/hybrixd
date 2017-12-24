@@ -70,14 +70,14 @@ DESKTOP STYLING: 1200px and up
   }
 
   .custom-menu .pure-menu-link.selected {
-    background: #FFF;
-    color: #000;
+    background: #F4F7F9;
+    color: #323C47;
     border-radius: 4px 4px 0px 0px;
     font-weight: 600;
   }
   .custom-menu .pure-menu-link.selected:hover {
-    background: #FFF;
-    color: #000;
+    background: #F4F7F9;
+    color: #13212D;
     border-radius: 4px 4px 0px 0px;
   }
 
@@ -118,20 +118,22 @@ DESKTOP STYLING: 1200px and up
   /* Yes, this is redundant, but as long we work with JQuery, which is the problem atm, we do this with css */
   #topmenu-assets {
     cursor: not-allowed;
-    color: rgba(256, 256, 256, .3);
+    color: rgba(255, 255, 255, .3);
     text-shadow: none;
     position: relative;
     transition: none;
   }
+  
   #topmenu-assets.active {
     cursor: pointer;
-    color: #EEE;
+    color: #FFF;
     text-shadow: none;
     position: relative;
   }
+
   #topmenu-assets.active:hover {
-  text-shadow: 0px 0px 5px #FFF;
-}
+    text-shadow: 0px 0px 5px #FFF;
+  }
 
   #topmenu-assets.active.selected {
     color: #000;

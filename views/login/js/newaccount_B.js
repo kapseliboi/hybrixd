@@ -148,7 +148,7 @@ function generateAccount(entropy) {
 
 function finalizeAccount(userid,passwd,entropy) {
   alert('<h2>Your account has been created!</h2> Please <u>write down</u> these login details and put them in a safe place. If you lose them, you can <u>never ever</u> log into your wallet again! <br/><br/> \
-    <div class="login-credentials"><table><tbody><tr style="border-bottom: 1px solid #ccc;"><td>Account ID: </td><td class="credential">'+userid+'</td></tr><tr><td>Password: </td><td class="credential">'+passwd+'</td></tr></tbody></table></div> \
+    <div class="login-credentials"><table><tbody><tr style="border-bottom: 1px solid #D9E3EB;"><td>Account ID: </td><td class="credential">'+userid+'</td></tr><tr><td>Password: </td><td class="credential">'+passwd+'</td></tr></tbody></table></div> \
     <br/>We cannot help you recover the keys, so they are <u>your responsibility</u>! <br/>Have a lot of fun using Internet of Coins! <br /> <span class="alpha-warning"><span style="font-size: 1em;">⚠</span> WARNING: This wallet is stil in alpha.<br />Do not yet store large amounts of value on it!</span> <br>',
     {title: '', button: 'Continue'},
     function(){

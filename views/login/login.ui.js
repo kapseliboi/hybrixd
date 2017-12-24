@@ -7,7 +7,7 @@ $(document).ready(function() {
   $('#loginbutton').click(function () { 
     if ( $('#loginbutton').hasClass('disabled') ) {
       $('#tooltip').fadeTo(50,1);
-      $('#loginform input[type=text], #loginform input[type=password]').css( 'border-color', 'orangered' )
+      $('#loginform input[type=text], #loginform input[type=password]').css( 'border-color', '#FF6D4A' )
     }
   } );
 });  
