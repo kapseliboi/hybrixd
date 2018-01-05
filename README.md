@@ -2,7 +2,7 @@
 
 ## cryptography
 
-hybridd employs industry-standard [nacl](https://nacl.cr.yp.to/) to encrypt and sign data packets. The implementation model of its encrypted channels is a uniquely robust one, that has been specially developed for the Internet of Coins project. The source code can be found in /lib/xauth.js (server-side) and /views/login (client-side) and utilises jQuery 1.12.x ajax calls for queries, which are robust and backwards compatible with almost all browsers including Opera for mobile and IE7.
+hybridd employs industry-standard [nacl](https://nacl.cr.yp.to/) to encrypt and sign data packets. The implementation model of its encrypted channels is a uniquely robust one, that has been specially developed for the Internet of Coins project. The source code can be found in /lib/xauth.js (server-side) and /views/login (client-side) and utilises jQuery 1.12.x ajax calls for queries, because it is a robust and backwards compatible library that is usable in almost all browsers including Opera for mobile and IE7 (both still often used on legacy systems).
 
 A hybridd node will, upon request from a client, serve a login view. A view is a json array, containing an lzma-compressed payload (resulting in a pure hexadecimal string) that contains javascript functions and html code to provide functionality. Views can be independently verified by the client, as they are checksummed using sha256sum to allow testing their authenticity [STILL TO BE IMPLEMENTED!]. This allows hybridd to get around the conundrum of https, while at the same time not becoming vulnerable to man-in-the-middle attacks.
 
