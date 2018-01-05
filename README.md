@@ -18,5 +18,5 @@ The client takes the provided first half running nonce and generates a second ha
 
 If the client has behaved well and the response checks out, the server records the client session public key, adds the two half /running/ nonces together and generates a server-side session private/public keypair, that is used to encrypt server responses. It then sends the server-side public encryption key (boxPk) and the server-side public signing key (signPk) to the client, signed with the server-side session signing key (signSk), so the client can verify that the server public signing key (signPk) that arrives at the client has not changed in transport, by comparing the signed version with the attached public sign key. If the public signing keys inside and outside the signed message match, then only the server could have signed the package with its corresponding server-side private signing key (signSk), and the authenticity of the communication channel is now guaranteed.
 
-
+Note that the security of the model rests on the inherent connection between the boxPk/boxSk and signPk/signSk pairs, being derived from the same original seed. 
 
