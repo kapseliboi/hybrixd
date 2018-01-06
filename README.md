@@ -6,9 +6,11 @@
 
 To get started with hybridd, perform the following steps on a GNU/Linux system (at the moment Debian 8 'jessie' is our reference system, but Debian 9 'stretch' should work also). To maintain security, we recommend to install the 'unattended-upgrades' package for automatic security updates. We are sorry that we cannot provide support for running on proprietary systems, but our build is compatible with the Darwin operating system (pilfered from FreeBSD) underneath Big Mac OS X. 
 
-`git clone https://github.com/internetofcoins/hybridd`
-`cd hybridd`
-`./coldstart_hybridd`
+```
+git clone https://github.com/internetofcoins/hybridd
+cd hybridd
+./coldstart_hybridd
+```
 
 Note: if you are a core developer, replace 'internetofcoins' with 'holosphere' to clone our private development repository.
 
