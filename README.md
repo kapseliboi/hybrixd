@@ -9,7 +9,6 @@ To get started with hybridd, perform the following steps on a GNU/Linux system (
 ```
 git clone https://github.com/internetofcoins/hybridd
 cd hybridd
-./coldstart_hybridd
 ```
 
 Note: if you are a core developer, replace 'internetofcoins' with 'holosphere' to clone our private development repository.
@@ -40,6 +39,14 @@ You can now start electrum in daemon mode, so it can serve API requests in the b
 
 ```
 electrum daemon &
+```
+
+### running hybridd
+
+To fetch any missing nodejs runtime dependencies and (re)generate the views, start hybridd with the following command. 
+
+```
+./coldstart_hybridd
 ```
 
 ## cryptography
