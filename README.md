@@ -1,6 +1,34 @@
 # hybridd documentation
 
+## getting started
+
+### installing hybridd
+
+To get started with hybridd, perform the following steps on a GNU/Linux system (at the moment Debian 8 'jessie' is our reference system, but Debian 9 'stretch' should work also). To maintain security, we recommend to install the 'unattended-upgrades' package for automatic security updates. We are sorry that we cannot provide support for running on proprietary systems, but our build is compatible with the Darwin operating system (pilfered from FreeBSD) underneath Big Mac OS X. 
+
+`git clone https://github.com/internetofcoins/hybridd
+cd hybridd
+./coldstart_hybridd`
+
+Note: if you are a core developer, replace 'internetofcoins' with 'holosphere' to clone our private development repository.
+
+### dependencies
+
+Hybridd depends on [electrum client](https://download.electrum.org) to communicate with the Bitcoin blockchain (because why should we reinvent the wheel). 
+
+`Install dependencies:
+sudo apt-get install python3-setuptools python3-pyqt5 python3-pip
+Install Electrum:
+sudo pip3 install https://download.electrum.org/3.0.3/Electrum-3.0.3.tar.gz`
+
+It is not necessary to go through the electrum setup wizard and create any keys, since electrum is only used as an API and hybridd does not permanently store any keys. Hybridd expects electrum to run on 127.0.0.1:8338 by default. To configure electrum, create the required config file, the following commands should suffice.
+
+`mkdir ~/.electrum
+echo '{ "rpcport":8338 }' > ~/.electrum/config`
+
 ## cryptography
+
+### establishing communication between client and node/server
 
 hybridd employs industry-standard [nacl](https://nacl.cr.yp.to/) to encrypt and sign data packets. The implementation model of its encrypted channels is a uniquely robust one, that has been specially developed for the Internet of Coins project. The source code can be found in /lib/xauth.js (server-side) and /views/login/login.js (client-side) and utilises jQuery 1.12.x ajax calls for queries, because it is a robust and backwards compatible library that is usable in almost all browsers including Opera for mobile and IE7 (both still often used on legacy systems).
 
