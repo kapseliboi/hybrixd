@@ -36,6 +36,11 @@ It is not necessary to go through the electrum setup wizard and create any keys,
 mkdir ~/.electrum
 echo '{ "rpcport":8338 }' > ~/.electrum/config
 ```
+You can now start electrum in daemon mode, so it can serve API requests in the background.
+
+```
+electrum daemon &
+```
 
 ## cryptography
 
