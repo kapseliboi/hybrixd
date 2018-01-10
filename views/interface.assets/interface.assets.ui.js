@@ -8,30 +8,10 @@ UItransform = {
       if (balance === "0") {
         output = '0';
       } else {
-        var maxlen = 8;   // amount of significant digits
-        var output = '';
-        var zeros = 0;
-        var i;
-        var size_open = '<span>';
-        var size_stop = '</span>';
-        if (balance[0] === "0") {
-          output+='<span>'+size_open;
-          for(i = 0; i < balance.length && i <= maxlen; i+=1) {
-            if (balance[i] === "0" || balance[i] === ".") {
-              zeros += 1;
-              if(balance[i] === ".") {
-                output += size_stop+balance.substr(i, 1)+size_open;
-              } else {
-                output += balance.substr(i, 1);
-              }
-            } else {
-              i = balance.length;
-            }
-          }
-          output+=size_stop+'</span>';
-        }
-        output += balance.substr(zeros,(i > maxlen?maxlen:i));
-        if ((balance.length-zeros) > maxlen) {
+        var maxlen = 11;   // amount of digits
+        output = balance.substr(0, maxlen);
+        
+        if (balance.length > maxlen) {
           output += '<span>&hellip;</span>';
         }
       }
@@ -91,8 +71,15 @@ displayAssets = function displayAssets() {
   var i = 0;
   var output = '';
   // create asset table
-  output+='<table class="pure-table pure-table-striped"><thead>';
-  output+='<tr><th class="icon-title"></th><th class="asset-title">Asset</th><th></th><th>Balance</th><th class="actions"></th></tr></thead><tbody>';
+  output+='<div class="table">';
+  output+='<div class="thead">';
+  output+='<div class="tr">';
+  output+='<div class="th col1 asset-title">Asset</div>';
+  output+='<div class="th col2">Balance</div>';
+  output+='<div class="th col3 actions"></div>';
+  output+='</div>';
+  output+='</div>';
+  output+='<div class="tbody">';
   for (var entry in activeAssetsObj) {
     balance.asset[i] = entry;
     balance.amount[i] = 0;
@@ -106,17 +93,21 @@ displayAssets = function displayAssets() {
     var maybeStarActive = maybeAsset === undefined ? '' : ' id="' + maybeAsset['id'].replace(/\./g, '_') + '" onclick=toggle_star(' + i + ') '
 
     // var starIsToggled=storage.Get(userStorageKey('ff00-0033'));
-    output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-'+element+'">'+entry+'</td><td class="star"><a' + maybeStarActive + 'role="button">'+ svg['star'] + '</a></td><td><div class="balance balance-'+element+'">'+progressbar()+'</div></td><td class="actions"><div class="assetbuttons assetbuttons-'+element+' disabled">';
+    output+='<div class="tr">';
+    output+='<div class="td col1 asset asset-'+element+'"><div class="icon">'+svg['circle']+'</div>'+entry+'<div class="star"><a' + maybeStarActive + 'role="button">'+ svg['star'] + '</a></div></div>';
+    output+='<div class="td col2 "><div class="balance balance-'+element+'">'+progressbar()+'</div></div>';
+    output+='<div class="td col3 actions">';
+    output+='<div class="assetbuttons assetbuttons-'+element+' disabled">';
     output+='<a onclick=\'fill_send("'+entry+'");\' href="#action-send" class="pure-button pure-button-primary" role="button" data-toggle="modal" disabled="disabled">Send</a>';
     output+='<a onclick=\'fill_recv("'+entry+'");\' href="#action-receive" class="pure-button pure-button-secondary" role="button" data-toggle="modal" disabled="disabled">Receive</a>';
     output+='<a href="#action-advanced" class="pure-button pure-button-grey advanced-button" role="button" disabled="disabled"><div class="advanced-icon">'+svg['advanced']+'</div><span class="button-label">Advanced</span></a>';
     output+='</div>'
     output+='<div class="assetbutton-mobile assetbuttons-'+element+' disabled">'
-    output+='<a onclick=\'fill_actions("'+entry+'");\' href="#action-actions" class="pure-button pure-button-grey actions-button" role="button" data-toggle="modal" disabled="disabled"><div class="actions-icon">'+svg['actions']+'</div>Actions</a>';
-    output+='</div></td></tr>';
+    output+='<a onclick=\'fill_actions("'+entry+'");\' href="#action-actions" class="pure-button pure-button-grey actions-button" role="button" data-toggle="modal" disabled="disabled">Actions</a>';
+    output+='</div></div></div>';
     i++;
   }
-  output+='</tbody></table>';
+  output+='</div></div>';
   // refresh assets
   ui_assets({i:i,balance:balance,path:path});
   intervals = setInterval( function(path) {

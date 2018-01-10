@@ -11,12 +11,24 @@ LOGIN STYLING
 body {
   background-color: #13212D;
   background: linear-gradient(#13212D,#042023);
-  font-family: Verdana, Geneva, sans-serif;
+  font-family: "Open Sans", Verdana, Geneva, sans-serif;
+  font-weight: 400;
+  font-size: 0.75em;
+}
+
+h2 {
+  font-size: 1.667em;
+  font-weight: 600;
+  margin-top:30px;
+}
+
+h5 {
+  font-weight: 600;
+  font-size: 1em;
 }
 
 /* tooltip */
 #tooltip {
-  font-size: 0.7em;
   display: block;
   text-align: center;
   padding: 12px;
@@ -24,7 +36,6 @@ body {
   position: relative;
   z-index: 1;
   transition: ease-in all 200ms;
-  font-weight: 300;
   background-color: #FFF;
   color: #939AA1;
   opacity: 0;
@@ -42,7 +53,6 @@ body {
 }
 
 #login_container  #tooltip {
-  font-size: 0.7em;
   margin: -24px auto 0;
   width: 80%;
 }
@@ -63,14 +73,12 @@ body {
 }
 
 .pure-form .input-label {
-  font-size: 0.6em;
+  font-size: 1em;
   text-align: left;
   color: rgba(255,255,255,0.80);
-  letter-spacing: 2px;
-  text-transform: uppercase;
+  letter-spacing: 0.5px;
   width: 100%;
   margin: 6px 0;
-  font-weight: 300;
 }
 
 .pure-form input[type=password], .pure-form input[type=email], 
@@ -88,10 +96,9 @@ body {
   border-radius: 3px;
   width: 100%;
   padding: 0.7em 0.8em;
-  font-size: 1em;
+  font-size: 1.167em;
   color: #FFF !important;
   letter-spacing: 1px;
-  font-weight: 300;
   border: 1px solid transparent;
 }
 
@@ -107,7 +114,6 @@ body {
 #login_container .pure-button {
   margin: 10px 0;
   display: block;
-  font-size: 0.9em;
 }
 
 .disabled, .pure-button[disabled] {
@@ -128,6 +134,7 @@ body {
 
 #login_container  #loginbutton {
   margin: 5px 0 30px;
+  padding: 9px 24px 13px 24px;
 }
 
 #loginbuttoncontent {
@@ -213,7 +220,7 @@ body {
 
 #login_container #generatebutton,  #login_container #helpbutton,  #login_container #alertbutton {
   display: block;
-  font-size: 0.9em;
+  font-size: 1.167em;
   color: #939AA1;
   margin: 0.5em 0 1.8em;
   font-weight: 600;
@@ -263,6 +270,17 @@ body {
   max-width: 100vw;
   max-height: 100vh;
   z-index: 2147483647;
+}
+
+#newaccountcontent #generate {
+  margin-top: 50px;
+  margin-bottom: 50px;
+  font-size: 1em;
+}
+
+#newaccountcontent #generate #percentagedone {
+  font-size: 1.667em;
+  font-weight: 700;
 }
 
 #generate {

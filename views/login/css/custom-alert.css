@@ -15,7 +15,6 @@
   border-radius: 5px;
   width: 550px;
   max-width: 550px;
-  font-size: 1em;
   display: none;
   position: fixed;
   max-width: 100vw;
@@ -51,26 +50,26 @@
 }
 
 .customalert .header {
-  font-size: .75em;
 }
 
 .customalert .alert-header {
   font-size: 4em;
+  padding: 20px;
+  font-weight: 600;
   background: #13212D;
   color: #FFD012;
   border-radius: 8px;
 }
 
-.customalert h2 {
-  font-size: 1.2em;
-  margin: 0.3em;
-  color: #222;
+.customalert h2, .customalert h3 {
+  font-size: 1.667em;
+  margin: 0.3em 0 1em;
+  color: #13212D;
+  font-weight: 600;
 }
 
 .customalert h3 {
-  margin: 0.3em;
-  color: #13212D;
-  font-size: 1em;
+  font-size: 1.167em;
 }
 
 .customalert .body {
@@ -91,7 +90,7 @@
 
 .customalert .body .login-credentials table td {
   text-align: right;
-  font-size: 0.8em;
+  font-size: 0.75em;
   padding: 12px;
   vertical-align: text-top;
   font-weight: 600;
@@ -101,7 +100,7 @@
   color: #13212D;
   letter-spacing: 1px;
   font-family: monospace;
-  font-size: 1.5em;
+  font-size: 1.167em;
   overflow-wrap: break-word;
   text-align: left;
   overflow-wrap: break-word;
@@ -113,14 +112,14 @@
 
 @media (min-width: 600px) {
   .customalert .body .login-credentials table td.credential {
-    font-size: 1.3em;
+    font-size: 1.167em;
   }
 }
 
 .customalert .body .alpha-warning {
   color: #FF6D4A;
   font-weight: 600;
-  font-size: 0.9em;
+  font-size: 1em;
   display: inline-block;
   padding: 8px 18px;
   border-radius: 8px;
@@ -129,7 +128,7 @@
 
 .customalert .footer {
   padding: 0 10px 10px;
-  font-size: 0.9em
+  font-size: 1em;
 }
 
 .customalert .footer .pure-button {

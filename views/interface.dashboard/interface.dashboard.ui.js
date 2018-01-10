@@ -15,7 +15,7 @@ UItransform = {
         var size_open = '<span class="mini-balance">';
         var size_stop = '</span>';
         if (balance[0] === "0") {
-          output+='<span>'+size_open;
+          output+=size_open;
           for(i = 0; i < balance.length && i <= maxlen; i+=1) {
             if (balance[i] === "0" || balance[i] === ".") {
               zeros += 1;
@@ -28,7 +28,7 @@ UItransform = {
               i = balance.length;
             }
           }
-          output+=size_stop+'</span>';
+          output+=size_stop;
         }
         output += balance.substr(zeros,(i > maxlen?maxlen:i));
         if ((balance.length-zeros) > maxlen) {
@@ -50,7 +50,7 @@ $(document).ready( function(){
   var element = {};
   element.transactions = '.dashboard-transactions';
   $(element.transactions+' .spinner-loader').fadeOut('slow', function() {
-    var output = '<div class="cogs">'+svg['cogs']+'<br><br>WORK IN PROGRESS</div>';
+    var output = '<div class="cogs">'+svg['cogs']+' <p>This element is still <strong>work in progress</strong>.<p> </div>';
     $(element.transactions+' > .data').html(output);	// insert new data into DOM
     /*
     var cur_step = next_step();
@@ -70,19 +70,19 @@ $(document).ready( function(){
 
   element.trade = '.dashboard-trade';
   $(element.trade+' .spinner-loader').fadeOut('slow', function() {
-    var output = '<div class="cogs">'+svg['cogs']+'<br><br>WORK IN PROGRESS</div>';
+    var output = '<div class="cogs">'+svg['cogs']+' <p>This element is still <strong>work in progress</strong>.<p> </div>';
     $(element.trade+' > .data').html(output);	// insert new data into DOM
   });
   
   element.chat = '.dashboard-chat';
   $(element.chat+' .spinner-loader').fadeOut('slow', function() {
-    var output = '<div class="cogs">'+svg['cogs']+'<br><br>WORK IN PROGRESS</div>';
+    var output = '<div class="cogs">'+svg['cogs']+' <p>This element is still <strong>work in progress</strong>.<p> </div>';
     $(element.chat+' > .data').html(output);	// insert new data into DOM
   });
   
   element.apps = '.dashboard-apps';
   $(element.apps+' .spinner-loader').fadeOut('slow', function() {
-    var output = '<div class="cogs">'+svg['cogs']+'<br><br>WORK IN PROGRESS</div>';
+    var output = '<div class="cogs">'+svg['cogs']+' <p>This element is still <strong>work in progress</strong>.<p> </div>';
     $(element.apps+' > .data').html(output);	// insert new data into DOM
   });
 

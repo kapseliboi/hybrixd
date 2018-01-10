@@ -3,10 +3,10 @@ init.interface.assets = function(args) {
   clearInterval(intervals); // clear all active intervals
 
   clipb_success = function() {
-    console.log('Data copied to clipboard.');
-    $('#action-receive .copied').html('Address copied to clipboard.');
     $('#action-receive .copied').fadeTo( "fast" , 1);
-    $('#action-receive .copied').delay(1000).fadeTo( "fast" , 0);
+    $('#action-receive .copied').delay(10).fadeTo( "fast" , 0.3);
+    $('#action-receive .copied').delay(10).fadeTo( "fast" , 1);
+    $('#action-receive .copied').delay(800).fadeTo( "fast" , 0);
   };
   clipb_fail = function(err) {
     alert("This browser cannot automatically copy to the clipboard! \n\nPlease select the text manually, and press CTRL+C to \ncopy it to your clipboard.\n");
@@ -99,16 +99,25 @@ init.interface.assets = function(args) {
         }
       }
     }
-    var output = '<table class="pure-table pure-table-striped"><tbody>';
+    var output = '<div class="table">';
+    output += '<div class="theader">';
+    output +='<div class="tr">';
+    output += '<div class="th col1"></div>';
+    output += '<div class="th col2"></div>';
+    output += '</div>';
+    output += '</div>';
+    output += '<div class="tbody">';
     var element;
     for (var entry in list) {
       if(typeof search === 'undefined' || entry.toLowerCase().indexOf(search) !== -1 || list[entry].toLowerCase().indexOf(search) !== -1 ) {
         element = entry.replace('.','-');
-        output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-btc">'+entry.toUpperCase()+'</td><td class="full-name">'+list[entry]+'</td>';
-        output+='<td class="actions"><div class="assetbuttons assetbuttons-'+element+'">'+renderManageButton(element,entry,(GL.assetSelect[entry]?1:0))+'</div></td></tr>';
+        output += '<div class="tr">';
+        output += '<div class="td col1"><div class="icon">'+svg['circle']+'</div><div class="asset">'+entry.toUpperCase()+'</div><div class="full-name">'+list[entry]+'</div></div>';
+        output += '<div class="td col2 actions"><div class="assetbuttons assetbuttons-'+element+'">'+renderManageButton(element,entry,(GL.assetSelect[entry]?1:0))+'</div></div>';
+        output += '</div>';
       }
     }
-    output+='</tbody></table>';
+    output+='</div></div>';
     $('#manage-assets .data').html(output); // insert new data into DOM
   }
   renderManageButton = function renderManageButton(element,asset,active) {
@@ -150,9 +159,9 @@ init.interface.assets = function(args) {
     $('#action-actions #ModalLabel').html(asset.toUpperCase());
     $('#action-actions .balance').html($(element).html().toUpperCase());
     var output = '';
-    output+='<a onclick=\'fill_send("'+asset+'");\' href="#action-send" class="pure-button pure-button-primary" role="button" data-dismiss="modal" data-toggle="modal">Send</a>';
-    output+='<a onclick=\'fill_recv("'+asset+'");\' href="#action-receive" class="pure-button pure-button-secondary" role="button" data-dismiss="modal" data-toggle="modal">Receive</a>';
-    output+='<a href="#action-advanced" class="pure-button pure-button-grey advanced-button" role="button" data-dismiss="modal" data-toggle="modal"><div class="advanced-icon">'+svg['advanced']+'</div>Advanced</a>';
+    output+='<a onclick=\'fill_send("'+asset+'");\' href="#action-send" class="pure-button pure-button-large pure-button-fw pure-button-primary" role="button" data-dismiss="modal" data-toggle="modal">Send</a>';
+    output+='<a onclick=\'fill_recv("'+asset+'");\' href="#action-receive" class="pure-button pure-button-large pure-button-fw pure-button-secondary" role="button" data-dismiss="modal" data-toggle="modal">Receive</a>';
+    output+='<a href="#action-advanced" class="pure-button pure-button-grey pure-button-large pure-button-fw advanced-button" role="button" data-dismiss="modal" data-toggle="modal"><div class="advanced-icon">'+svg['advanced']+'</div>Advanced</a>';
     $('#action-actions .buttons').html(output);
   }
   fill_send = function(asset) {
