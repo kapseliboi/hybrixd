@@ -100,10 +100,10 @@ init.interface.assets = function(args) {
       }
     }
     var output = '<div class="table">';
-    output += '<div class="theader">';
+    output += '<div class="thead">';
     output +='<div class="tr">';
-    output += '<div class="th col1"></div>';
-    output += '<div class="th col2"></div>';
+    output += '<div class="th col1">Asset</div>';
+    output += '<div class="th col2" style="text-align:right;">Add / remove</div>';
     output += '</div>';
     output += '</div>';
     output += '<div class="tbody">';
