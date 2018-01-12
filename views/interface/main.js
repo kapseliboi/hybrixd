@@ -63,7 +63,6 @@ hy_content += '<script>';
 hy_content += 'svg={};';
 hy_content += addsvg('./svg/cogs.svg','cogs');
 hy_content += addsvg('./svg/user.svg','user');
-hy_content += addsvg('./svg/logout.svg','logout');
 hy_content += addsvg('./svg/advanced.svg','advanced');
 hy_content += addsvg('./svg/circle.svg','circle');
 hy_content += addsvg('./svg/actions.svg','actions');
@@ -71,8 +70,33 @@ hy_content += addsvg('./svg/edit.svg','edit');
 hy_content += addsvg('./svg/star.svg','star');
 hy_content += addsvg('./svg/add.svg','add');
 hy_content += addsvg('./svg/remove.svg','remove');
+hy_content += addsvg('./svg/logout-alt.svg','logout-alt');
+
+hy_content += addsvg('./svg/dashboard.svg','dashboard');
+hy_content += addsvg('./svg/dashboard-o.svg','dashboard-o');
+hy_content += addsvg('./svg/assets.svg','assets');
+hy_content += addsvg('./svg/assets-o.svg','assets-o');
+hy_content += addsvg('./svg/trade.svg','trade');
+hy_content += addsvg('./svg/trade-o.svg','trade-o');
+hy_content += addsvg('./svg/chat.svg','chat');
+hy_content += addsvg('./svg/chat-o.svg','chat-o');
+hy_content += addsvg('./svg/apps.svg','apps');
+hy_content += addsvg('./svg/apps-o.svg','apps-o');
+hy_content += addsvg('./svg/other.svg','other');
+hy_content += addsvg('./svg/other-o.svg','other-o');
+hy_content += addsvg('./svg/logout.svg','logout');
+hy_content += addsvg('./svg/logout-o.svg','logout-o');
+
+hy_content += '$("#dashboard-icon").html(svg[\'dashboard-o\']);';
+hy_content += '$("#assets-icon").html(svg[\'assets-o\']);';
+hy_content += '$("#trade-icon").html(svg[\'trade-o\']);';
+hy_content += '$("#chat-icon").html(svg[\'chat-o\']);';
+hy_content += '$("#apps-icon").html(svg[\'apps-o\']);';
+hy_content += '$("#other-icon").html(svg[\'other-o\']);';
+hy_content += '$("#logout-icon").html(svg[\'logout-o\']);';
+
 hy_content += '$("#user-icon").html(svg[\'user\']);';
-hy_content += '$("#topmenu-logout").html(svg[\'logout\']);';
+hy_content += '$("#topmenu-logout").html(svg[\'logout-alt\']);';
 hy_content += '</script>';
 
 // load in the page elements *after* Javascript insertion
