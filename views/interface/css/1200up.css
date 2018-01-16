@@ -37,6 +37,10 @@ DESKTOP STYLING: 1200px and up
     background-color: transparent;
     text-align: left;
     padding: 0;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+
   }
 
   .custom-menu-top {
