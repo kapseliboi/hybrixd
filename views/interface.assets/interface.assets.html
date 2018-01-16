@@ -2,7 +2,7 @@
   <div class="databox-header">
     <h2>My assets</h2>
     <div class="manage-button">
-      <a onclick='manageAssets();' href="#manage-assets" role="button" data-toggle="modal"><span class="manage-icon"></span>Manage assets</a>
+      <a onclick='manageAssets();' href="#manage-assets" class="pure-button pure-button-misc" role="button" data-dismiss="modal" data-toggle="modal">Manage assets</a>
     </div>
   </div>
   <div class="data" style="text-align: center;">
@@ -39,8 +39,8 @@
     </div>
     <div class="modal-body">
       <p>Amount available to send from this account: <span class="bold modal-send-balance">?</span>&nbsp;<span class="bold modal-send-currency"></span></p>
-      <div style="font-size: 0.75em; min-height: 1.75em;">Network fee
-        <div class="bold modal-send-networkfee" style="display: inline-block; color: grey; word-wrap: break-word;">...</div>
+      <div>Network fee
+        <div class="modal-send-networkfee">...</div>
       </div>
       <div style="height: 1em;"></div>
 
@@ -53,8 +53,8 @@
 	<label for="target">Send to</label>
 	<input id="modal-send-target" type="text" placeholder="enter target address" class="inline" onkeydown = "check_tx();" oninput = "check_tx();" onpaste = "check_tx();" oncut = "check_tx();">
 	<label for="amount">Send amount</label>
-	<input id="modal-send-amount" type="text" placeholder="enter quantity" class="inline" onkeydown = "check_tx();" oninput = "check_tx();" onpaste = "check_tx();" oncut = "check_tx();" style="width: 74%;">
-	<div onclick='$("#modal-send-amount").val( $("#action-send .modal-send-balance").html() ); check_tx();' class="pure-button pure-button-small pure-button-warning max-amount-button" aria-hidden="true" style="vertical-align: top;">MAX</div>
+	<input id="modal-send-amount" type="text" placeholder="enter quantity" class="inline" onkeydown = "check_tx();" oninput = "check_tx();" onpaste = "check_tx();" oncut = "check_tx();" style="width: 77%;">
+	<div onclick='$("#modal-send-amount").val( $("#action-send .modal-send-balance").html() ); check_tx();' class="pure-button pure-button-warning max-amount-button" aria-hidden="true" style="vertical-align: top;">MAX</div>
       </form>
 
     </div>
@@ -73,8 +73,8 @@
     <div class="modal-body">
       <p>To receive <span class="modal-receive-currency"></span> transactions, deposit to the address below or use the QR code.<br></p>
       <div id="qrcode"></div><br><br>
-      <div class="modal-receive-addressfrom">...</div>
-      <div class="copied"></div>
+      <div class="modal-receive-addressfrom">...</div><div class="copied">copied</div>
+      
 
       <!--<div style="height: 1em;"></div>-->
 
