@@ -64,7 +64,6 @@ function displayAssets() {
     storage.Set(userStorageKey('ff00-0034'), userEncode(initAssetsStarred));
   }
 
-<<<<<<< HEAD
   // Finds any unmatched assets between active and starred and returns a starred object if any are found
   var unmatchedStarredAssets = GL.assetsActive.filter(function (asset) {
     return GL.assetsStarred.find(function (starred) {
@@ -148,68 +147,7 @@ function displayAssets() {
                       hybriddcall({r: 'a/' + asset.id + '/balance/' + assets.addr[asset.id], z: 0}, element, function (object) {
                         if(typeof object.data === 'string') {
                           object.data = UItransform.formatFloat(object.data);
-=======
-      // initialize all assets
-      hybriddcall({r:'/s/deterministic/hashes',z:1},null,
-        function(object,passdata){
-          assets.modehashes = object.data;
 
-          // create mode array of selected assets
-          var activeAssetsObj = {};
-          var i = 0;
-          for(i = 0; i < GL.assetsActive.length; ++i) {
-            if(typeof GL.assetmodes[GL.assetsActive[i]] !== 'undefined') {
-              activeAssetsObj[GL.assetsActive[i]] = GL.assetmodes[GL.assetsActive[i]];
-            }
-          }
-
-          var output = '';
-
-          var i = 0;
-          for (var entry in activeAssetsObj) {
-            // load assets and balances into arrays
-            balance.asset[i] = entry;
-            balance.amount[i] = 0;
-            // increment array counter
-            i++;
-            // get and initialize deterministic encryption routines for assets
-            // timeout used to avoid double downloading of deterministic routines
-            var defer = (assets.init.indexOf(GL.assetmodes[entry].split('.')[0])==-1?0:3000);
-            assets.init.push(GL.assetmodes[entry].split('.')[0]);
-            setTimeout(function(entry,passdata) {
-              initAsset(entry,GL.assetmodes[entry]);
-            },(100*i)+defer,entry);
-            // if all assets inits are called run
-            if(i===GL.assetsActive.length) {
-              // create asset elements that are selected to show in dashboard
-              var starredBalancesHTML = GL.assetsStarred.reduce(mkHtmlForStarredAssets, {i: 0, str: ''}).str
-
-              function mkHtmlForStarredAssets (acc, asset) {
-                var index = acc.i;
-                var str = asset.starred
-                    ? acc.str + '<div onclick="fetchview(\'interface.assets\',{user_keys: pass_args.user_keys, nonce: pass_args.nonce, asset:\'' + balance.asset[index] + '\'});" class="balance"><h5>'+balance.asset[index] + '</h5><div class="divider"></div><h3 class="balance balance-' + balance.asset[index].replace(/\./g,'-')+'">' + progressbar()+'</h3></div>'
-                    : acc.str;
-                return {i: acc.i + 1, str: str};
-              }
-              $('.dashboard-balances .spinner-loader').fadeOut('slow', function() {
-                $('.dashboard-balances > .data').html(starredBalancesHTML)// insert new data into DOM
-              })
-            }
-          }
-
-          var getBalances = function (balance, assets) {
-            // This would depend on the viewpath --> Why would you want to load all of a users'
-            // assets when you only display starred ones?
-            var assetsToCheck = true ? 'assetsActive' : 'assetsStarred';
-            GL[assetsToCheck].forEach(function (asset) {
-              var i = balance.asset.indexOf(asset);
-              var element = '.dashboard-balances > .data > .balance > .balance-' + balance.asset[i].replace(/\./g, '-');
-
-              setTimeout(function () {
-                hybriddcall({r: 'a/' + balance.asset[i] + '/balance/' + assets.addr[balance.asset[i]], z: 0}, element, function (object) {
-                  if(typeof object.data === 'string') {
-                    object.data = UItransform.formatFloat(object.data);
->>>>>>> remotes/origin/add-dashboard-spinner-while-loading-assets
                         }
                         return object;
                       })
