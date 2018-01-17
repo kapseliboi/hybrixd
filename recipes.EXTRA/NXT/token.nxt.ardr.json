@@ -1,6 +1,6 @@
 {
-    "symbol":"nxt.ardr",
-    "name":"Ardor",
+    "symbol":"nxt.ARDR",
+    "name":"ARDR",
     "module":"nxt",
     "mode":"nxt.token",
     "contract":"12422608354438203866",
