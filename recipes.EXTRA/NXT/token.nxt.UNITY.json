@@ -1,9 +1,9 @@
 {
-    "symbol":"nxt.unity",
-    "name":"SuperNET",
+    "symbol":"nxt.UNITY",
+    "name":"UNITY",
     "module":"nxt",
     "mode":"nxt.token",
-    "contract":"12071612744977229797",
-    "originator":"NXT-MRBN-8DFH-PFMK-A4DBM",
-    "factor":4
+    "contract":"8375321820311990826",
+    "originator":"NXT-P7GF-X4TU-YSY8-APAZA",
+    "factor":0
 }
