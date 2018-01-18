@@ -40,10 +40,10 @@ hy_content += addscript('../../lib/crypto/hex2dec.js');	      // arbitrary lengt
 hy_content += addscript('../../lib/crypto/proof.js');	        // proof-of-work library
 
 hy_content += '<script>';
-hy_content += 'pass_args = {};';
+hy_content += fs.readFileSync('./js/globalobjects.js');	// global objects/functions
+hy_content += "\n"+'pass_args = {};';
 hy_content += 'init.interface = function(args) {';
 hy_content += 'pass_args = args;';							        // pass args along DOM to toplevel buttons
-hy_content += fs.readFileSync('./js/globalobjects.js');	// global objects/functions
 hy_content += fs.readFileSync('./js/topmenu.js');			  // responsive top menu
 hy_content += fs.readFileSync('./js/hybriddcall.js');		// autonomous calls to hybridd
 hy_content += fs.readFileSync('./interface.js');	      // finally, take action

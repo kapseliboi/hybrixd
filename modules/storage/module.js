@@ -38,7 +38,7 @@ function exec(properties) {
 	var type  = target.type;
 	var factor = (typeof target.factor != 'undefined'?target.factor:8);
   var command = properties.command;
-	var subprocesses = [];	
+	var subprocesses = [];
 	// set request to what command we are performing
 	global.hybridd.proc[processID].request = properties.command;
 	// handle standard cases here, and construct the sequential process list
@@ -61,7 +61,7 @@ function exec(properties) {
                 var difficulty = (bytes*64>5000?bytes*64:5000);            // the more bytes to store, the bigger the POW challenge
                 var pow = proofOfWork.create(difficulty);
                 // save storage
-                storage.Set(command[1],command[2],{time:Date.now(),hash:DJB2.hash(command[2]),size:bytes,pow:pow.proof,res:0});
+                storage.Set(command[1],command[2],{time:Date.now(),hash:DJB2.hash(command[2]),size:bytes,pow:pow.proof,res:pow.hash});
                 subprocesses.push('stop(0,"'+pow.hash+'")');
               } else {
                 subprocesses.push('stop(1,"Storage object limit is 4096 bytes!")');
