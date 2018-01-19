@@ -1,4 +1,5 @@
 node
 views/*json
 nodejs-runtime
+**/.tern-port
 .DS_Store
