@@ -8,8 +8,8 @@ $(document).ready(function() {
       var userid = $('#inputUserID').val().toUpperCase();
       var passcode = $('#inputPasscode').val();
       if ( userid.length == 16 && (passcode.length == 16 || passcode.length == 48) ) {
-	clicked = true;
-	session_step = 0;
+        clicked = true;
+        session_step = 0;
         $('#arc0').css('background-color',$('#combinator').css('color'));
         $('#generatebutton').attr('disabled','disabled');
         $('#helpbutton').attr('disabled','disabled');
@@ -59,7 +59,7 @@ $(document).ready(function() {
 });
 
 init.login = function(args) {
-	//console.log('init.login called with args: '+JSON.stringify(args));
+	//DEBUG: console.log('init.login called with args: '+JSON.stringify(args));
 	// do nothing
 }
 
@@ -76,13 +76,15 @@ function validate_passwd(userid,passwd) {
 
 function main(userid,passcode) {
 	// instantiate nacl
-	nacl = nacl_factory.instantiate();
   blink('arc0');
+	nacl = nacl_factory.instantiate();
 	var nonce = nacl.crypto_box_random_nonce();
-	var user_keys = generate_keys(passcode,userid);
+  dial_login(0);
+	var user_keys = generate_keys(passcode,userid,0);
 
-	var user_pubkey = nacl.to_hex(user_keys.boxPk);
-	//DEBUG: console.log('user_pubkey:'+user_pubkey+'('+user_pubkey.length+')/nonce:'+nonce);
+	//DEBUG: 
+	var user_pubkey = nacl.to_hex(user_keys.boxPk); console.log('user_pubkey:'+user_pubkey+'('+user_pubkey.length+')/nonce:'+nonce);
+
   do_login(user_keys,nonce);
 	continue_session(user_keys,nonce,userid);
 }
@@ -138,32 +140,37 @@ function do_login(user_keys,nonce) {
 	var session_seckey = nacl.to_hex(session_keypair.boxSk);
 	var session_secsign = nacl.to_hex(session_signpair.signSk);
 
-	//DEBUG console.log('session_seed:'+session_seed+'('+session_seed.length+')');
-	//DEBUG console.log('session_hexkey:'+session_hexkey+'('+session_hexkey.length+')');
-	//DEBUG console.log('session_sign_seed:'+session_sign_seed+'('+session_sign_seed.length+')');
-	//DEBUG console.log('session_hexsign:'+session_hexsign+'('+session_hexsign.length+')');
+	//DEBUG 
+	console.log('session_seed:'+session_seed+'('+session_seed.length+')');
+	//DEBUG 
+	console.log('session_hexkey:'+session_hexkey+'('+session_hexkey.length+')');
+	//DEBUG 
+	console.log('session_sign_seed:'+session_sign_seed+'('+session_sign_seed.length+')');
+	//DEBUG 
+	console.log('session_hexsign:'+session_hexsign+'('+session_hexsign.length+')');
 
   dial_login(1);
-	// posts to server under session pub key
+	// posts to server under session sign public key
 	$.ajax({
 		url: path+'x/'+session_hexsign+'/'+session_step,
 		dataType: 'json'
   })
   .done(function(data) {
+    // PROCESS REPLY TO SESSION_STEP 0 REQUEST
+
     // receive nonce1 back
     if ( clean(data.nonce1).length == 48 )	{
-      session_step++; // next step, hand out nonce
+      session_step++; // next step, hand out nonce2
 	    var nonce2 = nacl.crypto_box_random_nonce();
 	    var nonce2_hex = nacl.to_hex(nonce2);
-	    // change first character to 1-6 if it is a-f to keep within 32 bytes
+	    // change first character to 0-7 if it is 8,9,a-f to keep sum nonce within 32 bytes
 	    var nonce2_hex = nonce2_hex.replace(/^[8-9a-f]/,function(match){var range=['8','9','a','b','c','d','e','f']; return range.indexOf(match);});
 	    var nonce1_hex = clean(data.nonce1);
-	    var nonce1 = nacl.from_hex(nonce1_hex);
 	    var nonce1_hex = nonce1_hex.replace(/^[8-9a-f]/,function(match){var range=['8','9','a','b','c','d','e','f']; return range.indexOf(match);});
 	    var secrets_json = { 'nonce1':nonce1_hex, 'nonce2':nonce2_hex, 'client_session_pubkey':session_hexkey };
 	    var session_secrets = JSON.stringify(secrets_json);
 
-	    // using signing method
+	    // using signing method to prevent in transport changes
 	    var crypt_bin = nacl.encode_utf8(session_secrets);
 	    var crypt_response = nacl.crypto_sign(crypt_bin,session_signpair.signSk);
 	    var crypt_hex = nacl.to_hex(crypt_response);
@@ -174,24 +181,56 @@ function do_login(user_keys,nonce) {
 		    dataType: 'json',
       })
     	.done(function(data) {
+    	  // PROCESS REPLY TO SESSION_STEP 1 REQUEST
         dial_login(2);
         // do something with the returning server_session_pubkey
+        // server-side structure of packet: 
+        //    var sign_hex = {server_sign_pubkey:server_sign_pubkey,server_session_pubkey:server_session_pubkey,current_nonce:current_nonce};
+        //    var crypt_hex = nacl.to_hex( nacl.crypto_box(sign_hex,current_nonce,client_session_pubkey,server_session_seckey) );
+        //    xresponse = {error:0,server_sign_pubkey:server_sign_pubkey,server_session_pubkey:server_session_pubkey,current_nonce:current_nonce,crhex:crypt_hex};
+        //DEBUG
+        console.log("Hello JSON:"+JSON.stringify(data)); // works
+
         var server_sign_binkey = nacl.from_hex(clean(data.server_sign_pubkey));
+        var server_session_binkey = nacl.from_hex(clean(data.server_session_pubkey));
+        var current_nonce = nacl.from_hex(clean(data.current_nonce));
+
+        //DEBUG console.log("nonse:"+data.current_nonce); // works
+
         var crypt_bin = nacl.from_hex(clean(data.crhex));
-        var crypt_pack = nacl.crypto_sign_open(crypt_bin,server_sign_binkey);
-        var crypt_str = nacl.decode_utf8(crypt_pack);
-        var crypt_vars = JSON.parse(crypt_str);
-        //DEBUG console.log('PAYLOAD:'+JSON.stringify(crypt_str));
-        if ( crypt_vars.server_sign_pubkey == data.server_sign_pubkey ) {
-	        // TODO: make key array local scope?
-	        var key_array = {'nonce':session_nonce,'nonce1':nonce1_hex,'nonce2':nonce2_hex,
+        var crypt_pack = nacl.crypto_box_open(crypt_bin,current_nonce,server_session_binkey,session_keypair.boxSk);
+        //DEBUG console.log("Cryptstr:"+JSON.stringify(crypt_pack)); // works!     
+        
+        var crypt_str = nacl.to_hex(crypt_pack);
+        //DEBUG console.log("Crypt hexstr:"+JSON.stringify(crypt_str)); // works!     
+        
+        // perform sign check here!
+        var sign_bin = nacl.from_hex(clean(crypt_str));
+        var sign_pack = nacl.crypto_sign_open(sign_bin,server_sign_binkey);
+        var sign_str = nacl.decode_utf8(sign_pack);
+
+        var sign_vars = JSON.parse(sign_str);    
+        
+        //DEBUG 
+        console.log('PAYLOAD:'+JSON.stringify(crypt_str)); // works!
+        console.log('SIGNLOAD:'+JSON.stringify(sign_str)); // works!
+
+        // check for server sign, session and nonce values within and without of crypt packet so as to associate the two public keys without a shadow of doubt
+        if ( 
+          sign_vars.server_sign_pubkey === data.server_sign_pubkey &&
+          sign_vars.server_session_pubkey === data.server_session_pubkey &&
+          sign_vars.current_nonce === data.current_nonce 
+        ) {
+          // if we are here, signed internal datapacket crhex checks out with open values
+
+          var key_array = {'nonce':session_nonce,'nonce1':nonce1_hex,'nonce2':nonce2_hex,'nonce_combi':sign_vars.current_nonce,
 	        'session_secsign':session_secsign,'session_seckey':session_seckey,
-	        'session_pubsign':session_hexsign,'session_pubkey':session_hexkey,
-	        'server_pubsign':crypt_vars.server_sign_pubkey,'server_pubkey':crypt_vars.server_session_pubkey};
+	        'session_pubsign':session_hexsign,'session_pubkey':session_hexkey, 'server_pubsign':sign_vars.server_sign_pubkey,'server_pubkey':sign_vars.server_session_pubkey};
 
 	        var sess_bin = nacl.encode_utf8(JSON.stringify(key_array));
 
-	        //DEBUG: console.log('Raw session_data: '+JSON.stringify(key_array));
+	        //DEBUG: 
+	        console.log('Raw session_data: '+JSON.stringify(key_array));
 
 	        var sess_response = nacl.crypto_box(sess_bin,nonce,user_keys.boxPk,user_keys.boxSk);
 	        var sess_hex = nacl.to_hex(sess_response);
@@ -203,15 +242,17 @@ function do_login(user_keys,nonce) {
   });
 }
 
-function generate_keys(secret,salt) {
+// returns array of double public/secret keypairs   
+// one for encrypting (boxPk/boxSk) and one for signing (signPk/signSk)
+function generate_keys(secret,salt,position) {
 	// we normalise strings with stringtolower and stringtoupper
 
 	// Key Seed I
 	// create bitArrays from secret and salt
 	var secr_ba = sjcl.codec.utf8String.toBits(secret.toUpperCase());
 	var salt_ba = sjcl.codec.utf8String.toBits(salt.toLowerCase());
-	// use pbkdf2 to calculate key_seed (64 * 4 bytes = 256 bits = 32 bytes)
-	var key_seed1 = sjcl.misc.pbkdf2(secr_ba,salt_ba,5000,4096,false);
+	// use pbkdf2 to calculate key_seed (64 * 4 bits per hex char = 256 bits = 32 bytes)
+	var key_seed1 = sjcl.misc.pbkdf2(secr_ba,salt_ba,5000+position,4096,false);
 
 	// Key Seed II
 	// reverse secret upper case + upper case salt
@@ -219,21 +260,19 @@ function generate_keys(secret,salt) {
 	// create bitArrays from reverse secret
 	var rsecr_ba = sjcl.codec.utf8String.toBits(rsecret);
 	var usalt_ba = sjcl.codec.utf8String.toBits(salt.toUpperCase());
-	// use pbkdf2 to calculate key_seed (64 * 4 bytes = 256 bits = 32 bytes)
-	var key_seed2 = sjcl.misc.pbkdf2(rsecr_ba,usalt_ba,5000,4096,false);
+	// use pbkdf2 to calculate key_seed 
+	var key_seed2 = sjcl.misc.pbkdf2(rsecr_ba,usalt_ba,5000+position,4096,false);
 
 	// use two seeds to generate master key seed
-	var key_seed3 = sjcl.misc.pbkdf2(key_seed1,key_seed2,5000,4096,false);
+	var key_seed3 = sjcl.misc.pbkdf2(key_seed1,key_seed2,5000+position,4096,false);
 	var key_seed_str3 = sjcl.codec.hex.fromBits(key_seed3);
 	// DEBUG alert(key_seed_str3+'['+key_seed_str3.length+']');
 	var final_key_seed = nacl.from_hex(key_seed_str3);
 
-	// create user master key
-	var user_key = nacl.crypto_box_keypair_from_seed(final_key_seed);
+	// create new key
+	var new_key = nacl.crypto_box_keypair_from_seed(final_key_seed);
 
-  dial_login(0);
-
-	return user_key;
+	return new_key;
 }
 
 function clean(dirty) {
