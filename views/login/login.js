@@ -59,7 +59,7 @@ $(document).ready(function() {
 });
 
 init.login = function(args) {
-	//DEBUG: console.log('init.login called with args: '+JSON.stringify(args));
+	if ( DEBUG ) { console.log('init.login called with args: '+JSON.stringify(args)); }
 	// do nothing
 }
 
@@ -82,8 +82,8 @@ function main(userid,passcode) {
   dial_login(0);
 	var user_keys = generate_keys(passcode,userid,0);
 
-	//DEBUG: 
-	var user_pubkey = nacl.to_hex(user_keys.boxPk); console.log('user_pubkey:'+user_pubkey+'('+user_pubkey.length+')/nonce:'+nonce);
+	var user_pubkey = nacl.to_hex(user_keys.boxPk); 
+        if ( DEBUG ) { console.log('user_pubkey:'+user_pubkey+'('+user_pubkey.length+')/nonce:'+nonce); }
 
   do_login(user_keys,nonce);
 	continue_session(user_keys,nonce,userid);
@@ -112,7 +112,7 @@ function continue_session(user_keys,nonce,userid) {
 		setTimeout( function() { continue_session(user_keys,nonce,userid); }, 1000 );
 	} else {
     // use read_session(user_keys,nonce) to read out session variables
-		// DEBUG: console.log(read_session(user_keys,nonce));  // it works!
+		if ( DEBUG ) { console.log(read_session(user_keys,nonce)); }
 		// forward to the interface, session for the user starts
 		setTimeout(function() { // added extra time to avoid forward to interface before x authentication completes!
 			fetchview('interface',{'user_keys':user_keys,'nonce':nonce,'userid':userid});
@@ -140,14 +140,10 @@ function do_login(user_keys,nonce) {
 	var session_seckey = nacl.to_hex(session_keypair.boxSk);
 	var session_secsign = nacl.to_hex(session_signpair.signSk);
 
-	//DEBUG 
-	console.log('session_seed:'+session_seed+'('+session_seed.length+')');
-	//DEBUG 
-	console.log('session_hexkey:'+session_hexkey+'('+session_hexkey.length+')');
-	//DEBUG 
-	console.log('session_sign_seed:'+session_sign_seed+'('+session_sign_seed.length+')');
-	//DEBUG 
-	console.log('session_hexsign:'+session_hexsign+'('+session_hexsign.length+')');
+	if ( DEBUG ) { console.log('session_seed:'+session_seed+'('+session_seed.length+')'); }
+	if ( DEBUG ) { console.log('session_hexkey:'+session_hexkey+'('+session_hexkey.length+')'); }
+	if ( DEBUG ) { console.log('session_sign_seed:'+session_sign_seed+'('+session_sign_seed.length+')'); }
+	if ( DEBUG ) { console.log('session_hexsign:'+session_hexsign+'('+session_hexsign.length+')'); }
 
   dial_login(1);
 	// posts to server under session sign public key
@@ -175,7 +171,7 @@ function do_login(user_keys,nonce) {
 	    var crypt_response = nacl.crypto_sign(crypt_bin,session_signpair.signSk);
 	    var crypt_hex = nacl.to_hex(crypt_response);
 
-	    //DEBUG console.log('CR:'+crypt_hex);
+	    if ( DEBUG ) { console.log('CR:'+crypt_hex); }
 	    $.ajax({
 		    url: path+'x/'+session_hexsign+'/'+session_step+'/'+crypt_hex,
 		    dataType: 'json',
@@ -188,22 +184,21 @@ function do_login(user_keys,nonce) {
         //    var sign_hex = {server_sign_pubkey:server_sign_pubkey,server_session_pubkey:server_session_pubkey,current_nonce:current_nonce};
         //    var crypt_hex = nacl.to_hex( nacl.crypto_box(sign_hex,current_nonce,client_session_pubkey,server_session_seckey) );
         //    xresponse = {error:0,server_sign_pubkey:server_sign_pubkey,server_session_pubkey:server_session_pubkey,current_nonce:current_nonce,crhex:crypt_hex};
-        //DEBUG
-        console.log("Hello JSON:"+JSON.stringify(data)); // works
+        if ( DEBUG ) { console.log("Hello JSON:"+JSON.stringify(data)); }
 
         var server_sign_binkey = nacl.from_hex(clean(data.server_sign_pubkey));
         var server_session_binkey = nacl.from_hex(clean(data.server_session_pubkey));
         var current_nonce = nacl.from_hex(clean(data.current_nonce));
 
-        //DEBUG console.log("nonse:"+data.current_nonce); // works
+        if ( DEBUG ) { console.log("nonse:"+data.current_nonce); }
 
         var crypt_bin = nacl.from_hex(clean(data.crhex));
         var crypt_pack = nacl.crypto_box_open(crypt_bin,current_nonce,server_session_binkey,session_keypair.boxSk);
-        //DEBUG console.log("Cryptstr:"+JSON.stringify(crypt_pack)); // works!     
-        
+        if ( DEBUG ) { console.log("Cryptstr:"+JSON.stringify(crypt_pack)); }
+
         var crypt_str = nacl.to_hex(crypt_pack);
-        //DEBUG console.log("Crypt hexstr:"+JSON.stringify(crypt_str)); // works!     
-        
+        if ( DEBUG ) { console.log("Crypt hexstr:"+JSON.stringify(crypt_str)); }
+ 
         // perform sign check here!
         var sign_bin = nacl.from_hex(clean(crypt_str));
         var sign_pack = nacl.crypto_sign_open(sign_bin,server_sign_binkey);
@@ -211,9 +206,7 @@ function do_login(user_keys,nonce) {
 
         var sign_vars = JSON.parse(sign_str);    
         
-        //DEBUG 
-        console.log('PAYLOAD:'+JSON.stringify(crypt_str)); // works!
-        console.log('SIGNLOAD:'+JSON.stringify(sign_str)); // works!
+        if ( DEBUG ) { console.log('PAYLOAD:'+JSON.stringify(crypt_str)); console.log('SIGNLOAD:'+JSON.stringify(sign_str)); }
 
         // check for server sign, session and nonce values within and without of crypt packet so as to associate the two public keys without a shadow of doubt
         if ( 
@@ -229,8 +222,7 @@ function do_login(user_keys,nonce) {
 
 	        var sess_bin = nacl.encode_utf8(JSON.stringify(key_array));
 
-	        //DEBUG: 
-	        console.log('Raw session_data: '+JSON.stringify(key_array));
+	        if ( DEBUG ) { console.log('Raw session_data: '+JSON.stringify(key_array)); }
 
 	        var sess_response = nacl.crypto_box(sess_bin,nonce,user_keys.boxPk,user_keys.boxSk);
 	        var sess_hex = nacl.to_hex(sess_response);
