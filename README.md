@@ -49,6 +49,29 @@ cd hybridd
 ./coldstart_hybridd
 ```
 
+### Show branch in command prompt
+
+- *Mac*: Add the following script to your .bash_profile file.
+- *Linux*: Add the following script to your .bashrc file.
+
+```bash
+# Git branch in prompt.
+
+parse_git_branch() {
+
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+
+}
+
+export PS1="\u@\h \W\[\033[32m\]\$(parse_git_branch)\[\033[00m\] $ "
+```
+
+This will make your prompt look like this:
+
+`user@hostname dirBasename (branchName) $`
+
+For more information on PS1 commands, check out [this link](https://www.linuxnix.com/linuxunix-shell-ps1-prompt-explained-in-detail/).
+
 ## cryptography
 
 ### establishing communication between client and node/server
