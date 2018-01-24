@@ -20,14 +20,14 @@ if [ "$1" != "XXrefork_daemonXX" ] ; then # 1. This is where the original call s
     tty=$(tty)
     if [ -z $(which setsid) ]; then
       # MAC OS does not have setsid
-      echo "[i] No setsid found. Launching a pseudo daemon."
+      echo " [i] No setsid found. Launching a pseudo daemon."
       cd $me_DIR/lib
       node hybridd.js > $me_DIR/var/log/hybridd.log 2>&1  &
     else
       setsid $me_DIR/$me_FILE child "$tty" "$@" &
     fi
   else
-    echo "hybridd already running. (pid $pid)"
+    echo " [!] hybridd already running (pid $pid)"
   fi
   exit 0
 fi
