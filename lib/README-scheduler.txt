@@ -100,9 +100,8 @@ function:   Name of the javascript function.
 data:       Store data in this subprocess data field. (Passed to parent process on stop.)
 
 Examples:
-  stop(1)                         // stop processing and set error to 1
-  stop(0,"Everything is ok.")     // stop processing, set no error, and put "Everything is ok." in main process data field
-  stop(404,"HELP! Not found.")    // stop processing, set error to 404, and put "HELP! Not found." in main process data field
+  func("myModule","ping")                  // call /modules/myModule/module.js::ping(); and store the result in the data field.
+  func("myModule","ping","Anyone there?")  // call /modules/myModule/module.js::ping("Anyone there?"); and store the result in the data field.
 
 
  stop(err [,data] )

@@ -1,0 +1,93 @@
+{
+  "a":{"_alias":"asset"},
+  "asset":{
+    "_help":"TODO",
+    "_ref":{
+      "_list":"assets",
+      "adress":"TODO",
+      "balance":"TODO",
+      "contract":"TODO",
+      "factor":"TODO",
+      "fee":"TODO",
+      "history":"TODO",
+      "push":"TODO",
+      "status":"TODO",
+      "test":"TODO",
+      "transfer":"TODO",
+      "unspent":"TODO"
+    },
+    "command":{
+      "_access":"root"
+    }
+  },
+  "c":{"_alias":"command"},
+  "command":{
+    "_help":"Execute a command to hybridd.",
+    "_access":"root",
+    "apiqueue" :{
+      "_help" : "Commands to control and check the API Queue.",
+      "pause":"Pause the API Queue",
+      "resume":"Resume the API Queue when it is paused.",
+      "status":"Check the status of the API Queue."
+    },
+    "reload" : {
+      "_this":"Reload hybridd or specific components",
+      "conf":"Reload hybridd configuration files.",
+      "modules":"Reload hybridd modules.",
+      "recipes":"Reload hybridd recipes."
+    },
+    "scheduler" :{
+      "_help" : "Commands to control and check the Scheduler.",
+      "pause":"Pause the Scheduler.",
+      "resume":"Resume the Scheduler when it is paused.",
+      "status":"Check the status of the Scheduler."
+    },
+    "stop" : "Stop hybridd."
+  },
+  "n":{"_alias":"network"},
+  "net":{"_alias":"network"},
+  "network":{},
+  "list":{
+    "asset" : {
+      "names":"TODO",
+      "modes":"TODO"
+    }
+  },
+  "p":{"_alias":"proc"},
+  "proc":{
+    "peek":{
+      "_access":"root",
+      "_this":"TODO"
+    },
+    "queue":{
+      "_access":"owner",
+      "_this":"TODO"
+    }
+  },
+  "s":{"_alias":"source"},
+  "source":{
+    "command":{
+      "_this":"TODO",
+      "_access":"root"
+    }
+  },
+  "v":{"_alias":"view"},
+  "view":{
+    "login":"TODO",
+    "interface":"TODO",
+    "interface.dashboard":"TODO",
+    "interface.assets":"TODO"
+  },
+  "x":{"_alias":"xauth"},
+  "xauth":{
+    "TODO":"TODO"
+  },
+  "y":{"_alias":"yauth"},
+  "ychan":{
+    "TODO":"TODO"
+  },
+  "z":{"_alias":"zauth"},
+  "zchan":{
+    "TODO":"TODO"
+  }
+}

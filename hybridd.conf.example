@@ -4,7 +4,12 @@ restbind = 127.0.0.1
 
 # Binding and port for User Interface
 userbind = 127.0.0.1
+
+#userport defaults to 8080
 userport = 8080
+
+#userinterface is enabled by default
+#userinterface = disabled|enabled
 
 # Other settings
 cacheidx = 3000
