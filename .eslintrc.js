@@ -8,5 +8,8 @@ module.exports = {
   "extends": "semistandard",
   "parserOptions": {
     "sourceType": "module"
+  },
+  "rules": {
+    "no-undef": 1
   }
 };
