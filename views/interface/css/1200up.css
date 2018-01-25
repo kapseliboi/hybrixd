@@ -114,31 +114,6 @@ DESKTOP STYLING: 1200px and up
     display: none;
   }
 
-  /* Yes, this is redundant, but as long we work with JQuery, which is the problem atm, we do this with css */
-  #topmenu-assets {
-    cursor: not-allowed;
-    color: rgba(255, 255, 255, .3);
-    text-shadow: none;
-    position: relative;
-    transition: none;
-  }
-  
-  #topmenu-assets.active {
-    cursor: pointer;
-    color: #FFF;
-    text-shadow: none;
-    position: relative;
-  }
-
-  #topmenu-assets.active:hover {
-    text-shadow: 0px 0px 5px #FFF;
-  }
-
-  #topmenu-assets.active.selected {
-    color: #000;
-  }
-
-
   /*****************************************************************/
   /* CONTENT */
 
