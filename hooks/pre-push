@@ -1,7 +1,11 @@
-b#!/bin/sh
+#!/bin/sh
 
-STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep ".jsx\{0,1\}$")
+echo "============================= pre-push started ============================= "
+
+STAGED_FILES=$(git diff --stat --cached --name-only master | grep ".jsx\{0,1\}$")
 ESLINT="$(git rev-parse --show-toplevel)/node_modules/.bin/eslint"
+
+echo "$STAGED_FILES"
 
 if [[ "$STAGED_FILES" = "" ]]; then
   exit 0
