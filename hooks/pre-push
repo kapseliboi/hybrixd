@@ -3,6 +3,8 @@ IFS=$'\n'
 STAGED_FILES=$(git diff --stat --cached --name-only master | grep ".jsx\{0,1\}$")
 ESLINT="$(git rev-parse --show-toplevel)/node_modules/.bin/eslint"
 
+echo "\nPre Push:\n"
+
 if [[ "$STAGED_FILES" = "" ]]; then
   exit 0
 fi
