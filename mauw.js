@@ -1,1 +1,2 @@
-var mauw = "mauw";
+var mauw = 'mauw';
+console.log(mauw);
