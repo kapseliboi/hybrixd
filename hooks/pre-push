@@ -1,5 +1,5 @@
 #!/bin/sh
-
+IFS=$'\n'
 STAGED_FILES=$(git diff --stat --cached --name-only master | grep ".jsx\{0,1\}$")
 ESLINT="$(git rev-parse --show-toplevel)/node_modules/.bin/eslint"
 
@@ -21,7 +21,6 @@ fi
 
 for FILE in $STAGED_FILES
 do
-
   eslint "$FILE"
 
   if [[ "$?" == 0 ]]; then
