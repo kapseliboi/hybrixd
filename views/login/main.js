@@ -1,7 +1,7 @@
 // generates json login package
 //
 // (c)2016 metasync r&d / internet of coins
- 
+
 fs = require('fs');
 lzma = require('../../lib/crypto/lz-string.js');
 
@@ -27,6 +27,9 @@ hy_content += '<script>'+fs.readFileSync('../../lib/crypto/nacl.js')+'</script>'
 
 // including sjcl (pbkdf2 sha256 for key generation)
 hy_content += '<script>'+fs.readFileSync('../../lib/crypto/sjcl.js')+'</script>';
+
+// Add global variables
+hy_content += '<script>'+fs.readFileSync('./js/globals.js')+'</script>';
 
 // and finally the login action handler code
 hy_content += '<script>'+fs.readFileSync('./login.js')+'</script>';
