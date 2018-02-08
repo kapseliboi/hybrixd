@@ -64,6 +64,15 @@ data:       Store data in this subprocess data field. (Passed to parent process 
 Examples:
   logs(0,"Nice dude!")   // logs "[.] Nice dude!" to console
 
+  dump(data)
+
+Dump (debug data)to the console
+
+data:       Store data in this subprocess data field. (Passed to parent process on stop.)
+
+Examples:
+  logs(0,{foo:"bar"})   // logs '[D] {foo:"bar"}' to console
+
 
  pass(data)
 
@@ -79,7 +88,7 @@ Preferred option: pass !
 
 
  prog(step [,steps] [,data] )
- 
+
 Force set the progress level of the parent process.
 
 step:   Current step in the progress. (Value -1 restores automatic progress reporting.)
@@ -93,15 +102,16 @@ Examples:
 
  func(module, function [,data] )
 
-Run a module's javascript function. 
+Run a module's javascript function.
 
 module:     Name of the module.
 function:   Name of the javascript function.
 data:       Store data in this subprocess data field. (Passed to parent process on stop.)
 
 Examples:
-  func("myModule","ping")                  // call /modules/myModule/module.js::ping(); and store the result in the data field.
-  func("myModule","ping","Anyone there?")  // call /modules/myModule/module.js::ping("Anyone there?"); and store the result in the data field.
+  stop(1)                         // stop processing and set error to 1
+  stop(0,"Everything is ok.")     // stop processing, set no error, and put "Everything is ok." in main process data field
+  stop(404,"HELP! Not found.")    // stop processing, set error to 404, and put "HELP! Not found." in main process data field
 
 
  stop(err [,data] )
@@ -145,6 +155,60 @@ Examples:
   test(a>3,1,-3)    // test if a>3, if true jump to the next instruction, if false jump back three instructions
   test(b<=1,-4,1)   // test if b<=1, if true jump back four instructions, if false jump to the next instruction
   test(a>3,-5)      // test if a>3, if true jump back five instructions, else default jump to the next instruction
+
+ chck(p,property,data, invalid,[valid])
+
+checks if a property exists in data if so passes it to valid or next, if not passes data to invalid
+
+property: A (or nested array/dicationary of) strings containing string
+values or the property paths to test (Example: "foo.bar")
+
+data:     Store data in this subprocess data field.
+invalid:  Amount of instructions lines to jump when property does not exist.   (1 = jump forward 1 instruction, -2 = jump backward two instructions)
+valid:    Amount of instructions lines to jump when property exists.           (1 = jump forward 1 instruction, -2 = jump backward two instructions)
+
+Examples:
+  chck(".foo",2,{foo:"bar"})                  // Passes "bar" to next
+  chck(".foo.bar[2]",2,{foo:{bar:[0,1,5]}})   // Passes 5 to next
+  chck(".foo.bar[2]",2,{foo:"bar"})           // Jumps 2 instructions and passes {foo:"bar"}
+  chck([".foo",".hello"],2,{foo:"bar",hello:"world"})           // Passes ["bar","world"] to next
+  chck({a:".foo",b:".hello",c:"test"},2,{foo:"bar",hello:"world"})  // Passes {a:"bar", b:"world", c:"test"} to next
+
+  form(data, factor)
+
+Format a (balance) number) and passes it to next
+
+data:   Contains a number
+factor: Contains a number
+
+Examples:
+
+  curl(p,target, querystring,method,[data,headers,overwriteProperties])
+
+creates an api call in the API queue
+
+target:       An string containing on of the following options
+- "[user[:password]@]host[:port]"  TODO
+- "asset://base[.mode]"
+- "source://base[.mode]"
+querystring:  A string containig the querypath  (Example: "/road/cars?color=red")
+method:       GET,POST or PUT
+data:         Data passed to call (optional)
+headers:       headers passed to call (optional)
+overwriteProperties: (optional) TODO
+- retry: max nr of retries allowed
+- throttle:
+- timeout:
+- interval:
+- user:
+- password:
+- proxy:
+- host:
+
+Examples:
+
+
+
 
 
 
