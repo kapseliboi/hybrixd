@@ -1,7 +1,11 @@
 A recipe file is a json file describing the properties of a source or asset implementation
 
+A recipe defines either an asset/token or a source. For assets a symbol is
+required, for sources an id.
+
 symbol                For assets
 id                    For sources
+
 name                  A string containing the display name
 mode
 
@@ -22,8 +26,3 @@ host                  A string of array of strings containing the hosts.
 [interval]            Defaults to 2000
 
 quartz
-
-
-
-
-

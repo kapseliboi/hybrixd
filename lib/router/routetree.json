@@ -66,9 +66,34 @@
   },
   "s":{"_alias":"source"},
   "source":{
+    "_this":"List available sources.",
     "command":{
       "_this":"TODO",
       "_access":"root"
+    },
+    "storage" : {
+      "get":"TODO",
+      "set":"TODO",
+      "del":"TODO",
+      "pow":"TODO",
+      "meta":"TODO"
+    },
+    "deterministic": {
+      "assets":"TODO",
+      "code":"TODO",
+      "hash":"TODO",
+      "hashes":"TODO",
+      "mode":"TODO"
+    },
+    "blockexplorer": {
+      "_ref":{
+        "_list":"sources",
+        "balance" : "TODO",
+        "command" : "TODO",
+        "status" : "TODO",
+        "unspent"  : "TODO"
+      }
+
     }
   },
   "v":{"_alias":"view"},
