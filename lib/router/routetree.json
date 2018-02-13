@@ -1,20 +1,21 @@
 {
   "a":{"_alias":"asset"},
   "asset":{
-    "_help":"TODO",
+    "_help":"Assets are cryptocurrencies or tokens.",
+    "_this" : "List all available assets",
     "_ref":{
-      "_list":"assets",
+      "_list":"asset",
       "adress":"TODO",
-      "balance":"TODO",
+      "balance":"Retrieve the balance TODO",
       "contract":"TODO",
-      "factor":"TODO",
-      "fee":"TODO",
+      "factor":"Retrieve the factor TODO",
+      "fee":"Retrieve the fee TODO",
       "history":"TODO",
-      "push":"TODO",
-      "status":"TODO",
+      "push":"Push a signed transaction.",
+      "status":"Retrieve the status of the service. TODO",
       "test":"TODO",
       "transfer":"TODO",
-      "unspent":"TODO"
+      "unspent":"Retrieve the unspent TODO"
     },
     "command":{
       "_access":"root"
@@ -31,7 +32,8 @@
       "status":"Check the status of the API Queue."
     },
     "reload" : {
-      "_this":"Reload hybridd or specific components",
+      "_help":"Commands to reload hybridd or specific components",
+      "_this":"Reload hybridd.",
       "conf":"Reload hybridd configuration files.",
       "modules":"Reload hybridd modules.",
       "recipes":"Reload hybridd recipes."
@@ -44,6 +46,10 @@
     },
     "stop" : "Stop hybridd."
   },
+  "h":{"_alias":"help"},
+  "help":{
+    "_this" : "Display help as html."
+  },
   "n":{"_alias":"network"},
   "net":{"_alias":"network"},
   "network":{},
@@ -55,17 +61,30 @@
   },
   "p":{"_alias":"proc"},
   "proc":{
+     "_this" : "List all processes.",
+    "_ref" : {
+      "_list" : "proc",
+      "_this" : "Display process details."
+    },
     "peek":{
       "_access":"root",
-      "_this":"TODO"
+      "_ref" : {
+        "_list" : "proc",
+        "_this" : "Display process internal data."
+      }
     },
     "queue":{
       "_access":"owner",
-      "_this":"TODO"
+      "_this" : "Display queued processes.",
+      "_ref" : {
+        "_list" : "proc",
+        "_this" : "Display process queue status."
+      }
     }
   },
   "s":{"_alias":"source"},
   "source":{
+    "_help":"Sources are public hosts for blockchain requests.",
     "_this":"List available sources.",
     "command":{
       "_this":"TODO",
@@ -99,21 +118,22 @@
         "_access":"root"
       },
       "_ref":{
-        "_list":"sources",
-        "balance" : "TODO",
-        "command" : "TODO",
-        "status" : "TODO",
-        "unspent"  : "TODO"
+        "_list":"source",
+        "balance" : "Retrieve the balance. TODO",
+        "command" : "Execute a command TODO",
+        "status" : "Retrieve the status TODO",
+        "unspent"  : "Retrieve the unspent TODO"
       }
 
     }
   },
   "v":{"_alias":"view"},
   "view":{
-    "login":"TODO",
-    "interface":"TODO",
-    "interface.dashboard":"TODO",
-    "interface.assets":"TODO"
+    "_this" : "List available views.",
+     "_ref" : {
+      "_list" : "view",
+      "_this" : "Returns the json file stored in $HYBRIDD_HOME/views/$VIEW.json. This file contains view information in packed form."
+     }
   },
   "x":{"_alias":"xauth"},
   "xauth":{
