@@ -72,6 +72,10 @@
       "_access":"root"
     },
     "storage" : {
+      "command" : {
+        "_this":"Execute a direct command.",
+        "_access":"root"
+      },
       "get":"TODO",
       "set":"TODO",
       "del":"TODO",
@@ -79,6 +83,10 @@
       "meta":"TODO"
     },
     "deterministic": {
+      "command" : {
+        "_this":"Execute a direct command.",
+        "_access":"root"
+      },
       "assets":"TODO",
       "code":"TODO",
       "hash":"TODO",
@@ -86,6 +94,10 @@
       "mode":"TODO"
     },
     "blockexplorer": {
+      "command" : {
+        "_this":"Execute a direct command.",
+        "_access":"root"
+      },
       "_ref":{
         "_list":"sources",
         "balance" : "TODO",
@@ -105,14 +117,17 @@
   },
   "x":{"_alias":"xauth"},
   "xauth":{
+    "_valid":true,
     "TODO":"TODO"
   },
   "y":{"_alias":"yauth"},
   "ychan":{
+    "_valid":true,
     "TODO":"TODO"
   },
   "z":{"_alias":"zauth"},
   "zchan":{
+    "_valid":true,
     "TODO":"TODO"
   }
 }
