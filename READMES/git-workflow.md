@@ -3,7 +3,7 @@
 *The name 'issue(s)' refers to the general term as found in a Github repository. The 'issues' tab contains a list of submitted issues, which consists of several categories. Examples of categories are bugs, feature requests, enhancements, etc.*
 
 ## Create issue
-_Create issues for every bug or feature request!_ This enables us to keep track of commits related to the issue. We can do this by starting the commit with a `#` (hash) and the issue number.
+**Create issues for every bug or feature request!** This enables us to keep track of commits related to the issue. We can do this by starting the commit with a `#` (hash) and the issue number.
 
 Provide the issue with a consise name, stating the problem / request as general as possible. Also **add a label** for better overview.
 
@@ -11,9 +11,9 @@ Provide the issue with a consise name, stating the problem / request as general 
 
 ### Dividing the issue into smaller steps ###
 
-If possible, specify the issue further by dividing it in steps by using checkboxes, like so in Markdown:
+If possible, specify the issue further by dividing it in steps by using checkboxes. You can also state when something has already been fixed, but needs writing down anyway:
 * `- [ ] Step summary or title`
-* `- [x] Step summary or title`, whenever you need to state something that has been fixed already.
+* `- [x] Step summary or title`
 
 These can be checked by the assigned developer, keeping track of this issue's progress:
 - [x] Step 1
