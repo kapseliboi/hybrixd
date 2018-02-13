@@ -9,5 +9,5 @@ issueNr=$(echo $issueBranch | grep -o  '^[0-9]\+')
 
 if [[ $issueNr =~ ^-?[0-9]+$ ]];then
     #append issue nr to commit message
-    echo " #$issueNr" >> $1
+    sed -i.bak -e "1s/^/#$issueNr-/" $1
 fi
