@@ -10,7 +10,7 @@
       "contract":"TODO",
       "factor":"Retrieve the factor TODO",
       "fee":"Retrieve the fee TODO",
-      "history":"TODO",
+      "history":"Retrieve asset history TODO",
       "push":"Push a signed transaction.",
       "status":"Retrieve the status of the service. TODO",
       "test":"TODO",
