@@ -1,6 +1,6 @@
 Command list
 
-command= a/$ASSET/$COMMAND/$1/$2/...
+command= asset|source/$ASSET/$COMMAND/$1/$2/...
 $COMMAND = $0 = init|status|factor|fee|balance|transfer|test|history|unspent|contract
 
 init
@@ -55,6 +55,10 @@ Transformation: Modules deterministic is used to transform the transaction objec
 
 Ouput: Succes/Failure?
 
+address
+?? counterpart module
+
+
 transfer
 ?? legacy?
 
@@ -70,3 +74,8 @@ history
 
 contract
 ??
+
+transferlist,confirm [Only for Meta Module]
+??
+
+get,set,pow,del,meta [Only for Storage Module]
