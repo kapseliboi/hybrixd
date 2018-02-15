@@ -61,7 +61,7 @@
   },
   "p":{"_alias":"proc"},
   "proc":{
-     "_this" : "List all processes.",
+    "_this" : "List all processes.",
     "_ref" : {
       "_list" : "proc",
       "_this" : "Display process details."
@@ -130,10 +130,10 @@
   "v":{"_alias":"view"},
   "view":{
     "_this" : "List available views.",
-     "_ref" : {
+    "_ref" : {
       "_list" : "view",
       "_this" : "Returns the json file stored in $HYBRIDD_HOME/views/$VIEW.json. This file contains view information in packed form."
-     }
+    }
   },
   "x":{"_alias":"xauth"},
   "xauth":{
@@ -142,12 +142,28 @@
   },
   "y":{"_alias":"yauth"},
   "ychan":{
-    "_valid":true,
-    "TODO":"TODO"
+    "_ref":{
+      "_list":"session",
+      "_ref" : {
+        "_list":"nonce",
+        "_ref" : {
+          "_list":"data",
+          "_this" : "TODO"
+        }
+      }
+    }
   },
   "z":{"_alias":"zauth"},
   "zchan":{
-    "_valid":true,
-    "TODO":"TODO"
+    "_ref":{
+      "_list":"session",
+      "_ref" : {
+        "_list":"nonce",
+        "_ref" : {
+          "_list":"data",
+          "_this" : "TODO"
+        }
+      }
+    }
   }
 }
