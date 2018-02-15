@@ -106,11 +106,21 @@
         "_this":"Execute a direct command.",
         "_access":"root"
       },
-      "assets":"TODO",
-      "code":"TODO",
-      "hash":"TODO",
-      "hashes":"TODO",
-      "mode":"TODO"
+      "assets":"List available assets.",
+      "code": {
+        "_ref":{
+          "_list" : "mode",
+          "_this" : "Returns the lzma compressed deterministic blobs (client side code) for a $MODE."
+        }
+      },
+      "hash":  {
+        "_ref":{
+          "_list" : "mode",
+          "_this" : "Returns the DJB2 hash of the deterministic blobs (client side code) for $MODE."
+        }
+      },
+      "hashes":"Returns the DJB2 hash of all deterministic blobs (client side code).",
+      "modes":"List available modes."
     },
     "blockexplorer": {
       "command" : {
@@ -137,31 +147,45 @@
   },
   "x":{"_alias":"xauth"},
   "xauth":{
-    "_valid":true,
-    "TODO":"TODO"
-  },
-  "y":{"_alias":"yauth"},
-  "ychan":{
+    "_help" : "Create a secure channel.",
     "_ref":{
-      "_list":"session",
-      "_ref" : {
-        "_list":"nonce",
+      "_help" : "The 64 char session hex key is given as an identifier.",
+      "_list":"session_hexkey",
+      "0" : "Step 0 consists of requesting the $NONCE. Note that resending the request will erase the session.",
+      "1" : {
         "_ref" : {
-          "_list":"data",
-          "_this" : "TODO"
+          "_list":"crypt_hex",
+          "_this":"Step 1 consists of sending the signed $NONCE, if this is verified the session public key is given."
         }
       }
     }
   },
-  "z":{"_alias":"zauth"},
-  "zchan":{
+  "y":{"_alias":"ychan"},
+  "ychan":{
+    "_help" : "Send an encrypted request through the channel and recieve an encrypted response.",
     "_ref":{
-      "_list":"session",
+      "_help" : "The 64 char session hex key is given as an identifier.",
+      "_list":"session_hexkey",
       "_ref" : {
         "_list":"nonce",
         "_ref" : {
-          "_list":"data",
-          "_this" : "TODO"
+          "_list":"encrypted_path",
+          "_this" : "$ENCRYPTED_PATH, for example: /asset/btc/command/help encrypted using the $SESSION_PUBLIC_KEY is executed as an API command and the result is encrypted and returned."
+        }
+      }
+    }
+  },
+  "z":{"_alias":"zchan"},
+  "zchan":{
+    "_help" : "Send an encrypted request through the channel and recieve an encrypted and compressed response.",
+    "_ref":{
+      "_list":"session_hexkey",
+      "_help" : "The 64 char session hex key is given as an identifier.",
+      "_ref" : {
+        "_list":"nonce",
+        "_ref" : {
+          "_list":"encrypted_path",
+          "_this" : "$ENCRYPTED_PATH, for example: `/asset/btc/command/help` encrypted using the $SESSION_PUBLIC_KEY is executed as an API command and the result is encrypted and compressed using lmza and returned."
         }
       }
     }
