@@ -5,7 +5,7 @@
     "_this" : "List all available assets",
     "_ref":{
       "_list":"asset",
-      "adress":"TODO",
+      "address":"TODO",
       "balance":"Retrieve the balance TODO",
       "contract":"TODO",
       "factor":"Retrieve the factor TODO",
@@ -15,7 +15,7 @@
       "status":"Retrieve the status of the service. TODO",
       "test":"TODO",
       "transfer":"TODO",
-      "unspent":"Retrieve the unspent TODO"
+      "unspent":"Retrieve the unspent. Unspent is a bitcoin related term that in hybridd is used for pretransactional data. Bitcoin: unspent means available inputs for creating a transaction. Ethereum: unspent means the most recent nonce of the cryptocurrency account needed for constructing a transaction.  NXT: unspent means the server reply information needed to construct a deterministic transaction."
     },
     "command":{
       "_access":"root"
@@ -110,13 +110,13 @@
       "code": {
         "_ref":{
           "_list" : "mode",
-          "_this" : "Returns the lzma compressed deterministic blobs (client side code) for a $MODE."
+          "_this" : "Returns the lzma compressed deterministic blobs (client side code) for a `$MODE` ."
         }
       },
       "hash":  {
         "_ref":{
           "_list" : "mode",
-          "_this" : "Returns the DJB2 hash of the deterministic blobs (client side code) for $MODE."
+          "_this" : "Returns the DJB2 hash of the deterministic blobs (client side code) for `$MODE` ."
         }
       },
       "hashes":"Returns the DJB2 hash of all deterministic blobs (client side code).",
@@ -142,20 +142,24 @@
     "_this" : "List available views.",
     "_ref" : {
       "_list" : "view",
-      "_this" : "Returns the json file stored in $HYBRIDD_HOME/views/$VIEW.json. This file contains view information in packed form."
+      "_this" : "Returns the json file stored in `$HYBRIDD_HOME/views/$VIEW.json` . This file contains view information in packed form."
     }
   },
   "x":{"_alias":"xauth"},
   "xauth":{
     "_help" : "Create a secure channel.",
     "_ref":{
-      "_help" : "The 64 char session hex key is given as an identifier.",
+      "_help" : "The 64 char session hex key is given as as a public key.",
       "_list":"session_hexkey",
-      "0" : "Step 0 consists of requesting the $NONCE. Note that resending the request will erase the session.",
+      "0" : {
+        "_this":"Step 0 consists of requesting `$NONCE1` . Note that resending the request will erase the session.",
+        "_response" : "{error:0, nonce1:$NONCE1}"
+      },
       "1" : {
         "_ref" : {
           "_list":"crypt_hex",
-          "_this":"Step 1 consists of sending the signed $NONCE, if this is verified the session public key is given."
+          "_this": "Step 1 consists of sending the signed `$NONCE1` , if this is verified the session public key is given.",
+          "_response" : "{error:0,server_sign_pubkey:$SERVER_SIGN_PUBKEY,server_session_pubkey:$SERVER_SESSION_PUBKEY,current_nonce:$NONCE_CONHEX,crhex:$CRYPT_HEX}"
         }
       }
     }
@@ -164,13 +168,13 @@
   "ychan":{
     "_help" : "Send an encrypted request through the channel and recieve an encrypted response.",
     "_ref":{
-      "_help" : "The 64 char session hex key is given as an identifier.",
+      "_help" : "The 64 char session hex key is given as a public key.",
       "_list":"session_hexkey",
       "_ref" : {
         "_list":"nonce",
         "_ref" : {
           "_list":"encrypted_path",
-          "_this" : "$ENCRYPTED_PATH, for example: /asset/btc/command/help encrypted using the $SESSION_PUBLIC_KEY is executed as an API command and the result is encrypted and returned."
+          "_this" : " `$ENCRYPTED_PATH` , for example: `/asset/btc/command/help` encrypted using the `$SESSION_PUBLIC_KEY` is executed as an API command and the result is encrypted and returned."
         }
       }
     }
@@ -180,12 +184,12 @@
     "_help" : "Send an encrypted request through the channel and recieve an encrypted and compressed response.",
     "_ref":{
       "_list":"session_hexkey",
-      "_help" : "The 64 char session hex key is given as an identifier.",
+      "_help" : "The 64 char session hex key is given as a public key.",
       "_ref" : {
         "_list":"nonce",
         "_ref" : {
           "_list":"encrypted_path",
-          "_this" : "$ENCRYPTED_PATH, for example: `/asset/btc/command/help` encrypted using the $SESSION_PUBLIC_KEY is executed as an API command and the result is encrypted and compressed using lmza and returned."
+          "_this" : " `$ENCRYPTED_PATH` , for example: `/asset/btc/command/help` encrypted using the `$SESSION_PUBLIC_KEY` is executed as an API command and the result is encrypted and compressed using lmza and returned."
         }
       }
     }
