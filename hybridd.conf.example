@@ -2,6 +2,9 @@
 restport = 1111
 restbind = 127.0.0.1
 
+#restinterface is enabled by default
+#restinterface = disabled|enabled
+
 # Binding and port for User Interface
 userbind = 127.0.0.1
 
@@ -14,4 +17,3 @@ userport = 8080
 # Other settings
 cacheidx = 3000
 ignoreTLSerror = true
-
