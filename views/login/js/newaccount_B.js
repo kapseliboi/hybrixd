@@ -124,13 +124,13 @@ function generateAccount(entropy) {
            However, we do advise not to store more than a month\'s wage worth of value in a medium security wallet.\
            High security wallets have a very long password, making them more secure.',function(highlevel) {
             if(highlevel) {
-              var offset=Math.floor(Math.random() * (511-100))
+              var offset=Math.floor(Math.random() * (511-120))
               var passwd=hexToBase32(entropy.substr(offset+20,60));              
             } else {
-              var offset=Math.floor(Math.random() * (511-40))
+              var offset=Math.floor(Math.random() * (511-60))
               var passwd=hexToBase32(entropy.substr(offset+20,20));              
             }
-            console.log( DJB2.hash(entropy.substr(offset,12).toLowerCase()+passwd.toUpperCase()).substr(4,4) );
+            //console.log( DJB2.hash(entropy.substr(offset,12).toLowerCase()+passwd.toUpperCase()).substr(4,4) );
             var userid=hexToBase32( entropy.substr(offset,12)+DJB2.hash(entropy.substr(offset,12).toUpperCase()).substr(0,4)+DJB2.hash(entropy.substr(offset,12).toLowerCase()+passwd.toUpperCase()).substr(4,4) );
             finalizeAccount(userid,passwd,entropy);
     },

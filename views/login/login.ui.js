@@ -25,7 +25,8 @@ function helpbutton() {
 function checkfields() {
   var userid=String($('#inputUserID').val());
   var passwd=String($('#inputPasscode').val());
-  if(userid.length==16 && (passwd.length==16 || passwd.length == 48) && userid!=passwd && validate_userid(userid) && validate_passwd(userid,passwd)) {
+  // DEBUG: alert('UID: '+validate_userid(userid)+'   PWD: '+validate_passwd(userid,passwd));
+  if(userid.length===16 && (passwd.length===16 || passwd.length === 48) && userid!==passwd && validate_userid(userid) && validate_passwd(userid,passwd)) {
     $('#loginbutton').removeClass('disabled');
     $('#tooltip').css('opacity', 0);
     $('#loginform input[type=text], #loginform input[type=password]').css( 'border-color', 'transparent' );
