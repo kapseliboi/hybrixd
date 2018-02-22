@@ -13,8 +13,7 @@ for D in *; do
       echo "[.] Checking ${D}..."
     	cd ${D}
 
-      #NEWEST_FILE="$(find . -type f -print0 | xargs -0 -f '%m %N' | sort -rn | head -1 | cut -f2- -d' ')";
-      NEWEST_FILE="$(find . -type f -exec stat --format '%m %N' "{}" \; | sort -rn | head -1 | cut -f2 -d' ')";
+      NEWEST_FILE="$(find . -type f -print0 | xargs -0 -f '%m %N' | sort -rn | head -1 | cut -f2- -d' ')";
 
       if [ "$D" = "index" ];then
         EXT="html"
@@ -22,13 +21,13 @@ for D in *; do
         EXT="json"
       fi
 
-      #if [ "$NEWEST_FILE" -nt "../${D}.${EXT}" ]; then
+      if [ "$NEWEST_FILE" -nt "../${D}.${EXT}" ]; then
         echo "[.] Needs compiling.."
         node main.js
         echo "[.] Compiling completed"
-      #else
-      #  echo "[.] Skip compiling"
-      #fi
+      else
+        echo "[.] Skip compiling"
+      fi
 
 
       cd ..
