@@ -23,7 +23,7 @@ exports.post = post;
 
 // initialization function
 function init() {
-        modules.initexec('blockexplorer',["init"]);
+	modules.initexec('blockexplorer',["init"]);
 }
 
 // stop function
@@ -40,22 +40,22 @@ function tick(properties) {
 // child processes are waited on, and the parent process is then updated by the postprocess() function
 // http://docs.electrum.org/en/latest/protocol.html
 function exec(properties) {
-        // decode our serialized properties
-        var processID = properties.processID;
+	// decode our serialized properties
+	var processID = properties.processID;
   var target = properties.target;
-        var mode  = (typeof target.mode!=='undefined'?target.mode:null);
-        var factor = (typeof target.factor !== 'undefined'?target.factor:8);
+	var mode  = (typeof target.mode!='undefined'?target.mode:null);
+	var factor = (typeof target.factor != 'undefined'?target.factor:8);
   var command = properties.command;
-        var subprocesses = [];
-        // set request to what command we are performing
-        global.hybridd.proc[processID].request = properties.command;
+	var subprocesses = [];
+	// set request to what command we are performing
+	global.hybridd.proc[processID].request = properties.command;
   // initialization
   if(command[0]==='init') {
     // set up REST API connection
-    if(typeof target.user !== 'undefined' && typeof target.pass !== 'undefined') {
+    if(typeof target.user != 'undefined' && typeof target.pass != 'undefined') {
       var options_auth={user:target.user,password:target.pass};
       global.hybridd.source[target.id].link = new Client(options_auth);
-    } else { global.hybridd.source[target.id].link = new Client(); }
+    } else { global.hybridd.source[target.id].link = new Client(); }    
     subprocesses.push('logs(1,"module blockexplorer: initialized '+target.id+'")');
   } else {
     // handle standard cases here, and construct the sequential process list
@@ -67,7 +67,7 @@ function exec(properties) {
               subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["/address/balance/'+command[1]+'?confirmations=0"]})');
               subprocesses.push('test((typeof data.data!="undefined" && typeof data.data.balance!="undefined" && !isNaN(data.data.balance)),2,1,data)')
               subprocesses.push('stop(1,null)');
-              subprocesses.push('stop(0, padFloat(data.data.balance,'+factor+') )');
+              subprocesses.push('stop(0, padFloat(data.data.balance,'+factor+') )');            
             } else {
               subprocesses.push('stop(1,"Please specify an address!")');
             }
@@ -90,7 +90,7 @@ function exec(properties) {
           case 'balance':
               subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["/addr/'+command[1]+'/balance"]})');
               subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["/addr/'+command[1]+'/unconfirmedBalance"]})');
-              subprocesses.push('coll(2)');
+              subprocesses.push('coll(2)');            
               subprocesses.push('stop( (isNaN(data[0])||isNaN(data[1])?1:0), fromInt((data[0]+data[1]),'+factor+') )');
           break;
           case 'unspent':
@@ -118,7 +118,7 @@ function exec(properties) {
           break;
           case 'unspent':
             // example: http://explorer.litecoin.net/unspent/LYmpJZm1WrP5FSnxwkV2TTo5SkAF4Eha31
-            if(typeof command[1]!=='undefined') {
+            if(typeof command[1]!='undefined') {
               subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["/unspent/'+command[1]+'"]})');
               subprocesses.push('func("blockexplorer","post",{target:'+jstr(target)+',command:'+jstr(command)+',data:data})');
             } else {
@@ -134,21 +134,21 @@ function exec(properties) {
     }
   }
   // fire the Qrtz-language program into the subprocess queue
-  scheduler.fire(processID,subprocesses);
+  scheduler.fire(processID,subprocesses);  
 }
 
 // standard function for postprocessing the data of a sequential set of instructions
 function post(properties) {
-        // decode our serialized properties
-        var processID = properties.processID;
-        var target = properties.target;
-        var mode  = target.mode;
-        var factor = (typeof target.factor !== 'undefined'?target.factor:8);
+	// decode our serialized properties
+	var processID = properties.processID;
+	var target = properties.target;
+	var mode  = target.mode;
+	var factor = (typeof target.factor != 'undefined'?target.factor:8);
   // first do a rough validation of the data
   var postdata = properties.data;
-        // set data to what command we are performing
-        global.hybridd.proc[processID].data = properties.command;
-        // handle the command
+	// set data to what command we are performing
+	global.hybridd.proc[processID].data = properties.command;
+	// handle the command
   var result = null;
   var success = true;
   switch(mode.split('.')[1]) {
@@ -164,7 +164,7 @@ function post(properties) {
           } else { success = false;	}
         break;
         default:
-          success = false;
+          success = false;		
       }
     break;
     case 'insight':
@@ -197,13 +197,13 @@ function post(properties) {
       }
     break;
     default:
-      success = false;
+      success = false;		
   }
   // handle sorting and filtering
   global.hybridd.proc[processID].progress = 0.5;
   switch(properties.command[0]) {
     case 'unspent':
-      if(typeof properties.command[2]!=='undefined') {
+      if(typeof properties.command[2]!='undefined') {
         var amount = toInt(properties.command[2],factor);
         if(amount.greaterThan(0)) {
           result = functions.sortArrayByObjKey(result,"amount",true);
@@ -242,19 +242,19 @@ function post(properties) {
 }
 
 function link(properties) {
-        var processID = properties.processID;
-        var target = properties.target;
-        var mode = target.mode;
+	var processID = properties.processID;
+	var target = properties.target;
+	var mode = target.mode;
   var type = 'GET'; // for now everything is GET
-  //var nopath = (properties.nopath!=='undefined' && properties.nopath?true:false);
-        var command = properties.command;
+  //var nopath = (properties.nopath!='undefined' && properties.nopath?true:false);
+	var command = properties.command;
   console.log(' [.] module blockexplorer: sending query ['+target.id+'] -> '+command.join(' '));
 
   var upath = command.shift();
-        var params = command.shift();
+	var params = command.shift();
   var args = {};
 
-        if(DEBUG) { console.log(' [D] query to: '+queryurl); }
+	if(DEBUG) { console.log(' [D] query to: '+queryurl); }
   // if POST -- FIXME
   /* var args = {
       data: {
@@ -269,7 +269,7 @@ function link(properties) {
   var args = {
       headers:{"Content-Type": "application/json"},
       path:upath
-  }
+  }  
   // construct the APIqueue object
   APIqueue.add({ 'method':type,
                  'link':'source["'+target.id+'"]',  // make sure APIqueue can use initialized API link
@@ -279,3 +279,4 @@ function link(properties) {
                  'pid':processID,
                  'target':target.id });
 }
+
