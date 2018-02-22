@@ -65,13 +65,13 @@ init.login = function(args) {
 
 function validate_userid(userid) {
   var hxid = base32ToHex(userid).toUpperCase();
-  return (DJB2.hash(hxid.substr(0,12)).substr(0,4)==hxid.substr(12,4)?true:false);
+  return (DJB2.hash(hxid.substr(0,12)).substr(0,4)===hxid.substr(12,4)?true:false);
 }
 
 function validate_passwd(userid,passwd) {
   var hxid = base32ToHex(userid).toLowerCase();
   var entr = passwd.toUpperCase();
-  return (DJB2.hash(hxid.substr(0,12)+entr).substr(4,4)==hxid.substr(16,4).toUpperCase()?true:false);
+  return (DJB2.hash(hxid.substr(0,12)+entr).substr(4,4)===hxid.substr(16,4).toUpperCase()?true:false);
 }
 
 function main(userid,passcode) {
