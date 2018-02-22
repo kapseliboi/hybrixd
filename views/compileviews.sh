@@ -13,7 +13,7 @@ for D in *; do
       echo "[.] Checking ${D}..."
     	cd ${D}
 
-      NEWEST_FILE="$(find . -type f -print0 | xargs -0 -f '%m %N' | sort -rn | head -1 | cut -f2- -d' ')";
+      NEWEST_FILE="$(find . -type f -print0 | xargs -0 stat -f '%m %N' | sort -rn | head -1 | cut -f2- -d' ')";
 
       if [ "$D" = "index" ];then
         EXT="html"
