@@ -47,22 +47,22 @@ function exec(properties) {
   var target = properties.target;
   var base = target.symbol.split('.')[0];     // in case of token fallback to base asset
   var mode  = target.mode;
-  var factor = (typeof target.factor != 'undefined'?target.factor:null);
+  var factor = (typeof target.factor !== 'undefined'?target.factor:null);
   var subprocesses = [];
   // set request to what command we are performing
   global.hybridd.proc[processID].request = properties.command;
   // define the source address/wallet
-  var sourceaddr = (typeof properties.command[1] != 'undefined'?properties.command[1]:false);
+  var sourceaddr = (typeof properties.command[1] !== 'undefined'?properties.command[1]:false);
   // handle standard cases here, and construct the sequential process list
 
   var command = properties.command[0];
   if(command=='init'){
     if(!isToken(target.symbol)) { //TODO why token specialization? Move to
       // set up REST API connection
-      if(typeof target.user != 'undefined' && typeof target.pass != 'undefined') {
+      if(typeof target.user !== 'undefined' && typeof target.pass !== 'undefined') {
         var options_auth={user:target.user,password:target.pass};
         global.hybridd.asset[target.symbol].link = new Client(options_auth);
-      } else if(typeof target.user != 'undefined') {
+      } else if(typeof target.user !== 'undefined') {
         var options_auth={user:target.user};
         global.hybridd.asset[target.symbol].link = new Client(options_auth);
       } else {
