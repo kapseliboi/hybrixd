@@ -77,16 +77,22 @@ function validate_passwd(userid,passwd) {
 function main(userid,passcode) {
 	// instantiate nacl
   blink('arc0');
-	nacl = nacl_factory.instantiate();
-	var nonce = nacl.crypto_box_random_nonce();
-  dial_login(0);
-	var user_keys = generate_keys(passcode,userid,0);
+	nacl = null; // TODO: make official global
+  nacl_factory.instantiate(function (naclinstance) {
 
-	var user_pubkey = nacl.to_hex(user_keys.boxPk);
-        if ( DEBUG ) { console.log('user_pubkey:'+user_pubkey+'('+user_pubkey.length+')/nonce:'+nonce); }
+    nacl = naclinstance;
 
-  do_login(user_keys,nonce);
-	continue_session(user_keys,nonce,userid);
+  	var nonce = nacl.crypto_box_random_nonce();
+    dial_login(0);
+  	var user_keys = generate_keys(passcode,userid,0);
+
+  	var user_pubkey = nacl.to_hex(user_keys.boxPk);
+          if ( DEBUG ) { console.log('user_pubkey:'+user_pubkey+'('+user_pubkey.length+')/nonce:'+nonce); }
+
+    do_login(user_keys,nonce);
+  	continue_session(user_keys,nonce,userid);
+
+  });
 }
 
 function next_step() {
