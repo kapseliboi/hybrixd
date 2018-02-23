@@ -2,7 +2,6 @@
   "symbol":"waves",
   "name":"Waves",
   "module":"quartz",
-  "module-deterministic":"waves",
   "mode":"waves",
   "factor":8,
   "fee":0.1,
