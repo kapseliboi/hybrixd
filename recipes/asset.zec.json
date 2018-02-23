@@ -34,10 +34,12 @@
       "stop(0,data)"
     ],
     "factor" : [
-      "stop(0,'$factor'))"
+      "stop(0,'$factor')"
     ],
     "history" : [],
     "contract" : [],
-    "fee" : []
+    "fee" : [
+      "stop(0,'$fee')"
+    ]
   }
 }
