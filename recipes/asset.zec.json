@@ -3,7 +3,7 @@
   "name":"ZCash",
   "module":"quartz",
   "module-deterministic":"zcash",
-  "mode":"zcash.zcash",
+  "mode":"zcash.livenet",
   "user":"user",
   "pass":"emFxMTJ3c3gK",
   "factor":8,
