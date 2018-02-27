@@ -64,17 +64,23 @@ function connectionOptions(recipe){
   var options = {};
   if(recipe.hasOwnProperty("pass")) {
     options.password = recipe.pass;
-  }else if(recipe.hasOwnProperty("user")) {
+  }
+  if(recipe.hasOwnProperty("user")) {
     options.user = recipe.user;
-  }else if(recipe.hasOwnProperty("proxy")) {
+  }
+  if(recipe.hasOwnProperty("proxy")) {
     options.proxy = recipe.proxy;
-  }else if(recipe.hasOwnProperty("connection")) {
+  }
+  if(recipe.hasOwnProperty("connection")) {
     options.connection = recipe.connection;
-  }else if(recipe.hasOwnProperty("mimetypes")) {
+  }
+  if(recipe.hasOwnProperty("mimetypes")) {
     options.mimetypes = recipe.mimetypes;
-  }else if(recipe.hasOwnProperty("requestConfig")) {
+  }
+  if(recipe.hasOwnProperty("requestConfig")) {
     options.requestConfig = recipe.requestConfig;
-  }else if(recipe.hasOwnProperty("proxy")) {
+  }
+  if(recipe.hasOwnProperty("proxy")) {
     options.responseConfig = recipe.responseConfig;
   }
   return options;
@@ -114,6 +120,8 @@ function exec(properties) {
   if(command=='init'){
 
     if(recipe.hasOwnProperty("host")){  // set up REST API connection
+      console.log(">>> Recipe: "+ JSON.stringify((recipe)));
+      console.log(">>> options: "+ JSON.stringify(connectionOptions(recipe)));
       list[id].link = new Client(connectionOptions(recipe));
     }
 
