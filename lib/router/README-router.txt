@@ -1,5 +1,3 @@
-
-
 Examples of paths:
 
 /command/reload         Reloads hybridd d
@@ -9,7 +7,6 @@ Files
 
 routetree.json      describes possible REST API paths
 router.js           first level routing
-router/help.js      validation and help subroutines
 router/[node].js    describes the routing for /[node]/...
 
 Features
