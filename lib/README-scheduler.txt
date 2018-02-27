@@ -156,9 +156,11 @@ Examples:
   test(b<=1,-4,1)   // test if b<=1, if true jump back four instructions, if false jump to the next instruction
   test(a>3,-5)      // test if a>3, if true jump back five instructions, else default jump to the next instruction
 
- chck(p,property,data, invalid,[valid])
+ tran(p,property, testObject, invalid,[valid], [data])
 
-checks if a property exists in data if so passes it to valid or next, if not passes data to invalid
+checks if properties exists in testObject and uses that to create a
+transformed object. On success of the check it to valid or next, if
+not passes the testObject to invalid
 
 property: A (or nested array/dicationary of) strings containing string
 values or the property paths to test (Example: "foo.bar")

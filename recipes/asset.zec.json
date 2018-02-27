@@ -3,11 +3,11 @@
   "name":"ZCash",
   "module":"quartz",
   "module-deterministic":"zcash",
-  "mode":"zcash.livenet",
+  "mode":"zcash.zcash",
   "user":"user",
   "pass":"emFxMTJ3c3gK",
   "factor":8,
-  "fee": 0.0001,
+  "fee":0.1,
   "host":["http://127.0.0.1:8232/"],
   "cache":15000,
   "throttle":5,
@@ -29,8 +29,10 @@
     ],
     "push" : [
       "curl('asset://$symbol','','POST',{jsonrpc:'1.0',id: Math.floor(Math.random()*10000),method:'broadcast',params:['$1']},{'content-type':'text/plain'})",
-      "chck('.result',1,2)",
+      "test(data,2)",
       "stop(1,'Broadcast failed!')",
+      "tran('.result',data,1,2)",
+      "stop(1,'No result!')",
       "stop(0,data)"
     ],
     "factor" : [
@@ -42,4 +44,3 @@
       "stop(0,'$fee')"
     ]
   }
-}
