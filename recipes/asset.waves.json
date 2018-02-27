@@ -20,19 +20,18 @@
       "stop(1,'No result')"
     ],
     "factor" : [
-      "stop(0,$factor))"
+      "stop(0,$factor)"
     ],
     "balance" : [
         "pass($1,2,1)",
         "stop(1,'No source address')",
         "curl('asset://$symbol','/balance/$1','GET')",
-        "chck('.balance',3)",
-        "form(data,$factor)",
+        "chck('.balance',2)",
         "stop(0,data)",
         "stop(1,'No result')"
     ],
     "fee" : [
-      "stop(0,10))"
+      "stop(0,'$fee')"
     ],
     "push" : [
               "curl('asset://$symbol','/transactions/broadcast','POST',data)",

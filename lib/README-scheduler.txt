@@ -187,7 +187,7 @@ Examples:
 
 creates an api call in the API queue
 
-target:       An string containing on of the following options
+target:       A string containing on of the following options
 - "[user[:password]@]host[:port]"  TODO
 - "asset://base[.mode]"
 - "source://base[.mode]"
@@ -207,7 +207,7 @@ overwriteProperties: (optional) TODO
 
 Examples:
 
-
+TODO
 
 
 
@@ -245,7 +245,7 @@ string:	String to turn into a JSON object.
 
 Examples:
  stop(0,jstr("{key:'Some data.'"))	// stops processing and returns {key:"Some data."}
- poke("myvar",jstr(data))		    // turns data into JSON, and pokes it to 'myvar'
+ poke("myvar",jstr(data))                   // turns data into JSON, and pokes it to 'myvar'
 
 
 
@@ -256,8 +256,8 @@ Collate or collect data from previous subprocess steps into an array.
 steps:	Number of previous steps to collate. Zero value means all previous steps.
 
 Examples:
-  coll(0)           	  // collate data of all previous steps
-  coll(5)      		      // collate data of the last five steps
+  coll(0)                 // collate data of all previous steps
+  coll(5)                     // collate data of the last five steps
 
 
 

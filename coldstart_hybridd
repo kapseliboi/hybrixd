@@ -31,6 +31,11 @@ if [ ! -x "$WHEREAMI/.git/hooks/pre-push" ]; then
   chmod +x ./.git/hooks/pre-push
 fi
 
+if [ ! -x "$WHEREAMI/.git/hooks/commit-msg" ]; then
+  cp ./hooks/commit-msg ./.git/hooks/commit-msg
+  chmod +x ./.git/hooks/commit-msg
+fi
+
 export PATH=$WHEREAMI/node/bin:"$PATH"
 NODEINST=`which node`
 
