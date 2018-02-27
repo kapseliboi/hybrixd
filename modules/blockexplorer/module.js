@@ -4,10 +4,8 @@
 
 // Supported block explorer systems and their API's:
 //  Insight:            https://blockexplorer.com/api-ref
-//  Blockr:             http://blockr.io/documentation/api
+//  Blockr:             http://blockr.io/documentation/api  NB blockr has been depreciated, left here for reference
 //  ABE (open source):  http://explorer.litecoin.net/q
-// Todo:
-//  Blockchain.info:    https://blockchain.info/api/blockchain_api
 
 // required libraries in this context
 var Client = require('../../lib/rest').Client;
@@ -75,7 +73,7 @@ function exec(properties) {
   } else {
     // handle standard cases here, and construct the sequential process list
     switch(mode.split('.')[1]) {
-    case 'blockr':
+    case 'blockr': // NB blockr has been depreciated, left here for reference
       switch(command[0]) {
       case 'balance':
         if(typeof command[1]!=='undefined') {
@@ -167,13 +165,14 @@ function post(properties) {
   var result = null;
   var success = true;
   switch(mode.split('.')[1]) {
-  case 'blockr':
+  case 'blockr': // NB blockr has been depreciated, left here for reference
     switch(properties.command[0]) {
     case 'unspent':
       if(typeof postdata.data!=='undefined' && typeof postdata.data.unspent==='object') {
         postdata = postdata.data.unspent;
         result = [];
         for (var i in postdata) {
+          //TODO script is missing
           result.push({amount:padFloat(postdata[i].amount,factor),txid:postdata[i].tx,txn:postdata[i].n});
         }
       } else { success = false;	}
@@ -188,7 +187,7 @@ function post(properties) {
       if(typeof postdata!=='undefined' && postdata!==null) {
         result = [];
         for (var i in postdata) {
-          result.push({amount:padFloat(postdata[i].amount,factor),txid:postdata[i].txid,txn:postdata[i].vout});
+          result.push({script:postdata[i].scriptPubKey,amount:padFloat(postdata[i].amount,factor),txid:postdata[i].txid,txn:postdata[i].vout});
         }
       } else { success = false; }
       break;
@@ -203,7 +202,7 @@ function post(properties) {
         postdata = postdata.unspent_outputs;
         result = [];
         for (var i in postdata) {
-          result.push({amount:fromInt(postdata[i].value,factor),txid:postdata[i].tx_hash,txn:postdata[i].tx_output_n});
+          result.push({script:postdata[i].script,amount:fromInt(postdata[i].value,factor),txid:postdata[i].tx_hash,txn:postdata[i].tx_output_n});
         }
       } else { success = false;	}
       break;

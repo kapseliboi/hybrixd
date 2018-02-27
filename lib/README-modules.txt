@@ -67,7 +67,22 @@ test
 
 unspent        “prepare” pre-transacties acties/informatie ophalen.Transactie voorbereiden. (Legacy van Bitcoin, maar ook bruikbaar voor anderen  )
 Syntax: a/$ASSET/unspent/$SOURCE_ADDRESS/$TARGET_ADDRESS/$AMOUNT/$PUBLIC_KEY
-??
+Output:
+For Blockexplorer (Bitcoin-like)
+{
+ unspents:[{txid:, txn:,script: $SCRIPT}],
+ change:$CHANGE
+}
+with $SCRIPT the scriptPubKey  and $CHANGE een float.
+
+For Ethereum:
+{
+ nonce:$NONCE
+}
+with $NONCE a number
+
+
+
 
 history
 ?? TODO get transaction history
