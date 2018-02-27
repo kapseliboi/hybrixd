@@ -16,36 +16,48 @@ function init() {
   modules.initexec('quartz',['init']);
 }
 
+// Preprocess quartz command
+function preprocess(command,recipe,xpath){
+  var re;
+  var parsedCommand = command;
+  re = /[$]([_a-zA-Z][\w\-]*)::([_\w\-]*)/g; // Search for "$recipeId::propertyId"
+  parsedCommand =  parsedCommand.replace(re, function(full,recipeId,propertyId) {
+    var recipe;
+
+    if(global.hybridd.asset.hasOwnProperty(recipeId)){
+      recipe = global.hybridd.asset[recipeId];
+    }else if(global.hybridd.source.hasOwnProperty(recipeId)){
+      recipe = global.hybridd.source[recipeId];
+    }else{
+      console.log(` [!] Error: Recipe "${recipeId}" for "${full}" not found. Neither asset nor source.`);
+      return full;
+    }
+
+    return recipe[propertyId];
+
+  }); // Replace all "$recipeId::propertyId" with recipe["recipeId"]["propertyId"]
+
+  re = /[$]([_a-zA-Z][\w\-_]*)/g; // Search for "$propertyId" and "$_propertyId-with_dashes--andNumbers1231"
+  parsedCommand = parsedCommand.replace(re, function(full,propertyId) {return recipe[propertyId];}); // Replace all "$propertyId" with recipe["propertyId"]
+
+  re = /[$][\d]+/g; // Search for $0, $1, ...
+  parsedCommand = parsedCommand.replace(re, function(x) {return xpath[x.substr(1)];}); // Replace all "$1" with xpath[1]
+  return parsedCommand;
+}
+
 // preprocess quartz code
 function addSubprocesses(subprocesses,commands,recipe,xpath) {
+
   for(var i=0,len=commands.length;i<len;++i){
-    var re;
-    var command =  commands[i];
-
-    re = /[$]([_a-zA-Z][\w\-]*)::([_\w\-]*)/g; // Search for "$recipeId::propertyId"
-    command =  command.replace(re, function(full,recipeId,propertyId) {
-      var recipe;
-
-      if(global.hybridd.asset.hasOwnProperty(recipeId)){
-        recipe = global.hybridd.asset[recipeId];
-      }else if(global.hybridd.source.hasOwnProperty(recipeId)){
-        recipe = global.hybridd.source[recipeId];
-      }else{
-        console.log(` [!] Error: Recipe "${recipeId}" for "${full}" not found. Neither asset nor source.`);
-        return full;
-      }
-
-      return recipe[propertyId];
-
-    }); // Replace all "$recipeId::propertyId" with recipe["recipeId"]["propertyId"]
-
-    re = /[$]([_a-zA-Z][\w\-_]*)/g; // Search for "$propertyId" and "$_propertyId-with_dashes--andNumbers1231"
-    command = command.replace(re, function(full,propertyId) {return recipe[propertyId];}); // Replace all "$propertyId" with recipe["propertyId"]
-
-    re = /[$][\d]+/g; // Search for $0, $1, ...
-    command = command.replace(re, function(x) {return xpath[x.substr(1)];}); // Replace all "$1" with xpath[1]
-    subprocesses.push(command);
+    subprocesses.push(preprocess(commands[i],recipe,xpath));
   }
+
+  // Postprocess: Append formating of result for specific commands
+  var command = xpath[0];
+  if(command === "balance" || command === "fee"){ // Append formatting of returned numbers
+    subprocesses.push(preprocess('form(data,$factor)',recipe,xpath));
+  }
+
 }
 
 function connectionOptions(recipe){
@@ -67,10 +79,10 @@ function connectionOptions(recipe){
   }
   return options;
 }
+
 // standard functions of an asset store results in a process superglobal -> global.hybridd.process[processID]
 // child processes are waited on, and the parent process is then updated by the postprocess() function
 function exec(properties) {
-
   // decode our serialized properties
   var processID = properties.processID;
   var recipe = properties.target; // The recipe object
@@ -94,7 +106,6 @@ function exec(properties) {
   }else{
     console.log(' [i] Error: recipe is neither asset nor symbol.');
   }
-
 
 
   global.hybridd.proc[processID].request = properties.command;   // set request to what command we are performing
@@ -127,16 +138,13 @@ function exec(properties) {
       Object.assign(newRecipe, recipe);
 
       addSubprocesses(subprocesses,baseRecipe.quartz[command],newRecipe,properties.command);
+
     }else{
       subprocesses.push('stop(1,"Recipe function \''+command+'\' not supported for \''+id+'\' nor for base  \''+base+'\'.")');
     }
 
   }else{
     subprocesses.push('stop(1,"Recipe function \''+command+'\' not supported for \''+id+'\'.")');
-  }
-
-  if(command === "balance" || command === "fee"){ // Append formatting of returned numbers
-    subprocesses.push('form(data,$factor)');
   }
 
   // fire the Qrtz-language program into the subprocess queue
