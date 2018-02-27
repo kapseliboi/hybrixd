@@ -120,8 +120,6 @@ function exec(properties) {
   if(command=='init'){
 
     if(recipe.hasOwnProperty("host")){  // set up REST API connection
-      console.log(">>> Recipe: "+ JSON.stringify((recipe)));
-      console.log(">>> options: "+ JSON.stringify(connectionOptions(recipe)));
       list[id].link = new Client(connectionOptions(recipe));
     }
 
