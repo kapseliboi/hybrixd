@@ -65,6 +65,7 @@
   "n":{"_alias":"network"},
   "net":{"_alias":"network"},
   "network":{},
+  "l":{"_alias":"list"},
   "list":{
     "asset" : {
       "names":"TODO",
