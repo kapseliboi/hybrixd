@@ -12,7 +12,7 @@
   "quartz":{
     "init" : [
       "curl('asset://$symbol','/utils/seed/2','GET')",
-      "logs(1,'module $symbol: '+(data?'connected':'failed connection')+' to host [$host]')"
+      "logs(1,'module: $symbol: '+(data?'connected':'failed connection')+' to host [$host]')"
     ],
     "status" : [
       "curl('asset://$symbol','/utils/seed/2','GET')",
