@@ -34,6 +34,12 @@ Description: account balance
 Input: Address  (sourceaddress)
 Output: Number (formatted using factor)
 
+contract
+Syntax a/$ASSET/contract/$SOURCE_ADDRESS
+Description: Retrieve contract data
+Input: Address  (sourceaddress)
+Output: Contract data
+
 push             iets pushen naar blockchain (meestal signed transaction) doorsturen (bij ethereum contracts)
 Syntax: a/$ASSET/push/$TRANSACTION_STRING
 Input:
@@ -53,7 +59,7 @@ transactionObject = {
 
 Transformation: Modules deterministic is used to transform the transaction object into a string  (deterministic.transaction(transactionObject))
 
-Ouput: Succes/Failure?
+Output: Succes/Failure?
 
 address
 ?? counterpart module
@@ -86,9 +92,6 @@ with $NONCE a number
 
 history
 ?? TODO get transaction history
-
-contract
-??
 
 transferlist,confirm [Only for Meta Module]
 ??

@@ -6,16 +6,37 @@
     "_ref":{
       "_list":"asset",
       "address":"TODO",
-      "balance":"Retrieve the balance TODO",
-      "contract":"TODO",
-      "factor":"Retrieve the factor TODO",
-      "fee":"Retrieve the fee TODO",
+      "balance":{
+        "_this": "Retrieve the balance TODO",
+        "_response": {"error":0,"info":"Process data.","id":"1519829438958324","progress":1,"started":1519829438958,"stopped":1519829440606,"data":"0.025106200000000000"}
+      },
+      "contract":{
+        "_this": "Retrieve the balance TODO",
+        "_response": [
+          {"error":1,"info":"Process data.","id":"1519829579467984","progress":1,"started":1519829579467,"stopped":1519829579499,"data":"Error: Not a contract address!"},
+          {"error":0,"info":"Process data.","id":"1519829634775083","progress":1,"started":1519829634775,"stopped":1519829634778,"data":"0xf230b790E05390FC8295F4d3F60332c93BEd42e2"}
+        ]
+      },
+      "factor":{
+        "_this": "Retrieve the factor TODO",
+        "_response": {"error":0,"info":"Process data.","id":"1519829794292742","progress":1,"started":1519829794292,"stopped":1519829794316,"data":"18"}
+      },
+      "fee":{
+        "_this": "Retrieve the fee TODO",
+        "_response": {"error":0,"info":"Process data.","id":"1519830189432904","progress":1,"started":1519830189432,"stopped":1519830189437,"data":"0.000420000000000000"}
+      },
       "history":"Retrieve asset history TODO",
-      "push":"Push a signed transaction.",
+      "push":{
+        "_this":"Push a signed transaction.",
+        "_response" : "{\"error\":0,\"info\":\"Process data.\",\"id\":\"1519830244168082\",\"progress\":1,\"started\":1519830244168,\"stopped\":1519830244173,\"data\":$TRANSACTION_ID}"
+      },
       "status":"Retrieve the status of the service. TODO",
       "test":"TODO",
       "transfer":"TODO",
-      "unspent":"Retrieve the unspent. Unspent is a bitcoin related term that in hybridd is used for pretransactional data. Bitcoin: unspent means available inputs for creating a transaction. Ethereum: unspent means the most recent nonce of the cryptocurrency account needed for constructing a transaction.  NXT: unspent means the server reply information needed to construct a deterministic transaction."
+      "unspent": {
+        "_this" : "Retrieve the unspent. Unspent is a bitcoin related term that in hybridd is used for pretransactional data. Bitcoin: unspent means available inputs for creating a transaction. Ethereum: unspent means the most recent nonce of the cryptocurrency account needed for constructing a transaction.  NXT: unspent means the server reply information needed to construct a deterministic transaction.",
+        "_response" : {"error":0,"info":"Process data.","id":"1519830913478733","progress":1,"started":1519830913478,"stopped":1519830914923,"data":{"nonce":"1"}}
+      }
     },
     "command":{
       "_access":"root"
