@@ -21,15 +21,15 @@
       "stop(1,'No result')"
     ],
     "factor" : [
-      "pass($factor)"
+      "pass('$factor')"
     ],
     "balance" : [
       "test('$1',2,1,data)",
       "stop(1,'No source address')",
       "curl('$block-explorer-host','/addresses/balance/details/$1','GET')",
-      "tran('.effective',data,1,2)",
+      "tran('.regular',data,1,2)",
       "stop(1,'No result!')",
-      "pass(data)"
+      "pass(data/Math.pow(10,$factor))"
     ],
     "fee" : [
       "pass('$fee')"
