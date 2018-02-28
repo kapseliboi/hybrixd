@@ -81,8 +81,8 @@ Pass data to the parent process.
 data:       Store data in this subprocess data field. (Passed to parent process on stop.)
 
 Examples:
-  push("Nice dude!")   // push data "Nice dude!" to master process
-  push("Wow: "+data)   // push data "Wow:" with previous subprocess data concatenated
+  pass("Nice dude!")   // push data "Nice dude!" to master process
+  pass("Wow: "+data)   // push data "Wow:" with previous subprocess data concatenated
 
 Preferred option: pass !
 
@@ -170,11 +170,11 @@ invalid:  Amount of instructions lines to jump when property does not exist.   (
 valid:    Amount of instructions lines to jump when property exists.           (1 = jump forward 1 instruction, -2 = jump backward two instructions)
 
 Examples:
-  chck(".foo",2,{foo:"bar"})                  // Passes "bar" to next
-  chck(".foo.bar[2]",2,{foo:{bar:[0,1,5]}})   // Passes 5 to next
-  chck(".foo.bar[2]",2,{foo:"bar"})           // Jumps 2 instructions and passes {foo:"bar"}
-  chck([".foo",".hello"],2,{foo:"bar",hello:"world"})           // Passes ["bar","world"] to next
-  chck({a:".foo",b:".hello",c:"test"},2,{foo:"bar",hello:"world"})  // Passes {a:"bar", b:"world", c:"test"} to next
+  tran(".foo",2,{foo:"bar"})                  // Passes "bar" to next
+  tran (".foo.bar[2]",2,{foo:{bar:[0,1,5]}})   // Passes 5 to next
+  tran (".foo.bar[2]",2,{foo:"bar"})           // Jumps 2 instructions and passes {foo:"bar"}
+  tran ([".foo",".hello"],2,{foo:"bar",hello:"world"})           // Passes ["bar","world"] to next
+  tran ({a:".foo",b:".hello",c:"test"},2,{foo:"bar",hello:"world"})  // Passes {a:"bar", b:"world", c:"test"} to next
 
   form(data, factor)
 

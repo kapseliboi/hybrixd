@@ -33,7 +33,7 @@
       "stop(1,'Broadcast failed!')",
       "tran('.result',data,1,2)",
       "stop(1,'No result!')",
-      "stop(0,data)"
+      "pass(data)"
     ],
     "factor" : [
       "stop(0,'$factor')"
@@ -41,7 +41,7 @@
     "history" : [],
     "contract" : [],
     "fee" : [
-      "stop(0,'$fee')"
+      "pass('$fee')"
     ]
   }
 }
