@@ -29,7 +29,7 @@
     ],
     "push" : [
       "curl('asset://$symbol','','POST',{jsonrpc:'1.0',id: Math.floor(Math.random()*10000),method:'sendrawtransaction',params:['$1']},{'content-type':'text/plain'})",
-      "test(data,2)",
+      "test(data,2,1,data)",
       "stop(1,'Broadcast failed!')",
       "tran('.result',data,1,2)",
       "stop(1,'No result!')",
