@@ -190,14 +190,14 @@ Examples:
 creates an api call in the API queue
 
 target:       A string containing on of the following options
-- "[user[:password]@]host[:port]"  TODO
+- "[user[:password]@]host[:port]"
 - "asset://base[.mode]"
 - "source://base[.mode]"
 querystring:  A string containig the querypath  (Example: "/road/cars?color=red")
 method:       GET,POST or PUT
 data:         Data passed to call (optional)
 headers:       headers passed to call (optional)
-overwriteProperties: (optional) TODO
+overwriteProperties: (optional)
 - retry: max nr of retries allowed
 - throttle:
 - timeout:
