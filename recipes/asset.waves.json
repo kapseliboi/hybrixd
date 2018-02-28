@@ -4,7 +4,7 @@
   "module":"quartz",
   "mode":"waves",
   "factor":8,
-  "fee":0.0001,
+  "fee":0.001,
   "host":"http://127.0.0.1:6869",
   "cache":15000,
   "throttle":5,
