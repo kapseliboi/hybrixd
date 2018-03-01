@@ -1,7 +1,8 @@
 
   // fill local usercrypto object with keys and nonce later on
   GL = {
-    usercrypto:{ user_keys: args.user_keys, nonce: args.nonce }
+    usercrypto:{ user_keys: args.user_keys, nonce: args.nonce },
+    powqueue:[]
   }
 
   // retrieve modes supported by node
@@ -27,9 +28,10 @@
 
   // once every minute, loop through proof-of-work queue
   setInterval(function() {
-    var payload = powqueue.shift();
-    if(typeof payload!=='undefined') {
+    var payload = GL.powqueue.shift();
+    if(typeof payload !== 'undefined') {
+      // DEBUG: logger('decentralized storage proof: '+payload);
       // attempt to send proof-of-work to node
       hybriddcall({r:'s/storage/pow/'+payload,z:0},0, function(object) {});
     }
-  },60000);
+  },30000);

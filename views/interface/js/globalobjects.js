@@ -4,8 +4,6 @@ pass_args = {};   // passes arguments between views - FIXME!
 
 intervals = {};   // stores timing intervals
 
-powqueue = [];    // queue to store proof of work hashes
-
 assets = {
   count : 0,       // amount of assets
   init  : [],      // initialization status

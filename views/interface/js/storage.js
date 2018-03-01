@@ -57,8 +57,8 @@ var storage = (function() {
               var loop_step = next_step();
               hybriddcall({r:'s/storage/set/'+storekey+'/'+value,c:GL.usercrypto,s:loop_step,z:0},0, function(object) {
                 // add to proof of work queue
-                if(typeof object.data === 'string' && powqueue.indexOf(meta.res) != -1) {
-                  powqueue.push(storekey+'/'+object.data);
+                if(typeof object.data === 'string' && GL.powqueue.indexOf(meta.res) === -1) {
+                  GL.powqueue.push(storekey+'/'+object.data);
                 }
               });
             });
@@ -69,9 +69,9 @@ var storage = (function() {
             if(typeof postfunction === 'function') {
               postfunction(value);
             }
-            if(meta.res!=='undefined' && meta.res!==1 && powqueue.indexOf(meta.res) != -1) {
+            if(meta.res !== 'undefined' && meta.res !== 1 && GL.powqueue.indexOf(meta.res) !== -1) {
               // add to proof of work queue
-              powqueue.push(storekey+'/'+meta.res);
+              GL.powqueue.push(storekey+'/'+meta.res);
             }
           });
         }

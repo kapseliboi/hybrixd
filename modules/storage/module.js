@@ -110,7 +110,7 @@ function proof(properties) {
   var pow = properties.pow;
   storage.GetMeta(key, function(meta) {
     if(meta!==null) {
-      if(meta.pow===pow) {
+      if(meta.res===pow) {
         meta.res=1;
         storage.SetMeta(key, meta);
         scheduler.stop(processID,{err:0,data:'OK'});
