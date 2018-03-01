@@ -5,6 +5,6 @@ WHEREAMI=`pwd`
 export PATH=$WHEREAMI/node/bin:"$PATH"
 NPMINST=`which npm`
 
-$WHEREAMI/node_modules/npm/bin/npm-cli.js install $TARGET
+node $WHEREAMI/node_modules/npm/bin/npm-cli.js install $TARGET
 
 export PATH=$OLDPATH
