@@ -7,9 +7,7 @@ var proofOfWork = require('../../lib/crypto/proof');
 
 // exports
 exports.init = init;
-exports.tick = tick;
 exports.exec = exec;
-exports.stop = stop;
 exports.proof = proof;
 exports.getStorage = getStorage;
 exports.getMeta = getMeta;
@@ -18,14 +16,6 @@ exports.getMeta = getMeta;
 function init() {
   var modulename = 'storage';
   // check for storage directory? if not there make one?
-}
-
-// stop function
-function stop() {
-}
-
-// loop tick called by internal scheduler
-function tick(properties) {
 }
 
 // exec
@@ -110,7 +100,7 @@ function proof(properties) {
   var pow = properties.pow;
   storage.GetMeta(key, function(meta) {
     if(meta!==null) {
-      if(meta.res===pow) {
+      if(meta.pow===pow) {
         meta.res=1;
         storage.SetMeta(key, meta);
         scheduler.stop(processID,{err:0,data:'OK'});
