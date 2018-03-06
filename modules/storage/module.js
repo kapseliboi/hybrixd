@@ -15,7 +15,12 @@ exports.getMeta = getMeta;
 // initialization function
 function init() {
   var modulename = 'storage';
-  // check for storage directory? if not there make one?
+  // check for storage directory? if not there make one
+  
+  // run autoclean every X seconds
+  setTimeout(function() {
+    storage.AutoClean();
+  },5000);
 }
 
 // exec
