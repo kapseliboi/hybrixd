@@ -51,7 +51,7 @@ function exec(properties) {
                 var difficulty = (bytes*64>5000?bytes*64:5000);            // the more bytes to store, the bigger the POW challenge
                 var pow = proofOfWork.create(difficulty);
                 // save storage
-                storage.Set(command[1],command[2],{time:Date.now(),hash:DJB2.hash(command[2]),size:bytes,pow:pow.proof,res:pow.hash});
+                storage.Set(command[1],command[2],{time:Date.now(),hash:DJB2.hash(command[2]),size:bytes,pow:pow.proof,res:pow.hash,n:0});
                 subprocesses.push('stop(0,"'+pow.hash+'")');
               } else {
                 subprocesses.push('stop(1,"Storage object limit is 4096 bytes!")');
@@ -101,9 +101,14 @@ function proof(properties) {
   storage.GetMeta(key, function(meta) {
     if(meta!==null) {
       if(meta.pow===pow) {
-        meta.res=1;
-        storage.SetMeta(key, meta);
-        scheduler.stop(processID,{err:0,data:'OK'});
+        if(meta.res!==1) {
+          meta.n+=1;
+          meta.res=1;
+          storage.SetMeta(key, meta);
+          scheduler.stop(processID,{err:0,data:'OK'});
+        } else {
+          scheduler.stop(processID,{err:0,data:'Ignored.'});
+        }
       } else {
         scheduler.stop(processID,{err:1,data:'Invalid proof!'});
       }
@@ -133,7 +138,6 @@ function getMeta(properties) {
       scheduler.stop(processID,{err:1,data:null});
     } else {
       if(typeof meta.pow!=='undefined') { delete meta.pow; }
-      if(typeof meta.read!=='undefined') { delete meta.read; }
       scheduler.stop(processID,{err:0,data:meta});
     }
   });

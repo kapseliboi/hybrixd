@@ -27,7 +27,7 @@
   });
 
   // once every two minutes, loop through proof-of-work queue
-  setInterval(function() {
+  intervals.pow = setInterval(function() {
     var req = GL.powqueue.shift();
     if(typeof req !== 'undefined') {
       // attempt to send proof-of-work to node
