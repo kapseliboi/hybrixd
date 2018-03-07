@@ -17,10 +17,12 @@ function init() {
   var modulename = 'storage';
   // check for storage directory? if not there make one
   
-  // run autoclean every X seconds
-  setTimeout(function() {
+  //
+  // FIXME: properly run autoclean every X seconds, without setInterval
+  //
+  setInterval(function() {
     storage.AutoClean();
-  },5000);
+  },300000); // every five minutes
 }
 
 // exec
