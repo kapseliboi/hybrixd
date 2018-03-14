@@ -129,27 +129,19 @@ function exec(properties) {
     }
   }
 
+  console.log(">>"+id+" : "+recipe.fee+" "+JSON.stringify(recipe.quartz.fee));
+
   var subprocesses = [];
   if(typeof recipe.quartz!=='undefined' && recipe.quartz.hasOwnProperty(command)){
 
     addSubprocesses(subprocesses,recipe.quartz[command],recipe,properties.command);
-
+/*
   } else if(base && token){ // use implicit inheritance from base class for tokens
 
     var baseRecipe = list[base];
     if(baseRecipe.quartz.hasOwnProperty(command)){
       // merge the base and token recipe to be passed
-      /*
-      var insRecipe = {};
-      if(typeof baseRecipe.quartz!=='undefined') {
-        insRecipe = baseRecipe.quartz;
-        delete(baseRecipe.quartz);
-      }*/
-      // override individual quartz commands
-      /*
-      if(insRecipe.hasOwnProperty(command)) {
-        newRecipe.quartz[command] = insRecipe[command];
-      }*/
+
 
       var newRecipe = Object.assign({}, recipe, baseRecipe);
 
@@ -161,12 +153,12 @@ function exec(properties) {
 
     } else {
       subprocesses.push('stop(1,"Recipe function \''+command+'\' not supported for \''+id+'\' nor for base  \''+base+'\'.")');
-    }
+    }*/
 
   } else {
     subprocesses.push('stop(1,"Recipe function \''+command+'\' not supported for \''+id+'\'.")');
   }
-  
+
   // fire the Qrtz-language program into the subprocess queue
   scheduler.fire(processID,subprocesses);
 }

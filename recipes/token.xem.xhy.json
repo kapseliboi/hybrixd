@@ -1,0 +1,15 @@
+{
+  "symbol":"xem.xhy",
+  "name":"Internet of Coins Hybrid Asset",
+  "module":"quartz",
+  "mode":"nem.mainnet",
+  "import": "xem",
+  "contract":"NB6TCTRBT7KUN5T5337LBSBIAYHL375VHCFZNOAU:internetofcoins:hybrid",
+  "originator":"NB6TCTRBT7KUN5T5337LBSBIAYHL375VHCFZNOAU",
+  "factor":6,
+  "quartz": {
+    "fee": [
+      "stop(0,'WOOPTIE!')"
+    ]
+  }
+}
