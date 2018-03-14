@@ -93,24 +93,23 @@ function exec(properties) {
   var processID = properties.processID;
   var recipe = properties.target; // The recipe object
 
-
   var id; // This variable will contain the recipe.id for sources or the recipe.symbol for assets
   var list; // This variable will contain the global.hybridd.source for sources or global.hybridd.asset for assets
   var base; // This variable will contain the base part of the symbol (the part before the '.' ) for assets
   var token;  // This variable will contain the token part of the symbol (the part after the '.' ) for assets
   if(recipe.hasOwnProperty("symbol")){ // If recipe defines an asset
     id = recipe.symbol;
-    list =  global.hybridd.asset;
+    list = global.hybridd.asset;
     var symbolSplit = id.split('.');
     base = symbolSplit[0];
-    if(symbolSplit.length>1){
+    if(symbolSplit.length>0){
       token = symbolSplit[1];
     }
   }else if(recipe.hasOwnProperty("id")){ // If recipe defines a source
     id = recipe.id;
     list = global.hybridd.source;
   }else{
-    console.log(' [i] Error: recipe is neither asset nor symbol.');
+    console.log(' [i] Error: recipe file contains neither asset symbol nor source id.');
   }
 
 
@@ -123,7 +122,7 @@ function exec(properties) {
       list[id].link = new Client(connectionOptions(recipe));
     }
 
-    // initialize deterministic code for smart contract calls if module-deterministic is defined
+    // initialize deterministic code for smart contract calls if mode is defined
     if(recipe.hasOwnProperty('module-deterministic')){
       var dcode = String(fs.readFileSync('../modules/deterministic/'+recipe['module-deterministic']+'/deterministic.js.lzma'));
       list[id].dcode = functions.activate( LZString.decompressFromEncodedURIComponent(dcode) );
@@ -131,28 +130,43 @@ function exec(properties) {
   }
 
   var subprocesses = [];
-  if(recipe.quartz.hasOwnProperty(command)){
+  if(typeof recipe.quartz!=='undefined' && recipe.quartz.hasOwnProperty(command)){
 
     addSubprocesses(subprocesses,recipe.quartz[command],recipe,properties.command);
 
-  }else if(base && token){ // use implicit inheritance from base class for tokens
+  } else if(base && token){ // use implicit inheritance from base class for tokens
 
     var baseRecipe = list[base];
     if(baseRecipe.quartz.hasOwnProperty(command)){
-      var newRecipe = {}; // Merge the base and token recipe to be passed
-      Object.assign(newRecipe, baseRecipe);
-      Object.assign(newRecipe, recipe);
+      // merge the base and token recipe to be passed
+      /*
+      var insRecipe = {};
+      if(typeof baseRecipe.quartz!=='undefined') {
+        insRecipe = baseRecipe.quartz;
+        delete(baseRecipe.quartz);
+      }*/
+      // override individual quartz commands
+      /*
+      if(insRecipe.hasOwnProperty(command)) {
+        newRecipe.quartz[command] = insRecipe[command];
+      }*/
 
-      addSubprocesses(subprocesses,baseRecipe.quartz[command],newRecipe,properties.command);
+      var newRecipe = Object.assign({}, recipe, baseRecipe);
 
-    }else{
+      if(typeof newRecipe['quartz-override']!=='undefined' && newRecipe['quartz-override'].hasOwnProperty(command)) {
+        newRecipe.quartz[command] = newRecipe['quartz-override'][command];
+      }
+
+      addSubprocesses(subprocesses,newRecipe.quartz[command],newRecipe,properties.command);
+
+    } else {
       subprocesses.push('stop(1,"Recipe function \''+command+'\' not supported for \''+id+'\' nor for base  \''+base+'\'.")');
     }
 
-  }else{
+  } else {
     subprocesses.push('stop(1,"Recipe function \''+command+'\' not supported for \''+id+'\'.")');
   }
-
+  
   // fire the Qrtz-language program into the subprocess queue
   scheduler.fire(processID,subprocesses);
 }
