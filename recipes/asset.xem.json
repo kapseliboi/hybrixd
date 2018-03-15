@@ -5,7 +5,6 @@
   "mode":"nem.mainnet",
   "factor":6,
   "fee":0.05,
-  "contract":"undefined",
   "host":["http://nsm.supernode.me:7890","http://esposium.de:7890","http://nem.homeip.net:7890","http://go.nem.ninja:7890"],
   "cache":120000,
   "throttle":5,
@@ -13,29 +12,43 @@
   "quartz":{
     "init" : [
       "curl('asset://$symbol','/heartbeat','GET')",
-      "logs(1,'module $symbol $contract: '+(typeof data.message!=='undefined' && data.message==='ok'?'connected':'failed connection')+' to host [$host]')"
+      "logs(1,'module $symbol: '+(typeof data.message!=='undefined' && data.message==='ok'?'connected':'failed connection')+' to host [$host]')"
     ],
     "status" : [
       "curl('asset://$symbol','/heartbeat','GET')",
       "logs(1,'module $symbol: '+(typeof data.message!=='undefined' && data.message==='ok'?'connected':'failed connection')+' to host [$host]')"
     ],
     "unspent" : [
-      "test('$contract',2,1)",
+      "test('$contract'==='undefined',1,2)",
       "stop(0,'Unspent returns mosaic data only in NEM tokens.')",
-      "pass('$contract')"
+      "poke('namespace','$contract'.split(':')[0])",
+      "curl('asset://$symbol','/account/mosaic/definition/page?address=$originator'+'&parent='+peek('namespace'),'GET')",
+      "tran('.data',data,1,2)",
+      "find({'namespaceId':peek('namespace')},data,2,1)",
+      "stop(1,'Contract address invalid or no mosaics found!')",
+      "pass(data)"
     ],
      "balance" : [
+      "test('$contract'==='undefined',1,6)",
       "curl('asset://$symbol','/account/get?address='+'$1'.replace(/-/g,''),'GET')",
       "tran('.account.balance',data,2,1)",
       "stop(1,null)",
       "form(data,$factor,'reduce')",
-      "pass(data)"
+      "stop(0,data)",      
+      "curl('asset://$symbol','/account/mosaic/owned?address='+'$1'.replace(/-/g,''),'GET')",
+      "tran('.data',data,2,1)",
+      "stop(1,null)",      
+      "find({'namespaceId':'internetofcoins'},data,1,2)",
+      "tran('.quantity',data,2,1)",
+      "pass(0)",
+      "form(data,$factor,'reduce')"
     ],
     "push" : [
       "jpar('$1')",
       "curl('asset://$symbol','/transaction/announce','POST',data,{'content-type':'application/json'})",
+      "test(typeof data.message!=='undefined' && data.message.substr(0,7)==='FAILURE',2,1)",
       "tran('.transactionHash.data',data,2,1)",
-      "stop(1,'Invalid transaction!')",
+      "stop(1,'Invalid transaction or transaction failure!')",
       "pass(data)"
     ],
     "factor" : [
@@ -45,7 +58,7 @@
     "contract" : [
       "test('$contract'==='undefined',1,2)",
       "stop(0,'Unspent returns mosaic data only in NEM tokens.')",
-      "pass('$contract')"
+      "pass('$originator:$contract')"
     ],
     "fee" : [
       "pass('$fee')"
