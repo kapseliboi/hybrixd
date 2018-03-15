@@ -129,7 +129,7 @@ function exec(properties) {
     }
   }
 
-  console.log(">>"+id+" : "+recipe.fee+" "+JSON.stringify(recipe.quartz.fee));
+  // DEBUG: console.log(">>"+id+" : "+recipe.fee+" "+JSON.stringify(recipe.quartz.fee));
 
   var subprocesses = [];
   if(typeof recipe.quartz!=='undefined' && recipe.quartz.hasOwnProperty(command)){
