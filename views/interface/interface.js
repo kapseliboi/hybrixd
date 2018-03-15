@@ -1,7 +1,8 @@
 
   // fill local usercrypto object with keys and nonce later on
   GL = {
-    usercrypto:{ user_keys: args.user_keys, nonce: args.nonce }
+    usercrypto:{ user_keys: args.user_keys, nonce: args.nonce },
+    powqueue:[]
   }
 
   // retrieve modes supported by node
@@ -25,11 +26,21 @@
     }
   });
 
-  // once every minute, loop through proof-of-work queue
-  setInterval(function() {
-    var payload = powqueue.shift();
-    if(typeof payload!=='undefined') {
+  // once every two minutes, loop through proof-of-work queue
+  intervals.pow = setInterval(function() {
+    var req = GL.powqueue.shift();
+    if(typeof req !== 'undefined') {
       // attempt to send proof-of-work to node
-      hybriddcall({r:'s/storage/pow/'+payload,z:0},0, function(object) {});
+      proofOfWork.solve(req.split('/')[1],
+        function(proof){ 
+          // DEBUG: 
+          logger('submitting storage proof: '+req.split('/')[0]+'/'+proof);
+          hybriddcall({r:'s/storage/pow/'+req.split('/')[0]+'/'+proof,z:0},0, function(object) {});
+        },
+        function(){ 
+          // DEBUG: 
+          logger('failed storage proof: '+req.split('/')[0]);
+        }
+      );
     }
-  },60000);
+  },120000);
