@@ -13,7 +13,7 @@
   "quartz":{
     "init" : [
       "curl('asset://$symbol','/heartbeat','GET')",
-      "logs(1,'module $symbol $contract: '+(typeof data.message!=='undefined' && data.message==='ok'?'connected':'failed connection')+' to host [$host]')"
+      "logs(1,'module $symbol: '+(typeof data.message!=='undefined' && data.message==='ok'?'connected':'failed connection')+' to host [$host]')"
     ],
     "status" : [
       "curl('asset://$symbol','/heartbeat','GET')",
