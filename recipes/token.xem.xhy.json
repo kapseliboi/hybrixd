@@ -2,7 +2,7 @@
   "symbol":"xem.xhy",
   "name":"Internet of Coins Hybrid Asset",
   "module":"quartz",
-  "mode":"nem.mainnet",
+  "mode":"nem.mosaic",
   "import": "xem",
   "contract":"internetofcoins:hybrid",
   "originator":"NB6TCTRBT7KUN5T5337LBSBIAYHL375VHCFZNOAU",
