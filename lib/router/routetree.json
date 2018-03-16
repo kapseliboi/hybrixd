@@ -100,6 +100,25 @@
       "_list" : "proc",
       "_this" : "Display process details."
     },
+    "kill":{
+      "_ref" : {
+        "_list" : "proc",
+        "_this" : "Kill a process and all child processes."
+      }
+    },
+    "pause":{
+      "_this" : "List all paused processes.",
+      "_ref" : {
+        "_list" : "proc",
+        "_this" : "Pause a process and all child processes."
+      }
+    },
+    "resume":{
+      "_ref" : {
+        "_list" : "proc",
+        "_this" : "Resume a paused process and all child processes."
+      }
+    },
     "peek":{
       "_access":"root",
       "_ref" : {

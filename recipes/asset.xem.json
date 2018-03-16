@@ -1,0 +1,54 @@
+{
+  "symbol":"xem",
+  "name":"New Economy Movement",
+  "module":"quartz",
+  "mode":"nem.mainnet",
+  "factor":6,
+  "fee":0.05,
+  "contract":"undefined",
+  "host":["http://nsm.supernode.me:7890","http://esposium.de:7890","http://nem.homeip.net:7890","http://go.nem.ninja:7890"],
+  "cache":120000,
+  "throttle":5,
+
+  "quartz":{
+    "init" : [
+      "curl('asset://$symbol','/heartbeat','GET')",
+      "logs(1,'module $symbol: '+(typeof data.message!=='undefined' && data.message==='ok'?'connected':'failed connection')+' to host [$host]')"
+    ],
+    "status" : [
+      "curl('asset://$symbol','/heartbeat','GET')",
+      "logs(1,'module $symbol: '+(typeof data.message!=='undefined' && data.message==='ok'?'connected':'failed connection')+' to host [$host]')"
+    ],
+    "unspent" : [
+      "test('$contract',2,1)",
+      "stop(0,'Unspent returns mosaic data only in NEM tokens.')",
+      "pass('$contract')"
+    ],
+     "balance" : [
+      "curl('asset://$symbol','/account/get?address='+'$1'.replace(/-/g,''),'GET')",
+      "tran('.account.balance',data,2,1)",
+      "stop(1,null)",
+      "form(data,$factor,'reduce')",
+      "pass(data)"
+    ],
+    "push" : [
+      "jpar('$1')",
+      "curl('asset://$symbol','/transaction/announce','POST',data,{'content-type':'application/json'})",
+      "tran('.transactionHash.data',data,2,1)",
+      "stop(1,'Invalid transaction!')",
+      "pass(data)"
+    ],
+    "factor" : [
+      "pass('$factor')"
+    ],
+    "history" : [],
+    "contract" : [
+      "test('$contract'==='undefined',1,2)",
+      "stop(0,'Unspent returns mosaic data only in NEM tokens.')",
+      "pass('$contract')"
+    ],
+    "fee" : [
+      "pass('$fee')"
+    ]
+  }
+}

@@ -156,18 +156,20 @@ Examples:
   test(b<=1,-4,1)   // test if b<=1, if true jump back four instructions, if false jump to the next instruction
   test(a>3,-5)      // test if a>3, if true jump back five instructions, else default jump to the next instruction
 
- tran(p,property, testObject, invalid,[valid], [data])
 
-checks if properties exists in testObject and uses that to create a
-transformed object. On success of the check it to valid or next, if
-not passes the testObject to invalid
+
+ tran(p,property, testObject, [valid], [invalid], [data])
+
+Checks if properties exist in testObject and uses that to pass a
+transformed object. On success of the check the function jumps to valid or next,
+if not it passes the testObject to invalid.
 
 property: A (or nested array/dicationary of) strings containing string
-values or the property paths to test (Example: "foo.bar")
+          values or the property paths to test (Example: "foo.bar")
 
 data:     Store data in this subprocess data field.
-invalid:  Amount of instructions lines to jump when property does not exist.   (1 = jump forward 1 instruction, -2 = jump backward two instructions)
 valid:    Amount of instructions lines to jump when property exists.           (1 = jump forward 1 instruction, -2 = jump backward two instructions)
+invalid:  Amount of instructions lines to jump when property does not exist.   (1 = jump forward 1 instruction, -2 = jump backward two instructions)
 
 Examples:
   tran(".foo",2,{foo:"bar"})                  // Passes "bar" to next
@@ -176,14 +178,24 @@ Examples:
   tran ([".foo",".hello"],2,{foo:"bar",hello:"world"})           // Passes ["bar","world"] to next
   tran ({a:".foo",b:".hello",c:"test"},2,{foo:"bar",hello:"world"})  // Passes {a:"bar", b:"world", c:"test"} to next
 
-  form(data, factor)
 
-Format a (balance) number) and passes it to next
 
-data:   Contains a number
-factor: Contains a number
+  form(data, factor, [conversion])
+
+Format a (floating point) number and return a neatly padded string
+
+data:         Contains a number
+factor:       Contains a number
+conversion:   Option to convert to or from atomic units.
+              Can take the values:  0 or 'none'
+                                    1 or 'reduce'
+                                    2 or 'atomic'
 
 Examples:
+  form(10,  $factor)    // If $factor is 8, passes: 10.00000000
+  form(0.8, $factor)    // If $factor is 4, passes: 0.8000
+
+
 
   curl(p,target, querystring,method,[data,headers,overwriteProperties])
 
@@ -239,15 +251,26 @@ Examples:
 
 
 
- jstr(string)
+ jstr(string)     // TODO: make primitive
 
-Turn a string into a JSON object.
+Turn a JSON object into a string
+
+string:	JSON object to turn into a string.
+
+Examples:
+ stop(0,jstr({key:'Some data.'})	// stops processing and returns "\{key:\"Some data.\"\}"
+ poke("myvar",jstr(data))         // turns data into string, and pokes it to 'myvar'
+
+
+
+ jpar(string,[failvalue])
+
+Turn a string into a JSON object. In case of failure pass failvalue.
 
 string:	String to turn into a JSON object.
 
 Examples:
- stop(0,jstr("{key:'Some data.'"))	// stops processing and returns {key:"Some data."}
- poke("myvar",jstr(data))                   // turns data into JSON, and pokes it to 'myvar'
+ jpar("{key:'Some data.'")	        // stops processing and returns {key:"Some data."}
 
 
 
