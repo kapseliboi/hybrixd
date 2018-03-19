@@ -3,6 +3,17 @@
 $(document).ready(function() {
   var clicked = false;
 
+  function scrollToQuestionOnLink () {
+    if (location.href.indexOf("#") != -1) {
+      var locationHref = location.href.substr(location.href.indexOf("#"));
+      if (locationHref === '#new') {
+        // PRNG.seeder.restart();
+        document.getElementById('newaccountmodal').style.display = 'block';
+        console.log("locationHref = ", locationHref);
+      }
+    }
+  }
+
   function handleLogin() {
     if (!clicked && !$('#loginbutton').hasClass('disabled')) {
       var userid = $('#inputUserID').val().toUpperCase();
@@ -55,6 +66,8 @@ $(document).ready(function() {
       }
       return true;
   });
+
+  scrollToQuestionOnLink()
 
 });
 
