@@ -26,6 +26,15 @@ if [ "$DARWIN_FLAG" != "" ]; then
  ln -s "./nodejs-runtime/darwin-x64" "$WHEREAMI/node"
 fi
 
+if [ ! -x "$WHEREAMI/.git/hooks/pre-push" ]; then
+  cp ./hooks/pre-push ./.git/hooks/pre-push
+  chmod +x ./.git/hooks/pre-push
+fi
+
+if [ ! -x "$WHEREAMI/.git/hooks/commit-msg" ]; then
+  cp ./hooks/commit-msg ./.git/hooks/commit-msg
+  chmod +x ./.git/hooks/commit-msg
+fi
 
 export PATH=$WHEREAMI/node/bin:"$PATH"
 NODEINST=`which node`

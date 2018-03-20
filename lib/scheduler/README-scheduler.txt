@@ -64,6 +64,15 @@ data:       Store data in this subprocess data field. (Passed to parent process 
 Examples:
   logs(0,"Nice dude!")   // logs "[.] Nice dude!" to console
 
+  dump(data)
+
+Dump (debug data)to the console
+
+data:       Store data in this subprocess data field. (Passed to parent process on stop.)
+
+Examples:
+  logs(0,{foo:"bar"})   // logs '[D] {foo:"bar"}' to console
+
 
  pass(data)
 
@@ -72,14 +81,14 @@ Pass data to the parent process.
 data:       Store data in this subprocess data field. (Passed to parent process on stop.)
 
 Examples:
-  push("Nice dude!")   // push data "Nice dude!" to master process
-  push("Wow: "+data)   // push data "Wow:" with previous subprocess data concatenated
+  pass("Nice dude!")   // push data "Nice dude!" to master process
+  pass("Wow: "+data)   // push data "Wow:" with previous subprocess data concatenated
 
 Preferred option: pass !
 
 
  prog(step [,steps] [,data] )
- 
+
 Force set the progress level of the parent process.
 
 step:   Current step in the progress. (Value -1 restores automatic progress reporting.)
@@ -93,7 +102,7 @@ Examples:
 
  func(module, function [,data] )
 
-Run a module's javascript function. 
+Run a module's javascript function.
 
 module:     Name of the module.
 function:   Name of the javascript function.
@@ -147,6 +156,62 @@ Examples:
   test(b<=1,-4,1)   // test if b<=1, if true jump back four instructions, if false jump to the next instruction
   test(a>3,-5)      // test if a>3, if true jump back five instructions, else default jump to the next instruction
 
+ tran(p,property, testObject, invalid,[valid], [data])
+
+checks if properties exists in testObject and uses that to create a
+transformed object. On success of the check it to valid or next, if
+not passes the testObject to invalid
+
+property: A (or nested array/dicationary of) strings containing string
+values or the property paths to test (Example: "foo.bar")
+
+data:     Store data in this subprocess data field.
+invalid:  Amount of instructions lines to jump when property does not exist.   (1 = jump forward 1 instruction, -2 = jump backward two instructions)
+valid:    Amount of instructions lines to jump when property exists.           (1 = jump forward 1 instruction, -2 = jump backward two instructions)
+
+Examples:
+  tran(".foo",2,{foo:"bar"})                  // Passes "bar" to next
+  tran (".foo.bar[2]",2,{foo:{bar:[0,1,5]}})   // Passes 5 to next
+  tran (".foo.bar[2]",2,{foo:"bar"})           // Jumps 2 instructions and passes {foo:"bar"}
+  tran ([".foo",".hello"],2,{foo:"bar",hello:"world"})           // Passes ["bar","world"] to next
+  tran ({a:".foo",b:".hello",c:"test"},2,{foo:"bar",hello:"world"})  // Passes {a:"bar", b:"world", c:"test"} to next
+
+  form(data, factor)
+
+Format a (balance) number) and passes it to next
+
+data:   Contains a number
+factor: Contains a number
+
+Examples:
+
+  curl(p,target, querystring,method,[data,headers,overwriteProperties])
+
+creates an api call in the API queue
+
+target:       A string containing on of the following options
+- "[user[:password]@]host[:port]"
+- "asset://base[.mode]"
+- "source://base[.mode]"
+querystring:  A string containig the querypath  (Example: "/road/cars?color=red")
+method:       GET,POST or PUT
+data:         Data passed to call (optional)
+headers:       headers passed to call (optional)
+overwriteProperties: (optional)
+- retry: max nr of retries allowed
+- throttle:
+- timeout:
+- interval:
+- user:
+- password:
+- proxy:
+- host:
+
+Examples:
+
+TODO
+
+
 
 
  poke(var [,data] )
@@ -182,7 +247,7 @@ string:	String to turn into a JSON object.
 
 Examples:
  stop(0,jstr("{key:'Some data.'"))	// stops processing and returns {key:"Some data."}
- poke("myvar",jstr(data))		    // turns data into JSON, and pokes it to 'myvar'
+ poke("myvar",jstr(data))                   // turns data into JSON, and pokes it to 'myvar'
 
 
 
@@ -193,8 +258,8 @@ Collate or collect data from previous subprocess steps into an array.
 steps:	Number of previous steps to collate. Zero value means all previous steps.
 
 Examples:
-  coll(0)           	  // collate data of all previous steps
-  coll(5)      		      // collate data of the last five steps
+  coll(0)                 // collate data of all previous steps
+  coll(5)                     // collate data of the last five steps
 
 
 

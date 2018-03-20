@@ -1,0 +1,42 @@
+#!/bin/bash
+me_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+me_FILE=$(basename $0)
+cd /
+
+#### CHILD HERE --------------------------------------------------------------------->
+if [ "$1" = "child" ] ; then   # 2. We are the child. We need to fork again.
+  shift; tty="$1"; shift
+  umask 0
+  sh $me_DIR/$me_FILE XXrefork_daemonXX "$tty" "$@" </dev/null >/dev/null 2>/dev/null &
+  exit 0
+fi
+
+##### ENTRY POINT HERE -------------------------------------------------------------->
+if [ "$1" != "XXrefork_daemonXX" ] ; then # 1. This is where the original call starts.
+
+  pid=$(ps -ax | grep "node hybridd.js" | grep -v "grep"  | cut -f 1 -d " ")
+
+  if [ -z $pid ]; then
+    tty=$(tty)
+    if [ -z $(which setsid) ]; then
+      # MAC OS does not have setsid
+      echo " [i] No setsid found. Launching a pseudo daemon."
+      cd $me_DIR/lib
+      node hybridd.js > $me_DIR/var/log/hybridd.log 2>&1  &
+    else
+      setsid $me_DIR/$me_FILE child "$tty" "$@" &
+    fi
+  else
+    echo " [!] hybridd already running (pid $pid)"
+  fi
+  exit 0
+fi
+
+##### RUNS AFTER CHILD FORKS (actually, on Linux, clone()s. See strace -------------->
+# 3. We have been reforked. Go to work.
+exec >/tmp/outfile
+exec 2>/tmp/errfile
+exec 0</dev/null
+
+shift; tty="$1"; shift
+node hybridd.js > $me_DIR/var/log/hybridd.log 2>&1
