@@ -129,12 +129,12 @@ function exec(properties) {
     }
   }
 
+  // DEBUG: console.log(">>"+id+" : "+recipe.fee+" "+JSON.stringify(recipe.quartz.fee));
+
   var subprocesses = [];
   if(typeof recipe.quartz!=='undefined' && recipe.quartz.hasOwnProperty(command)){
 
     addSubprocesses(subprocesses,recipe.quartz[command],recipe,properties.command);
-
-/*   Rouke: disabled on demand inheritance for tokens due to link object in target
 
   } else if(base && token){ // use implicit inheritance from base class for tokens
 
@@ -153,7 +153,7 @@ function exec(properties) {
 
     } else {
       subprocesses.push('stop(1,"Recipe function \''+command+'\' not supported for \''+id+'\' nor for base  \''+base+'\'.")');
-    }*/
+    }
 
   } else {
     subprocesses.push('stop(1,"Recipe function \''+command+'\' not supported for \''+id+'\'.")');
