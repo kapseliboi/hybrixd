@@ -10,7 +10,7 @@ UItransform = {
       } else {
         var maxlen = 11;   // amount of digits
         output = balance.substr(0, maxlen);
-        
+
         if (balance.length > maxlen) {
           output += '<span>&hellip;</span>';
         }
@@ -85,16 +85,20 @@ displayAssets = function displayAssets() {
     balance.amount[i] = 0;
     balance.lasttx[i] = 0;
 
-    var maybeAsset = GL.assetsStarred.find(function (starred) {
-      return starred.id === balance.asset[i]
+    var maybeAsset = GL.assetsStarred.find(function (asset) {
+      return asset.id === balance.asset[i]
     })
 
     var element=balance.asset[i].replace(/\./g,'-');
     var maybeStarActive = maybeAsset === undefined ? '' : ' id="' + maybeAsset['id'].replace(/\./g, '_') + '" onclick=toggle_star(' + i + ') '
+    var symbolName = entry.slice(entry.indexOf('.') + 1);
+    console.log(entry);
+    console.log("symbolName = ", symbolName);
+    var icon = (symbolName in black.svgs) ? black.svgs[symbolName] : svg['circle'];
 
     // var starIsToggled=storage.Get(userStorageKey('ff00-0033'));
     output+='<div class="tr">';
-    output+='<div class="td col1 asset asset-'+element+'"><div class="icon">'+svg['circle']+'</div>'+entry+'<div class="star"><a' + maybeStarActive + 'role="button">'+ svg['star'] + '</a></div></div>';
+    output+='<div class="td col1 asset asset-'+element+'"><div class="icon">'+icon+'</div>'+entry+'<div class="star"><a' + maybeStarActive + 'role="button">'+ svg['star'] + '</a></div></div>';
     output+='<div class="td col2 "><div class="balance balance-'+element+'">'+progressbar()+'</div></div>';
     output+='<div class="td col3 actions">';
     output+='<div class="assetbuttons assetbuttons-'+element+' disabled">';
