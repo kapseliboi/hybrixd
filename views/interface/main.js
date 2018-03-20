@@ -23,6 +23,7 @@ hy_content = ''; // variable to hold package content
 
 // CSS
 hy_content += '<style>';
+hy_content += fs.readFileSync('./../files/fonts/fonts.css');		// Fonts
 hy_content += fs.readFileSync('./css/spinner.css');		// Spinner for loading screens in CSS
 // DEPRECATED: already included in login -> hy_content += fs.readFileSync('./css/purecss.css');		// PureCSS
 hy_content += fs.readFileSync('./css/modal.css');		// CSS based modal boxes
