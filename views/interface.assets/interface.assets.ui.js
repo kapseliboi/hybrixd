@@ -93,7 +93,7 @@ displayAssets = function displayAssets() {
 
     var element=balance.asset[i].replace(/\./g,'-');
     var maybeStarActive = maybeAsset === undefined ? '' : ' id="' + maybeAsset['id'].replace(/\./g, '_') + '" onclick=toggle_star(' + i + ') ';
-    var balanceInDollars = renderDollarPrice(symbolName, balance.amount[i]);
+    var balanceInDollars = renderDollarPrice(symbolName, balance.amount[i])
 
     // var starIsToggled=storage.Get(userStorageKey('ff00-0033'));
     output+='<div class="tr">';
