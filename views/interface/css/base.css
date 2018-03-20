@@ -601,12 +601,23 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   height: 52px;
 }
 
-.content > .assets-main .table .col1, .content > .assets-main .table .col2 {
-  width: 65%;
+.content > .assets-main .table .col1 {
+  width: 50%;
+  float: left;
+}
+
+.content > .assets-main .table .col2 {
+  width: 30%;
   float: left;
 }
 
 .content > .assets-main .table .col3 {
+  width: 15%;
+  float: left;
+  margin-top: -52px;
+}
+
+.content > .assets-main .table .col4 {
   float: right;
   width: 35%;
   margin-top: -52px;
