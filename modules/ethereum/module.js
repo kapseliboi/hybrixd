@@ -58,7 +58,7 @@ function exec(properties) {
         // set up init probe command to check if RPC and block explorer are responding and connected
         subprocesses.push('func("ethereum","link",{target:'+jstr(target)+',command:["eth_gasPrice"]})');
         subprocesses.push('func("ethereum","post",{target:'+jstr(target)+',command:["init"],data:data,data})');
-        subprocesses.push('pass( (data != null && typeof data.result=="string" && data.result[1]=="x" ? 1 : 0) )');      
+        subprocesses.push('pass( (data != null && typeof data.result=="string" && data.result[1]=="x" ? 1 : 0) )');
         subprocesses.push('logs(1,"module ethereum: "+(data?"connected":"failed connection")+" to ['+target.symbol+'] host '+target.host+'")');      
       }
 		break;
