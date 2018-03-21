@@ -1,0 +1,44 @@
+{
+  "symbol":"bts",
+  "name":"BitShares",
+  "module":"quartz",
+  "mode":"bts.main",
+  "factor":8,
+  "fee":0.05,
+  "contract":"undefined",
+  "host":"wss://bitshares.openledger.info/ws",
+  "cache":120000,
+  "throttle":5,
+  "quartz":{
+    "init" : [
+      "curl('asset://$symbol','','',{'method': 'call', 'params': [1, 'login', ['', '']], 'id': 2})",
+      "logs(1,'module $symbol: '+(data?'connected':'failed connection')+' to host [$host]')"
+    ],
+    "status" : [
+       "stop(1,'Not yet implemented!')"
+    ],
+    "unspent" : [
+       "stop(1,'Not yet implemented!')"
+    ],
+     "balance" : [
+       "curl('asset://$symbol','','',{'id':1, 'method':'call', 'params':[0,'get_account_balances',['1.2.0',['1.3.0']]]})",
+       "tran('.result[0].amount',data,2,1)",
+       "stop(1,'No result!')",
+       "pass(data)"
+     ],
+    "push" : [
+      "stop(1,'Not yet implemented!')"
+
+    ],
+    "factor" : [
+      "pass('$factor')"
+    ],
+    "history" : [],
+    "contract" : [
+       "stop(1,'Not yet implemented!')"
+    ],
+    "fee" : [
+      "pass('$fee')"
+    ]
+  }
+}

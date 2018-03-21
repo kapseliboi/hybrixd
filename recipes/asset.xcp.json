@@ -1,0 +1,44 @@
+{
+  "symbol":"xcp",
+  "name":"Counterparty",
+  "module":"quartz",
+  "mode":"xcp.main",
+  "factor":8,
+  "fee":0.05,
+  "contract":"undefined",
+  "host":"https://wallet.counterwallet.io",
+  "cache":120000,
+  "throttle":5,
+
+
+  "quartz":{
+    "init" : [
+       "stop(1,'Not yet implemented!')"
+    ],
+    "status" : [
+       "stop(1,'Not yet implemented!')"
+    ],
+    "unspent" : [
+       "stop(1,'Not yet implemented!')"
+    ],
+     "balance" : [
+       "curl('asset://$symbol','/_api','POST',{'jsonrpc':'2.0','id':0,'method':'get_chain_address_info','params':{'addresses':['$1'],'with_uxtos':true,'with_last_txn_hashes':5}},{'content-type':'text/plain'})",
+       "tran('.result[0].info.balance',data,2,1)",
+       "stop(1,'No result!')",
+       "pass(data)"
+     ],
+    "push" : [
+       "stop(1,'Not yet implemented!')"
+    ],
+    "factor" : [
+      "pass('$factor')"
+    ],
+    "history" : [],
+    "contract" : [
+       "stop(1,'Not yet implemented!')"
+    ],
+    "fee" : [
+      "pass('$fee')"
+    ]
+  }
+}

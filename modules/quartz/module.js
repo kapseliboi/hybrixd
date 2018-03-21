@@ -6,6 +6,8 @@
 var fs = require('fs');
 var Client = require('../../lib/rest').Client;
 var functions = require('../../lib/functions');
+var WebSocket = require('ws');
+
 
 // exports
 exports.init = init;
@@ -97,6 +99,7 @@ function exec(properties) {
   var list; // This variable will contain the global.hybridd.source for sources or global.hybridd.asset for assets
   var base; // This variable will contain the base part of the symbol (the part before the '.' ) for assets
   var token;  // This variable will contain the token part of the symbol (the part after the '.' ) for assets
+
   if(recipe.hasOwnProperty("symbol")){ // If recipe defines an asset
     id = recipe.symbol;
     list = global.hybridd.asset;
@@ -112,14 +115,48 @@ function exec(properties) {
     console.log(' [i] Error: recipe file contains neither asset symbol nor source id.');
   }
 
-
   global.hybridd.proc[processID].request = properties.command;   // set request to what command we are performing
 
   var command = properties.command[0];
   if(command=='init'){
 
-    if(recipe.hasOwnProperty("host")){  // set up REST API connection
-      list[id].link = new Client(connectionOptions(recipe));
+    if(recipe.hasOwnProperty("host")){  // seta connection
+      if((typeof recipe.host === 'string' && (recipe.host.substr(0,5) === 'ws://' || recipe.host.substr(0,6) === 'wss://')) ||
+         (recipe.host[0].substr(0,5) === 'ws://' || recipe.host[0].substr(0,6) === 'wss://')
+        ){
+        try{
+
+          var connectUrl = "wss://bitshares.openledger.info/ws";
+
+
+          var options = {};
+
+          console.log("url:"+connectUrl+", options"+JSON.stringify( options));
+          var ws = new WebSocket(connectUrl, options);
+
+          ws.on('open', function open() {
+
+           console.log(" [i] WebSocket opened :"+connectUrl);
+
+
+          //  ws.send('{"method": "call", "params": [1, "login", ["", ""]], "id": 2}');
+
+          }).on('close', function close() {
+           console.log(" [i] WebSocket closed :"+connectUrl);
+          }).on('error', function error(code, description) {
+           console.log(" [i] WebSocket error :"+code+" "+description);
+          }).on('message', function message(data) {
+            console.log(data);
+          });
+
+          list[id].link = ws;
+
+        }catch(result){
+          console.log(`[!] Error initiating WebSocket -> ${result}`);
+        }
+      }else{
+        list[id].link = new Client(connectionOptions(recipe));
+      }
     }
 
     // initialize deterministic code for smart contract calls if mode is defined
@@ -133,27 +170,6 @@ function exec(properties) {
   if(typeof recipe.quartz!=='undefined' && recipe.quartz.hasOwnProperty(command)){
 
     addSubprocesses(subprocesses,recipe.quartz[command],recipe,properties.command);
-
-/*   Rouke: disabled on demand inheritance for tokens due to link object in target
-
-  } else if(base && token){ // use implicit inheritance from base class for tokens
-
-    var baseRecipe = list[base];
-    if(baseRecipe.quartz.hasOwnProperty(command)){
-      // merge the base and token recipe to be passed
-
-
-      var newRecipe = Object.assign({}, recipe, baseRecipe);
-
-      if(typeof newRecipe['quartz-override']!=='undefined' && newRecipe['quartz-override'].hasOwnProperty(command)) {
-        newRecipe.quartz[command] = newRecipe['quartz-override'][command];
-      }
-
-      addSubprocesses(subprocesses,newRecipe.quartz[command],newRecipe,properties.command);
-
-    } else {
-      subprocesses.push('stop(1,"Recipe function \''+command+'\' not supported for \''+id+'\' nor for base  \''+base+'\'.")');
-    }*/
 
   } else {
     subprocesses.push('stop(1,"Recipe function \''+command+'\' not supported for \''+id+'\'.")');
