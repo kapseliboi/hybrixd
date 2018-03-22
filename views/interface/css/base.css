@@ -158,10 +158,13 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   padding: .5em 0 .5em 1em;
   font-size: 1em;
   font-weight: 700;
+  text-align: center;
 }
 
 .custom-menu-bottom .pure-menu-link {
   opacity: 1;
+  width: 100px;
+  height: 80px;
   -webkit-transform: translateX(0);
   -moz-transform: translateX(0);
   -ms-transform: translateX(0);
@@ -183,8 +186,8 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 
 .custom-menu .pure-menu-link,
 .custom-menu .pure-menu-heading {
-  color: #FFF;
-  font-weight: 700;
+  color: #D9E3EB;
+  font-weight: 500;
 }
 
 .custom-menu .pure-menu-link:hover,
@@ -262,7 +265,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 .custom-menu-screen {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: #13212D;
   -webkit-transition: all 0.5s;
   -moz-transition: all 0.5s;
   -ms-transition: all 0.5s;
@@ -283,8 +286,13 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 
 .pure-menu-list {
   transition: all 0.5s ease;
-  background-color: rgba(19, 33, 45, .95);
+  background-color: #13212D;
   width: 100%;
+  text-align: center;
+  padding: 10px 0 10px 0;
+  -webkit-box-shadow: 0px 2px 6px 0px rgba(11, 21, 28, 0.41);
+  -moz-box-shadow: 0px 2px 6px 0px rgba(11, 21, 28, 0.41);
+  box-shadow: 0px 2px 6px 0px rgba(11, 21, 28, 0.41);
 }
 
 .custom-menu-tucked .pure-menu-active > .pure-menu-link, .pure-menu-link:hover, .pure-menu-link:focus {
@@ -303,7 +311,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   overflow: visible;
   padding: 0;
   white-space: normal;
-  /* width: 100%; # this will break logout */
+  width: 100%;
 }
 
 .custom-menu .pure-menu-link:hover, .custom-menu .pure-menu-heading:hover {
@@ -312,6 +320,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 
 .custom-menu .pure-menu-link.selected {
   color: #FFF;
+  font-weight: 700;
 }
 
 .custom-menu .disabled {
@@ -329,6 +338,11 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   padding: 0;
 }
 
+.custom-menu .disabled .m-icon {
+  opacity: .3;
+}
+
+
 /* menu tooltip */
 .custom-menu .disabled #tooltip {
   visibility: hidden;
@@ -339,6 +353,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   left: -20px;
   padding: 8px;
   font-size: 0.75em;
+  display: none;
 }
 
 .custom-menu .disabled #tooltip::after  {

@@ -4,6 +4,14 @@ TABLET LANDSCAPE STYLING: 900px and up
 
 @media (min-width: 900px) {
 
+  .custom-menu-bottom .break {
+    display: none;
+  }
+
+  .custom-menu-bottom .pure-menu-link {
+    height: 60px;
+  }
+
   /*****************************************************************/
   /* CONTENT */
   

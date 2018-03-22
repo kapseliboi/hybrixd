@@ -8,13 +8,15 @@
 		  </div>
 		  <div class="pure-menu pure-menu-horizontal pure-menu-scrollable custom-menu custom-menu-bottom custom-menu-tucked" id="tuckedMenu">
 			  <ul id="tuckedMenulist" class="pure-menu-list custom-menu-tucked">
-				  <li class="pure-menu-item"><a href="#" onclick="fetchview('interface.dashboard',pass_args);" class="pure-menu-link" id="topmenu-dashboard">Dashboard</a></li>
-          <li class="pure-menu-item"><a href="#" class="pure-menu-link" id="topmenu-assets">Assets</a></li>
-				  <li class="pure-menu-item"><a href="#" class="pure-menu-link disabled" id="topmenu-trade">Trade</a></li>
-				  <li class="pure-menu-item"><a href="#" class="pure-menu-link disabled" id="topmenu-chat">Chat</a></li>
-				  <li class="pure-menu-item"><a href="#" class="pure-menu-link disabled" id="topmenu-apps">Apps</a></li>
-				  <li class="pure-menu-item"><a href="#" class="pure-menu-link disabled" id="topmenu-other">Other</a></li>
-          <li class="pure-menu-item topmenu-logout-inline"><a href="#" id="topmenu-logout-inline" class="pure-menu-link topmenu-logout topmenu-logout-inline" onclick="location.reload();">Logout</a></li>
+				  <li class="pure-menu-item"><a href="#" onclick="fetchview('interface.dashboard',pass_args);" class="pure-menu-link" id="topmenu-dashboard"><div class="m-icon" id="dashboard-icon"></div>Dashboard</a></li>
+          <li class="pure-menu-item"><a href="#" class="pure-menu-link" id="topmenu-assets"><div class="m-icon" id="assets-icon"></div>Assets</a></li>
+				  <li class="pure-menu-item"><a href="#" class="pure-menu-link disabled" id="topmenu-trade"><div class="m-icon" id="trade-icon"></div>Trade</a></li>
+          <div class="break"></div>
+				  <li class="pure-menu-item"><a href="#" class="pure-menu-link disabled" id="topmenu-chat"><div class="m-icon" id="chat-icon"></div>Chat</a></li>
+				  <li class="pure-menu-item"><a href="#" class="pure-menu-link disabled" id="topmenu-apps"><div class="m-icon" id="apps-icon"></div>Apps</a></li>
+				  <li class="pure-menu-item"><a href="#" class="pure-menu-link disabled" id="topmenu-other"><div class="m-icon" id="other-icon"></div>Other</a></li>
+          <div class="break"></div>
+          <li class="pure-menu-item topmenu-logout-inline"><a href="#" id="topmenu-logout-inline" class="pure-menu-link topmenu-logout topmenu-logout-inline" onclick="location.reload();"><div id="logout-icon"></div>Logout</a></li>
         </ul>
 		  </div>
       <div id="topmenu-right"><div id="user-icon"></div><div id="userID"></div><div id="topmenu-logout" class="topmenu-logout" onclick="location.reload();"></div></div>
