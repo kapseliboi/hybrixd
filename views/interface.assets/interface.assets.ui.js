@@ -10,7 +10,7 @@ UItransform = {
       } else {
         var maxlen = 11;   // amount of digits
         output = balance.substr(0, maxlen);
-        
+
         if (balance.length > maxlen) {
           output += '<span>&hellip;</span>';
         }
@@ -19,22 +19,24 @@ UItransform = {
     return output;
   },
   txStart : function() {
-        $('#action-send .pure-button-send').addClass('pure-button-disabled').removeClass('pure-button-primary');
-        $('#action-send').css('opacity', '0.7');
-      },
+    loadSpinner();
+    $('#action-send .pure-button-send').addClass('pure-button-disabled').removeClass('pure-button-primary');
+    $('#action-send').css('opacity', '0.7');
+  },
   txStop : function() {
-        $('#action-send .pure-button-send').removeClass('pure-button-disabled').addClass('pure-button-primary');
-        $('#action-send').css('opacity', '1');
-      },
+    stopSpinner();
+    $('#action-send .pure-button-send').removeClass('pure-button-disabled').addClass('pure-button-primary');
+    $('#action-send').css('opacity', '1');
+  },
   txHideModal : function() {
-        $('#action-send').modal('hide').css('opacity', '1');
-      },
+    $('#action-send').modal('hide').css('opacity', '1');
+  },
   setBalance : function(element,setBalance) {
-        $(element).html(setBalance);
-      },
+    $(element).html(setBalance);
+  },
   deductBalance : function(element,newBalance) {
-        $(element).html('<span style="color:#D77;">'+String(newBalance))+'</span>';
-      }
+    $(element).html('<span style="color:#D77;">'+String(newBalance))+'</span>';
+  }
 }
 
 $(".clearable").each(function() {
@@ -107,6 +109,7 @@ displayAssets = function displayAssets() {
     output+='</div></div></div>';
     i++;
   }
+
   output+='</div></div>';
   // refresh assets
   ui_assets({i:i,balance:balance,path:path});
@@ -135,3 +138,11 @@ $(document).ready( function(){
     displayAssets();
   });
 });
+
+function loadSpinner () {
+  document.querySelector('#action-send .spinner').classList.add('active');
+}
+
+function stopSpinner () {
+  document.querySelector('#action-send .spinner').classList.remove('active');
+}
