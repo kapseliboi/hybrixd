@@ -14,7 +14,7 @@ TABLET LANDSCAPE STYLING: 900px and up
 
   /*****************************************************************/
   /* CONTENT */
-  
+
   .content {
     padding: 1.8em;
   }
@@ -23,25 +23,29 @@ TABLET LANDSCAPE STYLING: 900px and up
     width: 49.1%;
     margin: 0.5%;
   }
-  
+
   .button-label {
     display: inline;
   }
-  
+
   /*****************************************************************/
-  /* DASHBOARD */ 
+  /* DASHBOARD */
 
   .content > .dashboard-balances .balance {
     min-width: 90px;
     margin: 0 1%;
   }
 
-  .content > .dashboard-transactions, .content > .dashboard-chat {
+  .content > .dashboard-community,
+  .content > .dashboard-transactions,
+  .content > .dashboard-chat {
     margin-left: 0;
     margin-right: 0.5%;
   }
 
-  .content > .dashboard-trade, .content > .dashboard-apps {
+  .content > .dashboard-faq,
+  .content > .dashboard-trade,
+  .content > .dashboard-apps {
     margin-left: 0.5%;
     margin-right: 0;
   }

@@ -30,7 +30,7 @@ DESKTOP STYLING: 1200px and up
 
   .pure-menu-horizontal.pure-menu-scrollable {
     padding: 0;
-    width: fit-content; 
+    width: fit-content;
   }
 
   .pure-menu-list {
@@ -144,10 +144,12 @@ DESKTOP STYLING: 1200px and up
     margin-top: -1.4em;
   }
 
+  /*
   .content > .databox {
     width: 23.8%;
     margin: 0.5%;
   }
+  */
 
   /*****************************************************************/
   /* DASHBOARD */

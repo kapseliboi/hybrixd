@@ -12,6 +12,9 @@ TABLET PORTRAIT STYLING: 600px and up
   min-width: 25%;
 }
 
+.social-icons > div {
+  display: inline-block;
+}
 /*****************************************************************/
  /* ASSETS */
 

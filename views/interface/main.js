@@ -71,6 +71,7 @@ hy_content += addsvg('./svg/star.svg','star');
 hy_content += addsvg('./svg/add.svg','add');
 hy_content += addsvg('./svg/remove.svg','remove');
 hy_content += addsvg('./svg/logout-alt.svg','logout-alt');
+hy_content += addsvg('./svg/chevron-right.svg','chevron-right');
 
 hy_content += addsvg('./svg/dashboard.svg','dashboard');
 hy_content += addsvg('./svg/dashboard-o.svg','dashboard-o');
@@ -86,6 +87,12 @@ hy_content += addsvg('./svg/other.svg','other');
 hy_content += addsvg('./svg/other-o.svg','other-o');
 hy_content += addsvg('./svg/logout.svg','logout');
 hy_content += addsvg('./svg/logout-o.svg','logout-o');
+
+hy_content += addsvg('./svg/twitter.svg','twitter');
+hy_content += addsvg('./svg/telegram.svg','telegram');
+hy_content += addsvg('./svg/slack.svg','slack');
+hy_content += addsvg('./svg/riot.svg','riot');
+hy_content += addsvg('./svg/bitcointalk.svg','bitcointalk');
 
 hy_content += '$("#dashboard-icon").html(svg[\'dashboard-o\']);';
 hy_content += '$("#assets-icon").html(svg[\'assets-o\']);';
