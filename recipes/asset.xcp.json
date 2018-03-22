@@ -9,11 +9,11 @@
   "host":"https://wallet.counterwallet.io",
   "cache":120000,
   "throttle":5,
-
-
+  "api-documentation":"https://counterparty.io/docs/counterblock_api/",
   "quartz":{
     "init" : [
-       "stop(1,'Not yet implemented!')"
+      "curl('asset://$symbol','/_api','POST',{'jsonrpc':'2.0','id':0,'method':'is_ready','params':{}},{'content-type':'text/plain'})",
+      "logs(1,'module $symbol: '+(data?'connected':'failed connection')+' to host [$host]')"
     ],
     "status" : [
        "stop(1,'Not yet implemented!')"
@@ -28,12 +28,19 @@
        "pass(data)"
      ],
     "push" : [
-       "stop(1,'Not yet implemented!')"
+      "curl('asset://$symbol','/_api','POST',{'jsonrpc':'2.0','id':0,'method':'broadcast_tx','params':{'signed_tx_hex':'$1'}},{'content-type':'text/plain'})",
+      "test(data,2,1,data)",
+      "stop(1,'Broadcast failed!')",
+      "tran('.result',data,2,1)",
+      "stop(1,'No result!')",
+      "pass(data)"
     ],
     "factor" : [
       "pass('$factor')"
     ],
-    "history" : [],
+    "history" : [
+       "curl('asset://$symbol','/_api','POST',{ 'method': 'get_balances','params': {'filters': [{'field': 'address', 'op': '==', 'value': '14qqz8xpzzEtj6zLs3M1iASP7T4mj687yq'}, {'field': 'address', 'op': '==', 'value': '1bLockjTFXuSENM8fGdfNUaWqiM4GPe7V'}],'filterop': 'or'},'jsonrpc': '2.0', 'id': 0})"
+    ],
     "contract" : [
        "stop(1,'Not yet implemented!')"
     ],

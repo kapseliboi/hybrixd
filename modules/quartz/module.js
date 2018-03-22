@@ -119,34 +119,19 @@ function exec(properties) {
 
   var command = properties.command[0];
   if(command=='init'){
-
-    if(recipe.hasOwnProperty("host")){  // seta connection
-      if((typeof recipe.host === 'string' && (recipe.host.substr(0,5) === 'ws://' || recipe.host.substr(0,6) === 'wss://')) ||
-         (recipe.host[0].substr(0,5) === 'ws://' || recipe.host[0].substr(0,6) === 'wss://')
-        ){
+    if(recipe.hasOwnProperty("host")){  // set up connection
+      if((typeof recipe.host === 'string' && (recipe.host.substr(0,5) === 'ws://' || recipe.host.substr(0,6) === 'wss://'))){ // Websocket connections ws://, wss://
         try{
-
-          var connectUrl = "wss://bitshares.openledger.info/ws";
-
-
-          var options = {};
-
-          console.log("url:"+connectUrl+", options"+JSON.stringify( options));
-          var ws = new WebSocket(connectUrl, options);
+          var ws = new WebSocket(recipe.host, {});
 
           ws.on('open', function open() {
-
-           console.log(" [i] WebSocket opened :"+connectUrl);
-
-
-          //  ws.send('{"method": "call", "params": [1, "login", ["", ""]], "id": 2}');
-
+            console.log(" [i] WebSocket "+recipe.host + " opened.");
           }).on('close', function close() {
-           console.log(" [i] WebSocket closed :"+connectUrl);
+            console.log(" [i] WebSocket "+recipe.host + " opened.");
           }).on('error', function error(code, description) {
-           console.log(" [i] WebSocket error :"+code+" "+description);
+            console.log(" [i] WebSocket "+recipe.host + " : Error "+code+" "+description);
           }).on('message', function message(data) {
-            console.log(data);
+            console.log(" [!] Websocket "+recipe.host + " : Uncaught Message:"+ data);
           });
 
           list[id].link = ws;
@@ -154,7 +139,7 @@ function exec(properties) {
         }catch(result){
           console.log(`[!] Error initiating WebSocket -> ${result}`);
         }
-      }else{
+      }else{ // Http connection http:// https://
         list[id].link = new Client(connectionOptions(recipe));
       }
     }
