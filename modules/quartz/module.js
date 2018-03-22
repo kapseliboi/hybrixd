@@ -151,10 +151,31 @@ function exec(properties) {
     }
   }
 
+  // DEBUG: console.log(">>"+id+" : "+recipe.fee+" "+JSON.stringify(recipe.quartz.fee));
+
   var subprocesses = [];
   if(typeof recipe.quartz!=='undefined' && recipe.quartz.hasOwnProperty(command)){
 
     addSubprocesses(subprocesses,recipe.quartz[command],recipe,properties.command);
+
+  } else if(base && token){ // use implicit inheritance from base class for tokens
+
+    var baseRecipe = list[base];
+    if(baseRecipe.quartz.hasOwnProperty(command)){
+      // merge the base and token recipe to be passed
+
+
+      var newRecipe = Object.assign({}, recipe, baseRecipe);
+
+      if(typeof newRecipe['quartz-override']!=='undefined' && newRecipe['quartz-override'].hasOwnProperty(command)) {
+        newRecipe.quartz[command] = newRecipe['quartz-override'][command];
+      }
+
+      addSubprocesses(subprocesses,newRecipe.quartz[command],newRecipe,properties.command);
+
+    } else {
+      subprocesses.push('stop(1,"Recipe function \''+command+'\' not supported for \''+id+'\' nor for base  \''+base+'\'.")');
+    }
 
   } else {
     subprocesses.push('stop(1,"Recipe function \''+command+'\' not supported for \''+id+'\'.")');

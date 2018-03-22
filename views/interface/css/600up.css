@@ -25,13 +25,13 @@ TABLET PORTRAIT STYLING: 600px and up
 }
 
 .content > .assets-main .table .col2 {
-  width: 30%;
+  width: 20%;
   float:left;
 }
 
 .content > .assets-main .table .col3 {
   width: 30%;
-  float:right;
+  float:left;
   margin-top: 0;
 }
 

@@ -193,29 +193,29 @@ init.interface.assets = function(args) {
     $('#action-receive .modal-receive-status').attr('id','receivestatus-'+asset);
     $("#qrcode").html('').append( function() {
       new QRCode(document.getElementById("qrcode"),
-          { text:assets.addr[asset],
-            width: 160,
-            height: 160,
-            colorDark : "#000000",
-            colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.H
-          });
+                 { text:assets.addr[asset],
+                   width: 160,
+                   height: 160,
+                   colorDark : "#000000",
+                   colorLight : "#ffffff",
+                   correctLevel : QRCode.CorrectLevel.H
+                 });
     });
   }
   stop_recv = function() {
     $('#action-receive .modal-receive-status').attr('id','receivestatus'); // reset status ID attribute to avoid needless polling
   }
   check_tx = function() {
-      var p = {};
-      p.asset = $('#action-send .modal-send-currency').attr('asset');
-      p.target_address = String($('#modal-send-target').val());
-      p.amount = Number($("#modal-send-amount").val());
-      p.available = Number($('#action-send .modal-send-balance').html());
-      if(!isNaN(p.amount) && p.amount>0 && p.amount<=p.available && p.target_address) {
-        $('#action-send .pure-button-send').removeClass('disabled');
-      } else {
-        $('#action-send .pure-button-send').addClass('disabled');
-      }
+    var p = {};
+    p.asset = $('#action-send .modal-send-currency').attr('asset');
+    p.target_address = String($('#modal-send-target').val());
+    p.amount = Number($("#modal-send-amount").val());
+    p.available = Number($('#action-send .modal-send-balance').html());
+    if(!isNaN(p.amount) && p.amount>0 && p.amount<=p.available && p.target_address) {
+      $('#action-send .pure-button-send').removeClass('disabled');
+    } else {
+      $('#action-send .pure-button-send').addClass('disabled');
+    }
   }
 
   // fill asset elements
@@ -228,27 +228,41 @@ init.interface.assets = function(args) {
             var element = '.assets-main > .data .balance-'+balance.asset[i].replace(/\./g,'-');
             if((balance.lasttx[i]+120000)<(new Date).getTime()) {
               hybriddcall({r:'a/'+balance.asset[i]+'/balance/'+assets.addr[balance.asset[i]],z:0},element,
-                function(object){
-                  var assetbuttons = '.assets-main > .data .assetbuttons-'+balance.asset[i].replace(/\./g,'-');
-                  if(object.data!==null && !isNaN(object.data)){
-                    $(assetbuttons).delay(1000).removeClass('disabled');
-                    $(assetbuttons+' a').removeAttr('disabled');
-                    $(assetbuttons+' a').attr('data-toggle', 'modal');
-                    $(element).attr('amount',object.data);
-                    object.data = UItransform.formatFloat(object.data);
-                  } else {
-                    $(assetbuttons).addClass('disabled');
-                    $(assetbuttons+' a').removeAttr('data-toggle');
-                    $(element).attr('amount','?');
-                    object.data = '?';
-                  }
-                  return object;
-                }
-              );
+                          function(object){
+                            var assetbuttons = '.assets-main > .data .assetbuttons-'+balance.asset[i].replace(/\./g,'-');
+                            if(object.data!==null && !isNaN(object.data)){
+                              renderDollarPriceInAsset(balance.asset[i], Number(object.data));
+                              $(assetbuttons).delay(1000).removeClass('disabled');
+                              $(assetbuttons+' a').removeAttr('disabled');
+                              $(assetbuttons+' a').attr('data-toggle', 'modal');
+                              $(element).attr('amount',object.data);
+                              object.data = UItransform.formatFloat(object.data);
+                            } else {
+                              $(assetbuttons).addClass('disabled');
+                              $(assetbuttons+' a').removeAttr('data-toggle');
+                              $(element).attr('amount','?');
+                              object.data = '?';
+                            }
+                            return object;
+                          }
+                         );
             }
           }
         }
-      ,i*500,i);
+        ,i*500,i);
     }
+    setTimeout(getNewMarketPrices, 5000)
   }
+}
+
+function getNewMarketPrices () {
+  getDollarPrices(function () {
+    console.log('Fetched new prices.')
+  })
+}
+
+function renderDollarPriceInAsset (asset, amount) {
+  var symbolName = asset.slice(asset.indexOf('.') + 1);
+  var assetDollarPrice = renderDollarPrice(symbolName, amount)
+  document.getElementById(symbolName + '-dollar').innerHTML = assetDollarPrice;
 }
