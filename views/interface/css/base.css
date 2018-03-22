@@ -517,9 +517,6 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   }
 }
 
-.button-label {
-  display: none;
-}
 
 /*****************************************************************/
 /* DASHBOARD */
@@ -597,30 +594,37 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   filter: none;
 }
 
+.content > .assets-main .table .tr {
+  padding: 25px 10px;
+}
+
 .content > .assets-main .table .td {
-  height: 52px;
+  /*height: 52px;*/
+  padding: 3px 8px;
 }
 
 .content > .assets-main .table .col1 {
-  width: 50%;
+  width: 100%;
   float: left;
+  padding-bottom: 10px;
 }
 
 .content > .assets-main .table .col2 {
-  width: 30%;
+  width: 100%;
   float: left;
+  padding: 5px 43px;
 }
 
 .content > .assets-main .table .col3 {
-  width: 15%;
+  width: 100%;
   float: left;
-  margin-top: -52px;
+  padding: 5px 43px;
 }
 
 .content > .assets-main .table .col4 {
-  float: right;
-  width: 35%;
-  margin-top: -52px;
+  float: left;
+  width: 100%;
+  padding: 0 43px;
 }
 
 .content .table .thead {
@@ -641,7 +645,8 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 .content .table .icon {
   display:inline-block;
   vertical-align: middle;
-  padding-right: 8px;
+  padding-right: 15px;
+  margin-top: -3px;
 }
 
 .content .table .icon svg {
@@ -654,14 +659,26 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   margin-left: 8px;
 }
 
-.content .table .balance {
+.content .table .balance,
+.content .table .dollars {
   font-size: 1.167em;
-  font-weight: 600;
-  padding: 10px 11px 8px;
+  /*padding: 10px 11px 8px;*/
 }
 
 .content .table .balance:before {
   content: "Balance: ";
+  display: inline-block;
+  width: 110px;
+  color: #aaa;
+  margin-right: 5px;
+}
+
+.content .table .dollars:before {
+  content: "Balance (USD): ";
+  display: inline-block;
+  width: 110px;
+  color: #aaa;
+  margin-right: 5px;
 }
 
 .content .table .full-name {
@@ -671,22 +688,52 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 
 .content .table .balance .progress-radial {
   text-align: left;
-  display: inline-block;
-  margin-top:2px;
-}
-
-.content .table .actions {
-  text-align: right;
+  display: inline;
 }
 
 .content .table .actions .assetbuttons {
-  display: none;
+  margin-top: 5px;
+}
+
+.content .table .actions .assetbuttons .icon {
+  display:inline-block;
+  vertical-align: middle;
+  padding-right: 8px;
+  margin-top: -3px;
+}
+
+.content .table .actions .assetbuttons .icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.content .table .actions .assetbuttons .pure-button {
+  margin: 5px 0.5% 0 0.5%;
+  min-width: fit-content;
+  width: 49%;
+}
+
+.content .table .actions .assetbuttons .advanced-icon {
+  margin-top: 1px;
+}
+
+.content .table .actions .assetbuttons .advanced-icon svg {
+  width: 15px;
+  height: 15px;
+  padding: 0;
 }
 
 .content > #manage-assets .table .actions .assetbuttons {
   display: block;
   transition: ease 1s all;
+  text-align: right;
 }
+
+.content > #manage-assets .table .actions .assetbuttons .pure-button {
+  width: unset;
+  margin: 5px 0px;
+}
+
 
 .content > #manage-assets .table .actions .assetbuttons .pure-button .actions-icon {
   display: inline-block;
@@ -714,6 +761,10 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   width: 300px;
 }
 
+.content > #manage-assets .table .thead {
+  display: block;
+}
+
 .content > #manage-assets .table .col1 {
   width: 65%;
   float: left;
@@ -729,7 +780,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 .content > #manage-assets .icon {
-  padding: 0 0 5px 0;
+  padding: 0;
 }
 
  .content > #manage-assets .full-name {
@@ -775,8 +826,13 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   display: inline-block;
   padding: 0 7px 0px 0px;
   vertical-align: middle;
-  margin-top: 2px;
+  margin-top: 1px;
   float:left;
+}
+
+.pure-button .advanced-icon svg {
+  width: 16px;
+  height: 16px;
 }
 
 #action-send .modal-body p {
@@ -792,16 +848,6 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   display: block;
   margin: .5em auto;
   width: fit-content;
-}
-
-#action-actions .buttons .advanced-button .advanced-icon {
-  margin-top: 1px;
-  padding-right: 3px;
-}
-
-#action-actions .buttons .advanced-button .advanced-icon svg {
-  width: 16px;
-  height: 16px;
 }
 
 #action-send .modal-body .pure-form .max-amount-button {

@@ -59,15 +59,11 @@
 .progress-radial {
 	vertical-align: top;
 	text-align: center;
-	margin-left: auto;
-	margin-right: auto;
 	padding: 1px;
 }
 
 .progress-radial svg {
   display: inline-block;
-	margin-left: auto;
-	margin-right: auto;
   width: 0.6em;
   height: 0.6em;
   -webkit-transform: rotate(270deg);
@@ -78,8 +74,6 @@
 
 .progress-radial .dot {
   display: inline-block;
-	margin-left: auto;
-	margin-right: auto;
   background-color: #CCC;
   border-radius: 100%;
   -webkit-animation : scaleblink 1.0s infinite ease-in-out;

@@ -76,7 +76,7 @@ displayAssets = function displayAssets() {
   output+='<div class="tr">';
   output+='<div class="th col1 asset-title">Asset</div>';
   output+='<div class="th col2">Balance</div>';
-  output+='<div class="th col3">Dollars</div>';
+  output+='<div class="th col3">Balance (USD)</div>';
   output+='<div class="th col4 actions"></div>';
   output+='</div>';
   output+='</div>';
@@ -98,17 +98,15 @@ displayAssets = function displayAssets() {
     // var starIsToggled=storage.Get(userStorageKey('ff00-0033'));
     output+='<div class="tr">';
     output+='<div class="td col1 asset asset-'+element+'"><div class="icon">'+svg['circle']+'</div>'+entry+'<div class="star"><a' + maybeStarActive + 'role="button">'+ svg['star'] + '</a></div></div>';
-    output+='<div class="td col2 "><div class="balance balance-'+element+'">'+progressbar()+'</div></div>';
-    output+='<div id="' + symbolName + '-dollar" class="td col3 dollars"></div>';
+    output+='<div class="td col2"><div class="balance balance-'+element+'">'+progressbar()+'</div></div>';
+    output+='<div class="td col3"><div id="' + symbolName + '-dollar" class="dollars" >not available</div></div>';
     output+='<div class="td col4 actions">';
     output+='<div class="assetbuttons assetbuttons-'+element+' disabled">';
-    output+='<a onclick=\'fill_send("'+entry+'");\' href="#action-send" class="pure-button pure-button-primary" role="button" data-toggle="modal" disabled="disabled">Send</a>';
-    output+='<a onclick=\'fill_recv("'+entry+'");\' href="#action-receive" class="pure-button pure-button-secondary" role="button" data-toggle="modal" disabled="disabled">Receive</a>';
-    output+='<a href="#action-advanced" class="pure-button pure-button-grey advanced-button" role="button" disabled="disabled"><div class="advanced-icon">'+svg['advanced']+'</div><span class="button-label">Advanced</span></a>';
-    output+='</div>'
-    output+='<div class="assetbutton-mobile assetbuttons-'+element+' disabled">'
-    output+='<a onclick=\'fill_actions("'+entry+'");\' href="#action-actions" class="pure-button pure-button-grey actions-button" role="button" data-toggle="modal" disabled="disabled">Actions</a>';
-    output+='</div></div></div>';
+    output+='<a onclick=\'fill_send("'+entry+'");\' href="#action-send" class="pure-button pure-button-large pure-button-primary" role="button" data-toggle="modal" disabled="disabled"><div class="icon">'+svg['send']+'</div>Send</a>';
+    output+='<a onclick=\'fill_recv("'+entry+'");\' href="#action-receive" class="pure-button pure-button-large pure-button-secondary" role="button" data-toggle="modal" disabled="disabled"><div class="icon">'+svg['receive']+'</div>Receive</a>';
+    //output+='<a href="#action-advanced" class="pure-button pure-button-grey advanced-button" role="button" disabled="disabled"><div class="advanced-icon">'+svg['advanced']+'</div><span class="button-label">Advanced</span></a>';
+    output+='</div>';
+    output+='</div></div>';
     i++;
   }
   output+='</div></div>';
