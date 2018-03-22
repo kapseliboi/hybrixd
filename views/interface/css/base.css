@@ -851,3 +851,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 #qrcode { display: inline-block; }
+
+.display-assets-link {
+  cursor: pointer;
+}
