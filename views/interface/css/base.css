@@ -2,6 +2,10 @@
 BASE STYLING
 ******************************************************************/
 
+body {
+  background: linear-gradient(0deg,#3A3B61 -80%,#0C0F14 180%), #13212D;
+}
+
 a:focus, a:active,
 button::-moz-focus-inner,
 input[type="reset"]::-moz-focus-inner,

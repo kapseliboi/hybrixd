@@ -7,7 +7,7 @@
   width: 100vw;
   height: 100vh;
   z-index: 2147483647;
-  background: #13212D;
+  background: linear-gradient(0deg,#3A3B61 -80%,#0C0F14 180%);
 }
 
 .customalert {

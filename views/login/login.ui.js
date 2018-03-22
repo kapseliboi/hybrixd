@@ -1,16 +1,6 @@
-$(document).ready(function() {  
+$(document).ready(function() {
   new customAlert();
-  // tooltips
-  var output = '<span id="tooltip">It looks like you haven\'t filled in the correct credentials yet. Please check them and try again.</span>';
-  $('#loginbutton').after(output); 
-
-  $('#loginbutton').click(function () { 
-    if ( $('#loginbutton').hasClass('disabled') ) {
-      $('#tooltip').fadeTo(50,1);
-      $('#loginform input[type=text], #loginform input[type=password]').css( 'border-color', '#FF6D4A' )
-    }
-  } );
-});  
+});
 
 function alertbutton() {
   alert('<div class="alert-header">⚠</div><br><h2>WARNING: Do not store large value in this wallet!</h2><br>We\'re making every effort towards a secure design, and do not store any wallet file or data on this computer. Regardless, we cannot guarantee the security of your cryptocurrency in this stage of the project!<br><br>',
@@ -29,7 +19,7 @@ function checkfields() {
   if(userid.length===16 && (passwd.length===16 || passwd.length === 48) && userid!==passwd && validate_userid(userid) && validate_passwd(userid,passwd)) {
     $('#loginbutton').removeClass('disabled');
     $('#tooltip').css('opacity', 0);
-    $('#loginform input[type=text], #loginform input[type=password]').css( 'border-color', 'transparent' );
+    $('#loginform input[type=text], #loginform input[type=password]').css( 'border-color', '#D9E3EB' );
   } else {
     if(userid.length>0) {
       $('#inputUserID').css('text-transform','uppercase');
@@ -68,7 +58,7 @@ function rotate_login(turn) {
   var el = document.getElementById('arc3');
   var bgcl = $('#combinator').css('background-color');
   //alert(bgcl);
-  if (el != null) {  
+  if (el != null) {
     if (el.style['border-left']=='1px solid '+bgcl) {
       el.style['border-left']='1px solid';
       el.style['border-right']='1px solid';
@@ -94,7 +84,7 @@ function dial_login(turn) {
     el.style['border-top']='1px solid '+bgcl;
     el.style['border-right']='1px solid '+bgcl;
     el.style['border-bottom']='1px solid '+bgcl;
-  } 
+  }
   if (turn==1) {
     el.style['border-left']='1px solid';
     el.style['border-top']='1px solid';
