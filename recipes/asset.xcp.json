@@ -22,9 +22,10 @@
        "stop(1,'Not yet implemented!')"
     ],
      "balance" : [
-       "curl('asset://$symbol','/_api','POST',{'jsonrpc':'2.0','id':0,'method':'get_chain_address_info','params':{'addresses':['$1'],'with_uxtos':true,'with_last_txn_hashes':5}},{'content-type':'text/plain'})",
-       "tran('.result[0].info.balance',data,2,1)",
+       "curl('asset://$symbol','/_api','POST',{'jsonrpc':'2.0','id':0,'method':'get_normalized_balances','params':{'addresses':['$1']}},{'content-type':'text/plain'})",
+       "find({'asset':'XCP'},data.result,2,1)",
        "stop(1,'No result!')",
+       "form(data.quantity,$factor,'reduce')",
        "pass(data)"
      ],
     "push" : [
@@ -39,7 +40,7 @@
       "pass('$factor')"
     ],
     "history" : [
-       "curl('asset://$symbol','/_api','POST',{ 'method': 'get_balances','params': {'filters': [{'field': 'address', 'op': '==', 'value': '14qqz8xpzzEtj6zLs3M1iASP7T4mj687yq'}, {'field': 'address', 'op': '==', 'value': '1bLockjTFXuSENM8fGdfNUaWqiM4GPe7V'}],'filterop': 'or'},'jsonrpc': '2.0', 'id': 0})"
+       "stop(1,'Not yet implemented!')"
     ],
     "contract" : [
        "stop(1,'Not yet implemented!')"
