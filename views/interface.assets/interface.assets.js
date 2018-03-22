@@ -2,6 +2,14 @@ init.interface.assets = function(args) {
   topmenuset('assets');  // top menu UI change
   clearInterval(intervals); // clear all active intervals
 
+  scrollToAnchor = function  () {
+    if (args.element !== null) {
+      $('html, body').animate({
+        scrollTop: $('#' + args.element).offset().top
+      }, 500);
+    }
+  }
+
   clipb_success = function() {
     $('#action-receive .copied').fadeTo( "fast" , 1);
     $('#action-receive .copied').delay(10).fadeTo( "fast" , 0.3);

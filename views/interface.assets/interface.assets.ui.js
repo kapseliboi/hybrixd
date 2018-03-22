@@ -10,7 +10,7 @@ UItransform = {
       } else {
         var maxlen = 11;   // amount of digits
         output = balance.substr(0, maxlen);
-        
+
         if (balance.length > maxlen) {
           output += '<span>&hellip;</span>';
         }
@@ -94,7 +94,7 @@ displayAssets = function displayAssets() {
 
     // var starIsToggled=storage.Get(userStorageKey('ff00-0033'));
     output+='<div class="tr">';
-    output+='<div class="td col1 asset asset-'+element+'"><div class="icon">'+svg['circle']+'</div>'+entry+'<div class="star"><a' + maybeStarActive + 'role="button">'+ svg['star'] + '</a></div></div>';
+    output+='<div id="asset-' + element + '" class="td col1 asset asset-'+element+'"><div class="icon">'+svg['circle']+'</div>'+entry+'<div class="star"><a' + maybeStarActive + 'role="button">'+ svg['star'] + '</a></div></div>';
     output+='<div class="td col2 "><div class="balance balance-'+element+'">'+progressbar()+'</div></div>';
     output+='<div class="td col3 actions">';
     output+='<div class="assetbuttons assetbuttons-'+element+' disabled">';
@@ -113,13 +113,16 @@ displayAssets = function displayAssets() {
   intervals = setInterval( function(path) {
     ui_assets({i:i,balance:balance,path:path});
   },30000,path);
+
   $('.assets-main > .data').html(output);	// insert new data into DOM
+
+  scrollToAnchor();
 
   // render starred assets svgs
   for (var i=0; i < GL.assetsStarred.length; i++) {
     setStarredAssetClass(i, GL.assetsStarred[i]['starred']);
   }
-}
+};
 
 // main asset management code
 $(document).ready( function(){
@@ -131,7 +134,7 @@ $(document).ready( function(){
   $('.manage-icon').html(svg['edit']);
 
   // elements: MAIN
-  $('.assets-main .spinner-loader').fadeOut('slow', function() {
+  $('.assets-main .spinner-loader').fadeOut('slow', function () {
     displayAssets();
   });
 });
