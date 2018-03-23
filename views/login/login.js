@@ -7,7 +7,7 @@ $(document).ready(function() {
     if (location.href.indexOf("#") != -1) {
       var locationHref = location.href.substr(location.href.indexOf("#"));
       if (locationHref === '#new') {
-        // PRNG.seeder.restart();
+        PRNG.seeder.restart();
         document.getElementById('newaccountmodal').style.display = 'block';
         console.log("locationHref = ", locationHref);
       }
