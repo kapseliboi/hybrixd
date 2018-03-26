@@ -17,10 +17,12 @@ init.interface.assets = function(args) {
   //
 
   $('#send-transfer').click(function() {
-    if ($("#send-transfer").hasClass("disabled")) {
+    // if ($("#send-transfer").hasClass("disabled")) {
+    if (false) {
       // cannot send transaction
     } else {
       // send transfer
+      loadSpinner();
       var symbol = $('#action-send .modal-send-currency').attr('asset');
       sendTransaction({
         element:'.assets-main > .data .balance-'+symbol.replace(/\./g,'-'),
