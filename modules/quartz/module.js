@@ -142,9 +142,11 @@ function exec(properties) {
             console.log(" [i] WebSocket "+recipe.host + " opened.");
           }).on('error', function error(code, description) {
             console.log(" [i] WebSocket "+recipe.host + " : Error "+code+" "+description);
-          }).on('message', function message(data) {
+          })
+
+            /*.on('message', function message(data) {
             console.log(" [!] Websocket "+recipe.host + " : Uncaught Message:"+ data);
-          });
+          });*/
 
           list[id].link = ws;
 
