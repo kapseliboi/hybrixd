@@ -120,7 +120,11 @@ displayAssets = function displayAssets() {
   intervals = setInterval( function(path) {
     ui_assets({i:i,balance:balance,path:path});
   },30000,path);
+
   $('.assets-main > .data').html(output);	// insert new data into DOM
+
+  scrollToAnchor();
+
   // render starred assets svgs
   for (var i=0; i < GL.assetsStarred.length; i++) {
     setStarredAssetClass(i, GL.assetsStarred[i]['starred']);

@@ -942,3 +942,7 @@ body {
 }
 
 #qrcode { display: inline-block; }
+
+.display-assets-link {
+  cursor: pointer;
+}
