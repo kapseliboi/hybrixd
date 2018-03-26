@@ -95,6 +95,7 @@ init.interface.assets = function(args) {
     renderManageAssetsList(GL.assetnames);
   }
   renderManageAssetsList = function renderManageAssetsList(list,search) {
+    console.log("list = ", list);
     if(typeof search !== 'undefined') {
       search = search.toLowerCase();
     }
@@ -109,28 +110,32 @@ init.interface.assets = function(args) {
         }
       }
     }
-    var output = '<div class="table">';
-    output += '<div class="thead">';
-    output +='<div class="tr">';
-    output += '<div class="th col1">Asset</div>';
-    output += '<div class="th col2" style="text-align:right;">Add / remove from wallet</div>';
-    output += '</div>';
-    output += '</div>';
-    output += '<div class="tbody">';
+    var output = '<div class="table">' +
+        '<div class="thead">' +
+        '<div class="tr">' +
+        '<div class="th col1">Asset</div>' +
+        '<div class="th col2" style="text-align:right;">Add / remove from wallet</div>' +
+        '</div>' +
+        '</div>' +
+        '<div class="tbody">';
+
     var element;
+
     for (var entry in list) {
       if(typeof search === 'undefined' || entry.toLowerCase().indexOf(search) !== -1 || list[entry].toLowerCase().indexOf(search) !== -1 ) {
         var symbolName = entry.slice(entry.indexOf('.') + 1);
         var icon = (symbolName in black.svgs) ? black.svgs[symbolName] : mkSvgIcon(symbolName);
+        var entryExists = GL.assetsActive.includes(entry);
 
         element = entry.replace('.','-');
         output += '<div class="tr">';
         output += '<div class="td col1"><div class="icon">' + icon + '</div><div class="asset">'+entry.toUpperCase()+'</div><div class="full-name">'+list[entry]+'</div></div>';
-        output += '<div class="td col2 actions"><div class="assetbuttons assetbuttons-'+element+'">'+renderManageButton(element,entry,(GL.assetSelect[entry]?1:0))+'</div></div>';
+        output += '<div class="td col2 actions"><div class="assetbuttons assetbuttons-'+element+'">'+renderManageButton(element,entry,entryExists)+'</div></div>';
         output += '</div>';
       }
     }
-    output+='</div></div>';
+
+    output += '</div></div>';
     $('#manage-assets .data').html(output); // insert new data into DOM
   }
   renderManageButton = function renderManageButton(element,asset,active) {
