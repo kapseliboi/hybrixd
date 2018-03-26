@@ -224,6 +224,56 @@ Examples:
 TODO
 
 
+ fork(target,xpath,[data, childId])
+
+create a new process by calling the xpath command on target
+target:       A string containing on of the following options
+- "asset://base[.mode]"
+- "source://base[.mode]"
+xpath:         A string containg the command path. "command/a/b"
+calls command using $1 = "a", $2 = "b"
+data:         Optional data to be passed to the new process
+childID       if undefined then the new process will be
+independant. If 0 or larger is will be instantiated as a child process
+of the current process.
+
+
+Examples:
+  fork("asset://dummy","balance/abc")          // Starts a process to retrieve the
+  dummy balans for address abc
+
+ read(processIDs,millisecs)
+
+wait for one or more processes to finish and return the results.
+
+processIDs   A string containing the processID or an array of strings
+containing multiple processIDs
+millisecs    The amount of millisecs between each check if processes
+are finished
+
+
+Examples:
+  read("123456")          //Wait for process 123456 to finish and
+  return its data.
+  read(["123456","654321"])          //Wait for processes 123456 and 654321 to finish and
+  return their data combined into an array.
+
+
+ call(target,xpath,[data])
+
+create a new process by calling the xpath command on target and wait
+for the data to be returned. (Combining fork and read)
+target:       A string containing on of the following options
+- "asset://base[.mode]"
+- "source://base[.mode]"
+xpath:         A string containg the command path. "command/a/b"
+calls command using $1 = "a", $2 = "b"
+data:         Optional data to be passed to the new process
+
+
+Examples:
+  call("asset://dummy","balance/abc")          // Retrieve the
+  dummy balans for address abc
 
 
  poke(var [,data] )
@@ -270,7 +320,7 @@ Turn a string into a JSON object. In case of failure pass failvalue.
 string:	String to turn into a JSON object.
 
 Examples:
- jpar("{key:'Some data.'")	        // stops processing and returns {key:"Some data."}
+ jpar("{key:'Some data.'")              // stops processing and returns {key:"Some data."}
 
 
 

@@ -18,6 +18,18 @@ function init() {
   modules.initexec('quartz',['init']);
 }
 
+function write(value){
+  if(typeof value === 'string'){
+    return value;
+
+
+  }else if(typeof value === 'object' && value instanceof Array){
+    return value.join(",");
+  }else{
+    return "undefined";
+  }
+}
+
 // Preprocess quartz command
 function preprocess(command,recipe,xpath){
   var re;
@@ -35,12 +47,12 @@ function preprocess(command,recipe,xpath){
       return full;
     }
 
-    return recipe[propertyId];
+    return write(recipe[propertyId]);
 
   }); // Replace all "$recipeId::propertyId" with recipe["recipeId"]["propertyId"]
 
   re = /[$]([_a-zA-Z][\w\-_]*)/g; // Search for "$propertyId" and "$_propertyId-with_dashes--andNumbers1231"
-  parsedCommand = parsedCommand.replace(re, function(full,propertyId) {return recipe[propertyId];}); // Replace all "$propertyId" with recipe["propertyId"]
+  parsedCommand = parsedCommand.replace(re, function(full,propertyId) {return write(recipe[propertyId]);}); // Replace all "$propertyId" with recipe["propertyId"]
 
   re = /[$][\d]+/g; // Search for $0, $1, ...
   parsedCommand = parsedCommand.replace(re, function(x) {return xpath[x.substr(1)];}); // Replace all "$1" with xpath[1]
