@@ -61,6 +61,7 @@ hy_content += addscript('./js/transaction.js');     // deterministic transaction
 // SVG
 hy_content += '<script>';
 hy_content += 'svg={};';
+hy_content += fs.readFileSync('./../files/svg/black.js');
 hy_content += addsvg('./svg/cogs.svg','cogs');
 hy_content += addsvg('./svg/user.svg','user');
 hy_content += addsvg('./svg/advanced.svg','advanced');
