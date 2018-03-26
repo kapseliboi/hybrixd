@@ -30,7 +30,7 @@ DESKTOP STYLING: 1200px and up
 
   .pure-menu-horizontal.pure-menu-scrollable {
     padding: 0;
-    width: fit-content; 
+    width: fit-content;
   }
 
   .pure-menu-list {
@@ -144,10 +144,12 @@ DESKTOP STYLING: 1200px and up
     margin-top: -1.4em;
   }
 
+  /*
   .content > .databox {
     width: 23.8%;
     margin: 0.5%;
   }
+  */
 
   /*****************************************************************/
   /* DASHBOARD */
@@ -165,5 +167,26 @@ DESKTOP STYLING: 1200px and up
 
   /*****************************************************************/
   /* ASSETS */
+
+  .content > .assets-main .table .col1,
+  .content > .assets-main .table .col2,
+  .content > .assets-main .table .col3,
+  .content > .assets-main .table .col4 {
+    width: 24.5%;
+    padding: 0;
+  }
+
+  .content > .assets-main .table .col4 {
+    width: 26.5%;
+  }
+
+  .content > .assets-main .table .th {
+    padding: 10px 0;
+  }
+
+  .content .table .actions .assetbuttons .pure-button {
+    width: unset;
+    margin: 2px 0 2px 5px;
+  }
 
 }

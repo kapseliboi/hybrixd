@@ -14,7 +14,7 @@
 <div id="manage-assets" class="modal hide fade wide" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
   <div class="modal-content">
     <div class="modal-header">
-      <h2 id="ModalLabel">Manage assets</h2>
+      <h2 id="ModalLabel">Add and remove assets from your wallet</h2>
       <form class="pure-form pure-form-stacked">
 	<span class="clearable">
 	  <input id="search-assets" type="text" placeholder="Type to search..." class="inline" onkeydown = "" oninput = "" onpaste = "" oncut = "">
@@ -26,7 +26,7 @@
       <div class="data"></div>
     </div>
     <div class="modal-footer">
-      <button onclick="$('#search-assets').val('');" class="pure-button pure-button-grey" data-dismiss="modal" aria-hidden="true">Cancel</button>
+      <button onclick="$('#search-assets').val('');" class="pure-button pure-button-secondary" data-dismiss="modal" aria-hidden="true">Cancel</button>
       <button onclick="$('#search-assets').val('');" id="save-assetlist" class="pure-button pure-button-primary" data-dismiss="modal" aria-hidden="true">Save changes</button>
     </div>
   </div>
@@ -59,8 +59,13 @@
 
     </div>
     <div class="modal-footer">
-      <button class="pure-button pure-button-grey" data-dismiss="modal" aria-hidden="true">Cancel</button>
+      <button class="pure-button pure-button-secondary" data-dismiss="modal" aria-hidden="true">Cancel</button>
       <button id="send-transfer" class="pure-button pure-button-send pure-button-primary disabled" aria-hidden="true">Send transaction</button>
+    </div>
+
+    <div class="spinner">
+      <div class="spinner-loader">
+      </div>
     </div>
   </div>
 </div>
@@ -74,7 +79,7 @@
       <p>To receive <span class="modal-receive-currency"></span> transactions, deposit to the address below or use the QR code.<br></p>
       <div id="qrcode"></div><br><br>
       <div class="modal-receive-addressfrom">...</div><div class="copied">copied</div>
-      
+
 
       <!--<div style="height: 1em;"></div>-->
 
@@ -82,7 +87,7 @@
       <div class="modal-receive-status" id="receivestatus" style="display: block; font-size: 3em;"></div><div class="modal-receive-status-text"></div>
     </div>
     <div class="modal-footer">
-      <button onclick="stop_recv();" class="pure-button pure-button-grey" data-dismiss="modal" aria-hidden="true">Close</button>
+      <button onclick="stop_recv();" class="pure-button pure-button-secondary" data-dismiss="modal" aria-hidden="true">Close</button>
       <button id="modal-receive-button" data-clipboard-text="?" class="pure-button pure-button-xsmall pure-button-primary" aria-hidden="true">Copy address to clipboard</button>
     </div>
   </div>
@@ -102,7 +107,7 @@
     </div>
 
     <div class="modal-footer">
-      <button class="pure-button pure-button-grey" data-dismiss="modal" aria-hidden="true">Close</button>
+      <button class="pure-button pure-button-secondary" data-dismiss="modal" aria-hidden="true">Close</button>
     </div>
   </div>
 </div>
@@ -121,7 +126,7 @@
     </div>
 
     <div class="modal-footer">
-      <button class="pure-button pure-button-grey" data-dismiss="modal" aria-hidden="true">Close</button>
+      <button class="pure-button pure-button-secondary" data-dismiss="modal" aria-hidden="true">Close</button>
     </div>
   </div>
 </div>
@@ -160,7 +165,7 @@
     </div>
 
     <div class="modal-footer">
-      <button class="pure-button pure-button-grey" data-dismiss="modal" aria-hidden="true">Close</button>
+      <button class="pure-button pure-button-secondary" data-dismiss="modal" aria-hidden="true">Close</button>
       <button class="pure-button pure-button-primary">Submit</button>
     </div>
   </div>

@@ -32,7 +32,7 @@ UItransform = {
         }
         output += balance.substr(zeros,(i > maxlen?maxlen:i));
         if ((balance.length-zeros) > maxlen) {
-          output += '<span class="balance-end mini-balance">&hellip;</span>'; 
+          output += '<span class="balance-end mini-balance">&hellip;</span>';
         }
       }
     }
@@ -42,9 +42,15 @@ UItransform = {
 
 // do stuff the dashboard should do...
 $(document).ready( function(){
-  
+
   // add icon
   $('.manage-icon').html(svg['edit']);
+  $('.twitter').html(svg['twitter']);
+  $('.telegram').html(svg['telegram']);
+  $('.riot').html(svg['riot']);
+  $('.slack').html(svg['slack']);
+  $('.bitcointalk').html(svg['bitcointalk']);
+  $('.chevron-right').html(svg['chevron-right']);
 
   // element: NETWORK
   var element = {};
@@ -73,13 +79,13 @@ $(document).ready( function(){
     var output = '<div class="cogs">'+svg['cogs']+' <p>This element is still <strong>work in progress</strong>.<p> </div>';
     $(element.trade+' > .data').html(output);	// insert new data into DOM
   });
-  
+
   element.chat = '.dashboard-chat';
   $(element.chat+' .spinner-loader').fadeOut('slow', function() {
     var output = '<div class="cogs">'+svg['cogs']+' <p>This element is still <strong>work in progress</strong>.<p> </div>';
     $(element.chat+' > .data').html(output);	// insert new data into DOM
   });
-  
+
   element.apps = '.dashboard-apps';
   $(element.apps+' .spinner-loader').fadeOut('slow', function() {
     var output = '<div class="cogs">'+svg['cogs']+' <p>This element is still <strong>work in progress</strong>.<p> </div>';

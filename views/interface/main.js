@@ -61,6 +61,7 @@ hy_content += addscript('./js/transaction.js');     // deterministic transaction
 // SVG
 hy_content += '<script>';
 hy_content += 'svg={};';
+hy_content += fs.readFileSync('./../files/svg/black.js');
 hy_content += addsvg('./svg/cogs.svg','cogs');
 hy_content += addsvg('./svg/user.svg','user');
 hy_content += addsvg('./svg/advanced.svg','advanced');
@@ -71,6 +72,7 @@ hy_content += addsvg('./svg/star.svg','star');
 hy_content += addsvg('./svg/add.svg','add');
 hy_content += addsvg('./svg/remove.svg','remove');
 hy_content += addsvg('./svg/logout-alt.svg','logout-alt');
+hy_content += addsvg('./svg/chevron-right.svg','chevron-right');
 
 hy_content += addsvg('./svg/dashboard.svg','dashboard');
 hy_content += addsvg('./svg/dashboard-o.svg','dashboard-o');
@@ -87,6 +89,12 @@ hy_content += addsvg('./svg/other-o.svg','other-o');
 hy_content += addsvg('./svg/logout.svg','logout');
 hy_content += addsvg('./svg/logout-o.svg','logout-o');
 
+hy_content += addsvg('./svg/twitter.svg','twitter');
+hy_content += addsvg('./svg/telegram.svg','telegram');
+hy_content += addsvg('./svg/slack.svg','slack');
+hy_content += addsvg('./svg/riot.svg','riot');
+hy_content += addsvg('./svg/bitcointalk.svg','bitcointalk');
+
 hy_content += '$("#dashboard-icon").html(svg[\'dashboard-o\']);';
 hy_content += '$("#assets-icon").html(svg[\'assets-o\']);';
 hy_content += '$("#trade-icon").html(svg[\'trade-o\']);';
@@ -95,6 +103,8 @@ hy_content += '$("#apps-icon").html(svg[\'apps-o\']);';
 hy_content += '$("#other-icon").html(svg[\'other-o\']);';
 hy_content += '$("#logout-icon").html(svg[\'logout-o\']);';
 
+hy_content += addsvg('./svg/send.svg','send');
+hy_content += addsvg('./svg/receive.svg','receive');
 hy_content += '$("#user-icon").html(svg[\'user\']);';
 hy_content += '$("#topmenu-logout").html(svg[\'logout-alt\']);';
 hy_content += '</script>';

@@ -14,7 +14,7 @@ TABLET LANDSCAPE STYLING: 900px and up
 
   /*****************************************************************/
   /* CONTENT */
-  
+
   .content {
     padding: 1.8em;
   }
@@ -23,25 +23,29 @@ TABLET LANDSCAPE STYLING: 900px and up
     width: 49.1%;
     margin: 0.5%;
   }
-  
+
   .button-label {
     display: inline;
   }
-  
+
   /*****************************************************************/
-  /* DASHBOARD */ 
+  /* DASHBOARD */
 
   .content > .dashboard-balances .balance {
     min-width: 90px;
     margin: 0 1%;
   }
 
-  .content > .dashboard-transactions, .content > .dashboard-chat {
+  .content > .dashboard-community,
+  .content > .dashboard-transactions,
+  .content > .dashboard-chat {
     margin-left: 0;
     margin-right: 0.5%;
   }
 
-  .content > .dashboard-trade, .content > .dashboard-apps {
+  .content > .dashboard-faq,
+  .content > .dashboard-trade,
+  .content > .dashboard-apps {
     margin-left: 0.5%;
     margin-right: 0;
   }
@@ -49,35 +53,76 @@ TABLET LANDSCAPE STYLING: 900px and up
   /*****************************************************************/
   /* ASSETS */
 
-  .content > .assets-main .table .col1 {
-    width: 30%;
+  .content .table .thead {
+    display: block;
   }
 
+  .content > .assets-main .table .tr {
+    padding: 0 15px;
+  }
+
+  .content > .assets-main .table .col1,
+  .content > .assets-main .table .col2,
+  .content > .assets-main .table .col3,
+  .content > .assets-main .table .col4 {
+    width: 27%;
+    float: none;
+    display: inline-block;
+    padding: 11px 0 10px;
+    vertical-align: middle;
+    line-height: 40px;
+  }
+
+  .content > .assets-main .table .th {
+    line-height: 20px;
+  }
+
+  .content > .assets-main .table .col4 {
+    width: 19%;
+  }
+
+  .content .table .col1 .icon {
+  }
+
+  .content .table .col1 .icon svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .content > .assets-main .table .col2,
   .content > .assets-main .table .col3 {
-    width: 40%;
+    text-align: left;
+  }
+
+  .content .table .balance, .content .table .dollars {
+    padding: 13px 0;
+    line-height: 40px;
+  }
+
+  .content .table .balance div {
+    float: left;
+  }
+
+  .content .table .balance:before,
+  .content .table .dollars:before {
+    content: "";
+    width: 0;
+    display: inline-block;
   }
 
   .content .table .actions .assetbuttons {
     display: block;
+    text-align: right;
+  }
+
+  .content .table .actions .assetbuttons .pure-button {
+    margin: 2px 0;
+    width: 130px;
   }
 
   .content .table .actions .pure-button {
     display: inline-block;
     float: none;
-  }
-
-  .content .table .actions .assetbuttons .pure-button .advanced-icon svg {
-    width: 14px;
-    height: 14px;
-  }
-
-  .content .table .actions .assetbutton-mobile {
-    display: none;
-  }
-
-  .content .table .icon svg {
-    width: 28px;
-    height: 28px;
   }
 
   .content > #manage-assets .modal-header input {
