@@ -13,6 +13,12 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
     outline : 0;
 }
 
+body {
+  font-family: 'Open Sans Regular', ;
+  font-style: normal;
+  font-weight: 600;
+}
+
 .left {
   text-align: left;
 }
@@ -538,9 +544,6 @@ p {
   }
 }
 
-.button-label {
-  display: none;
-}
 
 /*****************************************************************/
 /* DASHBOARD */
@@ -686,30 +689,37 @@ p {
   filter: none;
 }
 
+.content > .assets-main .table .tr {
+  padding: 25px 10px;
+}
+
 .content > .assets-main .table .td {
-  height: 52px;
+  /*height: 52px;*/
+  padding: 3px 8px;
 }
 
 .content > .assets-main .table .col1 {
-  width: 50%;
+  width: 100%;
   float: left;
+  padding-bottom: 10px;
 }
 
 .content > .assets-main .table .col2 {
-  width: 30%;
+  width: 100%;
   float: left;
+  padding: 5px 43px;
 }
 
 .content > .assets-main .table .col3 {
-  width: 15%;
+  width: 100%;
   float: left;
-  margin-top: -52px;
+  padding: 5px 43px;
 }
 
 .content > .assets-main .table .col4 {
-  float: right;
-  width: 35%;
-  margin-top: -52px;
+  float: left;
+  width: 100%;
+  padding: 0 43px;
 }
 
 .content .table .thead {
@@ -730,7 +740,8 @@ p {
 .content .table .icon {
   display:inline-block;
   vertical-align: middle;
-  padding-right: 8px;
+  padding-right: 15px;
+  margin-top: -3px;
 }
 
 .content .table .icon svg {
@@ -743,14 +754,26 @@ p {
   margin-left: 8px;
 }
 
-.content .table .balance {
+.content .table .balance,
+.content .table .dollars {
   font-size: 1.167em;
-  font-weight: 600;
-  padding: 10px 11px 8px;
+  /*padding: 10px 11px 8px;*/
 }
 
 .content .table .balance:before {
   content: "Balance: ";
+  display: inline-block;
+  width: 110px;
+  color: #aaa;
+  margin-right: 5px;
+}
+
+.content .table .dollars:before {
+  content: "Balance (USD): ";
+  display: inline-block;
+  width: 110px;
+  color: #aaa;
+  margin-right: 5px;
 }
 
 .content .table .full-name {
@@ -760,22 +783,52 @@ p {
 
 .content .table .balance .progress-radial {
   text-align: left;
-  display: inline-block;
-  margin-top:2px;
-}
-
-.content .table .actions {
-  text-align: right;
+  display: inline;
 }
 
 .content .table .actions .assetbuttons {
-  display: none;
+  margin-top: 5px;
+}
+
+.content .table .actions .assetbuttons .icon {
+  display:inline-block;
+  vertical-align: middle;
+  padding-right: 8px;
+  margin-top: -3px;
+}
+
+.content .table .actions .assetbuttons .icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.content .table .actions .assetbuttons .pure-button {
+  margin: 5px 0.5% 0 0.5%;
+  min-width: fit-content;
+  width: 49%;
+}
+
+.content .table .actions .assetbuttons .advanced-icon {
+  margin-top: 1px;
+}
+
+.content .table .actions .assetbuttons .advanced-icon svg {
+  width: 15px;
+  height: 15px;
+  padding: 0;
 }
 
 .content > #manage-assets .table .actions .assetbuttons {
   display: block;
   transition: ease 1s all;
+  text-align: right;
 }
+
+.content > #manage-assets .table .actions .assetbuttons .pure-button {
+  width: unset;
+  margin: 5px 0px;
+}
+
 
 .content > #manage-assets .table .actions .assetbuttons .pure-button .actions-icon {
   display: inline-block;
@@ -803,6 +856,10 @@ p {
   width: 300px;
 }
 
+.content > #manage-assets .table .thead {
+  display: block;
+}
+
 .content > #manage-assets .table .col1 {
   width: 65%;
   float: left;
@@ -818,7 +875,7 @@ p {
 }
 
 .content > #manage-assets .icon {
-  padding: 0 0 5px 0;
+  padding: 0;
 }
 
  .content > #manage-assets .full-name {
@@ -864,8 +921,13 @@ p {
   display: inline-block;
   padding: 0 7px 0px 0px;
   vertical-align: middle;
-  margin-top: 2px;
+  margin-top: 1px;
   float:left;
+}
+
+.pure-button .advanced-icon svg {
+  width: 16px;
+  height: 16px;
 }
 
 #action-send .modal-body p {
@@ -881,16 +943,6 @@ p {
   display: block;
   margin: .5em auto;
   width: fit-content;
-}
-
-#action-actions .buttons .advanced-button .advanced-icon {
-  margin-top: 1px;
-  padding-right: 3px;
-}
-
-#action-actions .buttons .advanced-button .advanced-icon svg {
-  width: 16px;
-  height: 16px;
 }
 
 #action-send .modal-body .pure-form .max-amount-button {
@@ -925,7 +977,7 @@ p {
   word-wrap: break-word;
   margin-bottom: .2em;
   padding: 13px 10px;
-  font-family: monospace;
+  font-family: 'Open Sans';
   font-weight: 300;
   background: #E9EFF4;
   border-radius: 6px;
@@ -934,6 +986,19 @@ p {
 
 #action-send .modal-send-addressfrom {
   margin-top: 5px;
+}
+
+#action-send .spinner {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  display: none;
+}
+
+#action-send .spinner.active {
+  display: block;
 }
 
 #action-receive .copied {
@@ -951,3 +1016,7 @@ p {
 }
 
 #qrcode { display: inline-block; }
+
+.display-assets-link {
+  cursor: pointer;
+}

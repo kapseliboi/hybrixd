@@ -119,12 +119,14 @@ function displayAssets() {
                     }, false)
 
                     var starredAssetsHTML = GL.assetsStarred.reduce(mkHtmlForStarredAssets, {i: 0, str: ''}).str
-                    var noStarredAssetsHTML = '<div class="no-starred-message">No starred assets found. Your favorite assets will be displayed here. <br/><br/> Go to your assets to select favourite assets.</div>'
+                    var noStarredAssetsHTML = '<div class="no-starred-message">No starred assets found. Your favorite assets will be displayed here. <br/><br/> Click <a class="display-assets-link" onclick="fetchview(\'interface.assets\', pass_args);"><b>here</b></a> to select any favourites.</div>';
 
                     function mkHtmlForStarredAssets (acc, asset) {
                       var index = acc.i;
+                      var hyphenizedID = asset.id.replace(/\./g,'-');
+                      var assetElementID = 'asset-' + hyphenizedID;
                       var str = asset.starred
-                          ? acc.str + '<div onclick="fetchview(\'interface.assets\',{user_keys: pass_args.user_keys, nonce: pass_args.nonce, asset:\'' + asset.id + '\'});" class="balance"><h5>'+ asset.id + '</h5><div class="divider"></div><h3 class="balance balance-' + asset.id.replace(/\./g,'-')+'">' + progressbar()+'</h3></div>'
+                          ? acc.str + '<div onclick="fetchview(\'interface.assets\',{user_keys: pass_args.user_keys, nonce: pass_args.nonce, asset:\'' + asset.id + '\', element: \'' + assetElementID + '\'});" class="balance"><h5>'+ asset.id + '</h5><div class="divider"></div><h3 class="balance balance-' + hyphenizedID + '">' + progressbar()+'</h3></div>'
                           : acc.str;
                       return {i: acc.i + 1, str: str};
                     }

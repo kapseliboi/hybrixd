@@ -2,6 +2,14 @@ init.interface.assets = function(args) {
   topmenuset('assets');  // top menu UI change
   clearInterval(intervals); // clear all active intervals
 
+  scrollToAnchor = function  () {
+    if (args.element !== null && args.element !== undefined) {
+      $('html, body').animate({
+        scrollTop: $('#' + args.element).offset().top - 250
+      }, 500);
+    }
+  }
+
   clipb_success = function() {
     $('#action-receive .copied').fadeTo( "fast" , 1);
     $('#action-receive .copied').delay(10).fadeTo( "fast" , 0.3);
@@ -17,10 +25,12 @@ init.interface.assets = function(args) {
   //
 
   $('#send-transfer').click(function() {
-    if ($("#send-transfer").hasClass("disabled")) {
+    // if ($("#send-transfer").hasClass("disabled")) {
+    if (false) {
       // cannot send transaction
     } else {
       // send transfer
+      loadSpinner();
       var symbol = $('#action-send .modal-send-currency').attr('asset');
       sendTransaction({
         element:'.assets-main > .data .balance-'+symbol.replace(/\./g,'-'),
@@ -103,16 +113,19 @@ init.interface.assets = function(args) {
     output += '<div class="thead">';
     output +='<div class="tr">';
     output += '<div class="th col1">Asset</div>';
-    output += '<div class="th col2" style="text-align:right;">Add / remove</div>';
+    output += '<div class="th col2" style="text-align:right;">Add / remove from wallet</div>';
     output += '</div>';
     output += '</div>';
     output += '<div class="tbody">';
     var element;
     for (var entry in list) {
       if(typeof search === 'undefined' || entry.toLowerCase().indexOf(search) !== -1 || list[entry].toLowerCase().indexOf(search) !== -1 ) {
+        var symbolName = entry.slice(entry.indexOf('.') + 1);
+        var icon = (symbolName in black.svgs) ? black.svgs[symbolName] : mkSvgIcon(symbolName);
+
         element = entry.replace('.','-');
         output += '<div class="tr">';
-        output += '<div class="td col1"><div class="icon">'+svg['circle']+'</div><div class="asset">'+entry.toUpperCase()+'</div><div class="full-name">'+list[entry]+'</div></div>';
+        output += '<div class="td col1"><div class="icon">' + icon + '</div><div class="asset">'+entry.toUpperCase()+'</div><div class="full-name">'+list[entry]+'</div></div>';
         output += '<div class="td col2 actions"><div class="assetbuttons assetbuttons-'+element+'">'+renderManageButton(element,entry,(GL.assetSelect[entry]?1:0))+'</div></div>';
         output += '</div>';
       }
@@ -241,7 +254,7 @@ init.interface.assets = function(args) {
                               $(assetbuttons).addClass('disabled');
                               $(assetbuttons+' a').removeAttr('data-toggle');
                               $(element).attr('amount','?');
-                              object.data = '?';
+                              object.data = 'not available';
                             }
                             return object;
                           }
@@ -256,13 +269,14 @@ init.interface.assets = function(args) {
 }
 
 function getNewMarketPrices () {
-  getDollarPrices(function () {
-    console.log('Fetched new prices.')
-  })
+  getDollarPrices(() => {})
 }
 
 function renderDollarPriceInAsset (asset, amount) {
   var symbolName = asset.slice(asset.indexOf('.') + 1);
   var assetDollarPrice = renderDollarPrice(symbolName, amount)
-  document.getElementById(symbolName + '-dollar').innerHTML = assetDollarPrice;
+  var query = document.getElementById(symbolName + '-dollar');
+  if (query !== null) {
+    query.innerHTML = assetDollarPrice;
+  }
 }
