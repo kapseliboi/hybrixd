@@ -1,7 +1,8 @@
 {
   "symbol":"bch",
   "name":"Bitcoin Cash",
-  "module":"electrum",
+  "module":"quartz",
+  "import":"btc",
   "mode":"bitcoinjslib.bitcoin",
   "factor":8,
   "fee":0.001,
