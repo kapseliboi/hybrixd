@@ -103,7 +103,7 @@ init.interface.assets = function(args) {
     output += '<div class="thead">';
     output +='<div class="tr">';
     output += '<div class="th col1">Asset</div>';
-    output += '<div class="th col2" style="text-align:right;">Add / remove</div>';
+    output += '<div class="th col2" style="text-align:right;">Add / remove from wallet</div>';
     output += '</div>';
     output += '</div>';
     output += '<div class="tbody">';
@@ -241,7 +241,7 @@ init.interface.assets = function(args) {
                               $(assetbuttons).addClass('disabled');
                               $(assetbuttons+' a').removeAttr('data-toggle');
                               $(element).attr('amount','?');
-                              object.data = '?';
+                              object.data = 'not available';
                             }
                             return object;
                           }

@@ -15,42 +15,35 @@ TABLET PORTRAIT STYLING: 600px and up
 /*****************************************************************/
  /* ASSETS */
 
-.content .table .thead {
-  display: block;
+.content > .assets-main .table .tr {
+  padding: 20px 10px;
+}
+.content .table .col1 .icon svg {
+  width: 30px;
+  height: 30px;
 }
 
 .content > .assets-main .table .col1 {
-  width: 40%;
-  float:left;
+  width: 50%;
+  padding-bottom: 0;
 }
 
 .content > .assets-main .table .col2 {
-  width: 20%;
-  float:left;
-}
-
-.content > .assets-main .table .col3 {
-  width: 30%;
-  float:left;
-  margin-top: 0;
-}
-
-.content .table .balance:before {
-  content: "";
-}
-
-.content .table .actions {
+  padding: 5px;
+  width: 50%;
+  float: right;
   text-align: right;
 }
 
-.content > #manage-assets .table .col1 {
-  width: 70%;
-  float: left;
+.content > .assets-main .table .col3 {
+  padding: 5px;
+  width: 50%;
+  float: right;
+  text-align: right;
 }
 
-.content > #manage-assets .table .col2 {
-  float: right;
-  width: 30%;
+.content > .assets-main .table .col4 {
+  padding: 0;
 }
 
 .content > #manage-assets .icon, .content > #manage-assets .asset,  .content > #manage-assets .full-name {
