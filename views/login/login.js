@@ -3,6 +3,8 @@
 $(document).ready(function() {
   var clicked = false;
 
+  maybeOpenNewWalletModal();
+
   function handleLogin() {
     if (!clicked && !$('#loginbutton').hasClass('disabled')) {
       var userid = $('#inputUserID').val().toUpperCase();
@@ -274,4 +276,14 @@ function clean(dirty) {
 	var dirty_str = dirty.toString();
 	var clean_str = dirty_str.replace(/[^A-Za-z0-9]/g,'');
 	return clean_str;
+}
+
+function maybeOpenNewWalletModal () {
+  if (location.href.indexOf("#") != -1) {
+    var locationHref = location.href.substr(location.href.indexOf("#"));
+    if (locationHref === '#new') {
+      PRNG.seeder.restart();
+      document.getElementById('newaccountmodal').style.display = 'block';
+    }
+  }
 }

@@ -19,6 +19,9 @@ hy_content += '<script>'+fs.readFileSync('./js/custom-alert.min.js')+'</script>'
 // new account generator code (head)
 hy_content += '<script>'+fs.readFileSync('./js/newaccount_A.js')+'</script>';
 
+// new account generator code (body)
+hy_content += '<script>'+fs.readFileSync('./js/newaccount_B.js')+'</script>';
+
 // load in the page elements to add to DOM
 hy_content += ''+fs.readFileSync('./login.html');
 
@@ -34,9 +37,6 @@ hy_content += '<script>'+fs.readFileSync('./js/globals.js')+'</script>';
 // and finally the login action handler code
 hy_content += '<script>'+fs.readFileSync('./login.js')+'</script>';
 hy_content += '<script>'+fs.readFileSync('./login.ui.js')+'</script>';
-
-// new account generator code (body)
-hy_content += '<script>'+fs.readFileSync('./js/newaccount_B.js')+'</script>';
 
 // hex2base32 for account generator code
 hy_content += '<script>'+fs.readFileSync('../../lib/crypto/hex2base32.js')+'</script>';
