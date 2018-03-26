@@ -95,6 +95,8 @@ hy_content += '$("#apps-icon").html(svg[\'apps-o\']);';
 hy_content += '$("#other-icon").html(svg[\'other-o\']);';
 hy_content += '$("#logout-icon").html(svg[\'logout-o\']);';
 
+hy_content += addsvg('./svg/send.svg','send');
+hy_content += addsvg('./svg/receive.svg','receive');
 hy_content += '$("#user-icon").html(svg[\'user\']);';
 hy_content += '$("#topmenu-logout").html(svg[\'logout-alt\']);';
 hy_content += '</script>';

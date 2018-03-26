@@ -110,9 +110,12 @@ init.interface.assets = function(args) {
     var element;
     for (var entry in list) {
       if(typeof search === 'undefined' || entry.toLowerCase().indexOf(search) !== -1 || list[entry].toLowerCase().indexOf(search) !== -1 ) {
+        var symbolName = entry.slice(entry.indexOf('.') + 1);
+        var icon = (symbolName in black.svgs) ? black.svgs[symbolName] : mkSvgIcon(symbolName);
+
         element = entry.replace('.','-');
         output += '<div class="tr">';
-        output += '<div class="td col1"><div class="icon">'+svg['circle']+'</div><div class="asset">'+entry.toUpperCase()+'</div><div class="full-name">'+list[entry]+'</div></div>';
+        output += '<div class="td col1"><div class="icon">' + icon + '</div><div class="asset">'+entry.toUpperCase()+'</div><div class="full-name">'+list[entry]+'</div></div>';
         output += '<div class="td col2 actions"><div class="assetbuttons assetbuttons-'+element+'">'+renderManageButton(element,entry,(GL.assetSelect[entry]?1:0))+'</div></div>';
         output += '</div>';
       }
