@@ -101,7 +101,7 @@ displayAssets = function displayAssets() {
 
     // var starIsToggled=storage.Get(userStorageKey('ff00-0033'));
     output+='<div class="tr">';
-    output+='<div class="td col1 asset asset-'+element+'"><div class="icon">' + icon + '</div>'+entry+'<div class="star"><a' + maybeStarActive + 'role="button">' + svg['star'] + '</a></div></div>';
+    output+='<div id="asset-' + element + '" class="td col1 asset asset-'+element+'"><div class="icon">' + icon + '</div>'+entry+'<div class="star"><a' + maybeStarActive + 'role="button">' + svg['star'] + '</a></div></div>';
     output+='<div class="td col2"><div class="balance balance-'+element+'">'+progressbar()+'</div></div>';
     output+='<div class="td col3"><div id="' + symbolName + '-dollar" class="dollars" >not available</div></div>';
     output+='<div class="td col4 actions">';
@@ -123,12 +123,12 @@ displayAssets = function displayAssets() {
 
   $('.assets-main > .data').html(output);	// insert new data into DOM
 
-  scrollToAnchor();
-
   // render starred assets svgs
   for (var i=0; i < GL.assetsStarred.length; i++) {
     setStarredAssetClass(i, GL.assetsStarred[i]['starred']);
   }
+
+  scrollToAnchor();
 };
 
 // main asset management code

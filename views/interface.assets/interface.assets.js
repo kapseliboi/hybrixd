@@ -3,9 +3,9 @@ init.interface.assets = function(args) {
   clearInterval(intervals); // clear all active intervals
 
   scrollToAnchor = function  () {
-    if (args.element !== null) {
+    if (args.element !== null && args.element !== undefined) {
       $('html, body').animate({
-        scrollTop: $('#' + args.element).offset().top
+        scrollTop: $('#' + args.element).offset().top - 250
       }, 500);
     }
   }
@@ -269,13 +269,14 @@ init.interface.assets = function(args) {
 }
 
 function getNewMarketPrices () {
-  getDollarPrices(function () {
-    console.log('Fetched new prices.')
-  })
+  getDollarPrices(() => {})
 }
 
 function renderDollarPriceInAsset (asset, amount) {
   var symbolName = asset.slice(asset.indexOf('.') + 1);
   var assetDollarPrice = renderDollarPrice(symbolName, amount)
-  document.getElementById(symbolName + '-dollar').innerHTML = assetDollarPrice;
+  var query = document.getElementById(symbolName + '-dollar');
+  if (query !== null) {
+    query.innerHTML = assetDollarPrice;
+  }
 }
