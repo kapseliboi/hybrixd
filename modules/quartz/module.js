@@ -19,10 +19,8 @@ function init() {
 }
 
 function write(value){
-  if(typeof value === 'string'){
+  if(typeof value === 'string' || typeof value === 'number' ){
     return value;
-
-
   }else if(typeof value === 'object' && value instanceof Array){
     return value.join(",");
   }else{
