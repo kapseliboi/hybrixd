@@ -79,6 +79,7 @@ sendTransaction = function(properties) {
                 // DEBUG: logger(JSON.stringify(assets));
                 var transaction = deterministic.transaction({
                   mode:assets.mode[p.asset].split('.')[1],
+                  symbol:p.asset,
                   source:p.source_address,
                   target:p.target_address,
                   amount:toInt(p.amount,assets.fact[p.asset]),

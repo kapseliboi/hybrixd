@@ -137,7 +137,7 @@ function exec(properties) {
           ws.on('open', function open() {
             console.log(" [i] WebSocket "+recipe.host + " opened.");
           }).on('close', function close() {
-            console.log(" [i] WebSocket "+recipe.host + " opened.");
+            console.log(" [i] WebSocket "+recipe.host + " closed.");
           }).on('error', function error(code, description) {
             console.log(" [i] WebSocket "+recipe.host + " : Error "+code+" "+description);
           })
