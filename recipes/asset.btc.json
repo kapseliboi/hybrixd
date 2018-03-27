@@ -3,6 +3,8 @@
   "name":"Bitcoin",
   "module":"quartz",
   "mode":"bitcoinjslib.bitcoin",
+  "user":"ikke",
+  "pass":"appeltaart",
   "factor":8,
   "fee":0.001,
   "host":"http://127.0.0.1:8338",
@@ -14,16 +16,16 @@
       "logs(1,'module $symbol: '+(data?'connected':'failed connection')+' to host [$host]')"
     ],
     "status" : [
-      "curl('asset://$symbol','','POST',{'jsonrpc':'2.0','id':0,'method':'version','params':[]},{'content-type':'text/plain'})",
+      "curl('asset://$symbol','','POST',{'jsonrpc':'2.0','id':0,'method':'version','params':[]},{'content-type':'text/plain'})"
     ],
     "unspent" : [
       "func('blockexplorer','exec',{target:{symbol:'$symbol'}, command:['unspent','$1','$2']})"
     ],
     "balance" : [
       "curl('asset://$symbol','','POST',{'jsonrpc':'2.0','id':0,'method':'getaddressbalance','params':['$1']},{'content-type':'text/plain'})",
-      "tran('.result.confirmed',data,2,1)",
+      "tran({confirmed:'.result.confirmed',unconfirmed:'.result.unconfirmed'},data,2,1)",
       "stop(1,'No result!')",
-      "form(data.quantity,$factor,'reduce')",
+      "form(data.confirmed+data.unconfirmed,'$factor','reduce')",
       "pass(data)"
     ],
     "push" : [
