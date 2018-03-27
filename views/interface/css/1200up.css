@@ -9,6 +9,7 @@ DESKTOP STYLING: 1200px and up
 
   .custom-menu-wrapper {
     width: 90%;
+    height: 50px;
     max-width: 1600px;
   }
 
@@ -30,6 +31,7 @@ DESKTOP STYLING: 1200px and up
 
   .pure-menu-horizontal.pure-menu-scrollable {
     padding: 0;
+    width: -moz-fit-content;
     width: fit-content;
   }
 
@@ -49,6 +51,7 @@ DESKTOP STYLING: 1200px and up
 
   .custom-menu-brand img {
     margin-top: 0;
+    margin-right: 10px;
   }
 
   .custom-menu-toggle {
@@ -65,7 +68,9 @@ DESKTOP STYLING: 1200px and up
 
   .custom-menu-bottom .pure-menu-link {
     opacity: 1;
+    width: -moz-fit-content;
     width: fit-content;
+    height: -moz-fit-content;
     height: fit-content;
     -webkit-transform: translateX(0);
     -moz-transform: translateX(0);
@@ -87,7 +92,7 @@ DESKTOP STYLING: 1200px and up
   }
 
   .custom-menu .pure-menu-link {
-    padding: .6em 1em 17px;
+    padding: 14px 20px 15px;
   }
 
   .custom-menu .pure-menu-link.selected {
@@ -95,10 +100,15 @@ DESKTOP STYLING: 1200px and up
     color: #323C47;
     border-radius: 4px 4px 0px 0px;
   }
+
   .custom-menu .pure-menu-link.selected:hover {
     background: #F4F7F9;
     color: #13212D;
     border-radius: 4px 4px 0px 0px;
+  }
+
+  #topmenu-assets.active.selected {
+    color: #000;
   }
 
   /* menu tooltip */
@@ -109,7 +119,7 @@ DESKTOP STYLING: 1200px and up
   /* user menu */
   #topmenu-right {
     position: absolute;
-    top: 0;
+    top: 7px;
     right: 0;
     text-align: right;
   }
@@ -123,7 +133,7 @@ DESKTOP STYLING: 1200px and up
 
   #topmenu-logout {
     display:inline-block;
-    width: 1.3em;
+    width: 85px;
     vertical-align: middle;
     margin-bottom: 4px;
     margin-top: -1px;

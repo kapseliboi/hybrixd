@@ -3,7 +3,7 @@ BASE STYLING
 ******************************************************************/
 
 body {
-  background: linear-gradient(0deg,#3A3B61 -80%,#0C0F14 180%), #13212D;
+  background: linear-gradient(0deg,#3A3B61 -80%,#0C0F14 180%), #1C1E2E;
 }
 
 a:focus, a:active,
@@ -155,10 +155,10 @@ p {
 }
 .custom-menu-wrapper {
   overflow: visible;
-  margin: 0.4em auto 2.5em auto;
+  margin: 0 auto 2.5em auto;
   white-space: nowrap;
   position: relative;
-  height: 3.2em;
+  height: 60px;
   width: 100%;
 }
 
@@ -170,7 +170,7 @@ p {
 }
 
 .custom-menu .pure-menu-item {
-  padding: .5em 0 .5em 1em;
+  padding: 12px 0 0 10px;
   font-size: 1em;
   font-weight: 700;
   text-align: center;
@@ -223,7 +223,7 @@ p {
 }
 
 .custom-menu-brand img {
-  height: 2em;
+  height: 36px;
   margin-top: 0em;
   padding-left: 0;
   padding-right: 0;
@@ -280,7 +280,7 @@ p {
 }
 
 .custom-menu-screen {
-  background-color: #13212D;
+  background-color: #1C1E2E;
   -webkit-transition: all 0.5s;
   -moz-transition: all 0.5s;
   -ms-transition: all 0.5s;
@@ -301,7 +301,7 @@ p {
 
 .pure-menu-list {
   transition: all 0.5s ease;
-  background-color: #13212D;
+  background-color: #1C1E2E;
   width: 100%;
   text-align: center;
   padding: 10px 0 10px 0;
@@ -395,13 +395,17 @@ p {
 }
 
 #userID {
-  display:inline-block;
+  display: inline-block;
   height: 3.2em;
-  color: rgba(255,255,255,.7);
-  margin-top: 0.7em;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 400;
+  margin-top: 30px;
   margin-right: 0;
-  margin-bottom: -0.7em;
   letter-spacing: 1px;
+}
+#userID:before {
+  content: "Account ID: ";
+  letter-spacing: 0;
 }
 
 #topmenu-right {
@@ -430,12 +434,23 @@ p {
 }
 
 #topmenu-assets.active.selected {
-  color: #000;
+  color: #fff;
 }
 
 #topmenu-logout {
   display: none;
   vertical-align: middle;
+}
+#topmenu-logout svg {
+  vertical-align: middle;
+}
+#topmenu-logout:after {
+  content: "Sign out";
+  vertical-align: middle;
+  color: #fff;
+  margin: 10px;
+  display: inline-block;
+  font-size: 1.16em;
 }
 
 .topmenu-logout-inline {
@@ -476,8 +491,6 @@ p {
   margin: 0.5%;
   padding: 0px;
   width: 100%;
-  -webkit-transition: all 2s ease;
-  transition: all 2s ease;
 }
 
 .content > .databox.wide {
@@ -514,6 +527,7 @@ p {
   text-align: left;
   display: inline-block;
   color: #939AA1;
+  font-weight: 400;
 }
 
 .content > .databox .cogs svg {
@@ -808,6 +822,7 @@ p {
 
 .content .table .actions .assetbuttons .pure-button {
   margin: 5px 0.5% 0 0.5%;
+  min-width: -moz-fit-content;
   min-width: fit-content;
   width: 49%;
 }
@@ -946,6 +961,7 @@ p {
 #action-actions .modal-body .buttons .pure-button {
   display: block;
   margin: .5em auto;
+  width: -moz-fit-content;
   width: fit-content;
 }
 

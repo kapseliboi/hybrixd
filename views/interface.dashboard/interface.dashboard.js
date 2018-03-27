@@ -119,7 +119,7 @@ function displayAssets() {
                     }, false)
 
                     var starredAssetsHTML = GL.assetsStarred.reduce(mkHtmlForStarredAssets, {i: 0, str: ''}).str
-                    var noStarredAssetsHTML = '<div class="no-starred-message">No starred assets found. Your favorite assets will be displayed here. <br/><br/> Click <a class="display-assets-link" onclick="fetchview(\'interface.assets\', pass_args);"><b>here</b></a> to select any favourites.</div>';
+                    var noStarredAssetsHTML = '<p>No starred assets found. <br>You can star your favorite assets in the Asset tab to make them appear here. <br><br><a class="pure-button pure-button-primary" onclick="fetchview(\'interface.assets\', pass_args);"><span>Go to My Assets</span></a></p>';
 
                     function mkHtmlForStarredAssets (acc, asset) {
                       var index = acc.i;
