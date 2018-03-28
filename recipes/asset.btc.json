@@ -4,9 +4,9 @@
   "module":"quartz",
   "mode":"bitcoinjslib.bitcoin",
   "user":"user",
-  "pass":"password",
+  "pass":"1nt3rn3t0fc01ns",
   "factor":8,
-  "fee":0.001,
+  "fee":0.00005,
   "host":"http://127.0.0.1:8338",
   "cache":60000,
   "throttle":10,
@@ -25,7 +25,7 @@
       "curl('asset://$symbol','','POST',{'jsonrpc':'2.0','id':0,'method':'getaddressbalance','params':['$1']},{'content-type':'text/plain'})",
       "tran({confirmed:'.result.confirmed',unconfirmed:'.result.unconfirmed'},data,2,1)",
       "stop(1,'No result!')",
-      "pass(data.confirmed+data.unconfirmed)"
+      "pass(String(Number(data.confirmed)+Number(data.unconfirmed)))"
     ],
     "push" : [
       "curl('asset://$symbol','','POST',{'jsonrpc':'2.0','id':0,'method':'broadcast','params':['$1']},{'content-type':'text/plain'})",
