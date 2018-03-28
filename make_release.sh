@@ -75,8 +75,6 @@ cp -R modules/deterministic $OUTPATH/modules/
 cp -R modules/storage $OUTPATH/modules/
 cp -R modules/quartz $OUTPATH/modules/
 
-cp -R modules/dummycoin $OUTPATH/modules/
-cp -R modules/electrum $OUTPATH/modules/
 cp -R modules/ethereum $OUTPATH/modules/
 cp -R modules/lisk $OUTPATH/modules/
 cp -R modules/nxt $OUTPATH/modules/

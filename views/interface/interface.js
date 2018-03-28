@@ -68,7 +68,7 @@ renderDollarPrice = function (symbolName, assetAmount) {
 
   return matchedTicker.length !== 0
     ? '$' + (assetAmount * matchedTicker[0].price_usd).toFixed(2)
-    : 'not available';
+    : 'n/a';
 };
 
 mkSvgIcon = function (symbolName) {
