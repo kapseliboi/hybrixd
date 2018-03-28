@@ -1,0 +1,52 @@
+{
+  "symbol":"test",
+  "name":"Internet of Coins Hybrid Asset",
+  "module":"quartz",
+  "mode":"test",
+  "symbols": ["eth","dummy","btc"],
+  "quartz": {
+    "init" : [],
+    "status" : [],
+    "unspent" : [
+      "logs(1,'unspent 1.')",
+      "call('asset://$symbol','test/a/b/c','data')",
+      "logs(1,data)"
+    ],
+
+    "test" : [
+      "logs(1,'Test '+ data +' $1 $2 $3')",
+      "pass('appel')"
+    ],
+
+
+    "balance2" : [
+      "call('asset://dummy','balance/$1')",
+      "stop(0,data)"
+    ],
+
+    "balance" : [
+      "expl('$1','&')",
+      "each('$symbols'.split(','),'asset://$symbol','subbalance',data)",
+      "stop(0,jstr(data))"
+    ],
+
+    "subbalance" : [
+      "call('asset://'+data.value,'balance/'+data.data[data.index])"
+    ],
+
+
+    "push" : [
+      "stop(1,'Not yet implemented.')"
+    ],
+    "factor" : [
+      "stop(1,'Not yet implemented.')"
+    ],
+    "history" : [],
+    "contract" : [
+      "stop(1,'Not yet implemented.')"
+    ],
+    "fee" : [
+      "pass('$fee')"
+    ]
+  }
+}
