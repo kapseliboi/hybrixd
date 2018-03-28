@@ -5,7 +5,7 @@
   "mode":"dummycoin",
   "contract":"IN PROGRESS",
   "originator":"IN PROGRESS",
-  "factor":8
+  "factor":8,
   "quartz":{
     "init" : [
       "logs(1,'module $symbol: initialized')"
@@ -34,3 +34,5 @@
       "pass('$fee')"
     ]
   }
+}
+
