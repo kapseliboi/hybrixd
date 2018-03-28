@@ -3,10 +3,15 @@
   "name":"Bitcoin Cash",
   "module":"quartz",
   "import":"btc",
-  "mode":"bitcoinjslib.bitcoin",
+  "mode":"bitcoinjslib.bitcoincash",
   "factor":8,
-  "fee":0.001,
+  "fee":0.0003,
   "host":"http://127.0.0.1:8348",
   "cache":60000,
-  "throttle":10
+  "throttle":10,
+  "quartz": {
+    "push": [
+      "stop(1,'Transaction cannot be done. Coin under maintenance.')"
+    ]
+  }
 }
