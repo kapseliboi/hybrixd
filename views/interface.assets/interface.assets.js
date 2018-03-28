@@ -25,8 +25,7 @@ init.interface.assets = function(args) {
   //
 
   $('#send-transfer').click(function() {
-    // if ($("#send-transfer").hasClass("disabled")) {
-    if (false) {
+    if ($("#send-transfer").hasClass("disabled")) {
       // cannot send transaction
     } else {
       // send transfer

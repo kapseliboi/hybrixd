@@ -122,21 +122,19 @@ function displayAssets() {
                     var noStarredAssetsHTML = '<p>No starred assets found. <br>You can star your favorite assets in the Asset tab to make them appear here. <br><br><a class="pure-button pure-button-primary" onclick="fetchview(\'interface.assets\', pass_args);"><span>Go to My Assets</span></a></p>';
 
                     function mkHtmlForStarredAssets (acc, asset) {
-                      var index = acc.i;
-                      var hyphenizedID = asset.id.replace(/\./g,'-');
+                      var assetID = asset.id;
+                      var hyphenizedID = assetID.replace(/\./g,'-');
                       var assetElementID = 'asset-' + hyphenizedID;
-
-                      var symbolName = entry.slice(entry.indexOf('.') + 1);
-                      var balanceInDollars = renderDollarPrice(symbolName, balance.amount[index]);
+                      var symbolName = assetID.slice(assetID.indexOf('.') + 1);
                       var icon = (symbolName in black.svgs) ? black.svgs[symbolName] : mkSvgIcon(symbolName);
 
                       var str = asset.starred
-                          ? acc.str + '<div onclick="fetchview(\'interface.assets\',{user_keys: pass_args.user_keys, nonce: pass_args.nonce, asset:\'' + asset.id + '\', element: \'' + assetElementID + '\'});" class="balance">' +
+                          ? acc.str + '<div onclick="fetchview(\'interface.assets\',{user_keys: pass_args.user_keys, nonce: pass_args.nonce, asset:\'' + assetID + '\', element: \'' + assetElementID + '\'});" class="balance">' +
                                         '<div class="icon">' +
                                            icon +
                                         '</div>' +
                                         '<h5>' +
-                                           asset.id +
+                                           assetID +
                                         '</h5>' +
                                         '<div class="divider"></div>' +
                                         '<h3 class="balance balance-' + hyphenizedID + '">' +
@@ -150,8 +148,8 @@ function displayAssets() {
                     $('.dashboard-balances .spinner-loader').fadeOut('slow', function () {
                       $('.dashboard-balances > .data').html(hasStarredAssets
                                                             ? starredAssetsHTML
-                                                            : noStarredAssetsHTML)// insert new data into DOM
-                    })
+                                                            : noStarredAssetsHTML); // insert new data into DOM
+                    });
                   }
                 }
 
