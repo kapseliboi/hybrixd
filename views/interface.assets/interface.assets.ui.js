@@ -96,7 +96,6 @@ displayAssets = function displayAssets() {
     var element=balance.asset[i].replace(/\./g,'-');
     var maybeStarActive = maybeAsset === undefined ? '' : ' id="' + maybeAsset['id'].replace(/\./g, '_') + '" onclick=toggle_star(' + i + ') ';
     var balanceInDollars = renderDollarPrice(symbolName, balance.amount[i]);
-    var symbolName = entry.slice(entry.indexOf('.') + 1);
     var icon = (symbolName in black.svgs) ? black.svgs[symbolName] : mkSvgIcon(symbolName);
 
     // var starIsToggled=storage.Get(userStorageKey('ff00-0033'));
