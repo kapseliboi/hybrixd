@@ -259,7 +259,7 @@ init.interface.assets = function(args) {
                               $(assetbuttons).addClass('disabled');
                               $(assetbuttons+' a').removeAttr('data-toggle');
                               $(element).attr('amount','?');
-                              object.data = 'not available';
+                              object.data = 'n/a';
                             }
                             return object;
                           }
