@@ -8,8 +8,10 @@ TABLET PORTRAIT STYLING: 600px and up
  /* DASHBOARD */
 
 .content > .dashboard-balances .balance {
-  margin: 0 3%;
-  min-width: 25%;
+  min-width: 30%;
+}
+.content > .dashboard-balances .data > .balance {
+  margin: 30px 1.5% 10px;
 }
 
 .social-icons > div {

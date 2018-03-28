@@ -32,8 +32,11 @@ TABLET LANDSCAPE STYLING: 900px and up
   /* DASHBOARD */
 
   .content > .dashboard-balances .balance {
-    min-width: 90px;
-    margin: 0 1%;
+    min-width: 120px;
+  }
+
+  .content > .dashboard-balances .data > .balance {
+      margin: 30px 10px 10px;
   }
 
   .content > .dashboard-community,

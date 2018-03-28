@@ -576,7 +576,7 @@ p {
 
 .content > .dashboard-balances .balance {
   display: inline-block;
-  min-width: 50%;
+  min-width: 100%;
   padding: 12px;
   text-align: center;
   vertical-align: top;
@@ -590,10 +590,25 @@ p {
 .content > .dashboard-balances .balance:hover {
     background: #E9EFF4;
 }
+
+.content > .dashboard-balances .data > .balance {
+  border: 1px solid #E9EFF4;
+  margin: 30px 5px 10px;
+}
+
+.content > .dashboard-balances .balance .icon {
+  margin-top: -35px;
+}
+
+.content > .dashboard-balances .balance .icon svg {
+  width: 50px;
+  height: 50px;
+}
+
 .content > .dashboard-balances .balance h5 {
   color: #939AA1;
   text-transform: uppercase;
-  margin: 0.2em 0.2em;
+  margin: 10px 0 0;
   font-size: 1.167em;
   font-weight: 600;
 }
@@ -602,7 +617,8 @@ p {
   color: #4DA1FF;
   font-size: 1.833em;
   font-weight: 600;
-  margin: 0.2em 0.2em;
+  margin: 10px 0 0;
+  padding: 0;
 }
 
 .content > .dashboard-balances .balance .mini-balance {
