@@ -14,7 +14,7 @@ Deterministic-Module: The client side programmatic implementation of an asset. T
 
 *) To add a new mode for an existing asset only a new recipe is required
 
-**) Note that by using the Quarts module the server side code can be described in the recipe as well
+**) Note that by using the Quartz module the server side code can be described in the recipe as well
         Reference: hybridd/lib/README-scheduler.txt
 
 
