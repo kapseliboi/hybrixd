@@ -1,8 +1,8 @@
 {
   "symbol":"omni.xhy",
   "name":"Internet of Coins Hybrid Asset - MAINTENANCE",
-  "module":"dummycoin",
-  "mode":"dummycoin",
+  "module":"quartz",
+  "mode":"bitcoinjslib.omni",
   "contract":"IN PROGRESS",
   "originator":"IN PROGRESS",
   "factor":8,
@@ -14,9 +14,7 @@
       "stop(0,'This coin is a dummy for testing.')"
     ],
     "balance":[
-      "test('$1',2,1)",
-      "stop(1,'Error: missing address!')",
-      "pass(0)"
+      "stop(0,'0.0000000')"
     ],
     "push":[
       "pass('NOT YET SUPPORTED!')"
