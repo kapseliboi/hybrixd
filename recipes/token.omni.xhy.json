@@ -1,0 +1,36 @@
+{
+  "symbol":"bts.omni",
+  "name":"MAINTENANCE - Internet of Coins Hybrid Asset",
+  "module":"dummycoin",
+  "mode":"dummycoin",
+  "contract":"IN PROGRESS",
+  "originator":"IN PROGRESS",
+  "factor":8
+  "quartz":{
+    "init" : [
+      "logs(1,'module $symbol: initialized')"
+    ],
+    "status" : [
+      "stop(0,'This coin is a dummy for testing.')"
+    ],
+    "balance":[
+      "test('$1',2,1)",
+      "stop(1,'Error: missing address!')",
+      "pass(0)"
+    ],
+    "push":[
+      "pass('NOT YET SUPPORTED!')"
+    ],
+    "factor" : [
+      "pass('$factor')"
+    ],
+    "history" : [
+      "stop(1,'Not yet implemented!')"
+    ],
+    "contract" : [
+      "stop(1,'Not yet implemented!')"
+    ],
+    "fee" : [
+      "pass('$fee')"
+    ]
+  }

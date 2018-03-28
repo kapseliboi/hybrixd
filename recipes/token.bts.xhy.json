@@ -1,9 +1,10 @@
 {
   "symbol":"bts.xhy",
-  "name":"Bitshares",
+  "name":"Internet of Coins Hybrid Asset",
   "module":"quartz",
   "mode":"bitshares.token",
-  "asset-id":"1.3.1275",
+  "contract":"1.3.1275",
+  "originator":"1.2.155481",
   "import":"bts",
   "factor":8
 }
