@@ -4,11 +4,11 @@
   "module":"quartz",
   "deterministic-module":"bitshares",
   "mode":"bitshares.main",
-  "asset-id":"1.3.0",
   "factor":8,
   "fee":0.05,
-  "contract":"undefined",
-  "host":"wss://bitshares.openledger.info/ws",
+  "contract":"1.3.0",
+  "host":"wss://bitshares.crypto.fans/ws",
+  "host-alts":["wss://dex.rnglab.org","wss://api.bts.blckchnd.com","wss://bitshares.crypto.fans/ws","wss://eu.openledger.info/ws","wss://dexnode.net/ws","wss://bitshares-api.wancloud.io/ws","wss://japan.bitshares.apasia.tech/ws","wss://openledger.hk/ws","wss://bit.btsabc.org/ws","wss://bitshares.nu/ws","wss://bitshares.openledger.info/ws","wss://bitshares.openledger.info/ws"],
   "cache":120000,
   "throttle":5,
   "quartz":{
@@ -24,9 +24,9 @@
       "pass(data)"
     ],
     "balance" : [
-      "curl('asset://$symbol','','',{'id':1, 'method':'call', 'params':[0,'get_named_account_balances',['$1',['$asset-id']]], id: Math.floor(Math.random()*10000)})",
+      "curl('asset://$symbol','','',{'id':1, 'method':'call', 'params':[0,'get_named_account_balances',['$1',['$contract']]], id: Math.floor(Math.random()*10000)})",
       "tran('.result[0].amount',data,2,1)",
-      "stop(1,'No result!')",
+      "jump(2,'0')",
       "form(data,$factor,'reduce')",
       "pass(data)"
     ],
