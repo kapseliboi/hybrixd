@@ -1,6 +1,6 @@
 {
   "symbol":"bch",
-  "name":"Bitcoin Cash",
+  "name":"Bitcoin Cash - MAINTENANCE",
   "module":"quartz",
   "import":"btc",
   "mode":"bitcoinjslib.bitcoincash",

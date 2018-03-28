@@ -1,6 +1,6 @@
 {
   "symbol":"xcp.xhy",
-  "name":"Internet of Coins Hybrid Asset",
+  "name":"Internet of Coins Hybrid Asset - MAINTENANCE",
   "module":"quartz",
   "mode":"bitcoinjslib.counterparty",
   "import":"xcp",
