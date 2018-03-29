@@ -803,7 +803,7 @@ p {
 }
 
 .content .table .dollars:before {
-  content: "Balance (USD): ";
+  content: "Valuation: ";
   display: inline-block;
   width: 110px;
   color: #aaa;
