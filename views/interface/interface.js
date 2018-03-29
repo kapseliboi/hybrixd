@@ -2,8 +2,9 @@
   // fill local usercrypto object with keys and nonce later on
   GL = {
     usercrypto:{ user_keys: args.user_keys, nonce: args.nonce },
-    powqueue:[]
-  }
+    powqueue:[],
+    coinMarketCapTickers: []
+  };
 
   // retrieve modes supported by node
   GL.cur_step = next_step();
@@ -19,9 +20,10 @@
           GL.assetnames=object.data;
 
           getDollarPrices(function () {
-            // Switch to dashboard view
-            fetchview('interface.dashboard',args);
+            console.log('Fetched prices')
           });
+          // Switch to dashboard view
+          fetchview('interface.dashboard',args);
         }
       });
     }
