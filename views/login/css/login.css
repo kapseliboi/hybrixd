@@ -276,15 +276,17 @@ a {
 }
 #login_container #helpbutton,
 #login_container #websitebutton {
-  opacity:0.6;
+  opacity:0.7;
 }
 #login_container #alertbutton:hover {
   cursor: pointer;
+  color: #6FC7C3;
   opacity: 1;
 }
 #login_container #helpbutton:hover,
 #login_container #websitebutton:hover {
-  opacity: 0.8;
+  color: #fff;
+  opacity: 0.9;
   cursor: pointer;
 }
 
