@@ -12,11 +12,11 @@
   "quartz":{
     "init" : [
       "curl('asset://$symbol','/heartbeat','GET')",
-      "logs(1,'module $symbol: '+(typeof data.message!=='undefined' && data.message==='ok'?'connected':'failed connection')+' to host [$host]')"
+      "logs(1,'module $symbol: '+(data && typeof data.message!=='undefined' && data.message==='ok'?'connected':'failed connection')+' to host [$host]')"
     ],
     "status" : [
       "curl('asset://$symbol','/heartbeat','GET')",
-      "logs(1,'module $symbol: '+(typeof data.message!=='undefined' && data.message==='ok'?'connected':'failed connection')+' to host [$host]')"
+      "logs(1,'module $symbol: '+(data && typeof data.message!=='undefined' && data.message==='ok'?'connected':'failed connection')+' to host [$host]')"
     ],
     "unspent" : [
       "test('$contract'==='undefined',1,2)",
@@ -34,11 +34,11 @@
       "tran('.account.balance',data,2,1)",
       "stop(1,null)",
       "form(data,$factor,'reduce')",
-      "stop(0,data)",      
+      "stop(0,data)",
       "poke('namespace','$contract'.split(':')[0])",
       "curl('asset://$symbol','/account/mosaic/owned?address='+'$1'.replace(/-/g,''),'GET')",
       "tran('.data',data,2,1)",
-      "stop(1,null)",      
+      "stop(1,null)",
       "find({'namespaceId':peek('namespace')},data,1,2)",
       "tran('.quantity',data,2,1)",
       "pass(0)",
