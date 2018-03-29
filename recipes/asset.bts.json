@@ -2,7 +2,6 @@
   "symbol":"bts",
   "name":"BitShares",
   "module":"quartz",
-  "deterministic-module":"bitshares",
   "mode":"bitshares.main",
   "factor":8,
   "fee":0.05,
