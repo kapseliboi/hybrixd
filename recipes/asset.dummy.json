@@ -1,7 +1,7 @@
 {
   "symbol":"dummy",
   "name":"Dummycoin (test coin for Internet of Coins)",
-  "module":"dummycoin",
+  "module":"quartz",
   "mode":"dummycoin",
   "factor":8,
   "fee":0.15,
