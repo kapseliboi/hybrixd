@@ -18,7 +18,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 }
 
 body {
-  font-family: 'Open Sans Regular', ;
+  font-family: 'Open Sans', sans-serif;
   font-style: normal;
   font-weight: 600;
 }
@@ -1013,7 +1013,7 @@ p {
   word-wrap: break-word;
   margin-bottom: .2em;
   padding: 13px 10px;
-  font-family: 'Open Sans';
+  font-family: 'Open Sans', Verdana, sans-serif;
   font-weight: 300;
   background: #E9EFF4;
   border-radius: 6px;
