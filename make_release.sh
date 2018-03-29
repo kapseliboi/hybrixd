@@ -17,45 +17,64 @@ mkdir $OUTPATH
 cp hybridd $OUTPATH/
 
 mkdir -p $OUTPATH/lib/crypto
+$UGLIFY lib/crypto/bignumber.js > $OUTPATH/lib/crypto/bignumber.js
 $UGLIFY lib/crypto/decimal-light.js > $OUTPATH/lib/crypto/decimal-light.js
+$UGLIFY lib/crypto/hashDJB2.js > $OUTPATH/lib/crypto/hashDJB2.js
 $UGLIFY lib/crypto/hex2base32.js > $OUTPATH/lib/crypto/hex2base32.js
 $UGLIFY lib/crypto/hex2dec.js > $OUTPATH/lib/crypto/hex2dec.js
 $UGLIFY lib/crypto/lz-string.js > $OUTPATH/lib/crypto/lz-string.js
 $UGLIFY lib/crypto/nacl.js > $OUTPATH/lib/crypto/nacl.js
+$UGLIFY lib/crypto/proof.js > $OUTPATH/lib/crypto/proof.js
 $UGLIFY lib/crypto/sjcl.js > $OUTPATH/lib/crypto/sjcl.js
 $UGLIFY lib/crypto/urlbase64.js > $OUTPATH/lib/crypto/urlbase64.js
-$UGLIFY lib/crypto/hashDJB2.js > $OUTPATH/lib/crypto/hashDJB2.js
-$UGLIFY lib/crypto/proof.js > $OUTPATH/lib/crypto/proof.js
 
-cp lib/asset.js $OUTPATH/lib/asset.js
-cp lib/source.js $OUTPATH/lib/source.js
-cp lib/modules.js $OUTPATH/lib/modules.js
-$MINIFY lib/globals.js --output $OUTPATH/lib/globals.js
-$MINIFY lib/storage.js --output $OUTPATH/lib/storage.js
-
-$UGLIFY lib/functions.js > $OUTPATH/lib/functions.js
+# /lib
 $UGLIFY lib/APIqueue.js > $OUTPATH/lib/APIqueue.js
-$UGLIFY lib/network.js > $OUTPATH/lib/network.js
-$UGLIFY lib/proc.js > $OUTPATH/lib/proc.js
-$UGLIFY lib/list.js > $OUTPATH/lib/list.js
-$UGLIFY lib/prototypes.js > $OUTPATH/lib/prototypes.js
-$UGLIFY lib/scheduler.js > $OUTPATH/lib/scheduler.js
+$UGLIFY lib/cache.js > $OUTPATH/lib/cache.js
+$UGLIFY lib/conf.js > $OUTPATH/lib/conf.js
+$UGLIFY lib/functions.js > $OUTPATH/lib/functions.js
+$MINIFY lib/globals.js --output $OUTPATH/lib/globals.js
 $UGLIFY lib/hcmd.js > $OUTPATH/lib/hcmd.js
 $UGLIFY lib/hybridd.js > $OUTPATH/lib/hybridd.js
 $UGLIFY lib/ini.js > $OUTPATH/lib/ini.js
 $UGLIFY lib/main.js > $OUTPATH/lib/main.js
+$UGLIFY lib/modules.js > $OUTPATH/lib/modules.js
+$UGLIFY lib/naclFactory.js > $OUTPATH/lib/naclFactory.js
+$UGLIFY lib/prototypes.js > $OUTPATH/lib/prototypes.js
+$UGLIFY lib/recipes.js > $OUTPATH/lib/recipes.js
 $UGLIFY lib/rest.js > $OUTPATH/lib/rest.js
 $UGLIFY lib/router.js > $OUTPATH/lib/router.js
-$UGLIFY lib/view.js > $OUTPATH/lib/view.js
-$UGLIFY lib/xauth.js > $OUTPATH/lib/xauth.js
+$UGLIFY lib/scheduler.js > $OUTPATH/lib/scheduler.js
+$UGLIFY lib/servers.js > $OUTPATH/lib/servers.js
+$MINIFY lib/storage.js --output $OUTPATH/lib/storage.js
+
+mkdir -p $OUTPATH/lib/router
+$UGLIFY lib/router/asset.js > $OUTPATH/lib/router/asset.js
+$UGLIFY lib/router/command.js > $OUTPATH/lib/router/command.js
+$UGLIFY lib/router/help.js > $OUTPATH/lib/router/help.js
+$UGLIFY lib/router/list.js > $OUTPATH/lib/router/list.js
+$UGLIFY lib/router/network.js > $OUTPATH/lib/router/network.js
+$UGLIFY lib/router/proc.js > $OUTPATH/lib/router/proc.js
+cp lib/router/routetree.json $OUTPATH/lib/router/routetree.json
+$UGLIFY lib/router/source.js > $OUTPATH/lib/router/source.js
+$UGLIFY lib/router/view.js > $OUTPATH/lib/router/view.js
+$UGLIFY lib/router/xauth.js > $OUTPATH/lib/router/xauth.js
+
+#cp lib/asset.js $OUTPATH/lib/asset.js
+#cp lib/source.js $OUTPATH/lib/source.js
+#cp lib/modules.js $OUTPATH/lib/modules.js
+
+mkdir -p $OUTPATH/lib/scheduler
+$UGLIFY lib/scheduler/quartz.js > $OUTPATH/lib/scheduler/quartz.js
+
+
 
 mkdir -p $OUTPATH/modules
 cp -R modules/blockexplorer $OUTPATH/modules/
 cp -R modules/deterministic $OUTPATH/modules/
 cp -R modules/storage $OUTPATH/modules/
+cp -R modules/quartz $OUTPATH/modules/
 
-cp -R modules/dummycoin $OUTPATH/modules/
-cp -R modules/electrum $OUTPATH/modules/
 cp -R modules/ethereum $OUTPATH/modules/
 cp -R modules/lisk $OUTPATH/modules/
 cp -R modules/nxt $OUTPATH/modules/
@@ -69,10 +88,12 @@ cp views/compileviews.sh $OUTPATH/views/compileviews.sh
 cp views/*.html $OUTPATH/views/
 cp views/index/main.js $OUTPATH/views/index/
 cp views/index/jquery-1.12.4.min.js $OUTPATH/views/index
-cp views/index/snow.js $OUTPATH/views/index
+#cp views/index/snow.js $OUTPATH/views/index
 $UGLIFY views/index/hy_connect.js > $OUTPATH/views/index/hy_connect.js
 
 mkdir -p $OUTPATH/views/interface/js
+cp -R views/files $OUTPATH/views/
+
 cp views/favicon.ico $OUTPATH/views/
 cp views/interface/main.js $OUTPATH/views/interface/
 cp views/interface/*.html $OUTPATH/views/interface/
@@ -80,13 +101,13 @@ $UGLIFY views/interface/interface.js > $OUTPATH/views/interface/interface.js
 $UGLIFY views/interface/js/clipboard.js > $OUTPATH/views/interface/js/clipboard.js
 $UGLIFY views/interface/js/globalobjects.js > $OUTPATH/views/interface/js/globalobjects.js
 $UGLIFY views/interface/js/hybriddcall.js > $OUTPATH/views/interface/js/hybriddcall.js
-$UGLIFY views/interface/js/storage.js > $OUTPATH/views/interface/js/storage.js
 $UGLIFY views/interface/js/modal.js > $OUTPATH/views/interface/js/modal.js
 $UGLIFY views/interface/js/qrcode.js > $OUTPATH/views/interface/js/qrcode.js
+$UGLIFY views/interface/js/sha256.js > $OUTPATH/views/interface/js/sha256.js
+$UGLIFY views/interface/js/storage.js > $OUTPATH/views/interface/js/storage.js
 $UGLIFY views/interface/js/topmenu.js > $OUTPATH/views/interface/js/topmenu.js
 $UGLIFY views/interface/js/topmenuset.js > $OUTPATH/views/interface/js/topmenuset.js
 $UGLIFY views/interface/js/transaction.js > $OUTPATH/views/interface/js/transaction.js
-$UGLIFY views/interface/js/sha256.js > $OUTPATH/views/interface/js/sha256.js
 
 mkdir -p $OUTPATH/views/interface/css
 $CSSMIN views/interface/css/modal.css > $OUTPATH/views/interface/css/modal.css
@@ -117,6 +138,7 @@ cp views/login/*.html $OUTPATH/views/login/
 cp views/login/main.js $OUTPATH/views/login/
 $UGLIFY views/login/login.js > $OUTPATH/views/login/login.js
 $UGLIFY views/login/login.ui.js > $OUTPATH/views/login/login.ui.js
+cp views/login/js/globals.js $OUTPATH/views/login/js/
 $UGLIFY views/login/js/custom-alert.min.js > $OUTPATH/views/login/js/custom-alert.min.js
 $UGLIFY views/login/js/newaccount_A.js > $OUTPATH/views/login/js/newaccount_A.js
 $UGLIFY views/login/js/newaccount_B.js > $OUTPATH/views/login/js/newaccount_B.js

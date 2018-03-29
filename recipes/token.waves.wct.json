@@ -1,6 +1,6 @@
 {
   "symbol":"waves.wct",
-  "name":"Waves Comunity Token",
+  "name":"Waves Community Token",
   "module":"quartz",
   "mode":"waves.token",
   "import":"waves",

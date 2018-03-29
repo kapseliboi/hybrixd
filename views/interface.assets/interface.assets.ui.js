@@ -78,7 +78,7 @@ displayAssets = function displayAssets() {
   output+='<div class="tr">';
   output+='<div class="th col1 asset-title">Asset</div>';
   output+='<div class="th col2">Balance</div>';
-  output+='<div class="th col3">Balance (USD)</div>';
+  output+='<div class="th col3">Valuation</div>';
   output+='<div class="th col4 actions"></div>';
   output+='</div>';
   output+='</div>';
@@ -102,7 +102,7 @@ displayAssets = function displayAssets() {
     output+='<div class="tr">';
     output+='<div id="asset-' + element + '" class="td col1 asset asset-'+element+'"><div class="icon">' + icon + '</div>'+entry+'<div class="star"><a' + maybeStarActive + 'role="button">' + svg['star'] + '</a></div></div>';
     output+='<div class="td col2"><div class="balance balance-'+element+'">'+progressbar()+'</div></div>';
-    output+='<div class="td col3"><div id="' + symbolName + '-dollar" class="dollars" >not available</div></div>';
+    output+='<div class="td col3"><div id="' + symbolName + '-dollar" class="dollars" style="color: #AAA;">n/a</div></div>';
     output+='<div class="td col4 actions">';
     output+='<div class="assetbuttons assetbuttons-'+element+' disabled">';
     output+='<a onclick=\'fill_send("'+entry+'");\' href="#action-send" class="pure-button pure-button-large pure-button-primary" role="button" data-toggle="modal" disabled="disabled"><div class="icon">'+svg['send']+'</div>Send</a>';
@@ -144,13 +144,6 @@ $(document).ready( function() {
     displayAssets();
   });
 });
-
-
-function mkSvgIcon (symbolName) {
-  var firstLetterCapitalized = symbolName.slice(0, 1).toUpperCase();
-
-  return '<svg width="50px" height="50px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <g id="Asset-view" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="Symbols" transform="translate(-367.000000, -248.000000)" fill-rule="nonzero" fill="#000000"> <g id="error" transform="translate(367.000000, 248.000000)"> <path d="M25.016,0.016 C38.8656595,0.016 50.016,11.1663405 50.016,25.016 C50.016,38.8656595 38.8656595,50.016 25.016,50.016 C11.1663405,50.016 0.016,38.8656595 0.016,25.016 C0.016,11.1663405 11.1663405,0.016 25.016,0.016 Z" id="Shape"></path> <text x="50%" y="72%" text-anchor="middle" fill="white" style="font-size: 30px; font-weight: 200;">' + firstLetterCapitalized + '</text> </g> </g> </g> </svg>';
-}
 
 function loadSpinner () {
   document.querySelector('#action-send .spinner').classList.add('active');

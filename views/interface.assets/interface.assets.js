@@ -25,8 +25,7 @@ init.interface.assets = function(args) {
   //
 
   $('#send-transfer').click(function() {
-    // if ($("#send-transfer").hasClass("disabled")) {
-    if (false) {
+    if ($("#send-transfer").hasClass("disabled")) {
       // cannot send transaction
     } else {
       // send transfer
@@ -259,7 +258,7 @@ init.interface.assets = function(args) {
                               $(assetbuttons).addClass('disabled');
                               $(assetbuttons+' a').removeAttr('data-toggle');
                               $(element).attr('amount','?');
-                              object.data = 'not available';
+                              object.data = 'n/a';
                             }
                             return object;
                           }
