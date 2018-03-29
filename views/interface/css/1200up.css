@@ -49,9 +49,14 @@ DESKTOP STYLING: 1200px and up
     padding-left: 1em;
   }
 
+  .custom-menu-brand {
+    width: moz-fit-content;
+    width: fit-content;
+  }
   .custom-menu-brand img {
     margin-top: 0;
     margin-right: 10px;
+    width: 70px;
   }
 
   .custom-menu-toggle {
