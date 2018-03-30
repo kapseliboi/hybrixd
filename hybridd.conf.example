@@ -17,3 +17,6 @@ userport = 8080
 # Other settings
 cacheidx = 3000
 ignoreTLSerror = true
+
+# set maximum event listeners
+maxListeners = 50
