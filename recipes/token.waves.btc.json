@@ -1,6 +1,6 @@
 {
     "symbol":"waves.btc",
-    "name":"Bitcoin (WAVES)",
+    "name":"Bitcoin (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

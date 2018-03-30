@@ -1,6 +1,6 @@
 {
     "symbol":"waves.inpay",
-    "name":"InPay (WAVES)",
+    "name":"InPay (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

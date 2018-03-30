@@ -1,6 +1,6 @@
 {
     "symbol":"waves.eur",
-    "name":"Euro (WAVES)",
+    "name":"Euro (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

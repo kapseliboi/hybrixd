@@ -1,6 +1,6 @@
 {
     "symbol":"waves.liquid",
-    "name":"Liquid",
+    "name":"Liquid (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

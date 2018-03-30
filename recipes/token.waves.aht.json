@@ -1,6 +1,6 @@
 {
     "symbol":"waves.aht",
-    "name":"Bowhead",
+    "name":"Bowhead (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

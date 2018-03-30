@@ -1,6 +1,6 @@
 {
     "symbol":"waves.eot",
-    "name":"EOT Token",
+    "name":"EOT Token (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

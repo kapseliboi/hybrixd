@@ -1,6 +1,6 @@
 {
     "symbol":"waves.bch",
-    "name":"Bitcoin Cash (WAVES)",
+    "name":"Bitcoin Cash (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

@@ -1,6 +1,6 @@
 {
     "symbol":"waves.mrt",
-    "name":"Miners' Reward Token",
+    "name":"Miners' Reward Token (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

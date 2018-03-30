@@ -1,6 +1,6 @@
 {
     "symbol":"waves.wfn",
-    "name":"WavesFullNode",
+    "name":"WavesFullNode (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

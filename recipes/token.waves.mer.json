@@ -1,6 +1,6 @@
 {
     "symbol":"waves.mer",
-    "name":"Mercury",
+    "name":"Mercury (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

@@ -1,6 +1,6 @@
 {
     "symbol":"waves.akche",
-    "name":"AKCHE",
+    "name":"AKCHE (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

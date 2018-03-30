@@ -1,6 +1,6 @@
 {
     "symbol":"waves.tracknettoken",
-    "name":"TrackNetToken",
+    "name":"TrackNetToken (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

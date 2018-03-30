@@ -1,6 +1,6 @@
 {
     "symbol":"waves.zec",
-    "name":"Zcash (WAVES)",
+    "name":"Zcash (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

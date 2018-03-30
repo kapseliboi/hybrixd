@@ -1,6 +1,6 @@
 {
     "symbol":"waves.smart",
-    "name":"SMART",
+    "name":"SMART (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

@@ -1,6 +1,6 @@
 {
     "symbol":"waves.wpn",
-    "name":"WavesPool.NET",
+    "name":"WavesPool.net (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

@@ -1,6 +1,6 @@
 {
     "symbol":"waves.wgr",
-    "name":"Wagerr",
+    "name":"Wagerr (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

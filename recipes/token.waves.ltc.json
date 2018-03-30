@@ -1,6 +1,6 @@
 {
     "symbol":"waves.ltc",
-    "name":"Litecoin (WAVES)",
+    "name":"Litecoin (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

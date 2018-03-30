@@ -1,6 +1,6 @@
 {
     "symbol":"waves.dar",
-    "name":"Darcrus",
+    "name":"Darcrus (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

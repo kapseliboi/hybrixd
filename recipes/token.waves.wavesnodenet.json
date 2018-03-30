@@ -1,6 +1,6 @@
 {
     "symbol":"waves.wnet",
-    "name":"Wavesnode.NET",
+    "name":"Wavesnode.net (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

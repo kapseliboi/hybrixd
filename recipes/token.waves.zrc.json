@@ -1,6 +1,6 @@
 {
     "symbol":"waves.zrc",
-    "name":"ZrCoin",
+    "name":"ZrCoin (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

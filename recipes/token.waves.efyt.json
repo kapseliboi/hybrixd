@@ -1,6 +1,6 @@
 {
     "symbol":"waves.efyt",
-    "name":"Ergo",
+    "name":"Ergo (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

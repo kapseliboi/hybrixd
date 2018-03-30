@@ -1,6 +1,6 @@
 {
     "symbol":"waves.wgo",
-    "name":"WavesGo",
+    "name":"WavesGo (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

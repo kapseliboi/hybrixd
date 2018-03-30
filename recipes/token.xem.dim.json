@@ -1,6 +1,6 @@
 {
   "symbol":"xem.xhy",
-  "name":"DIM Coin (XEM)",
+  "name":"DIM Coin (NEM)",
   "module":"quartz",
   "mode":"nem.mosaic",
   "import": "xem",

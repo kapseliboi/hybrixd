@@ -1,6 +1,6 @@
 {
     "symbol":"waves.ocl",
-    "name":"Oceanlab",
+    "name":"Oceanlab (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

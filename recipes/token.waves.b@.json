@@ -1,6 +1,6 @@
 {
     "symbol":"waves.b@",
-    "name":"Bankcoin",
+    "name":"Bankcoin (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

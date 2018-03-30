@@ -1,6 +1,6 @@
 {
     "symbol":"waves.sta",
-    "name":"Starta",
+    "name":"Starta (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

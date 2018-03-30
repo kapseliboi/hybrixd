@@ -1,6 +1,6 @@
 {
     "symbol":"waves.vtn",
-    "name":"Voltroon",
+    "name":"Voltroon (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

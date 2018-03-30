@@ -1,6 +1,6 @@
 {
     "symbol":"waves.eth",
-    "name":"Ethereum (WAVES)",
+    "name":"Ethereum (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",
