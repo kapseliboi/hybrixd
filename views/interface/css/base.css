@@ -184,10 +184,10 @@ p {
   -moz-transform: translateX(0);
   -ms-transform: translateX(0);
   transform: translateX(0);
-  -webkit-transition: all 0.5s;
-  -moz-transition: all 0.5s;
-  -ms-transition: all 0.5s;
-  transition: all 0.5s;
+  -webkit-transition: all 0.2s;
+  -moz-transition: all 0.2s;
+  -ms-transition: all 0.2s;
+  transition: all 0.2s;
 }
 
 .custom-menu-bottom.custom-menu-tucked .pure-menu-link {
@@ -339,7 +339,7 @@ p {
 }
 
 .custom-menu .disabled {
-  cursor: not-allowed;
+  cursor: default;
   color: rgba(255, 255, 255, .3);
   text-shadow: none;
   position: relative;
@@ -417,14 +417,14 @@ p {
 
   /* Yes, this is redundant, but as long we work with JQuery, which is the problem atm, we do this with css */
 #topmenu-assets {
-  cursor: not-allowed;
-  color: rgba(255, 255, 255, .3);
+  cursor: default;
+  opacity: 0.3;
   text-shadow: none;
 }
 
 #topmenu-assets.active {
   cursor: pointer;
-  color: #FFF;
+  opacity: 1;
   text-shadow: none;
   position: relative;
 }
@@ -434,7 +434,7 @@ p {
 }
 
 #topmenu-assets.active.selected {
-  color: #fff;
+  opacity: 1;
 }
 
 #topmenu-logout {
@@ -816,11 +816,13 @@ p {
 }
 
 .content .table .balance .progress-radial {
-  text-align: left;
-  display: inline;
+  text-align: right;
+  display: inline-block;
+  width: 10px !important;
+  height: 10px !important;
 }
 
-.content .table .actions .assetbuttons {
+.content .table .actions .buttons {
   margin-top: 5px;
 }
 
@@ -985,6 +987,7 @@ p {
   margin-top: 3px;
   height: 41px;
   padding-top: 12px;
+  float:right;
 }
 
 #action-send .modal-send-networkfee {
@@ -1014,10 +1017,11 @@ p {
   margin-bottom: .2em;
   padding: 13px 10px;
   font-family: 'Open Sans', Verdana, sans-serif;
-  font-weight: 300;
+  font-weight: 600;
   background: #E9EFF4;
   border-radius: 6px;
-  color: 13212D;
+  color: #13212D;
+  letter-spacing: 1px;
 }
 
 #action-send .modal-send-addressfrom {
