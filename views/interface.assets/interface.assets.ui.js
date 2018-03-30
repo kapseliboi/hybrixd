@@ -35,7 +35,7 @@ UItransform = {
     $(element).html(setBalance);
   },
   deductBalance : function(element,newBalance) {
-    $(element).html('<span style="color:#D77;">'+String(newBalance))+'</span>';
+    $(element).html('<span style="color:#6B6;">'+String(newBalance))+'</span>';
   }
 }
 
