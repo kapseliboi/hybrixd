@@ -173,6 +173,7 @@ a {
   display:inline-block;
   vertical-align: middle;
   margin-left: 3em;
+  margin-bottom: -3px;
 }
 
 #combinatorwrap {
@@ -183,6 +184,7 @@ a {
   width: 16px;
   height: 16px;
   margin: auto;
+  margin-bottom: -3px;
   -webkit-transition: all 0.5s ease;
   transition: all 0.5s ease;
   margin-left: 1.5em;
