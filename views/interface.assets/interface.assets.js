@@ -45,9 +45,10 @@ init.interface.assets = function(args) {
     // push selected assets to active stack
     var array = [];
     for(var entry in GL.assetnames) {
-      if(GL.assetSelect[entry]) {
+      var entryExists = GL.assetSelect[entry];
+      if(entryExists) {
         array.push(entry);
-        initAsset(entry,GL.assetmodes[entry]);
+        initAsset(entry, GL.assetmodes[entry]);
       }
     }
     GL.assetsActive = array;
@@ -99,12 +100,15 @@ init.interface.assets = function(args) {
       search = search.toLowerCase();
     }
     for(var entry in GL.assetnames) {
+      var hasCorrectType = typeof GL.assetSelect[entry]==='undefined' || typeof GL.assetSelect[entry]==='function'
       if(GL.assetsActive.indexOf(entry) === -1) {
-        if(typeof GL.assetSelect[entry]==='undefined') {
+        // Check if type is function for Shift asset. TODO: Refactor.
+        if(hasCorrectType) {
           GL.assetSelect[entry] = false;
         }
       } else {
-        if(typeof GL.assetSelect[entry]==='undefined') {
+        // Check if type is function for Shift asset.
+        if(hasCorrectType) {
           GL.assetSelect[entry] = true;
         }
       }
