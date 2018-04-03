@@ -95,6 +95,7 @@ function connectionOptions(recipe){
   if(recipe.hasOwnProperty("proxy")) {
     options.responseConfig = recipe.responseConfig;
   }
+  options.rejectUnauthorized = false;
   return options;
 }
 

@@ -6,6 +6,7 @@
   "factor":8,
   "fee":0.001,
   "host": "https://104.20.58.132",
+  "rejectUnauthorized":false,
   "host-alt": "https://nodes.wavesnodes.com",
   "cache":15000,
   "throttle":3,

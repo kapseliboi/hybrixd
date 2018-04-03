@@ -218,6 +218,8 @@ overwriteProperties: (optional)
 - password:
 - proxy:
 - host:
+- rejectUnauthorized Whether to reject TLS unauthorized
+errors. (Defaults to true)
 
 Examples:
 
