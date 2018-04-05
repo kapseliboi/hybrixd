@@ -52,6 +52,10 @@
       "resume":"Resume the API Queue when it is paused.",
       "status":"Check the status of the API Queue."
     },
+    "cache" :{
+      "_help" : "Commands to control and check the cache.",
+      "clear" : "Clear the cache."
+    },
     "reload" : {
       "_help":"Commands to reload hybridd or specific components",
       "_this":"Reload hybridd.",
