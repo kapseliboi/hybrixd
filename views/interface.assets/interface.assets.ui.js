@@ -4,7 +4,7 @@ UItransform = {
     if(isNaN(n)) {
       output = '?';
     } else {
-      var balance = String(Number(n));
+      var balance = bigNumberToString((toInt(n)));
       if (balance === "0") {
         output = '0';
       } else {
