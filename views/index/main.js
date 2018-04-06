@@ -32,6 +32,9 @@ hy_page += '<script>'+fs.readFileSync('../../lib/crypto/lz-string.js')+'</script
 // and finally the hybrid connector
 hy_page += '<script>'+fs.readFileSync('./hy_connect.js')+'</script>';
 
+// COMMON UTILS
+hy_page += '<script>'+fs.readFileSync('./../../../commonUtils.js')+'</script>';
+
 // close document
 hy_page += '</body></html>';
 
