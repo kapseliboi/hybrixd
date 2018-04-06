@@ -13,7 +13,7 @@ var storage = (function() {
 
   var Sync = function(storekey,postfunction) {
     // compare meta data
-    var loop_step = next_step();
+    var loop_step = nextStep();
     hybriddcall({r:'s/storage/meta/'+storekey,c:GL.usercrypto,s:loop_step,z:0},0, function(object) {
       var meta = object.data;
       if(typeof meta==='undefined' || meta===null || meta==='null') {
@@ -27,7 +27,7 @@ var storage = (function() {
         if(meta.hash!==localmeta.hash) {
           // remote is newer
           if(meta.time>localmeta.time) {
-            var loop_step = next_step();
+            var loop_step = nextStep();
             hybriddcall({r:'s/storage/get/'+storekey,c:GL.usercrypto,s:loop_step,z:0},0, function(object) {
               if(typeof object.data==='undefined' || object.data===null || object.data==='null') {
                 localforage.getItem(storekey).then(function(value) {
@@ -54,7 +54,7 @@ var storage = (function() {
               if(typeof postfunction === 'function') {
                 postfunction(value);
               }
-              var loop_step = next_step();
+              var loop_step = nextStep();
               hybriddcall({r:'s/storage/set/'+storekey+'/'+value,c:GL.usercrypto,s:loop_step,z:0},0, function(object) {
                 // add to proof of work queue
                 if(typeof object.data === 'string' && GL.powqueue.indexOf(meta.res) === -1) {

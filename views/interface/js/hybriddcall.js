@@ -133,11 +133,11 @@ initAsset = function(entry,fullmode) {
     assets.seed[entry] = deterministicSeedGenerator(entry);
     assets.keys[entry] = deterministic.keys( {symbol:entry,seed:assets.seed[entry],mode:submode} );
     assets.addr[entry] = deterministic.address( Object.assign(assets.keys[entry],{mode:submode}) );
-    var loop_step = next_step();
+    var loop_step = nextStep();
     hybriddcall({r:'a/'+entry+'/factor',c:GL.usercrypto,s:loop_step,z:0},0, function(object) { if(typeof object.data!='undefined') { assets.fact[entry]=object.data; } });
-    var loop_step = next_step();
+    var loop_step = nextStep();
     hybriddcall({r:'a/'+entry+'/fee',c:GL.usercrypto,s:loop_step,z:0},0, function(object) { if(typeof object.data!='undefined') { assets.fees[entry]=object.data; } });
-    var loop_step = next_step();
+    var loop_step = nextStep();
     hybriddcall({r:'a/'+entry+'/contract',c:GL.usercrypto,s:loop_step,z:0},0, function(object) { if(typeof object.data!='undefined') { assets.cntr[entry]=object.data; } });
   }
 
@@ -232,7 +232,7 @@ hybriddcall = function(properties,element,postfunction,waitfunction) {
   };
   var urltarget = properties.r; 	// URL or request
   var usercrypto = GL.usercrypto;	// crypto properties
-  var step = next_step();		    // rolling nonce step of crypto packet
+  var step = nextStep();		    // rolling nonce step of crypto packet
   var reqmethod = (typeof properties.z != 'undefined' && !properties.z?0:1);
   if(!element) { element = '#NULL'; }
   // and fill the data using AJAX calls
@@ -271,7 +271,7 @@ hybriddcall = function(properties,element,postfunction,waitfunction) {
     if(cnt) { if(cnt<10) { cnt++; } } else { cnt = 1; }
     var urltarget = object.properties.r;
     var usercrypto = GL.usercrypto;
-    var proc_step = next_step();
+    var proc_step = nextStep();
     var reqmethod = (typeof object.properties.z != 'undefined' && !object.properties.z?0:1);
     var procobj = object;
     if(typeof object.data != 'undefined') {

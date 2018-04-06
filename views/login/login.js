@@ -99,13 +99,6 @@ function main(userid,passcode) {
   });
 }
 
-function next_step() {
-  // function to prevent mis-stepping by concurrent step calls
-  var current_session = session_step;
-  session_step++;
-  return current_session+1;
-}
-
 function do_login(user_keys, nonce) {
   var initialSessionData = generateInitialSessionData(nonce)
   dial_login(1);

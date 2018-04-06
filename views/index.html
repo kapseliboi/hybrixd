@@ -790,12 +790,21 @@ function continueSession (user_keys, nonce, userid, getSessionWatch, cb) {
   }
 }
 
+
+function next_step() {
+  // function to prevent mis-stepping by concurrent step calls
+  var current_session = session_step;
+  session_step++;
+  return current_session+1;
+}
+
 module.exports = {
   clean,
   continueSession,
   generateKeys,
   generateInitialSessionData,
   generateSecondarySessionData,
+  next_step,
   readSession,
   sessionStep1Reply
 }
