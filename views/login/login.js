@@ -119,32 +119,11 @@ function continue_session(user_keys,nonce,userid) {
 }
 
 function do_login(user_keys,nonce) {
-  // post session_pubkey to server + receive server_pubkey back
-  // generate random session_seed
-  var session_seed = nacl.random_bytes(4096);
-  // generate new session keypair
-  var session_keypair = nacl.crypto_box_keypair_from_seed(session_seed);
-  // generate new session signpair
-  var session_sign_seed = nacl.crypto_hash_sha256(session_seed);
-  var session_signpair = nacl.crypto_sign_keypair_from_seed(session_sign_seed);
-  // convert nonce to hex representation for urlsafe transport
-  var session_nonce = nacl.to_hex(nonce);
-  // convert pubkeys to hex representation for urlsafe transport
-  var session_hexkey = nacl.to_hex(session_keypair.boxPk);
-  var session_hexsign = nacl.to_hex(session_signpair.signPk);
-  // convert seckeys to hex for storage in key_array
-  var session_seckey = nacl.to_hex(session_keypair.boxSk);
-  var session_secsign = nacl.to_hex(session_signpair.signSk);
-
-  if ( DEBUG ) { console.log('session_seed:'+session_seed+'('+session_seed.length+')'); }
-  if ( DEBUG ) { console.log('session_hexkey:'+session_hexkey+'('+session_hexkey.length+')'); }
-  if ( DEBUG ) { console.log('session_sign_seed:'+session_sign_seed+'('+session_sign_seed.length+')'); }
-  if ( DEBUG ) { console.log('session_hexsign:'+session_hexsign+'('+session_hexsign.length+')'); }
-
+  var initialSessionData = generateInitialSessionData(nonce)
   dial_login(1);
   // posts to server under session sign public key
   $.ajax({
-    url: path + 'x/' + session_hexsign + '/' + session_step,
+    url: path + 'x/' + initialSessionData.session_hexsign + '/' + session_step,
     dataType: 'json'
   })
     .done(function(data) {
@@ -158,29 +137,29 @@ function do_login(user_keys,nonce) {
   	var nonce2_hex = nonce2_hex.replace(/^[8-9a-f]/,function(match){var range=['8','9','a','b','c','d','e','f']; return range.indexOf(match);});
   	var nonce1_hex = clean(data.nonce1);
   	var nonce1_hex = nonce1_hex.replace(/^[8-9a-f]/,function(match){var range=['8','9','a','b','c','d','e','f']; return range.indexOf(match);});
-  	var secrets_json = { 'nonce1':nonce1_hex, 'nonce2':nonce2_hex, 'client_session_pubkey':session_hexkey };
+  	var secrets_json = { 'nonce1':nonce1_hex, 'nonce2':nonce2_hex, 'client_session_pubkey': initialSessionData.session_hexkey };
   	var session_secrets = JSON.stringify(secrets_json);
 
   	// using signing method to prevent in transport changes
   	var crypt_bin = nacl.encode_utf8(session_secrets);
-  	var crypt_response = nacl.crypto_sign(crypt_bin,session_signpair.signSk);
+  	var crypt_response = nacl.crypto_sign(crypt_bin, initialSessionData.session_signpair.signSk);
   	var crypt_hex = nacl.to_hex(crypt_response);
 
   	if ( DEBUG ) { console.log('CR:'+crypt_hex); }
   	$.ajax({
-  	  url: path+'x/'+session_hexsign+'/'+session_step+'/'+crypt_hex,
+  	  url: path+'x/' + initialSessionData.session_hexsign + '/' + session_step + '/'+crypt_hex,
   	  dataType: 'json'
         })
           .done(function (data) {
             var sessionData = {
               nonce1_hex,
               nonce2_hex,
-              session_keypair,
-              session_nonce,
-              session_secsign,
-              session_seckey,
-              session_hexsign,
-              session_hexkey,
+              session_keypair: initialSessionData.session_keypair,
+              session_nonce: initialSessionData.session_nonce,
+              session_secsign: initialSessionData.session_secsign,
+              session_seckey: initialSessionData.session_seckey,
+              session_hexsign: initialSessionData.session_hexsign,
+              session_hexkey: initialSessionData.session_hexkey,
               nonce,
               user_keys
             }
