@@ -103,23 +103,14 @@ function next_step() {
   return current_session+1;
 }
 
-function read_session(user_keys,nonce) {
-  // decrypt session data (so that it does not lie around but is only 'known' upon decrypt)
-  var sess_bin = nacl.from_hex($('#session_data').text());
-  // user's session nonce is used for session_data
-  var session_data = nacl.crypto_box_open(sess_bin,nonce,user_keys.boxPk,user_keys.boxSk);
-  var session_string = nacl.decode_utf8(session_data);
-
-  return JSON.parse(session_string);
-}
-
 function continue_session(user_keys,nonce,userid) {
   var session_watch = $('#session_data').text();
   if ( session_watch == '' ) {
     setTimeout( function() { continue_session(user_keys,nonce,userid); }, 1000 );
   } else {
+    var sessionData = $('#session_data').text();
     // use read_session(user_keys,nonce) to read out session variables
-    if ( DEBUG ) { console.log(read_session(user_keys,nonce)); }
+    if ( DEBUG ) { console.log(readSession(user_keys, nonce, sessionData, cannotSetUpEncryptedSessionAlert)) }
     // forward to the interface, session for the user starts
     setTimeout(function() { // added extra time to avoid forward to interface before x authentication completes!
       fetchview('interface',{'user_keys':user_keys,'nonce':nonce,'userid':userid});
@@ -213,4 +204,8 @@ function maybeOpenNewWalletModal () {
       document.getElementById('newaccountmodal').style.display = 'block';
     }
   }
+}
+
+function cannotSetUpEncryptedSessionAlert () {
+  console.log('Error: Cannot set up encrypted session. Please check your connectivity!');
 }
