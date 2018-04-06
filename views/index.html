@@ -781,8 +781,18 @@ function generateSecondarySessionData (data, sessionHexKey, signSk) {
   }
 }
 
+function continueSession (user_keys, nonce, userid, getSessionWatch, cb) {
+  var sessionWatch = getSessionWatch();
+  if (sessionWatch === '') {
+    setTimeout(function () { continueSession(user_keys, nonce, userid, getSessionWatch, cb); }, 1000);
+  } else {
+    cb();
+  }
+}
+
 module.exports = {
   clean,
+  continueSession,
   generateKeys,
   generateInitialSessionData,
   generateSecondarySessionData,

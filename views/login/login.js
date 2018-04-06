@@ -91,8 +91,11 @@ function main(userid,passcode) {
     if ( DEBUG ) { console.log('user_pubkey:'+user_pubkey+'('+user_pubkey.length+')/nonce:'+nonce); }
 
     do_login(user_keys,nonce);
-    continue_session(user_keys,nonce,userid);
-
+    var sessionWatch = $('#session_data').text();
+    function getSessionWatch () {
+      return $('#session_data').text()
+    }
+    continueSession(user_keys, nonce, userid, getSessionWatch, sessionContinuation(user_keys, nonce, userid));
   });
 }
 
@@ -101,21 +104,6 @@ function next_step() {
   var current_session = session_step;
   session_step++;
   return current_session+1;
-}
-
-function continue_session(user_keys,nonce,userid) {
-  var session_watch = $('#session_data').text();
-  if ( session_watch == '' ) {
-    setTimeout( function() { continue_session(user_keys,nonce,userid); }, 1000 );
-  } else {
-    var sessionData = $('#session_data').text();
-    // use read_session(user_keys,nonce) to read out session variables
-    if ( DEBUG ) { console.log(readSession(user_keys, nonce, sessionData, cannotSetUpEncryptedSessionAlert)) }
-    // forward to the interface, session for the user starts
-    setTimeout(function() { // added extra time to avoid forward to interface before x authentication completes!
-      fetchview('interface',{'user_keys':user_keys,'nonce':nonce,'userid':userid});
-    }, 3000 );
-  }
 }
 
 function do_login(user_keys, nonce) {
@@ -173,4 +161,19 @@ function maybeOpenNewWalletModal () {
 
 function cannotSetUpEncryptedSessionAlert () {
   console.log('Error: Cannot set up encrypted session. Please check your connectivity!');
+}
+
+function sessionContinuation (user_keys, nonce, userid) {
+  return function () {
+    // use read_session(user_keys,nonce) to read out session variables
+    if ( DEBUG ) { console.log(readSession(user_keys, nonce, sessionData, cannotSetUpEncryptedSessionAlert)) }
+    // forward to the interface, session for the user starts
+    setTimeout(function() { // added extra time to avoid forward to interface before x authentication completes!
+      fetchview('interface',{
+        user_keys,
+        nonce,
+        userid
+      });
+    }, 3000 );
+  }
 }
