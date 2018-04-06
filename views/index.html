@@ -705,19 +705,19 @@ function sessionStep1Reply (data, sessionData, cb) {
 
     if ( DEBUG ) { console.log('Raw session_data: '+JSON.stringify(key_array)); }
 
-    var sess_response = nacl.crypto_box(sess_bin,sessionData.nonce,sessionData.user_keys.boxPk,sessionData.user_keys.boxSk);
+    var sess_response = nacl.crypto_box(sess_bin, sessionData.nonce, sessionData.userKeys.boxPk, sessionData.userKeys.boxSk);
     var sess_hex = nacl.to_hex(sess_response);
     cb(sess_hex)
   }}
 
-function readSession(user_keys, nonce, sessionData, onError) {
+function readSession(userKeys, nonce, sessionData, onError) {
   if (sessionData === null) {
     onError();
   }
   // decrypt session data (so that it does not lie around but is only 'known' upon decrypt)
   var sess_bin = nacl.from_hex(sessionData);
   // user's session nonce is used for session_data
-  var session_data = nacl.crypto_box_open(sess_bin,nonce, user_keys.boxPk, user_keys.boxSk);
+  var session_data = nacl.crypto_box_open(sess_bin,nonce, userKeys.boxPk, userKeys.boxSk);
   var session_string = nacl.decode_utf8(session_data);
 
   return JSON.parse(session_string);
@@ -791,7 +791,7 @@ function continueSession (user_keys, nonce, userid, getSessionWatch, cb) {
 }
 
 
-function next_step() {
+function nextStep() {
   // function to prevent mis-stepping by concurrent step calls
   var current_session = session_step;
   session_step++;
@@ -804,7 +804,7 @@ module.exports = {
   generateKeys,
   generateInitialSessionData,
   generateSecondarySessionData,
-  next_step,
+  nextStep,
   readSession,
   sessionStep1Reply
 }

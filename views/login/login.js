@@ -11,13 +11,13 @@ $(document).ready(function() {
       var passcode = $('#inputPasscode').val();
       if ( userid.length == 16 && (passcode.length == 16 || passcode.length == 48) ) {
         clicked = true;
-        session_step = 0;
+        var sessionStep = session_step = 0;
         $('#arc0').css('background-color',$('#combinator').css('color'));
         $('#generatebutton').attr('disabled','disabled');
         $('#helpbutton').attr('disabled','disabled');
         $('#combinatorwrap').css('opacity',1);
         rotate_login(0);
-        setTimeout(function() { main( userid,passcode ); },1000);
+        setTimeout(function() { main( userid, passcode, sessionStep ); },1000);
       }
     }
   }
@@ -69,66 +69,80 @@ function validate_userid(userid) {
   return (DJB2.hash(hxid.substr(0,12)).substr(0,4)===hxid.substr(12,4)?true:false);
 }
 
-function validate_passwd(userid,passwd) {
+function validate_passwd(userid, passwd) {
   var hxid = base32ToHex(userid).toLowerCase();
   var entr = passwd.toUpperCase();
   return (DJB2.hash(hxid.substr(0,12)+entr).substr(4,4)===hxid.substr(16,4).toUpperCase()?true:false);
 }
 
-function main(userid,passcode) {
-  // instantiate nacl
+function main(userid, passcode, sessionStep) {
   blink('arc0');
   nacl = null; // TODO: make official global
-  nacl_factory.instantiate(function (naclinstance) {
-
-    nacl = naclinstance;
-
-    var nonce = nacl.crypto_box_random_nonce();
-    dial_login(0);
-    var user_keys = generateKeys(passcode,userid,0);
-
-    var user_pubkey = nacl.to_hex(user_keys.boxPk);
-    if ( DEBUG ) { console.log('user_pubkey:'+user_pubkey+'('+user_pubkey.length+')/nonce:'+nonce); }
-
-    do_login(user_keys,nonce);
-    var sessionWatch = $('#session_data').text();
-    function getSessionWatch () {
-      return $('#session_data').text()
-    }
-    continueSession(user_keys, nonce, userid, getSessionWatch, sessionContinuation(user_keys, nonce, userid));
-  });
+  nacl_factory.instantiate(
+    instantiateNaclAndHandleLogin(passcode, userid, sessionStep)
+  ); // instantiate nacl and handle login
 }
 
-function do_login(user_keys, nonce) {
-  var initialSessionData = generateInitialSessionData(nonce)
+function instantiateNaclAndHandleLogin (passcode, userID, sessionStep, cb) {
+  return function (naclinstance) {
+    nacl = naclinstance; // TODO: INSTANTIATION MUST BE SAVED SOMEWHERE NON-GLOBALLAY SO IT IS ACCESSABLE THROUGHOUT
+    login(passcode, userID, sessionStep)
+  }
+}
+
+function login (passcode, userID, sessionStep) {
+  var nonce = nacl.crypto_box_random_nonce();
+  var userKeys = generateKeys(passcode, userID, 0);
+  var user_pubkey = nacl.to_hex(userKeys.boxPk);
+
+  handleLogin(userKeys, nonce, userID, sessionStep)
+}
+
+function handleLogin (userKeys, nonce, userID, sessionStep) {
+  dial_login(0); // Do some animation
+  postSessionStep0Data(userKeys, nonce, sessionStep);
+  continueSession(userKeys, nonce, userID, getSessionData, sessionContinuation(userKeys, nonce, userID));
+}
+
+// posts to server under session sign public key
+function postSessionStep0Data (userKeys, nonce, sessionStep) {
+  var initialSessionData = generateInitialSessionData(nonce);
   dial_login(1);
-  // posts to server under session sign public key
   $.ajax({
-    url: path + 'x/' + initialSessionData.session_hexsign + '/' + session_step,
+    url: path + 'x/' + initialSessionData.session_hexsign + '/' + sessionStep,
     dataType: 'json'
   })
-    .done(function(data) {
-      // PROCESS REPLY TO SESSION_STEP 0 REQUEST
-      // receive nonce1 back
-      if ( clean(data.nonce1).length === 48 )	{
-        session_step++; // next step, hand out nonce2
-        var secondarySessionData = generateSecondarySessionData(data, initialSessionData.session_hexkey, initialSessionData.session_signpair.signSk)
-  	$.ajax({
-  	  url: path+'x/' + initialSessionData.session_hexsign + '/' + session_step + '/' + secondarySessionData.crypt_hex,
-  	  dataType: 'json'
-        })
-          .done(function (data) {
-            var sessionData = Object.assign(initialSessionData, secondarySessionData, { nonce }, { user_keys });
-            function setSessionDataInElement (sessionHex) {
-              $('#session_data').text(sessionHex);
-            }
+    .done(processSessionStep0Reply(initialSessionData, nonce, userKeys));
+}
 
-            dial_login(2);
-            sessionStep1Reply(data, sessionData, setSessionDataInElement);
-            dial_login(3);
-          });
-      }
-    });
+function processSessionStep0Reply (sessionStep0Data, nonce, userKeys) {
+  return function (nonce1Data) {
+    const cleanNonceHasCorrectLength = clean(nonce1Data.nonce1).length === 48;
+    if (cleanNonceHasCorrectLength) {
+      session_step++; // next step, hand out nonce2
+      const sessionStep = session_step;
+      var sessionStep1Data = generateSecondarySessionData(nonce1Data, sessionStep0Data.session_hexkey, sessionStep0Data.session_signpair.signSk)
+      $.ajax({
+        url: path+'x/' + sessionStep0Data.session_hexsign + '/' + sessionStep + '/' + sessionStep1Data.crypt_hex,
+        dataType: 'json'
+      })
+        .done(postSession1StepData(sessionStep0Data, sessionStep1Data, nonce, userKeys));
+    }
+  }
+}
+
+function setSessionDataInElement (sessionHex) {
+  $('#session_data').text(sessionHex);
+}
+
+function postSession1StepData (initialSessionData, sessionStep1Data, nonce, userKeys) {
+  return function (data) {
+    var sessionData = Object.assign(initialSessionData, sessionStep1Data, { nonce }, { userKeys });
+
+    dial_login(2);
+    sessionStep1Reply(data, sessionData, setSessionDataInElement);
+    dial_login(3);
+  }
 }
 
 function maybeOpenNewWalletModal () {
@@ -158,4 +172,8 @@ function sessionContinuation (user_keys, nonce, userid) {
       });
     }, 3000 );
   }
+}
+
+function getSessionData () {
+  return $('#session_data').text()
 }
