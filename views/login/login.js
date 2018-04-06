@@ -125,18 +125,7 @@ function do_login(user_keys, nonce) {
   	  dataType: 'json'
         })
           .done(function (data) {
-            var sessionData = {
-              nonce1_hex: secondarySessionData.nonce1_hex,
-              nonce2_hex: secondarySessionData.nonce2_hex,
-              session_keypair: initialSessionData.session_keypair,
-              session_nonce: initialSessionData.session_nonce,
-              session_secsign: initialSessionData.session_secsign,
-              session_seckey: initialSessionData.session_seckey,
-              session_hexsign: initialSessionData.session_hexsign,
-              session_hexkey: initialSessionData.session_hexkey,
-              nonce,
-              user_keys
-            }
+            var sessionData = Object.assign(initialSessionData, secondarySessionData, { nonce }, { user_keys });
             function setSessionDataInElement (sessionHex) {
               $('#session_data').text(sessionHex);
             }
