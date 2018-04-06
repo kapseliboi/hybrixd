@@ -118,7 +118,7 @@ function continue_session(user_keys,nonce,userid) {
   }
 }
 
-function do_login(user_keys,nonce) {
+function do_login(user_keys, nonce) {
   var initialSessionData = generateInitialSessionData(nonce)
   dial_login(1);
   // posts to server under session sign public key
@@ -131,29 +131,15 @@ function do_login(user_keys,nonce) {
       // receive nonce1 back
       if ( clean(data.nonce1).length === 48 )	{
         session_step++; // next step, hand out nonce2
-  	var nonce2 = nacl.crypto_box_random_nonce();
-  	var nonce2_hex = nacl.to_hex(nonce2);
-  	// change first character to 0-7 if it is 8,9,a-f to keep sum nonce within 32 bytes
-  	var nonce2_hex = nonce2_hex.replace(/^[8-9a-f]/,function(match){var range=['8','9','a','b','c','d','e','f']; return range.indexOf(match);});
-  	var nonce1_hex = clean(data.nonce1);
-  	var nonce1_hex = nonce1_hex.replace(/^[8-9a-f]/,function(match){var range=['8','9','a','b','c','d','e','f']; return range.indexOf(match);});
-  	var secrets_json = { 'nonce1':nonce1_hex, 'nonce2':nonce2_hex, 'client_session_pubkey': initialSessionData.session_hexkey };
-  	var session_secrets = JSON.stringify(secrets_json);
-
-  	// using signing method to prevent in transport changes
-  	var crypt_bin = nacl.encode_utf8(session_secrets);
-  	var crypt_response = nacl.crypto_sign(crypt_bin, initialSessionData.session_signpair.signSk);
-  	var crypt_hex = nacl.to_hex(crypt_response);
-
-  	if ( DEBUG ) { console.log('CR:'+crypt_hex); }
+        var secondarySessionData = generateSecondarySessionData(data, initialSessionData.session_hexkey, initialSessionData.session_signpair.signSk)
   	$.ajax({
-  	  url: path+'x/' + initialSessionData.session_hexsign + '/' + session_step + '/'+crypt_hex,
+  	  url: path+'x/' + initialSessionData.session_hexsign + '/' + session_step + '/' + secondarySessionData.crypt_hex,
   	  dataType: 'json'
         })
           .done(function (data) {
             var sessionData = {
-              nonce1_hex,
-              nonce2_hex,
+              nonce1_hex: secondarySessionData.nonce1_hex,
+              nonce2_hex: secondarySessionData.nonce2_hex,
               session_keypair: initialSessionData.session_keypair,
               session_nonce: initialSessionData.session_nonce,
               session_secsign: initialSessionData.session_secsign,

@@ -757,10 +757,35 @@ function generateInitialSessionData (nonce) {
   }
 }
 
+function generateSecondarySessionData (data, sessionHexKey, signSk) {
+  var nonce2 = nacl.crypto_box_random_nonce();
+  var nonce2_hex = nacl.to_hex(nonce2);
+  // change first character to 0-7 if it is 8,9,a-f to keep sum nonce within 32 bytes
+  var nonce2_hex = nonce2_hex.replace(/^[8-9a-f]/,function(match){var range=['8','9','a','b','c','d','e','f']; return range.indexOf(match);});
+  var nonce1_hex = clean(data.nonce1);
+  var nonce1_hex = nonce1_hex.replace(/^[8-9a-f]/,function(match){var range=['8','9','a','b','c','d','e','f']; return range.indexOf(match);});
+  var secrets_json = { 'nonce1':nonce1_hex, 'nonce2':nonce2_hex, 'client_session_pubkey': sessionHexKey };
+  var session_secrets = JSON.stringify(secrets_json);
+
+  // using signing method to prevent in transport changes
+  var crypt_bin = nacl.encode_utf8(session_secrets);
+  var crypt_response = nacl.crypto_sign(crypt_bin, signSk);
+  var crypt_hex = nacl.to_hex(crypt_response);
+
+  if ( DEBUG ) { console.log('CR:'+crypt_hex); }
+
+  return {
+    nonce1_hex,
+    nonce2_hex,
+    crypt_hex
+  }
+}
+
 module.exports = {
   clean,
   generateKeys,
   generateInitialSessionData,
+  generateSecondarySessionData,
   readSession,
   sessionStep1Reply
 }
