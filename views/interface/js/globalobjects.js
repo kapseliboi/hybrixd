@@ -54,5 +54,5 @@ function bigNumberToString (obj, base) {
   if (!('toString' in obj) || !('lessThan' in obj)) return obj
 
   // if object has bignumber properties, convert to string with base
-  return obj.toString(base)
+  return obj.toString(base);
 }
