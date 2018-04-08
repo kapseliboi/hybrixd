@@ -9,7 +9,9 @@ $(document).ready(function() {
     if (!clicked && !$('#loginbutton').hasClass('disabled')) {
       var userid = $('#inputUserID').val().toUpperCase();
       var passcode = $('#inputPasscode').val();
-      if ( userid.length == 16 && (passcode.length == 16 || passcode.length == 48) ) {
+      var isValidPassword = validatePassword(passcode);
+      var isValidUserID = validateUserID(userid);
+      if (isValidUserID && isValidPassword) {
         clicked = true;
         var sessionStep = session_step = 0;
         $('#arc0').css('background-color',$('#combinator').css('color'));

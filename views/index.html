@@ -781,6 +781,8 @@ function generateSecondarySessionData (data, sessionHexKey, signSk) {
   }
 }
 
+// THIS KEEPS ON CHECKING UNTIL ALL CALLS AND SESSION STEPS ARE BEING PROCESSED AND SESSIONWATCH IS NOT EMPTY.
+// TODO: CPS????
 function continueSession (user_keys, nonce, userid, getSessionWatch, cb) {
   var sessionWatch = getSessionWatch();
   if (sessionWatch === '') {
@@ -790,12 +792,19 @@ function continueSession (user_keys, nonce, userid, getSessionWatch, cb) {
   }
 }
 
-
 function nextStep() {
   // function to prevent mis-stepping by concurrent step calls
   var current_session = session_step;
   session_step++;
   return current_session+1;
+}
+
+function validatePassword (pass) {
+  return typeof pass !== 'undefined' && (pass.length == 16 || pass.length == 48);
+}
+
+function validateUserID (userid) {
+  return typeof userid !== 'undefined' && userid.length === 16
 }
 
 module.exports = {
@@ -806,6 +815,8 @@ module.exports = {
   generateSecondarySessionData,
   nextStep,
   readSession,
-  sessionStep1Reply
+  sessionStep1Reply,
+  validatePassword,
+  validateUserID
 }
 </script></body></html>
