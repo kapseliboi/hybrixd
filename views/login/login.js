@@ -1,21 +1,5 @@
 // hy_login.js - contains javascript for login, encryption and session authentication
 $(document).ready(function() {
-  function handleLogin () {
-    var btnIsNotDisabled = !$('#loginbutton').hasClass('disabled')
-    if (btnIsNotDisabled) {
-      // CANNOT FACTOR THIS UP YET, BECAUSE IT WILL NOT FIND CREDENTIALS RIGHT AWAY.
-      var userid = $('#inputUserID').val().toUpperCase();
-      var passcode = $('#inputPasscode').val();
-      var isValidUserIDAndPassword = validateUserID(userid) && validatePassword(passcode);
-      if (isValidUserIDAndPassword) {
-        var sessionStep = session_step = 0;
-        rotate_login(0);
-        setCSSTorenderButtonsToDisabled()
-        main(userid, passcode, sessionStep);
-      }
-    }
-  }
-
   $('#loginbutton').click(handleLogin);
   $('#inputUserID').keypress(focusOnPasswordAfterReturnKeyOnID);
   $(document).keydown(handleCtrlSKeyEvent); // for legacy wallets enable signin button on CTRL-S
@@ -114,9 +98,7 @@ function cannotSetUpEncryptedSessionAlert () {
 
 function sessionContinuation (user_keys, nonce, userid) {
   return function () {
-    // use read_session(user_keys,nonce) to read out session variables
-    if ( DEBUG ) { console.log(readSession(user_keys, nonce, sessionData, cannotSetUpEncryptedSessionAlert)) }
-    // forward to the interface, session for the user starts
+    if ( DEBUG ) { console.log(readSession(user_keys, nonce, sessionData, cannotSetUpEncryptedSessionAlert)) } // use read_session(user_keys,nonce) to read out session variables
     setTimeout(function() { // added extra time to avoid forward to interface before x authentication completes!
       fetchview('interface',{
         user_keys,
@@ -172,3 +154,19 @@ function focusOnLoginButton (cb) {
     }
   }
 };
+
+function handleLogin () {
+  var btnIsNotDisabled = !$('#loginbutton').hasClass('disabled')
+  if (btnIsNotDisabled) {
+    // \/\/\/\/ CANNOT FACTOR THIS UP YET, BECAUSE IT WILL NOT FIND CREDENTIALS RIGHT AWAY.
+    var userid = $('#inputUserID').val().toUpperCase();
+    var passcode = $('#inputPasscode').val();
+    var isValidUserIDAndPassword = validateUserID(userid) && validatePassword(passcode);
+    if (isValidUserIDAndPassword) {
+      var sessionStep = session_step = 0;
+      rotate_login(0);
+      setCSSTorenderButtonsToDisabled()
+      main(userid, passcode, sessionStep);
+    }
+  }
+}
