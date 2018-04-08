@@ -12,6 +12,7 @@ function helpbutton () {
         {title: '', button: 'Close'});
 }
 
+// TODO: Give back some feedback to the user about incorrect credentials????
 function checkfields () {
   var userID = String($('#inputUserID').val());
   var pass = String($('#inputPasscode').val());
@@ -19,16 +20,16 @@ function checkfields () {
   var isPasswordValid = validatePassword(pass) && validate_passwd(userID, pass);
 
   if (isUserIDValid && isPasswordValid) {
-    $('#loginbutton').removeClass('disabled');
-    $('#tooltip').css('opacity', 0);
-    $('#loginform input[type=text], #loginform input[type=password]').css('border-color', '#D9E3EB');
+    renderLoginFormToEnabledState();
+  } else if (userID.length > 0) {
+    $('#inputUserID').css('text-transform', 'uppercase'); // Set userID to uppercase on every input
   } else {
-    // TODO: Give back some feedback to the user about incorrect credentials????
-    if (userID.length > 0) {
-      $('#inputUserID').css('text-transform', 'uppercase');
-    } else {
-      $('#inputUserID').css('text-transform', '');
-    }
     $('#loginbutton').addClass('disabled');
   }
+}
+
+function renderLoginFormToEnabledState () {
+  $('#loginbutton').removeClass('disabled');
+  $('#tooltip').css('opacity', 0);
+  $('#loginform input[type=text], #loginform input[type=password]').css('border-color', '#D9E3EB');
 }
