@@ -1,13 +1,3 @@
-// animation (init)
-function animate_login () {
-  $('#arc0').css('background-color', $('#combinator').css('color'));
-  if (blink('arc0') && rotate_login(0) && dial_login(0)) {
-    // return true to confirm animation is running
-    return true;
-  }
-}
-
-// animation (blink)
 function blink (target) {
   var el = document.getElementById(target);
   if (el != null && typeof el.style !== 'undefined') {
@@ -17,7 +7,7 @@ function blink (target) {
       el.style.visibility = 'hidden';
     }
   }
-  // setTimeout("blink('" + target + "')", 400);
+
   setTimeout(function () {
     blink(target);
   }, 400);
@@ -25,7 +15,6 @@ function blink (target) {
   return true;
 }
 
-// animation (rotation)
 function rotate_login (turn) {
   var el = document.getElementById('arc3');
   var bgcl = $('#combinator').css('background-color');
