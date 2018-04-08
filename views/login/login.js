@@ -1,80 +1,43 @@
 // hy_login.js - contains javascript for login, encryption and session authentication
 
 $(document).ready(function() {
-  var clicked = false;
-
-  maybeOpenNewWalletModal();
-
   function handleLogin() {
-    if (!clicked && !$('#loginbutton').hasClass('disabled')) {
+    var btnIsNotDisabled = !$('#loginbutton').hasClass('disabled')
+    if (true) {
       var userid = $('#inputUserID').val().toUpperCase();
       var passcode = $('#inputPasscode').val();
       var isValidPassword = validatePassword(passcode);
-      var isValidUserID = validateUserID(userid);
+      var isValidUserID = validateUserID(userid)
       if (isValidUserID && isValidPassword) {
-        clicked = true;
         var sessionStep = session_step = 0;
+        $('#loginbutton').addClass('disabled')
         $('#arc0').css('background-color',$('#combinator').css('color'));
         $('#generatebutton').attr('disabled','disabled');
         $('#helpbutton').attr('disabled','disabled');
         $('#combinatorwrap').css('opacity',1);
         rotate_login(0);
-        setTimeout(function() { main( userid, passcode, sessionStep ); },1000);
+        main(userid, passcode, sessionStep);
       }
     }
   }
 
   // handle login click
-  $('#loginbutton').click( function() { handleLogin(clicked); });
-
-  $('#inputUserID').keypress(function(e) {
-    if (e.keyCode == 13) {
-      $('#inputPasscode').focus();
-    }
-  });
-
-  $('#inputPasscode').keypress(function(e) {
+  $('#loginbutton').click(handleLogin);
+  $('#inputUserID').keypress(focusOnPasswordAfterReturnKeyOnID);
+  $('#inputPasscode').keypress(function (e) {
     if (e.keyCode == 13) {
       $('#loginbutton').focus();
-      handleLogin(clicked);
+      handleLogin();
     }
   });
 
-  // for legacy wallets enable signin button on CTRL-S
-  $(document).keydown(function(e) {
-
-    var key = undefined;
-    var possible = [ e.key, e.keyIdentifier, e.keyCode, e.which ];
-
-    while (key === undefined && possible.length > 0)
-    {
-      key = possible.pop();
-    }
-
-    if (key && (key == '115' || key == '83' ) && (e.ctrlKey || e.metaKey) && !(e.altKey))
-    {
-      e.preventDefault();
-      $('#loginbutton').removeAttr('disabled');
-      return false;
-    }
-    return true;
-  });
+  $(document).keydown(handleCtrlSKeyEvent); // for legacy wallets enable signin button on CTRL-S
+  maybeOpenNewWalletModal();
 });
 
 init.login = function(args) {
   if ( DEBUG ) { console.log('init.login called with args: '+JSON.stringify(args)); }
   // do nothing
-}
-
-function validate_userid(userid) {
-  var hxid = base32ToHex(userid).toUpperCase();
-  return (DJB2.hash(hxid.substr(0,12)).substr(0,4)===hxid.substr(12,4)?true:false);
-}
-
-function validate_passwd(userid, passwd) {
-  var hxid = base32ToHex(userid).toLowerCase();
-  var entr = passwd.toUpperCase();
-  return (DJB2.hash(hxid.substr(0,12)+entr).substr(4,4)===hxid.substr(16,4).toUpperCase()?true:false);
 }
 
 function main(userid, passcode, sessionStep) {
@@ -178,4 +141,28 @@ function sessionContinuation (user_keys, nonce, userid) {
 
 function getSessionData () {
   return $('#session_data').text()
+}
+
+function handleCtrlSKeyEvent (e) {
+  var key = undefined;
+  var possible = [ e.key, e.keyIdentifier, e.keyCode, e.which ];
+
+  while (key === undefined && possible.length > 0)
+  {
+    key = possible.pop();
+  }
+
+  if (key && (key == '115' || key == '83' ) && (e.ctrlKey || e.metaKey) && !(e.altKey))
+  {
+    e.preventDefault();
+    $('#loginbutton').removeAttr('disabled');
+    return false;
+  }
+  return true;
+}
+
+function focusOnPasswordAfterReturnKeyOnID (e) {
+  if (e.keyCode == 13) {
+    $('#inputPasscode').focus();
+  }
 }
