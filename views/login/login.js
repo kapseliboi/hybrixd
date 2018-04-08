@@ -3,19 +3,18 @@
 $(document).ready(function() {
   function handleLogin() {
     var btnIsNotDisabled = !$('#loginbutton').hasClass('disabled')
-    if (true) {
+    if (btnIsNotDisabled) {
       var userid = $('#inputUserID').val().toUpperCase();
       var passcode = $('#inputPasscode').val();
-      var isValidPassword = validatePassword(passcode);
-      var isValidUserID = validateUserID(userid)
-      if (isValidUserID && isValidPassword) {
+      var isValidUserIDAndPassword = validateUserID(userid) && validatePassword(passcode);
+      if (isValidUserIDAndPassword) {
         var sessionStep = session_step = 0;
         $('#loginbutton').addClass('disabled')
+        rotate_login(0);
         $('#arc0').css('background-color',$('#combinator').css('color'));
         $('#generatebutton').attr('disabled','disabled');
         $('#helpbutton').attr('disabled','disabled');
         $('#combinatorwrap').css('opacity',1);
-        rotate_login(0);
         main(userid, passcode, sessionStep);
       }
     }
@@ -24,6 +23,7 @@ $(document).ready(function() {
   // handle login click
   $('#loginbutton').click(handleLogin);
   $('#inputUserID').keypress(focusOnPasswordAfterReturnKeyOnID);
+  $(document).keydown(handleCtrlSKeyEvent); // for legacy wallets enable signin button on CTRL-S
   $('#inputPasscode').keypress(function (e) {
     if (e.keyCode == 13) {
       $('#loginbutton').focus();
@@ -31,7 +31,6 @@ $(document).ready(function() {
     }
   });
 
-  $(document).keydown(handleCtrlSKeyEvent); // for legacy wallets enable signin button on CTRL-S
   maybeOpenNewWalletModal();
 });
 
@@ -103,7 +102,6 @@ function setSessionDataInElement (sessionHex) {
 function postSession1StepData (initialSessionData, sessionStep1Data, nonce, userKeys) {
   return function (data) {
     var sessionData = Object.assign(initialSessionData, sessionStep1Data, { nonce }, { userKeys });
-
     dial_login(2);
     sessionStep1Reply(data, sessionData, setSessionDataInElement);
     dial_login(3);

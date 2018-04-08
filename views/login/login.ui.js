@@ -12,16 +12,19 @@ function helpbutton() {
         {title: '', button: 'Close'});
 }
 
-function checkfields() {
-  var userid=String($('#inputUserID').val());
-  var passwd=String($('#inputPasscode').val());
-  // DEBUG: alert('UID: '+validate_userid(userid)+'   PWD: '+validate_passwd(userid,passwd));
-  if(userid.length===16 && (passwd.length===16 || passwd.length === 48) && userid!==passwd && validate_userid(userid) && validate_passwd(userid,passwd)) {
+function checkfields () {
+  var userID = String($('#inputUserID').val());
+  var pass = String($('#inputPasscode').val());
+  var isUserIDValid = validateUserID(userID) && validate_userid(userID) && userID !== pass;
+  var isPasswordValid = validatePassword(pass) && validate_passwd(userID, pass);
+
+  if (isUserIDValid && isPasswordValid) {
     $('#loginbutton').removeClass('disabled');
     $('#tooltip').css('opacity', 0);
     $('#loginform input[type=text], #loginform input[type=password]').css( 'border-color', '#D9E3EB' );
   } else {
-    if(userid.length>0) {
+    // TODO: Give back some feedback to the user about incorrect credentials????
+    if (userID.length > 0) {
       $('#inputUserID').css('text-transform','uppercase');
     } else {
       $('#inputUserID').css('text-transform','');
