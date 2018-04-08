@@ -34,6 +34,9 @@ hy_content += '<script>'+fs.readFileSync('../../lib/crypto/sjcl.js')+'</script>'
 // Add global variables
 hy_content += '<script>'+fs.readFileSync('./js/globals.js')+'</script>';
 
+// Add login animations
+hy_content += '<script>'+fs.readFileSync('./js/animations.js')+'</script>';
+
 // Add login validations
 hy_content += '<script>'+fs.readFileSync('./js/validations.js')+'</script>';
 

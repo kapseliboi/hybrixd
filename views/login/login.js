@@ -1,35 +1,25 @@
 // hy_login.js - contains javascript for login, encryption and session authentication
-
 $(document).ready(function() {
-  function handleLogin() {
+  function handleLogin () {
     var btnIsNotDisabled = !$('#loginbutton').hasClass('disabled')
     if (btnIsNotDisabled) {
+      // CANNOT FACTOR THIS UP YET, BECAUSE IT WILL NOT FIND CREDENTIALS RIGHT AWAY.
       var userid = $('#inputUserID').val().toUpperCase();
       var passcode = $('#inputPasscode').val();
       var isValidUserIDAndPassword = validateUserID(userid) && validatePassword(passcode);
       if (isValidUserIDAndPassword) {
         var sessionStep = session_step = 0;
-        $('#loginbutton').addClass('disabled')
         rotate_login(0);
-        $('#arc0').css('background-color',$('#combinator').css('color'));
-        $('#generatebutton').attr('disabled','disabled');
-        $('#helpbutton').attr('disabled','disabled');
-        $('#combinatorwrap').css('opacity',1);
+        setCSSTorenderButtonsToDisabled()
         main(userid, passcode, sessionStep);
       }
     }
   }
 
-  // handle login click
   $('#loginbutton').click(handleLogin);
   $('#inputUserID').keypress(focusOnPasswordAfterReturnKeyOnID);
   $(document).keydown(handleCtrlSKeyEvent); // for legacy wallets enable signin button on CTRL-S
-  $('#inputPasscode').keypress(function (e) {
-    if (e.keyCode == 13) {
-      $('#loginbutton').focus();
-      handleLogin();
-    }
-  });
+  $('#inputPasscode').keypress(focusOnLoginButton(handleLogin));
 
   maybeOpenNewWalletModal();
 });
@@ -39,7 +29,7 @@ init.login = function(args) {
   // do nothing
 }
 
-function main(userid, passcode, sessionStep) {
+function main (userid, passcode, sessionStep) {
   blink('arc0');
   nacl = null; // TODO: make official global
   nacl_factory.instantiate(
@@ -50,19 +40,19 @@ function main(userid, passcode, sessionStep) {
 function instantiateNaclAndHandleLogin (passcode, userID, sessionStep, cb) {
   return function (naclinstance) {
     nacl = naclinstance; // TODO: INSTANTIATION MUST BE SAVED SOMEWHERE NON-GLOBALLAY SO IT IS ACCESSABLE THROUGHOUT
-    login(passcode, userID, sessionStep)
+    generateNonceAndUserKeys(passcode, userID, sessionStep)
   }
 }
 
-function login (passcode, userID, sessionStep) {
+function generateNonceAndUserKeys (passcode, userID, sessionStep) {
   var nonce = nacl.crypto_box_random_nonce();
   var userKeys = generateKeys(passcode, userID, 0);
   var user_pubkey = nacl.to_hex(userKeys.boxPk);
 
-  handleLogin(userKeys, nonce, userID, sessionStep)
+  startAnimationAndDoLogin(userKeys, nonce, userID, sessionStep)
 }
 
-function handleLogin (userKeys, nonce, userID, sessionStep) {
+function startAnimationAndDoLogin (userKeys, nonce, userID, sessionStep) {
   dial_login(0); // Do some animation
   postSessionStep0Data(userKeys, nonce, sessionStep);
   continueSession(userKeys, nonce, userID, getSessionData, sessionContinuation(userKeys, nonce, userID));
@@ -145,8 +135,7 @@ function handleCtrlSKeyEvent (e) {
   var key = undefined;
   var possible = [ e.key, e.keyIdentifier, e.keyCode, e.which ];
 
-  while (key === undefined && possible.length > 0)
-  {
+  while (key === undefined && possible.length > 0) {
     key = possible.pop();
   }
 
@@ -159,8 +148,27 @@ function handleCtrlSKeyEvent (e) {
   return true;
 }
 
+function setCSSTorenderButtonsToDisabled () {
+  $('#loginbutton').addClass('disabled')
+  $('#arc0').css('background-color', $('#combinator').css('color'));
+  $('#generatebutton').attr('disabled','disabled');
+  $('#helpbutton').attr('disabled','disabled');
+  $('#combinatorwrap').css('opacity', 1);
+}
+
 function focusOnPasswordAfterReturnKeyOnID (e) {
-  if (e.keyCode == 13) {
+  const keyPressIsReturn = e.keyCode == 13
+  if (keyPressIsReturn) {
     $('#inputPasscode').focus();
   }
 }
+
+function focusOnLoginButton (cb) {
+  return function (e) {
+    const keyPressIsReturn = e.keyCode == 13
+    if (keyPressIsReturn) {
+      $('#loginbutton').focus();
+      cb();
+    }
+  }
+};
