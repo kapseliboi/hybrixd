@@ -4,6 +4,8 @@ const Utils = utils;
 
 Utils.documentReady(function () {
   const customAlert = new CustomAlert();
+
+  credentialsStream.subscribe();
 });
 
 function alertbutton () {
@@ -14,26 +16,39 @@ function helpbutton () {
   alert('<h2>Welcome to the Internet of Coins wallet</h2><br><h3>I already have an account</h3>To sign in, you need to enter an account code and password that are both 16 characters long.<br><br><h3>I\'m new, I need a new account </h3>If you don\'t have sign in credentials yet, you can generate them by clicking on the "+ Create a new account" button, and the new credentials will be filled in for you.<br><br><h3>Do you still have questions?</h3>Please visit <a href="https://internetofcoins.org" target="_BLANK">our FAQ.</a><br><br>', {title: '', button: 'Close'});
 }
 
-// TODO: Give back some feedback to the user about incorrect credentials????
-// STREAMS???
-function checkfields () {
-  const userID = String(document.querySelector('#inputUserID').value);
-  const pass = String(document.querySelector('#inputPasscode').value);
-  const hasValidCredentials = validateCredentials(userID, pass);
-
-  if (hasValidCredentials) {
-    renderLoginFormToEnabledState();
-  } else if (userID.length > 0) {
-    document.querySelector('#inputUserID').style.textTransform = 'uppercase'; // Set userID to uppercase on every input
-  } else {
-    document.querySelector('#loginbutton').classList.add('disabled');
-  }
+function getTargetValue (e) {
+  return e.target.value;
 }
 
-function renderLoginFormToEnabledState () {
-  document.querySelector('#loginbutton').classList.remove('disabled');
-  document.querySelector('#loginform input[type=text]').style.borderColor = '#D9E3EB';
-  document.querySelector('#loginform input[type=password]').style.borderColor = '#D9E3EB';
+const userIdInputStr = Rx.Observable
+      .fromEvent(document.querySelector('#inputUserID'), 'input')
+      .map(getTargetValue);
+
+const passwordInputStream = Rx.Observable
+      .fromEvent(document.querySelector('#inputPasscode'), 'input')
+      .map(getTargetValue);
+
+// TODO: Give back some feedback to the user about incorrect credentials????
+const credentialsStream = Rx.Observable
+      .combineLatest(userIdInputStr, passwordInputStream)
+      .map(validateZippedCredentials)
+      .map(renderLoginFormState);
+
+function renderLoginFormState (isValid) {
+  const borderColor = isValid ? '#D9E3EB' : 'transparent';
+  const addOrRemove = isValid ? 'remove' : 'add';
+
+  renderLoginFormToEnabledState(addOrRemove, borderColor);
+}
+
+function renderLoginFormToEnabledState (addOrRemove, color) {
+  document.querySelector('#loginbutton').classList[addOrRemove]('disabled');
+  document.querySelector('#loginform input[type=text]').style.borderColor = color;
+  document.querySelector('#loginform input[type=password]').style.borderColor = color;
+}
+
+function validateZippedCredentials (z) {
+  validateCredentials(z[0], z[1]);
 }
 
 function validateCredentials (userID, pass) {
