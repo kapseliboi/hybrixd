@@ -17,7 +17,7 @@ function blink (target) {
 
 function rotateLogin (turn) {
   var el = document.querySelector('#arc3');
-  var bgcl = document.querySelector('#combinator').style.backgroundColor;
+  var bgcl = "transparent";
 
   if (el != null) {
     if (el.style['border-left'] === '1px solid ' + bgcl) {
@@ -41,7 +41,7 @@ function rotateLogin (turn) {
 
 function dialLogin (turn) {
   var el = document.querySelector('#arc2');
-  var bgcl = document.querySelector('#combinator').style.backgroundColor;
+  var bgcl = "";
 
   if (turn === 0) {
     el.style['border-left'] = '1px solid';

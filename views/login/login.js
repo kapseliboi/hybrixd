@@ -3,6 +3,8 @@ const C = commonUtils;
 const A = animations;
 const Utils = utils;
 
+const path = 'api';
+
 Utils.documentReady(function () {
   initializeClickAndKeyEvents();
   maybeOpenNewWalletModal();
@@ -60,8 +62,8 @@ function postSessionStep0Data (userKeys, nonce, sessionStep) {
   A.dialLogin(1);
   fetch(url)
     .then(r => r.json()
-          .then(processSessionStep0Reply(initialSessionData, nonce, userKeys))
-          .catch(e => console.log('postSessionStep0Data: Error retrieving nonce:', e)))
+      .then(processSessionStep0Reply(initialSessionData, nonce, userKeys))
+      .catch(e => console.log('postSessionStep0Data: Error retrieving nonce:', e)))
     .catch(e => console.log('postSessionStep0Data: Error fetching data:', e));
 }
 
