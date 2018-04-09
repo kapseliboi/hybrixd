@@ -10,7 +10,7 @@ $(document).ready(function() {
   path = 'api/';
   console.log('Starting hybridd-connect...');
   // fetch the login view
-  fetchview('login',{});
+  fetchview('login', {});
 });
 
 function fetchview(viewpath,args) {
@@ -22,7 +22,7 @@ function fetchview(viewpath,args) {
     // run the safely initialized object through its sub-object id
     // subelement abstractor calls init.viewname
     if(typeof args == 'undefined') { args = false; }
-    initialize = function(data,accessor) {
+    initialize = function (data, accessor) {
       var keys = accessor.split('.');
       var result = data;
       while (keys.length > 0) {
@@ -69,8 +69,11 @@ function activateview(viewpath,args,data) {
   // put hy_view into hy_frame
   $(hy_target).html(hy_view);
   // run init.subframe if it exists, and contains a non-empty function
-  if(typeof initialize !== 'undefined' && JSON.stringify(initialize) != '{}') {
-    initialize(init,viewpath)(args);
+  if(typeof initialize !== 'undefined' && JSON.stringify(initialize) !== '{}') {
+    var initialized = initialize(init, viewpath);
+    if (typeof initialized !== 'object') {
+      initialized(args);
+    }
   }
 }
 
