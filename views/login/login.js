@@ -1,15 +1,19 @@
 // hy_login.js - contains javascript for login, encryption and session authentication
-$(document).ready(function() {
-  $('#loginbutton').click(handleLogin);
-  $('#inputUserID').keypress(focusOnPasswordAfterReturnKeyOnID);
-  $(document).keydown(handleCtrlSKeyEvent); // for legacy wallets enable signin button on CTRL-S
-  $('#inputPasscode').keypress(focusOnLoginButton(handleLogin));
+const C = commonUtils;
+const A = animations;
+const Utils = utils;
+
+Utils.documentReady(function () {
+  document.querySelector('#loginbutton').onclick = handleLogin;
+  document.querySelector('#inputUserID').onkeypress = focusOnPasswordAfterReturnKeyOnID;
+  document.querySelector('#inputPasscode').onkeypress = focusOnLoginButton(handleLogin);
+  document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
 
   maybeOpenNewWalletModal();
 });
 
 init.login = function(args) {
-  if ( DEBUG ) { console.log('init.login called with args: '+JSON.stringify(args)); }
+  if ( DEBUG ) { console.log('init.login called with args: ' + JSON.stringify(args)); }
   // do nothing
 }
 
@@ -23,34 +27,35 @@ function main (userid, passcode, sessionStep) {
 
 function instantiateNaclAndHandleLogin (passcode, userID, sessionStep, cb) {
   return function (naclinstance) {
-    nacl = naclinstance; // TODO: INSTANTIATION MUST BE SAVED SOMEWHERE NON-GLOBALLAY SO IT IS ACCESSABLE THROUGHOUT
+    nacl = naclinstance; // TODO: INSTANTIATION MUST BE SAVED SOMEWHERE NON-GLOBALLY SO IT IS ACCESSABLE THROUGHOUT
     generateNonceAndUserKeys(passcode, userID, sessionStep)
   }
 }
 
 function generateNonceAndUserKeys (passcode, userID, sessionStep) {
   var nonce = nacl.crypto_box_random_nonce();
-  var userKeys = generateKeys(passcode, userID, 0);
+  var userKeys = C.generateKeys(passcode, userID, 0);
   var user_pubkey = nacl.to_hex(userKeys.boxPk);
 
   startAnimationAndDoLogin(userKeys, nonce, userID, sessionStep)
 }
 
 function startAnimationAndDoLogin (userKeys, nonce, userID, sessionStep) {
-  dial_login(0); // Do some animation
+  A.dialLogin(0); // Do some animation
   postSessionStep0Data(userKeys, nonce, sessionStep);
-  continueSession(userKeys, nonce, userID, getSessionData, sessionContinuation(userKeys, nonce, userID));
+  C.continueSession(userKeys, nonce, userID, getSessionData, sessionContinuation(userKeys, nonce, userID));
 }
 
 // posts to server under session sign public key
 function postSessionStep0Data (userKeys, nonce, sessionStep) {
-  var initialSessionData = generateInitialSessionData(nonce);
-  dial_login(1);
-  $.ajax({
-    url: path + 'x/' + initialSessionData.session_hexsign + '/' + sessionStep,
-    dataType: 'json'
-  })
-    .done(processSessionStep0Reply(initialSessionData, nonce, userKeys));
+  var initialSessionData = C.generateInitialSessionData(nonce);
+  var url = path + 'x/' + initialSessionData.session_hexsign + '/' + sessionStep;
+  A.dialLogin(1);
+  fetch(url)
+    .then(r => r.json()
+          .then(processSessionStep0Reply(initialSessionData, nonce, userKeys))
+          .catch(e => console.log('postSessionStep0Data: Error retrieving nonce:', e)))
+    .catch(e => console.log('postSessionStep0Data: Error fetching data:', e));
 }
 
 function processSessionStep0Reply (sessionStep0Data, nonce, userKeys) {
@@ -59,26 +64,27 @@ function processSessionStep0Reply (sessionStep0Data, nonce, userKeys) {
     if (cleanNonceHasCorrectLength) {
       session_step++; // next step, hand out nonce2
       const sessionStep = session_step;
-      var sessionStep1Data = generateSecondarySessionData(nonce1Data, sessionStep0Data.session_hexkey, sessionStep0Data.session_signpair.signSk)
-      $.ajax({
-        url: path+'x/' + sessionStep0Data.session_hexsign + '/' + sessionStep + '/' + sessionStep1Data.crypt_hex,
-        dataType: 'json'
-      })
-        .done(postSession1StepData(sessionStep0Data, sessionStep1Data, nonce, userKeys));
+      var sessionStep1Data = C.generateSecondarySessionData(nonce1Data, sessionStep0Data.session_hexkey, sessionStep0Data.session_signpair.signSk)
+      var url = path+'x/' + sessionStep0Data.session_hexsign + '/' + sessionStep + '/' + sessionStep1Data.crypt_hex;
+        fetch(url)
+        .then(r => r.json()
+              .then(postSession1StepData(sessionStep0Data, sessionStep1Data, nonce, userKeys))
+              .catch(e => console.log('postSessionStep0Data: Error retrieving nonce:', e)))
+        .catch(e => console.log('postSessionStep0Data: Error fetching data:', e));
     }
   }
 }
 
 function setSessionDataInElement (sessionHex) {
-  $('#session_data').text(sessionHex);
+  document.querySelector('#session_data').textContent = sessionHex;
 }
 
 function postSession1StepData (initialSessionData, sessionStep1Data, nonce, userKeys) {
   return function (data) {
     var sessionData = Object.assign(initialSessionData, sessionStep1Data, { nonce }, { userKeys });
-    dial_login(2);
-    sessionStep1Reply(data, sessionData, setSessionDataInElement);
-    dial_login(3);
+    A.dialLogin(2);
+    C.sessionStep1Reply(data, sessionData, setSessionDataInElement);
+    A.dialLogin(3);
   }
 }
 
@@ -110,7 +116,7 @@ function sessionContinuation (user_keys, nonce, userid) {
 }
 
 function getSessionData () {
-  return $('#session_data').text()
+  return document.querySelector('#session_data').textContent
 }
 
 function handleCtrlSKeyEvent (e) {
@@ -124,24 +130,25 @@ function handleCtrlSKeyEvent (e) {
   if (key && (key == '115' || key == '83' ) && (e.ctrlKey || e.metaKey) && !(e.altKey))
   {
     e.preventDefault();
-    $('#loginbutton').removeAttr('disabled');
+    document.querySelector('#loginbutton').removeAttribute('disabled');
     return false;
   }
   return true;
 }
 
 function setCSSTorenderButtonsToDisabled () {
-  $('#loginbutton').addClass('disabled')
-  $('#arc0').css('background-color', $('#combinator').css('color'));
-  $('#generatebutton').attr('disabled','disabled');
-  $('#helpbutton').attr('disabled','disabled');
-  $('#combinatorwrap').css('opacity', 1);
+  const arcBackgroundColor = document.querySelector('#combinator').style.color;
+  document.querySelector('#loginbutton').classList.add('disabled')
+  document.querySelector('#arc0').style.backgroundColor = arcBackgroundColor;
+  document.querySelector('#generatebutton').setAttribute('disabled','disabled');
+  document.querySelector('#helpbutton').setAttribute('disabled','disabled');
+  document.querySelector('#combinatorwrap').style.opacity = 1;
 }
 
 function focusOnPasswordAfterReturnKeyOnID (e) {
   const keyPressIsReturn = e.keyCode == 13
   if (keyPressIsReturn) {
-    $('#inputPasscode').focus();
+    document.querySelector('#inputPasscode').focus();
   }
 }
 
@@ -149,22 +156,22 @@ function focusOnLoginButton (cb) {
   return function (e) {
     const keyPressIsReturn = e.keyCode == 13
     if (keyPressIsReturn) {
-      $('#loginbutton').focus();
+      document.querySelector('#loginbutton').focus();
       cb();
     }
   }
 };
 
 function handleLogin () {
-  var btnIsNotDisabled = !$('#loginbutton').hasClass('disabled')
+  var btnIsNotDisabled = !document.querySelector('#loginbutton').classList.contains('disabled');
   if (btnIsNotDisabled) {
     // \/\/\/\/ CANNOT FACTOR THIS UP YET, BECAUSE IT WILL NOT FIND CREDENTIALS RIGHT AWAY.
-    var userid = $('#inputUserID').val().toUpperCase();
-    var passcode = $('#inputPasscode').val();
-    var isValidUserIDAndPassword = validateUserID(userid) && validatePassword(passcode);
+    var userid = document.querySelector('#inputUserID').value.toUpperCase();
+    var passcode = document.querySelector('#inputPasscode').value;
+    var isValidUserIDAndPassword = C.validateUserIDLength(userid) && C.validatePasswordLength(passcode);
     if (isValidUserIDAndPassword) {
       var sessionStep = session_step = 0;
-      rotate_login(0);
+      A.rotateLogin(0);
       setCSSTorenderButtonsToDisabled()
       main(userid, passcode, sessionStep);
     }

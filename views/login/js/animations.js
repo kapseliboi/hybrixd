@@ -15,10 +15,10 @@ function blink (target) {
   return true;
 }
 
-function rotate_login (turn) {
-  var el = document.getElementById('arc3');
-  var bgcl = $('#combinator').css('background-color');
-  // alert(bgcl);
+function rotateLogin (turn) {
+  var el = document.querySelector('#arc3');
+  var bgcl = document.querySelector('#combinator').style.backgroundColor;
+
   if (el != null) {
     if (el.style['border-left'] === '1px solid ' + bgcl) {
       el.style['border-left'] = '1px solid';
@@ -34,14 +34,15 @@ function rotate_login (turn) {
   }
   if (turn === 0) { turn = 1; } else { turn = 0; }
   setTimeout(function () {
-    rotate_login(turn);
+    rotateLogin(turn);
   }, 1500);
   return true;
 }
 
-function dial_login (turn) {
-  var el = document.getElementById('arc2');
-  var bgcl = $('#combinator').css('background-color');
+function dialLogin (turn) {
+  var el = document.querySelector('#arc2');
+  var bgcl = document.querySelector('#combinator').style.backgroundColor;
+
   if (turn === 0) {
     el.style['border-left'] = '1px solid';
     el.style['border-top'] = '1px solid ' + bgcl;
@@ -68,3 +69,9 @@ function dial_login (turn) {
   }
   return true;
 }
+
+animations = {
+  blink,
+  rotateLogin,
+  dialLogin
+};

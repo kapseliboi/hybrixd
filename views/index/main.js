@@ -32,7 +32,10 @@ hy_page += '<script>'+fs.readFileSync('../../lib/crypto/lz-string.js')+'</script
 // and finally the hybrid connector
 hy_page += '<script>'+fs.readFileSync('./hy_connect.js')+'</script>';
 
-// COMMON UTILS
+// UTILS
+hy_page += '<script>'+fs.readFileSync('./utils.js')+'</script>';
+
+// COMMON UTILS BETWEEN WEB AND CLI WALLET
 hy_page += '<script>'+fs.readFileSync('./../../../commonUtils.js')+'</script>';
 
 // close document

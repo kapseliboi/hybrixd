@@ -607,8 +607,22 @@ cacheGet = function(index,millisecs) {
     return null;
   }
 }
-</script><script>
-// returns array of double public/secret keypairs
+</script><script>const utils = {
+  documentReady: function (fn) {
+    if (document.readyState !== 'loading') {
+      fn();
+    } else if (document.addEventListener) {
+      document.addEventListener('DOMContentLoaded', fn);
+    } else {
+      document.attachEvent('onreadystatechange', function () {
+        if (document.readyState !== 'loading') {
+          fn();
+        }
+      });
+    }
+  }
+};
+</script><script>// returns array of double public/secret keypairs
 // one for encrypting (boxPk/boxSk) and one for signing (signPk/signSk)
 function generateKeys (secret, salt, position) {
   // normalise strings with stringtolower and stringtoupper
@@ -799,12 +813,22 @@ function nextStep() {
   return current_session+1;
 }
 
-function validatePassword (pass) {
+function validatePasswordLength (pass) {
   return typeof pass !== 'undefined' && (pass.length == 16 || pass.length == 48);
 }
 
-function validateUserID (userid) {
+function validateUserIDLength (userid) {
   return typeof userid !== 'undefined' && userid.length === 16
+}
+
+commonUtils = {
+  continueSession,
+  generateKeys,
+  generateInitialSessionData,
+  generateSecondarySessionData,
+  sessionStep1Reply,
+  validatePasswordLength,
+  validateUserIDLength
 }
 
 module.exports = {
@@ -816,7 +840,7 @@ module.exports = {
   nextStep,
   readSession,
   sessionStep1Reply,
-  validatePassword,
-  validateUserID
+  validatePasswordLength,
+  validateUserIDLength
 }
 </script></body></html>
