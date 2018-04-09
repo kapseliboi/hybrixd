@@ -2,6 +2,7 @@
 const C = commonUtils;
 const A = animations;
 const Utils = utils;
+const S = loginInputStreams;
 
 const path = 'api';
 
@@ -10,19 +11,38 @@ Utils.documentReady(function () {
   maybeOpenNewWalletModal();
 });
 
-function handleLogin () {
-  var btnIsNotDisabled = !document.querySelector('#loginbutton').classList.contains('disabled');
-  if (btnIsNotDisabled) {
-    // \/\/\/\/ CANNOT FACTOR THIS UP YET, BECAUSE IT WILL NOT FIND CREDENTIALS RIGHT AWAY.
-    var userid = document.querySelector('#inputUserID').value.toUpperCase();
-    var passcode = document.querySelector('#inputPasscode').value;
-    var isValidUserIDAndPassword = C.validateUserIDLength(userid) && C.validatePasswordLength(passcode);
-    if (isValidUserIDAndPassword) {
-      var sessionStep = session_step = 0;
-      A.rotateLogin(0);
-      setCSSTorenderButtonsToDisabled();
-      main(userid, passcode, sessionStep);
-    }
+function btnIsNotDisabled (e) {
+  return !e.target.parentElement.classList.contains('disabled');
+}
+
+const credentialsStream = Rx.Observable
+      .zip(
+        S.userIdInputStr,
+        S.passwordInputStream
+      )
+
+const loginBtnStr = Rx.Observable
+      .fromEvent(document.querySelector('#loginbutton'), 'click')
+      .filter(btnIsNotDisabled);
+
+const loginStream = loginBtnStr
+      .withLatestFrom(credentialsStream)
+      .map(function (latest) {
+        const userID = latest[1][0];
+        const pass = latest[1][1];
+        handleLogin(userID, pass);
+      });
+
+loginStream.subscribe();
+
+function handleLogin (userID, password) {
+  // TODO MOVE THIS CHECK \/\/\/\/\/
+  var isValidUserIDAndPassword = C.validateUserIDLength(userID) && C.validatePasswordLength(password);
+  if (isValidUserIDAndPassword) {
+    var sessionStep = session_step = 0;
+    setCSSTorenderButtonsToDisabled();
+    A.rotateLogin(0);
+    main(userID, password, sessionStep);
   }
 }
 
