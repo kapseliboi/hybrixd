@@ -31,7 +31,6 @@ function fetchview(viewpath,args) {
           result = result[key];
         }
       }
-      console.log('result', result);
       return result;
     }
     // check if view available in cache
