@@ -1,8 +1,9 @@
 // hy_login.js - contains javascript for login, encryption and session authentication
 const C = commonUtils;
 const A = animations;
-const Utils = utils;
 const S = loginInputStreams;
+const V = validations;
+const Utils = utils;
 
 const path = 'api';
 
@@ -15,18 +16,12 @@ function btnIsNotDisabled (e) {
   return !e.target.parentElement.classList.contains('disabled');
 }
 
-const credentialsStream = Rx.Observable
-      .zip(
-        S.userIdInputStr,
-        S.passwordInputStream
-      )
-
 const loginBtnStr = Rx.Observable
       .fromEvent(document.querySelector('#loginbutton'), 'click')
       .filter(btnIsNotDisabled);
 
 const loginStream = loginBtnStr
-      .withLatestFrom(credentialsStream)
+      .withLatestFrom(S.credentialsStream)
       .map(function (latest) {
         const userID = latest[1][0];
         const pass = latest[1][1];
@@ -35,9 +30,9 @@ const loginStream = loginBtnStr
 
 loginStream.subscribe();
 
+// TODO Give user feedback about incorrect credentials
 function handleLogin (userID, password) {
-  // TODO MOVE THIS CHECK \/\/\/\/\/
-  var isValidUserIDAndPassword = C.validateUserIDLength(userID) && C.validatePasswordLength(password);
+  var isValidUserIDAndPassword = V.validateCredentials(userID, password);
   if (isValidUserIDAndPassword) {
     var sessionStep = session_step = 0;
     setCSSTorenderButtonsToDisabled();

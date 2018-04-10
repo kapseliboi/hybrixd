@@ -4,10 +4,7 @@ const Utils = utils;
 const S = loginInputStreams;
 
 // TODO: Give back some feedback to the user about incorrect credentials????
-const credentialsStream = Rx.Observable
-      .combineLatest(S.userIdInputStr, S.passwordInputStream);
-
-const loginFormStateStr = credentialsStream
+const loginFormStateStr = S.credentialsStream
       .map(validateZippedCredentials)
       .map(renderLoginFormState);
 
@@ -25,14 +22,7 @@ function renderLoginFormToEnabledState (addOrRemove, color) {
 }
 
 function validateZippedCredentials (z) {
-  return validateCredentials(z[0], z[1]);
-}
-
-function validateCredentials (userID, pass) {
-  var isUserIDValid = C.validateUserIDLength(userID) && V.validateUseridForLegacyWallets(userID) && userID !== pass;
-  var isPasswordValid = C.validatePasswordLength(pass) && V.validatePassForLegacyWallets(userID, pass);
-
-  return isUserIDValid && isPasswordValid;
+  return C.validateUserIDLength(z[0]) && C.validatePasswordLength(z[1]);
 }
 
 function alertbutton () {
