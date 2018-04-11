@@ -22,7 +22,7 @@ function renderLoginFormToEnabledState (addOrRemove, color) {
 }
 
 function validateZippedCredentials (z) {
-  return C.validateUserIDLength(z[0]) && C.validatePasswordLength(z[1]);
+  return V.validateCredentials(z[0], z[1]);
 }
 
 function alertbutton () {

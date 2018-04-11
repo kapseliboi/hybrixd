@@ -7,11 +7,6 @@ const Utils = utils;
 
 const path = 'api';
 
-Utils.documentReady(function () {
-  initializeClickAndKeyEvents();
-  maybeOpenNewWalletModal();
-});
-
 function btnIsNotDisabled (e) {
   return !e.target.parentElement.classList.contains('disabled');
 }
@@ -22,26 +17,24 @@ const loginBtnStr = Rx.Observable
 
 const loginStream = loginBtnStr
       .withLatestFrom(S.credentialsStream)
-      .map(function (latest) {
-        const userID = latest[1][0];
-        const pass = latest[1][1];
-        handleLogin(userID, pass);
+      .map(function (z) {
+        const userID = z[1][0];
+        const pass = z[1][1];
+        login(userID, pass);
       });
 
-loginStream.subscribe();
-
 // TODO Give user feedback about incorrect credentials
-function handleLogin (userID, password) {
+function login (userID, password) {
   var isValidUserIDAndPassword = V.validateCredentials(userID, password);
   if (isValidUserIDAndPassword) {
-    var sessionStep = session_step = 0;
+    var sessionStep = session_step = 0; // TODO: Factor out!
     setCSSTorenderButtonsToDisabled();
     A.rotateLogin(0);
-    main(userID, password, sessionStep);
+    startAnimationAndInitializeNacl(userID, password, sessionStep);
   }
 }
 
-function main (userid, passcode, sessionStep) {
+function startAnimationAndInitializeNacl (userid, passcode, sessionStep) {
   blink('arc0');
   nacl = null; // TODO: make official global
   nacl_factory.instantiate(
@@ -59,7 +52,6 @@ function instantiateNaclAndHandleLogin (passcode, userID, sessionStep, cb) {
 function generateNonceAndUserKeys (passcode, userID, sessionStep) {
   var nonce = nacl.crypto_box_random_nonce();
   var userKeys = C.generateKeys(passcode, userID, 0);
-  var user_pubkey = nacl.to_hex(userKeys.boxPk);
 
   startAnimationAndDoLogin(userKeys, nonce, userID, sessionStep);
 }
@@ -84,7 +76,7 @@ function postSessionStep0Data (userKeys, nonce, sessionStep) {
 
 function processSessionStep0Reply (sessionStep0Data, nonce, userKeys) {
   return function (nonce1Data) {
-    const cleanNonceHasCorrectLength = clean(nonce1Data.nonce1).length === 48;
+    const cleanNonceHasCorrectLength = C.clean(nonce1Data.nonce1).length === 48;
     if (cleanNonceHasCorrectLength) {
       session_step++; // next step, hand out nonce2
       const sessionStep = session_step;
@@ -103,6 +95,10 @@ function setSessionDataInElement (sessionHex) {
   document.querySelector('#session_data').textContent = sessionHex;
 }
 
+function getSessionData () {
+  return document.querySelector('#session_data').textContent;
+}
+
 function postSession1StepData (initialSessionData, sessionStep1Data, nonce, userKeys) {
   return function (data) {
     var sessionData = Object.assign(initialSessionData, sessionStep1Data, { nonce }, { userKeys });
@@ -112,7 +108,7 @@ function postSession1StepData (initialSessionData, sessionStep1Data, nonce, user
   };
 }
 
-function maybeOpenNewWalletModal () {
+function maybeOpenNewWalletModal (location) {
   if (location.href.indexOf('#') !== -1) {
     var locationHref = location.href.substr(location.href.indexOf('#'));
     if (locationHref === '#new') {
@@ -122,14 +118,9 @@ function maybeOpenNewWalletModal () {
   }
 }
 
-function cannotSetUpEncryptedSessionAlert () {
-  console.log('Error: Cannot set up encrypted session. Please check your connectivity!');
-}
-
 function sessionContinuation (userKeys, nonce, userid) {
   return function () {
-    if (DEBUG) { console.log(readSession(userKeys, nonce, sessionData, cannotSetUpEncryptedSessionAlert)); } // use read_session(user_keys,nonce) to read out session variables
-    setTimeout(function () { // added extra time to avoid forward to interface before x authentication completes!
+    setTimeout(function () { // added extra time to avoid forward to interface before x authentication completes! TODO: Remove!
       fetchview('interface', {
         user_keys: userKeys,
         nonce,
@@ -137,10 +128,6 @@ function sessionContinuation (userKeys, nonce, userid) {
       });
     }, 3000);
   };
-}
-
-function getSessionData () {
-  return document.querySelector('#session_data').textContent;
 }
 
 function handleCtrlSKeyEvent (e) {
@@ -185,8 +172,15 @@ function focusOnLoginButton (cb) {
 }
 
 function initializeClickAndKeyEvents () {
-  document.querySelector('#loginbutton').onclick = handleLogin;
+  document.querySelector('#loginbutton').onclick = login;
   document.querySelector('#inputUserID').onkeypress = focusOnPasswordAfterReturnKeyOnID;
-  document.querySelector('#inputPasscode').onkeypress = focusOnLoginButton(handleLogin);
+  document.querySelector('#inputPasscode').onkeypress = focusOnLoginButton(login);
   document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
 }
+
+Utils.documentReady(function () {
+  const documentLocation = location;
+  initializeClickAndKeyEvents();
+  maybeOpenNewWalletModal(documentLocation);
+  loginStream.subscribe();
+});
