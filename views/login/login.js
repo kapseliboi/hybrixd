@@ -4,6 +4,7 @@ const A = animations;
 const S = loginInputStreams;
 const V = validations;
 const Utils = utils;
+const fetch_ = fetch
 
 const path = 'api';
 
@@ -67,7 +68,7 @@ function postSessionStep0Data (userKeys, nonce, sessionStep) {
   var initialSessionData = C.generateInitialSessionData(nonce);
   var url = path + 'x/' + initialSessionData.session_hexsign + '/' + sessionStep;
   A.dialLogin(1);
-  fetch(url)
+  fetch_(url)
     .then(r => r.json()
       .then(processSessionStep0Reply(initialSessionData, nonce, userKeys))
       .catch(e => console.log('postSessionStep0Data: Error retrieving nonce:', e)))
@@ -82,7 +83,7 @@ function processSessionStep0Reply (sessionStep0Data, nonce, userKeys) {
       const sessionStep = session_step;
       var sessionStep1Data = C.generateSecondarySessionData(nonce1Data, sessionStep0Data.session_hexkey, sessionStep0Data.session_signpair.signSk);
       var url = path + 'x/' + sessionStep0Data.session_hexsign + '/' + sessionStep + '/' + sessionStep1Data.crypt_hex;
-      fetch(url)
+      fetch_(url)
         .then(r => r.json()
               .then(postSession1StepData(sessionStep0Data, sessionStep1Data, nonce, userKeys))
               .catch(e => console.log('postSessionStep0Data: Error retrieving nonce:', e)))
