@@ -1,62 +1,23 @@
-init.interface.dashboard = function(args) {
+var noStarredAssetsHTML = '<p>No starred assets found. <br>You can star your favorite assets in the Asset tab to make them appear here. <br><br><a class="pure-button pure-button-primary" onclick="fetchview(\'interface.assets\', pass_args);"><span>Go to My Assets</span></a></p>';
 
-  $("#userID").html(args.userid); // set user ID field in top bar
-  topmenuset('dashboard');  // top menu UI change
+init.interface.dashboard = function (args) {
+  $("#userID").html(args.userid); // set user ID field in top bar // Save in STATE
+  topmenuset('dashboard');  // top menu UI change --> Sets element to active class
   clearInterval(intervals); // clear all active intervals
-
-  // modal helper functions
-  manage_favourites = function() {
-    var output = '';
-    output+='<table class="pure-table pure-table-striped"><tbody>';
-    output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-btc">BTC</td><td class="full-name">Bitcoin</td>';
-    output+='<td class="actions"><div class="assetbuttons assetbuttons-btc"><a onclick="" class="pure-button pure-button-grey button-unfavourite" role="button"><div class="actions-icon">'+svg['star-o']+'</div>Remove star</a></div></td></tr>';
-    output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-eth">ETH</td><td class="full-name">Ethereum</td>';
-    output+='<td class="actions"><div class="assetbuttons assetbuttons-eth"><a onclick="" class="pure-button pure-button-warning button-favourite" role="button"><div class="actions-icon">'+svg['star']+'</div>Add star</a></div></td></tr>';
-    output+='<tr><td class="icon">'+svg['circle']+'</td><td class="asset asset-lsk">LSK</td><td class="full-name">Lisk</td>';
-    output+='<td class="actions"><div class="assetbuttons assetbuttons-lsk"><a onclick="" class="pure-button pure-button-warning button-favourite" role="button"><div class="actions-icon">'+svg['star']+'</div>Add star</a></div></td></tr>';
-    output+='</tbody></table>';
-    $('#manage-favourites .data').html(output); // insert new data into DOM
-  }
+  loadinterval = ''; // F-ING GLOBAL BS
 
   // do stuff the dashboard should do...
-  $(document).ready( function(){
+  $(document).ready(main);
+};
 
-    // element: TOP ACCOUNT BALANCES
-    // functions: display account balances, and cache the deterministic encryption routines
-    balance = {};
-    balance.asset = [];
-    balance.amount = [];
-    balance.lasttx = [];
-
-    // query storage for active assets
-    if(typeof GL.assetsActive === 'undefined') {
-      storage.Get( userStorageKey('ff00-0033') , function(crypted) {
-        GL.assetsActive = userDecode(crypted);
-        ;
-        ;
-        // query storage for dash assets
-        if(typeof GL.assetsStarred === 'undefined') {
-          storage.Get( userStorageKey('ff00-0034') , function(crypted) {
-            GL.assetsStarred = userDecode(crypted);
-            // init asset display
-            displayAssets();
-          });
-        }
-      });
-    } else {
-      displayAssets();
-    }
-  });
-}
-
-function displayAssets() {
-
-  if(GL.assetsActive == null || typeof GL.assetsActive !== 'object') {
-    GL.assetsActive = ["btc","eth"];
+// TODO: This will mostly be obsolete with the new data model!
+function matchAssets () {
+  if (GL.assetsActive == null || typeof GL.assetsActive !== 'object') {
+    GL.assetsActive = ['btc', 'eth'];
   }
 
   // Assets active in Dashboard
-  if(GL.assetsStarred === null || typeof GL.assetsStarred !== 'object') {
+  if (GL.assetsStarred === null || typeof GL.assetsStarred !== 'object') {
     var initAssetsStarred = GL.assetsActive.map((asset) => ({id: asset, starred: false}));
 
     GL.assetsStarred = initAssetsStarred;
@@ -67,133 +28,138 @@ function displayAssets() {
   // Finds any unmatched assets between active and starred and returns a starred object if any are found
   var unmatchedStarredAssets = GL.assetsActive.filter(function (asset) {
     return GL.assetsStarred.find(function (starred) {
-      return starred.id === asset
+      return starred.id === asset;
     }) === undefined;
-  }).map((asset) => ({id: asset, starred: false}));
-
-  GL.assetsStarred.concat(unmatchedStarredAssets)
-
-  // Below code does not work properly when GL.assetsActive has not been initialized properly.
-  // For now, this fix: user can only go to Assets view when GL.assetsActive has been populated.
-  $('#topmenu-assets').click(function () {
-    fetchview('interface.assets', pass_args);
+  }).map(function (asset) {
+    return {id: asset, starred: false};
   })
 
-  $('#topmenu-assets').addClass('active');
+  GL.assetsStarred.concat(unmatchedStarredAssets);
+}
 
-  // initialize all assets
-  hybriddcall({r:'/s/deterministic/hashes',z:1},null,
-              function(object,passdata){
-                assets.modehashes = object.data;
+function displayAssets () {
+  matchAssets();
+  // Below code does not work properly when GL.assetsActive has not been initialized properly.
+  // For now, this fix: user can only go to Assets view when GL.assetsActive has been populated.
+  document.querySelector('#topmenu-assets').onclick = fetchAssetsViews(pass_args);
+  document.querySelector('#topmenu-assets').classList.add('active');
 
-                // create mode array of selected assets
-                var activeAssetsObj = {};
-                var i = 0;
-                for(i = 0; i < GL.assetsActive.length; ++i) {
-                  if(typeof GL.assetmodes[GL.assetsActive[i]] !== 'undefined') {
-                    activeAssetsObj[GL.assetsActive[i]] = GL.assetmodes[GL.assetsActive[i]];
-                  }
-                }
+  hybriddcall({r: '/s/deterministic/hashes', z: 1}, null, processDataAndRenderAndStuff); // initialize all assets
+};
 
-                var output = '';
+function processDataAndRenderAndStuff (object, passdata) {
+  assets.modehashes = object.data;
+  GL.assetsActive.map(renderDOMStuff);
+  setIntervalFunctions(balance, GL.assetsStarred);
+}
 
-                var i = 0;
-                for (var entry in activeAssetsObj) {
-                  // load assets and balances into arrays
-                  balance.asset[i] = entry;
-                  balance.amount[i] = 0;
-                  // increment array counter
-                  i++;
-                  // get and initialize deterministic encryption routines for assets
-                  // timeout used to avoid double downloading of deterministic routines
-                  var defer = (assets.init.indexOf(GL.assetmodes[entry].split('.')[0])==-1?0:3000);
-                  assets.init.push(GL.assetmodes[entry].split('.')[0]);
-                  setTimeout(function(entry,passdata) {
-                    initAsset(entry,GL.assetmodes[entry]);
-                  },(100*i)+defer,entry);
-                  // if all assets inits are called run
-                  if(i===GL.assetsActive.length) {
-                    // create asset elements that are selected to show in dashboard
-                    var hasStarredAssets = GL.assetsStarred.reduce(function (b, asset) {
-                      return asset.starred ? asset.starred : b;
-                    }, false)
+function setIntervalFunctions (balance, assets) {
+  intervals = setInterval(function () { getBalances(assets); }, 60000); // regularly fill 5 asset elements with balances
+  loadinterval = setInterval(checkIfAssetsAreLoaded(balance, assets), 500); // check if assets are loaded by hybriddcall
+}
 
-                    var starredAssetsHTML = GL.assetsStarred.reduce(mkHtmlForStarredAssets, {i: 0, str: ''}).str
-                    var noStarredAssetsHTML = '<p>No starred assets found. <br>You can star your favorite assets in the Asset tab to make them appear here. <br><br><a class="pure-button pure-button-primary" onclick="fetchview(\'interface.assets\', pass_args);"><span>Go to My Assets</span></a></p>';
+function renderDOMStuff (entry, i) {
+  balance.asset[i] = entry;
+  balance.amount[i] = 0;
 
-                    function mkHtmlForStarredAssets (acc, asset) {
-                      var assetID = asset.id;
-                      var hyphenizedID = assetID.replace(/\./g,'-');
-                      var assetElementID = 'asset-' + hyphenizedID;
-                      var symbolName = assetID.slice(assetID.indexOf('.') + 1);
-                      var icon = (symbolName in black.svgs) ? black.svgs[symbolName] : mkSvgIcon(symbolName);
+  initializeDeterministicEncryptionRoutines(entry, i);
+  // if all assets inits are called run
+  if (i === GL.assetsActive.length - 1) {
+    renderStarredHTML(GL.assetsStarred);
+  }
+}
 
-                      var str = asset.starred
-                          ? acc.str + '<div onclick="fetchview(\'interface.assets\',{user_keys: pass_args.user_keys, nonce: pass_args.nonce, asset:\'' + assetID + '\', element: \'' + assetElementID + '\'});" class="balance">' +
-                                        '<div class="icon">' +
-                                           icon +
-                                        '</div>' +
-                                        '<h5>' +
-                                           assetID +
-                                        '</h5>' +
-                                        '<h3 class="balance balance-' + hyphenizedID + '">' +
-                                           progressbar() +
-                                        '</h3>' +
-                                      '</div>'
-                          : acc.str;
-                      return {i: acc.i + 1, str: str};
-                    }
+// TODO Move this up to just after login, when retrieving hash, modes, etc
+function initializeDeterministicEncryptionRoutines (entry, i) {
+  // get and initialize deterministic encryption routines for assets
+  // timeout used to avoid double downloading of deterministic routines
+  var assetIsInitialized = assets.init.indexOf(GL.assetmodes[entry].split('.')[0]) === -1;
+  var defer = (assetIsInitialized ? 0 : 3000);
+  assets.init.push(GL.assetmodes[entry].split('.')[0]);
+  setTimeout(initializeAsset, (100 * i) + defer, entry);
+}
 
-                    $('.dashboard-balances .spinner-loader').fadeOut('slow', function () {
-                      $('.dashboard-balances > .data').html(hasStarredAssets
-                                                            ? starredAssetsHTML
-                                                            : noStarredAssetsHTML); // insert new data into DOM
-                    });
-                  }
-                }
+function renderStarredHTML (starredAssets) {
+  // TODO R.all
+  var hasStarredAssets = starredAssets.reduce(function (b, asset) {
+    return asset.starred ? asset.starred : b;
+  }, false);
 
-                var getBalances = function (balance, assets) {
-                  // This would depend on the viewpath --> Why would you want to load all of a users'
-                  // assets when you only display starred ones?
-                  var assetsToCheck = false ? 'assetsActive' : 'assetsStarred';
-                  GL[assetsToCheck].forEach(function (asset) {
-                    var element = '.dashboard-balances > .data > .balance > .balance-' + asset.id.replace(/\./g, '-');
-                    setTimeout(function () {
-                      hybriddcall({r: 'a/' + asset.id + '/balance/' + assets.addr[asset.id], z: 0}, element, function (object) {
-                        if(typeof object.data === 'string') {
-                          object.data = UItransform.formatFloat(object.data);
+  var starredAssetsHTML = GL.assetsStarred.reduce(mkHtmlForStarredAssets, {i: 0, str: ''}).str;
 
-                        }
-                        return object;
-                      })
-                    }, i*500);
-                    // DEBUG: console.log('ASSET CALL: a/'+balance.asset[i]+'/balance/'+assets.addr[balance.asset[i]]);
-                  })
-                }
+  $('.dashboard-balances .spinner-loader').fadeOut('slow', function () {
+    $('.dashboard-balances > .data').html(hasStarredAssets
+                                          ? starredAssetsHTML
+                                          : noStarredAssetsHTML); // insert new data into DOM
+  });
+}
 
-                // regularly fill 5 asset elements with balances
-                intervals = setInterval(
-                  function() {
-                    getBalances(balance,assets);
-                  }
-                  ,60000);
-                // fill the same elements when dashboard has just loaded
-                loadinterval = setInterval(
-                  // check if assets are loaded by hybriddcall
-                  function() {
-                    var assetsloaded = true;
-                    for (i = 0; i < 5; i++) {
-                      if(typeof balance.asset[i] != 'undefined' && typeof assets.addr[balance.asset[i]] == 'undefined') {
-                        assetsloaded = false;
-                      }
-                    }
-                    if(assetsloaded) {
-                      getBalances(balance,assets);
-                      clearInterval(loadinterval);
-                    }
-                  }
-                  ,500);
-              }
-             );
+// TODO: Do this recursively???
+function checkIfAssetsAreLoaded (balance, assets) {
+  assets.forEach(function (asset, i) {
+    var assetHasBalance = typeof balance.asset[i] !== 'undefined' && typeof window.assets.addr[asset] === 'undefined';
+    if (assetHasBalance) {
+      assets.forEach(renderBalanceThroughHybridd);
+      clearInterval(loadinterval);
+    }
+  });
+}
 
+function getBalances (assets) {
+  assets.forEach(renderBalanceThroughHybridd);
+}
+
+function renderBalanceThroughHybridd (asset, i) {
+  var element = '.dashboard-balances > .data > .balance > .balance-' + asset.id.replace(/\./g, '-');
+  setTimeout(function () {
+    hybriddcall({r: 'a/' + asset.id + '/balance/' + window.assets.addr[asset.id], z: 0}, element, renderBalanceWithSomeGlobalEntanglement)
+  }, i * 500);
+}
+
+function renderBalanceWithSomeGlobalEntanglement (object) {
+  if (typeof object.data === 'string') {
+    object.data = UItransform.formatFloat(object.data);
+  }
+  return object;
+}
+
+function main () {
+  initializeBalanceGlobal();
+  getActiveAndStarredAssetsFromStorage();
+}
+
+function getActiveAndStarredAssetsFromStorage () {
+  if (typeof GL.assetsActive === 'undefined') {
+    storage.Get( userStorageKey('ff00-0033'), function (crypted) {
+      GL.assetsActive = userDecode(crypted);
+      // query storage for dash assets
+      if(typeof GL.assetsStarred === 'undefined') {
+        storage.Get( userStorageKey('ff00-0034'), function (crypted) {
+          GL.assetsStarred = userDecode(crypted);
+          // init asset display
+          displayAssets();
+        });
+      }
+    });
+  } else {
+    displayAssets();
+  }
+}
+
+function initializeBalanceGlobal () {
+  balance = {
+    asset: [],
+    amount: [],
+    lasttx: []
+  };
+}
+
+function initializeAsset (entry, passdata) {
+  initAsset(entry, GL.assetmodes[entry]);
+}
+
+function fetchAssetsViews (args) {
+  return function () {
+    fetchview('interface.assets', args);
+  };
 }

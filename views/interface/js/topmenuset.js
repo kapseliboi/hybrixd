@@ -1,4 +1,4 @@
-function topmenuset(target) {
+function topmenuset (target) {
   $('.pure-menu-link').removeClass('selected');
-  $('#topmenu-'+target).addClass('selected');  
+  $('#topmenu-' + target).addClass('selected');
 }
