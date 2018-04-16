@@ -79,10 +79,7 @@ function initializeDeterministicEncryptionRoutines (entry, i) {
 
 function renderStarredHTML (starredAssets) {
   // TODO R.all
-  var hasStarredAssets = starredAssets.reduce(function (b, asset) {
-    return asset.starred ? asset.starred : b;
-  }, false);
-
+  var hasStarredAssets = R.any(R.prop('starred'), starredAssets)
   var starredAssetsHTML = GL.assetsStarred.reduce(mkHtmlForStarredAssets, {i: 0, str: ''}).str;
 
   $('.dashboard-balances .spinner-loader').fadeOut('slow', function () {
