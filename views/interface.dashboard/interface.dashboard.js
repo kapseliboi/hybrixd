@@ -63,8 +63,7 @@ function renderDOMStuff (entry, i) {
   balance.amount[i] = 0;
 
   // initializeDeterministicEncryptionRoutines(entry, i);
-  // if all assets inits are called run
-  if (i === GL.assetsActive.length - 1) { renderStarredHTML(GL.assetsStarred); }
+  if (i === GL.assetsActive.length - 1) { renderStarredHTML(GL.assetsStarred); } // if all assets inits are called run
 }
 
 // TODO Move this up to just after login, when retrieving hash, modes, etc
@@ -78,9 +77,11 @@ function initializeDeterministicEncryptionRoutines (entry, i) {
 }
 
 function renderStarredHTML (starredAssets) {
-  // TODO R.all
   var hasStarredAssets = R.any(R.prop('starred'), starredAssets)
-  var starredAssetsHTML = GL.assetsStarred.reduce(mkHtmlForStarredAssets, {i: 0, str: ''}).str;
+  var starredAssetsHTML = R.compose(
+    R.prop('str'),
+    R.reduce(mkHtmlForStarredAssets, {i: 0, str: ''})
+  )(starredAssets);
 
   $('.dashboard-balances .spinner-loader').fadeOut('slow', function () {
     $('.dashboard-balances > .data').html(hasStarredAssets
@@ -98,10 +99,6 @@ function checkIfAssetsAreLoaded (balance, assets) {
       clearInterval(loadinterval);
     }
   });
-}
-
-function getBalances (assets) {
-  assets.forEach(renderBalanceThroughHybridd);
 }
 
 function renderBalanceThroughHybridd (asset, i) {
@@ -149,12 +146,6 @@ function initializeBalanceGlobal () {
   };
 }
 
-function initializeAsset (entry, passdata) {
-  initAsset(entry, GL.assetmodes[entry]);
-}
-
-function fetchAssetsViews (args) {
-  return function () {
-    fetchview('interface.assets', args);
-  };
-}
+function getBalances (assets) { assets.forEach(renderBalanceThroughHybridd); };
+function initializeAsset (entry, passdata) { initAsset(entry, GL.assetmodes[entry]); }
+function fetchAssetsViews (args) { return function () { fetchview('interface.assets', args); }; }
