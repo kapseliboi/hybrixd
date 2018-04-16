@@ -35,6 +35,9 @@ hy_page += '<script>'+fs.readFileSync('./hy_connect.js')+'</script>';
 // UTILS
 hy_page += '<script>'+fs.readFileSync('./utils.js')+'</script>';
 
+// RAmda
+hy_page += '<script>'+fs.readFileSync('./ramda.min.js')+'</script>';
+
 // RxJS
 hy_page += '<script>'+fs.readFileSync('./rx.lite.js')+'</script>';
 

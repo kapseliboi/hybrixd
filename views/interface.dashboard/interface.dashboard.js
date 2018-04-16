@@ -2,7 +2,7 @@ var noStarredAssetsHTML = '<p>No starred assets found. <br>You can star your fav
 
 init.interface.dashboard = function (args) {
   $("#userID").html(args.userid); // set user ID field in top bar // Save in STATE
-  topmenuset('dashboard');  // top menu UI change --> Sets element to active class
+  topmenuset('dashboard'); // top menu UI change --> Sets element to active class
   clearInterval(intervals); // clear all active intervals
   loadinterval = ''; // F-ING GLOBAL BS
 
@@ -32,7 +32,7 @@ function matchAssets () {
     }) === undefined;
   }).map(function (asset) {
     return {id: asset, starred: false};
-  })
+  });
 
   GL.assetsStarred.concat(unmatchedStarredAssets);
 }
@@ -62,11 +62,9 @@ function renderDOMStuff (entry, i) {
   balance.asset[i] = entry;
   balance.amount[i] = 0;
 
-  initializeDeterministicEncryptionRoutines(entry, i);
+  // initializeDeterministicEncryptionRoutines(entry, i);
   // if all assets inits are called run
-  if (i === GL.assetsActive.length - 1) {
-    renderStarredHTML(GL.assetsStarred);
-  }
+  if (i === GL.assetsActive.length - 1) { renderStarredHTML(GL.assetsStarred); }
 }
 
 // TODO Move this up to just after login, when retrieving hash, modes, etc
@@ -75,7 +73,7 @@ function initializeDeterministicEncryptionRoutines (entry, i) {
   // timeout used to avoid double downloading of deterministic routines
   var assetIsInitialized = assets.init.indexOf(GL.assetmodes[entry].split('.')[0]) === -1;
   var defer = (assetIsInitialized ? 0 : 3000);
-  assets.init.push(GL.assetmodes[entry].split('.')[0]);
+  assets.init.push(GL.assetmodes[entry].split('.')[0]); // ASSETS.INIT IS NOT BEING USED!!!!!!!!
   setTimeout(initializeAsset, (100 * i) + defer, entry);
 }
 
