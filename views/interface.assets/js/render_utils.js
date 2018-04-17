@@ -1,10 +1,15 @@
-function renderManageButton (element,asset,active) {
-  return '<a onclick="changeManageButton(\''+element+'\',\''+asset+'\','+(active?0:1)+');" class="pure-button '+(active?'pure-button-error selectedAsset':'pure-button-success')+'" role="button"><div class="actions-icon">'+(active?svg['remove']:svg['add'])+'</div>'+(active?'Remove':'Add')+'</a>';
+function renderManageButton (element, asset, active) {
+  var activeToggled = R.not(active);
+  var btnText = active ? 'Remove' : 'Add';
+  var btnClass = active ? 'pure-button-error selectedAsset' : 'pure-button-success';
+  var svgName = active ? 'remove' : 'add';
+
+  return '<a onclick="changeManageButton(\'' + element + '\',\'' + asset + '\',' + activeToggled + ');" class="pure-button ' + btnClass + '" role="button"><div class="actions-icon">' + svg[svgName] + '</div>' + btnText + '</a>';
 }
 
-function changeManageButton (element,asset,active) {
-  GL.assetSelect[asset] = active
-  $('#manage-assets .assetbuttons-'+element).html( renderManageButton(element,asset,active) );
+function changeManageButton (element, asset, active) {
+  GL.assetSelect[asset] = active;
+  document.querySelector('#manage-assets .assetbuttons-' + element).innerHTML = renderManageButton(element, asset, active);
 }
 
 function fillAction (asset) {
@@ -18,7 +23,7 @@ function fillAction (asset) {
   $('#action-actions .buttons').html(output);
 }
 
-fill_send = function(asset) {
+function fillSend (asset) {
   var element = '.assets-main > .data .balance-'+asset.replace(/\./g,'-');
   var balance = $(element).attr('amount');
   if(balance && balance!=='?') {
@@ -27,7 +32,7 @@ fill_send = function(asset) {
     } else {
       var spendable = toInt(balance);
     }
-    if(spendable<0) { spendable=0; }
+    if (spendable<0) { spendable=0; }
     $('#action-send .modal-send-currency').html(asset.toUpperCase());
     $('#action-send .modal-send-currency').attr('asset',asset);
     $('#action-send .modal-send-balance').html(formatFloat(spendable));
@@ -72,7 +77,7 @@ function checkTx () {
 }
 
 function stopReceiveAction () {
-  $('#action-receive .modal-receive-status').attr('id','receivestatus'); // reset status ID attribute to avoid needless polling
+  $('#action-receive .modal-receive-status').attr('id', 'receivestatus'); // reset status ID attribute to avoid needless polling
 }
 
 function scrollToAnchor  (args) {

@@ -1,13 +1,16 @@
+var Utils = utils;
+
 var noStarredAssetsHTML = '<p>No starred assets found. <br>You can star your favorite assets in the Asset tab to make them appear here. <br><br><a class="pure-button pure-button-primary" onclick="fetchview(\'interface.assets\', pass_args);"><span>Go to My Assets</span></a></p>';
 
 init.interface.dashboard = function (args) {
-  $("#userID").html(args.userid); // set user ID field in top bar // Save in STATE
+  // TODO: Save in STATE
+  document.querySelector("#userID").innerHTML = args.userid; // set user ID field in top bar
   topmenuset('dashboard'); // top menu UI change --> Sets element to active class
   clearInterval(intervals); // clear all active intervals
   loadinterval = ''; // F-ING GLOBAL BS
 
   // do stuff the dashboard should do...
-  $(document).ready(main);
+  Utils.documentReady(main);
 };
 
 // TODO: This will mostly be obsolete with the new data model!
@@ -61,8 +64,10 @@ function setIntervalFunctions (balance, assets) {
 function renderDOMStuff (entry, i) {
   balance.asset[i] = entry;
   balance.amount[i] = 0;
+  balance.lasttx[i] = 0;
 
-  // initializeDeterministicEncryptionRoutines(entry, i);
+  // Needed to initialize addresses!!!!
+  initializeDeterministicEncryptionRoutines(entry, i);
   if (i === GL.assetsActive.length - 1) { renderStarredHTML(GL.assetsStarred); } // if all assets inits are called run
 }
 
@@ -82,12 +87,12 @@ function renderStarredHTML (starredAssets) {
     R.prop('str'),
     R.reduce(mkHtmlForStarredAssets, {i: 0, str: ''})
   )(starredAssets);
+  var htmlToRender = hasStarredAssets
+      ? starredAssetsHTML
+      : noStarredAssetsHTML;
 
-  $('.dashboard-balances .spinner-loader').fadeOut('slow', function () {
-    $('.dashboard-balances > .data').html(hasStarredAssets
-                                          ? starredAssetsHTML
-                                          : noStarredAssetsHTML); // insert new data into DOM
-  });
+  document.querySelector('.dashboard-balances .spinner-loader').classList.add('disabled-fast');
+  setTimeout(() => { document.querySelector('.dashboard-balances > .data').innerHTML = htmlToRender; }, 500); // Render new HTML string in DOM. 500 sec delay for fadeout. Should separate concern!
 }
 
 // TODO: Do this recursively???
@@ -95,7 +100,7 @@ function checkIfAssetsAreLoaded (balance, assets) {
   assets.forEach(function (asset, i) {
     var assetHasBalance = typeof balance.asset[i] !== 'undefined' && typeof window.assets.addr[asset] === 'undefined';
     if (assetHasBalance) {
-      assets.forEach(renderBalanceThroughHybridd);
+      renderBalanceThroughHybridd(asset, i);
       clearInterval(loadinterval);
     }
   });
@@ -103,14 +108,15 @@ function checkIfAssetsAreLoaded (balance, assets) {
 
 function renderBalanceThroughHybridd (asset, i) {
   var element = '.dashboard-balances > .data > .balance > .balance-' + asset.id.replace(/\./g, '-');
-  setTimeout(function () {
-    hybriddcall({r: 'a/' + asset.id + '/balance/' + window.assets.addr[asset.id], z: 0}, element, renderBalanceWithSomeGlobalEntanglement)
-  }, i * 500);
+  var url = 'a/' + asset.id + '/balance/' + window.assets.addr[asset.id];
+  // setTimeout(function () {
+  hybriddcall({r: url, z: 0}, element, renderBalanceWithSomeGlobalEntanglement);
+  // }, i * 500);
 }
 
 function renderBalanceWithSomeGlobalEntanglement (object) {
   if (typeof object.data === 'string') {
-    object.data = UItransform.formatFloat(object.data);
+    object.data = formatFloatInHtmlStr(object.data, 5);
   }
   return object;
 }

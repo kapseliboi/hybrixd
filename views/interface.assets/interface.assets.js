@@ -23,6 +23,7 @@ init.interface.assets = function(args) {
   setStarredAssetClass = setStarredAssetClass;
   toggle_star = toggleStar;
 
+  fill_send = fillSend;
   fill_actions = fillAction;
   fill_recv = receiveAction;
   stop_recv = stopReceiveAction;
@@ -34,8 +35,9 @@ init.interface.assets = function(args) {
 
 function renderAssetsButtons (element, balance, i) {
   return function (object) {
-    var assetbuttons = '.assets-main > .data .assetbuttons-'+balance.asset[i].replace(/\./g,'-');
-    if(object.data!==null && !isNaN(object.data)){
+    console.log("object = ", object);
+    var assetbuttons = '.assets-main > .data .assetbuttons-' + balance.asset[i].replace(/\./g,'-');
+    if(object.data !== null && !isNaN(object.data)) {
       renderDollarPriceInAsset(balance.asset[i], Number(object.data));
       $(assetbuttons).delay(1000).removeClass('disabled');
       $(assetbuttons+' a').removeAttr('disabled');
@@ -214,17 +216,18 @@ function toggleStar (i) {
 function uiAssets (balance) {
   return function (properties) {
     GL.assetsActive.forEach(function (asset, i) {
-      setTimeout(
-        function() {
-          if(typeof balance.asset[i] !== 'undefined') {
-            var element = '.assets-main > .data .balance-'+balance.asset[i].replace(/\./g,'-');
-            if((balance.lasttx[i]+120000)<(new Date).getTime()) {
-              hybriddcall({r:'a/'+balance.asset[i]+'/balance/'+assets.addr[balance.asset[i]],z:0},element, renderAssetsButtons(element, balance, i));
+      // setTimeout(
+        // function () {
+          if (typeof balance.asset[i] !== 'undefined') {
+            var element = '.assets-main > .data .balance-' + balance.asset[i].replace(/\./g,'-');
+            var timeIsCurrent = balance.lasttx[i] + 120000 < (new Date).getTime();
+            var url = 'a/' + balance.asset[i] + '/balance/' + window.assets.addr[balance.asset[i]];
+            if (timeIsCurrent) {
+              hybriddcall({r: url, z: 0}, element, renderAssetsButtons(element, balance, i));
             }
           }
-        }
-        ,i * 500);
-    })
-    setTimeout(getNewMarketPrices, 5000)
-  }
+        // }, i * 500);
+    });
+    setTimeout(getNewMarketPrices, 5000);
+  };
 }

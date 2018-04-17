@@ -20,3 +20,33 @@ function mkHtmlForStarredAssets (acc, asset) {
       : acc.str;
   return {i: acc.i + 1, str: str};
 }
+
+function formatFloatInHtmlStr (amount, maxLengthSignificantDigits) {
+  var normalizedAmount = Number(amount);
+
+  function regularOrZeroedBalance (balanceStr, maxLen) {
+    var decimalNumberString = balanceStr.substring(2).split('');
+    var zeros = R.compose(
+      R.concat('0.'),
+      R.reduce((baseStr, n) => baseStr + n, ''),
+      R.takeWhile((n) => n === '0')
+    )(decimalNumberString);
+    var numbers = balanceStr.replace(zeros, '');
+    var defaultOrFormattedBalanceStr = balanceStr.includes('0.') ? mkAssetBalanceHtmlStr(zeros, numbers, maxLen) : balanceStr;
+
+    return defaultOrFormattedBalanceStr;
+  }
+
+  function mkAssetBalanceHtmlStr (zeros_, numbers_, maxLen) {
+    var emptyOrBalanceEndHtmlStr = numbers_.length < maxLen ? '' : '<span class="balance-end" style="color: grey;">&hellip;</span>';
+    var numbersFormatted = numbers_.slice(0, maxLen);
+    return '<span style="font-size: 0.75em; color: grey;">' + zeros_ + '</span>' + numbersFormatted + emptyOrBalanceEndHtmlStr;
+  }
+
+  if (isNaN(normalizedAmount)) {
+    return '?';
+  } else {
+    var balance = R.compose(bigNumberToString, toInt)(normalizedAmount);
+    return balance === '0' ? '0' : regularOrZeroedBalance(balance, maxLengthSignificantDigits);
+  }
+}
