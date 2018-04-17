@@ -118,8 +118,8 @@ displayAssets = function displayAssets() {
     path: path
   }
 
-  ui_assets(assetDetail);
-  intervals = setInterval(function () { ui_assets(assetDetail); }, 30000);
+  uiAssets(balance)(assetDetail);
+  intervals = setInterval(function () { uiAssets(balance)(assetDetail); }, 30000); // TODO: Replace this with Rx interval. Now it breaks sometimes.....
 
   document.querySelector('.assets-main > .data').innerHTML = htmlToRender; // insert new data into DOM
   GL.assetsStarred.forEach(function (asset, i) { setStarredAssetClass(i, R.prop('starred', asset)); });

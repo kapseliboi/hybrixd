@@ -8,11 +8,13 @@ init.interface.assets = function(args) {
   clipb_success = clipboardSucces;
   clipb_fail = clipboardError;
 
-  $('#send-transfer').click(sendTransfer);
-  $('#save-assetlist').click(saveAssetList);
+  document.querySelector('#send-transfer').onclick = sendTransfer;
+  document.querySelector('#save-assetlist').onclick = saveAssetList;
   GL.searchingactive = false;
   GL.searchval = '';
-  $('#search-assets').on('change keydown paste input', searchAssets);
+
+  var events = ['change', 'keydown', 'paste', 'input'];
+  events.forEach(function (event) { document.querySelector('#search-assets').addEventListener(event, searchAssets); });
 
   // modal helper functions
   manageAssets = manageAssets;
@@ -29,7 +31,7 @@ init.interface.assets = function(args) {
 
   // fill asset elements
   ui_assets = uiAssets(balance);
-}
+};
 
 function renderAssetsButtons (element, balance, i) {
   return function (object) {
@@ -58,43 +60,40 @@ function getNewMarketPrices () {
 
 function renderDollarPriceInAsset (asset, amount) {
   var symbolName = asset.slice(asset.indexOf('.') + 1);
-  var assetDollarPrice = Valuations.renderDollarPrice(symbolName, amount)
+  var assetDollarPrice = Valuations.renderDollarPrice(symbolName, amount);
   var query = document.getElementById(symbolName + '-dollar');
-  if (query !== null) {
-    query.innerHTML = assetDollarPrice;
-  }
+  if (query !== null) { query.innerHTML = assetDollarPrice; }
 }
 
-function saveAssetList () {
-  // push selected assets to active stack
-  var array = [];
-  for(var entry in GL.assetnames) {
-    var entryExists = GL.assetSelect[entry];
-    if(entryExists) {
-      array.push(entry);
-      initAsset(entry, GL.assetmodes[entry]);
-    }
-  }
-  GL.assetsActive = array;
+function entryExists (entry) { return GL.assetSelect[entry]; }
+function initializeAsset (entry) { initAsset(entry, R.prop(entry, GL.assetmodes)); }
 
-  var newAssetsToStar = GL.assetsActive.filter(function (asset) {
+function saveAssetList () {
+  var newActiveAssets = R.filter(entryExists, R.keys(GL.assetnames));
+
+  GL.assetsActive = newActiveAssets;
+  R.forEach(initializeAsset, newActiveAssets);
+  storage.Set(userStorageKey('ff00-0033'), userEncode(newActiveAssets));
+  starNewAssets(newActiveAssets);
+  displayAssets(); // Re-render the view;
+}
+
+function starNewAssets (activeAssets) {
+  var newAssetsToStar = activeAssets.filter(function (asset) {
     var foundOrUndefinedId = GL.assetsStarred.find(function (starred) {
       return starred.id === asset;
-    })
+    });
     return foundOrUndefinedId === undefined;
-  })
+  });
 
-  GL.assetsStarred = GL.assetsActive.map(function (asset) {
+  GL.assetsStarred = activeAssets.map(function (asset) {
     var foundOrUndefinedId = GL.assetsStarred.find(function (starred) {
       return asset === starred.id;
-    })
+    });
     return foundOrUndefinedId === undefined ? {id: asset, starred: false} : foundOrUndefinedId;
-  })
+  });
 
-  // store selected assets
-  storage.Set(  userStorageKey('ff00-0033') , userEncode(array) );
-  storage.Set(  userStorageKey('ff00-0034') , userEncode(GL.assetsStarred) );
-  displayAssets();
+  storage.Set(userStorageKey('ff00-0034') , userEncode(GL.assetsStarred));
 }
 
 function sendTransfer () {
@@ -105,7 +104,7 @@ function sendTransfer () {
     loadSpinner();
     var symbol = $('#action-send .modal-send-currency').attr('asset');
     sendTransaction({
-      element:'.assets-main > .data .balance-'+symbol.replace(/\./g,'-'),
+      element: '.assets-main > .data .balance-'+symbol.replace(/\./g,'-'),
       asset:symbol,
       amount:Number($("#modal-send-amount").val().replace(/\,/g,'.')),
       source:String($('#action-send .modal-send-addressfrom').html()).trim(),
@@ -114,17 +113,17 @@ function sendTransfer () {
   }
 }
 
-function searchAssets (){
-  if(!GL.searchingactive) {
+function searchAssets () {
+  if (!GL.searchingactive) {
     GL.searchingactive = true;
     // delay the search to avoid many multiple spawns of renderManageAssetsList
-    setTimeout( function() {
-      if($('#search-assets').val()!==GL.searchval) {
-        renderManageAssetsList(GL.assetnames,$('#search-assets').val());
+    setTimeout(function () {
+      if ($('#search-assets').val() !== GL.searchval) {
+        renderManageAssetsList(GL.assetnames, $('#search-assets').val());
         GL.searchval = $('#search-assets').val();
       }
       GL.searchingactive = false;
-    },250);
+    }, 250);
   }
 }
 
@@ -133,21 +132,21 @@ function manageAssets() {
   renderManageAssetsList(GL.assetnames);
 }
 
-function renderManageAssetsList (list, searchQuery) {
-  if(typeof searchQuery !== 'undefined') {
-    searchQuery = searchQuery.toLowerCase();
-  }
+function renderManageAssetsList (assetNames, searchQuery) {
+  console.log("searchQuery = ", searchQuery);
+  console.log("list = ", assetNames);
+  if (typeof searchQuery !== 'undefined') { searchQuery = searchQuery.toLowerCase(); }
 
-  for(var entry in GL.assetnames) {
-    var hasCorrectType = typeof GL.assetSelect[entry]==='undefined' || typeof GL.assetSelect[entry]==='function'
-    if(GL.assetsActive.indexOf(entry) === -1) {
+  for (var entry in GL.assetnames) {
+    var hasCorrectType = typeof GL.assetSelect[entry] === 'undefined' || typeof GL.assetSelect[entry] === 'function';
+    if (GL.assetsActive.indexOf(entry) === -1) {
       // Check if type is function for Shift asset. TODO: Refactor.
-      if(hasCorrectType) {
+      if (hasCorrectType) {
         GL.assetSelect[entry] = false;
       }
     } else {
       // Check if type is function for Shift asset.
-      if(hasCorrectType) {
+      if (hasCorrectType) {
         GL.assetSelect[entry] = true;
       }
     }
@@ -162,31 +161,29 @@ function renderManageAssetsList (list, searchQuery) {
       '</div>' +
       '<div class="tbody">';
 
-  // TODO Don't use var list, but filter var list on assets returned from search
-  var assetsHTMLStr = Object.keys(list).reduce(function (acc, entry) {
-    var searchReturnsNothing = typeof searchQuery === 'undefined' ||
-        entry.toLowerCase().indexOf(searchQuery) !== -1 ||
-        list[entry].toLowerCase().indexOf(searchQuery) !== -1
-    if (searchReturnsNothing) {
+  function queryMatchesEntry (entry) { return R.test(new RegExp(searchQuery, 'g'), entry); }
+  var matchedEntries = R.filter(queryMatchesEntry, Object.keys(assetNames));
+
+  var assetsHTMLStr = matchedEntries.reduce(function (acc, entry) {
       var symbolName = entry.slice(entry.indexOf('.') + 1);
       var icon = (symbolName in black.svgs) ? black.svgs[symbolName] : mkSvgIcon(symbolName);
       var entryExists = GL.assetsActive.includes(entry);
-      var element = entry.replace('.','-');
+      var element = entry.replace('.', '-');
 
       var assetIconHTMLStr = '<div class="icon">' + icon + '</div>';
       var assetIDHTMLSTr = '<div class="asset">' + entry.toUpperCase() + '</div>';
-      var assetFullNameHTMLStr = '<div class="full-name">' + list[entry] + '</div>';
-      var actionBtns = '<div class="assetbuttons assetbuttons-'+element+'">' + renderManageButton(element,entry,entryExists) + '</div>'
+      var assetFullNameHTMLStr = '<div class="full-name">' + assetNames[entry] + '</div>';
+      var actionBtns = '<div class="assetbuttons assetbuttons-' + element + '">' + renderManageButton(element, entry, entryExists) + '</div>';
 
-      var htmlStr =  '<div class="tr">' +
-                        '<div class="td col1">' + assetIconHTMLStr + assetIDHTMLSTr + assetFullNameHTMLStr + '</div>' +
-                           '<div class="td col2 actions">' + actionBtns + '</div>' +
-                     '</div>';
+      var htmlStr = '<div class="tr">' +
+                      '<div class="td col1">' + assetIconHTMLStr + assetIDHTMLSTr + assetFullNameHTMLStr + '</div>' +
+                      '<div class="td col2 actions">' + actionBtns + '</div>' +
+                    '</div>';
       return acc + htmlStr;
-    }
-  }, '')
+  }, '');
+
   var output = tableHTMLStr + assetsHTMLStr + '</div></div>';
-  $('#manage-assets .data').html(output); // insert new data into DOM
+  document.querySelector('.data.manageAssets').innerHTML = output; }; // insert new data into DOM
 }
 
 function setStarredAssetClass (i, isStarred) {
@@ -208,7 +205,6 @@ function toggleStar (i) {
   });
 
   setStarredAssetClass(i, isStarred);
-  // storage.Set(userStorageKey('ff00-0034'), userEncode(initAssetsStarred));
 }
 
 function uiAssets (balance) {
