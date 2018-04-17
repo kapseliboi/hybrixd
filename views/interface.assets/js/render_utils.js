@@ -13,63 +13,69 @@ function changeManageButton (element, asset, active) {
 }
 
 function fillSend (asset) {
-  var element = '.assets-main > .data .balance-'+asset.replace(/\./g,'-');
-  var balance = $(element).attr('amount');
-  if(balance && balance!=='?') {
-    if(!isToken(asset)) {
+  var element = '.assets-main > .data .balance-' + asset.replace(/\./g,'-');
+  var balance = document.querySelector(element).getAttribute('amount');
+  if (balance && balance !== '?') {
+    if (!isToken(asset)) {
       var spendable = toInt(balance).minus(toInt(assets.fees[asset]));
     } else {
       var spendable = toInt(balance);
     }
-    if (spendable<0) { spendable=0; }
-    $('#action-send .modal-send-currency').html(asset.toUpperCase());
-    $('#action-send .modal-send-currency').attr('asset',asset);
-    $('#action-send .modal-send-balance').html(formatFloat(spendable));
-    $('#modal-send-target').val('');
-    $('#modal-send-amount').val('');
-    $('#action-send .modal-send-addressfrom').html(assets.addr[asset]);
-    $('#action-send .modal-send-networkfee').html(formatFloat(assets.fees[asset])+' '+asset.split('.')[0].toUpperCase());
+    if (spendable < 0) { spendable = 0; }
+    document.querySelector('#action-send .modal-send-currency').innerHTML = asset.toUpperCase();
+    document.querySelector('#action-send .modal-send-currency').setAttribute('asset', asset);
+    document.querySelector('#action-send .modal-send-balance').innerHTML = formatFloat(spendable);
+    document.querySelector('#modal-send-target').value = '';
+    document.querySelector('#modal-send-amount').value = '';
+    document.querySelector('#action-send .modal-send-addressfrom').innerHTML = assets.addr[asset];
+    document.querySelector('#action-send .modal-send-networkfee').innerHTML = formatFloat(assets.fees[asset]) + ' ' + asset.split('.')[0].toUpperCase();
     check_tx();
   }
 }
 
 function receiveAction (asset) {
-  $('#action-receive .modal-receive-currency').html(asset.toUpperCase());
-  // after getting address from hybridd, set data-clipboard-text to contain it
-  $('#action-receive .modal-receive-addressfrom').html(assets.addr[asset]);
-  $('#modal-receive-button').attr('data-clipboard-text', $('#action-receive .modal-receive-addressfrom').html() ) // set clipboard content for copy button to address
+  var assetAddress = assets.addr[asset];
+  document.querySelector('#action-receive .modal-receive-currency').innerHTML = asset.toUpperCase(); // after getting address from hybridd, set data-clipboard-text to contain it
+  document.querySelector('#action-receive .modal-receive-addressfrom').innerHTML = assetAddress;
+  document.querySelector('#modal-receive-button').setAttribute('data-clipboard-text', document.querySelector('#action-receive .modal-receive-addressfrom').innerHTML); // set clipboard content for copy button to address
   clipboardButton('#modal-receive-button', clipb_success, clipb_fail); // set function of the copy button
-  $('#action-receive .modal-receive-status').attr('id','receivestatus-'+asset);
-  $("#qrcode").html('').append( function() {
-    new QRCode(document.getElementById("qrcode"),
-               { text:assets.addr[asset],
-                 width: 160,
-                 height: 160,
-                 colorDark : "#000000",
-                 colorLight : "#ffffff",
-                 correctLevel : QRCode.CorrectLevel.H
-               });
-  });
+  document.querySelector('#action-receive .modal-receive-status').setAttribute('id', 'receivestatus-' + asset);
+
+  mkNewQRCode(assetAddress);
 }
+
+function mkNewQRCode (address) {
+    new QRCode(document.getElementById('qrcode'), {
+      text: address,
+      width: 160,
+      height: 160,
+      colorDark: '#000000',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.H
+    });
+  }
 
 function checkTx () {
-  var p = {};
-  p.asset = $('#action-send .modal-send-currency').attr('asset');
-  p.target_address = String($('#modal-send-target').val());
-  p.amount = Number($("#modal-send-amount").val());
-  p.available = Number($('#action-send .modal-send-balance').html());
-  if(!isNaN(p.amount) && p.amount>0 && p.amount<=p.available && p.target_address) {
-    $('#action-send .pure-button-send').removeClass('disabled');
-  } else {
-    $('#action-send .pure-button-send').addClass('disabled');
-  }
+  var p = {
+    asset: document.querySelector('#action-send .modal-send-currency').getAttribute('asset'),
+    target_address: String(document.querySelector('#modal-send-target').value),
+    amount: Number(document.querySelector('#modal-send-amount').value),
+    available: Number(document.querySelector('#action-send .modal-send-balance').innerHTML)
+  };
+  // TODO Validations
+  var txDetailsAreValid = !isNaN(p.amount) &&
+      p.amount > 0 &&
+      p.amount <=
+      p.available &&
+      p.target_address;
+
+  var classListMethod = txDetailsAreValid ? 'remove' : 'add';
+  document.querySelector('#action-send .pure-button-send').classList[classListMethod]('disabled');
 }
 
-function stopReceiveAction () {
-  $('#action-receive .modal-receive-status').attr('id', 'receivestatus'); // reset status ID attribute to avoid needless polling
-}
+function stopReceiveAction () { document.querySelector('#action-receive .modal-receive-status').setAttribute('id', 'receivestatus'); }; // reset status ID attribute to avoid needless polling
 
-function scrollToAnchor  (args) {
+function scrollToAnchor (args) {
   return function () {
     if (args.element !== null && args.element !== undefined) {
       $('html, body').animate({
