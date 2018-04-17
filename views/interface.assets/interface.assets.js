@@ -8,7 +8,6 @@ init.interface.assets = function(args) {
   clipb_success = clipboardSucces;
   clipb_fail = clipboardError;
 
-
   $('#send-transfer').click(sendTransfer);
   $('#save-assetlist').click(saveAssetList);
   GL.searchingactive = false;
@@ -34,27 +33,27 @@ init.interface.assets = function(args) {
 
 function renderAssetsButtons (element, balance, i) {
   return function (object) {
-    console.log("object = ", object);
-    var assetbuttons = '.assets-main > .data .assetbuttons-' + balance.asset[i].replace(/\./g,'-');
-    if(object.data !== null && !isNaN(object.data)) {
+    var assetbuttonsClass = '.assets-main > .data .assetbuttons-' + balance.asset[i].replace(/\./g,'-');
+    var objectDataIsValid = object.data !== null && !isNaN(object.data);
+    if (objectDataIsValid) {
       renderDollarPriceInAsset(balance.asset[i], Number(object.data));
-      $(assetbuttons).delay(1000).removeClass('disabled');
-      $(assetbuttons+' a').removeAttr('disabled');
-      $(assetbuttons+' a').attr('data-toggle', 'modal');
-      $(element).attr('amount',object.data);
-      object.data = UItransform.formatFloat(object.data);
+      setTimeout(function () { document.querySelector(assetbuttonsClass).classList.remove('disabled'); }, 1000);
+      document.querySelector(assetbuttonsClass + ' a').removeAttribute('disabled');
+      document.querySelector(assetbuttonsClass + ' a').setAttribute('data-toggle', 'modal');
+      document.querySelector(element).setAttribute('amount', object.data);
+      object.data = UItransform.formatFloat(object.data, 11);
     } else {
-      $(assetbuttons).addClass('disabled');
-      $(assetbuttons+' a').removeAttr('data-toggle');
-      $(element).attr('amount','?');
+      document.querySelector(assetbuttonsClass).classList.add('disabled');
+      document.querySelector(assetbuttonsClass + ' a').removeAttribute('data-toggle');
+      document.querySelector(element).setAttribute('amount', '?');
       object.data = 'n/a';
     }
     return object;
-  }
+  };
 }
 
 function getNewMarketPrices () {
-  Valuations.getDollarPrices(() => {})
+  Valuations.getDollarPrices(() => {});
 }
 
 function renderDollarPriceInAsset (asset, amount) {
