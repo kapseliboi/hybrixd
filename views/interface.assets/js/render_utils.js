@@ -12,17 +12,6 @@ function changeManageButton (element, asset, active) {
   document.querySelector('#manage-assets .assetbuttons-' + element).innerHTML = renderManageButton(element, asset, active);
 }
 
-function fillAction (asset) {
-  var element = '.assets-main > .data .balance-'+asset.replace(/\./g,'-');
-  $('#action-actions #ModalLabel').html(asset.toUpperCase());
-  $('#action-actions .balance').html($(element).html().toUpperCase());
-  var output = '';
-  output+='<a onclick=\'fill_send("'+asset+'");\' href="#action-send" class="pure-button pure-button-large pure-button-fw pure-button-primary" role="button" data-dismiss="modal" data-toggle="modal">Send</a>';
-  output+='<a onclick=\'fill_recv("'+asset+'");\' href="#action-receive" class="pure-button pure-button-large pure-button-fw pure-button-secondary" role="button" data-dismiss="modal" data-toggle="modal">Receive</a>';
-  output+='<a href="#action-advanced" class="pure-button pure-button-grey pure-button-large pure-button-fw advanced-button" role="button" data-dismiss="modal" data-toggle="modal"><div class="advanced-icon">'+svg['advanced']+'</div>Advanced</a>';
-  $('#action-actions .buttons').html(output);
-}
-
 function fillSend (asset) {
   var element = '.assets-main > .data .balance-'+asset.replace(/\./g,'-');
   var balance = $(element).attr('amount');

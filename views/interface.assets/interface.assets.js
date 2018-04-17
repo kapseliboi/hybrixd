@@ -24,7 +24,6 @@ init.interface.assets = function(args) {
   toggle_star = toggleStar;
 
   fill_send = fillSend;
-  fill_actions = fillAction;
   fill_recv = receiveAction;
   stop_recv = stopReceiveAction;
   check_tx = checkTx;
