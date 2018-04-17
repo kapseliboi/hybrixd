@@ -25,7 +25,7 @@
     ],
 
     "balance" : [
-      "expl('&','$1')",
+      "expl('$1','&')",
       "each('$symbols'.split(','),'asset://$symbol','subbalance',data)",
       "stop(0,jstr(data))"
     ],

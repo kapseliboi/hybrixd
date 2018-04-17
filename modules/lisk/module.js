@@ -121,16 +121,6 @@ function exec(properties) {
     subprocesses.push('poke("sourceaddr","'+sourceaddr+'")');	// store the resulting data for post-process collage
     subprocesses.push('func("lisk","link",'+jstr({target,command})+')');
     break;
- case 'details':
-    var symbol = target.symbol;
-    var name = target.name;
-    var fee = padFloat(fee,factor);
-    var base = target.symbol.split('.')[0];
-    //var mode; already defined
-    //var factor; already defined
-    var contract = null;
-    subprocesses.push("stop(0,{symbol:'"+symbol+"', name:'"+name+"',mode:'"+mode+"',fee:'"+fee+"',contract:'"+contract+"',factor:'"+factor+"','keygen-base':'"+base+"','fee-symbol':'"+base+"'})");
-    break;
   default:
     subprocesses.push('stop(1,"Asset function not supported!")');
   }
@@ -173,6 +163,7 @@ function post(properties) {
         if (charlist === undefined) { charlist = "\s"; }
         return str.replace(new RegExp("[" + charlist + "]+$"), "");
       };
+
 
       collage.version = (typeof postdata.liskC.version != 'undefined' ? String(postdata.liskC.version+' (build '+(typeof postdata.liskC.build != 'undefined'?rTrim(postdata.liskC.build,"\n"):'?')+')') : null);
 
