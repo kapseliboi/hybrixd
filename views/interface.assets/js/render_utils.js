@@ -45,15 +45,19 @@ function receiveAction (asset) {
 }
 
 function mkNewQRCode (address) {
-    new QRCode(document.getElementById('qrcode'), {
-      text: address,
-      width: 160,
-      height: 160,
-      colorDark: '#000000',
-      colorLight: '#ffffff',
-      correctLevel: QRCode.CorrectLevel.H
-    });
-  }
+  var qrCode = document.getElementById('qrcode');
+
+  qrCode.innerHTML = ''; // Remove old QR code. HACKY!!!!
+
+  new QRCode(document.getElementById('qrcode'), {
+    text: address,
+    width: 160,
+    height: 160,
+    colorDark: '#000000',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+}
 
 function checkTx () {
   var p = {
