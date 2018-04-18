@@ -37,72 +37,71 @@ sendTransaction = function(properties) {
 
           deterministic = activate( LZString.decompressFromEncodedURIComponent(dcode) );
 
-//          setTimeout(function() {
-            if(typeof deterministic!='object' || deterministic=={}) {
-              // alert(lang.alertError,lang.modalSendTxErrorDcode);
-              alert('Sorry, the transaction could not be generated! Deterministic code could not be initialized!');
+          if(typeof deterministic!='object' || deterministic=={}) {
+            // alert(lang.alertError,lang.modalSendTxErrorDcode);
+            alert('Sorry, the transaction could not be generated! Deterministic code could not be initialized!');
+            UItransform.txStop();
+            UItransform.setBalance(p.element,p.balorig);
+          } else {
+            try {
+
+              var onTransaction = function(transaction){
+                if(typeof transaction!=='undefined') {
+                  // DEBUG: logger(transaction);
+                  hybriddcall({r:'a/'+this.p.asset+'/push/'+transaction,z:1,pass:this.p},null, function(object,passdata) {
+                    var p = passdata;
+                    if(typeof object.data!='undefined' && object.error==0) {
+                      // again deduct real amount from balance in GUI (in case of refresh)
+                      UItransform.deductBalance(p.element,p.balance);
+                      setTimeout(function() {
+                        UItransform.txStop();
+                        UItransform.txHideModal();
+                      },1000);
+                      // push function returns TXID
+                      logger('Node sent transaction ID: '+object.data);
+                    } else {
+                      UItransform.txStop();
+                      UItransform.setBalance(p.element,p.balorig);
+                      logger('Error sending transaction: '+object.data);
+                      //alert(lang.alertError,lang.modalSendTxFailed+'\n'+object.data);
+                      alert('The transaction could not be sent by the hybridd node! Please try again. ');
+                    }
+                  });
+                } else {
+                  UItransform.txStop();
+                  UItransform.setBalance(this.p.element,this.p.balorig);
+                  alert('The transaction deterministic calculation failed!  Please ask the Internet of Coins developers to fix this.');
+                  logger('Deterministic calculation failed for '+this.p.asset+'!')
+                }
+              }.bind({p:p});
+
+              // DEBUG: logger(JSON.stringify(assets));
+              var transaction = deterministic.transaction({
+                mode:assets.mode[p.asset].split('.')[1],
+                symbol:p.asset,
+                source:p.source_address,
+                target:p.target_address,
+                amount:toInt(p.amount,assets.fact[p.asset]),
+                fee:toInt(p.fee,assets.fact[p.base]),
+                factor:assets.fact[p.asset],
+                contract:assets.cntr[p.asset],
+                keys:assets.keys[p.asset],
+                seed:assets.seed[p.asset],
+                unspent:unspent
+              },onTransaction);
+
+              if(typeof transaction !== 'undefined'){// If a direct value is returned instead of using the callback then call the callback using that value
+                onTransaction(transaction);
+              }
+
+            } catch(e) {
               UItransform.txStop();
               UItransform.setBalance(p.element,p.balorig);
-            } else {
-              try {
-
-                var onTransaction = function(transaction){
-                  if(typeof transaction!=='undefined') {
-                    // DEBUG: logger(transaction);
-                    hybriddcall({r:'a/'+this.p.asset+'/push/'+transaction,z:1,pass:this.p},null, function(object,passdata) {
-                      var p = passdata;
-                      if(typeof object.data!='undefined' && object.error==0) {
-                        // again deduct real amount from balance in GUI (in case of refresh)
-                        UItransform.deductBalance(p.element,p.balance);
-                        setTimeout(function() {
-                          UItransform.txStop();
-                          UItransform.txHideModal();
-                        },1000);
-                        // push function returns TXID
-                        logger('Node sent transaction ID: '+object.data);
-                      } else {
-                        UItransform.txStop();
-                        UItransform.setBalance(p.element,p.balorig);
-                        logger('Error sending transaction: '+object.data);
-                        //alert(lang.alertError,lang.modalSendTxFailed+'\n'+object.data);
-                        alert('The transaction could not be sent by the hybridd node! Please try again. ');
-                      }
-                    });
-                  } else {
-                    UItransform.txStop();
-                    UItransform.setBalance(this.p.element,this.p.balorig);
-                    alert('The transaction deterministic calculation failed!  Please ask the Internet of Coins developers to fix this.');
-                    logger('Deterministic calculation failed for '+this.p.asset+'!')
-                  }
-                }.bind({p:p});
-
-                // DEBUG: logger(JSON.stringify(assets));
-                var transaction = deterministic.transaction({
-                  mode:assets.mode[p.asset].split('.')[1],
-                  symbol:p.asset,
-                  source:p.source_address,
-                  target:p.target_address,
-                  amount:toInt(p.amount,assets.fact[p.asset]),
-                  fee:toInt(p.fee,assets.fact[p.base]),
-                  factor:assets.fact[p.asset],
-                  contract:assets.cntr[p.asset],
-                  keys:assets.keys[p.asset],
-                  seed:assets.seed[p.asset],
-                  unspent:unspent
-                },onTransaction);
-
-                if(typeof transaction !== 'undefined'){// If a direct value is returned instead of using the callback then call the callback using that value
-                  onTransaction(transaction);
-                }
-
-              } catch(e) {
-                UItransform.txStop();
-                UItransform.setBalance(p.element,p.balorig);
-                alert('Sorry, the transaction could not be generated! Check if you have entered the right address.');
-                logger('Error generating transaction for '+p.asset+': '+e)
-              }
+              alert('Sorry, the transaction could not be generated!<br><br>'+e);
+              logger('Error generating transaction for '+p.asset+': '+e)
             }
-    //      },500);
+          }
+
         });
       } else {
         UItransform.txStop();
