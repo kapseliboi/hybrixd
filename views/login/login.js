@@ -30,17 +30,29 @@ function login (userID, password) {
   if (isValidUserIDAndPassword) {
     var sessionStep = session_step = 0; // TODO: Factor out!
     setCSSTorenderButtonsToDisabled();
-    A.rotateLogin(0);
     startAnimationAndInitializeNacl(userID, password, sessionStep);
   }
 }
 
 function startAnimationAndInitializeNacl (userid, passcode, sessionStep) {
-  blink('arc0');
+  doAnimation();
   nacl = null; // TODO: make official global
   nacl_factory.instantiate(
     instantiateNaclAndHandleLogin(passcode, userid, sessionStep)
   ); // instantiate nacl and handle login
+}
+
+
+
+function doAnimation (n) {
+  blink('arc0');
+  A.rotateLogin(0);
+  dialLoginAnimation(0);
+  function dialLoginAnimation (n) {
+    var newNumberOrZero = n > 3 ? 0 : n;
+    A.dialLogin(n);
+    setTimeout(function () { dialLoginAnimation(n + 1); }, 100);
+  }
 }
 
 function instantiateNaclAndHandleLogin (passcode, userID, sessionStep, cb) {
@@ -58,7 +70,6 @@ function generateNonceAndUserKeys (passcode, userID, sessionStep) {
 }
 
 function startAnimationAndDoLogin (userKeys, nonce, userID, sessionStep) {
-  A.dialLogin(0); // Do some animation
   postSessionStep0Data(userKeys, nonce, sessionStep);
   C.continueSession(userKeys, nonce, userID, getSessionData, sessionContinuation(userKeys, nonce, userID));
 }
@@ -67,7 +78,6 @@ function startAnimationAndDoLogin (userKeys, nonce, userID, sessionStep) {
 function postSessionStep0Data (userKeys, nonce, sessionStep) {
   var initialSessionData = C.generateInitialSessionData(nonce);
   var url = path + 'x/' + initialSessionData.session_hexsign + '/' + sessionStep;
-  A.dialLogin(1);
   fetch_(url)
     .then(r => r.json()
       .then(processSessionStep0Reply(initialSessionData, nonce, userKeys))
@@ -103,9 +113,8 @@ function getSessionData () {
 function postSession1StepData (initialSessionData, sessionStep1Data, nonce, userKeys) {
   return function (data) {
     var sessionData = Object.assign(initialSessionData, sessionStep1Data, { nonce }, { userKeys });
-    A.dialLogin(2);
+
     C.sessionStep1Reply(data, sessionData, setSessionDataInElement);
-    A.dialLogin(3);
   };
 }
 
