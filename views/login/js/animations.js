@@ -70,8 +70,18 @@ function dialLogin (turn) {
   return true;
 }
 
+function startLoginAnimation (n) {
+  function dialLoginAnimation (n) {
+    var newNumberOrZero = n > 3 ? 0 : n;
+    dialLogin(n);
+    setTimeout(function () { dialLoginAnimation(n + 1); }, 100);
+  }
+
+  blink('arc0');
+  rotateLogin(0);
+  dialLoginAnimation(0);
+}
+
 animations = {
-  blink,
-  rotateLogin,
-  dialLogin
+  startLoginAnimation
 };

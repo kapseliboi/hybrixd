@@ -1,106 +1,126 @@
 // hy_login.js - contains javascript for login, encryption and session authentication
-const C = commonUtils;
-const A = animations;
-const S = loginInputStreams;
-const V = validations;
-const Utils = utils;
-const fetch_ = fetch
+var C = commonUtils;
+var A = animations;
+var S = loginInputStreams;
+var V = validations;
+var Utils = utils;
+var fetch_ = fetch
 
-const path = 'api';
+var path = 'api';
 
-function btnIsNotDisabled (e) {
-  return !e.target.parentElement.classList.contains('disabled');
+////////////////////////////////
+// GLOBAL STUFFZ ///////////////
+////////////////////////////////
+
+nacl_factory.instantiate(function (naclinstance) {
+  nacl = naclinstance;
+});
+
+var loginBtnStr = Rx.Observable
+    .fromEvent(document.querySelector('#loginbutton'), 'click')
+    .filter(btnIsNotDisabled);
+
+var validatedUserCredentialsStream = loginBtnStr
+    .withLatestFrom(S.credentialsStream)
+    .filter(function (z) {
+      var userID = z[1][0];
+      var password = z[1][1];
+      console.log('Valid credentials?', V.validateCredentials(userID, password));
+      return V.validateCredentials(userID, password);
+    });
+
+var doRenderAndAnimationStuffStream =
+    validatedUserCredentialsStream
+    .map(function (_) {
+      setCSSTorenderButtonsToDisabled(); // Make own stream);
+      A.startLoginAnimation(); // Combine with above stream
+    });
+
+// var sessionStepStream = Rx.Observable
+//     .interval(1000);
+
+var sessionStepStream = Rx.Observable
+    .from([0]);
+
+var generatedKeysStream =
+    validatedUserCredentialsStream
+    .map(function (z) {
+      var userID = z[1][0];
+      var password = z[1][1];
+      return C.generateKeys(password, userID, 0);
+    });
+
+var randomNonceStream = Rx.Observable
+    .from(nacl.crypto_box_random_nonce());
+
+var initialSessionDataStream = Rx.Observable // GET INITIAL SESSIONDATA HERE
+    .zip(
+      generatedKeysStream,
+      sessionStepStream,
+      randomNonceStream
+    )
+    .map(createSessionStep0UrlAndData);
+
+var postSessionStep0DataStream =
+    initialSessionDataStream
+    .flatMap(initialSessionData =>
+             Rx.Observable.fromPromise(
+               fetch_(initialSessionData.url)
+                 .then(r => r.json()
+                       .then(r => r)
+                       .catch(e => console.log('postSessionStep0Data: Error retrieving nonce:', e)))
+                 .catch(e => console.log('postSessionStep0Data: Error fetching data:', e))
+             ));
+
+var processSessionStep0ReplyStream = Rx.Observable
+    .zip(
+      postSessionStep0DataStream,
+      sessionStepStream, // SESSIONSTEP NEEDS TO BE INCREMENTED HERE
+      initialSessionDataStream,
+      postSessionStep0DataStream
+    )
+    .filter(nonceHasCorrectLength)
+    .map(mkPostSessionStep1Url);
+
+function mkPostSessionStep1Url (z) {
+  var nonce1Data = z[0];
+  var sessionStep = z[1] + 1; // NOW SETTING SESSION STEP MANUALLY.....
+  var initialSessionData = z[2];
+  var sessionStep1Data = C.generateSecondarySessionData(nonce1Data, initialSessionData.sessionData.session_hexkey, initialSessionData.sessionData.session_signpair.signSk);
+  console.log("sessionStep1Data = ", sessionStep1Data);
+  return path + 'x/' + initialSessionData.sessionData.session_hexsign + '/' + sessionStep + '/' + sessionStep1Data.crypt_hex;
 }
 
-const loginBtnStr = Rx.Observable
-      .fromEvent(document.querySelector('#loginbutton'), 'click')
-      .filter(btnIsNotDisabled);
+var postSessionStep1DataStream =
+    processSessionStep0ReplyStream
+    .map(function (z) {
+      console.log('dataBefore', z);
+      return z
+    })
+    .flatMap(function (url) {
+      return Rx.Observable
+        .fromPromise(fetch_(url)
+                     .then(r => r.json()
+                           .then(r => r)
+                           .catch(e => console.log('postSessionStep1Data: Error retrieving session step 1 data:', e)))
+                     .catch(e => console.log('postSessionStep1Data: Error fetching data:', e)))
+    })
+    .map(function (z) {
+      console.log('dataAfter', z);
+      return z
+    })
 
-const loginStream = loginBtnStr
-      .withLatestFrom(S.credentialsStream)
-      .map(function (z) {
-        const userID = z[1][0];
-        const pass = z[1][1];
-        login(userID, pass);
-      });
-
-// TODO Give user feedback about incorrect credentials
-function login (userID, password) {
-  var isValidUserIDAndPassword = V.validateCredentials(userID, password);
-  if (isValidUserIDAndPassword) {
-    var sessionStep = session_step = 0; // TODO: Factor out!
-    setCSSTorenderButtonsToDisabled();
-    startAnimationAndInitializeNacl(userID, password, sessionStep);
-  }
-}
-
-function startAnimationAndInitializeNacl (userid, passcode, sessionStep) {
-  doAnimation();
-  nacl = null; // TODO: make official global
-  nacl_factory.instantiate(
-    instantiateNaclAndHandleLogin(passcode, userid, sessionStep)
-  ); // instantiate nacl and handle login
-}
-
-
-
-function doAnimation (n) {
-  blink('arc0');
-  A.rotateLogin(0);
-  dialLoginAnimation(0);
-  function dialLoginAnimation (n) {
-    var newNumberOrZero = n > 3 ? 0 : n;
-    A.dialLogin(n);
-    setTimeout(function () { dialLoginAnimation(n + 1); }, 100);
-  }
-}
-
-function instantiateNaclAndHandleLogin (passcode, userID, sessionStep, cb) {
-  return function (naclinstance) {
-    nacl = naclinstance; // TODO: INSTANTIATION MUST BE SAVED SOMEWHERE NON-GLOBALLY SO IT IS ACCESSABLE THROUGHOUT
-    generateNonceAndUserKeys(passcode, userID, sessionStep);
-  };
-}
-
-function generateNonceAndUserKeys (passcode, userID, sessionStep) {
-  var nonce = nacl.crypto_box_random_nonce();
-  var userKeys = C.generateKeys(passcode, userID, 0);
-
-  startAnimationAndDoLogin(userKeys, nonce, userID, sessionStep);
-}
-
-function startAnimationAndDoLogin (userKeys, nonce, userID, sessionStep) {
-  postSessionStep0Data(userKeys, nonce, sessionStep);
-  C.continueSession(userKeys, nonce, userID, getSessionData, sessionContinuation(userKeys, nonce, userID));
-}
-
-// posts to server under session sign public key
-function postSessionStep0Data (userKeys, nonce, sessionStep) {
-  var initialSessionData = C.generateInitialSessionData(nonce);
-  var url = path + 'x/' + initialSessionData.session_hexsign + '/' + sessionStep;
-  fetch_(url)
-    .then(r => r.json()
-      .then(processSessionStep0Reply(initialSessionData, nonce, userKeys))
-      .catch(e => console.log('postSessionStep0Data: Error retrieving nonce:', e)))
-    .catch(e => console.log('postSessionStep0Data: Error fetching data:', e));
-}
-
-function processSessionStep0Reply (sessionStep0Data, nonce, userKeys) {
-  return function (nonce1Data) {
-    const cleanNonceHasCorrectLength = C.clean(nonce1Data.nonce1).length === 48;
-    if (cleanNonceHasCorrectLength) {
-      session_step++; // next step, hand out nonce2
-      const sessionStep = session_step;
+var sessionStep1DataStream = Rx.Observable
+    .zip(
+      postSessionStep0DataStream,
+      randomNonceStream
+    )
+    .map(function (z) {
+      var nonce1Data = z[0];
+      var sessionStep0Data = z[1];
       var sessionStep1Data = C.generateSecondarySessionData(nonce1Data, sessionStep0Data.session_hexkey, sessionStep0Data.session_signpair.signSk);
-      var url = path + 'x/' + sessionStep0Data.session_hexsign + '/' + sessionStep + '/' + sessionStep1Data.crypt_hex;
-      fetch_(url)
-        .then(r => r.json()
-              .then(postSession1StepData(sessionStep0Data, sessionStep1Data, nonce, userKeys))
-              .catch(e => console.log('postSessionStep0Data: Error retrieving nonce:', e)))
-        .catch(e => console.log('postSessionStep0Data: Error fetching data:', e));
-    }
-  };
-}
+      return sessionStep1Data;
+    });
 
 function setSessionDataInElement (sessionHex) {
   document.querySelector('#session_data').textContent = sessionHex;
@@ -110,34 +130,64 @@ function getSessionData () {
   return document.querySelector('#session_data').textContent;
 }
 
-function postSession1StepData (initialSessionData, sessionStep1Data, nonce, userKeys) {
-  return function (data) {
-    var sessionData = Object.assign(initialSessionData, sessionStep1Data, { nonce }, { userKeys });
+var postSession1StepDataStream = Rx.Observable
+    .zip(
+      initialSessionDataStream, // INITIAL SESSION DATA. ALSO CONTAINS USERKEYS
+      postSessionStep1DataStream, // DATA FROM API CALL
+      randomNonceStream,
+      sessionStep1DataStream // SESSIONS DATA GENERATED BY FN
+    )
+    .map(function (z) {
+      var initialSessionData = z[0].sessionData;
+      var userKeys = z[0].userKeys;
+      var sessionStep1Data = z[1];
+      var nonce = z[2];
+      var sessionDataStep1 = z[3];
+      var sessionData = Object.assign(initialSessionData, sessionStep1Data, { nonce }, { userKeys });
 
-    C.sessionStep1Reply(data, sessionData, setSessionDataInElement);
-  };
-}
+      C.sessionStep1Reply(sessionDataStep1, sessionData, setSessionDataInElement); // RETURNS SESSION HEX WHICH WE WANNA SAVE IN SOME STATE
+      // TO KEEP THINGS WORKING, SAVE IT SOME ELEMENT
+      // SESSION_HEX IS BEING REQUESTED BY HYBRIDDCALL WHENEVER IT WANTS TO MAKE AN API CALL
+    })
+    .map((_) => true);
 
-function maybeOpenNewWalletModal (location) {
-  if (location.href.indexOf('#') !== -1) {
-    var locationHref = location.href.substr(location.href.indexOf('#'));
-    if (locationHref === '#new') {
-      PRNG.seeder.restart();
-      document.getElementById('newaccountmodal').style.display = 'block';
-    }
-  }
-}
-
-function sessionContinuation (userKeys, nonce, userid) {
-  return function () {
-    setTimeout(function () { // added extra time to avoid forward to interface before x authentication completes! TODO: Remove!
+var fetchViewStream = Rx.Observable
+    .zip(
+      initialSessionDataStream,
+      randomNonceStream,
+      validatedUserCredentialsStream,
+      postSession1StepDataStream
+    )
+    .filter(function (z) {
+      var retrievedSessionData = z[2];
+      var finishedDoingSessionDataStuff = z[3];
+      return retrievedSessionData && finishedDoingSessionDataStuff;
+    })
+    .map(function (z) {
+      var userKeys = z[0].userKeys;
+      var nonce = z[1];
+      var userid = z[2][0];
+      // DO IT!
       fetchview('interface', {
         user_keys: userKeys,
         nonce,
         userid
       });
-    }, 3000);
+    });
+
+function createSessionStep0UrlAndData (z) {
+  var nonce = z[0];
+  var sessionStep = z[1];
+  var initialSessionData = C.generateInitialSessionData(nonce);
+  return {
+    url: path + 'x/' + initialSessionData.session_hexsign + '/' + sessionStep,
+    sessionData: C.generateInitialSessionData(nonce)
   };
+}
+
+function nonceHasCorrectLength (z) {
+  var nonce1 = z[0].nonce1;
+  return C.clean(nonce1).length === 48;
 }
 
 function handleCtrlSKeyEvent (e) {
@@ -154,9 +204,9 @@ function handleCtrlSKeyEvent (e) {
   }
   return true;
 }
-
+;
 function setCSSTorenderButtonsToDisabled () {
-  const arcBackgroundColor = document.querySelector('#combinator').style.color;
+  var arcBackgroundColor = document.querySelector('#combinator').style.color;
   document.querySelector('#loginbutton').classList.add('disabled');
   document.querySelector('#arc0').style.backgroundColor = arcBackgroundColor;
   document.querySelector('#generatebutton').setAttribute('disabled', 'disabled');
@@ -165,7 +215,7 @@ function setCSSTorenderButtonsToDisabled () {
 }
 
 function focusOnPasswordAfterReturnKeyOnID (e) {
-  const keyPressIsReturn = e.keyCode === 13;
+  var keyPressIsReturn = e.keyCode === 13;
   if (keyPressIsReturn) {
     document.querySelector('#inputPasscode').focus();
   }
@@ -173,7 +223,7 @@ function focusOnPasswordAfterReturnKeyOnID (e) {
 
 function focusOnLoginButton (cb) {
   return function (e) {
-    const keyPressIsReturn = e.keyCode === 13;
+    var keyPressIsReturn = e.keyCode === 13;
     if (keyPressIsReturn) {
       document.querySelector('#loginbutton').focus();
       cb();
@@ -181,16 +231,33 @@ function focusOnLoginButton (cb) {
   };
 }
 
-function initializeClickAndKeyEvents () {
-  document.querySelector('#loginbutton').onclick = login;
-  document.querySelector('#inputUserID').onkeypress = focusOnPasswordAfterReturnKeyOnID;
-  document.querySelector('#inputPasscode').onkeypress = focusOnLoginButton(login);
-  document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
+// function initializeClickAndKeyEvents () {
+//   document.querySelector('#loginbutton').onclick = login;
+//   document.querySelector('#inputUserID').onkeypress = focusOnPasswordAfterReturnKeyOnID;
+//   document.querySelector('#inputPasscode').onkeypress = focusOnLoginButton(login);
+//   document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
+// }
+
+function maybeOpenNewWalletModal (location) {
+  if (location.href.indexOf('#') !== -1) {
+    var locationHref = location.href.substr(location.href.indexOf('#'));
+    if (locationHref === '#new') {
+      PRNG.seeder.restart();
+      document.getElementById('newaccountmodal').style.display = 'block';
+    }
+  }
+}
+
+function btnIsNotDisabled (e) {
+  return !e.target.parentElement.classList.contains('disabled');
 }
 
 Utils.documentReady(function () {
-  const documentLocation = location;
-  initializeClickAndKeyEvents();
+  var documentLocation = location;
+  // initializeClickAndKeyEvents();
   maybeOpenNewWalletModal(documentLocation);
-  loginStream.subscribe();
+
+  postSessionStep1DataStream.subscribe();
+  // fetchViewStream.subscribe();
+  // doRenderAndAnimationStuffStream.subscribe();
 });
