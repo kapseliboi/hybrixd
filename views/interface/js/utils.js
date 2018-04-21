@@ -19,7 +19,10 @@ const utils = {
   fetchDataFromUrl: function (url, cb, errStr) {
     fetch_(url)
       .then(r => r.json()
-            .then(cb)
+            .then(r => {
+              console.log("r = ", r);
+              cb(r);
+            })
             .catch(e => console.log(errStr, e)))
       .catch(e => console.log(errStr, e));
   }

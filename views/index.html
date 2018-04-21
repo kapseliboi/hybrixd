@@ -686,10 +686,10 @@ function sessionStep1Reply (data, sessionData, cb) {
   var server_session_binkey = nacl.from_hex(clean(data.server_session_pubkey));
   var current_nonce = nacl.from_hex(clean(data.current_nonce));
 
-  if ( DEBUG ) { console.log("nonse:"+data.current_nonce); }
+  if ( DEBUG ) { console.log("nonce:"+data.current_nonce); }
 
   var crypt_bin = nacl.from_hex(clean(data.crhex));
-  var crypt_pack = nacl.crypto_box_open(crypt_bin,current_nonce,server_session_binkey, sessionData.session_keypair.boxSk);
+  var crypt_pack = nacl.crypto_box_open(crypt_bin, current_nonce, server_session_binkey, sessionData.session_keypair.boxSk);
   if ( DEBUG ) { console.log("Cryptstr:"+JSON.stringify(crypt_pack)); }
 
   var crypt_str = nacl.to_hex(crypt_pack);
@@ -729,11 +729,14 @@ function sessionStep1Reply (data, sessionData, cb) {
 
     if ( DEBUG ) { console.log('Raw session_data: '+JSON.stringify(key_array)); }
 
-    var sess_response = nacl.crypto_box(sess_bin, sessionData.nonce, sessionData.userKeys.boxPk, sessionData.userKeys.boxSk);
+    var sess_response = nacl.crypto_box(sess_bin, current_nonce, sessionData.userKeys.boxPk, sessionData.userKeys.boxSk);
     var sess_hex = nacl.to_hex(sess_response);
 
-    return sess_hex;
-    // cb(sess_hex)
+    cb(sess_hex)
+    return {
+      sess_hex,
+      current_nonce
+    };
   }}
 
 function readSession(userKeys, nonce, sessionData, onError) {
@@ -743,7 +746,7 @@ function readSession(userKeys, nonce, sessionData, onError) {
   // decrypt session data (so that it does not lie around but is only 'known' upon decrypt)
   var sess_bin = nacl.from_hex(sessionData);
   // user's session nonce is used for session_data
-  var session_data = nacl.crypto_box_open(sess_bin,nonce, userKeys.boxPk, userKeys.boxSk);
+  var session_data = nacl.crypto_box_open(sess_bin, nonce, userKeys.boxPk, userKeys.boxSk);
   var session_string = nacl.decode_utf8(session_data);
 
   return JSON.parse(session_string);
@@ -783,14 +786,18 @@ function generateInitialSessionData (nonce) {
   }
 }
 
-function generateSecondarySessionData (data, sessionHexKey, signSk) {
+function generateSecondarySessionData (nonce1, sessionHexKey, signSk) {
   var nonce2 = nacl.crypto_box_random_nonce();
   var nonce2_hex = nacl.to_hex(nonce2);
   // change first character to 0-7 if it is 8,9,a-f to keep sum nonce within 32 bytes
   var nonce2_hex = nonce2_hex.replace(/^[8-9a-f]/,function(match){var range=['8','9','a','b','c','d','e','f']; return range.indexOf(match);});
-  var nonce1_hex = clean(data.nonce1);
+  var nonce1_hex = clean(nonce1);
   var nonce1_hex = nonce1_hex.replace(/^[8-9a-f]/,function(match){var range=['8','9','a','b','c','d','e','f']; return range.indexOf(match);});
-  var secrets_json = { 'nonce1':nonce1_hex, 'nonce2':nonce2_hex, 'client_session_pubkey': sessionHexKey };
+  var secrets_json = {
+    'nonce1': nonce1_hex,
+    'nonce2': nonce2_hex,
+    'client_session_pubkey': sessionHexKey
+  };
   var session_secrets = JSON.stringify(secrets_json);
 
   // using signing method to prevent in transport changes
