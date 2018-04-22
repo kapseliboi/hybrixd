@@ -7,13 +7,27 @@ function blink (target) {
       el.style.visibility = 'hidden';
     }
   }
-
-  setTimeout(function () {
-    blink(target);
-  }, 400);
-
-  return true;
 }
+
+var blinkAnimationStream = Rx.Observable
+    .interval(400)
+    .map(function (_) { blink('arc0'); });
+
+var rotateLoginStream = Rx.Observable
+    .interval(1500)
+    .startWith(0)
+    .map(R.compose(
+      rotateLogin,
+      R.modulo(4)
+    ));
+
+var dialLoginStream = Rx.Observable
+    .interval(1500)
+    .startWith(0)
+    .map(R.compose(
+      dialLogin,
+      R.modulo(4)
+    ));
 
 function rotateLogin (turn) {
   var el = document.querySelector('#arc3');
@@ -32,56 +46,55 @@ function rotateLogin (turn) {
       el.style['border-bottom'] = '1px solid';
     }
   }
-  if (turn === 0) { turn = 1; } else { turn = 0; }
-  setTimeout(function () {
-    rotateLogin(turn);
-  }, 1500);
-  return true;
 }
 
 function dialLogin (turn) {
   var el = document.querySelector('#arc2');
   var bgcl = 'transparent';
 
-  if (turn === 0) {
-    el.style['border-left'] = '1px solid';
-    el.style['border-top'] = '1px solid ' + bgcl;
-    el.style['border-right'] = '1px solid ' + bgcl;
-    el.style['border-bottom'] = '1px solid ' + bgcl;
+  if (el != null) {
+    if (turn === 0) {
+      el.style['border-left'] = '1px solid';
+      el.style['border-top'] = '1px solid ' + bgcl;
+      el.style['border-right'] = '1px solid ' + bgcl;
+      el.style['border-bottom'] = '1px solid ' + bgcl;
+    }
+    if (turn === 1) {
+      el.style['border-left'] = '1px solid';
+      el.style['border-top'] = '1px solid';
+      el.style['border-right'] = '1px solid ' + bgcl;
+      el.style['border-bottom'] = '1px solid ' + bgcl;
+    }
+    if (turn === 2) {
+      el.style['border-left'] = '1px solid';
+      el.style['border-top'] = '1px solid';
+      el.style['border-right'] = '1px solid';
+      el.style['border-bottom'] = '1px solid ' + bgcl;
+    }
+    if (turn === 3) {
+      el.style['border-left'] = '1px solid';
+      el.style['border-top'] = '1px solid';
+      el.style['border-right'] = '1px solid';
+      el.style['border-bottom'] = '1px solid';
+    }
   }
-  if (turn === 1) {
-    el.style['border-left'] = '1px solid';
-    el.style['border-top'] = '1px solid';
-    el.style['border-right'] = '1px solid ' + bgcl;
-    el.style['border-bottom'] = '1px solid ' + bgcl;
-  }
-  if (turn === 2) {
-    el.style['border-left'] = '1px solid';
-    el.style['border-top'] = '1px solid';
-    el.style['border-right'] = '1px solid';
-    el.style['border-bottom'] = '1px solid ' + bgcl;
-  }
-  if (turn === 3) {
-    el.style['border-left'] = '1px solid';
-    el.style['border-top'] = '1px solid';
-    el.style['border-right'] = '1px solid';
-    el.style['border-bottom'] = '1px solid';
-  }
-  return true;
 }
 
-function startLoginAnimation (n) {
-  function dialLoginAnimation (n) {
-    var newNumberOrZero = n > 3 ? 0 : n;
-    dialLogin(n);
-    setTimeout(function () { dialLoginAnimation(n + 1); }, 100);
-  }
+var animationStream = Rx.Observable
+    .merge(
+      blinkAnimationStream,
+      rotateLoginStream,
+      dialLoginStream
+    );
 
-  blink('arc0');
-  rotateLogin(0);
-  dialLoginAnimation(0);
+function disposeCurrentDisposable (disposable) { disposable.dispose(); }
+function startLoginAnimation () { return animationStream.subscribe(); }
+function stopLoginAnimation (d) {
+  R.forEach(disposeCurrentDisposable, R.path(['m', 'current', 'disposables'], d));
+  d.dispose();
 }
 
 animations = {
-  startLoginAnimation
+  startLoginAnimation,
+  stopLoginAnimation
 };
