@@ -14,8 +14,6 @@ GL = {
 };
 // Don't move this yet, as the cur_step is needed by assetModesUrl. Synchronous coding!
 GL.cur_step = nextStep();
-console.log('steppie', GL.cur_step);
-console.log('steppie', session_step);
 var assetModesUrl = path + zchan(GL.usercrypto, GL.cur_step, 'l/asset/modes');
 
 function main () {

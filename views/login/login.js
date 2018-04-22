@@ -119,10 +119,18 @@ var processSession1StepDataStream = Rx.Observable
     )
     .map(function (z) {
       var initialSessionData = z[0].sessionData;
+      var secondarySessionData = z[0].sessionData2;
       var sessionStep1Data = z[0].sessionStep1;
       var nonce = z[1];
       var userKeys = z[2];
-      var sessionData = Object.assign(initialSessionData, sessionStep1Data, { nonce }, { userKeys });
+      var sessionData = R.mergeAll([
+        initialSessionData,
+        secondarySessionData,
+        sessionStep1Data,
+        { nonce },
+        { userKeys }
+      ]);
+      console.log("sessionData = ", sessionData);
 
       return C.sessionStep1Reply(sessionStep1Data, sessionData, setSessionDataInElement); // RETURNS SESSION HEX WHICH WE WANNA SAVE IN SOME STATE
       // TO KEEP THINGS WORKING, SAVE IT SOME ELEMENT

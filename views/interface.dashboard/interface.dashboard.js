@@ -128,7 +128,9 @@ function main () {
 
 function getActiveAndStarredAssetsFromStorage () {
   if (typeof GL.assetsActive === 'undefined') {
+    console.log('retrieve stuff');
     storage.Get( userStorageKey('ff00-0033'), function (crypted) {
+      console.log("crypted = ", crypted);
       GL.assetsActive = userDecode(crypted);
       // query storage for dash assets
       if(typeof GL.assetsStarred === 'undefined') {

@@ -19,14 +19,11 @@ const utils = {
   fetchDataFromUrl: function (url, cb, errStr) {
     fetch_(url)
       .then(r => r.json()
-            .then(r => {
-              console.log("r = ", r);
-              cb(r);
-            })
+            .then(cb)
             .catch(e => console.log(errStr, e)))
       .catch(e => console.log(errStr, e));
   }
-}
+};
 
 function bigNumberToString (obj, base) {
   // setup base

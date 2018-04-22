@@ -30,7 +30,7 @@ ychan_encode = function(usercrypto, step, txtdata) {
   var session_nonce = nacl.from_hex( nonce_conhex );
   var crypt_utf8 = nacl.encode_utf8(txtdata);
   // use nacl to create a crypto box containing the data
-  var crypt_bin = nacl.crypto_box(crypt_utf8, usercrypto.nonce, server_session_pubkey, client_session_seckey);
+  var crypt_bin = nacl.crypto_box(crypt_utf8, session_nonce, server_session_pubkey, client_session_seckey);
   var encdata = nacl.to_hex(crypt_bin);
   // DEBUG: console.log(sessionid+'/'+step+'/'+encdata); // this seems to work properly
   return sessionid+'/'+step+'/'+UrlBase64.safeCompress(encdata);
@@ -66,7 +66,7 @@ ychan_decode = function(usercrypto,step,encdata) {
     if(hexdata!=null) {
       var crypt_hex = nacl.from_hex(hexdata);
       // use nacl to create a crypto box containing the data
-      var crypt_bin = nacl.crypto_box_open(crypt_hex, usercrypto.nonce, server_session_pubkey, client_session_seckey);
+      var crypt_bin = nacl.crypto_box_open(crypt_hex, session_nonce, server_session_pubkey, client_session_seckey);
       var txtdata = nacl.decode_utf8(crypt_bin);
     } else { txtdata = null; }
   }
@@ -233,7 +233,8 @@ hybriddcall = function(properties,element,postfunction,waitfunction) {
   var urltarget = properties.r; 	// URL or request
   var usercrypto = GL.usercrypto;
   console.log("usercryptoCall = ", usercrypto);// crypto properties
-  var step = nextStep();		    // rolling nonce step of crypto packet
+  var step = nextStep() -1;
+  console.log("step = ", step);// rolling nonce step of crypto packet
   var reqmethod = (typeof properties.z != 'undefined' && !properties.z?0:1);
   if(!element) { element = '#NULL'; }
   // and fill the data using AJAX calls
