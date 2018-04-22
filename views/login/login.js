@@ -79,9 +79,9 @@ var processSessionStep0ReplyStream = Rx.Observable
     .map(mkPostSessionStep1Url);
 
 function mkPostSessionStep1Url (z) {
-  var nonce1 = z[0].nonce1;
+  var nonce1 = R.path(['0', 'nonce1'], z);
   var sessionStep = z[1] + 1; // NOW SETTING SESSION STEP MANUALLY.....
-  var initialSessionData = z[0].sessionData;
+  var initialSessionData = R.path(['0', 'sessionData'], z);
   var sessionStep1Data = C.generateSecondarySessionData(nonce1, initialSessionData.session_hexkey, initialSessionData.session_signpair.signSk);
 
   return {
@@ -106,19 +106,6 @@ var processSession1StepDataStream = Rx.Observable
       generatedKeysStream
     )
     .map(mkSessionHexAndNonce);
-
-function mkSessionHexAndNonce (z) {
-  var sessionStep1Data = R.path(['0', 'sessionStep1'], z);
-  var sessionData = R.mergeAll([
-    R.path(['0', 'sessionData'], z),
-    R.path(['0', 'sessionData2'], z),
-    sessionStep1Data,
-    { nonce: R.nth('1', z) },
-    { userKeys: R.nth('2', z) }
-  ]);
-
-  return C.sessionStep1Reply(sessionStep1Data, sessionData, setSessionDataInElement);
-}
 
 var fetchViewStream = Rx.Observable
     .zip(
@@ -148,6 +135,19 @@ function createSessionStep0UrlAndData (z) {
     url: path + 'x/' + initialSessionData.session_hexsign + '/' + sessionStep,
     sessionData: initialSessionData
   };
+}
+
+function mkSessionHexAndNonce (z) {
+  var sessionStep1Data = R.path(['0', 'sessionStep1'], z);
+  var sessionData = R.mergeAll([
+    R.path(['0', 'sessionData'], z),
+    R.path(['0', 'sessionData2'], z),
+    sessionStep1Data,
+    { nonce: R.nth('1', z) },
+    { userKeys: R.nth('2', z) }
+  ]);
+
+  return C.sessionStep1Reply(sessionStep1Data, sessionData, setSessionDataInElement);
 }
 
 function handleCtrlSKeyEvent (e) {
@@ -186,8 +186,8 @@ function maybeOpenNewWalletModal (location) {
 
 function nonceHasCorrectLength (nonce1) { return C.clean(nonce1).length === 48; }
 function btnIsNotDisabled (e) { return !e.target.parentElement.classList.contains('disabled'); }
-function setSessionDataInElement (sessionHex) { document.querySelector('#session_data').textContent = sessionHex; }
 function mkSessionKeys (credentials) { return C.generateKeys(R.prop('password', credentials), R.prop('userID', credentials), 0); }
+function setSessionDataInElement (sessionHex) { document.querySelector('#session_data').textContent = sessionHex; }
 
 Utils.documentReady(function () {
   document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
