@@ -14,8 +14,6 @@ var path = 'api';
 nacl_factory.instantiate(function (naclinstance) { nacl = naclinstance; });
 session_step = 1; // Session step number at the end of login
 
-var randomNonce = nacl.crypto_box_random_nonce();
-
 var keyDownOnUserIDStream = S.mkInputStream('#inputUserID');
 var keyDownOnPasswordStream = S.mkInputStream('#inputPasscode');
 
@@ -29,28 +27,24 @@ var validatedUserCredentialsStream = Rx.Observable
       keyDownOnPasswordStream
     )
     .withLatestFrom(S.credentialsStream)
-    .map(function (z) {
-      return { userID: R.path(['1', '0'], z), password: R.path(['1', '1'], z) };
-    })
-    .filter(function (credentials) {
-      return V.validateCredentials(R.prop('userID', credentials), R.prop('password', credentials));
-    });
+    .map(mkCredentialsObj)
+    .filter(hasValidCredentials);
 
 var doRenderAndAnimationStuffStream =
     validatedUserCredentialsStream
     .map(function (_) {
-      setCSSTorenderButtonsToDisabled(); // Make own stream);
-      return A.startLoginAnimation(); // Combine with above stream
+      setCSSTorenderButtonsToDisabled();
+      return A.startLoginAnimation();
     });
 
-var sessionStepStream = Rx.Observable.from([0]); // Make incremental with every call
-var randomNonceStream = Rx.Observable.from(randomNonce);
+var sessionStepStream = Rx.Observable.of(0); // Make incremental with every call
+var randomNonceStream = Rx.Observable.of(nacl.crypto_box_random_nonce());
 
 var generatedKeysStream =
     validatedUserCredentialsStream
     .map(mkSessionKeys);
 
-var initialSessionDataStream = Rx.Observable // GET INITIAL SESSIONDATA HERE
+var initialSessionDataStream = Rx.Observable
     .combineLatest(
       randomNonceStream,
       sessionStepStream,
@@ -81,13 +75,13 @@ var processSessionStep0ReplyStream = Rx.Observable
 function mkPostSessionStep1Url (z) {
   var nonce1 = R.path(['0', 'nonce1'], z);
   var sessionStep = z[1] + 1; // NOW SETTING SESSION STEP MANUALLY.....
-  var initialSessionData = R.path(['0', 'sessionData'], z);
+  var initialSessionData = R.path(['0', 'initialSessionData'], z);
   var sessionStep1Data = C.generateSecondarySessionData(nonce1, initialSessionData.session_hexkey, initialSessionData.session_signpair.signSk);
 
   return {
     url: path + 'x/' + initialSessionData.session_hexsign + '/' + sessionStep + '/' + sessionStep1Data.crypt_hex,
-    sessionData: initialSessionData,
-    sessionData2: sessionStep1Data
+    initialSessionData,
+    secondarySessionData: sessionStep1Data
   };
 }
 
@@ -133,15 +127,15 @@ function createSessionStep0UrlAndData (z) {
   var initialSessionData = C.generateInitialSessionData(nonce);
   return {
     url: path + 'x/' + initialSessionData.session_hexsign + '/' + sessionStep,
-    sessionData: initialSessionData
+    initialSessionData
   };
 }
 
 function mkSessionHexAndNonce (z) {
   var sessionStep1Data = R.path(['0', 'sessionStep1'], z);
   var sessionData = R.mergeAll([
-    R.path(['0', 'sessionData'], z),
-    R.path(['0', 'sessionData2'], z),
+    R.path(['0', 'initialSessionData'], z),
+    R.path(['0', 'secondarySessionData'], z),
     sessionStep1Data,
     { nonce: R.nth('1', z) },
     { userKeys: R.nth('2', z) }
@@ -188,10 +182,12 @@ function nonceHasCorrectLength (nonce1) { return C.clean(nonce1).length === 48; 
 function btnIsNotDisabled (e) { return !e.target.parentElement.classList.contains('disabled'); }
 function mkSessionKeys (credentials) { return C.generateKeys(R.prop('password', credentials), R.prop('userID', credentials), 0); }
 function setSessionDataInElement (sessionHex) { document.querySelector('#session_data').textContent = sessionHex; }
+function hasValidCredentials (credentials) { return V.validateCredentials(R.prop('userID', credentials), R.prop('password', credentials)); }
+function mkCredentialsObj (z) { return { userID: R.path(['1', '0'], z), password: R.path(['1', '1'], z) }; }
 
 Utils.documentReady(function () {
   document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
   maybeOpenNewWalletModal(location);
-  keyDownOnUserIDStream.subscribe(_ => document.querySelector('#inputPasscode').focus());
+  keyDownOnUserIDStream.subscribe(function (_) { document.querySelector('#inputPasscode').focus() });
   fetchViewStream.subscribe();
 });
