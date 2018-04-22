@@ -20,11 +20,18 @@ session_step = 1; // Session step number at the end of login
 
 var randomNonce = nacl.crypto_box_random_nonce();
 
-var loginBtnStr = Rx.Observable
+var keyDownOnUserIDStream = mkInputStream('#inputUserID');
+var keyDownOnPasswordStream = mkInputStream('#inputPasscode');
+
+var loginBtnStream = Rx.Observable
     .fromEvent(document.querySelector('#loginbutton'), 'click')
     .filter(btnIsNotDisabled);
 
-var validatedUserCredentialsStream = loginBtnStr
+var validatedUserCredentialsStream = Rx.Observable
+    .merge(
+      loginBtnStream,
+      keyDownOnPasswordStream
+    )
     .withLatestFrom(S.credentialsStream)
     .filter(function (z) {
       var userID = z[1][0];
@@ -36,11 +43,8 @@ var doRenderAndAnimationStuffStream =
     validatedUserCredentialsStream
     .map(function (_) {
       setCSSTorenderButtonsToDisabled(); // Make own stream);
-      // A.startLoginAnimation(); // Combine with above stream
+      A.startLoginAnimation(); // Combine with above stream
     });
-
-// var sessionStepStream = Rx.Observable
-//     .interval(1000);
 
 var sessionStepStream = Rx.Observable
     .from([0]);
@@ -63,7 +67,7 @@ var initialSessionDataStream = Rx.Observable // GET INITIAL SESSIONDATA HERE
       generatedKeysStream,
       doRenderAndAnimationStuffStream
     )
-    .map(createSessionStep0UrlAndData)
+    .map(createSessionStep0UrlAndData);
 
 var postSessionStep0DataStream =
     initialSessionDataStream
@@ -98,6 +102,7 @@ function mkPostSessionStep1Url (z) {
 
 var postSessionStep1DataStream =
     processSessionStep0ReplyStream
+    .map(function (r) { console.log('rrrr1', r); return r; })
     .flatMap(function (sessionData) {
       return Rx.Observable
         .fromPromise(fetch_(sessionData.url)
@@ -105,18 +110,15 @@ var postSessionStep1DataStream =
                            .then(r => R.merge(sessionData, { sessionStep1: r }))
                            .catch(e => console.log('postSessionStep1Data: Error retrieving session step 1 data:', e)))
                      .catch(e => console.log('postSessionStep1Data: Error fetching data:', e)));
-    })
-
-function setSessionDataInElement (sessionHex) { document.querySelector('#session_data').textContent = sessionHex; }
-function getSessionData () { return document.querySelector('#session_data').textContent; }
+    });
 
 var processSession1StepDataStream = Rx.Observable
     .combineLatest(
-      // initialSessionDataStream, // INITIAL SESSION DATA.
-      postSessionStep1DataStream, // DATA FROM API CALL
+      postSessionStep1DataStream,
       randomNonceStream,
       generatedKeysStream
     )
+    .map(function (r) { console.log('rrrr', r); return r; })
     .map(function (z) {
       var initialSessionData = z[0].sessionData;
       var secondarySessionData = z[0].sessionData2;
@@ -130,13 +132,9 @@ var processSession1StepDataStream = Rx.Observable
         { nonce },
         { userKeys }
       ]);
-      console.log("sessionData = ", sessionData);
 
-      return C.sessionStep1Reply(sessionStep1Data, sessionData, setSessionDataInElement); // RETURNS SESSION HEX WHICH WE WANNA SAVE IN SOME STATE
-      // TO KEEP THINGS WORKING, SAVE IT SOME ELEMENT
-      // SESSION_HEX IS BEING REQUESTED BY HYBRIDDCALL WHENEVER IT WANTS TO MAKE AN API CALL
-    })
-    // .map((_) => true);
+      return C.sessionStep1Reply(sessionStep1Data, sessionData, setSessionDataInElement);
+    });
 
 var fetchViewStream = Rx.Observable
     .combineLatest(
@@ -144,7 +142,6 @@ var fetchViewStream = Rx.Observable
       randomNonceStream,
       validatedUserCredentialsStream,
       processSession1StepDataStream
-      // postSessionStep1DataStream
     )
     .filter(function (z) {
       var retrievedSessionData = z[2];
@@ -154,7 +151,7 @@ var fetchViewStream = Rx.Observable
       var userKeys = z[0];
       var nonce = z[3].current_nonce;
       var userid = z[2][0];
-      // DO IT!
+
       fetchview('interface', {
         user_keys: userKeys,
         nonce,
@@ -201,29 +198,11 @@ function setCSSTorenderButtonsToDisabled () {
   document.querySelector('#combinatorwrap').style.opacity = 1;
 }
 
-function focusOnPasswordAfterReturnKeyOnID (e) {
-  var keyPressIsReturn = e.keyCode === 13;
-  if (keyPressIsReturn) {
-    document.querySelector('#inputPasscode').focus();
-  }
+function mkInputStream (query) {
+  return Rx.Observable
+    .fromEvent(document.querySelector(query), 'keydown')
+    .filter(function (e) { return e.key === 'Enter'; });
 }
-
-function focusOnLoginButton (cb) {
-  return function (e) {
-    var keyPressIsReturn = e.keyCode === 13;
-    if (keyPressIsReturn) {
-      document.querySelector('#loginbutton').focus();
-      cb();
-    }
-  };
-}
-
-// function initializeClickAndKeyEvents () {
-//   document.querySelector('#loginbutton').onclick = login;
-//   document.querySelector('#inputUserID').onkeypress = focusOnPasswordAfterReturnKeyOnID;
-//   document.querySelector('#inputPasscode').onkeypress = focusOnLoginButton(login);
-//   document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
-// }
 
 function maybeOpenNewWalletModal (location) {
   if (location.href.indexOf('#') !== -1) {
@@ -235,17 +214,13 @@ function maybeOpenNewWalletModal (location) {
   }
 }
 
-function btnIsNotDisabled (e) {
-  return !e.target.parentElement.classList.contains('disabled');
-}
+function btnIsNotDisabled (e) { return !e.target.parentElement.classList.contains('disabled'); }
+function setSessionDataInElement (sessionHex) { document.querySelector('#session_data').textContent = sessionHex; }
+function getSessionData () { return document.querySelector('#session_data').textContent; }
 
 Utils.documentReady(function () {
-  var documentLocation = location;
-  // initializeClickAndKeyEvents();
-  maybeOpenNewWalletModal(documentLocation);
-
-  // processSession1StepDataStream.subscribe();
-  // postSessionStep1DataStream.subscribe();
-  // postSessionStep1DataStream.subscribe();
+  document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
+  maybeOpenNewWalletModal(location);
+  keyDownOnUserIDStream.subscribe(_ => document.querySelector('#inputPasscode').focus());
   fetchViewStream.subscribe();
 });

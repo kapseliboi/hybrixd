@@ -165,25 +165,25 @@ function renderManageAssetsList (assetNames, searchQuery) {
   var matchedEntries = R.filter(queryMatchesEntry, Object.keys(assetNames));
 
   var assetsHTMLStr = matchedEntries.reduce(function (acc, entry) {
-      var symbolName = entry.slice(entry.indexOf('.') + 1);
-      var icon = (symbolName in black.svgs) ? black.svgs[symbolName] : mkSvgIcon(symbolName);
-      var entryExists = GL.assetsActive.includes(entry);
-      var element = entry.replace('.', '-');
+    var symbolName = entry.slice(entry.indexOf('.') + 1);
+    var icon = (symbolName in black.svgs) ? black.svgs[symbolName] : mkSvgIcon(symbolName);
+    var entryExists = GL.assetsActive.includes(entry);
+    var element = entry.replace('.', '-');
 
-      var assetIconHTMLStr = '<div class="icon">' + icon + '</div>';
-      var assetIDHTMLSTr = '<div class="asset">' + entry.toUpperCase() + '</div>';
-      var assetFullNameHTMLStr = '<div class="full-name">' + assetNames[entry] + '</div>';
-      var actionBtns = '<div class="assetbuttons assetbuttons-' + element + '">' + renderManageButton(element, entry, entryExists) + '</div>';
+    var assetIconHTMLStr = '<div class="icon">' + icon + '</div>';
+    var assetIDHTMLSTr = '<div class="asset">' + entry.toUpperCase() + '</div>';
+    var assetFullNameHTMLStr = '<div class="full-name">' + assetNames[entry] + '</div>';
+    var actionBtns = '<div class="assetbuttons assetbuttons-' + element + '">' + renderManageButton(element, entry, entryExists) + '</div>';
 
-      var htmlStr = '<div class="tr">' +
-                      '<div class="td col1">' + assetIconHTMLStr + assetIDHTMLSTr + assetFullNameHTMLStr + '</div>' +
-                      '<div class="td col2 actions">' + actionBtns + '</div>' +
-                    '</div>';
-      return acc + htmlStr;
+    var htmlStr = '<div class="tr">' +
+        '<div class="td col1">' + assetIconHTMLStr + assetIDHTMLSTr + assetFullNameHTMLStr + '</div>' +
+        '<div class="td col2 actions">' + actionBtns + '</div>' +
+        '</div>';
+    return acc + htmlStr;
   }, '');
 
   var output = tableHTMLStr + assetsHTMLStr + '</div></div>';
-  document.querySelector('.data.manageAssets').innerHTML = output; }; // insert new data into DOM
+  document.querySelector('.data.manageAssets').innerHTML = output; // insert new data into DOM
 }
 
 function setStarredAssetClass (i, isStarred) {
@@ -211,16 +211,16 @@ function uiAssets (balance) {
   return function (properties) {
     GL.assetsActive.forEach(function (asset, i) {
       // setTimeout(
-        // function () {
-          if (typeof balance.asset[i] !== 'undefined') {
-            var element = '.assets-main > .data .balance-' + balance.asset[i].replace(/\./g,'-');
-            var timeIsCurrent = balance.lasttx[i] + 120000 < (new Date).getTime();
-            var url = 'a/' + balance.asset[i] + '/balance/' + window.assets.addr[balance.asset[i]];
-            if (timeIsCurrent) {
-              hybriddcall({r: url, z: 0}, element, renderAssetsButtons(element, balance, i));
-            }
-          }
-        // }, i * 500);
+      // function () {
+      if (typeof balance.asset[i] !== 'undefined') {
+        var element = '.assets-main > .data .balance-' + balance.asset[i].replace(/\./g,'-');
+        var timeIsCurrent = balance.lasttx[i] + 120000 < (new Date).getTime();
+        var url = 'a/' + balance.asset[i] + '/balance/' + window.assets.addr[balance.asset[i]];
+        if (timeIsCurrent) {
+          hybriddcall({r: url, z: 0}, element, renderAssetsButtons(element, balance, i));
+        }
+      }
+      // }, i * 500);
     });
     setTimeout(getNewMarketPrices, 5000);
   };
