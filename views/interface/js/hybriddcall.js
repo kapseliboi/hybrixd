@@ -1,3 +1,5 @@
+var TIMEOUT = 30000;
+
 // ychan encrypts an API query before sending it to the router
 ychan = function(usercrypto,step,txtdata) {
   // decodes only from UrlBase64 for now, must be real usercrypto!
@@ -224,122 +226,70 @@ function deterministicSeedGenerator(asset) {
 // 		- the function postfunction runs after a successful call to hybridd, while waitfunction runs regularly while the hybridd process is completing
 progressbar = function(size) { return '<div class="progress-radial" proc-data=""'+(size>0?' style="font-size: '+size+'em;" size="'+size+'"':'')+'><div class="dot" style="'+(size>0?'width:'+size+'px;height:'+size+'px;"':'width:1em;height:1em;overflow:visible;"')+'"></div><svg style="margin-left:-'+(size>0?size+'px':'1em')+';" viewbox="0 0 80 80" height="120" width="120"><circle cx="40" cy="40" r="35" fill="rgba(255,255,255,0.0)" stroke="#BBB" stroke-width="10" stroke-dasharray="239" stroke-dashoffset="239" /></svg></div>'; }
 
-hybriddcall = function(properties,element,postfunction,waitfunction) {
-  if(typeof properties.r == 'undefined') {
-    if(typeof this.vars.postfunction == 'function') {
-      this.vars.postfunction({object:{properties:properties}});
-    }
-  };
+hybriddcall = function(properties,element,success,waitfunction) {
   var urltarget = properties.r; 	// URL or request
   var usercrypto = GL.usercrypto;
-  console.log("usercryptoCall = ", usercrypto);// crypto properties
-  var step = nextStep() -1;
-  console.log("step = ", step);// rolling nonce step of crypto packet
-  var reqmethod = (typeof properties.z != 'undefined' && !properties.z?0:1);
-  if(!element) { element = '#NULL'; }
-  // and fill the data using AJAX calls
-  var urlrequest = path+(reqmethod ? zchan(usercrypto, step, urltarget) : ychan(usercrypto, step, urltarget));
-  console.log("urlrequest = ", urlrequest);
+  var step = nextStep();
+  var reqmethod = typeof properties.z === 'undefined' && properties.z;
+  var urlrequest = path + zchanOrYchanEncryptionStr(reqmethod, step, usercrypto, urltarget);
+
   var varsmain = {properties:properties,element:element,postfunction:postfunction,waitfunction:waitfunction};
-  $.ajax({url: urlrequest,
-          timeout: 30000,
-	  success: function (encobject){
-            var object = (reqmethod ? zchan_obj(usercrypto,step,encobject) : ychan_obj(usercrypto,step,encobject));
-            if(object === false) {	// quick and dirty retry function for bad connections (TODO! OPTIMIZE!)
-              console.log('Retrying call no: '+step);
-              hybriddcall(properties,element,postfunction,waitfunction);
-            } else {
-              if(object==null) { object={} }
-              object.properties = properties;
-              // we get back the processID in object.data
-              //  now we load the proc and check if complete, else little CSS
-              //  pie/circle signifies how many % done!
-              if( $(this.vars.element).html()==='?' ) {
-                var size = $(this.vars.element+' .progress-radial').attr('size');
-                $(this.vars.element).html(progressbar(size));
-              }
-              hybriddproc(this.vars.element,object,this.vars.postfunction,this.vars.waitfunction,0);
-            }
-	  }.bind({vars:varsmain})
-          , error: function(object){
-            $(this.vars.element).html('[read error!]');
-            if(typeof this.vars.postfunction == 'function') {
-              var pass = (typeof this.vars.properties.pass!='undefined'?this.vars.properties.pass:null);
-              this.vars.postfunction(object,pass);
-            }
-	  }.bind({vars:varsmain}),
-          error: function (e) {
-            console.log("error retrieving stuff = ", e);
-          }
-	 });
+  $.ajax({
+    url: urlrequest,
+    timeout: TIMEOUT,
+    success: function (encodedResult) {
+      var decodedResultObj = zchanOrYchanEncryptionObj(reqmethod, step, usercrypto, encodedResult);
+      var objectWithProperties = Object.assign(properties, decodedResultObj);
+      hybriddproc(urltarget, usercrypto, reqmethod, objectWithProperties, success, waitfunction, 0);
+    },
+    error: function (object) {
+      console.log('Something up', object)
+      // maybeRunFunctionWithArgs(success, {properties: properties}, object, '[read error]');
+    }
+  })
 
   // proc request helper function
-  function hybriddproc(element,object,postfunction,waitfunction,cnt) {
+  function hybriddproc(urltarget, usercrypto, reqmethod, properties, callback, waitfunction, cnt) {
     if(cnt) { if(cnt<10) { cnt++; } } else { cnt = 1; }
-    var urltarget = object.properties.r;
-    var usercrypto = GL.usercrypto;
-    var proc_step = nextStep();
-    var reqmethod = (typeof object.properties.z != 'undefined' && !object.properties.z?0:1);
-    var procobj = object;
-    if(typeof object.data != 'undefined') {
-      var urlrequest = path+(reqmethod ? zchan(usercrypto,proc_step,'p/'+object.data) : ychan(usercrypto,proc_step,'p/'+object.data));
-      var varsproc = {element:element,procobj:procobj,postfunction:postfunction,waitfunction:waitfunction,cnt:cnt};
-      $.ajax({url: urlrequest, timeout: 30000,
-              success: function(result){
-                var object = (reqmethod ? zchan_obj(usercrypto,proc_step,result) : ychan_obj(usercrypto,proc_step,result));
-                if(typeof object != 'object') { object.progress = 0; }
-                var cnt = this.vars.cnt;
-                var element = this.vars.element;
-                var procobj = this.vars.procobj;
-                var postfunction = this.vars.postfunction;
-                var waitfunction = this.vars.waitfunction;
-                var perc = (259 * (1-object.progress));
-                perc=(perc>239 ? (perc>258?239:232) : (perc<20?20:perc));
-                $(element+' .progress-radial circle').css('stroke-dashoffset', perc);
-                if(object.progress < 1 && object.stopped == null) {
-                  $(element+' .progress-radial').attr('proc-data',object.data);
-                  // check again in X milliseconds
-                  setTimeout( function(element,procobj,postfunction,waitfunction,cnt) { hybriddproc(element,procobj,postfunction,waitfunction,cnt); } ,(cnt*3000), element,procobj,postfunction,waitfunction,cnt);
-                  if(typeof waitfunction == 'function') {
-                    var pass = (typeof procobj.properties.pass!='undefined'?procobj.properties.pass:null);
-                    waitfunction(object,pass);
-                  }
-                } else {
-                  // run postfunction
-                  if(typeof postfunction == 'function') {
-                    var pass = (typeof procobj.properties.pass!='undefined'?procobj.properties.pass:null);
-                    object = postfunction(object,pass);
-                  }
-                  // progress complete, fadeout progressbar if necessary, and fill the element with returned data
-                  if(typeof object=='undefined') { object = {}; }
-                  if(typeof object.data!='undefined') {
-                    if(object.data == null) { object.data = '?'; }
-                    if(object.data == 0) { object.data = '0'; }
-                  } else { object.data = '?' }
-                  if( $(this.vars.element).html()==='?' ) {
-                    $(element+' .progress-radial').fadeOut('slow', function() {
-                      $(element).html(object.data);
-                    });
-                  } else {
-                    $(element).html(object.data);
-                  }
-                }
-	      }.bind({vars:varsproc}),
-              error: function(object){
-                $(this.vars.element).html('?');
-                if(typeof this.vars.postfunction == 'function') {
-                  var pass;
-                  if(typeof this.vars.properties!=='undefined') {
-                    pass = (typeof this.vars.properties.pass!=='undefined'?this.vars.properties.pass:null);
-                  } else { pass = null; }
-                  this.vars.postfunction(object,pass);
-                }
-	      }.bind({vars:varsproc}),
-	     });
+    var processStep = nextStep();
+    var urlrequest = path + zchanOrYchanEncryptionStr(reqmethod, processStep, usercrypto, 'p/' + properties.data);
+
+    if (typeof properties.data !== 'undefined') {
+      $.ajax({
+        url: urlrequest,
+        timeout: TIMEOUT,
+        success: function (result) {
+          var objectContainingRequestedData = zchanOrYchanEncryptionObj(reqmethod, processStep, usercrypto, result);
+          function retryHybriddProcess () {
+            hybriddproc(urltarget, usercrypto, reqmethod, properties, callback, waitfunction, cnt);
+          }
+          maybeSuccessfulDataRequestRender(properties, callback, waitfunction, cnt, retryHybriddProcess, objectContainingRequestedData);
+        },
+        error: function (object) {
+          maybeRunFunctionWithArgs(callback, properties, object, '?');
+        }
+      });
     }
-  }
 }
 
 function couldNotRetrieveSessionDataAlert () {
   console.log('Error: Could not retrieve session data.');
+}
+
+function zchanOrYchanEncryptionStr (requestMethod, userCrypto) {
+  return function (step) {
+    return function (str) {
+      var encryptionMethod = requestMethod ? zchan : ychan;
+      return encryptionMethod(userCrypto, step, str);
+    }
+  }
+}
+
+function zchanOrYchanEncryptionObj (requestMethod, userCrypto) {
+  return function (step) {
+    return function (obj) {
+      var encryptionMethod = requestMethod ? zchan_obj : ychan_obj;
+      return encryptionMethod(userCrypto, step, obj);
+    }
+  }
 }
