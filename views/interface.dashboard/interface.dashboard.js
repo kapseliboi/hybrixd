@@ -57,6 +57,12 @@ function processDataAndRenderAndStuff (object, passdata) {
 }
 
 function setIntervalFunctions (balance, assets) {
+  var retrieveBalanceStream = Rx.Observable
+      .interval(60000)
+      .map(getBalances(assets));
+
+  // retrieveBalanceStream.subscribe()
+
   intervals = setInterval(function () { getBalances(assets); }, 60000); // regularly fill 5 asset elements with balances
   loadinterval = setInterval(checkIfAssetsAreLoaded(balance, assets), 500); // check if assets are loaded by hybriddcall
 }
@@ -82,7 +88,7 @@ function initializeDeterministicEncryptionRoutines (entry, i) {
 }
 
 function renderStarredHTML (starredAssets) {
-  var hasStarredAssets = R.any(R.prop('starred'), starredAssets)
+  var hasStarredAssets = R.any(R.prop('starred'), starredAssets);
   var starredAssetsHTML = R.compose(
     R.prop('str'),
     R.reduce(mkHtmlForStarredAssets, {i: 0, str: ''})
@@ -106,12 +112,10 @@ function checkIfAssetsAreLoaded (balance, assets) {
   });
 }
 
-function renderBalanceThroughHybridd (asset, i) {
+function renderBalanceThroughHybridd (asset) {
   var element = '.dashboard-balances > .data > .balance > .balance-' + asset.id.replace(/\./g, '-');
   var url = 'a/' + asset.id + '/balance/' + window.assets.addr[asset.id];
-  // setTimeout(function () {
   hybriddcall({r: url, z: 0}, element, renderBalanceWithSomeGlobalEntanglement);
-  // }, i * 500);
 }
 
 function renderBalanceWithSomeGlobalEntanglement (object) {
@@ -128,9 +132,7 @@ function main () {
 
 function getActiveAndStarredAssetsFromStorage () {
   if (typeof GL.assetsActive === 'undefined') {
-    console.log('retrieve stuff');
     storage.Get( userStorageKey('ff00-0033'), function (crypted) {
-      console.log("crypted = ", crypted);
       GL.assetsActive = userDecode(crypted);
       // query storage for dash assets
       if(typeof GL.assetsStarred === 'undefined') {

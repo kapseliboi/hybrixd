@@ -94,7 +94,7 @@ var processSession1StepDataStream = Rx.Observable
     .map(mkSessionHexAndNonce);
 
 var fetchViewStream = Rx.Observable
-    .zip(
+    .combineLatest(
       generatedKeysStream,
       randomNonceStream,
       validatedUserCredentialsStream,

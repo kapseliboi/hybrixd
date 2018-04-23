@@ -1,4 +1,5 @@
 var Utils = utils;
+var SVG = svg;
 
 var socialMediaIcons = [
   // {class: '.manage-icon', svg: 'edit'},
@@ -10,9 +11,7 @@ var socialMediaIcons = [
   {class: '.chevron-right', svg: 'chevron-right'}
 ]
 
-function renderSvgIcon (icon) {
-  document.querySelector(icon.class).innerHTML = svg[icon.svg];
-}
+function renderSvgIcon (icon) { document.querySelector(icon.class).innerHTML = R.path(['icon', 'svg'], SVG); }
 
 Utils.documentReady(function () {
   socialMediaIcons.forEach(renderSvgIcon);

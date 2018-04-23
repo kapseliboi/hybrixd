@@ -517,13 +517,15 @@ if (typeof define === 'function' && define.amd) {
 //
 // (c)2016-2017 metasync r&d / internet of coins project
 //
-$(document).ready(function() {
+
+$(document).ready(function () {
   init = {};
   cached = {};
   fetchview_path = null;
   fetchview_time = 0;
   path = 'api/';
   console.log('Starting hybridd-connect...');
+
   // fetch the login view
   fetchview('login', {});
 });

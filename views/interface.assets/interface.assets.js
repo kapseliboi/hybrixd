@@ -1,7 +1,7 @@
 var Valuations = valuations;
 
-init.interface.assets = function(args) {
-  topmenuset('assets');  // top menu UI change
+init.interface.assets = function (args) {
+  topmenuset('assets'); // top menu UI change
   clearInterval(intervals); // clear all active intervals
 
   scrollToAnchor = scrollToAnchor(args);
@@ -54,10 +54,6 @@ function renderAssetsButtons (element, balance, i) {
   };
 }
 
-function getNewMarketPrices () {
-  Valuations.getDollarPrices(() => {});
-}
-
 function renderDollarPriceInAsset (asset, amount) {
   var symbolName = asset.slice(asset.indexOf('.') + 1);
   var assetDollarPrice = Valuations.renderDollarPrice(symbolName, amount);
@@ -65,6 +61,7 @@ function renderDollarPriceInAsset (asset, amount) {
   if (query !== null) { query.innerHTML = assetDollarPrice; }
 }
 
+function getNewMarketPrices () { Valuations.getDollarPrices(() => {}); }
 function entryExists (entry) { return GL.assetSelect[entry]; }
 function initializeAsset (entry) { initAsset(entry, R.prop(entry, GL.assetmodes)); }
 
