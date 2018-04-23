@@ -47,10 +47,12 @@ function displayAssets () {
   document.querySelector('#topmenu-assets').onclick = fetchAssetsViews(pass_args);
   document.querySelector('#topmenu-assets').classList.add('active');
 
-  hybriddcall({r: '/s/deterministic/hashes', z: 1}, null, processDataAndRenderAndStuff); // initialize all assets
+  hybriddcall({r: '/s/deterministic/hashes', z: 1}, processDataAndRenderAndStuff); // initialize all assets
 };
 
 function processDataAndRenderAndStuff (object, passdata) {
+  console.log("passdata = ", passdata);
+  console.log("object = ", object);
   assets.modehashes = object.data;
   GL.assetsActive.map(renderDOMStuff);
   setIntervalFunctions(balance, GL.assetsStarred);
@@ -115,7 +117,12 @@ function checkIfAssetsAreLoaded (balance, assets) {
 function renderBalanceThroughHybridd (asset) {
   var element = '.dashboard-balances > .data > .balance > .balance-' + asset.id.replace(/\./g, '-');
   var url = 'a/' + asset.id + '/balance/' + window.assets.addr[asset.id];
-  hybriddcall({r: url, z: 0}, renderBalanceWithSomeGlobalEntanglement);
+  hybriddcall({r: url, z: 0}, function (returnedObjectFromServer, passdata) {
+    var sanitizedData = sanitizeServerObject(returnedObjectFromServer).data;
+    renderDataInDom(element, 5, sanitizedData);
+  })
+
+              // renderBalanceWithSomeGlobalEntanglement);
 }
 
 function renderBalanceWithSomeGlobalEntanglement (object) {

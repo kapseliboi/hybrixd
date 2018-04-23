@@ -136,11 +136,11 @@ initAsset = function(entry,fullmode) {
     assets.keys[entry] = deterministic.keys( {symbol:entry,seed:assets.seed[entry],mode:submode} );
     assets.addr[entry] = deterministic.address( Object.assign(assets.keys[entry],{mode:submode}) );
     var loop_step = nextStep();
-    hybriddcall({r:'a/'+entry+'/factor',c:GL.usercrypto,s:loop_step,z:0},0, function(object) { if(typeof object.data!='undefined') { assets.fact[entry]=object.data; } });
+    hybriddcall({r:'a/'+entry+'/factor',c:GL.usercrypto,s:loop_step,z:0}, function(object) { if(typeof object.data!='undefined') { assets.fact[entry]=object.data; } });
     var loop_step = nextStep();
-    hybriddcall({r:'a/'+entry+'/fee',c:GL.usercrypto,s:loop_step,z:0},0, function(object) { if(typeof object.data!='undefined') { assets.fees[entry]=object.data; } });
+    hybriddcall({r:'a/'+entry+'/fee',c:GL.usercrypto,s:loop_step,z:0}, function(object) { if(typeof object.data!='undefined') { assets.fees[entry]=object.data; } });
     var loop_step = nextStep();
-    hybriddcall({r:'a/'+entry+'/contract',c:GL.usercrypto,s:loop_step,z:0},0, function(object) { if(typeof object.data!='undefined') { assets.cntr[entry]=object.data; } });
+    hybriddcall({r:'a/'+entry+'/contract',c:GL.usercrypto,s:loop_step,z:0}, function(object) { if(typeof object.data!='undefined') { assets.cntr[entry]=object.data; } });
   }
 
   var mode = fullmode.split('.')[0];
@@ -249,26 +249,27 @@ hybriddcall = function (properties, success, waitfunction) {
 
 // proc request helper function
 function hybriddproc (urltarget, usercrypto, reqmethod, properties, callback, waitfunction, cnt) {
+  console.log("urltarget = ", urltarget);
   if(cnt) { if(cnt<10) { cnt++; } } else { cnt = 1; }
   var processStep = nextStep();
-    var urlrequest = path + zchanOrYchanEncryptionStr(reqmethod, usercrypto)(processStep)('p/' + properties.data);
+  var urlrequest = path + zchanOrYchanEncryptionStr(reqmethod, usercrypto)(processStep)('p/' + properties.data);
 
-    if (typeof properties.data !== 'undefined') {
-      $.ajax({
-        url: urlrequest,
-        timeout: TIMEOUT,
-        success: function (result) {
-          var objectContainingRequestedData = zchanOrYchanEncryptionObj(reqmethod, processStep, usercrypto, result);
-          function retryHybriddProcess () {
-            hybriddproc(urltarget, usercrypto, reqmethod, properties, callback, waitfunction, cnt);
-          }
-          maybeSuccessfulDataRequestRender(properties, callback, waitfunction, cnt, retryHybriddProcess, objectContainingRequestedData);
-        },
-        error: function (object) {
-          maybeRunFunctionWithArgs(callback, properties, object, '?');
+  if (typeof properties.data !== 'undefined') {
+    $.ajax({
+      url: urlrequest,
+      timeout: TIMEOUT,
+      success: function (result) {
+        var objectContainingRequestedData = zchanOrYchanEncryptionObj(reqmethod, usercrypto)(processStep)(result);
+        function retryHybriddProcess () {
+          hybriddproc(urltarget, usercrypto, reqmethod, properties, callback, waitfunction, cnt);
         }
-      });
-    }
+        maybeSuccessfulDataRequestRender(properties, callback, waitfunction, cnt, retryHybriddProcess, objectContainingRequestedData);
+      },
+      error: function (object) {
+        maybeRunFunctionWithArgs(callback, properties, object, '?');
+      }
+    });
+  }
 }
 
 function couldNotRetrieveSessionDataAlert () {
@@ -301,7 +302,7 @@ function maybeSuccessfulDataRequestRender (properties, postfunction, waitfunctio
   maybeRunFunctionWithArgs(continuation, properties, objectContainingRequestedData);
 }
 
-function sanitizeServerObject (obj) {
+sanitizeServerObject = function (obj) {
   var emptyOrIdentityObject = Object.assign({}, obj);
   if (typeof emptyOrIdentityObject.data !== 'undefined') {
     if (emptyOrIdentityObject.data === null) { emptyOrIdentityObject.data = '?'; }
@@ -312,7 +313,7 @@ function sanitizeServerObject (obj) {
   return emptyOrIdentityObject;
 }
 
-function renderDataInDom (element, maxLengthSignificantDigits, data) {
+renderDataInDom = function (element, maxLengthSignificantDigits, data) {
   var formattedBalanceStr = formatFloatInHtmlStr(data, maxLengthSignificantDigits);
 
   if ($(element).html() === '?') {
