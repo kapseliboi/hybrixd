@@ -14,6 +14,11 @@ var path = 'api';
 nacl_factory.instantiate(function (naclinstance) { nacl = naclinstance; });
 session_step = 1; // Session step number at the end of login
 
+// TODO:
+// - Remove global session_step --> Make into incremental counter (save in state)
+// - Remove Nacl as a global and save in some state
+// - Put Ctrl-S event in Stream
+
 var keyDownOnUserIDStream = S.mkInputStream('#inputUserID');
 var keyDownOnPasswordStream = S.mkInputStream('#inputPasscode');
 
@@ -71,19 +76,6 @@ var processSessionStep0ReplyStream = Rx.Observable
       R.nth(0)
     ))
     .map(mkPostSessionStep1Url);
-
-function mkPostSessionStep1Url (z) {
-  var nonce1 = R.path(['0', 'nonce1'], z);
-  var sessionStep = z[1] + 1; // NOW SETTING SESSION STEP MANUALLY.....
-  var initialSessionData = R.path(['0', 'initialSessionData'], z);
-  var sessionStep1Data = C.generateSecondarySessionData(nonce1, initialSessionData.session_hexkey, initialSessionData.session_signpair.signSk);
-
-  return {
-    url: path + 'x/' + initialSessionData.session_hexsign + '/' + sessionStep + '/' + sessionStep1Data.crypt_hex,
-    initialSessionData,
-    secondarySessionData: sessionStep1Data
-  };
-}
 
 var postSessionStep1DataStream =
     processSessionStep0ReplyStream
@@ -144,6 +136,20 @@ function mkSessionHexAndNonce (z) {
   return C.sessionStep1Reply(sessionStep1Data, sessionData, setSessionDataInElement);
 }
 
+function mkPostSessionStep1Url (z) {
+  var nonce1 = R.path(['0', 'nonce1'], z);
+  var sessionStep = z[1] + 1; // NOW SETTING SESSION STEP MANUALLY.....
+  var initialSessionData = R.path(['0', 'initialSessionData'], z);
+  var sessionStep1Data = C.generateSecondarySessionData(nonce1, initialSessionData.session_hexkey, initialSessionData.session_signpair.signSk);
+
+  return {
+    url: path + 'x/' + initialSessionData.session_hexsign + '/' + sessionStep + '/' + sessionStep1Data.crypt_hex,
+    initialSessionData,
+    secondarySessionData: sessionStep1Data
+  };
+}
+
+// TODO: mk into Stream
 function handleCtrlSKeyEvent (e) {
   var possible = [ e.key, e.keyIdentifier, e.keyCode, e.which ];
 
@@ -158,7 +164,7 @@ function handleCtrlSKeyEvent (e) {
   }
   return true;
 }
-;
+
 function setCSSTorenderButtonsToDisabled () {
   var arcBackgroundColor = document.querySelector('#combinator').style.color;
   document.querySelector('#loginbutton').classList.add('disabled');
