@@ -115,7 +115,7 @@ function checkIfAssetsAreLoaded (balance, assets) {
 function renderBalanceThroughHybridd (asset) {
   var element = '.dashboard-balances > .data > .balance > .balance-' + asset.id.replace(/\./g, '-');
   var url = 'a/' + asset.id + '/balance/' + window.assets.addr[asset.id];
-  hybriddcall({r: url, z: 0}, element, renderBalanceWithSomeGlobalEntanglement);
+  hybriddcall({r: url, z: 0}, renderBalanceWithSomeGlobalEntanglement);
 }
 
 function renderBalanceWithSomeGlobalEntanglement (object) {

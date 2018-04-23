@@ -214,7 +214,7 @@ function uiAssets (balance) {
         var timeIsCurrent = balance.lasttx[i] + 120000 < (new Date).getTime();
         var url = 'a/' + balance.asset[i] + '/balance/' + window.assets.addr[balance.asset[i]];
         if (timeIsCurrent) {
-          hybriddcall({r: url, z: 0}, element, renderAssetsButtons(element, balance, i));
+          hybriddcall({r: url, z: 0}, renderAssetsButtons(element, balance, i));
         }
       }
       // }, i * 500);

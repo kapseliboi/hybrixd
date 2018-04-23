@@ -226,33 +226,32 @@ function deterministicSeedGenerator(asset) {
 // 		- the function postfunction runs after a successful call to hybridd, while waitfunction runs regularly while the hybridd process is completing
 progressbar = function(size) { return '<div class="progress-radial" proc-data=""'+(size>0?' style="font-size: '+size+'em;" size="'+size+'"':'')+'><div class="dot" style="'+(size>0?'width:'+size+'px;height:'+size+'px;"':'width:1em;height:1em;overflow:visible;"')+'"></div><svg style="margin-left:-'+(size>0?size+'px':'1em')+';" viewbox="0 0 80 80" height="120" width="120"><circle cx="40" cy="40" r="35" fill="rgba(255,255,255,0.0)" stroke="#BBB" stroke-width="10" stroke-dasharray="239" stroke-dashoffset="239" /></svg></div>'; }
 
-hybriddcall = function(properties,element,success,waitfunction) {
-  var urltarget = properties.r; 	// URL or request
+hybriddcall = function (properties, success, waitfunction) {
+  var urltarget = properties.r;
   var usercrypto = GL.usercrypto;
   var step = nextStep();
   var reqmethod = typeof properties.z === 'undefined' && properties.z;
-  var urlrequest = path + zchanOrYchanEncryptionStr(reqmethod, step, usercrypto, urltarget);
+  var urlrequest = path + zchanOrYchanEncryptionStr(reqmethod, usercrypto)(step)(urltarget);
 
-  var varsmain = {properties:properties,element:element,postfunction:postfunction,waitfunction:waitfunction};
   $.ajax({
     url: urlrequest,
     timeout: TIMEOUT,
     success: function (encodedResult) {
-      var decodedResultObj = zchanOrYchanEncryptionObj(reqmethod, step, usercrypto, encodedResult);
+      var decodedResultObj = zchanOrYchanEncryptionObj(reqmethod, usercrypto)(step)(encodedResult);
       var objectWithProperties = Object.assign(properties, decodedResultObj);
       hybriddproc(urltarget, usercrypto, reqmethod, objectWithProperties, success, waitfunction, 0);
     },
     error: function (object) {
-      console.log('Something up', object)
-      // maybeRunFunctionWithArgs(success, {properties: properties}, object, '[read error]');
+      maybeRunFunctionWithArgs(success, { properties }, object, '[read error]');
     }
   })
+}
 
-  // proc request helper function
-  function hybriddproc(urltarget, usercrypto, reqmethod, properties, callback, waitfunction, cnt) {
-    if(cnt) { if(cnt<10) { cnt++; } } else { cnt = 1; }
-    var processStep = nextStep();
-    var urlrequest = path + zchanOrYchanEncryptionStr(reqmethod, processStep, usercrypto, 'p/' + properties.data);
+// proc request helper function
+function hybriddproc (urltarget, usercrypto, reqmethod, properties, callback, waitfunction, cnt) {
+  if(cnt) { if(cnt<10) { cnt++; } } else { cnt = 1; }
+  var processStep = nextStep();
+    var urlrequest = path + zchanOrYchanEncryptionStr(reqmethod, usercrypto)(processStep)('p/' + properties.data);
 
     if (typeof properties.data !== 'undefined') {
       $.ajax({
@@ -292,4 +291,80 @@ function zchanOrYchanEncryptionObj (requestMethod, userCrypto) {
       return encryptionMethod(userCrypto, step, obj);
     }
   }
+}
+
+function maybeSuccessfulDataRequestRender (properties, postfunction, waitfunction, cnt, retryHybriddProcess, objectContainingRequestedData) {
+  var hasCorrectProgressStatus = objectContainingRequestedData.progress < 1 && objectContainingRequestedData.stopped == null;
+  var continuation = hasCorrectProgressStatus ? waitfunction : postfunction;
+
+  if (hasCorrectProgressStatus) setTimeout(retryHybriddProcess, (cnt * 3000));
+  maybeRunFunctionWithArgs(continuation, properties, objectContainingRequestedData);
+}
+
+function sanitizeServerObject (obj) {
+  var emptyOrIdentityObject = Object.assign({}, obj);
+  if (typeof emptyOrIdentityObject.data !== 'undefined') {
+    if (emptyOrIdentityObject.data === null) { emptyOrIdentityObject.data = '?'; }
+    if (emptyOrIdentityObject.data === 0) { emptyOrIdentityObject.data = '0'; }
+  } else {
+    emptyOrIdentityObject.data = '?';
+  }
+  return emptyOrIdentityObject;
+}
+
+function renderDataInDom (element, maxLengthSignificantDigits, data) {
+  var formattedBalanceStr = formatFloatInHtmlStr(data, maxLengthSignificantDigits);
+
+  if ($(element).html() === '?') {
+    $(element + ' .progress-radial').fadeOut('slow', function () {
+      renderElementInDom(element, formattedBalanceStr);
+    });
+  } else {
+    renderElementInDom(element, formattedBalanceStr);
+  }
+}
+
+function renderElementInDom (query, data) {
+  $(query).html(data);
+}
+
+function maybeRunFunctionWithArgs (fn, props, dataFromServer) {
+  if (typeof fn === 'function') {
+    var pass = typeof props.pass !== 'undefined' ? props.pass : null;
+    fn(dataFromServer, pass);
+  }
+}
+
+function formatFloatInHtmlStr (amount, maxLengthSignificantDigits) {
+  function regularOrZeroedBalance (balanceStr, maxLen) {
+    var decimalNumberString = balanceStr.substring(2).split('');
+    var zeros = '0.' + takeWhile((n) => n === '0', decimalNumberString).reduce((baseStr, n) => baseStr + n, ''); // use R.takeWhile later!
+    var numbers = balanceStr.replace(zeros, '');
+    var defaultOrFormattedBalanceStr = balanceStr.includes('0.') ? mkAssetBalanceHtmlStr(zeros, numbers, maxLen) : balanceStr;
+
+    return defaultOrFormattedBalanceStr;
+  }
+
+  function mkAssetBalanceHtmlStr (zeros_, numbers_, maxLen) {
+    var emptyOrBalanceEndHtmlStr = numbers_.length <= maxLen ? '' : '<span class="balance-end mini-balance">&hellip;</span>';
+    var numbersFormatted = numbers_.slice(0, maxLen);
+    return '<span class="mini-balance">' + zeros_ + '</span>' + numbersFormatted + emptyOrBalanceEndHtmlStr;
+  }
+
+  if (isNaN(amount)) {
+    return '?';
+  } else {
+    var balance = String(Number(amount));
+    return balance === '0' ? '0' : regularOrZeroedBalance(balance, maxLengthSignificantDigits);
+  }
+}
+
+// With love from Ramda
+function takeWhile (fn, xs) {
+  var idx = 0;
+  var len = xs.length;
+  while (idx < len && fn(xs[idx])) {
+    idx += 1;
+  }
+  return Array.prototype.slice.call(xs, 0, idx);
 }
