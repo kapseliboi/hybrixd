@@ -815,13 +815,6 @@ p {
   color: #939AA1;
 }
 
-.content .table .balance .progress-radial {
-  text-align: right;
-  display: inline-block;
-  width: 10px !important;
-  height: 10px !important;
-}
-
 .content .table .actions .buttons {
   margin-top: 5px;
 }
