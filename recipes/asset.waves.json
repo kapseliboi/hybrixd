@@ -45,10 +45,10 @@
     "push" : [
       "pass(JSON.parse('$1'))",
       "curl('asset://$symbol','/assets/broadcast/transfer','POST',data,{Accept:'application/json','Content-Type':'application/json'})",
-      "test(data,2,1,data)",
-      "stop(1,'Broadcast failed!')",
+      "test(data.error,1,2,data)",
+      "stop(1,data.message)",
       "tran('.id',data,2,1)",
-      "stop(1,'Transaction Failed! '+data.message)",
+      "stop(1,'Transaction Failed! '+jstr(data))",
       "pass(data)"
     ],
     "history" : [

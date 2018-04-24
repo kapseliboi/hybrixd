@@ -50,7 +50,7 @@
       "curl('asset://$symbol','/transaction/announce','POST',data,{'content-type':'application/json'})",
       "test(typeof data.message!=='undefined' && data.message.substr(0,7)==='FAILURE',2,1,data)",
       "tran('.transactionHash.data',data,2,1)",
-      "stop(1,'Invalid transaction or transaction failure!')",
+      "stop(1,data.error+' : '+data.message)",
       "pass(data)"
     ],
     "factor" : [

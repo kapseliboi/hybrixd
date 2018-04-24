@@ -102,7 +102,7 @@ function exec(properties) {
     if(deterministic_script) {
       subprocesses.push('func("ethereum","link",{target:'+jstr(target)+',command:["eth_sendRawTransaction",["'+deterministic_script+'"]]})');
       // returns: { "id":1, "jsonrpc": "2.0", "result": "0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331" }
-      subprocesses.push('stop((typeof data.result!="undefined"?0:1),(typeof data.result!="undefined"?data.result:null))');
+      subprocesses.push('stop((typeof data.result!="undefined"?0:1),(typeof data.result!="undefined"?data.result:data.error.message))');
     } else {
       subprocesses.push('stop(1,"Missing or badly formed deterministic transaction!")');
     }

@@ -110,7 +110,7 @@ function exec(properties) {
     if(deterministic_script) {
       subprocesses.push('func("nxt","link",{target:'+jstr(target)+',command:["broadcastTransaction",["transactionBytes='+deterministic_script+'"]]})');
       // returns: { "requestProcessingTime": 4, "fullHash": "3a304584f20cf3d2cbbdd9698ff9a166427005ab98fbe9ca4ad6253651ee81f1", "transaction": "15200507403046301754" }
-      subprocesses.push('stop((typeof data.transaction==="undefined"?1:0),(typeof data.transaction==="undefined"?null:data.transaction))');
+      subprocesses.push('stop((typeof data.transaction==="undefined"?1:0),(typeof data.transaction==="undefined"?data.errorDescription:data.transaction))');
     } else {
       subprocesses.push('stop(1,"Missing or badly formed deterministic transaction!")');
     }
@@ -135,12 +135,12 @@ function exec(properties) {
             subprocesses.push('stop(1,"Error: missing NXT public key!")');
           }
           if(!isToken(target.symbol)) {
-            amount -= fee;  // with NXT the unspent function is a transaction preparation, so must subtract the fee
+            amount = fromInt( toInt(amount,factor).minus(toInt(fee,factor)),factor ).toString();  // with NXT the unspent function is a transaction preparation, so must subtract the fee
             subprocesses.push('func("nxt","link",{target:'+jstr(target)+',command:["sendMoney",["recipient='+targetaddr+'",'+publicKey+',"amountNQT='+toInt(amount,factor)+'","feeNQT='+toInt(fee,factor)+'","deadline=300","doNotSign=1","broadcast=false"] ]})');
           } else {
             var fee = (typeof global.hybridd.asset[base].fee != 'undefined'?global.hybridd.asset[base].fee:null);
             var feefactor = (typeof global.hybridd.asset[base].factor != 'undefined'?global.hybridd.asset[base].factor:null);
-            amount -= fee;  // with NXT the unspent function is a transaction preparation, so must subtract the fee
+            amount = fromInt( toInt(amount,factor).minus(toInt(fee,factor)),factor ).toString();  // with NXT the unspent function is a transaction preparation, so must subtract the fee
             subprocesses.push('func("nxt","link",{target:'+jstr(target)+',command:["transferAsset",["recipient='+targetaddr+'","asset='+target.contract+'",'+publicKey+',"quantityQNT='+toInt(amount,factor)+'","feeNQT='+toInt(fee,feefactor)+'","deadline=300","doNotSign=1","broadcast=false"] ]})');
           }
           subprocesses.push('stop((typeof data.errorCode==="undefined"?0:data.errorCode),(typeof data.errorCode==="undefined"?data:null))');
