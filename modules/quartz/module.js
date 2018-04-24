@@ -143,9 +143,6 @@ function exec(properties) {
             console.log(" [i] websocket "+recipe.host + " : Error "+code+" "+description);
           })
 
-            /*.on('message', function message(data) {
-            console.log(" [!] Websocket "+recipe.host + " : Uncaught Message:"+ data);
-          });*/
 
           list[id].link = ws;
 
@@ -164,38 +161,17 @@ function exec(properties) {
     }
   }
 
-  // DEBUG: console.log(">>"+id+" : "+recipe.fee+" "+JSON.stringify(recipe.quartz.fee));
-
   var subprocesses = [];
-  if(typeof recipe.quartz!=='undefined' && recipe.quartz.hasOwnProperty(command)){
+  if(recipe.hasOwnProperty('quartz') && recipe.quartz.hasOwnProperty(command)){
 
     addSubprocesses(subprocesses,recipe.quartz[command],recipe,properties.command);
 
-  } else if(base && token){ // use implicit inheritance from base class for tokens
-
-    if(list.hasOwnProperty(base)){
-      var baseRecipe = list[base];
-      if(baseRecipe.quartz.hasOwnProperty(command)){
-        // merge the base and token recipe to be passed
-
-
-        var newRecipe = Object.assign({}, recipe, baseRecipe);
-
-        if(typeof newRecipe['quartz-override']!=='undefined' && newRecipe['quartz-override'].hasOwnProperty(command)) {
-          newRecipe.quartz[command] = newRecipe['quartz-override'][command];
-        }
-
-        addSubprocesses(subprocesses,newRecipe.quartz[command],newRecipe,properties.command);
-
-      } else {
-        subprocesses.push('stop(1,"Recipe function \''+command+'\' not supported for \''+id+'\' nor for base  \''+base+'\'.")');
-      }
-    }else{
-      subprocesses.push('stop(1,"base recipe \''+base+'\' not found!.")');
-    }
-
   } else {
-    subprocesses.push('stop(1,"Recipe function \''+command+'\' not supported for \''+id+'\'.")');
+    if(global.hybridd.defaultQuartz.hasOwnProperty('quartz') && global.hybridd.defaultQuartz.quartz.hasOwnProperty(command)){
+      addSubprocesses(subprocesses,global.hybridd.defaultQuartz.quartz[command],recipe,properties.command);
+    }else{
+      subprocesses.push('stop(1,"Recipe function \''+command+'\' not supported for \''+id+'\'.")');
+    }
   }
 
   // fire the Qrtz-language program into the subprocess queue

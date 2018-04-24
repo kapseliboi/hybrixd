@@ -23,14 +23,14 @@
       "pass(data)"
     ],
     "balance" : [
-      "curl('asset://$symbol','','',{'id':1, 'method':'call', 'params':[0,'get_named_account_balances',['$1',['$contract']]], id: Math.floor(Math.random()*10000)})",
+      "curl('asset://$symbol','','',{'method':'call', 'params':[0,'get_named_account_balances',['$1',['$contract']]], id: Math.floor(Math.random()*10000)})",
       "tran('.result[0].amount',data,2,1)",
       "jump(2,'0')",
       "form(data,$factor,'reduce')",
       "pass(data)"
     ],
     "push" : [
-      "curl('asset://$symbol','','',{'id':1, 'method':'call', 'params':['broadcast_transaction',['$1']], id: Math.floor(Math.random()*10000)})",
+      "curl('asset://$symbol','','',{'method':'call', 'params':['broadcast_transaction',['$1']], id: Math.floor(Math.random()*10000)})",
       "test(data,2,1,data)",
       "stop(1,'Broadcast failed!')",
       "tran('.result',data,2,1)",

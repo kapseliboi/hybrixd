@@ -17,6 +17,10 @@
           {"error":0,"info":"Process data.","id":"1519829634775083","progress":1,"started":1519829634775,"stopped":1519829634778,"data":"0xf230b790E05390FC8295F4d3F60332c93BEd42e2"}
         ]
       },
+      "details":{
+        "_this": "Retrieve the fee symbol TODO",
+        "_response": "TODO"
+      },
       "factor":{
         "_this": "Retrieve the factor TODO",
         "_response": {"error":0,"info":"Process data.","id":"1519829794292742","progress":1,"started":1519829794292,"stopped":1519829794316,"data":"18"}
@@ -25,11 +29,20 @@
         "_this": "Retrieve the fee TODO",
         "_response": {"error":0,"info":"Process data.","id":"1519830189432904","progress":1,"started":1519830189432,"stopped":1519830189437,"data":"0.000420000000000000"}
       },
+      "fee-symbol":{
+        "_this": "Retrieve the fee symbol TODO",
+        "_response": "TODO"
+      },
       "history":"Retrieve asset history TODO",
       "push":{
         "_this":"Push a signed transaction.",
         "_response" : "{\"error\":0,\"info\":\"Process data.\",\"id\":\"1519830244168082\",\"progress\":1,\"started\":1519830244168,\"stopped\":1519830244173,\"data\":$TRANSACTION_ID}"
       },
+      "keygen-base":{
+        "_this": "Retrieve the keygen-base TODO",
+        "_response": "TODO"
+      },
+
       "status":"Retrieve the status of the service. TODO",
       "test":"TODO",
       "transfer":"TODO",
@@ -94,7 +107,8 @@
   "list":{
     "asset" : {
       "names":"TODO",
-      "modes":"TODO"
+      "modes":"TODO",
+      "details":"Retrieve a list of all basic asset details [{symbol,name,mode}]"
     }
   },
   "p":{"_alias":"proc"},
