@@ -214,11 +214,34 @@ function uiAssets (balance) {
         var timeIsCurrent = balance.lasttx[i] + 120000 < (new Date).getTime();
         var url = 'a/' + balance.asset[i] + '/balance/' + window.assets.addr[balance.asset[i]];
         if (timeIsCurrent) {
-          hybriddcall({r: url, z: 0}, renderAssetsButtons(element, balance, i));
+          hybriddcall({r: url, z: 0},
+
+                      function (returnedObjFromServer, stuffToPassDown) {
+                        var sanitizedData = sanitizeServerObject(returnedObjFromServer).data;
+                        renderDataInDom(element, 11, sanitizedData);
+                        fillAssetElement(element, asset.id, returnedObjFromServer);
+                      });
+
+
+
+          // renderAssetsButtons(element, balance, i));
         }
       }
       // }, i * 500);
     });
     setTimeout(getNewMarketPrices, 5000);
   };
+}
+
+function fillAssetElement (element, assetbuttons, object) {
+  if (object.data !== null && !isNaN(object.data)) {
+    $(assetbuttons).delay(1000).removeClass('disabled');
+    $(assetbuttons + ' a').removeAttr('disabled');
+    $(assetbuttons + ' a').attr('data-toggle', 'modal');
+  } else {
+    $(assetbuttons).addClass('disabled');
+    $(assetbuttons + ' a').removeAttr('data-toggle');
+    $(element).attr('amount', '?');
+  }
+  return object;
 }

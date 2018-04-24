@@ -15,29 +15,17 @@ init.interface.dashboard = function (args) {
 
 // TODO: This will mostly be obsolete with the new data model!
 function matchAssets () {
-  if (GL.assetsActive == null || typeof GL.assetsActive !== 'object') {
-    GL.assetsActive = ['btc', 'eth'];
+  // Assets active
+  if (GL.assets === null || typeof GL.assets !== 'array') {
+    var initedAssets = [
+      {id: 'btc', starred: false},
+      {id: 'eth', starred: false}
+    ];
+
+    GL.assets = initedAssets;
+
+    storage.Set(userStorageKey('ff00-0034'), userEncode(initedAssets));
   }
-
-  // Assets active in Dashboard
-  if (GL.assetsStarred === null || typeof GL.assetsStarred !== 'object') {
-    var initAssetsStarred = GL.assetsActive.map((asset) => ({id: asset, starred: false}));
-
-    GL.assetsStarred = initAssetsStarred;
-
-    storage.Set(userStorageKey('ff00-0034'), userEncode(initAssetsStarred));
-  }
-
-  // Finds any unmatched assets between active and starred and returns a starred object if any are found
-  var unmatchedStarredAssets = GL.assetsActive.filter(function (asset) {
-    return GL.assetsStarred.find(function (starred) {
-      return starred.id === asset;
-    }) === undefined;
-  }).map(function (asset) {
-    return {id: asset, starred: false};
-  });
-
-  GL.assetsStarred.concat(unmatchedStarredAssets);
 }
 
 function displayAssets () {
@@ -50,12 +38,9 @@ function displayAssets () {
   hybriddcall({r: '/s/deterministic/hashes', z: 1}, processDataAndRenderAndStuff); // initialize all assets
 };
 
-function processDataAndRenderAndStuff (object, passdata) {
-  console.log("passdata = ", passdata);
-  console.log("object = ", object);
-  assets.modehashes = object.data;
-  GL.assetsActive.map(renderDOMStuff);
-  setIntervalFunctions(balance, GL.assetsStarred);
+function processDataAndRenderAndStuff (modeHashes, passdata) {
+  GL.assets.map(renderDOMStuff);
+  setIntervalFunctions(balance, GL.assets);
 }
 
 function setIntervalFunctions (balance, assets) {
@@ -75,8 +60,8 @@ function renderDOMStuff (entry, i) {
   balance.lasttx[i] = 0;
 
   // Needed to initialize addresses!!!!
-  initializeDeterministicEncryptionRoutines(entry, i);
-  if (i === GL.assetsActive.length - 1) { renderStarredHTML(GL.assetsStarred); } // if all assets inits are called run
+  // initializeDeterministicEncryptionRoutines(entry, i);
+  setTimeout(function () { renderStarredHTML(GL.assets); }, 2000); // if all assets inits are called run
 }
 
 // TODO Move this up to just after login, when retrieving hash, modes, etc
@@ -86,7 +71,7 @@ function initializeDeterministicEncryptionRoutines (entry, i) {
   var assetIsInitialized = assets.init.indexOf(GL.assetmodes[entry].split('.')[0]) === -1;
   var defer = (assetIsInitialized ? 0 : 3000);
   assets.init.push(GL.assetmodes[entry].split('.')[0]); // ASSETS.INIT IS NOT BEING USED!!!!!!!!
-  setTimeout(initializeAsset, (100 * i) + defer, entry);
+  initializeAsset(entry);
 }
 
 function renderStarredHTML (starredAssets) {
@@ -108,7 +93,7 @@ function checkIfAssetsAreLoaded (balance, assets) {
   assets.forEach(function (asset, i) {
     var assetHasBalance = typeof balance.asset[i] !== 'undefined' && typeof window.assets.addr[asset] === 'undefined';
     if (assetHasBalance) {
-      renderBalanceThroughHybridd(asset, i);
+      renderBalanceThroughHybridd(asset);
       clearInterval(loadinterval);
     }
   });
@@ -116,13 +101,14 @@ function checkIfAssetsAreLoaded (balance, assets) {
 
 function renderBalanceThroughHybridd (asset) {
   var element = '.dashboard-balances > .data > .balance > .balance-' + asset.id.replace(/\./g, '-');
-  var url = 'a/' + asset.id + '/balance/' + window.assets.addr[asset.id];
+  var url = 'a/' + asset.id + '/balance/' + assets.addr[asset.id];
+  console.log(assets.addr);
   hybriddcall({r: url, z: 0}, function (returnedObjectFromServer, passdata) {
     var sanitizedData = sanitizeServerObject(returnedObjectFromServer).data;
     renderDataInDom(element, 5, sanitizedData);
-  })
+  });
 
-              // renderBalanceWithSomeGlobalEntanglement);
+  // renderBalanceWithSomeGlobalEntanglement);
 }
 
 function renderBalanceWithSomeGlobalEntanglement (object) {
@@ -134,25 +120,7 @@ function renderBalanceWithSomeGlobalEntanglement (object) {
 
 function main () {
   initializeBalanceGlobal();
-  getActiveAndStarredAssetsFromStorage();
-}
-
-function getActiveAndStarredAssetsFromStorage () {
-  if (typeof GL.assetsActive === 'undefined') {
-    storage.Get( userStorageKey('ff00-0033'), function (crypted) {
-      GL.assetsActive = userDecode(crypted);
-      // query storage for dash assets
-      if(typeof GL.assetsStarred === 'undefined') {
-        storage.Get( userStorageKey('ff00-0034'), function (crypted) {
-          GL.assetsStarred = userDecode(crypted);
-          // init asset display
-          displayAssets();
-        });
-      }
-    });
-  } else {
-    displayAssets();
-  }
+  displayAssets();
 }
 
 function initializeBalanceGlobal () {

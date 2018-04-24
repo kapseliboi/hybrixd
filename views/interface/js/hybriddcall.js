@@ -128,43 +128,65 @@ activate = function(code) {
   }
 }
 
-initAsset = function(entry,fullmode) {
-  function finalize(dcode,submode) {
-    deterministic = activate( LZString.decompressFromEncodedURIComponent(dcode) );
-    assets.mode[entry] = fullmode;
-    assets.seed[entry] = deterministicSeedGenerator(entry);
-    assets.keys[entry] = deterministic.keys( {symbol:entry,seed:assets.seed[entry],mode:submode} );
-    assets.addr[entry] = deterministic.address( Object.assign(assets.keys[entry],{mode:submode}) );
-    var loop_step = nextStep();
-    hybriddcall({r:'a/'+entry+'/factor',c:GL.usercrypto,s:loop_step,z:0}, function(object) { if(typeof object.data!='undefined') { assets.fact[entry]=object.data; } });
-    var loop_step = nextStep();
-    hybriddcall({r:'a/'+entry+'/fee',c:GL.usercrypto,s:loop_step,z:0}, function(object) { if(typeof object.data!='undefined') { assets.fees[entry]=object.data; } });
-    var loop_step = nextStep();
-    hybriddcall({r:'a/'+entry+'/contract',c:GL.usercrypto,s:loop_step,z:0}, function(object) { if(typeof object.data!='undefined') { assets.cntr[entry]=object.data; } });
-  }
+function finalize(dcode, submode, entry, fullmode) {
+  deterministic = activate( LZString.decompressFromEncodedURIComponent(dcode) );
+  var url = 'a/' + entry + '/details/';
+  var seed = deterministicSeedGenerator(entry);
+  var keys = deterministic.keys( {symbol: entry, seed, mode:submode} );
+  var addr = deterministic.address( Object.assign(keys , {mode: submode}) );
 
+  assets.mode[entry] = fullmode;
+  assets.seed[entry] = seed;
+  assets.keys[entry] = keys;
+  assets.addr[entry] = addr;
+  var loop_step = nextStep();
+  hybriddcall({r:'a/'+entry+'/factor',c:GL.usercrypto,s:loop_step,z:0}, function(object) { if(typeof object.data!='undefined') { assets.fact[entry]=object.data; } });
+  var loop_step = nextStep();
+  hybriddcall({r:'a/'+entry+'/fee',c:GL.usercrypto,s:loop_step,z:0}, function(object) { if(typeof object.data!='undefined') { assets.fees[entry]=object.data; } });
+  var loop_step = nextStep();
+  hybriddcall({r:'a/'+entry+'/contract',c:GL.usercrypto,s:loop_step,z:0}, function(object) { if(typeof object.data!='undefined') { assets.cntr[entry]=object.data; } });
+
+  hybriddcall({r: url, z: 0}, function (returnedObjectFromServer, passdata) {
+    var assetDetails = R.merge(
+      R.prop('data', returnedObjectFromServer),
+      {
+        mode: R.prop(entry, assets.mode),
+        seed,
+        keys,
+        address: addr
+      }
+    )
+
+    GL.assets = R.reduce(function (assets, asset) {
+      var assetOrUpdatedDetails = R.equals(asset.id, assetDetails.symbol)
+          ? R.merge(asset, assetDetails)
+          : asset
+      return R.append(assetOrUpdatedDetails, assets)
+    }, [], GL.assets);
+  });
+}
+
+initAsset = function(entry, fullmode) {
   var mode = fullmode.split('.')[0];
   var submode = fullmode.split('.')[1]
   // if the deterministic code is already cached client-side
-  if(typeof assets.modehashes[mode]!='undefined') {
-    storage.Get(assets.modehashes[mode]+'-LOCAL', function(dcode) {
+  if(typeof assets.modehashes[mode] !== 'undefined') {
+    storage.Get(assets.modehashes[mode] + '-LOCAL', function (dcode) {
       if(dcode) {
-        finalize(dcode,submode);
+        finalize(dcode, submode, entry, fullmode);
         return true;
       } else {
         storage.Del(assets.modehashes[mode]+'-LOCAL');
       }
       // in case of no cache request code from server
       if(!dcode) { // || typeof assets.mode[entry]=='undefined') {
-        hybriddcall({r:'s/deterministic/code/'+mode,z:0},null,
-                    function(object) {
-                      if(typeof object.error !== 'undefined' && object.error === 0) {
-                        // decompress and make able to run the deterministic routine
-                        storage.Set(assets.modehashes[mode]+'-LOCAL',object.data)
-                        finalize(object.data,submode);
-                      }
-                    }
-                   );
+        hybriddcall({r:'s/deterministic/code/'+mode,z:0}, function(object) {
+          if(typeof object.error !== 'undefined' && object.error === 0) {
+            // decompress and make able to run the deterministic routine
+            storage.Set(assets.modehashes[mode]+'-LOCAL',object.data)
+            finalize(object.data, submode, entry, fullmode);
+          }
+        });
         return true;
       }
     });
@@ -228,6 +250,7 @@ progressbar = function(size) { return '<div class="progress-radial" proc-data=""
 
 hybriddcall = function (properties, success, waitfunction) {
   var urltarget = properties.r;
+  console.log("urltarget = ", urltarget);
   var usercrypto = GL.usercrypto;
   var step = nextStep();
   var reqmethod = typeof properties.z === 'undefined' && properties.z;
@@ -249,7 +272,6 @@ hybriddcall = function (properties, success, waitfunction) {
 
 // proc request helper function
 function hybriddproc (urltarget, usercrypto, reqmethod, properties, callback, waitfunction, cnt) {
-  console.log("urltarget = ", urltarget);
   if(cnt) { if(cnt<10) { cnt++; } } else { cnt = 1; }
   var processStep = nextStep();
   var urlrequest = path + zchanOrYchanEncryptionStr(reqmethod, usercrypto)(processStep)('p/' + properties.data);
