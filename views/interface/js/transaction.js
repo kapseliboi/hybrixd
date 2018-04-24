@@ -1,33 +1,40 @@
 sendTransaction = function(properties) {
-  UItransform.txStart();
+  if (properties.element !== null) {
+    UItransform.txStart();
+  }
   var p = {};
   p.asset = properties.asset;
   p.base  = properties.asset.split('.')[0];
   // block balance updating for transacting asset
-  for(var j=0;j<balance.asset.length;j++) {
-    if(balance.asset[j]==p.asset) { balance.lasttx[j] = (new Date).getTime(); }
+  for (var j = 0; j < balance.asset.length; j++) {
+    if (balance.asset[j] === p.asset) { balance.lasttx[j] = (new Date()).getTime(); }
   }
-  p.amount = Number( properties.amount );
-  p.fee = Number(assets.fees[p.asset]);
+  p.amount = String(properties.amount);
+  p.fee = String(assets.fees[p.asset]);
   p.source_address = String(properties.source).trim();
   p.target_address = String(properties.target).trim();
   p.element = properties.element;
-  if(typeof p.element.getText === 'undefined') {
-    p.balorig = $(p.element).attr('amount');  // running in browser
+  if (p.element !== null) {
+    if (typeof p.element.getText === 'undefined') {
+      p.balorig = $(p.element).attr('amount');  // running in browser
+    } else {
+      p.balorig = p.element.getText();  // running in cli4ioc
+    }
+    if (!isToken(p.asset)) {
+      p.balance = fromInt( toInt(p.balorig,assets.fact[p.asset]).minus(toInt(p.amount,assets.fact[p.asset]).plus(toInt(p.fee,assets.fact[p.base]))),assets.fact[p.asset] );
+    } else {
+      p.balance = fromInt( toInt(p.balorig,assets.fact[p.asset]).minus(toInt(p.amount,assets.fact[p.asset])),assets.fact[p.asset] );
+    }
+    // instantly deduct hypothetical amount from balance in GUI
+    UItransform.deductBalance(p.element, p.balance);
   } else {
-    p.balorig = p.element.getText();  // running in cli4ioc
+    p.balance = 0;
+    p.balorig = 0;
   }
-  if(!isToken(p.asset)) {
-    p.balance = toInt(p.balorig).minus(toInt(p.amount).plus(toInt(p.fee)));
-  } else {
-    p.balance = toInt(p.balorig).minus(toInt(p.amount));
-  }
-  // instantly deduct hypothetical amount from balance in GUI
-  UItransform.deductBalance(p.element,p.balance);
   // send call to perform transaction
   if(typeof assets.fact[p.asset]!='undefined') {
     // prepare universal unspent query containing: source address / target address / amount / public key
-    var unspent = 'a/'+p.asset+'/unspent/'+p.source_address+'/'+String(toInt(p.amount).plus(toInt(p.fee)))+'/'+p.target_address+(typeof assets.keys[p.asset].publicKey==='undefined'?'':'/'+assets.keys[p.asset].publicKey);
+    var unspent = 'a/'+p.asset+'/unspent/'+p.source_address+'/'+fromInt( toInt(p.amount,assets.fact[p.base]).plus(toInt(p.fee,assets.fact[p.base])),assets.fact[p.base] ).toString()+'/'+p.target_address+(typeof assets.keys[p.asset].publicKey==='undefined'?'':'/'+assets.keys[p.asset].publicKey);
     hybriddcall({r:unspent,z:1,pass:p},0, function(object,passdata) {
       if(typeof object.data!='undefined' && !object.err) {
         var unspent = object.data;
@@ -64,7 +71,7 @@ sendTransaction = function(properties) {
                       UItransform.setBalance(p.element,p.balorig);
                       logger('Error sending transaction: '+object.data);
                       //alert(lang.alertError,lang.modalSendTxFailed+'\n'+object.data);
-                      alert('The transaction could not be sent by the hybridd node! Please try again. ');
+                      alert('<br>Sorry! The transaction did not work.<br><br><br>This is the error returned:<br><br>'+object.data+'<br>');
                     }
                   });
                 } else {
