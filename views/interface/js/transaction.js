@@ -35,7 +35,6 @@ sendTransaction = function(properties) {
     p.balorig = 0;
     p.balbase = 0;
   }
-  console.log(' ### '+p.fee+' '+p.base+' '+assets.fact[p.base]+' '+p.balbase);
   if (isToken(p.asset) && toInt(p.fee,assets.fact[p.base]).greaterThan(toInt(p.balbase,assets.fact[p.base]))) {
     UItransform.txStop();
     alert('<br><br>You do not have enough '+p.base.toUpperCase()+' in your wallet to be able to send '+p.asset.toUpperCase()+' tokens!<br><br>');
