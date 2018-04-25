@@ -108,11 +108,20 @@ function exec(properties) {
     }
     break;
   case 'unspent':
-    if(sourceaddr) {
-      subprocesses.push('func("ethereum","link",{target:'+jstr(target)+',command:["eth_getTransactionCount",["'+sourceaddr+'","pending"]]})');
-      subprocesses.push('stop(0,{"nonce":hex2dec.toDec(data.result)})');
+    // Checks if the given string is a plausible ETH address
+    function isEthAddress(address) {
+            return (/^(0x){1}[0-9a-fA-F]{40}$/i.test(address));
+    }
+    if(isEthAddress(sourceaddr)) {
+      var targetaddr = (typeof properties.command[3] != 'undefined'?properties.command[3]:false);
+      if(isEthAddress(targetaddr)) {
+        subprocesses.push('func("ethereum","link",{target:'+jstr(target)+',command:["eth_getTransactionCount",["'+sourceaddr+'","pending"]]})');
+        subprocesses.push('stop(0,{"nonce":hex2dec.toDec(data.result)})');
+      } else {
+        subprocesses.push('stop(1,"Error: bad or missing target address!")');
+      }
     } else {
-      subprocesses.push('stop(1,"Error: missing address!")');
+      subprocesses.push('stop(1,"Error: bad or missing source address!")');
     }
     break;
   case 'contract':
