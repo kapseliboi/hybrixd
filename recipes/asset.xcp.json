@@ -24,7 +24,7 @@
        "stop(1,'Not yet implemented!')"
     ],
      "balance" : [
-       "time(24000)",
+       "time(32000)",
        "curl('asset://$symbol','/_api','POST',{'jsonrpc':'2.0','id':0,'method':'get_normalized_balances','params':{'addresses':['$1']}},{'content-type':'text/plain'})",
        "test(typeof data.result!=='undefined',2,1,data)",
        "stop(1,'No result!')",

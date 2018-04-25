@@ -33,6 +33,7 @@ init.interface.assets = function(args) {
       var symbol = $('#action-send .modal-send-currency').attr('asset');
       sendTransaction({
         element:'.assets-main > .data .balance-'+symbol.replace(/\./g,'-'),
+        elementbase:'.assets-main > .data .balance-'+symbol.split('.')[0],
         asset:symbol,
         amount:Number($("#modal-send-amount").val().replace(/\,/g,'.')),
         source:String($('#action-send .modal-send-addressfrom').html()).trim(),
