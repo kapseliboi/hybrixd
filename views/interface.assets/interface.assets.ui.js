@@ -74,7 +74,7 @@ displayAssets = function displayAssets() {
     R.prop('str'),
     R.reduce(mkHtmlForAssets, {i: 0, str: ''}),
     R.map(R.prop('id'))
-  )(GL.assetsStarred);
+  )(GL.assets);
 
   function mkHtmlForAssets (acc, assetID) {
     var symbolName = assetID.slice(assetID.indexOf('.') + 1);
@@ -82,7 +82,7 @@ displayAssets = function displayAssets() {
     balance.amount[acc.i] = 0;
     balance.lasttx[acc.i] = 0;
 
-    var maybeAsset = GL.assetsStarred.find(function (starred) {
+    var maybeAsset = GL.assets.find(function (starred) {
       return starred.id === balance.asset[acc.i];
     });
 
@@ -122,7 +122,7 @@ displayAssets = function displayAssets() {
   intervals = setInterval(function () { uiAssets(balance)(assetDetail); }, 30000); // TODO: Replace this with Rx interval. Now it breaks sometimes.....
 
   document.querySelector('.assets-main > .data').innerHTML = htmlToRender; // insert new data into DOM
-  GL.assetsStarred.forEach(function (asset, i) { setStarredAssetClass(i, R.prop('starred', asset)); });
+  GL.assets.forEach(function (asset, i) { setStarredAssetClass(i, R.prop('starred', asset)); });
   scrollToAnchor();
 };
 

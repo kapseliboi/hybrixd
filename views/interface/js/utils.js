@@ -16,10 +16,10 @@ mkSvgIcon = function (symbolName) {
 };
 
 const utils = {
-  fetchDataFromUrl: function (url, cb, errStr) {
-    fetch_(url)
+  fetchDataFromUrl: function (url, errStr) {
+    return fetch_(url)
       .then(r => r.json()
-            .then(cb)
+            .then(r => r)
             .catch(e => console.log(errStr, e)))
       .catch(e => console.log(errStr, e));
   }

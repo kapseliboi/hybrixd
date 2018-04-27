@@ -68,29 +68,32 @@ function initializeAsset (entry) { initAsset(entry, R.prop(entry, GL.assetmodes)
 function saveAssetList () {
   var newActiveAssets = R.filter(entryExists, R.keys(GL.assetnames));
 
-  GL.assetsActive = newActiveAssets;
+  GL.assets = newActiveAssets;
   R.forEach(initializeAsset, newActiveAssets);
   storage.Set(userStorageKey('ff00-0033'), userEncode(newActiveAssets));
   starNewAssets(newActiveAssets);
   displayAssets(); // Re-render the view;
 }
 
+// NOW BREAKING
 function starNewAssets (activeAssets) {
   var newAssetsToStar = activeAssets.filter(function (asset) {
-    var foundOrUndefinedId = GL.assetsStarred.find(function (starred) {
+    var foundOrUndefinedId = GL.assets.find(function (starred) {
       return starred.id === asset;
     });
     return foundOrUndefinedId === undefined;
   });
 
-  GL.assetsStarred = activeAssets.map(function (asset) {
-    var foundOrUndefinedId = GL.assetsStarred.find(function (starred) {
-      return asset === starred.id;
-    });
-    return foundOrUndefinedId === undefined ? {id: asset, starred: false} : foundOrUndefinedId;
-  });
+  console.log("newAssetsToStar = ", newAssetsToStar);
 
-  storage.Set(userStorageKey('ff00-0034') , userEncode(GL.assetsStarred));
+  // GL.assets = activeAssets.map(function (asset) {
+  //   var foundOrUndefinedId = GL.assets.find(function (starred) {
+  //     return asset === starred.id;
+  //   });
+  //   return foundOrUndefinedId === undefined ? {id: asset, starred: false} : foundOrUndefinedId;
+  // });
+
+  // storage.Set(userStorageKey('ff00-0034') , userEncode(GL.assets));
 }
 
 function sendTransfer () {
@@ -130,13 +133,11 @@ function manageAssets() {
 }
 
 function renderManageAssetsList (assetNames, searchQuery) {
-  console.log("searchQuery = ", searchQuery);
-  console.log("list = ", assetNames);
   if (typeof searchQuery !== 'undefined') { searchQuery = searchQuery.toLowerCase(); }
 
   for (var entry in GL.assetnames) {
     var hasCorrectType = typeof GL.assetSelect[entry] === 'undefined' || typeof GL.assetSelect[entry] === 'function';
-    if (GL.assetsActive.indexOf(entry) === -1) {
+    if (GL.assets.indexOf(entry) === -1) {
       // Check if type is function for Shift asset. TODO: Refactor.
       if (hasCorrectType) {
         GL.assetSelect[entry] = false;
@@ -158,13 +159,24 @@ function renderManageAssetsList (assetNames, searchQuery) {
       '</div>' +
       '<div class="tbody">';
 
-  function queryMatchesEntry (entry) { return R.test(new RegExp(searchQuery, 'g'), entry); }
-  var matchedEntries = R.filter(queryMatchesEntry, Object.keys(assetNames));
+  function queryMatchesEntry (entry) {
+    var assetID = R.toLower(R.nth(0, entry));
+    var assetName = R.toLower(R.nth(1, entry));
+    return R.test(new RegExp(searchQuery, 'g'), assetID) ||
+      R.test(new RegExp(searchQuery, 'g'), assetName);
+  }
+
+  var matchedEntries = R.compose(
+    R.keys,
+    R.fromPairs,
+    R.filter(queryMatchesEntry),
+    R.toPairs
+  )(assetNames);
 
   var assetsHTMLStr = matchedEntries.reduce(function (acc, entry) {
     var symbolName = entry.slice(entry.indexOf('.') + 1);
     var icon = (symbolName in black.svgs) ? black.svgs[symbolName] : mkSvgIcon(symbolName);
-    var entryExists = GL.assetsActive.includes(entry);
+    var entryExists = GL.assets.includes(entry);
     var element = entry.replace('.', '-');
 
     var assetIconHTMLStr = '<div class="icon">' + icon + '</div>';
@@ -184,29 +196,33 @@ function renderManageAssetsList (assetNames, searchQuery) {
 }
 
 function setStarredAssetClass (i, isStarred) {
-  var id = '#' + GL.assetsStarred[i]['id'].replace(/\./g, '_');
+  var id = '#' + GL.assets[i]['id'].replace(/\./g, '_');
   $(id).children('svg').toggleClass('starred', isStarred);
-}
+};
 
+// TODO REMOVE INDEX, USE NAME
 function toggleStar (i) {
-  var isStarred = GL.assetsStarred[i]['starred'] = !GL.assetsStarred[i]['starred'];
+  var globalAssets = GL.assets;
+  var updatedGlobalAssets = R.reduce(function (acc, asset) {
+    var starredLens = R.lensProp('starred');
+    var toggledStarredValue = R.not(R.view(starredLens, asset));
+    var updatedOrCurrentAsset = asset.id === GL.assets[i]['id']
+        ? R.set(starredLens, toggledStarredValue, asset)
+        : asset;
+    return R.append(updatedOrCurrentAsset, acc);
+  }, [], globalAssets);
+  var isStarred = updatedGlobalAssets[i]['starred'];
+  var starredForStorage = R.map(R.pickAll(['id', 'starred']), updatedGlobalAssets);
 
-  storage.Get(userStorageKey('ff00-0034'), function (assetsStarred) {
-    var newAssetsStarred = userDecode(assetsStarred).map(function (asset) {
-      var sameOrModifiedStarredAsset = asset.id === GL.assetsStarred[i]['id']
-          ? {id: GL.assetsStarred[i]['id'], starred: isStarred}
-          : asset
-      return sameOrModifiedStarredAsset;
-    })
-    storage.Set(userStorageKey('ff00-0034'), userEncode(newAssetsStarred));
-  });
+  storage.Set(userStorageKey('ff00-0034'), userEncode(starredForStorage));
+  GL.assets = updatedGlobalAssets;
 
   setStarredAssetClass(i, isStarred);
 }
 
 function uiAssets (balance) {
   return function (properties) {
-    GL.assetsActive.forEach(function (asset, i) {
+    GL.assets.forEach(function (asset, i) {
       // setTimeout(
       // function () {
       if (typeof balance.asset[i] !== 'undefined') {
@@ -215,7 +231,6 @@ function uiAssets (balance) {
         var url = 'a/' + balance.asset[i] + '/balance/' + window.assets.addr[balance.asset[i]];
         if (timeIsCurrent) {
           hybriddcall({r: url, z: 0},
-
                       function (returnedObjFromServer, stuffToPassDown) {
                         var sanitizedData = sanitizeServerObject(returnedObjFromServer).data;
                         renderDataInDom(element, 11, sanitizedData);

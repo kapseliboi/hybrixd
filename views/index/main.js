@@ -39,7 +39,8 @@ hy_page += '<script>'+fs.readFileSync('./utils.js')+'</script>';
 hy_page += '<script>'+fs.readFileSync('./ramda.min.js')+'</script>';
 
 // RxJS
-hy_page += '<script>'+fs.readFileSync('./rx.lite.js')+'</script>';
+hy_page += '<script>'+fs.readFileSync('./rx.min.js')+'</script>';
+// hy_page += '<script>'+fs.readFileSync('./rx.lite.js')+'</script>';
 
 // COMMON UTILS BETWEEN WEB AND CLI WALLET
 hy_page += '<script>'+fs.readFileSync('./../../../commonUtils.js')+'</script>';

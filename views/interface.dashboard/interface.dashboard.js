@@ -4,7 +4,7 @@ var noStarredAssetsHTML = '<p>No starred assets found. <br>You can star your fav
 
 init.interface.dashboard = function (args) {
   // TODO: Save in STATE
-  document.querySelector("#userID").innerHTML = args.userid; // set user ID field in top bar
+  document.querySelector('#userID').innerHTML = args.userid; // set user ID field in top bar
   topmenuset('dashboard'); // top menu UI change --> Sets element to active class
   clearInterval(intervals); // clear all active intervals
   loadinterval = ''; // F-ING GLOBAL BS
@@ -13,35 +13,67 @@ init.interface.dashboard = function (args) {
   Utils.documentReady(main);
 };
 
-// TODO: This will mostly be obsolete with the new data model!
-function matchAssets () {
-  // Assets active
-  if (GL.assets === null || typeof GL.assets !== 'array') {
-    var initedAssets = [
-      {id: 'btc', starred: false},
-      {id: 'eth', starred: false}
-    ];
+// function matchAssets () {
+//   // Assets active
+//   if (GL.assets === null || typeof GL.assets !== 'object') {
+//     var initedAssets = [
+//       {id: 'btc', starred: false},
+//       {id: 'eth', starred: false}
+//     ];
 
-    GL.assets = initedAssets;
+//     GL.assets = initedAssets;
 
-    storage.Set(userStorageKey('ff00-0034'), userEncode(initedAssets));
-  }
-}
+//     storage.Set(userStorageKey('ff00-0034'), userEncode(initedAssets));
+//   }
+// }
+
+var deterministicHashesStream = Rx.Observable
+    .fromPromise(hybriddcall({r: '/s/deterministic/hashes', z: 1}))
+    .filter(R.propEq('error', 0))
+    .map(R.merge({r: '/s/deterministic/hashes', z: true}));
+
+var deterministicHashesResponseStream = deterministicHashesStream
+    .flatMap(function (properties) {
+      return Rx.Observable
+        .fromPromise(hybriddReturnProcess(properties));
+    })
 
 function displayAssets () {
-  matchAssets();
+  // matchAssets();
   // Below code does not work properly when GL.assetsActive has not been initialized properly.
   // For now, this fix: user can only go to Assets view when GL.assetsActive has been populated.
   document.querySelector('#topmenu-assets').onclick = fetchAssetsViews(pass_args);
   document.querySelector('#topmenu-assets').classList.add('active');
 
-  hybriddcall({r: '/s/deterministic/hashes', z: 1}, processDataAndRenderAndStuff); // initialize all assets
-};
+  deterministicHashesResponseStream.subscribe(function (_) {
+    GL.assets.forEach(initializeBalances);
+    renderStarredAssets();
+    setIntervalFunctions(balance, GL.assets);
+  });
+}
 
 function processDataAndRenderAndStuff (modeHashes, passdata) {
-  GL.assets.map(renderDOMStuff);
+  // Needed to initialize addresses!!!!
+  // initializeDeterministicEncryptionRoutines(entry, i);
+  // renderStarredHTML(GL.assets); // if all assets inits are called run
+
+  // Now loading nothing on first go, because assets haven't been retrieved from storage yet.
+  GL.assets.forEach(initializeBalances);
+  renderStarredAssets();
   setIntervalFunctions(balance, GL.assets);
 }
+
+function renderStarredAssets () {
+    var hasStarredAssets = R.any(R.prop('starred'), GL.assets);
+    var renderAssets = hasStarredAssets || R.not(R.isEmpty(GL.assets));
+
+    var htmlToRender = renderAssets
+        ? renderStarredHTML(GL.assets)
+        : noStarredAssetsHTML;
+
+    document.querySelector('.dashboard-balances .spinner-loader').classList.add('disabled-fast');
+    setTimeout(() => { document.querySelector('.dashboard-balances > .data').innerHTML = htmlToRender; }, 500); // Render new HTML string in DOM. 500 sec delay for fadeout. Should separate concern!
+  }
 
 function setIntervalFunctions (balance, assets) {
   var retrieveBalanceStream = Rx.Observable
@@ -54,38 +86,17 @@ function setIntervalFunctions (balance, assets) {
   loadinterval = setInterval(checkIfAssetsAreLoaded(balance, assets), 500); // check if assets are loaded by hybriddcall
 }
 
-function renderDOMStuff (entry, i) {
+function initializeBalances (entry, i) {
   balance.asset[i] = entry;
   balance.amount[i] = 0;
   balance.lasttx[i] = 0;
-
-  // Needed to initialize addresses!!!!
-  // initializeDeterministicEncryptionRoutines(entry, i);
-  setTimeout(function () { renderStarredHTML(GL.assets); }, 2000); // if all assets inits are called run
-}
-
-// TODO Move this up to just after login, when retrieving hash, modes, etc
-function initializeDeterministicEncryptionRoutines (entry, i) {
-  // get and initialize deterministic encryption routines for assets
-  // timeout used to avoid double downloading of deterministic routines
-  var assetIsInitialized = assets.init.indexOf(GL.assetmodes[entry].split('.')[0]) === -1;
-  var defer = (assetIsInitialized ? 0 : 3000);
-  assets.init.push(GL.assetmodes[entry].split('.')[0]); // ASSETS.INIT IS NOT BEING USED!!!!!!!!
-  initializeAsset(entry);
 }
 
 function renderStarredHTML (starredAssets) {
-  var hasStarredAssets = R.any(R.prop('starred'), starredAssets);
-  var starredAssetsHTML = R.compose(
+  return R.compose(
     R.prop('str'),
     R.reduce(mkHtmlForStarredAssets, {i: 0, str: ''})
   )(starredAssets);
-  var htmlToRender = hasStarredAssets
-      ? starredAssetsHTML
-      : noStarredAssetsHTML;
-
-  document.querySelector('.dashboard-balances .spinner-loader').classList.add('disabled-fast');
-  setTimeout(() => { document.querySelector('.dashboard-balances > .data').innerHTML = htmlToRender; }, 500); // Render new HTML string in DOM. 500 sec delay for fadeout. Should separate concern!
 }
 
 // TODO: Do this recursively???
@@ -101,14 +112,30 @@ function checkIfAssetsAreLoaded (balance, assets) {
 
 function renderBalanceThroughHybridd (asset) {
   var element = '.dashboard-balances > .data > .balance > .balance-' + asset.id.replace(/\./g, '-');
+
   var url = 'a/' + asset.id + '/balance/' + assets.addr[asset.id];
-  console.log(assets.addr);
-  hybriddcall({r: url, z: 0}, function (returnedObjectFromServer, passdata) {
+  var balanceStream = Rx.Observable
+      .fromPromise(hybriddcall({r: url, z: 0}))
+      .filter(R.propEq('error', 0))
+      .map(R.merge({r: url, z: true}));
+
+  var balanceResponseStream = balanceStream
+      .flatMap(function (properties) {
+        return Rx.Observable
+          .fromPromise(hybriddReturnProcess(properties));
+      })
+      .map(data => {
+        if (R.isNil(data.stopped) && data.progress < 1) {
+          throw data; // error will be picked up by retryWhen
+        }
+        return data;
+      })
+      .retryWhen(function (errors) { return errors.delay(100); });
+
+  balanceResponseStream.subscribe(returnedObjectFromServer => {
     var sanitizedData = sanitizeServerObject(returnedObjectFromServer).data;
     renderDataInDom(element, 5, sanitizedData);
   });
-
-  // renderBalanceWithSomeGlobalEntanglement);
 }
 
 function renderBalanceWithSomeGlobalEntanglement (object) {

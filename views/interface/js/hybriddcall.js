@@ -1,3 +1,5 @@
+var U = utils;
+
 var TIMEOUT = 30000;
 
 // ychan encrypts an API query before sending it to the router
@@ -248,49 +250,61 @@ function deterministicSeedGenerator(asset) {
 // 		- the function postfunction runs after a successful call to hybridd, while waitfunction runs regularly while the hybridd process is completing
 progressbar = function(size) { return '<div class="progress-radial" proc-data=""'+(size>0?' style="font-size: '+size+'em;" size="'+size+'"':'')+'><div class="dot" style="'+(size>0?'width:'+size+'px;height:'+size+'px;"':'width:1em;height:1em;overflow:visible;"')+'"></div><svg style="margin-left:-'+(size>0?size+'px':'1em')+';" viewbox="0 0 80 80" height="120" width="120"><circle cx="40" cy="40" r="35" fill="rgba(255,255,255,0.0)" stroke="#BBB" stroke-width="10" stroke-dasharray="239" stroke-dashoffset="239" /></svg></div>'; }
 
-hybriddcall = function (properties, success, waitfunction) {
+hybriddcall = function (properties) {
   var urltarget = properties.r;
-  console.log("urltarget = ", urltarget);
   var usercrypto = GL.usercrypto;
   var step = nextStep();
   var reqmethod = typeof properties.z === 'undefined' && properties.z;
   var urlrequest = path + zchanOrYchanEncryptionStr(reqmethod, usercrypto)(step)(urltarget);
 
-  $.ajax({
-    url: urlrequest,
-    timeout: TIMEOUT,
-    success: function (encodedResult) {
-      var decodedResultObj = zchanOrYchanEncryptionObj(reqmethod, usercrypto)(step)(encodedResult);
-      var objectWithProperties = Object.assign(properties, decodedResultObj);
-      hybriddproc(urltarget, usercrypto, reqmethod, objectWithProperties, success, waitfunction, 0);
-    },
-    error: function (object) {
-      maybeRunFunctionWithArgs(success, { properties }, object, '[read error]');
-    }
-  })
+  return fetch(urlrequest)
+    .then(r => r.json()
+          .then(encodedResult => zchanOrYchanEncryptionObj(reqmethod, usercrypto)(step)(encodedResult)) // TODO: Factor out decoding!!!
+          .catch(e => console.log('Error hybriddCall', e)))
+    .catch(e => console.log('Error hybriddCall', e));
 }
 
 // proc request helper function
-function hybriddproc (urltarget, usercrypto, reqmethod, properties, callback, waitfunction, cnt) {
-  if(cnt) { if(cnt<10) { cnt++; } } else { cnt = 1; }
+hybriddReturnProcess = function (properties) {
   var processStep = nextStep();
-  var urlrequest = path + zchanOrYchanEncryptionStr(reqmethod, usercrypto)(processStep)('p/' + properties.data);
+  var reqmethod = typeof properties.z === 'undefined' && properties.z;
+  var urlrequest = path + zchanOrYchanEncryptionStr(reqmethod, GL.usercrypto)(processStep)('p/' + properties.data);
 
-  if (typeof properties.data !== 'undefined') {
-    $.ajax({
-      url: urlrequest,
-      timeout: TIMEOUT,
-      success: function (result) {
-        var objectContainingRequestedData = zchanOrYchanEncryptionObj(reqmethod, usercrypto)(processStep)(result);
-        function retryHybriddProcess () {
-          hybriddproc(urltarget, usercrypto, reqmethod, properties, callback, waitfunction, cnt);
-        }
-        maybeSuccessfulDataRequestRender(properties, callback, waitfunction, cnt, retryHybriddProcess, objectContainingRequestedData);
-      },
-      error: function (object) {
-        maybeRunFunctionWithArgs(callback, properties, object, '?');
-      }
-    });
+  return fetch(urlrequest)
+    .then(r => r.json()
+          .then(r => zchanOrYchanEncryptionObj(reqmethod, GL.usercrypto)(processStep)(r)) // TODO: Factor out decoding!!!
+          .catch(e => console.log('Error hybriddCall', e)))
+    .catch(e => console.log('Error hybriddCall', e));
+}
+
+
+function errorHybriddCall (success, properties) {
+  return function (object) {
+    maybeRunFunctionWithArgs(success, { properties }, object, '[read error]');
+  }
+}
+
+function successHybriddCall (properties, urltarget, reqmethod, usercrypto, step, success, waitfunction) {
+  return function (encodedResult) {
+  var decodedResultObj = zchanOrYchanEncryptionObj(reqmethod, usercrypto)(step)(encodedResult);
+  var objectWithProperties = Object.assign(properties, decodedResultObj);
+    hybriddproc(urltarget, usercrypto, reqmethod, objectWithProperties, success, waitfunction, 0);
+  }
+}
+
+function hybriddProcError (callback, properties) {
+  return function (object) {
+    maybeRunFunctionWithArgs(callback, properties, object, '?');
+  }
+}
+
+function successHybriddProc (urltarget, usercrypto, reqmethod, properties, callback, waitfunction, processStep, cnt) {
+  return function (result) {
+  var objectContainingRequestedData = zchanOrYchanEncryptionObj(reqmethod, usercrypto)(processStep)(result);
+  function retryHybriddProcess () {
+    hybriddproc(urltarget, usercrypto, reqmethod, properties, callback, waitfunction, cnt);
+  }
+    maybeSuccessfulDataRequestRender(properties, callback, waitfunction, cnt, retryHybriddProcess, objectContainingRequestedData);
   }
 }
 
