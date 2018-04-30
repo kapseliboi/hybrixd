@@ -1,3 +1,15 @@
+// - Get assetmodes and names
+// - Get modehashes
+// - Retrieve user's assets from storage
+// - Initialize user assets
+
+// NOPE \/\/\/ Render DOM independently!!!!
+//   When ready:
+// - Fetch view: dashboard
+
+// - Async: Fetch valuations
+// - Async: Initialize Proof of Work loop
+
 var POW = proofOfWork;
 var Valuations = valuations;
 var U = utils;
@@ -14,13 +26,18 @@ GL = {
   assets: []
 };
 
-assets.seed = {};
-assets.keys = {};
-assets.addr = {};
+assets.seed = {}; // Transaction.js
+assets.keys = {}; // Transaction.js
+assets.addr = {}; // Transaction.js + balance calls
 
 // Don't move this yet, as the cur_step is needed by assetModesUrl. Synchronous coding!
 GL.cur_step = nextStep();
 var assetModesUrl = path + zchan(GL.usercrypto, GL.cur_step, 'l/asset/details');
+
+var defaultAssetData = [
+  { id: 'btc', starred: false },
+  { id: 'eth', starred: false }
+];
 
 // All synchronous dependencies. Make async with Streamzzzz
 function main () {
@@ -31,69 +48,54 @@ function main () {
       .fromPromise(U.fetchDataFromUrl(assetModesUrl, 'Error retrieving asset details.'))
       .map(setAssetsData);
 
-  var hybriddCallStream = Rx.Observable
+  var deterministicHashesStream = Rx.Observable
       .fromPromise(hybriddcall({r: '/s/deterministic/hashes', z: true}))
       .filter(R.propEq('error', 0))
       .map(R.merge({r: '/s/deterministic/hashes', z: true}));
 
-  var hybriddCallResponseProcessStream = hybriddCallStream
+  var deterministicHashesResponseProcessStream = deterministicHashesStream
       .flatMap(function (properties) {
         return Rx.Observable
           .fromPromise(hybriddReturnProcess(properties));
       })
-      .map((z) => {
-        assets.modehashes = z.data;
-        return true;
-      });
+      .map((z) => { assets.modehashes = z.data; }); // TODO: MAKE PURE!!!!
 
   var storedUserDataStream = storage.Get_(userStorageKey('ff00-0034'))
-      .map(function (z) {
-        var decodedData = userDecode(z);
-        GL.assets = decodedData;
+      .map(userDecode)
+      .map(storedOrDefaultUserData);
 
-        GL.assets.forEach(R.compose(
-          initializeDeterministicEncryptionRoutines,
+  var assetsDetailsStream = storedUserDataStream
+      .flatMap(a => a) // Flatten Array structure...
+      .flatMap(R.compose(
+          initializeAsset,
           R.prop('id')
-        ));
-
-        return decodedData;
-      });
+      ));
 
   var combinedStream = Rx.Observable
       .combineLatest(
         storedUserDataStream,
         assetDetailsStream,
-        hybriddCallResponseProcessStream
-      ).map(z => true);
+        deterministicHashesResponseProcessStream
+      );
 
-  // storedUserDataStream.subscribe();
-  // assetDetailsStream.subscribe();
-  // hybriddCallResponseProcessStream.subscribe();
-
-  // retrieveUserAssetData();
+  // TODO: Separate data retrieval from DOM rendering. Dashboard should be rendered in any case.
   combinedStream.subscribe(z => {
+    GL.assets = R.nth(0, z);
+    fetchview('interface.dashboard', args); });
 
-    fetchview('interface.dashboard', args);    // Switch to dashboard view
+  // UNTIL VIEW IS RENDERED SEPARATELY:
+  assetsDetailsStream.subscribe(assetDetails => {
+    GL.assets = R.reduce(mkUpdatedAssets(assetDetails), [], GL.assets);
+
+    // HACK: Assets can only be viewed when all details have been retrieved. Otherwise, transactions will not work.
+    document.querySelector('#topmenu-assets').onclick = fetchAssetsViews(pass_args);
+    document.querySelector('#topmenu-assets').classList.add('active');
   });
 }
 
-// TODO Move this up to just after login, when retrieving hash, modes, etc
-function initializeDeterministicEncryptionRoutines (assetID, i) {
-  initializeAsset(assetID);
+function initializeAsset (entry) {
+  return initAsset(entry, GL.assetmodes[entry]);
 }
-
-// - Get assetmodes and names
-// - Get modehashes
-// - Retrieve user's assets from storage
-// - Initialize user assets
-
-//   When ready:
-// - Fetch view: dashboard
-
-// - Async: Fetch valuations
-// - Async: Initialize Proof of Work loop
-
-function initializeAsset (entry, passdata) { initAsset(entry, GL.assetmodes[entry]); }
 
 function setAssetsData (assetModesData) {
   var decryptedData = zchan_obj(GL.usercrypto, GL.cur_step, assetModesData);
@@ -120,25 +122,24 @@ function matchSymbolWithData (key, data) {
   );
 }
 
-// function retrieveUserAssetData () {
-//   storage.Get(userStorageKey('ff00-0034'), function (crypted) {
-//     var decodedData = userDecode(crypted);
+// TODO: Make pure!!!
+function storedOrDefaultUserData (decodeUserData) {
+  if (R.isNil(decodeUserData)) {
+    storage.Set(userStorageKey('ff00-0034'), userEncode(defaultAssetData));
+  }
 
-//     GL.assets = R.isNil(decodedData)
-//       ? [
-//         {id: 'btc', starred: false},
-//         {id: 'eth', starred: false}
-//       ]
-//       : decodedData;
+  return R.isNil(decodeUserData)
+    ? defaultAssetData
+    : decodeUserData;
+}
 
-//     GL.assets.forEach(R.compose(
-//       initializeDeterministicEncryptionRoutines,
-//       R.prop('id')
-//     ));
-
-//     // TRANSITION TO SINGLE STORAGE KEY FOR DATA
-//     storage.Set(userStorageKey('ff00-0035'), userEncode(decodedData));
-//   });
-// }
+function mkUpdatedAssets (details) {
+  return function (assets, asset) {
+    var assetOrUpdatedDetails = R.equals(asset.id, details.symbol)
+        ? R.merge(asset, details)
+        : asset;
+    return R.append(assetOrUpdatedDetails, assets);
+  }
+}
 
 main();

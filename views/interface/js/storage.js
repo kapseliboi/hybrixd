@@ -171,6 +171,7 @@ var storage = (function() {
     },
 
     Get_ : function (storekey) {
+      console.log("storekey = ", storekey);
       if(storekey.substr(-6) === '-LOCAL') {
         console.log('Storing');
         return Rx.Observable

@@ -13,59 +13,35 @@ init.interface.dashboard = function (args) {
   Utils.documentReady(main);
 };
 
-// function matchAssets () {
-//   // Assets active
-//   if (GL.assets === null || typeof GL.assets !== 'object') {
-//     var initedAssets = [
-//       {id: 'btc', starred: false},
-//       {id: 'eth', starred: false}
-//     ];
+function mkHybriddCallStream (url) {
+  var hybriddCallStream = Rx.Observable
+      .fromPromise(hybriddcall({r: url, z: true}))
+      .filter(R.propEq('error', 0))
+      .map(R.merge({r: url, z: true}));
 
-//     GL.assets = initedAssets;
+  var hybriddCallResponseStream = hybriddCallStream
+      .flatMap(function (properties) {
+        return Rx.Observable
+          .fromPromise(hybriddReturnProcess(properties));
+      });
 
-//     storage.Set(userStorageKey('ff00-0034'), userEncode(initedAssets));
-//   }
-// }
-
-var deterministicHashesStream = Rx.Observable
-    .fromPromise(hybriddcall({r: '/s/deterministic/hashes', z: 1}))
-    .filter(R.propEq('error', 0))
-    .map(R.merge({r: '/s/deterministic/hashes', z: true}));
-
-var deterministicHashesResponseStream = deterministicHashesStream
-    .flatMap(function (properties) {
-      return Rx.Observable
-        .fromPromise(hybriddReturnProcess(properties));
-    })
+  return hybriddCallResponseStream;
+}
 
 function displayAssets () {
-  // matchAssets();
-  // Below code does not work properly when GL.assetsActive has not been initialized properly.
-  // For now, this fix: user can only go to Assets view when GL.assetsActive has been populated.
-  document.querySelector('#topmenu-assets').onclick = fetchAssetsViews(pass_args);
-  document.querySelector('#topmenu-assets').classList.add('active');
+  var deterministicHashesUrl = '/s/deterministic/hashes';
+  var deterministicHashesHybriddCallStream = mkHybriddCallStream(deterministicHashesUrl);
 
-  deterministicHashesResponseStream.subscribe(function (_) {
+  deterministicHashesHybriddCallStream.subscribe(function (_) {
     GL.assets.forEach(initializeBalances);
-    renderStarredAssets();
+    renderStarredAssets(GL.assets);
     setIntervalFunctions(balance, GL.assets);
   });
 }
 
-function processDataAndRenderAndStuff (modeHashes, passdata) {
-  // Needed to initialize addresses!!!!
-  // initializeDeterministicEncryptionRoutines(entry, i);
-  // renderStarredHTML(GL.assets); // if all assets inits are called run
-
-  // Now loading nothing on first go, because assets haven't been retrieved from storage yet.
-  GL.assets.forEach(initializeBalances);
-  renderStarredAssets();
-  setIntervalFunctions(balance, GL.assets);
-}
-
-function renderStarredAssets () {
-    var hasStarredAssets = R.any(R.prop('starred'), GL.assets);
-    var renderAssets = hasStarredAssets || R.not(R.isEmpty(GL.assets));
+function renderStarredAssets (assets) {
+    var hasStarredAssets = R.any(R.prop('starred'), assets);
+    var renderAssets = hasStarredAssets || R.not(R.isEmpty(assets));
 
     var htmlToRender = renderAssets
         ? renderStarredHTML(GL.assets)
@@ -112,37 +88,18 @@ function checkIfAssetsAreLoaded (balance, assets) {
 
 function renderBalanceThroughHybridd (asset) {
   var element = '.dashboard-balances > .data > .balance > .balance-' + asset.id.replace(/\./g, '-');
-
   var url = 'a/' + asset.id + '/balance/' + assets.addr[asset.id];
-  var balanceStream = Rx.Observable
-      .fromPromise(hybriddcall({r: url, z: 0}))
-      .filter(R.propEq('error', 0))
-      .map(R.merge({r: url, z: true}));
-
-  var balanceResponseStream = balanceStream
-      .flatMap(function (properties) {
-        return Rx.Observable
-          .fromPromise(hybriddReturnProcess(properties));
-      })
+  var balanceStream = mkHybriddCallStream(url)
       .map(data => {
-        if (R.isNil(data.stopped) && data.progress < 1) {
-          throw data; // error will be picked up by retryWhen
-        }
+        if (R.isNil(data.stopped) && data.progress < 1) throw data;
         return data;
       })
       .retryWhen(function (errors) { return errors.delay(100); });
 
-  balanceResponseStream.subscribe(returnedObjectFromServer => {
+  balanceStream.subscribe(returnedObjectFromServer => {
     var sanitizedData = sanitizeServerObject(returnedObjectFromServer).data;
     renderDataInDom(element, 5, sanitizedData);
   });
-}
-
-function renderBalanceWithSomeGlobalEntanglement (object) {
-  if (typeof object.data === 'string') {
-    object.data = formatFloatInHtmlStr(object.data, 5);
-  }
-  return object;
 }
 
 function main () {
@@ -159,5 +116,4 @@ function initializeBalanceGlobal () {
 }
 
 function getBalances (assets) { assets.forEach(renderBalanceThroughHybridd); };
-function initializeAsset (entry, passdata) { initAsset(entry, GL.assetmodes[entry]); }
 function fetchAssetsViews (args) { return function () { fetchview('interface.assets', args); }; }

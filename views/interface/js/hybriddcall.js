@@ -130,68 +130,90 @@ activate = function(code) {
   }
 }
 
-function finalize(dcode, submode, entry, fullmode) {
-  deterministic = activate( LZString.decompressFromEncodedURIComponent(dcode) );
+function mkAssetDetailsStream (deterministic, submode, entry, fullmode) {
   var url = 'a/' + entry + '/details/';
   var seed = deterministicSeedGenerator(entry);
   var keys = deterministic.keys( {symbol: entry, seed, mode:submode} );
   var addr = deterministic.address( Object.assign(keys , {mode: submode}) );
+  var mode = R.prop(entry, assets.mode);
 
+  // TODO: RM globals
   assets.mode[entry] = fullmode;
   assets.seed[entry] = seed;
   assets.keys[entry] = keys;
   assets.addr[entry] = addr;
-  var loop_step = nextStep();
-  hybriddcall({r:'a/'+entry+'/factor',c:GL.usercrypto,s:loop_step,z:0}, function(object) { if(typeof object.data!='undefined') { assets.fact[entry]=object.data; } });
-  var loop_step = nextStep();
-  hybriddcall({r:'a/'+entry+'/fee',c:GL.usercrypto,s:loop_step,z:0}, function(object) { if(typeof object.data!='undefined') { assets.fees[entry]=object.data; } });
-  var loop_step = nextStep();
-  hybriddcall({r:'a/'+entry+'/contract',c:GL.usercrypto,s:loop_step,z:0}, function(object) { if(typeof object.data!='undefined') { assets.cntr[entry]=object.data; } });
 
-  hybriddcall({r: url, z: 0}, function (returnedObjectFromServer, passdata) {
+  var assetDetailsStream = Rx.Observable
+      .fromPromise(hybriddcall({r:url, z:0}))
+      .filter(R.propEq('error', 0))
+      .map(R.merge({r: '/s/deterministic/hashes', z: true}));
+
+  var assetDetailsResponseStream = assetDetailsStream
+      .flatMap(function (properties) {
+        return Rx.Observable
+          .fromPromise(hybriddReturnProcess(properties));
+      });
+
+  // TODO: Return Observable back to interface.js
+  return assetDetailsResponseStream
+    .map(updateGlobalAssets(entry, seed, keys, addr, mode))
+}
+
+function updateGlobalAssets (entry, seed, keys, addr, mode) {
+  return function (assetDetailsResponse) {
     var assetDetails = R.merge(
-      R.prop('data', returnedObjectFromServer),
+      R.prop('data', assetDetailsResponse),
       {
-        mode: R.prop(entry, assets.mode),
+        mode,
         seed,
         keys,
         address: addr
       }
     )
 
-    GL.assets = R.reduce(function (assets, asset) {
-      var assetOrUpdatedDetails = R.equals(asset.id, assetDetails.symbol)
-          ? R.merge(asset, assetDetails)
-          : asset
-      return R.append(assetOrUpdatedDetails, assets)
-    }, [], GL.assets);
-  });
+    return assetDetails
+    // // MUTATING GLOBAL ASSETS OBJECT!!
+    // GL.assets = R.reduce(mkUpdatedAssets(assetDetails), [], GL.assets);
+  }
 }
 
-initAsset = function(entry, fullmode) {
+initAsset = function (entry, fullmode) {
   var mode = fullmode.split('.')[0];
   var submode = fullmode.split('.')[1]
   // if the deterministic code is already cached client-side
   if(typeof assets.modehashes[mode] !== 'undefined') {
-    storage.Get(assets.modehashes[mode] + '-LOCAL', function (dcode) {
-      if(dcode) {
-        finalize(dcode, submode, entry, fullmode);
-        return true;
-      } else {
+    var modeHashStream = storage.Get_(assets.modehashes[mode] + '-LOCAL')
+    return modeHashStream
+      .flatMap(getDeterministicStuff(entry, mode, submode, fullmode))
+  }
+}
+
+function initializeDetermisticAndMkDetailsStream (dcode, submode, entry, fullmode) {
+  var deterministic = deterministic = activate(LZString.decompressFromEncodedURIComponent(dcode));
+  return mkAssetDetailsStream(deterministic, submode, entry, fullmode);
+}
+
+// Currently breaking!
+function bar (mode, submode, entry, fullmode) {
+  // TODO: STREAMIFY!!!
+  hybriddcall({r:'s/deterministic/code/'+mode,z:0}, function (object) {
+    if(typeof object.error !== 'undefined' && object.error === 0) {
+      // decompress and make able to run the deterministic routine
+      storage.Set(assets.modehashes[mode]+'-LOCAL', object.data)
+      mkAssetDetailsStream(object.data, submode, entry, fullmode);
+    }
+  });
+  return true;
+}
+
+function getDeterministicStuff (entry, mode, submode, fullmode) {
+  return function (dcode) {
+    return R.not(R.isNil(dcode))
+      ? initializeDetermisticAndMkDetailsStream(dcode, submode, entry, fullmode)
+      : function () {
         storage.Del(assets.modehashes[mode]+'-LOCAL');
+        return bar(mode);
       }
-      // in case of no cache request code from server
-      if(!dcode) { // || typeof assets.mode[entry]=='undefined') {
-        hybriddcall({r:'s/deterministic/code/'+mode,z:0}, function(object) {
-          if(typeof object.error !== 'undefined' && object.error === 0) {
-            // decompress and make able to run the deterministic routine
-            storage.Set(assets.modehashes[mode]+'-LOCAL',object.data)
-            finalize(object.data, submode, entry, fullmode);
-          }
-        });
-        return true;
-      }
-    });
   }
 }
 
@@ -286,8 +308,8 @@ function errorHybriddCall (success, properties) {
 
 function successHybriddCall (properties, urltarget, reqmethod, usercrypto, step, success, waitfunction) {
   return function (encodedResult) {
-  var decodedResultObj = zchanOrYchanEncryptionObj(reqmethod, usercrypto)(step)(encodedResult);
-  var objectWithProperties = Object.assign(properties, decodedResultObj);
+    var decodedResultObj = zchanOrYchanEncryptionObj(reqmethod, usercrypto)(step)(encodedResult);
+    var objectWithProperties = Object.assign(properties, decodedResultObj);
     hybriddproc(urltarget, usercrypto, reqmethod, objectWithProperties, success, waitfunction, 0);
   }
 }
@@ -300,10 +322,10 @@ function hybriddProcError (callback, properties) {
 
 function successHybriddProc (urltarget, usercrypto, reqmethod, properties, callback, waitfunction, processStep, cnt) {
   return function (result) {
-  var objectContainingRequestedData = zchanOrYchanEncryptionObj(reqmethod, usercrypto)(processStep)(result);
-  function retryHybriddProcess () {
-    hybriddproc(urltarget, usercrypto, reqmethod, properties, callback, waitfunction, cnt);
-  }
+    var objectContainingRequestedData = zchanOrYchanEncryptionObj(reqmethod, usercrypto)(processStep)(result);
+    function retryHybriddProcess () {
+      hybriddproc(urltarget, usercrypto, reqmethod, properties, callback, waitfunction, cnt);
+    }
     maybeSuccessfulDataRequestRender(properties, callback, waitfunction, cnt, retryHybriddProcess, objectContainingRequestedData);
   }
 }

@@ -30,16 +30,16 @@ UItransform = {
   }
 }
 
-$(".clearable").each(function() {
+$(".clearable").each(function () {
 
   var $inp = $(this).find("input:text"),
       $cle = $(this).find(".clearable__clear");
 
-  $inp.on("input", function(){
+  $inp.on("input", function (){
     $cle.toggle(!!this.value);
   });
 
-  $cle.on("touchstart click", function(e) {
+  $cle.on("touchstart click", function (e) {
     e.preventDefault();
     $inp.val("").trigger("input");
   });
@@ -87,7 +87,7 @@ displayAssets = function displayAssets() {
     });
 
     var element = balance.asset[acc.i].replace(/\./g,'-');
-    var maybeStarActive = maybeAsset === undefined ? '' : ' id="' + maybeAsset['id'].replace(/\./g, '_') + '" onclick=toggle_star(' + acc.i + ') ';
+    var maybeStarActive = maybeAsset === undefined ? '' : ' id="' + maybeAsset['id'].replace(/\./g, '_') + '" onclick=toggleStar("' + assetID + '") ';
     var balanceInDollars = Valuations.renderDollarPrice(symbolName, balance.amount[acc.i]);
     var icon = (symbolName in black.svgs) ? black.svgs[symbolName] : mkSvgIcon(symbolName);
 
@@ -122,7 +122,7 @@ displayAssets = function displayAssets() {
   intervals = setInterval(function () { uiAssets(balance)(assetDetail); }, 30000); // TODO: Replace this with Rx interval. Now it breaks sometimes.....
 
   document.querySelector('.assets-main > .data').innerHTML = htmlToRender; // insert new data into DOM
-  GL.assets.forEach(function (asset, i) { setStarredAssetClass(i, R.prop('starred', asset)); });
+  GL.assets.forEach(function (asset) { setStarredAssetClass(asset.id, R.prop('starred', asset)); });
   scrollToAnchor();
 };
 

@@ -1,17 +1,3 @@
-function renderManageButton (element, asset, active) {
-  var activeToggled = R.not(active);
-  var btnText = active ? 'Remove' : 'Add';
-  var btnClass = active ? 'pure-button-error selectedAsset' : 'pure-button-success';
-  var svgName = active ? 'remove' : 'add';
-
-  return '<a onclick="changeManageButton(\'' + element + '\',\'' + asset + '\',' + activeToggled + ');" class="pure-button ' + btnClass + '" role="button"><div class="actions-icon">' + svg[svgName] + '</div>' + btnText + '</a>';
-}
-
-function changeManageButton (element, asset, active) {
-  GL.assetSelect[asset] = active;
-  document.querySelector('#manage-assets .assetbuttons-' + element).innerHTML = renderManageButton(element, asset, active);
-}
-
 function fillSend (asset) {
   var element = '.assets-main > .data .balance-' + asset.replace(/\./g, '-');
   var balance = document.querySelector(element).getAttribute('amount'); // TODO: Get balance from State.
