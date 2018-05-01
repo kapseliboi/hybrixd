@@ -88,7 +88,7 @@ function main () {
 
   // UNTIL VIEW IS RENDERED SEPARATELY:
   assetsDetailsStream.subscribe(assetDetails => {
-    GL.assets = R.reduce(mkUpdatedAssets(assetDetails), [], GL.assets);
+    GL.assets = R.reduce(U.mkUpdatedAssets(assetDetails), [], GL.assets);
 
     // HACK: Assets can only be viewed when all details have been retrieved. Otherwise, transactions will not work.
     document.querySelector('#topmenu-assets').onclick = fetchAssetsViews(pass_args);
@@ -136,15 +136,6 @@ function storedOrDefaultUserData (decodeUserData) {
   return R.isNil(decodeUserData)
     ? defaultAssetData
     : decodeUserData;
-}
-
-function mkUpdatedAssets (details) {
-  return function (assets, asset) {
-    var assetOrUpdatedDetails = R.equals(asset.id, details.symbol)
-        ? R.merge(asset, details)
-        : asset;
-    return R.append(assetOrUpdatedDetails, assets);
-  };
 }
 
 function fetchAssetsViews (args) { return function () { fetchview('interface.assets', args); }; }

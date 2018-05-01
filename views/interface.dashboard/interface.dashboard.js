@@ -18,8 +18,8 @@ function main () {
 }
 
 function renderStarredAssets (assets) {
-  var hasStarredAssets = R.any(R.prop('starred'), assets);
-  var renderAssets = hasStarredAssets || R.not(R.isEmpty(assets));
+  var hasStarredAssets = R.any(R.propEq('starred', true), assets);
+  var renderAssets = hasStarredAssets && R.not(R.isEmpty(assets));
   var starredAssetsHTML = R.reduce(mkHtmlForStarredAssets, '', assets);
 
     var htmlToRender = renderAssets

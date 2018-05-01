@@ -27,5 +27,16 @@ utils = {
   },
   updateGlobalAssets: function (a) {
     GL.assets = a;
+  },
+  getTargetValue: function (e) {
+    return e.target.value;
+  },
+  mkUpdatedAssets: function (details) {
+    return function (assets, asset) {
+      var assetOrUpdatedDetails = R.equals(asset.id, details.symbol)
+          ? R.merge(asset, details)
+          : asset;
+      return R.append(assetOrUpdatedDetails, assets);
+    };
   }
 };

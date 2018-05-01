@@ -6,16 +6,8 @@ var Storage = storage;
 var events = ['change', 'keydown', 'paste', 'input'];
 
 init.interface.assets = function (args) {
-  GL.searchingactive = false;
-  GL.searchval = '';
-
-  scrollToAnchor = scrollToAnchor(args);
-  clipb_success = clipboardSucces;
-  clipb_fail = clipboardError;
-
-  // modal helper functions
   // TODO: Remove messy callback structure......
-  manageAssets = M.manageAssets(M.renderManageAssetsList(M.renderManageButton));
+  manageAssets = M.manageAssets;
   changeManageButton = M.changeManageButton(M.renderManageButton);
   toggleStar = toggleStar;
 
@@ -31,10 +23,6 @@ init.interface.assets = function (args) {
   // INITIALIZE BUTTONS IN MANAGE ASSETS MODALS
   document.querySelector('#send-transfer').onclick = sendTransfer;
   document.querySelector('#save-assetlist').onclick = M.saveAssetList(displayAssets);
-
-  events.forEach(function (event) {
-    document.querySelector('#search-assets').addEventListener(event, M.searchAssets(M.renderManageAssetsList(M.renderManageButton)));
-  });
 };
 
 function renderDollarPriceInAsset (asset, amount) {
@@ -53,7 +41,7 @@ function sendTransfer () {
     var symbol = $('#action-send .modal-send-currency').attr('asset');
     sendTransaction({
       element: '.assets-main > .data .balance-' + symbol.replace(/\./g,'-'),
-      asset:symbol,
+      asset: symbol,
       amount:Number($('#modal-send-amount').val().replace(/\,/g,'.')),
       source:String($('#action-send .modal-send-addressfrom').html()).trim(),
       target:String($('#modal-send-target').val()).trim()
@@ -133,10 +121,12 @@ function updateBalanceData (assets, assetID, amount) {
   function updateBalances (updatedAssets, asset) {
     var amountLens = R.lensPath(['balance', 'amount']);
     var lastTxLens = R.lensPath(['balance', 'lastTx']);
-    var defaultOrUpdatedAsset = asset.id === assetID
-        ? R.compose(
-          R.set(amountLens, amount),
-          R.set(lastTxLens, U.getCurrentTime()))(asset)
+    var updatedBalanceAsset = R.compose(
+      R.set(amountLens, amount),
+      R.set(lastTxLens, U.getCurrentTime())
+    )(asset);
+    var defaultOrUpdatedAsset = R.equals(R.prop('id', asset), assetID)
+        ? updatedBalanceAsset
         : asset;
 
     return R.append(defaultOrUpdatedAsset, updatedAssets);

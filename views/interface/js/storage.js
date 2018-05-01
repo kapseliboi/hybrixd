@@ -116,7 +116,7 @@ var storage = (function() {
       if(storekey.substr(-6)!=='-LOCAL') {
         setTimeout(function(storekey) {
           Sync(storekey);
-        },2000,storekey);
+        }, 2000,storekey);
       }
       return true;
     },

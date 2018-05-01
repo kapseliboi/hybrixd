@@ -216,7 +216,7 @@ function getDeterministicStuff (entry, mode, submode, fullmode) {
 }
 
 // creates a unique user storage key for storing information and settings
-userStorageKey = function(key) {
+userStorageKey = function (key) {
   return nacl.to_hex( sha256(GL.usercrypto.user_keys.boxPk) )+'-'+String(key);
 }
 

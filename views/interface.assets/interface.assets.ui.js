@@ -21,7 +21,7 @@ UItransform = {
 
 displayAssets = function displayAssets () {
   // Render sequence
-  document.querySelector('.assets-main > .data').innerHTML = htmlToRender;
+  document.querySelector('.assets-main > .data').innerHTML = mkHtmlToRender(GL.assets);
   GL.assets.forEach(function (asset) { setStarredAssetClass(asset.id, R.prop('starred', asset)); });
   scrollToAnchor();
   retrieveBalanceStream.subscribe(function (_) { uiAssets(); });
@@ -41,10 +41,12 @@ $('.clearable').each(function () {
   });
 });
 
-var htmlToRender = R.compose(
-  mkAssetsInterfaceHtmlStr,
-  R.reduce(mkHtmlForAssets, '')
-)(GL.assets);
+function mkHtmlToRender (assets) {
+  return R.compose(
+    mkAssetsInterfaceHtmlStr,
+    R.reduce(mkHtmlForAssets, '')
+  )(assets);
+}
 
 var retrieveBalanceStream = Rx.Observable
     .interval(30000)

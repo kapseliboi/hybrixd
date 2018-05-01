@@ -1,17 +1,22 @@
-function fillSend (asset) {
-  var element = '.assets-main > .data .balance-' + asset.replace(/\./g, '-');
-  var balance = document.querySelector(element).getAttribute('amount'); // TODO: Get balance from State.
+var Clipboard = clipboard
+
+function fillSend (assetID) {
+  var asset = R.find(R.propEq('id', assetID))(GL.assets);
+  var element = '.assets-main > .data .balance-' + assetID.replace(/\./g, '-');
+  var balance = R.path(['balance', 'amount'], asset);
+  var address = R.prop('address', asset);
+  var fee = R.prop('fee', asset);
   if (balance && balance !== '?') {
-    var spendable = !isToken(asset) ? toInt(balance).minus(toInt(assets.fees[asset])) : toInt(balance);
+    var spendable = !isToken(assetID) ? toInt(balance).minus(toInt(fee)) : toInt(balance);
 
     if (spendable < 0) { spendable = 0; }
-    document.querySelector('#action-send .modal-send-currency').innerHTML = asset.toUpperCase();
-    document.querySelector('#action-send .modal-send-currency').setAttribute('asset', asset);
+    document.querySelector('#action-send .modal-send-currency').innerHTML = assetID.toUpperCase();
+    document.querySelector('#action-send .modal-send-currency').setAttribute('asset', assetID);
     document.querySelector('#action-send .modal-send-balance').innerHTML = formatFloat(spendable);
     document.querySelector('#modal-send-target').value = '';
     document.querySelector('#modal-send-amount').value = '';
-    document.querySelector('#action-send .modal-send-addressfrom').innerHTML = assets.addr[asset];
-    document.querySelector('#action-send .modal-send-networkfee').innerHTML = formatFloat(assets.fees[asset]) + ' ' + asset.split('.')[0].toUpperCase();
+    document.querySelector('#action-send .modal-send-addressfrom').innerHTML = address;
+    document.querySelector('#action-send .modal-send-networkfee').innerHTML = formatFloat(fee) + ' ' + assetID.split('.')[0].toUpperCase();
     check_tx();
   }
 }
@@ -21,7 +26,7 @@ function receiveAction (asset) {
   document.querySelector('#action-receive .modal-receive-currency').innerHTML = asset.toUpperCase(); // after getting address from hybridd, set data-clipboard-text to contain it
   document.querySelector('#action-receive .modal-receive-addressfrom').innerHTML = assetAddress;
   document.querySelector('#modal-receive-button').setAttribute('data-clipboard-text', document.querySelector('#action-receive .modal-receive-addressfrom').innerHTML); // set clipboard content for copy button to address
-  clipboardButton('#modal-receive-button',clipb_success, clipb_fail); // set function of the copy button
+  clipboardButton('#modal-receive-button', Clipboard.clipboardSuccess, Clipboard.clipboardError); // set function of the copy button
   document.querySelector('#action-receive .modal-receive-status').setAttribute('id', 'receivestatus-' + asset);
 
   mkNewQRCode(assetAddress);

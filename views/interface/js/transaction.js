@@ -1,4 +1,4 @@
-sendTransaction = function(properties) {
+sendTransaction = function (properties) {
   UItransform.txStart();
   var p = {};
   p.asset = properties.asset;

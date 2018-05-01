@@ -1,16 +1,13 @@
 var fetch_ = fetch
-
-function getTargetValue (e) {
-  return e.target.value;
-}
+var U = utils;
 
 const userIdInputStr = Rx.Observable
       .fromEvent(document.querySelector('#inputUserID'), 'input')
-      .map(getTargetValue);
+      .map(U.getTargetValue);
 
 const passwordInputStream = Rx.Observable
       .fromEvent(document.querySelector('#inputPasscode'), 'input')
-      .map(getTargetValue);
+      .map(U.getTargetValue);
 
 loginInputStreams = {
   credentialsStream: Rx.Observable

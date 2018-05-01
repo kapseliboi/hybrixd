@@ -17,6 +17,7 @@ hy_content = ''; // variable to hold package content
 hy_content += fs.readFileSync('./'+viewname+'.html');
 hy_content += '<script>';
 hy_content += fs.readFileSync('./js/manageAssets.js');
+hy_content += fs.readFileSync('./js/searchBar.js');
 hy_content += fs.readFileSync('./js/clipboard.js');
 hy_content += fs.readFileSync('./js/render_utils.js');
 hy_content += fs.readFileSync('./'+viewname+'.js');
