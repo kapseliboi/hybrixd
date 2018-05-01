@@ -140,7 +140,10 @@ function exec(properties) {
           } else {
             var fee = (typeof global.hybridd.asset[base].fee != 'undefined'?global.hybridd.asset[base].fee:null);
             var feefactor = (typeof global.hybridd.asset[base].factor != 'undefined'?global.hybridd.asset[base].factor:null);
-            amount = fromInt( toInt(amount,factor).minus(toInt(fee,factor)),factor ).toString();  // with NXT the unspent function is a transaction preparation, so must subtract the fee
+            //if(base==='nxt' && toInt(amount,factor).toString()!==toInt(amount,factor).toInteger().toString() ) {
+            //  subprocesses.push('stop(1,"Error: NXT token transactions support only integer amounts!")');
+            //}
+            amount = fromInt( toInt(amount,factor).minus(toInt(fee,factor)).toInteger(),factor ).toString();  // with NXT the unspent function is a transaction preparation, so must subtract the fee
             subprocesses.push('func("nxt","link",{target:'+jstr(target)+',command:["transferAsset",["recipient='+targetaddr+'","asset='+target.contract+'",'+publicKey+',"quantityQNT='+toInt(amount,factor)+'","feeNQT='+toInt(fee,feefactor)+'","deadline=300","doNotSign=1","broadcast=false"] ]})');
           }
           subprocesses.push('stop((typeof data.errorCode==="undefined"?0:data.errorCode),(typeof data.errorCode==="undefined"?data:null))');
