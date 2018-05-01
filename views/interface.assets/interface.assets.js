@@ -160,14 +160,23 @@ function toggleAssetButtons (element, assetID, balance) {
     R.compose(R.not, isNaN)
   ])(balance);
 
-  if (balanceIsValid) {
-    setTimeout(function () { document.querySelector(assetbuttonsClass).classList.remove('disabled'); }, 1000);
-    document.querySelector(assetbuttonsClass + ' a').removeAttribute('disabled');
-    document.querySelector(assetbuttonsClass + ' a').setAttribute('data-toggle', 'modal');
-    document.querySelector(element).setAttribute('amount', balance);
-  } else {
-    document.querySelector(assetbuttonsClass).classList.add('disabled');
-    document.querySelector(assetbuttonsClass + ' a').removeAttribute('data-toggle');
-    document.querySelector(element).setAttribute('amount', '?');
-  }
+  balanceIsValid
+    ? toggleTransactionButtons(element, assetbuttonsClass, 'remove', enableAttribute, balance)
+    : toggleTransactionButtons(element, assetbuttonsClass, 'add', disableAttribute, '?');
+}
+
+function toggleTransactionButtons (elem, query, addOrRemove, fn, attr) {
+  document.querySelector(query).classList[addOrRemove]('disabled');
+  document.querySelectorAll(query + ' a').forEach(fn);
+  document.querySelector(elem).setAttribute('amount', attr);
+}
+
+function disableAttribute (elem) {
+  elem.setAttribute('disabled', 'disabled');
+  elem.removeAttribute('data-toggle');
+}
+
+function enableAttribute (elem) {
+  elem.removeAttribute('disabled');
+  elem.setAttribute('data-toggle', 'modal');
 }
