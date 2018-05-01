@@ -113,18 +113,17 @@ function renderBalances () {
           })
           .retryWhen(function (errors) { return errors.delay(100); });
 
-      balanceStream.subscribe(returnedObjectFromServer => {
+      balanceStream.subscribe(balanceDataResponse => {
         var sanitizedData = R.compose(
+          R.defaultTo('n/a'),
           R.prop('data'),
           sanitizeServerObject
-        )(returnedObjectFromServer);
+        )(balanceDataResponse);
 
         renderDataInDom(element, 11, sanitizedData);
-        fillAssetElement(element, R.prop('id', asset), Number(sanitizedData));
+        toggleAssetButtons(element, R.prop('id', asset), Number(sanitizedData));
         renderDollarPriceInAsset(assetID, Number(sanitizedData));
-
-        // Update globals
-        GL.assets = updateBalanceData(GL.assets, assetID, sanitizedData);
+        U.updateGlobalAssets(updateBalanceData(GL.assets, assetID, sanitizedData));
       });
     }
   });
@@ -154,14 +153,21 @@ function getNewMarketPrices () {
   });
 }
 
-function fillAssetElement (element, assetID, balance) {
-  if (balance !== null && !isNaN(balance)) {
-    $(assetID).delay(1000).removeClass('disabled');
-    $(assetID + ' a').removeAttr('disabled');
-    $(assetID + ' a').attr('data-toggle', 'modal');
+function toggleAssetButtons (element, assetID, balance) {
+  var assetbuttonsClass = '.assets-main > .data .assetbuttons-' + assetID.replace(/\./g,'-');
+  var balanceIsValid = R.allPass([
+    R.compose(R.not, R.isNil),
+    R.compose(R.not, isNaN)
+  ])(balance);
+
+  if (balanceIsValid) {
+    setTimeout(function () { document.querySelector(assetbuttonsClass).classList.remove('disabled'); }, 1000);
+    document.querySelector(assetbuttonsClass + ' a').removeAttribute('disabled');
+    document.querySelector(assetbuttonsClass + ' a').setAttribute('data-toggle', 'modal');
+    document.querySelector(element).setAttribute('amount', balance);
   } else {
-    $(assetID).addClass('disabled');
-    $(assetID + ' a').removeAttr('data-toggle');
-    $(element).attr('amount', '?');
+    document.querySelector(assetbuttonsClass).classList.add('disabled');
+    document.querySelector(assetbuttonsClass + ' a').removeAttribute('data-toggle');
+    document.querySelector(element).setAttribute('amount', '?');
   }
 }
