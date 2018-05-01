@@ -2,93 +2,60 @@ var Valuations = valuations;
 
 // User interface transformations
 UItransform = {
-  formatFloat : function (amount, maxLengthSignificantDigits) {
-    if(isNaN(amount)) {
-      return '?';
-    } else {
-      var balance = bigNumberToString((toInt(amount)));
-      var trailingHtmlStr = balance.length > maxLengthSignificantDigits ? '<span>&hellip;</span>' : '';
-      var normalizedBalanceStr = balance === "0" ? '0' : balance.substr(0, maxLengthSignificantDigits) + trailingHtmlStr
-      return normalizedBalanceStr;
-    }
-  },
-  txStart : function() {
+  txStart : function () {
     loadSpinner();
-    document.querySelector('#action-send .pure-button-send').classList.add('pure-button-disabled')
+    document.querySelector('#action-send .pure-button-send').classList.add('pure-button-disabled');
     document.querySelector('#action-send .pure-button-send').classList.remove('pure-button-primary');
     document.querySelector('#action-send').style.opacity = '0.7';
   },
-  txStop : function() {
+  txStop : function () {
     stopSpinner();
-    document.querySelector('#action-send .pure-button-send').classList.remove('pure-button-disabled')
+    document.querySelector('#action-send .pure-button-send').classList.remove('pure-button-disabled');
     document.querySelector('#action-send .pure-button-send').classList.add('pure-button-primary');
     document.querySelector('#action-send').style.opacity = '1';
   },
-  txHideModal : function () { $('#action-send').css('opacity', '1').modal('hide') }, // TODO: REMOVE JQUERY HERE. SOMEWHAT ANNOYING!!!! Modal refers to jquery plugin
+  txHideModal : function () { $('#action-send').css('opacity', '1').modal('hide'); }, // TODO: REMOVE JQUERY HERE. SOMEWHAT ANNOYING!!!! Modal refers to jquery plugin
   setBalance : function (element, setBalance) { document.querySelector(element).innerHTML = setBalance; },
-  deductBalance : function (element,newBalance) { document.querySelector(element).innerHTML = ('<span style="color:#6B6;">' + String(newBalance)) + '</span>';
-  }
-}
+  deductBalance : function (element, newBalance) { document.querySelector(element).innerHTML = ('<span style="color:#6B6;">' + String(newBalance)) + '</span>'; }
+};
 
-$(".clearable").each(function () {
+displayAssets = function displayAssets () {
+  // Render sequence
+  document.querySelector('.assets-main > .data').innerHTML = htmlToRender;
+  GL.assets.forEach(function (asset) { setStarredAssetClass(asset.id, R.prop('starred', asset)); });
+  scrollToAnchor();
+  retrieveBalanceStream.subscribe(function (_) { uiAssets(); });
+};
 
-  var $inp = $(this).find("input:text"),
-      $cle = $(this).find(".clearable__clear");
+$('.clearable').each(function () {
+  var $inp = $(this).find('input:text');
+  var $cle = $(this).find('.clearable__clear');
 
-  $inp.on("input", function (){
+  $inp.on('input', function () {
     $cle.toggle(!!this.value);
   });
 
-  $cle.on("touchstart click", function (e) {
+  $cle.on('touchstart click', function (e) {
     e.preventDefault();
-    $inp.val("").trigger("input");
+    $inp.val('').trigger('input');
   });
-
 });
 
-displayAssets = function displayAssets() {
-  balance = {}
-  balance.asset = [];
-  balance.amount = [];
-  balance.lasttx = [];
+var htmlToRender = R.compose(
+  mkAssetsInterfaceHtmlStr,
+  R.reduce(mkHtmlForAssets, '')
+)(GL.assets);
 
-  // create asset table
-  function mkDashboardHtmlStr (assetsHTMLStr) {
-    return '<div class="table">' +
-      '<div class="thead">' +
-      '<div class="tr">' +
-      '<div class="th col1 asset-title">Asset</div>' +
-      '<div class="th col2">Balance</div>' +
-      '<div class="th col3">Valuation</div>' +
-      '<div class="th col4 actions"></div>' +
-      '</div>' +
-      '</div>' +
-      '<div class="tbody">' +
-      assetsHTMLStr +
-      '</div>' +
-      '</div>';
-  }
+var retrieveBalanceStream = Rx.Observable
+    .interval(30000)
+    .startWith(0);
 
-  var htmlToRender = R.compose(
-    mkDashboardHtmlStr,
-    R.prop('str'),
-    R.reduce(mkHtmlForAssets, {i: 0, str: ''}),
-    R.map(R.prop('id'))
-  )(GL.assets);
-
-  function mkHtmlForAssets (acc, assetID) {
+  function mkHtmlForAssets (str, asset) {
+    var assetID = R.prop('id', asset);
     var symbolName = assetID.slice(assetID.indexOf('.') + 1);
-    balance.asset[acc.i] = assetID;
-    balance.amount[acc.i] = 0;
-    balance.lasttx[acc.i] = 0;
 
-    var maybeAsset = GL.assets.find(function (starred) {
-      return starred.id === balance.asset[acc.i];
-    });
-
-    var element = balance.asset[acc.i].replace(/\./g,'-');
-    var maybeStarActive = maybeAsset === undefined ? '' : ' id="' + maybeAsset['id'].replace(/\./g, '_') + '" onclick=toggleStar("' + assetID + '") ';
-    var balanceInDollars = Valuations.renderDollarPrice(symbolName, balance.amount[acc.i]);
+    var element = assetID.replace(/\./g,'-');
+    var maybeStarActive = ' id="' + assetID.replace(/\./g, '_') + '" onclick=toggleStar("' + assetID + '") ';
     var icon = (symbolName in black.svgs) ? black.svgs[symbolName] : mkSvgIcon(symbolName);
 
     var assetInfoHTMLStr = '<div id="asset-' + element + '" class="td col1 asset asset-' + element + '"><div class="icon">' + icon + '</div>' + assetID + '<div class="star"><a' + maybeStarActive + 'role="button">' + svg['star'] + '</a></div></div>';
@@ -109,28 +76,28 @@ displayAssets = function displayAssets() {
                           '</div>' +
                        '</div>';
 
-    return { i: R.add(acc.i, 1), str: R.concat(acc.str, htmlToRender) };
-  }
-  // refresh assets
-  var assetDetail = {
-    i: i,
-    balance: balance,
-    path: path
+    return str + htmlToRender;
   }
 
-  uiAssets(balance)(assetDetail);
-  intervals = setInterval(function () { uiAssets(balance)(assetDetail); }, 30000); // TODO: Replace this with Rx interval. Now it breaks sometimes.....
-
-  document.querySelector('.assets-main > .data').innerHTML = htmlToRender; // insert new data into DOM
-  GL.assets.forEach(function (asset) { setStarredAssetClass(asset.id, R.prop('starred', asset)); });
-  scrollToAnchor();
-};
-
-// main asset management code
-$(document).ready(function () {
-  document.querySelector('.assets-main .spinner-loader').classList.add('disabled-fast');
-  setTimeout(displayAssets, 500); // Render new HTML string in DOM. 500 sec delay for fadeout. Should separate concern!
-});
+  function mkAssetsInterfaceHtmlStr (assetsHTMLStr) {
+    return '<div class="table">' +
+      '<div class="thead">' +
+      '<div class="tr">' +
+      '<div class="th col1 asset-title">Asset</div>' +
+      '<div class="th col2">Balance</div>' +
+      '<div class="th col3">Valuation</div>' +
+      '<div class="th col4 actions"></div>' +
+      '</div>' +
+      '</div>' +
+      '<div class="tbody">' +
+      assetsHTMLStr +
+      '</div>' +
+      '</div>';
+  }
 
 function loadSpinner () { document.querySelector('#action-send .spinner').classList.add('active'); };
 function stopSpinner () { document.querySelector('#action-send .spinner').classList.remove('active'); };
+
+$(document).ready(function () {
+  displayAssets();
+});

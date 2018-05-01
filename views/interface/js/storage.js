@@ -56,14 +56,6 @@ var storage = (function() {
             return noChangesBetweenRemoteAndLocal(storekey, metaData);
           }
         })
-        // .map(function (z) {
-        //   console.log("z123 = ", z);
-        //   return z
-        // })
-
-    return compareStream
-
-    compareStream.subscribe();
 
     function remoteIsNewer (storeKey) {
       return Rx.Observable
@@ -90,31 +82,13 @@ var storage = (function() {
     }
 
     function remoteIsOlder (storeKey, metaData) {
-      console.log("metaData = ", metaData);
-      console.log("storeKey = ", storeKey);
       return Rx.Observable
         .fromPromise(localforage.getItem(storeKey)
                      .then(r => r)
                      .catch(e => console.log('e', e)))
         .map(value => {
-          console.log("value = ", value);
           return value
         })
-
-
-
-        // .flatMap(function (value) {
-        //   var url = 's/storage/set/' + storeKey + '/' + value;
-        //   return Rx.Observable
-        //     .fromPromise(hybriddcall({r: url, z: 0}))
-        // })
-        // .map(function (object) {
-        //   // add to proof of work queue
-        //   if(typeof object.data === 'string' && GL.powqueue.indexOf(metaData.res) === -1) {
-        //     GL.powqueue.push(storeKey + '/' + object.data);
-        //   }
-        //   return object
-        // });
     }
 
     function noChangesBetweenRemoteAndLocal (storeKey, metaData) {
@@ -131,19 +105,7 @@ var storage = (function() {
         });
     }
 
-    // hybriddcall({r:'s/storage/meta/'+storekey, z:0}, function(object) {
-    //   var meta = object.data;
-    //   if(typeof meta==='undefined' || meta===null || meta==='null') {
-    //     meta = {time:0,hash:null}
-    //   }
-    //   localforage.getItem(storekey+'.meta').then(function(localmeta) {
-    //     // difference detected
-    //     if(localmeta===null) { localmeta = {time:0,hash:0}; }
-    //     var meta = this.meta;
-    //     // DEBUG: logger(' KEY: '+storekey+' HASHES: '+meta.hash+' '+localmeta.hash);
-
-    //   }.bind({meta:meta}));
-    // });
+    return compareStream
   }
 
   var storage = {
@@ -171,13 +133,10 @@ var storage = (function() {
     },
 
     Get_ : function (storekey) {
-      console.log("storekey = ", storekey);
       if(storekey.substr(-6) === '-LOCAL') {
-        console.log('Storing');
         return Rx.Observable
           .fromPromise(localforage.getItem(storekey))
       } else {
-        console.log('Syncing');
         return Sync(storekey);
       }
       return true;

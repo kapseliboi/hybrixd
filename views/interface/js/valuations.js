@@ -12,15 +12,15 @@ valuations = {
       })
       .error(function (e) { console.log('Could not fetch valuations:', e); });
   },
-  renderDollarPrice: function (symbolName, assetAmount) {
+  renderDollarPrice: function (symbolName, amount) {
     var assetSymbolUpperCase = symbolName.toUpperCase();
     var tickers = GL.coinMarketCapTickers;
     var matchedTicker = tickers.filter(function (ticker) {
       return ticker.symbol === assetSymbolUpperCase;
     });
 
-    return matchedTicker.length !== 0
-      ? '$' + (assetAmount * matchedTicker[0].price_usd).toFixed(2)
+    return matchedTicker.length !== 0 && R.not(isNaN(amount))
+      ? '$' + (amount * matchedTicker[0].price_usd).toFixed(2)
       : 'n/a';
   }
-}
+};

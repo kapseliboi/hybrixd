@@ -172,8 +172,6 @@ function updateGlobalAssets (entry, seed, keys, addr, mode) {
     )
 
     return assetDetails
-    // // MUTATING GLOBAL ASSETS OBJECT!!
-    // GL.assets = R.reduce(mkUpdatedAssets(assetDetails), [], GL.assets);
   }
 }
 
@@ -299,6 +297,22 @@ hybriddReturnProcess = function (properties) {
     .catch(e => console.log('Error hybriddCall', e));
 }
 
+hybridd = {
+  mkHybriddCallStream: function (url) {
+    var hybriddCallStream = Rx.Observable
+        .fromPromise(hybriddcall({r: url, z: true}))
+        .filter(R.propEq('error', 0))
+        .map(R.merge({r: url, z: true}));
+
+    var hybriddCallResponseStream = hybriddCallStream
+        .flatMap(function (properties) {
+          return Rx.Observable
+            .fromPromise(hybriddReturnProcess(properties));
+      });
+
+    return hybriddCallResponseStream;
+  }
+}
 
 function errorHybriddCall (success, properties) {
   return function (object) {

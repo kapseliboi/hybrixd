@@ -41,8 +41,8 @@ var defaultAssetData = [
 
 // All synchronous dependencies. Make async with Streamzzzz
 function main () {
-  // Valuations.getDollarPrices(function () { console.log('Fetched valuations.'); });
-  // intervals.pow = setInterval(POW.loopThroughProofOfWork, 120000); // once every two minutes, loop through proof-of-work queue
+  Valuations.getDollarPrices(function () { console.log('Fetched valuations.'); });
+  intervals.pow = setInterval(POW.loopThroughProofOfWork, 120000); // once every two minutes, loop through proof-of-work queue
 
   var assetDetailsStream = Rx.Observable
       .fromPromise(U.fetchDataFromUrl(assetModesUrl, 'Error retrieving asset details.'))
@@ -80,8 +80,11 @@ function main () {
 
   // TODO: Separate data retrieval from DOM rendering. Dashboard should be rendered in any case.
   combinedStream.subscribe(z => {
-    GL.assets = R.nth(0, z);
-    fetchview('interface.dashboard', args); });
+    var globalAssets = R.nth(0, z);
+    var globalAssetsWithBalanceInit = R.map(R.merge({balance: { amount: 0, lastTx: 0 }}), globalAssets);
+
+    GL.assets = globalAssetsWithBalanceInit;
+  });
 
   // UNTIL VIEW IS RENDERED SEPARATELY:
   assetsDetailsStream.subscribe(assetDetails => {
@@ -90,6 +93,8 @@ function main () {
     // HACK: Assets can only be viewed when all details have been retrieved. Otherwise, transactions will not work.
     document.querySelector('#topmenu-assets').onclick = fetchAssetsViews(pass_args);
     document.querySelector('#topmenu-assets').classList.add('active');
+
+    fetchview('interface.dashboard', args);
   });
 }
 
@@ -139,7 +144,9 @@ function mkUpdatedAssets (details) {
         ? R.merge(asset, details)
         : asset;
     return R.append(assetOrUpdatedDetails, assets);
-  }
+  };
 }
+
+function fetchAssetsViews (args) { return function () { fetchview('interface.assets', args); }; }
 
 main();
