@@ -49,6 +49,68 @@ cd hybridd
 ./coldstart_hybridd
 ```
 
+### coding standards
+
+Our coding principles
+
+*semicolons*
+
+Use semicolons to end a statement
+
+*double space indent*
+
+Use a double space (not tabs) for one indent level
+
+*functions embraced*
+
+Embrace functions by opening them on line 1 and closing them at the correct indent level, including a comment what function is closed
+
+```
+myfunction (myvar) {
+
+} // close myfunction
+```
+
+*strings literal*
+
+Use single quotes for string evaluation, except when you really need escape sequence parsing (\n)
+
+*ternaries kissed*
+
+Keep ternary notation simple. Be verbose if it makes things more easy to read
+
+*multiline exceptional*
+
+Try to avoid huge functions that spill over line endings
+
+*globals sparingly*
+
+Do not introduce any new global variables without consulting the lead programmers
+
+*perfect global future state*
+
+Try to integrate variables for settings and configuration within the branching global var structure already in place
+
+*research switch*
+
+If nesting can sometimes become rather unwieldy, but be careful in using novel syntax because not all older browsers can handle it
+
+*push laundromat*
+
+Upon pushing the code will be linted (checked for minimal standards of beauty and clarity)
+
+*styleful merge*
+
+Only code that has been beautified will end up in final merges (only exception for now is modular self-contained third party libraries)
+
+*optimal workflow*
+
+We are working towards eliminating common hiccups or repetitive tasks in our programmers workflow
+
+*documented functionality*
+
+Place comments in your code liberally and document innovations in a README-myelement.md or write a paragraph on the wiki on github hybridd
+
 ### Show branch in command prompt
 
 - *Mac*: Add the following script to your .bash_profile file.
