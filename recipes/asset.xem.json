@@ -43,6 +43,7 @@
       "find({'namespaceId':peek('namespace')},data,1,2)",
       "tran('.quantity',data,2,1)",
       "pass(0)",
+      "time($cache,data)",
       "form(data,$factor,'reduce')"
     ],
     "push" : [

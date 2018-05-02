@@ -36,6 +36,7 @@
       "curl('$block-explorer-host','/assets/balance/$1/$contract','GET')",
       "tran('.balance',data,2,1)",
       "stop(1,'No result!')",
+      "time($cache,data)",
       "pass(data/Math.pow(10,$factor))"
     ],
     "fee" : [

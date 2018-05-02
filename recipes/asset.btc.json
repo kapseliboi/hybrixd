@@ -25,6 +25,7 @@
       "curl('asset://$symbol','','POST',{'jsonrpc':'2.0','id':0,'method':'getaddressbalance','params':['$1']},{'content-type':'text/plain'})",
       "tran({confirmed:'.result.confirmed',unconfirmed:'.result.unconfirmed'},data,2,1)",
       "stop(1,'No result!')",
+      "time($cache,data)",
       "pass(String(Number(data.confirmed)+Number(data.unconfirmed)))"
     ],
     "push" : [
