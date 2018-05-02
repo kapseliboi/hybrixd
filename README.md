@@ -81,7 +81,7 @@ Keep ternary notation simple. Be verbose if it makes things more easy to read
 
 *multiline exceptional*
 
-Avoid huge functions that spill over line endings
+Avoid huge statements that spill over multiple line endings
 
 *globals sparingly*
 
