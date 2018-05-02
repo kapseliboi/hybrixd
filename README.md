@@ -49,7 +49,7 @@ cd hybridd
 ./coldstart_hybridd
 ```
 
-### coding standards
+## coding standards
 
 Our coding principles
 
@@ -111,7 +111,7 @@ We are working towards eliminating common hiccups or repetitive tasks in our pro
 
 Place comments in your code liberally and document innovations in a README-myelement.md or write a paragraph on the wiki on github hybridd
 
-### Show branch in command prompt
+## Show branch in command prompt
 
 - *Mac*: Add the following script to your .bash_profile file.
 - *Linux*: Add the following script to your .bashrc file.
