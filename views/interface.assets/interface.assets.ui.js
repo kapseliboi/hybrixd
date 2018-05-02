@@ -63,8 +63,8 @@ var retrieveBalanceStream = Rx.Observable
     var assetInfoHTMLStr = '<div id="asset-' + element + '" class="td col1 asset asset-' + element + '"><div class="icon">' + icon + '</div>' + assetID + '<div class="star"><a' + maybeStarActive + 'role="button">' + svg['star'] + '</a></div></div>';
     var assetBalanceHtmlStr = '<div class="td col2"><div class="balance balance-' + element + '">' + progressbar() + '</div></div>';
     var assetDollarValuationHtmlStr = '<div class="td col3"><div id="' + symbolName + '-dollar" class="dollars" style="color: #AAA;">n/a</div></div>';
-    var assetSendBtnHtmlStr = '<a onclick=\'fill_send("' + assetID + '");\' href="#action-send" class="pure-button pure-button-large pure-button-primary" role="button" data-toggle="modal" disabled="disabled"><div class="icon">' + svg['send'] + '</div>Send</a>'
-    var assetReceiveBtnHtmlStr = '<a onclick=\'fill_recv("' + assetID + '");\' href="#action-receive" class="pure-button pure-button-large pure-button-secondary" role="button" data-toggle="modal" disabled="disabled"><div class="icon">' + svg['receive'] + '</div>Receive</a>'
+    var assetSendBtnHtmlStr = '<a onclick=\'fillSend("' + assetID + '");\' href="#action-send" class="pure-button pure-button-large pure-button-primary" role="button" data-toggle="modal" disabled="disabled"><div class="icon">' + svg['send'] + '</div>Send</a>'
+    var assetReceiveBtnHtmlStr = '<a onclick=\'fillRecv("' + assetID + '");\' href="#action-receive" class="pure-button pure-button-large pure-button-secondary" role="button" data-toggle="modal" disabled="disabled"><div class="icon">' + svg['receive'] + '</div>Receive</a>'
 
     var htmlToRender = '<div class="tr">' +
                           assetInfoHTMLStr +

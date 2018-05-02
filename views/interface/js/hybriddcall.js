@@ -194,7 +194,7 @@ function initializeDetermisticAndMkDetailsStream (dcode, submode, entry, fullmod
 // Currently breaking!
 function resetModes (init, mode, submode, entry, fullmode) {
   // TODO: STREAMIFY!!!
-  hybriddcall({r:'s/deterministic/code/'+mode,z:0}, function (object) {
+  hybriddcall({r: 's/deterministic/code/' + mode, z: 0}, function (object) {
     if(typeof object.error !== 'undefined' && object.error === 0) {
       // decompress and make able to run the deterministic routine
       storage.Set(assets.modehashes[mode]+'-LOCAL', object.data);
@@ -374,17 +374,6 @@ function maybeSuccessfulDataRequestRender (properties, postfunction, waitfunctio
   maybeRunFunctionWithArgs(continuation, properties, objectContainingRequestedData);
 }
 
-sanitizeServerObject = function (obj) {
-  var emptyOrIdentityObject = Object.assign({}, obj);
-  if (typeof emptyOrIdentityObject.data !== 'undefined') {
-    if (emptyOrIdentityObject.data === null) { emptyOrIdentityObject.data = '?'; }
-    if (emptyOrIdentityObject.data === 0) { emptyOrIdentityObject.data = '0'; }
-  } else {
-    emptyOrIdentityObject.data = '?';
-  }
-  return emptyOrIdentityObject;
-}
-
 renderDataInDom = function (element, maxLengthSignificantDigits, data) {
   var formattedBalanceStr = formatFloatInHtmlStr(data, maxLengthSignificantDigits);
 
@@ -411,7 +400,7 @@ function maybeRunFunctionWithArgs (fn, props, dataFromServer) {
 function formatFloatInHtmlStr (amount, maxLengthSignificantDigits) {
   function regularOrZeroedBalance (balanceStr, maxLen) {
     var decimalNumberString = balanceStr.substring(2).split('');
-    var zeros = '0.' + takeWhile((n) => n === '0', decimalNumberString).reduce((baseStr, n) => baseStr + n, ''); // use R.takeWhile later!
+    var zeros = '0.' + R.takeWhile((n) => n === '0', decimalNumberString).reduce((baseStr, n) => baseStr + n, ''); // use R.takeWhile later!
     var numbers = balanceStr.replace(zeros, '');
     var defaultOrFormattedBalanceStr = balanceStr.includes('0.') ? mkAssetBalanceHtmlStr(zeros, numbers, maxLen) : balanceStr;
 
@@ -430,14 +419,4 @@ function formatFloatInHtmlStr (amount, maxLengthSignificantDigits) {
     var balance = String(Number(amount));
     return balance === '0' ? '0' : regularOrZeroedBalance(balance, maxLengthSignificantDigits);
   }
-}
-
-// With love from Ramda
-function takeWhile (fn, xs) {
-  var idx = 0;
-  var len = xs.length;
-  while (idx < len && fn(xs[idx])) {
-    idx += 1;
-  }
-  return Array.prototype.slice.call(xs, 0, idx);
 }

@@ -1,20 +1,18 @@
 var Valuations = valuations;
 var M = manageAssets;
 var U = utils;
+var H = hybridd;
 var Storage = storage;
 
 var events = ['change', 'keydown', 'paste', 'input'];
 
 init.interface.assets = function (args) {
-  // TODO: Remove messy callback structure......
-  manageAssets = M.manageAssets;
-  changeManageButton = M.changeManageButton(M.renderManageButton);
+  changeManageButton = M.changeManageButton(M.renderManageButton); // TODO: Remove messy callback structure......
   toggleStar = toggleStar;
-
-  fill_send = fillSend;
-  fill_recv = receiveAction;
-  stop_recv = stopReceiveAction;
-  check_tx = checkTx;
+  fillSend = fillSend;
+  fillRecv = receiveAction;
+  stopRecv = stopReceiveAction;
+  checkTx = checkTx;
 
   topmenuset('assets'); // top menu UI change
 
@@ -80,35 +78,14 @@ function uiAssets () {
 }
 
 function renderBalances () {
-  GL.assets.forEach(function (asset) {
-    var assetID = R.prop('id', asset);
-    var hyphenizedID = assetID.replace(/\./g,'-');
-    var assetAddress = R.prop('address', asset);
-    var element = '.assets-main > .data .balance-' + hyphenizedID;
-    var url = 'a/' + assetID + '/balance/' + assetAddress;
+  GL.assets.forEach(U.retrieveBalance(updateGlobalAssetsAndRenderDataInDOM, 11, '.assets-main > .data .balance-'));
+}
 
-    var balanceStream = H.mkHybriddCallStream(url)
-        .map(data => {
-          if (R.isNil(data.stopped) && data.progress < 1) {
-            throw data; // error will be picked up by retryWhen
-          }
-          return data;
-        })
-        .retryWhen(function (errors) { return errors.delay(500); });
-
-    balanceStream.subscribe(balanceDataResponse => {
-      var sanitizedData = R.compose(
-        R.defaultTo('n/a'),
-        R.prop('data'),
-        sanitizeServerObject
-      )(balanceDataResponse);
-
-      renderDataInDom(element, 11, sanitizedData);
-      toggleAssetButtons(element, R.prop('id', asset), Number(sanitizedData));
-      renderDollarPriceInAsset(assetID, Number(sanitizedData));
-      U.updateGlobalAssets(updateBalanceData(GL.assets, assetID, sanitizedData));
-    });
-  });
+function updateGlobalAssetsAndRenderDataInDOM (element, numberOfSignificantDigits, sanitizedData, assetID) {
+  renderDataInDom(element, numberOfSignificantDigits, sanitizedData);
+  renderDollarPriceInAsset(assetID, Number(sanitizedData));
+  toggleAssetButtons(element, assetID, Number(sanitizedData));
+  U.updateGlobalAssets(updateBalanceData(GL.assets, assetID, sanitizedData));
 }
 
 function updateBalanceData (assets, assetID, amount) {

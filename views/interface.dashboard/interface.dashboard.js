@@ -22,13 +22,13 @@ function renderStarredAssets (assets) {
   var renderAssets = hasStarredAssets && R.not(R.isEmpty(assets));
   var starredAssetsHTML = R.reduce(mkHtmlForStarredAssets, '', assets);
 
-    var htmlToRender = renderAssets
-        ? starredAssetsHTML
-        : noStarredAssetsHTML;
+  var htmlToRender = renderAssets
+      ? starredAssetsHTML
+      : noStarredAssetsHTML;
 
-    document.querySelector('.dashboard-balances .spinner-loader').classList.add('disabled-fast');
-    setTimeout(() => { document.querySelector('.dashboard-balances > .data').innerHTML = htmlToRender; }, 500); // Render new HTML string in DOM. 500 sec delay for fadeout. Should separate concern!
-  }
+  document.querySelector('.dashboard-balances .spinner-loader').classList.add('disabled-fast');
+  setTimeout(() => { document.querySelector('.dashboard-balances > .data').innerHTML = htmlToRender; }, 500); // Render new HTML string in DOM. 500 sec delay for fadeout. Should separate concern!
+}
 
 function setIntervalFunctions (assets) {
   var retrieveBalanceStream = Rx.Observable
@@ -36,30 +36,6 @@ function setIntervalFunctions (assets) {
       .startWith(0);
 
   retrieveBalanceStream.subscribe(function (_) {
-    assets.forEach(renderBalanceThroughHybridd);
-  });
-}
-
-function renderBalanceThroughHybridd (asset) {
-  var assetID = asset.id;
-  var assetAddress = asset.address;
-  var hypenizedID = assetID.replace(/\./g, '-');
-  var element = '.dashboard-balances > .data > .balance > .balance-' + hypenizedID;
-  var url = 'a/' + asset.id + '/balance/' + assetAddress;
-
-  var balanceStream = H.mkHybriddCallStream(url)
-      .map(data => {
-        if (R.isNil(data.stopped) && data.progress < 1) throw data;
-        return data;
-      })
-      .retryWhen(function (errors) { return errors.delay(100); });
-
-  balanceStream.subscribe(function (balanceData) {
-    var sanitizedData = R.compose(
-      R.prop('data'),
-      sanitizeServerObject
-    )(balanceData);
-
-    renderDataInDom(element, 5, sanitizedData);
+    assets.forEach(U.retrieveBalance(renderDataInDom, 5, '.dashboard-balances > .data > .balance > .balance-'));
   });
 }

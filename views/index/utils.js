@@ -1,5 +1,17 @@
 var fetch_ = fetch;
 
+sanitizeServerObject = function (obj) {
+  var emptyOrIdentityObject = Object.assign({}, obj);
+  if (typeof emptyOrIdentityObject.data !== 'undefined') {
+    if (emptyOrIdentityObject.data === null) { emptyOrIdentityObject.data = '?'; }
+    if (emptyOrIdentityObject.data === 0) { emptyOrIdentityObject.data = '0'; }
+  } else {
+    emptyOrIdentityObject.data = '?';
+  }
+  return emptyOrIdentityObject;
+};
+
+
 utils = {
   documentReady: function (fn) {
     if (document.readyState !== 'loading') {
@@ -38,5 +50,31 @@ utils = {
           : asset;
       return R.append(assetOrUpdatedDetails, assets);
     };
+  },
+  retrieveBalance: function (fn, numberOfSignificantDigits, classStr) {
+    return function (asset) {
+      var assetID = R.prop('id', asset);
+      var assetAddress = R.prop('address', asset);
+      var hypenizedID = assetID.replace(/\./g, '-');
+      var element = classStr + hypenizedID;
+      var url = 'a/' + assetID + '/balance/' + assetAddress;
+
+      var balanceStream = H.mkHybriddCallStream(url)
+          .map(data => {
+            if (R.isNil(R.prop('stopped', data)) && R.prop('progress', data) < 1) throw data;
+            return data;
+          })
+          .retryWhen(function (errors) { return errors.delay(100); });
+
+      balanceStream.subscribe(function (balanceData) {
+        var sanitizedData = R.compose(
+          R.defaultTo('n/a'),
+          R.prop('data'),
+          sanitizeServerObject
+        )(balanceData);
+
+        fn(element, numberOfSignificantDigits, sanitizedData, assetID);
+      });
+    }
   }
 };

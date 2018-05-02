@@ -2,7 +2,6 @@ var Clipboard = clipboard
 
 function fillSend (assetID) {
   var asset = R.find(R.propEq('id', assetID))(GL.assets);
-  var element = '.assets-main > .data .balance-' + assetID.replace(/\./g, '-');
   var balance = R.path(['balance', 'amount'], asset);
   var address = R.prop('address', asset);
   var fee = R.prop('fee', asset);
@@ -17,7 +16,7 @@ function fillSend (assetID) {
     document.querySelector('#modal-send-amount').value = '';
     document.querySelector('#action-send .modal-send-addressfrom').innerHTML = address;
     document.querySelector('#action-send .modal-send-networkfee').innerHTML = formatFloat(fee) + ' ' + assetID.split('.')[0].toUpperCase();
-    check_tx();
+    checkTx();
   }
 }
 

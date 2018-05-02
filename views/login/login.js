@@ -118,7 +118,7 @@ function createSessionStep0UrlAndData (z) {
   var sessionStep = R.nth(1, z);
   var initialSessionData = C.generateInitialSessionData(nonce);
   return {
-    url: path + 'x/' + initialSessionData.session_hexsign + '/' + sessionStep,
+    url: path + 'x/' + R.prop('session_hexsign', initialSessionData) + '/' + sessionStep,
     initialSessionData
   };
 }
@@ -143,7 +143,7 @@ function mkPostSessionStep1Url (z) {
   var sessionStep1Data = C.generateSecondarySessionData(nonce1, initialSessionData.session_hexkey, initialSessionData.session_signpair.signSk);
 
   return {
-    url: path + 'x/' + initialSessionData.session_hexsign + '/' + sessionStep + '/' + sessionStep1Data.crypt_hex,
+    url: path + 'x/' + R.prop('session_hexsign', initialSessionData) + '/' + sessionStep + '/' + sessionStep1Data.crypt_hex,
     initialSessionData,
     secondarySessionData: sessionStep1Data
   };

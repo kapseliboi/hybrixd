@@ -15,7 +15,6 @@ var manageAssets = {
       document.querySelector('#manage-assets .assetbuttons-' + element).innerHTML = cb(element, asset, active);
     };
   },
-  // TODO: Make faster by only getting new info on newly added assets.
   saveAssetList: function (cb) {
     return function () {
       var newActiveAssets = R.compose(

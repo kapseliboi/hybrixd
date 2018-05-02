@@ -39,55 +39,56 @@ var defaultAssetData = [
   { id: 'eth', starred: false }
 ];
 
+var assetDetailsStream = Rx.Observable
+    .fromPromise(U.fetchDataFromUrl(assetModesUrl, 'Error retrieving asset details.'))
+    .map(setAssetsData);
+
+var deterministicHashesStream = Rx.Observable
+    .fromPromise(hybriddcall({r: '/s/deterministic/hashes', z: true}))
+    .filter(R.propEq('error', 0))
+    .map(R.merge({r: '/s/deterministic/hashes', z: true}));
+
+var deterministicHashesResponseProcessStream = deterministicHashesStream
+    .flatMap(function (properties) {
+      return Rx.Observable
+        .fromPromise(hybriddReturnProcess(properties));
+    })
+    .map((z) => { assets.modehashes = z.data; }); // TODO: MAKE PURE!!!!
+
+var storedUserDataStream = storage.Get_(userStorageKey('ff00-0034'))
+    .map(userDecode)
+    .map(storedOrDefaultUserData);
+// Almost same code is used in ManageAssets. Refactor if possible....
+var assetsDetailsStream = storedUserDataStream
+    .flatMap(a => a) // Flatten Array structure...
+    .flatMap(function (asset) {
+      return R.compose(
+        initializeAsset(asset),
+        R.prop('id')
+      )(asset);
+    });
+// .bounceCount();
+
+var combinedStream = Rx.Observable
+    .combineLatest(
+      storedUserDataStream,
+      assetDetailsStream,
+      deterministicHashesResponseProcessStream
+    );
+
 // All synchronous dependencies. Make async with Streamzzzz
 function main () {
   Valuations.getDollarPrices(function () { console.log('Fetched valuations.'); });
   intervals.pow = setInterval(POW.loopThroughProofOfWork, 120000); // once every two minutes, loop through proof-of-work queue
-
-  var assetDetailsStream = Rx.Observable
-      .fromPromise(U.fetchDataFromUrl(assetModesUrl, 'Error retrieving asset details.'))
-      .map(setAssetsData);
-
-  var deterministicHashesStream = Rx.Observable
-      .fromPromise(hybriddcall({r: '/s/deterministic/hashes', z: true}))
-      .filter(R.propEq('error', 0))
-      .map(R.merge({r: '/s/deterministic/hashes', z: true}));
-
-  var deterministicHashesResponseProcessStream = deterministicHashesStream
-      .flatMap(function (properties) {
-        return Rx.Observable
-          .fromPromise(hybriddReturnProcess(properties));
-      })
-      .map((z) => { assets.modehashes = z.data; }); // TODO: MAKE PURE!!!!
-
-  var storedUserDataStream = storage.Get_(userStorageKey('ff00-0034'))
-      .map(userDecode)
-      .map(storedOrDefaultUserData);
-  // Almost same code is used in ManageAssets. Refactor if possible....
-  var assetsDetailsStream = storedUserDataStream
-      .flatMap(a => a) // Flatten Array structure...
-      .flatMap(function (asset) {
-        return R.compose(
-          initializeAsset(asset),
-          R.prop('id')
-        )(asset);
-      });
-
-  var combinedStream = Rx.Observable
-      .combineLatest(
-        storedUserDataStream,
-        assetDetailsStream,
-        deterministicHashesResponseProcessStream
-      );
-
   // TODO: Separate data retrieval from DOM rendering. Dashboard should be rendered in any case.
   combinedStream.subscribe(z => {
-    var globalAssets = R.nth(0, z);
-    var globalAssetsWithBalanceInit = R.map(R.merge({balance: { amount: 0, lastTx: 0 }}), globalAssets);
+    var globalAssets = R.compose(
+      R.map(R.merge({balance: { amount: 0, lastTx: 0 }})),
+      R.nth(0)
+    )(z);
 
-    GL.assets = globalAssetsWithBalanceInit;
+    U.updateGlobalAssets(globalAssets);
   });
-
   // UNTIL VIEW IS RENDERED SEPARATELY:
   assetsDetailsStream.subscribe(assetDetails => {
     GL.assets = R.reduce(U.mkUpdatedAssets(assetDetails), [], GL.assets);
