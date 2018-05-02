@@ -19,7 +19,7 @@ UItransform = {
   deductBalance : function (element, newBalance) { document.querySelector(element).innerHTML = ('<span style="color:#6B6;">' + String(newBalance)) + '</span>'; }
 };
 
-displayAssets = function displayAssets () {
+displayAssets = function () {
   // Render sequence
   document.querySelector('.assets-main > .data').innerHTML = mkHtmlToRender(GL.assets);
   GL.assets.forEach(function (asset) { setStarredAssetClass(asset.id, R.prop('starred', asset)); });

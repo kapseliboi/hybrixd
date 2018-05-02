@@ -63,13 +63,15 @@ function main () {
   var storedUserDataStream = storage.Get_(userStorageKey('ff00-0034'))
       .map(userDecode)
       .map(storedOrDefaultUserData);
-
+  // Almost same code is used in ManageAssets. Refactor if possible....
   var assetsDetailsStream = storedUserDataStream
       .flatMap(a => a) // Flatten Array structure...
-      .flatMap(R.compose(
-          initializeAsset,
+      .flatMap(function (asset) {
+        return R.compose(
+          initializeAsset(asset),
           R.prop('id')
-      ));
+        )(asset);
+      });
 
   var combinedStream = Rx.Observable
       .combineLatest(
@@ -98,8 +100,10 @@ function main () {
   });
 }
 
-function initializeAsset (entry) {
-  return initAsset(entry, GL.assetmodes[entry]);
+function initializeAsset (asset) {
+  return function (entry) {
+    return initAsset(entry, GL.assetmodes[entry], asset);
+  };
 }
 
 function setAssetsData (assetModesData) {

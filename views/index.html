@@ -647,7 +647,7 @@ utils = {
   },
   mkUpdatedAssets: function (details) {
     return function (assets, asset) {
-      var assetOrUpdatedDetails = R.equals(asset.id, details.symbol)
+      var assetOrUpdatedDetails = R.equals(R.prop('id', asset), R.prop('symbol', details))
           ? R.merge(asset, details)
           : asset;
       return R.append(assetOrUpdatedDetails, assets);

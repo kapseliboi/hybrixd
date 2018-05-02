@@ -130,11 +130,11 @@ activate = function(code) {
   }
 }
 
-function mkAssetDetailsStream (deterministic, submode, entry, fullmode) {
+function mkAssetDetailsStream (init, deterministic, submode, entry, fullmode) {
   var url = 'a/' + entry + '/details/';
   var seed = deterministicSeedGenerator(entry);
-  var keys = deterministic.keys( {symbol: entry, seed, mode:submode} );
-  var addr = deterministic.address( Object.assign(keys , {mode: submode}) );
+  var keys = deterministic.keys( {symbol: entry, seed, mode:submode});
+  var addr = deterministic.address( Object.assign(keys, {mode: submode}));
   var mode = R.prop(entry, assets.mode);
 
   // TODO: RM globals
@@ -144,7 +144,7 @@ function mkAssetDetailsStream (deterministic, submode, entry, fullmode) {
   assets.addr[entry] = addr;
 
   var assetDetailsStream = Rx.Observable
-      .fromPromise(hybriddcall({r:url, z:0}))
+      .fromPromise(hybriddcall({r: url, z: 0}))
       .filter(R.propEq('error', 0))
       .map(R.merge({r: '/s/deterministic/hashes', z: true}));
 
@@ -156,12 +156,13 @@ function mkAssetDetailsStream (deterministic, submode, entry, fullmode) {
 
   // TODO: Return Observable back to interface.js
   return assetDetailsResponseStream
-    .map(updateGlobalAssets(entry, seed, keys, addr, mode))
+    .map(updateGlobalAssets(init, entry, seed, keys, addr, mode));
 }
 
-function updateGlobalAssets (entry, seed, keys, addr, mode) {
+function updateGlobalAssets (init, entry, seed, keys, addr, mode) {
   return function (assetDetailsResponse) {
-    var assetDetails = R.merge(
+    var assetDetails = R.mergeAll([
+      init,
       R.prop('data', assetDetailsResponse),
       {
         mode,
@@ -169,48 +170,47 @@ function updateGlobalAssets (entry, seed, keys, addr, mode) {
         keys,
         address: addr
       }
-    )
-
+    ]);
     return assetDetails
-  }
+  };
 }
 
-initAsset = function (entry, fullmode) {
+initAsset = function (entry, fullmode, init) {
   var mode = fullmode.split('.')[0];
-  var submode = fullmode.split('.')[1]
+  var submode = fullmode.split('.')[1];
   // if the deterministic code is already cached client-side
-  if(typeof assets.modehashes[mode] !== 'undefined') {
-    var modeHashStream = storage.Get_(assets.modehashes[mode] + '-LOCAL')
+  if (typeof assets.modehashes[mode] !== 'undefined') {
+    var modeHashStream = storage.Get_(assets.modehashes[mode] + '-LOCAL');
     return modeHashStream
-      .flatMap(getDeterministicStuff(entry, mode, submode, fullmode))
+      .flatMap(getDeterministicStuff(entry, mode, submode, fullmode, init));
   }
-}
+};
 
-function initializeDetermisticAndMkDetailsStream (dcode, submode, entry, fullmode) {
+function initializeDetermisticAndMkDetailsStream (dcode, submode, entry, fullmode, init) {
   var deterministic = deterministic = activate(LZString.decompressFromEncodedURIComponent(dcode));
-  return mkAssetDetailsStream(deterministic, submode, entry, fullmode);
+  return mkAssetDetailsStream(init, deterministic, submode, entry, fullmode);
 }
 
 // Currently breaking!
-function bar (mode, submode, entry, fullmode) {
+function resetModes (init, mode, submode, entry, fullmode) {
   // TODO: STREAMIFY!!!
   hybriddcall({r:'s/deterministic/code/'+mode,z:0}, function (object) {
     if(typeof object.error !== 'undefined' && object.error === 0) {
       // decompress and make able to run the deterministic routine
-      storage.Set(assets.modehashes[mode]+'-LOCAL', object.data)
-      mkAssetDetailsStream(object.data, submode, entry, fullmode);
+      storage.Set(assets.modehashes[mode]+'-LOCAL', object.data);
+      mkAssetDetailsStream(init, object.data, submode, entry, fullmode);
     }
   });
   return true;
 }
 
-function getDeterministicStuff (entry, mode, submode, fullmode) {
+function getDeterministicStuff (entry, mode, submode, fullmode, init) {
   return function (dcode) {
     return R.not(R.isNil(dcode))
-      ? initializeDetermisticAndMkDetailsStream(dcode, submode, entry, fullmode)
+      ? initializeDetermisticAndMkDetailsStream(dcode, submode, entry, fullmode, init)
       : function () {
         storage.Del(assets.modehashes[mode]+'-LOCAL');
-        return bar(mode);
+        return resetModes(init, mode);
       }
   }
 }

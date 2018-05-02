@@ -15,41 +15,72 @@ var manageAssets = {
       document.querySelector('#manage-assets .assetbuttons-' + element).innerHTML = cb(element, asset, active);
     };
   },
+  // TODO: Make faster by only getting new info on newly added assets.
   saveAssetList: function (cb) {
     return function () {
       var newActiveAssets = R.compose(
-        R.map(mkNewAssetEntry),
+        R.map(existingOrNewAssetEntry),
         R.filter(entryIsSelected),
         R.keys
       )(GL.assetnames);
       var newActiveAssetsForStorage = R.map(R.pick(['id', 'starred']), newActiveAssets);
-      var assetsDetailsStream = Rx.Observable.from(newActiveAssetsForStorage)
-          .flatMap(R.compose(
-            initializeAsset,
-            R.prop('id')
-          ));
+      var newAssetsToInitialize = R.filter(idDoesNotExist, newActiveAssetsForStorage);
+      var assetsDetailsStream = R.isEmpty(newAssetsToInitialize)
+          ? Rx.Observable.from([[]])
+          : Rx.Observable.from(newAssetsToInitialize)
+          .flatMap(function (asset) {
+            return R.compose(
+              initializeAsset(asset),
+              R.prop('id')
+            )(asset);
+          })
+          .bufferCount(R.length(newAssetsToInitialize));
 
-      // GLOBAL STUFF
-      storage.Set(userStorageKey('ff00-0034'), userEncode(newActiveAssetsForStorage));
-      // MAKE SIMPLER!!!!
-      GL.assets = newActiveAssets;
-      assetsDetailsStream.subscribe(assetDetails => {
-        GL.assets = R.reduce(U.mkUpdatedAssets(assetDetails), [], GL.assets); // MAKE SIMPLER!!!!
+      assetsDetailsStream.subscribe(assetsDetails => {
+        var newGlobalAssets = R.reduce(function (newAssets, asset) {
+          return R.compose(
+            R.flip(R.append)(newAssets),
+            R.merge(asset),
+            R.defaultTo(asset),
+            R.find(R.eqProps('id', asset))
+          )(assetsDetails);
+        }, [], newActiveAssets);
+
+        // GLOBAL STUFF
+        storage.Set(userStorageKey('ff00-0034'), userEncode(newActiveAssetsForStorage));
+        U.updateGlobalAssets(newGlobalAssets);
         cb(); // RE-RENDER VIEW
       });
     };
   },
   manageAssets: function () {
     GL.assetSelect = [];
-    for (var entry in GL.assetnames) {
-      var assetAlreadyExists = R.not(R.isNil(R.find(R.propEq('id', entry), GL.assets)));
-      var hasCorrectType = typeof GL.assetSelect[entry] === 'undefined' || typeof GL.assetSelect[entry] === 'function';
+    for (var assetName in GL.assetnames) {
+      var assetAlreadyExists = R.compose(
+        R.not,
+        R.isNil,
+        R.find(R.propEq('id', assetName))
+      )(GL.assets);
+      var hasCorrectType = typeof GL.assetSelect[assetName] === 'undefined' || typeof GL.assetSelect[assetName] === 'function';
 
-      GL.assetSelect[entry] = hasCorrectType ? assetAlreadyExists : false;
+      GL.assetSelect[assetName] = hasCorrectType ? assetAlreadyExists : false;
     }
   }
 };
 
-function mkNewAssetEntry (assetName) { return { id: assetName, starred: false, balance: {amount: 0, lastTx: 0} }; }
+function idDoesNotExist (asset) {
+  return R.compose(
+    R.not,
+    R.any(R.propEq('id', asset.id))
+  )(GL.assets);
+}
+
+function existingOrNewAssetEntry (assetName) {
+  var foo = { id: assetName, starred: false, balance: {amount: 0, lastTx: 0} };
+  return R.compose(
+    R.defaultTo(foo),
+    R.find(R.propEq('id', assetName))
+  )(GL.assets);
+}
 function entryIsSelected (entry) { return GL.assetSelect[entry]; } // R.has...? R.hasIn???
-function initializeAsset (entry) { return initAsset(entry, R.prop(entry, GL.assetmodes)); }
+function initializeAsset (asset) { return function (entry) { return initAsset(entry, R.prop(entry, GL.assetmodes), asset);}};

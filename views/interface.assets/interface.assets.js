@@ -16,8 +16,6 @@ init.interface.assets = function (args) {
   stop_recv = stopReceiveAction;
   check_tx = checkTx;
 
-  ui_assets = uiAssets();
-
   topmenuset('assets'); // top menu UI change
 
   // INITIALIZE BUTTONS IN MANAGE ASSETS MODALS
@@ -85,46 +83,38 @@ function renderBalances () {
   GL.assets.forEach(function (asset) {
     var assetID = R.prop('id', asset);
     var hyphenizedID = assetID.replace(/\./g,'-');
-    var assetBalance = R.prop('balance', asset);
     var assetAddress = R.prop('address', asset);
     var element = '.assets-main > .data .balance-' + hyphenizedID;
-    var timeIsCurrent = R.prop('lastTx', assetBalance) + 120000 < U.getCurrentTime();
     var url = 'a/' + assetID + '/balance/' + assetAddress;
 
-    if (timeIsCurrent) {
-      var balanceStream = H.mkHybriddCallStream(url)
-          .map(data => {
-            if (R.isNil(data.stopped) && data.progress < 1) {
-              throw data; // error will be picked up by retryWhen
-            }
-            return data;
-          })
-          .retryWhen(function (errors) { return errors.delay(100); });
+    var balanceStream = H.mkHybriddCallStream(url)
+        .map(data => {
+          if (R.isNil(data.stopped) && data.progress < 1) {
+            throw data; // error will be picked up by retryWhen
+          }
+          return data;
+        })
+        .retryWhen(function (errors) { return errors.delay(500); });
 
-      balanceStream.subscribe(balanceDataResponse => {
-        var sanitizedData = R.compose(
-          R.defaultTo('n/a'),
-          R.prop('data'),
-          sanitizeServerObject
-        )(balanceDataResponse);
+    balanceStream.subscribe(balanceDataResponse => {
+      var sanitizedData = R.compose(
+        R.defaultTo('n/a'),
+        R.prop('data'),
+        sanitizeServerObject
+      )(balanceDataResponse);
 
-        renderDataInDom(element, 11, sanitizedData);
-        toggleAssetButtons(element, R.prop('id', asset), Number(sanitizedData));
-        renderDollarPriceInAsset(assetID, Number(sanitizedData));
-        U.updateGlobalAssets(updateBalanceData(GL.assets, assetID, sanitizedData));
-      });
-    }
+      renderDataInDom(element, 11, sanitizedData);
+      toggleAssetButtons(element, R.prop('id', asset), Number(sanitizedData));
+      renderDollarPriceInAsset(assetID, Number(sanitizedData));
+      U.updateGlobalAssets(updateBalanceData(GL.assets, assetID, sanitizedData));
+    });
   });
 }
 
 function updateBalanceData (assets, assetID, amount) {
   function updateBalances (updatedAssets, asset) {
     var amountLens = R.lensPath(['balance', 'amount']);
-    var lastTxLens = R.lensPath(['balance', 'lastTx']);
-    var updatedBalanceAsset = R.compose(
-      R.set(amountLens, amount),
-      R.set(lastTxLens, U.getCurrentTime())
-    )(asset);
+    var updatedBalanceAsset = R.set(amountLens, amount, asset);
     var defaultOrUpdatedAsset = R.equals(R.prop('id', asset), assetID)
         ? updatedBalanceAsset
         : asset;
