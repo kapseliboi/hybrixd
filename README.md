@@ -63,17 +63,17 @@ Use a double space (not tabs) for one indent level
 
 *functions embraced*
 
-Embrace functions by opening them on line 1 and closing them at the correct indent level, including a comment what function is closed
+Embrace functions by opening them on line 1 and closing them at the correct indent level, including a comment what function is closed if the function cannot be fully read on one small screen
 
 ```
 myfunction (myvar) {
-
+  var pi = 'three point one four';
 } // close myfunction
 ```
 
 *strings literal*
 
-Use single quotes for string evaluation, except when you really need escape sequence parsing (\n)
+Use single quotes for string evaluation, except when you really need escape sequence parsing (\n) and do not forget **var** to set the scope of your variable
 
 *ternaries kissed*
 
@@ -81,7 +81,7 @@ Keep ternary notation simple. Be verbose if it makes things more easy to read
 
 *multiline exceptional*
 
-Try to avoid huge functions that spill over line endings
+Avoid huge functions that spill over line endings
 
 *globals sparingly*
 
@@ -93,7 +93,7 @@ Try to integrate variables for settings and configuration within the branching g
 
 *research switch*
 
-If nesting can sometimes become rather unwieldy, but be careful in using novel syntax because not all older browsers can handle it
+'If nesting' can sometimes become rather unwieldy, but be careful in using novel syntax because not all older browsers can handle it
 
 *push laundromat*
 
@@ -109,7 +109,7 @@ We are working towards eliminating common hiccups or repetitive tasks in our pro
 
 *documented functionality*
 
-Place comments in your code liberally and document innovations in a README-myelement.md or write a paragraph on the wiki on github hybridd
+Place comments in your code liberally and document innovations in a README-myelement.md or write a paragraph on the wiki on github hybridd README.md or the repo your code is in
 
 ## Show branch in command prompt
 
