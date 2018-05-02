@@ -14,7 +14,9 @@ assets = {
   addr  : {},      // public addresses of assets
   cntr  : {},      // stored contract pointer, location or address
   fact  : {},      // factor of assets
-  fees  : {}       // fees of assets
+  fees  : {},      // fees of assets
+  fsym  : {},      // fees of assets
+  base  : {}       // fees of assets
 };
 
 //

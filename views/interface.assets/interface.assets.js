@@ -96,7 +96,7 @@ init.interface.assets = function(args) {
     renderManageAssetsList(GL.assetnames);
   }
   renderManageAssetsList = function renderManageAssetsList(list,search) {
-    console.log("list = ", list);
+    // DEBUG: console.log("list = ", list);
     if(typeof search !== 'undefined') {
       search = search.toLowerCase();
     }
@@ -202,7 +202,7 @@ init.interface.assets = function(args) {
       $('#modal-send-target').val('');
       $('#modal-send-amount').val('');
       $('#action-send .modal-send-addressfrom').html(assets.addr[asset]);
-      $('#action-send .modal-send-networkfee').html(formatFloat(assets.fees[asset])+' '+asset.split('.')[0].toUpperCase());
+      $('#action-send .modal-send-networkfee').html(formatFloat(assets.fees[asset])+' '+assets.fsym[asset].toUpperCase());
       check_tx();
     }
   }

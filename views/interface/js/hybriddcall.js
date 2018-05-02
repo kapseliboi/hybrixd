@@ -126,19 +126,26 @@
 
         initAsset = function(entry,fullmode) {
           function finalize(dcode,submode) {
-            deterministic = activate( LZString.decompressFromEncodedURIComponent(dcode) );
-            assets.mode[entry] = fullmode;
-            assets.seed[entry] = deterministicSeedGenerator(entry);
-            assets.keys[entry] = deterministic.keys( {symbol:entry,seed:assets.seed[entry],mode:submode} );
-            assets.addr[entry] = deterministic.address( Object.assign(assets.keys[entry],{mode:submode}) );
+            // request asset details
             var loop_step = next_step();
-            hybriddcall({r:'a/'+entry+'/factor',c:GL.usercrypto,s:loop_step,z:0},0, function(object) { if(typeof object.data!='undefined') { assets.fact[entry]=object.data; } });
-            var loop_step = next_step();
-            hybriddcall({r:'a/'+entry+'/fee',c:GL.usercrypto,s:loop_step,z:0},0, function(object) { if(typeof object.data!='undefined') { assets.fees[entry]=object.data; } });
-            var loop_step = next_step();
-            hybriddcall({r:'a/'+entry+'/contract',c:GL.usercrypto,s:loop_step,z:0},0, function(object) { if(typeof object.data!='undefined') { assets.cntr[entry]=object.data; } });
+            hybriddcall({r:'a/'+entry+'/details',c:GL.usercrypto,s:loop_step,z:0},0, function(object) {
+              if(typeof object.data!=='undefined') {
+                assets.fact[this.entry] = object.data['factor'];
+                assets.fees[this.entry] = object.data['fee'];
+                assets.cntr[this.entry] = object.data['contract'];
+                assets.base[this.entry] = object.data['keygen-base'];
+                assets.fsym[this.entry] = object.data['fee-symbol'];
+                // activate deterministic library and create keys
+                deterministic = activate( LZString.decompressFromEncodedURIComponent(this.dcode) );
+                assets.mode[this.entry] = fullmode;
+                assets.seed[this.entry] = deterministicSeedGenerator(assets.base[entry]);
+                assets.keys[this.entry] = deterministic.keys( {symbol:entry,seed:assets.seed[entry],mode:submode} );
+                assets.addr[this.entry] = deterministic.address( Object.assign(assets.keys[entry],{mode:submode}) );
+              }
+            }.bind({entry:entry,dcode:dcode}));
           }
-          
+
+          // cache the downloaded deterministic code
           var mode = fullmode.split('.')[0];
           var submode = fullmode.split('.')[1]
           // if the deterministic code is already cached client-side
@@ -151,7 +158,7 @@
                 storage.Del(assets.modehashes[mode]+'-LOCAL');
               }
               // in case of no cache request code from server
-              if(!dcode) { // || typeof assets.mode[entry]=='undefined') {
+              if(!dcode) {
                 hybriddcall({r:'s/deterministic/code/'+mode,z:0},null,
                   function(object) {
                     if(typeof object.error !== 'undefined' && object.error === 0) {
@@ -211,7 +218,7 @@
 						return c;
 					}
 					// return deterministic seed
-					return UrlBase64.Encode( xorEntropyMix( nacl.to_hex(GL.usercrypto.user_keys.boxPk), xorEntropyMix(asset.split('.')[0], xorEntropyMix(salt,nacl.to_hex(GL.usercrypto.user_keys.boxSk)) ) ) ).slice(0, -2);
+					return UrlBase64.Encode( xorEntropyMix( nacl.to_hex(GL.usercrypto.user_keys.boxPk), xorEntropyMix(asset, xorEntropyMix(salt,nacl.to_hex(GL.usercrypto.user_keys.boxSk)) ) ) ).slice(0, -2);
 				}
 
 
