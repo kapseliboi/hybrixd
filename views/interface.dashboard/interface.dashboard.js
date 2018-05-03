@@ -1,10 +1,10 @@
-var Utils = utils;
+var U = utils;
 var H = hybridd;
 
 init.interface.dashboard = function (args) {
   document.querySelector('#userID').innerHTML = args.userid; // set user ID field in top bar
   topmenuset('dashboard'); // top menu UI change --> Sets element to active class
-  Utils.documentReady(main);
+  U.documentReady(main);
 };
 
 function main () {
@@ -30,11 +30,15 @@ function renderStarredAssets (assets) {
   setTimeout(() => { document.querySelector('.dashboard-balances > .data').innerHTML = htmlToRender; }, 500); // Render new HTML string in DOM. 500 sec delay for fadeout. Should separate concern!
 }
 
-function setIntervalFunctions (assets) {
-  var retrieveBalanceStream = Rx.Observable
-      .interval(60000)
-      .startWith(0);
+var stopBalanceStream = Rx.Observable
+    .fromEvent(document.querySelector('#topmenu-assets'), 'click');
 
+var retrieveBalanceStream = Rx.Observable
+    .interval(60000)
+    .startWith(0)
+    .takeUntil(stopBalanceStream);
+
+function setIntervalFunctions (assets) {
   retrieveBalanceStream.subscribe(function (_) {
     assets.forEach(U.retrieveBalance(renderDataInDom, 5, '.dashboard-balances > .data > .balance > .balance-'));
   });

@@ -111,7 +111,7 @@ var fetchViewStream = Rx.Observable
         nonce: R.path(['3', 'current_nonce'], z),
         userid: R.path(['2', 'userID'], z)
       });
-    });
+    }); // Move fetchview to subscribe and use bufferCount
 
 function createSessionStep0UrlAndData (z) {
   var nonce = R.nth(0, z);
@@ -194,6 +194,6 @@ function mkCredentialsObj (z) { return { userID: R.path(['1', '0'], z), password
 Utils.documentReady(function () {
   document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
   maybeOpenNewWalletModal(location);
-  keyDownOnUserIDStream.subscribe(function (_) { document.querySelector('#inputPasscode').focus() });
+  keyDownOnUserIDStream.subscribe(function (_) { document.querySelector('#inputPasscode').focus(); });
   fetchViewStream.subscribe();
 });

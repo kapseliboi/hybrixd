@@ -4,7 +4,7 @@ const Utils = utils;
 const S = loginInputStreams;
 
 // TODO: Give back some feedback to the user about incorrect credentials????
-const loginFormStateStr = S.credentialsStream
+const loginFormStateStream = S.credentialsStream
       .map(validateZippedCredentials)
       .map(renderLoginFormState);
 
@@ -35,6 +35,5 @@ function helpbutton () {
 
 Utils.documentReady(function () {
   const customAlert = new CustomAlert();
-
-  loginFormStateStr.subscribe();
+  loginFormStateStream.subscribe();
 });
