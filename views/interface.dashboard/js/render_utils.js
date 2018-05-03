@@ -21,10 +21,10 @@ var dashboardUI = {
       '</div>'
       : htmlStr;
   },
-  formatFloatInHtmlStr: function  (amount, maxLengthSignificantDigits) {
+  formatFloatInHtmlStr: function (amount, maxLengthSignificantDigits) {
     var normalizedAmount = Number(amount);
 
-    function regularOrZeroedBalance (balanceStr, maxLen) {
+    function regularOrZeroedBalance (maxLen, balanceStr) {
       var decimalNumberString = balanceStr.substring(2).split('');
       var zeros = R.compose(
         R.concat('0.'),
@@ -43,11 +43,20 @@ var dashboardUI = {
       return '<span style="font-size: 0.75em; color: grey;">' + zeros_ + '</span>' + numbersFormatted + emptyOrBalanceEndHtmlStr;
     }
 
-    if (isNaN(normalizedAmount)) {
-      return '?';
-    } else {
-      var balance = R.compose(bigNumberToString, toInt)(normalizedAmount);
-      return balance === '0' ? '0' : regularOrZeroedBalance(balance, maxLengthSignificantDigits);
+    function mkBalance (amount) {
+      return R.compose(
+        R.ifElse(
+          R.equals('0'),
+          R.always('0'),
+          R.curry(regularOrZeroedBalance)(maxLengthSignificantDigits)
+        ),
+        bigNumberToString,
+        toInt
+      )(amount);
     }
+
+    return R.isNil(normalizedAmount)
+      ? '?'
+      : mkBalance(normalizedAmount);
   }
-}
+};
