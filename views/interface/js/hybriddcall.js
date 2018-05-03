@@ -377,17 +377,13 @@ function maybeSuccessfulDataRequestRender (properties, postfunction, waitfunctio
 renderDataInDom = function (element, maxLengthSignificantDigits, data) {
   var formattedBalanceStr = formatFloatInHtmlStr(data, maxLengthSignificantDigits);
 
-  if ($(element).html() === '?') {
     $(element + ' .progress-radial').fadeOut('slow', function () {
       renderElementInDom(element, formattedBalanceStr);
     });
-  } else {
-    renderElementInDom(element, formattedBalanceStr);
-  }
-}
+};
 
 function renderElementInDom (query, data) {
-  $(query).html(data);
+  document.querySelector(query).innerHTML = data;
 }
 
 function maybeRunFunctionWithArgs (fn, props, dataFromServer) {

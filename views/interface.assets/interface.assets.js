@@ -68,7 +68,7 @@ function toggleStar (assetID) {
 
 function uiAssets () {
   renderBalances();
-  getNewMarketPrices();
+  getNewMarketPrices(); // Should be done on a higher level
 }
 
 function renderBalances () {
@@ -117,9 +117,13 @@ function toggleAssetButtons (element, assetID, balance) {
 }
 
 function toggleTransactionButtons (elem, query, addOrRemove, attrToSet, val, attrToRemove, attr) {
-  document.querySelector(query).classList[addOrRemove]('disabled');
-  document.querySelectorAll(query + ' a').forEach(toggleAttribute(attrToSet, val, attrToRemove));
-  document.querySelector(elem).setAttribute('amount', attr);
+  // HACK! Not breaking functionality, but ugly nonetheless. Optimize!
+  var exists = R.not(R.isNil(document.querySelector(query))) || R.not(R.isNil(document.querySelector(elem)));
+  if (exists) {
+    document.querySelector(query).classList[addOrRemove]('disabled');
+    document.querySelectorAll(query + ' a').forEach(toggleAttribute(attrToSet, val, attrToRemove));
+    document.querySelector(elem).setAttribute('amount', attr);
+  }
 }
 
 function toggleAttribute (attrToSet, val, attrToRemove) {

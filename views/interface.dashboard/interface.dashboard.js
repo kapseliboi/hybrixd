@@ -12,6 +12,7 @@ function main () {
   var deterministicHashesHybriddCallStream = H.mkHybriddCallStream(deterministicHashesUrl);
 
   deterministicHashesHybriddCallStream.subscribe(function (_) {
+    console.log("_ = ", _);
     renderStarredAssets(GL.assets);
     setIntervalFunctions(GL.assets);
   });
@@ -36,6 +37,7 @@ var stopBalanceStream = Rx.Observable
 var retrieveBalanceStream = Rx.Observable
     .interval(60000)
     .startWith(0)
+    .delay(500) // HACK! Delay balance retrieval somewhat. Retrieval is sometimes faster than DOM rendering, so can't render right away.....
     .takeUntil(stopBalanceStream);
 
 function setIntervalFunctions (assets) {
