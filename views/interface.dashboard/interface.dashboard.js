@@ -8,14 +8,8 @@ init.interface.dashboard = function (args) {
 };
 
 function main () {
-  var deterministicHashesUrl = '/s/deterministic/hashes';
-  var deterministicHashesHybriddCallStream = H.mkHybriddCallStream(deterministicHashesUrl);
-
-  deterministicHashesHybriddCallStream.subscribe(function (_) {
-    console.log("_ = ", _);
-    renderStarredAssets(GL.assets);
-    setIntervalFunctions(GL.assets);
-  });
+  renderStarredAssets(GL.assets);
+  setIntervalFunctions(GL.assets);
 }
 
 function renderStarredAssets (assets) {
