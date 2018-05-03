@@ -4,15 +4,9 @@ var U = utils;
 var H = hybridd;
 var Storage = storage;
 
-var events = ['change', 'keydown', 'paste', 'input'];
-
 init.interface.assets = function (args) {
   changeManageButton = M.changeManageButton(M.renderManageButton); // TODO: Remove messy callback structure......
   toggleStar = toggleStar;
-  fillSend = fillSend;
-  fillRecv = receiveAction;
-  stopRecv = stopReceiveAction;
-  checkTx = checkTx;
 
   topmenuset('assets'); // top menu UI change
 
@@ -118,22 +112,19 @@ function toggleAssetButtons (element, assetID, balance) {
   ])(balance);
 
   balanceIsValid
-    ? toggleTransactionButtons(element, assetbuttonsClass, 'remove', enableAttribute, balance)
-    : toggleTransactionButtons(element, assetbuttonsClass, 'add', disableAttribute, '?');
+    ? toggleTransactionButtons(element, assetbuttonsClass, 'remove', 'data-toggle', 'modal', 'disabled', balance)
+    : toggleTransactionButtons(element, assetbuttonsClass, 'add', 'disabled', 'disabled', 'data-toggle', '?');
 }
 
-function toggleTransactionButtons (elem, query, addOrRemove, fn, attr) {
+function toggleTransactionButtons (elem, query, addOrRemove, attrToSet, val, attrToRemove, attr) {
   document.querySelector(query).classList[addOrRemove]('disabled');
-  document.querySelectorAll(query + ' a').forEach(fn);
+  document.querySelectorAll(query + ' a').forEach(toggleAttribute(attrToSet, val, attrToRemove));
   document.querySelector(elem).setAttribute('amount', attr);
 }
 
-function disableAttribute (elem) {
-  elem.setAttribute('disabled', 'disabled');
-  elem.removeAttribute('data-toggle');
-}
-
-function enableAttribute (elem) {
-  elem.removeAttribute('disabled');
-  elem.setAttribute('data-toggle', 'modal');
+function toggleAttribute (attrToSet, val, attrToRemove) {
+  return function (elem) {
+    elem.setAttribute(attrToSet, val);
+    elem.removeAttribute(attrToRemove);
+  };
 }

@@ -1,6 +1,6 @@
 var Clipboard = clipboard
 
-function fillSend (assetID) {
+fillSend = function (assetID) {
   var asset = R.find(R.propEq('id', assetID))(GL.assets);
   var balance = R.path(['balance', 'amount'], asset);
   var address = R.prop('address', asset);
@@ -20,7 +20,7 @@ function fillSend (assetID) {
   }
 }
 
-function receiveAction (asset) {
+receiveAction = function (asset) {
   var assetAddress = assets.addr[asset];
   document.querySelector('#action-receive .modal-receive-currency').innerHTML = asset.toUpperCase(); // after getting address from hybridd, set data-clipboard-text to contain it
   document.querySelector('#action-receive .modal-receive-addressfrom').innerHTML = assetAddress;
@@ -46,7 +46,7 @@ function mkNewQRCode (address) {
   });
 }
 
-function checkTx () {
+checkTx = function () {
   var p = {
     asset: document.querySelector('#action-send .modal-send-currency').getAttribute('asset'),
     target_address: String(document.querySelector('#modal-send-target').value),
@@ -64,7 +64,7 @@ function checkTx () {
   document.querySelector('#action-send .pure-button-send').classList[classListMethod]('disabled');
 }
 
-function stopReceiveAction () { document.querySelector('#action-receive .modal-receive-status').setAttribute('id', 'receivestatus'); }; // reset status ID attribute to avoid needless polling
+stopReceiveAction = function () { document.querySelector('#action-receive .modal-receive-status').setAttribute('id', 'receivestatus'); }; // reset status ID attribute to avoid needless polling
 
 function scrollToAnchor (args) {
   return function () {
