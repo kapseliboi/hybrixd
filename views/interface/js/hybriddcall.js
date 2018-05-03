@@ -308,7 +308,7 @@ hybridd = {
         .flatMap(function (properties) {
           return Rx.Observable
             .fromPromise(hybriddReturnProcess(properties));
-      });
+        });
 
     return hybriddCallResponseStream;
   },
@@ -385,9 +385,9 @@ function maybeSuccessfulDataRequestRender (properties, postfunction, waitfunctio
 renderDataInDom = function (element, maxLengthSignificantDigits, data) {
   var formattedBalanceStr = formatFloatInHtmlStr(data, maxLengthSignificantDigits);
 
-    $(element + ' .progress-radial').fadeOut('slow', function () {
-      renderElementInDom(element, formattedBalanceStr);
-    });
+  $(element + ' .progress-radial').fadeOut('slow', function () {
+    renderElementInDom(element, formattedBalanceStr);
+  });
 };
 
 function renderElementInDom (query, data) {
@@ -402,7 +402,9 @@ function maybeRunFunctionWithArgs (fn, props, dataFromServer) {
 }
 
 function formatFloatInHtmlStr (amount, maxLengthSignificantDigits) {
-  function regularOrZeroedBalance (balanceStr, maxLen) {
+  var normalizedAmount = Number(amount);
+
+  function regularOrZeroedBalance (maxLen, balanceStr) {
     var decimalNumberString = balanceStr.substring(2).split('');
     var zeros = '0.' + R.takeWhile((n) => n === '0', decimalNumberString).reduce((baseStr, n) => baseStr + n, ''); // use R.takeWhile later!
     var numbers = balanceStr.replace(zeros, '');
@@ -417,10 +419,19 @@ function formatFloatInHtmlStr (amount, maxLengthSignificantDigits) {
     return '<span class="mini-balance">' + zeros_ + '</span>' + numbersFormatted + emptyOrBalanceEndHtmlStr;
   }
 
-  if (isNaN(amount)) {
-    return '?';
-  } else {
-    var balance = String(Number(amount));
-    return balance === '0' ? '0' : regularOrZeroedBalance(balance, maxLengthSignificantDigits);
+  function mkBalance (amount) {
+    return R.compose(
+      R.ifElse(
+        R.equals('0'),
+        R.always('0'),
+        R.curry(regularOrZeroedBalance)(maxLengthSignificantDigits)
+      ),
+      bigNumberToString,
+      toInt
+    )(amount);
   }
+
+  return R.isNil(normalizedAmount) || isNaN(normalizedAmount)
+    ? '?'
+    : mkBalance(normalizedAmount);
 }
