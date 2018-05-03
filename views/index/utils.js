@@ -75,6 +75,12 @@ utils = {
 
         fn(element, numberOfSignificantDigits, sanitizedData, assetID);
       });
-    }
+    };
+  },
+  setViewTab: function (target) {
+    document.querySelectorAll('.pure-menu-link').forEach(function (elem) {
+      elem.classList.remove('selected');
+    });
+    document.querySelector('#topmenu-' + target).classList.add('selected');
   }
 };

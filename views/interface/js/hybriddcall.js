@@ -311,13 +311,21 @@ hybridd = {
       });
 
     return hybriddCallResponseStream;
+  },
+  renderDataInDom: function (element, maxLengthSignificantDigits, data) {
+    var formattedBalanceStr = formatFloatInHtmlStr(data, maxLengthSignificantDigits);
+
+    // TODO Remove Jquery!
+    $(element + ' .progress-radial').fadeOut('slow', function () {
+      renderElementInDom(element, formattedBalanceStr);
+    });
   }
-}
+};
 
 function errorHybriddCall (success, properties) {
   return function (object) {
     maybeRunFunctionWithArgs(success, { properties }, object, '[read error]');
-  }
+  };
 }
 
 function successHybriddCall (properties, urltarget, reqmethod, usercrypto, step, success, waitfunction) {
