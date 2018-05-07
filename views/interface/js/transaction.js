@@ -91,6 +91,7 @@ sendTransaction = function(properties) {
                 }.bind({p:p});
 
                 // DEBUG: logger(JSON.stringify(assets));
+                  
                 var transaction = deterministic.transaction({
                   mode:assets.mode[p.asset].split('.')[1],
                   symbol:p.asset,

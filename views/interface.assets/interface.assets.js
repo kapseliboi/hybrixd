@@ -190,7 +190,7 @@ init.interface.assets = function(args) {
     var element = '.assets-main > .data .balance-'+asset.replace(/\./g,'-');
     var balance = $(element).attr('amount');
     if(balance && balance!=='?') {
-      if(!isToken(asset)) {
+      if(!isToken(asset) && assets.base[asset]===asset) {
         var spendable = toInt(balance).minus(toInt(assets.fees[asset]));
       } else {
         var spendable = toInt(balance);
