@@ -22,7 +22,7 @@ UItransform = {
 displayAssets = function () {
   // Render sequence
   document.querySelector('.assets-main > .data').innerHTML = mkHtmlToRender(GL.assets);
-  GL.assets.forEach(function (asset) { setStarredAssetClass(asset.id, R.prop('starred', asset)); });
+  GL.assets.forEach(function (asset) { setStarredAssetClass(R.prop('id', asset), R.prop('starred', asset)); });
   scrollToAnchor();
   retrieveBalanceStream.subscribe(function (_) { uiAssets(); });
 };

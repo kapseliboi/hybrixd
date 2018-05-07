@@ -678,7 +678,7 @@ utils = {
             if (R.isNil(R.prop('stopped', data)) && R.prop('progress', data) < 1) throw data;
             return data;
           })
-          .retryWhen(function (errors) { return errors.delay(100); });
+          .retryWhen(function (errors) { return errors.delay(100); })
 
       balanceStream.subscribe(function (balanceData) {
         var sanitizedData = R.compose(

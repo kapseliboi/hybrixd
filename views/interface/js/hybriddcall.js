@@ -131,11 +131,14 @@ activate = function(code) {
 }
 
 function mkAssetDetailsStream (init, deterministic, submode, entry, fullmode) {
+  console.log("entry = ", entry);
   var url = 'a/' + entry + '/details/';
   var seed = deterministicSeedGenerator(entry);
   var keys = deterministic.keys( {symbol: entry, seed, mode:submode});
   var addr = deterministic.address( Object.assign(keys, {mode: submode}));
   var mode = R.prop(entry, assets.mode);
+  console.log("AZZmode = ", assets.mode);
+  console.log("mode = ", mode);
 
   // TODO: RM globals
   assets.mode[entry] = fullmode;

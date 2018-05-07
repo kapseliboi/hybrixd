@@ -5,10 +5,11 @@ var H = hybridd;
 var Storage = storage;
 
 init.interface.assets = function (args) {
+  // Expose functions globally
   changeManageButton = M.changeManageButton(M.renderManageButton); // TODO: Remove messy callback structure......
   toggleStar = toggleStar;
 
-  topmenuset('assets'); // top menu UI change
+  U.setViewTab('assets'); // top menu UI change
 
   // INITIALIZE BUTTONS IN MANAGE ASSETS MODALS
   document.querySelector('#send-transfer').onclick = sendTransfer;
@@ -22,6 +23,7 @@ function renderDollarPriceInAsset (asset, amount) {
   if (query !== null) { query.innerHTML = assetDollarPrice; }
 }
 
+// Streamify!
 function sendTransfer () {
   if (document.querySelector('#send-transfer').classList.contains('disabled')) {
     // cannot send transaction
@@ -29,12 +31,14 @@ function sendTransfer () {
     // send transfer
     loadSpinner();
     var symbol = $('#action-send .modal-send-currency').attr('asset');
+    var asset = R.find(R.propEq('id', symbol), GL.assets);
+    console.log("asset = ", asset);
     sendTransaction({
       element: '.assets-main > .data .balance-' + symbol.replace(/\./g,'-'),
-      asset: symbol,
-      amount:Number($('#modal-send-amount').val().replace(/\,/g,'.')),
-      source:String($('#action-send .modal-send-addressfrom').html()).trim(),
-      target:String($('#modal-send-target').val()).trim()
+      asset,
+      amount:Number($('#modal-send-amount').val().replace(/\,/g,'.')), // Streamify!
+      source:String($('#action-send .modal-send-addressfrom').html()).trim(), // Streamify!
+      target:String($('#modal-send-target').val()).trim() // Streamify!
     });
   }
 }
@@ -68,7 +72,7 @@ function toggleStar (assetID) {
 
 function uiAssets () {
   renderBalances();
-  getNewMarketPrices(); // Should be done on a higher level
+  getNewMarketPrices(); // Should be done on a higher level. Move to interface.js
 }
 
 function renderBalances () {
@@ -105,19 +109,20 @@ function getNewMarketPrices () {
 }
 
 function toggleAssetButtons (element, assetID, balance) {
+  var no = 3;
   var assetbuttonsClass = '.assets-main > .data .assetbuttons-' + assetID.replace(/\./g,'-');
   var balanceIsValid = R.allPass([
     R.compose(R.not, R.isNil),
     R.compose(R.not, isNaN)
   ])(balance);
 
-  balanceIsValid
+  balanceIsValid && R.equals(no, 3)
     ? toggleTransactionButtons(element, assetbuttonsClass, 'remove', 'data-toggle', 'modal', 'disabled', balance)
     : toggleTransactionButtons(element, assetbuttonsClass, 'add', 'disabled', 'disabled', 'data-toggle', '?');
 }
 
 function toggleTransactionButtons (elem, query, addOrRemove, attrToSet, val, attrToRemove, attr) {
-  // HACK! Not breaking functionality, but ugly nonetheless. Optimize!
+  // HACK! Bug is not breaking functionality, but hack is ugly nonetheless. Optimize!
   var exists = R.not(R.isNil(document.querySelector(query))) || R.not(R.isNil(document.querySelector(elem)));
   if (exists) {
     document.querySelector(query).classList[addOrRemove]('disabled');
