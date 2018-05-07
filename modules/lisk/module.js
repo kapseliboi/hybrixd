@@ -99,7 +99,7 @@ function exec(properties) {
     if(deterministic_script && typeof deterministic_script=='string') {
       subprocesses.push('func("lisk","link",{target:'+jstr(target)+',command:["/api/blocks/getNetHash"]})'); // get the nethash to be able to send transactions
       subprocesses.push('func("lisk","link",{target:'+jstr(target)+',command:'+jstr(['/peer/transactions',deterministic_script])+',nethash:data.nethash})'); // shoot deterministic script object to peer node
-      subprocesses.push('stop((typeof data.success!="undefined" && data.success?0:1),(typeof data.transactionId!="undefined"?functions.clean(data.transactionId):"Transaction error or bad nethash!"))'); // shoot deterministic script object to peer node
+      subprocesses.push('stop((typeof data.success!="undefined" && data.success?0:1),(typeof data.transactionId!=="undefined"?functions.clean(data.transactionId): (typeof data.error==="string"?data.error:(typeof data.message==="string"?data.message:data.error.message)) ))'); // shoot deterministic script object to peer node
     } else {
       subprocesses.push('func("lisk","link",{target:'+jstr(target)+',command:["/api/blocks/getNetHash"]})'); // get the nethash to be able to send transactions
       subprocesses.push('stop(1,"Missing or badly formed deterministic transaction!")');
@@ -219,7 +219,10 @@ function link(properties) {
     // alternative version reporting for other lisk derivatives
     switch (mode.split('.')[1]) {
     case 'rise':
-      version = '0.1.1';
+      version = '0.1.2';
+      break;
+    case 'shift':
+      version = '6.6.2';
       break;
     default:  // lisk
       version = '0.9.9';

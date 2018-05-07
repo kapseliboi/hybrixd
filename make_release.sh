@@ -40,7 +40,6 @@ $UGLIFY lib/ini.js > $OUTPATH/lib/ini.js
 $UGLIFY lib/main.js > $OUTPATH/lib/main.js
 $UGLIFY lib/modules.js > $OUTPATH/lib/modules.js
 $UGLIFY lib/naclFactory.js > $OUTPATH/lib/naclFactory.js
-$UGLIFY lib/prototypes.js > $OUTPATH/lib/prototypes.js
 $UGLIFY lib/recipes.js > $OUTPATH/lib/recipes.js
 $UGLIFY lib/rest.js > $OUTPATH/lib/rest.js
 $UGLIFY lib/router.js > $OUTPATH/lib/router.js

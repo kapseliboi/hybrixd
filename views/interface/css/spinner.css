@@ -98,6 +98,8 @@
   display: inline-block;
   width: 0.6em;
   height: 0.6em;
+  margin-left: -0.8em !important;
+  margin-bottom: 0.2em !important;
   -webkit-transform: rotate(270deg);
   transform: rotate(270deg);
   -webkit-transition: all 0.5s ease;
@@ -106,6 +108,7 @@
 
 .progress-radial .dot {
   display: inline-block;
+  
   background-color: #CCC;
   border-radius: 100%;
   -webkit-animation : scaleblink 1.0s infinite ease-in-out;

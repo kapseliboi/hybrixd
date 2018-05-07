@@ -216,5 +216,3 @@ function handleTransactionPushResult (res) {
     return 'SUCCESS!';
   } else {
     throw 'The transaction could not be sent by the hybridd node! Please try again.';
-  }
-}

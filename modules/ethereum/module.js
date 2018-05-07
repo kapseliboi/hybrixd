@@ -102,17 +102,26 @@ function exec(properties) {
     if(deterministic_script) {
       subprocesses.push('func("ethereum","link",{target:'+jstr(target)+',command:["eth_sendRawTransaction",["'+deterministic_script+'"]]})');
       // returns: { "id":1, "jsonrpc": "2.0", "result": "0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331" }
-      subprocesses.push('stop((typeof data.result!="undefined"?0:1),(typeof data.result!="undefined"?data.result:null))');
+      subprocesses.push('stop((typeof data.result!="undefined"?0:1),(typeof data.result!="undefined"?data.result:data.error.message))');
     } else {
       subprocesses.push('stop(1,"Missing or badly formed deterministic transaction!")');
     }
     break;
   case 'unspent':
-    if(sourceaddr) {
-      subprocesses.push('func("ethereum","link",{target:'+jstr(target)+',command:["eth_getTransactionCount",["'+sourceaddr+'","pending"]]})');
-      subprocesses.push('stop(0,{"nonce":hex2dec.toDec(data.result)})');
+    // Checks if the given string is a plausible ETH address
+    function isEthAddress(address) {
+            return (/^(0x){1}[0-9a-fA-F]{40}$/i.test(address));
+    }
+    if(isEthAddress(sourceaddr)) {
+      var targetaddr = (typeof properties.command[3] != 'undefined'?properties.command[3]:false);
+      if(isEthAddress(targetaddr)) {
+        subprocesses.push('func("ethereum","link",{target:'+jstr(target)+',command:["eth_getTransactionCount",["'+sourceaddr+'","pending"]]})');
+        subprocesses.push('stop(0,{"nonce":hex2dec.toDec(data.result)})');
+      } else {
+        subprocesses.push('stop(1,"Error: bad or missing target address!")');
+      }
     } else {
-      subprocesses.push('stop(1,"Error: missing address!")');
+      subprocesses.push('stop(1,"Error: bad or missing source address!")');
     }
     break;
   case 'contract':
