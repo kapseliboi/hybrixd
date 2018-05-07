@@ -1,6 +1,7 @@
 sendTransaction = function (properties) {
   var H = hybridd;
   var p = {
+    asset_: R.prop('asset', properties),
     asset: R.path(['asset', 'symbol'], properties),
     base: R.path(['asset', 'fee-symbol'], properties),
     fee: R.path(['asset', 'fee'], properties),
@@ -28,35 +29,65 @@ sendTransaction = function (properties) {
   var assetHasValidPublicKey = typeof publicKey === 'undefined';
   var assetHasValidFactorial = typeof R.path(['asset', 'factor'], properties) !== 'undefined';
 
-  if (assetHasValidFactorial) {
-    // prepare universal unspent query containing: source address / target address / amount / public key
-    var totalAmount = toInt(p.amount).plus(toInt(p.fee));
-    var emptyOrPublicKeyString = assetHasValidPublicKey ? '' : '/' + publicKey;
-    var url = 'a/' + p.asset + '/unspent/' + p.source_address + '/' + String(totalAmount) + '/' + R.prop('target_address', p) + emptyOrPublicKeyString;
+  // prepare universal unspent query containing: source address / target address / amount / public key
+  var totalAmount = toInt(p.amount).plus(toInt(p.fee));
+  var emptyOrPublicKeyString = assetHasValidPublicKey ? '' : '/' + publicKey;
+  var url = 'a/' + p.asset + '/unspent/' + p.source_address + '/' + String(totalAmount) + '/' + R.prop('target_address', p) + emptyOrPublicKeyString;
 
-    console.log("url = ", url);
 
-    var transactionStream = H.mkHybriddCallStream(url); // Filter for errors
-    var modeStr = assets.modehashes[ assets.mode[p.asset].split('.')[0] ]+'-LOCAL'
-    var modeFromStorageStream = storage.Get_(modeStr);
+  var transactionDataStream = Rx.Observable.of(p);
+  var transactionStream = H.mkHybriddCallStream(url); // Filter for errors
+  var modeStr = assets.modehashes[ assets.mode[p.asset].split('.')[0] ] + '-LOCAL';
+  var modeFromStorageStream = storage.Get_(modeStr);
 
-    var fooStream = Rx.Observable
-        .combineLatest(
-          transactionStream,
-          modeFromStorageStream
-        )
-        .map(z => {
-          var deterministic = deterministic = R.compose(
-            activate,
-            LZString.decompressFromEncodedURIComponent,
-            R.nth(1)
-          )(z)
-        })
-    fooStream.subscribe()
-  } else {
-    UItransform.txStop();
-    alert('Transaction failed. Assets were not yet completely initialized. Please try again in a moment.');
-  }
+  var fooStream = Rx.Observable
+      .combineLatest(
+        transactionStream,
+        modeFromStorageStream,
+        transactionDataStream
+      )
+      .map(z => {
+        var decodedData = R.nth(1, z);
+        var deterministicData = R.compose(
+          activate,
+          LZString.decompressFromEncodedURIComponent
+        )(decodedData);
+
+        if (typeof deterministicData !== 'object' || deterministicData === {}) {
+          throw 'Sorry, the transaction could not be generated! Deterministic code could not be initialized!';
+        } else {
+          return R.append(deterministicData, z);
+        }
+      })
+      .map(z => {
+        var unspent = R.prop('data', R.nth(0, z));
+        var transactionData = R.nth(2, z);
+        var deterministic_ = R.nth(3, z);
+        var factor = R.path(['asset_', 'factor'], transactionData);
+
+        var checkTransaction = deterministic_.transaction({
+          mode: R.path(['asset_', 'mode'], transactionData).split('.')[1],
+          symbol: R.path(['asset_', 'symbol'], transactionData),
+          source: R.prop('source_address', transactionData),
+          target: R.prop('target_address', transactionData),
+          amount: toInt(R.prop('amount', transactionData), factor),
+          fee: toInt(R.prop('fee', transactionData), factor),
+          factor: factor,
+          contract: R.path(['asset_', 'contract'], transactionData),
+          keys: R.path(['asset_', 'keys'], transactionData),
+          seed: R.path(['asset_', 'seed'], transactionData),
+          unspent
+        });
+        console.log("checkTransaction = ", checkTransaction);
+      });
+
+  fooStream.subscribe(
+    function (data) {
+      console.log("data = ", data);
+    })
+    // function (err) {
+    //   alert(err);
+    // });
 }
 
 
@@ -71,7 +102,7 @@ function doTransactionOrSomething (p) {
       if (someCond) {
         unspent.change = toInt(unspent.change, assets.fact[p.asset]);
       }
-      storage.Get(assets.modehashes[ assets.mode[p.asset].split('.')[0] ]+'-LOCAL', function (dcode) {
+      storage.Get(assets.modehashes[ assets.mode[p.asset].split('.')[0] ] + '-LOCAL', function (dcode) {
 
         deterministic = activate( LZString.decompressFromEncodedURIComponent(dcode) );
 
@@ -119,7 +150,7 @@ function doTransactionOrSomething (p) {
   };
 }
 
-function onTransaction_(transaction){
+function onTransaction_ (transaction) {
   if(typeof transaction!=='undefined') {
     // DEBUG: logger(transaction);
     hybriddcall({r:'a/'+this.p.asset+'/push/'+transaction,z:1,pass:this.p},null, function(object,passdata) {
