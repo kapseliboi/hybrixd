@@ -4,7 +4,7 @@ sendTransaction = function (properties) {
   var base = R.path(['asset', 'fee-symbol'], properties);
   var transactionData = {
     asset_: R.prop('asset', properties),
-    fee: R.path(['asset', 'fee'], properties),
+    fee: Number(R.path(['asset', 'fee'], properties)),
     amount: Number(R.prop('amount', properties)),
     source_address: String(R.prop('source', properties)).trim(),
     target_address: String(R.prop('target', properties)).trim()
@@ -14,7 +14,7 @@ sendTransaction = function (properties) {
   var assetHasValidPublicKey = typeof publicKey === 'undefined';
   var emptyOrPublicKeyString = assetHasValidPublicKey ? '' : '/' + publicKey;
 
-  var factor = R.path(['asset_', 'factor'], transactionData);
+  var factor = R.path(['asset', 'factor'], properties);
   var totalAmount = fromInt(
     toInt(R.prop('amount', transactionData), factor)
       .plus(toInt(R.prop('fee', transactionData), factor), factor)
@@ -30,10 +30,11 @@ sendTransaction = function (properties) {
       R.prop('target_address', transactionData) +
       emptyOrPublicKeyString;
 
+  var assetMode = R.path(['asset', 'mode'], properties).split('.')[0];
+  var modeStr = assets.modehashes[assetMode] + '-LOCAL';
+  var modeFromStorageStream = storage.Get_(modeStr);
   var transactionDataStream = Rx.Observable.of(transactionData);
   var unspentStream = H.mkHybriddCallStream(unspentUrl); // Filter for errors
-  var modeStr = assets.modehashes[ assets.mode[assetID].split('.')[0] ] + '-LOCAL';
-  var modeFromStorageStream = storage.Get_(modeStr);
 
   var doTransactionStream = Rx.Observable
       .combineLatest(
@@ -53,13 +54,11 @@ sendTransaction = function (properties) {
 function onSucces (data) {
   UItransform.txStop();
   UItransform.txHideModal();
-  console.log("data = ", data);
 }
 
 function onError (err) {
   UItransform.txStop();
   alert(err);
-  console.log("err = ", err);
 }
 
 function getDeterministicData (z) {

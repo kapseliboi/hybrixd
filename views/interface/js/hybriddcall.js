@@ -159,12 +159,11 @@ function mkAssetDetailsStream (init, deterministic, submode, entry, fullmode) {
       })
       .retryWhen(function (errors) { return errors.delay(5000); })
 
-  // TODO: Return Observable back to interface.js
   return assetDetailsResponseStream
-    .map(updateGlobalAssets(init, entry, seed, keys, addr, fullmode));
+    .map(updateGlobalAssets(init, seed, keys, addr, fullmode));
 }
 
-function updateGlobalAssets (init, entry, seed, keys, addr, mode) {
+function updateGlobalAssets (init, seed, keys, addr, mode) {
   return function (assetDetailsResponse) {
     var assetDetails = R.mergeAll([
       init,
@@ -183,12 +182,13 @@ function updateGlobalAssets (init, entry, seed, keys, addr, mode) {
 initAsset = function (entry, fullmode, init) {
   var mode = fullmode.split('.')[0];
   var submode = fullmode.split('.')[1];
+  var hashMode = R.path(['modehashes', mode], assets);
   // if the deterministic code is already cached client-side
-  if (typeof assets.modehashes[mode] !== 'undefined') {
+  if (typeof hashMode !== 'undefined') {
     var modeHashStream = Storage.Get_(assets.modehashes[mode] + '-LOCAL');
     return modeHashStream
       .flatMap(getDeterministicStuff(entry, mode, submode, fullmode, init));
-  }
+  } // else ?????
 };
 
 function initializeDetermisticAndMkDetailsStream (dcode, submode, entry, fullmode, init) {
