@@ -90,6 +90,4 @@ function mkAssetsInterfaceHtmlStr (assetsHTMLStr) {
 function loadSpinner () { document.querySelector('#action-send .spinner').classList.add('active'); };
 function stopSpinner () { document.querySelector('#action-send .spinner').classList.remove('active'); };
 
-$(document).ready(function () {
-  displayAssets();
-});
+U.documentReady(displayAssets);
