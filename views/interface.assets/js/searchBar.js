@@ -11,18 +11,18 @@ var tableHTMLStr = '<div class="table">' +
     '<div class="tbody">';
 
 var searchBarStream = Rx.Observable
-    .fromEvent(document.querySelector('#search-assets'), 'input')
-    .startWith({target: {value: ''}})
-    .map(U.getTargetValue)
-    .map(R.toLower)
-    .map(query => {
-      return R.compose(
-        R.keys,
-        R.fromPairs,
-        R.filter(queryMatchesEntry(query)),
-        R.toPairs
-      )(GL.assetnames);
-    });
+  .fromEvent(document.querySelector('#search-assets'), 'input')
+  .startWith({target: {value: ''}})
+  .map(U.getTargetValue)
+  .map(R.toLower)
+  .map(query => {
+    return R.compose(
+      R.keys,
+      R.fromPairs,
+      R.filter(queryMatchesEntry(query)),
+      R.toPairs
+    )(GL.assetnames);
+  });
 
 searchBarStream.subscribe(matchedEntries => {
   var assetsHTMLStr = matchedEntries.reduce(mkSearchedAssetHTMLStr, '');
@@ -31,22 +31,22 @@ searchBarStream.subscribe(matchedEntries => {
 });
 
 function mkSearchedAssetHTMLStr (acc, entry) {
-    var symbolName = entry.slice(entry.indexOf('.') + 1);
-    var icon = (symbolName in black.svgs) ? black.svgs[symbolName] : mkSvgIcon(symbolName);
-    var entryExists = R.any(R.propEq('id', entry), GL.assets);
-    var element = entry.replace('.', '-');
+  var symbolName = entry.slice(entry.indexOf('.') + 1);
+  var icon = (symbolName in black.svgs) ? black.svgs[symbolName] : mkSvgIcon(symbolName);
+  var entryExists = R.any(R.propEq('id', entry), GL.assets);
+  var element = entry.replace('.', '-');
 
-    var assetIconHTMLStr = '<div class="icon">' + icon + '</div>';
-    var assetIDHTMLSTr = '<div class="asset">' + entry.toUpperCase() + '</div>';
-    var assetFullNameHTMLStr = '<div class="full-name">' + GL.assetnames[entry] + '</div>';
-    var actionBtns = '<div class="assetbuttons assetbuttons-' + element + '">' + M.renderManageButton(element, entry, entryExists) + '</div>';
+  var assetIconHTMLStr = '<div class="icon">' + icon + '</div>';
+  var assetIDHTMLSTr = '<div class="asset">' + entry.toUpperCase() + '</div>';
+  var assetFullNameHTMLStr = '<div class="full-name">' + GL.assetnames[entry] + '</div>';
+  var actionBtns = '<div class="assetbuttons assetbuttons-' + element + '">' + M.renderManageButton(element, entry, entryExists) + '</div>';
 
-    var htmlStr = '<div class="tr">' +
+  var htmlStr = '<div class="tr">' +
         '<div class="td col1">' + assetIconHTMLStr + assetIDHTMLSTr + assetFullNameHTMLStr + '</div>' +
         '<div class="td col2 actions">' + actionBtns + '</div>' +
         '</div>';
-    return acc + htmlStr;
-  }
+  return acc + htmlStr;
+}
 
 function queryMatchesEntry (query) {
   return function (entry) {

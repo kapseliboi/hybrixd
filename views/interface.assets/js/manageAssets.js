@@ -25,8 +25,8 @@ var manageAssets = {
       var newActiveAssetsForStorage = R.map(R.pick(['id', 'starred']), newActiveAssets);
       var newAssetsToInitialize = R.filter(idDoesNotExist, newActiveAssetsForStorage);
       var assetsDetailsStream = R.isEmpty(newAssetsToInitialize)
-          ? Rx.Observable.from([[]])
-          : Rx.Observable.from(newAssetsToInitialize)
+        ? Rx.Observable.from([[]])
+        : Rx.Observable.from(newAssetsToInitialize)
           .flatMap(function (asset) {
             return R.compose(
               initializeAsset(asset),
@@ -82,4 +82,4 @@ function existingOrNewAssetEntry (assetName) {
   )(GL.assets);
 }
 function entryIsSelected (entry) { return GL.assetSelect[entry]; } // R.has...? R.hasIn???
-function initializeAsset (asset) { return function (entry) { return initAsset(entry, R.prop(entry, GL.assetmodes), asset);}};
+function initializeAsset (asset) { return function (entry) { return initAsset(entry, R.prop(entry, GL.assetmodes), asset); }; }

@@ -7,7 +7,6 @@ var Storage = storage;
 init.interface.assets = function (args) {
   // Expose functions globally
   changeManageButton = M.changeManageButton(M.renderManageButton); // TODO: Remove messy callback structure......
-  toggleStar = toggleStar;
 
   U.setViewTab('assets'); // top menu UI change
 
@@ -32,13 +31,13 @@ function sendTransfer () {
     loadSpinner();
     var symbol = $('#action-send .modal-send-currency').attr('asset');
     var asset = R.find(R.propEq('id', symbol), GL.assets);
-    console.log("asset = ", asset);
+    console.log('asset = ', asset);
     sendTransaction({
-      element: '.assets-main > .data .balance-' + symbol.replace(/\./g,'-'),
+      element: '.assets-main > .data .balance-' + symbol.replace(/\./g, '-'),
       asset,
-      amount:Number($('#modal-send-amount').val().replace(/\,/g,'.')), // Streamify!
-      source:String($('#action-send .modal-send-addressfrom').html()).trim(), // Streamify!
-      target:String($('#modal-send-target').val()).trim() // Streamify!
+      amount: Number($('#modal-send-amount').val().replace(/, /g, '.')), // Streamify!
+      source: String($('#action-send .modal-send-addressfrom').html()).trim(), // Streamify!
+      target: String($('#modal-send-target').val()).trim() // Streamify!
     });
   }
 }
@@ -53,13 +52,13 @@ function maybeUpdateStarredProp (assetID) {
     var starredLens = R.lensProp('starred');
     var toggledStarredValue = R.not(R.view(starredLens, asset));
     var updatedOrCurrentAsset = R.equals(R.prop('id', asset), assetID)
-        ? R.set(starredLens, toggledStarredValue, asset)
-        : asset;
+      ? R.set(starredLens, toggledStarredValue, asset)
+      : asset;
     return R.append(updatedOrCurrentAsset, acc);
   };
 }
 
-function toggleStar (assetID) {
+toggleStar = function (assetID) {
   var globalAssets = GL.assets;
   var updatedGlobalAssets = R.reduce(maybeUpdateStarredProp(assetID), [], globalAssets);
   var isStarred = R.defaultTo(false, R.find(R.propEq('id', assetID, updatedGlobalAssets)));
@@ -68,7 +67,7 @@ function toggleStar (assetID) {
   Storage.Set(userStorageKey('ff00-0034'), userEncode(starredForStorage));
   U.updateGlobalAssets(updatedGlobalAssets);
   setStarredAssetClass(assetID, isStarred);
-}
+};
 
 function uiAssets () {
   renderBalances();
@@ -91,8 +90,8 @@ function updateBalanceData (assets, assetID, amount) {
     var amountLens = R.lensPath(['balance', 'amount']);
     var updatedBalanceAsset = R.set(amountLens, amount, asset);
     var defaultOrUpdatedAsset = R.equals(R.prop('id', asset), assetID)
-        ? updatedBalanceAsset
-        : asset;
+      ? updatedBalanceAsset
+      : asset;
 
     return R.append(defaultOrUpdatedAsset, updatedAssets);
   }
@@ -101,7 +100,7 @@ function updateBalanceData (assets, assetID, amount) {
 
 function getNewMarketPrices () {
   var dollarPriceStream = Rx.Observable
-      .interval(5000);
+    .interval(5000);
 
   dollarPriceStream.subscribe(function (_) {
     Valuations.getDollarPrices(() => {});
@@ -110,7 +109,7 @@ function getNewMarketPrices () {
 
 function toggleAssetButtons (element, assetID, balance) {
   var no = 3;
-  var assetbuttonsClass = '.assets-main > .data .assetbuttons-' + assetID.replace(/\./g,'-');
+  var assetbuttonsClass = '.assets-main > .data .assetbuttons-' + assetID.replace(/\./g, '-');
   var balanceIsValid = R.allPass([
     R.compose(R.not, R.isNil),
     R.compose(R.not, isNaN)

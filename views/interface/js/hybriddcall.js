@@ -137,12 +137,6 @@ function mkAssetDetailsStream (init, deterministic, submode, entry, fullmode) {
   var keys = deterministic.keys({symbol: entry, seed, mode: submode});
   var addr = deterministic.address(Object.assign(keys, {mode: submode}));
 
-  // TODO: RM globals
-  assets.mode[entry] = fullmode;
-  assets.seed[entry] = seed;
-  assets.keys[entry] = keys;
-  assets.addr[entry] = addr;
-
   var assetDetailsStream = Rx.Observable
       .fromPromise(hybriddcall({r: url, z: false}))
       .filter(R.propEq('error', 0))

@@ -26,10 +26,6 @@ GL = {
   assets: []
 };
 
-assets.seed = {}; // Transaction.js
-assets.keys = {}; // Transaction.js
-assets.addr = {}; // Transaction.js + balance calls
-
 // Don't move this yet, as the cur_step is needed by assetModesUrl. Synchronous coding!
 GL.cur_step = nextStep();
 var assetModesUrl = path + zchan(GL.usercrypto, GL.cur_step, 'l/asset/details');
