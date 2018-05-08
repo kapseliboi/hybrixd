@@ -31,7 +31,6 @@ function sendTransfer () {
     loadSpinner();
     var symbol = $('#action-send .modal-send-currency').attr('asset');
     var asset = R.find(R.propEq('id', symbol), GL.assets);
-    console.log('asset = ', asset);
     sendTransaction({
       element: '.assets-main > .data .balance-' + symbol.replace(/\./g, '-'),
       asset,
