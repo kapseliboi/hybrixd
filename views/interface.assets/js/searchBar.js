@@ -10,25 +10,40 @@ var tableHTMLStr = '<div class="table">' +
     '</div>' +
     '<div class="tbody">';
 
-var searchBarStream = Rx.Observable
-  .fromEvent(document.querySelector('#search-assets'), 'input')
-  .startWith({target: {value: ''}})
-  .map(U.getTargetValue)
-  .map(R.toLower)
-  .map(query => {
-    return R.compose(
-      R.keys,
-      R.fromPairs,
-      R.filter(queryMatchesEntry(query)),
-      R.toPairs
-    )(GL.assetnames);
-  });
+var clearBtns = [
+  document.querySelector('.clearable__clear'),
+  document.querySelector('.manageBtnSave'),
+  document.querySelector('.manageBtnCancel')
+];
 
-searchBarStream.subscribe(matchedEntries => {
-  var assetsHTMLStr = matchedEntries.reduce(mkSearchedAssetHTMLStr, '');
-  var output = tableHTMLStr + assetsHTMLStr + '</div></div>';
-  document.querySelector('.data.manageAssets').innerHTML = output; // insert new data into DOM
+var clearBtnsStream = clearBtns.map(function (elem) {
+  return Rx.Observable.fromEvent(elem, 'click');
 });
+
+var searchAssetsStream = Rx.Observable
+    .fromEvent(document.querySelector('#search-assets'), 'input')
+    .startWith({target: {value: ''}})
+    .map(U.getTargetValue);
+
+var searchBarStream = searchAssetsStream
+    .map(R.toLower)
+    .map(query => {
+      return R.compose(
+        R.keys,
+        R.fromPairs,
+        R.filter(queryMatchesEntry(query)),
+        R.toPairs
+      )(GL.assetnames);
+    });
+
+var clearSearchBarStream = Rx.Observable
+  .merge(clearBtnsStream)
+    .map(function (_) {
+      var searchBar = document.querySelector('#search-assets');
+      searchBar.innerHTML = '';
+      searchBar.value = '';
+      U.triggerEvent(searchBar, 'input');
+    });
 
 function mkSearchedAssetHTMLStr (acc, entry) {
   var symbolName = entry.slice(entry.indexOf('.') + 1);
@@ -56,3 +71,14 @@ function queryMatchesEntry (query) {
       R.test(new RegExp(query, 'g'), assetName);
   };
 }
+
+clearSearchBarStream.subscribe();
+searchBarStream.subscribe(function (matchedEntries) {
+  var assetsHTMLStr = matchedEntries.reduce(mkSearchedAssetHTMLStr, '');
+  var output = tableHTMLStr + assetsHTMLStr + '</div></div>';
+  document.querySelector('.data.manageAssets').innerHTML = output; // insert new data into DOM
+});
+searchAssetsStream.subscribe(function (value) {
+  var displayValue = R.equals(value, '') ? 'none' : 'inline';
+  document.querySelector('.clearable__clear').style.display = displayValue;
+});

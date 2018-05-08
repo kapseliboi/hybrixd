@@ -27,20 +27,6 @@ displayAssets = function () {
   retrieveBalanceStream.subscribe(function (_) { uiAssets(); });
 };
 
-$('.clearable').each(function () {
-  var $inp = $(this).find('input:text');
-  var $cle = $(this).find('.clearable__clear');
-
-  $inp.on('input', function () {
-    $cle.toggle(!!this.value);
-  });
-
-  $cle.on('touchstart click', function (e) {
-    e.preventDefault();
-    $inp.val('').trigger('input');
-  });
-});
-
 function mkHtmlToRender (assets) {
   return R.compose(
     mkAssetsInterfaceHtmlStr,
@@ -101,8 +87,8 @@ function mkAssetsInterfaceHtmlStr (assetsHTMLStr) {
       '</div>';
 }
 
-function loadSpinner () { document.querySelector('#action-send .spinner').classList.add('active'); }
-function stopSpinner () { document.querySelector('#action-send .spinner').classList.remove('active'); }
+function loadSpinner () { document.querySelector('#action-send .spinner').classList.add('active'); };
+function stopSpinner () { document.querySelector('#action-send .spinner').classList.remove('active'); };
 
 $(document).ready(function () {
   displayAssets();

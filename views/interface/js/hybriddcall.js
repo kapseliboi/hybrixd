@@ -151,7 +151,7 @@ function mkAssetDetailsStream (init, deterministic, submode, entry, fullmode) {
         if (R.isNil(R.prop('data', processData)) && R.equals(R.prop('error', processData), 0)) throw processData;
         return processData;
       })
-      .retryWhen(function (errors) { return errors.delay(5000); })
+      .retryWhen(function (errors) { return errors.delay(500); })
 
   return assetDetailsResponseStream
     .map(updateGlobalAssets(init, seed, keys, addr, fullmode));
@@ -190,12 +190,12 @@ function initializeDetermisticAndMkDetailsStream (dcode, submode, entry, fullmod
   return mkAssetDetailsStream(init, deterministic, submode, entry, fullmode);
 }
 
-function setStorageAndMkAssetDetails (init, submode, entry, fullmode) {
-  return function (object) {
-    var err = R.prop('error', object)
+function setStorageAndMkAssetDetails (init, mode, submode, entry, fullmode) {
+  return function (deterministicCodeResponse) {
+    var err = R.prop('error', deterministicCodeResponse)
     if (typeof err !== 'undefined' && R.equals(err, 0)) {
-      var deterministic = deterministic = activate(LZString.decompressFromEncodedURIComponent(object.data));      // decompress and make able to run the deterministic routine
-      Storage.Set(assets.modehashes[mode] + '-LOCAL', object.data);
+      var deterministic = deterministic = activate(LZString.decompressFromEncodedURIComponent(deterministicCodeResponse.data));      // decompress and make able to run the deterministic routine
+      Storage.Set(assets.modehashes[mode] + '-LOCAL', R.prop('data', deterministicCodeResponse));
       return mkAssetDetailsStream(init, deterministic, submode, entry, fullmode);
     } else {
       return Rx.Observable.of({error: 'Could not set storage.'}); // TODO: Catch error properly!
@@ -216,7 +216,7 @@ function reinitializeMode (init, mode, submode, entry, fullmode) {
         return processData;
       })
       .retryWhen(function (errors) { return errors.delay(1000); })
-      .map(setStorageAndMkAssetDetails(init, submode, entry, fullmode));
+      .map(setStorageAndMkAssetDetails(init, mode, submode, entry, fullmode));
 
   Storage.Del(assets.modehashes[mode] + '-LOCAL'); // TODO: Make pure!
   return modeResponseStream;
