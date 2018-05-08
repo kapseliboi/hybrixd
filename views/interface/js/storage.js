@@ -112,13 +112,15 @@ var storage = (function() {
 
     Set : function (storekey, storevalue) {
       localforage.setItem(storekey, storevalue);
-      localforage.setItem(storekey+'.meta',{time:Date.now(),hash:DJB2.hash(storevalue)});
-      if(storekey.substr(-6)!=='-LOCAL') {
+      localforage.setItem(storekey + '.meta',{
+        time: Date.now(),
+        hash: DJB2.hash(storevalue)
+      });
+      if (storekey.substr(-6)!=='-LOCAL') {
         setTimeout(function(storekey) {
           Sync(storekey);
         }, 2000,storekey);
       }
-      return true;
     },
 
     Get : function (storekey, postfunction) {

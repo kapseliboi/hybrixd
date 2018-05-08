@@ -1,4 +1,5 @@
 var U = utils;
+var Storage = storage
 
 var TIMEOUT = 30000;
 
@@ -122,10 +123,10 @@ isToken = function(symbol) {
 // activate (deterministic) code from a string
 activate = function(code) {
   if(typeof code == 'string') {
-    eval('var deterministic = (function(){})(); '+code);	// interpret deterministic library into an object
+    eval('var deterministic = (function(){})(); ' + code); // interpret deterministic library into an object
     return deterministic;
   } else {
-    console.log('Cannot activate deterministic code!')
+    console.log('Cannot activate deterministic code!');
     return function(){};
   }
 }
@@ -133,8 +134,8 @@ activate = function(code) {
 function mkAssetDetailsStream (init, deterministic, submode, entry, fullmode) {
   var url = 'a/' + entry + '/details/';
   var seed = deterministicSeedGenerator(entry);
-  var keys = deterministic.keys( {symbol: entry, seed, mode: submode});
-  var addr = deterministic.address( Object.assign(keys, {mode: submode}));
+  var keys = deterministic.keys({symbol: entry, seed, mode: submode});
+  var addr = deterministic.address(Object.assign(keys, {mode: submode}));
 
   // TODO: RM globals
   assets.mode[entry] = fullmode;
@@ -143,7 +144,7 @@ function mkAssetDetailsStream (init, deterministic, submode, entry, fullmode) {
   assets.addr[entry] = addr;
 
   var assetDetailsStream = Rx.Observable
-      .fromPromise(hybriddcall({r: url, z: 0}))
+      .fromPromise(hybriddcall({r: url, z: false}))
       .filter(R.propEq('error', 0))
       .map(R.merge({r: '/s/deterministic/hashes', z: true}));
 
@@ -151,7 +152,12 @@ function mkAssetDetailsStream (init, deterministic, submode, entry, fullmode) {
       .flatMap(function (properties) {
         return Rx.Observable
           .fromPromise(hybriddReturnProcess(properties));
-      });
+      })
+      .map(function (processData) {
+        if (R.isNil(R.prop('data', processData)) && R.equals(R.prop('error', processData), 0)) throw processData;
+        return processData;
+      })
+      .retryWhen(function (errors) { return errors.delay(5000); })
 
   // TODO: Return Observable back to interface.js
   return assetDetailsResponseStream
@@ -179,7 +185,7 @@ initAsset = function (entry, fullmode, init) {
   var submode = fullmode.split('.')[1];
   // if the deterministic code is already cached client-side
   if (typeof assets.modehashes[mode] !== 'undefined') {
-    var modeHashStream = storage.Get_(assets.modehashes[mode] + '-LOCAL');
+    var modeHashStream = Storage.Get_(assets.modehashes[mode] + '-LOCAL');
     return modeHashStream
       .flatMap(getDeterministicStuff(entry, mode, submode, fullmode, init));
   }
@@ -190,28 +196,44 @@ function initializeDetermisticAndMkDetailsStream (dcode, submode, entry, fullmod
   return mkAssetDetailsStream(init, deterministic, submode, entry, fullmode);
 }
 
-// Currently breaking!
-function resetModes (init, mode, submode, entry, fullmode) {
-  // TODO: STREAMIFY!!!
-  hybriddcall({r: 's/deterministic/code/' + mode, z: 0}, function (object) {
-    if(typeof object.error !== 'undefined' && object.error === 0) {
-      // decompress and make able to run the deterministic routine
-      storage.Set(assets.modehashes[mode]+'-LOCAL', object.data);
-      mkAssetDetailsStream(init, object.data, submode, entry, fullmode);
+function setStorageAndMkAssetDetails (init, submode, entry, fullmode) {
+  return function (object) {
+    var err = R.prop('error', object)
+    if (typeof err !== 'undefined' && R.equals(err, 0)) {
+      var deterministic = deterministic = activate(LZString.decompressFromEncodedURIComponent(object.data));      // decompress and make able to run the deterministic routine
+      Storage.Set(assets.modehashes[mode] + '-LOCAL', object.data);
+      return mkAssetDetailsStream(init, deterministic, submode, entry, fullmode);
+    } else {
+      return Rx.Observable.of({error: 'Could not set storage.'}); // TODO: Catch error properly!
     }
-  });
-  return true;
+  }
+};
+
+function reinitializeMode (init, mode, submode, entry, fullmode) {
+  var url = 's/deterministic/code/' + mode;
+  var modeStream = Rx.Observable.fromPromise(hybriddcall({r: url, z: 0}));
+  var modeResponseStream = modeStream
+      .flatMap(function (properties) {
+        return Rx.Observable
+          .fromPromise(hybriddReturnProcess(properties));
+      })
+      .map(function (processData) {
+        if (R.isNil(R.prop('stopped', processData)) && R.prop('progress', processData) < 1) throw processData;
+        return processData;
+      })
+      .retryWhen(function (errors) { return errors.delay(1000); })
+      .map(setStorageAndMkAssetDetails(init, submode, entry, fullmode));
+
+  Storage.Del(assets.modehashes[mode] + '-LOCAL'); // TODO: Make pure!
+  return modeResponseStream;
 }
 
 function getDeterministicStuff (entry, mode, submode, fullmode, init) {
   return function (dcode) {
     return R.not(R.isNil(dcode))
       ? initializeDetermisticAndMkDetailsStream(dcode, submode, entry, fullmode, init)
-      : function () {
-        storage.Del(assets.modehashes[mode]+'-LOCAL');
-        return resetModes(init, mode);
-      }
-  }
+      : reinitializeMode(init, mode, submode, entry, fullmode);
+  };
 }
 
 // creates a unique user storage key for storing information and settings
@@ -243,7 +265,7 @@ userDecode = function(data) {
 }
 
 // creates a unique seed for deterministic asset code
-function deterministicSeedGenerator(asset) {
+function deterministicSeedGenerator (asset) {
   // this salt need not be too long (if changed: adjust slice according to tests)
   var salt = '1nT3rN3t0Fc01NsB1nD5tH3cRyPt05Ph3R3t093Th3Rf0Rp30Pl3L1k3M34nDy0U';
   // slightly increases entropy by XOR obfuscating and mixing data with a key
@@ -294,7 +316,7 @@ hybriddReturnProcess = function (properties) {
           .then(r => zchanOrYchanEncryptionObj(reqmethod, GL.usercrypto)(processStep)(r)) // TODO: Factor out decoding!!!
           .catch(e => console.log('Error hybriddCall', e)))
     .catch(e => console.log('Error hybriddCall', e));
-}
+};
 
 hybridd = {
   mkHybriddCallStream: function (url) {

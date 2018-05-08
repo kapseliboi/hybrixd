@@ -30,6 +30,6 @@ loginInputStreams = {
             return R.merge(sessionData, defaultOrAssociatedStepData);
           })
           .catch(e => console.log(stepNameStr + ': Error retrieving data:', e)))
-    .catch(e => console.log('postSessionStep0Data: Error fetching data:', e));
+    .catch(e => console.log('Error fetching data:', e));
 }
 };
