@@ -47,15 +47,15 @@ function mkAssetDetailsStream (init, deterministic, submode, entry, fullmode) {
     .map(R.merge({r: '/s/deterministic/hashes', z: true}));
 
   var assetDetailsResponseStream = assetDetailsStream
-    .flatMap(function (properties) {
-      return Rx.Observable
-        .fromPromise(hybriddReturnProcess(properties));
-    })
-    .map(function (processData) {
-      if (R.isNil(R.prop('data', processData)) && R.equals(R.prop('error', processData), 0)) throw processData;
-      return processData;
-    })
-    .retryWhen(function (errors) { return errors.delay(500); });
+      .flatMap(function (properties) {
+        return Rx.Observable
+          .fromPromise(hybriddReturnProcess(properties));
+      })
+      .map(function (processData) {
+        if (R.isNil(R.prop('data', processData)) && R.equals(R.prop('error', processData), 0)) throw processData;
+        return processData;
+      })
+      .retryWhen(function (errors) { return errors.delay(500); })
 
   return assetDetailsResponseStream
     .map(updateGlobalAssets(init, seed, keys, addr, fullmode));
@@ -96,9 +96,9 @@ function initializeDetermisticAndMkDetailsStream (dcode, submode, entry, fullmod
 
 function setStorageAndMkAssetDetails (init, mode, submode, entry, fullmode) {
   return function (deterministicCodeResponse) {
-    var err = R.prop('error', deterministicCodeResponse);
+    var err = R.prop('error', deterministicCodeResponse)
     if (typeof err !== 'undefined' && R.equals(err, 0)) {
-      var deterministic = deterministic = activate(LZString.decompressFromEncodedURIComponent(deterministicCodeResponse.data)); // decompress and make able to run the deterministic routine
+      var deterministic = deterministic = activate(LZString.decompressFromEncodedURIComponent(deterministicCodeResponse.data));      // decompress and make able to run the deterministic routine
       Storage.Set(assets.modehashes[mode] + '-LOCAL', R.prop('data', deterministicCodeResponse));
       return mkAssetDetailsStream(init, deterministic, submode, entry, fullmode);
     } else {
@@ -111,16 +111,16 @@ function reinitializeMode (init, mode, submode, entry, fullmode) {
   var url = 's/deterministic/code/' + mode;
   var modeStream = Rx.Observable.fromPromise(hybriddcall({r: url, z: 0}));
   var modeResponseStream = modeStream
-    .flatMap(function (properties) {
-      return Rx.Observable
-        .fromPromise(hybriddReturnProcess(properties));
-    })
-    .map(function (processData) {
-      if (R.isNil(R.prop('stopped', processData)) && R.prop('progress', processData) < 1) throw processData;
-      return processData;
-    })
-    .retryWhen(function (errors) { return errors.delay(1000); })
-    .map(setStorageAndMkAssetDetails(init, mode, submode, entry, fullmode));
+      .flatMap(function (properties) {
+        return Rx.Observable
+          .fromPromise(hybriddReturnProcess(properties));
+      })
+      .map(function (processData) {
+        if (R.isNil(R.prop('stopped', processData)) && R.prop('progress', processData) < 1) throw processData;
+        return processData;
+      })
+      .retryWhen(function (errors) { return errors.delay(1000); })
+      .map(setStorageAndMkAssetDetails(init, mode, submode, entry, fullmode));
 
   Storage.Del(assets.modehashes[mode] + '-LOCAL'); // TODO: Make pure!
   return modeResponseStream;
