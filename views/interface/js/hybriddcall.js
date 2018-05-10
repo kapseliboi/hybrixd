@@ -3,27 +3,6 @@ var Storage = storage;
 
 var TIMEOUT = 30000;
 
-fromInt = function (input, factor) {
-  var f = Number(factor);
-  var x = new Decimal(String(input));
-  return x.times((f > 1 ? '0.' + new Array(f).join('0') : '') + '1');
-};
-
-toInt = function (input, factor) {
-  var f = Number(factor);
-  var x = new Decimal(String(input));
-  return x.times('1' + (f > 1 ? new Array(f + 1).join('0') : ''));
-};
-
-/* TO BE DEPRECATED */
-formatFloat = function (n) {
-  return String(Number(n));
-};
-
-isToken = function (symbol) {
-  return (symbol.indexOf('.') !== -1 ? 1 : 0);
-};
-
 // activate (deterministic) code from a string
 activate = function (code) {
   if (typeof code === 'string') {
@@ -96,9 +75,9 @@ function initializeDetermisticAndMkDetailsStream (dcode, submode, entry, fullmod
 
 function setStorageAndMkAssetDetails (init, mode, submode, entry, fullmode) {
   return function (deterministicCodeResponse) {
-    var err = R.prop('error', deterministicCodeResponse)
+    var err = R.prop('error', deterministicCodeResponse);
     if (typeof err !== 'undefined' && R.equals(err, 0)) {
-      var deterministic = deterministic = activate(LZString.decompressFromEncodedURIComponent(deterministicCodeResponse.data));      // decompress and make able to run the deterministic routine
+      var deterministic = deterministic = activate(LZString.decompressFromEncodedURIComponent(deterministicCodeResponse.data)); // decompress and make able to run the deterministic routine
       Storage.Set(assets.modehashes[mode] + '-LOCAL', R.prop('data', deterministicCodeResponse));
       return mkAssetDetailsStream(init, deterministic, submode, entry, fullmode);
     } else {

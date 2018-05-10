@@ -97,3 +97,24 @@ utils = {
     document.querySelector('#topmenu-' + target).classList.add('selected');
   }
 };
+
+fromInt = function (input, factor) {
+  var f = Number(factor);
+  var x = new Decimal(String(input));
+  return x.times((f > 1 ? '0.' + new Array(f).join('0') : '') + '1');
+};
+
+toInt = function (input, factor) {
+  var f = Number(factor);
+  var x = new Decimal(String(input));
+  return x.times('1' + (f > 1 ? new Array(f + 1).join('0') : ''));
+};
+
+/* TO BE DEPRECATED */
+formatFloat = function (n) {
+  return String(Number(n));
+};
+
+isToken = function (symbol) {
+  return (symbol.indexOf('.') !== -1 ? 1 : 0);
+};
