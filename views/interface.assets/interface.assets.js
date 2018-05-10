@@ -28,21 +28,22 @@ function sendTransfer () {
   } else {
     // send transfer
     loadSpinner();
-    var symbol = $('#action-send .modal-send-currency').attr('asset');
+    var symbol = document.querySelector('#action-send .modal-send-currency').getAttribute('asset');
     var asset = R.find(R.propEq('id', symbol), GL.assets);
     sendTransaction({
       element: '.assets-main > .data .balance-' + symbol.replace(/\./g, '-'),
       asset,
-      amount: Number($('#modal-send-amount').val().replace(/, /g, '.')), // Streamify!
-      source: String($('#action-send .modal-send-addressfrom').html()).trim(), // Streamify!
-      target: String($('#modal-send-target').val()).trim() // Streamify!
+      amount: Number(document.querySelector('#modal-send-amount').value.replace(/, /g, '.')), // Streamify!
+      source: String(document.querySelector('#action-send .modal-send-addressfrom').innerHTML).trim(), // Streamify!
+      target: String(document.querySelector('#modal-send-target').value.trim()) // Streamify!
     });
   }
 }
 
 function setStarredAssetClass (assetID, isStarred) {
   var id = '#' + assetID.replace(/\./g, '_'); // Mk into function. Being used elsewhere too.
-  $(id).children('svg').toggleClass('starred', isStarred); // DAMN YOU JQUERY!!!!
+  var addOrRemoveClass = isStarred ? 'add' : 'remove';
+  document.querySelector(id + ' > svg').classList[addOrRemoveClass]('starred');
 }
 
 function maybeUpdateStarredProp (assetID) {
