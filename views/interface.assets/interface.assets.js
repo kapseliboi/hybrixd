@@ -78,10 +78,10 @@ function renderBalances () {
 }
 
 function updateGlobalAssetsAndRenderDataInDOM (element, numberOfSignificantDigits, sanitizedData, assetID) {
-  renderDataInDom(element, numberOfSignificantDigits, sanitizedData);
-  renderDollarPriceInAsset(assetID, Number(sanitizedData));
   toggleAssetButtons(element, assetID, Number(sanitizedData));
   U.updateGlobalAssets(updateBalanceData(GL.assets, assetID, sanitizedData));
+  H.renderDataInDom(element, numberOfSignificantDigits, sanitizedData);
+  renderDollarPriceInAsset(assetID, Number(sanitizedData));
 }
 
 function updateBalanceData (assets, assetID, amount) {
@@ -107,14 +107,13 @@ function getNewMarketPrices () {
 }
 
 function toggleAssetButtons (element, assetID, balance) {
-  var no = 3;
   var assetbuttonsClass = '.assets-main > .data .assetbuttons-' + assetID.replace(/\./g, '-');
   var balanceIsValid = R.allPass([
     R.compose(R.not, R.isNil),
     R.compose(R.not, isNaN)
   ])(balance);
 
-  balanceIsValid && R.equals(no, 3)
+  balanceIsValid
     ? toggleTransactionButtons(element, assetbuttonsClass, 'remove', 'data-toggle', 'modal', 'disabled', balance)
     : toggleTransactionButtons(element, assetbuttonsClass, 'add', 'disabled', 'disabled', 'data-toggle', '?');
 }
