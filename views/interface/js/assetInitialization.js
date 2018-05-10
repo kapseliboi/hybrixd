@@ -12,6 +12,17 @@ initAsset = function (entry, fullmode, init) {
   } // else ?????
 };
 
+// activate (deterministic) code from a string
+activate = function (code) {
+  if (typeof code === 'string') {
+    eval('var deterministic = (function(){})(); ' + code); // interpret deterministic library into an object
+    return deterministic;
+  } else {
+    console.log('Cannot activate deterministic code!');
+    return function () {};
+  }
+};
+
 function mkAssetDetailsStream (init, deterministic, submode, entry, fullmode) {
   var url = 'a/' + entry + '/details/';
   var seed = deterministicSeedGenerator(entry);
@@ -98,17 +109,6 @@ function getDeterministicData (entry, mode, submode, fullmode, init) {
       : reinitializeMode(init, mode, submode, entry, fullmode);
   };
 }
-
-// activate (deterministic) code from a string
-function activate (code) {
-  if (typeof code === 'string') {
-    eval('var deterministic = (function(){})(); ' + code); // interpret deterministic library into an object
-    return deterministic;
-  } else {
-    console.log('Cannot activate deterministic code!');
-    return function () {};
-  }
-};
 
 // creates a unique seed for deterministic asset code
 function deterministicSeedGenerator (asset) {
