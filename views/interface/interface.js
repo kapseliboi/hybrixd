@@ -38,7 +38,7 @@ var defaultAssetData = [
   { id: 'eth', starred: false }
 ];
 
-var assetDetailsStream = Rx.Observable
+var assetsModesAndNamesStream = Rx.Observable
     .fromPromise(U.fetchDataFromUrl(assetModesUrl, 'Error retrieving asset details.'))
     .map(setAssetsData);
 
@@ -57,7 +57,7 @@ var deterministicHashesResponseProcessStream = deterministicHashesStream
 var storedUserDataStream = storage.Get_(userStorageKey('ff00-0034'))
     .map(userDecode)
     .map(storedOrDefaultUserData);
-// Almost same code is used in ManageAssets. Refactor if possible....
+
 var assetsDetailsStream = storedUserDataStream
     .flatMap(a => a) // Flatten Array structure...
     .flatMap(function (asset) {
@@ -70,7 +70,7 @@ var assetsDetailsStream = storedUserDataStream
 var initializationStream = Rx.Observable
     .combineLatest(
       storedUserDataStream,
-      assetDetailsStream,
+      assetsModesAndNamesStream,
       deterministicHashesResponseProcessStream
     );
 

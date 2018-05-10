@@ -10,7 +10,7 @@ function blink (target) {
 }
 
 var blinkAnimationStream = Rx.Observable
-    .interval(400)
+    .interval(750)
     .map(function (_) { blink('arc0'); });
 
 var rotateLoginStream = Rx.Observable

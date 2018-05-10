@@ -23,11 +23,8 @@ activate = function (code) {
   }
 };
 
-function mkAssetDetailsStream (init, deterministic, submode, entry, fullmode) {
+function mkAssetDetailsStream (init, dcode, submode, entry, fullmode) {
   var url = 'a/' + entry + '/details/';
-  var seed = deterministicSeedGenerator(entry);
-  var keys = deterministic.keys({symbol: entry, seed, mode: submode});
-  var addr = deterministic.address(Object.assign(keys, {mode: submode}));
 
   var assetDetailsStream = Rx.Observable
     .fromPromise(hybriddcall({r: url, z: false}))
@@ -46,28 +43,38 @@ function mkAssetDetailsStream (init, deterministic, submode, entry, fullmode) {
       .retryWhen(function (errors) { return errors.delay(500); });
 
   return assetDetailsResponseStream
-    .map(updateGlobalAssets(init, seed, keys, addr, fullmode));
+    .map(updateGlobalAssets(init, dcode, entry, submode, fullmode));
 }
 
-function updateGlobalAssets (init, seed, keys, addr, mode) {
+function mkDeterministicDetails (init, dcode, entry, submode, mode, assetDetailsResponse) {
+  var deterministic = activate(LZString.decompressFromEncodedURIComponent(dcode));
+  var keyGenBase = R.path(['data', 'keygen-base'], assetDetailsResponse);
+  var seed = deterministicSeedGenerator(keyGenBase);
+  var keys = deterministic.keys({symbol: entry, seed, mode: submode});
+  var assetDetails = R.mergeAll([
+        init,
+        R.prop('data', assetDetailsResponse),
+        {
+          mode,
+          seed,
+          keys,
+          address: deterministic.address(Object.assign(keys, {mode: submode}))
+        }
+      ]);
+  return assetDetails;
+}
+
+function updateGlobalAssets (init, dcode, entry, submode, mode) {
   return function (assetDetailsResponse) {
-    var assetDetails = R.mergeAll([
-      init,
-      R.prop('data', assetDetailsResponse),
-      {
-        mode,
-        seed,
-        keys,
-        address: addr
-      }
-    ]);
-    return assetDetails;
+    var hasKeyGenBase = R.not(R.isNil(R.path(['data', 'keygen-base'], assetDetailsResponse)));
+    return hasKeyGenBase
+      ? mkDeterministicDetails(init, dcode, entry, submode, mode, assetDetailsResponse)
+      : R.prop('data', assetDetailsResponse);
   };
 }
 
 function initializeDetermisticAndMkDetailsStream (dcode, submode, entry, fullmode, init) {
-  var deterministic = deterministic = activate(LZString.decompressFromEncodedURIComponent(dcode));
-  return mkAssetDetailsStream(init, deterministic, submode, entry, fullmode);
+  return mkAssetDetailsStream(init, dcode, submode, entry, fullmode);
 }
 
 function setStorageAndMkAssetDetails (init, mode, submode, entry, fullmode) {
