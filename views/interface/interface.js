@@ -135,11 +135,12 @@ function matchSymbolWithData (key, data) {
 
 // TODO: Make pure!!!
 function storedOrDefaultUserData (decodeUserData) {
+  var hasCorrectFormat = R.has('id', decodeUserData) && R.has('starred', decodeUserData);
   if (R.isNil(decodeUserData)) {
     storage.Set(userStorageKey('ff00-0034'), userEncode(defaultAssetData));
   }
 
-  return R.isNil(decodeUserData)
+  return R.isNil(decodeUserData) && R.not(hasCorrectFormat)
     ? defaultAssetData
     : decodeUserData;
 }
