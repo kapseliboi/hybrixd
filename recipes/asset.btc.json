@@ -6,7 +6,7 @@
   "user":"user",
   "pass":"1nt3rn3t0fc01ns",
   "factor":8,
-  "fee":0.0001,
+  "fee":0.000025,
   "host":"http://127.0.0.1:8338",
   "cache":60000,
   "throttle":10,
