@@ -80,7 +80,7 @@ function renderBalances () {
 function updateGlobalAssetsAndRenderDataInDOM (element, numberOfSignificantDigits, sanitizedData, assetID) {
   toggleAssetButtons(element, assetID, Number(sanitizedData));
   U.updateGlobalAssets(updateBalanceData(GL.assets, assetID, sanitizedData));
-  H.renderDataInDom(element, numberOfSignificantDigits, sanitizedData);
+  U.renderDataInDom(element, numberOfSignificantDigits, sanitizedData);
   renderDollarPriceInAsset(assetID, Number(sanitizedData));
 }
 

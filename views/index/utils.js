@@ -95,6 +95,44 @@ utils = {
       elem.classList.remove('selected');
     });
     document.querySelector('#topmenu-' + target).classList.add('selected');
+  },
+  formatFloatInHtmlStr: function (amount, maxLengthSignificantDigits) {
+    var normalizedAmount = Number(amount);
+
+    function regularOrZeroedBalance (maxLen, balanceStr) {
+      var decimalNumberString = balanceStr.substring(2).split('');
+      var zeros = '0.' + R.takeWhile((n) => n === '0', decimalNumberString).reduce((baseStr, n) => baseStr + n, ''); // use R.takeWhile later!
+      var numbers = balanceStr.replace(zeros, '');
+      var defaultOrFormattedBalanceStr = balanceStr.includes('0.') ? mkAssetBalanceHtmlStr(zeros, numbers, maxLen) : balanceStr;
+
+      return defaultOrFormattedBalanceStr;
+    }
+
+    function mkAssetBalanceHtmlStr (zeros, amountStr_, maxLen) {
+      var emptyOrBalanceEndHtmlStr = R.length(amountStr_) <= maxLen ? '' : '<span class="balance-end mini-balance">&hellip;</span>';
+      var numbersFormatted = amountStr_.slice(0, maxLen);
+      return '<span class="mini-balance">' + zeros + '</span>' + numbersFormatted + emptyOrBalanceEndHtmlStr;
+    }
+
+    function mkBalance (amount) {
+      return R.compose(
+        R.ifElse(
+          R.equals('0'),
+          R.always('0'),
+          R.curry(regularOrZeroedBalance)(maxLengthSignificantDigits)
+        ),
+        bigNumberToString,
+        toInt
+      )(amount);
+    }
+
+    return R.isNil(normalizedAmount) || isNaN(normalizedAmount)
+      ? '?'
+      : mkBalance(normalizedAmount);
+  },
+  renderDataInDom: function (element, maxLengthSignificantDigits, data) {
+    var formattedBalanceStr = U.formatFloatInHtmlStr(data, maxLengthSignificantDigits);
+    renderElementInDom(element, formattedBalanceStr);
   }
 };
 
@@ -118,3 +156,37 @@ formatFloat = function (n) {
 isToken = function (symbol) {
   return (symbol.indexOf('.') !== -1 ? 1 : 0);
 };
+
+progressbar = function (size) { return '<div class="progress-radial" proc-data=""' + (size > 0 ? ' style="font-size: ' + size + 'em;" size="' + size + '"' : '') + '><div class="dot" style="' + (size > 0 ? 'width:' + size + 'px;height:' + size + 'px;"' : 'width:1em;height:1em;overflow:visible;"') + '"></div><svg style="margin-left:-' + (size > 0 ? size + 'px' : '1em') + ';" viewbox="0 0 80 80" height="120" width="120"><circle cx="40" cy="40" r="35" fill="rgba(255,255,255,0.0)" stroke="#BBB" stroke-width="10" stroke-dasharray="239" stroke-dashoffset="239" /></svg></div>'; };
+
+// creates a unique user storage key for storing information and settings
+userStorageKey = function (key) {
+  return nacl.to_hex(sha256(GL.usercrypto.user_keys.boxPk)) + '-' + String(key);
+};
+
+userEncode = function (data) {
+  var nonce_salt = nacl.from_hex('F4E5D5C0B3A4FC83F4E5D5C0B3A4AC83F4E5D000B9A4FC83');
+  var crypt_utf8 = nacl.encode_utf8(JSON.stringify(data));
+  var crypt_bin = nacl.crypto_box(crypt_utf8, nonce_salt, GL.usercrypto.user_keys.boxPk, GL.usercrypto.user_keys.boxSk);
+  return UrlBase64.safeCompress(nacl.to_hex(crypt_bin));
+};
+
+userDecode = function (data) {
+  var object = null;
+  if (data != null) {
+    var nonce_salt = nacl.from_hex('F4E5D5C0B3A4FC83F4E5D5C0B3A4AC83F4E5D000B9A4FC83');
+    var crypt_hex = nacl.from_hex(UrlBase64.safeDecompress(data));
+    // use nacl to create a crypto box containing the data
+    var crypt_bin = nacl.crypto_box_open(crypt_hex, nonce_salt, GL.usercrypto.user_keys.boxPk, GL.usercrypto.user_keys.boxSk);
+    try {
+      object = JSON.parse(nacl.decode_utf8(crypt_bin));
+    } catch (err) {
+      object = null;
+    }
+  }
+  return object;
+};
+
+function renderElementInDom (query, data) {
+  document.querySelector(query).innerHTML = data;
+}

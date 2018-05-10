@@ -37,7 +37,7 @@ function renderStarredAssets (assets) {
 
 function setIntervalFunctions (assets) {
   retrieveBalanceStream.subscribe(function (_) {
-    assets.forEach(U.retrieveBalance(H.renderDataInDom, AMOUNT_OF_SIGNIFICANT_DIGITS, '.dashboard-balances > .data > .balance > .balance-'));
+    assets.forEach(U.retrieveBalance(U.renderDataInDom, AMOUNT_OF_SIGNIFICANT_DIGITS, '.dashboard-balances > .data > .balance > .balance-'));
   });
 }
 
