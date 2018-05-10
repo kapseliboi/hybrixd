@@ -11,7 +11,9 @@ init.interface.assets = function (args) {
 
   // INITIALIZE BUTTONS IN MANAGE ASSETS MODALS
   document.querySelector('#send-transfer').onclick = sendTransfer;
-  document.querySelector('#save-assetlist').onclick = M.saveAssetList(displayAssets);
+  document.querySelector('#save-assetlist').onclick = M.saveAssetList(displayAssets());
+
+  U.documentReady(displayAssets(args));
 };
 
 function renderDollarPriceInAsset (asset, amount) {
