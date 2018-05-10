@@ -1,5 +1,4 @@
 var U = utils;
-var Storage = storage;
 
 hybridd = {
   mkHybriddCallStream: function (url) {

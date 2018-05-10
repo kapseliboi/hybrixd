@@ -1,17 +1,5 @@
 var fetch_ = fetch;
 
-sanitizeServerObject = function (obj) {
-  var emptyOrIdentityObject = Object.assign({}, obj);
-  if (typeof emptyOrIdentityObject.data !== 'undefined') {
-    if (emptyOrIdentityObject.data === null) { emptyOrIdentityObject.data = '?'; }
-    if (emptyOrIdentityObject.data === 0) { emptyOrIdentityObject.data = '0'; }
-  } else {
-    emptyOrIdentityObject.data = '?';
-  }
-  return emptyOrIdentityObject;
-};
-
-
 utils = {
   documentReady: function (fn) {
     if (document.readyState !== 'loading') {
@@ -187,6 +175,24 @@ userDecode = function (data) {
   return object;
 };
 
+function sanitizeServerObject (res) {
+  var emptyOrIdentityObject = R.merge({}, res);
+  return R.compose(
+    R.assoc('data', R.__, emptyOrIdentityObject),
+    R.ifElse(
+      R.equals(0),
+      R.toString,
+      R.identity
+    ),
+    R.defaultTo('?'),
+    R.prop('data')
+  )(emptyOrIdentityObject);
+};
+
 function renderElementInDom (query, data) {
-  document.querySelector(query).innerHTML = data;
+  var element = document.querySelector(query);
+  // HACK to prevent innerHTML of undefined error when switching views.
+  if (R.not(R.isNil(element))) {
+    document.querySelector(query).innerHTML = data;
+  }
 }

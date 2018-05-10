@@ -1,3 +1,5 @@
+var Storage = storage;
+
 initAsset = function (entry, fullmode, init) {
   var mode = fullmode.split('.')[0];
   var submode = fullmode.split('.')[1];
@@ -30,7 +32,7 @@ function mkAssetDetailsStream (init, deterministic, submode, entry, fullmode) {
         if (R.isNil(R.prop('data', processData)) && R.equals(R.prop('error', processData), 0)) throw processData;
         return processData;
       })
-      .retryWhen(function (errors) { return errors.delay(500); })
+      .retryWhen(function (errors) { return errors.delay(500); });
 
   return assetDetailsResponseStream
     .map(updateGlobalAssets(init, seed, keys, addr, fullmode));
