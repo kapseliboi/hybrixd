@@ -19,15 +19,14 @@ UItransform = {
   deductBalance: function (element, newBalance) { document.querySelector(element).innerHTML = ('<span style="color:#6B6;">' + String(newBalance)) + '</span>'; }
 };
 
+// Render sequence
 displayAssets = function (args) {
   return function () {
-    // Render sequence
     document.querySelector('.assets-main > .data').innerHTML = mkHtmlToRender(GL.assets);
     GL.assets.forEach(function (asset) { setStarredAssetClass(R.prop('id', asset), R.prop('starred', asset)); });
-    console.log(args);
     scrollToAnchor(args);
     retrieveBalanceStream.subscribe(function (_) { uiAssets(); });
-  }
+  };
 };
 
 function mkHtmlToRender (assets) {
