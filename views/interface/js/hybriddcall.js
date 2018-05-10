@@ -329,11 +329,7 @@ hybridd = {
   },
   renderDataInDom: function (element, maxLengthSignificantDigits, data) {
     var formattedBalanceStr = formatFloatInHtmlStr(data, maxLengthSignificantDigits);
-
-    // TODO Remove Jquery!
-    $(element + ' .progress-radial').fadeOut('slow', function () {
-      renderElementInDom(element, formattedBalanceStr);
-    });
+    renderElementInDom(element, formattedBalanceStr);
   }
 };
 
