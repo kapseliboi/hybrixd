@@ -7,7 +7,6 @@ var Storage = storage;
 init.interface.assets = function (args) {
   // Expose functions globally
   changeManageButton = M.changeManageButton(M.renderManageButton); // TODO: Remove messy callback structure......
-
   U.setViewTab('assets'); // top menu UI change
 
   // INITIALIZE BUTTONS IN MANAGE ASSETS MODALS
@@ -50,10 +49,14 @@ function maybeUpdateStarredProp (assetID) {
   return function (acc, asset) {
     var starredLens = R.lensProp('starred');
     var toggledStarredValue = R.not(R.view(starredLens, asset));
-    var updatedOrCurrentAsset = R.equals(R.prop('id', asset), assetID)
-      ? R.set(starredLens, toggledStarredValue, asset)
-      : asset;
-    return R.append(updatedOrCurrentAsset, acc);
+
+    return R.compose(
+      R.append(R.__, acc),
+      R.when(
+        function (a) { return R.equals(R.prop('id', a), assetID); },
+        R.set(starredLens, toggledStarredValue)
+      )
+    )(asset);
   };
 }
 

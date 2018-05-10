@@ -24,7 +24,7 @@ utils = {
       // IE 8
       var e = document.createEventObject();
       e.eventType = type;
-      el.fireEvent('on'+e.eventType, e);
+      el.fireEvent('on' + e.eventType, e);
     }
   },
   fetchDataFromUrl: function (url, errStr) {
@@ -89,7 +89,7 @@ utils = {
 
     function regularOrZeroedBalance (maxLen, balanceStr) {
       var decimalNumberString = balanceStr.substring(2).split('');
-      var zeros = '0.' + R.takeWhile((n) => n === '0', decimalNumberString).reduce((baseStr, n) => baseStr + n, ''); // use R.takeWhile later!
+      var zeros = '0.' + R.takeWhile((n) => n === '0', decimalNumberString).reduce((baseStr, n) => baseStr + n, '');
       var numbers = balanceStr.replace(zeros, '');
       var defaultOrFormattedBalanceStr = balanceStr.includes('0.') ? mkAssetBalanceHtmlStr(zeros, numbers, maxLen) : balanceStr;
 
