@@ -1,5 +1,4 @@
-var Valuations = valuations;
-
+var U = utils;
 // User interface transformations
 UItransform = {
   txStart: function () {
@@ -24,7 +23,7 @@ displayAssets = function (args) {
   return function () {
     document.querySelector('.assets-main > .data').innerHTML = mkHtmlToRender(GL.assets);
     GL.assets.forEach(function (asset) { setStarredAssetClass(R.prop('id', asset), R.prop('starred', asset)); });
-    scrollToAnchor(args);
+    U.scrollToAnchor(args);
     retrieveBalanceStream.subscribe(function (_) { uiAssets(); });
   };
 };
@@ -89,5 +88,5 @@ function mkAssetsInterfaceHtmlStr (assetsHTMLStr) {
     '</div>';
 }
 
-function loadSpinner () { document.querySelector('#action-send .spinner').classList.add('active'); };
-function stopSpinner () { document.querySelector('#action-send .spinner').classList.remove('active'); };
+function loadSpinner () { document.querySelector('#action-send .spinner').classList.add('active'); }
+function stopSpinner () { document.querySelector('#action-send .spinner').classList.remove('active'); }

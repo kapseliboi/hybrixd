@@ -68,13 +68,3 @@ checkTx = function () {
 };
 
 stopReceiveAction = function () { document.querySelector('#action-receive .modal-receive-status').setAttribute('id', 'receivestatus'); }; // reset status ID attribute to avoid needless polling
-
-function scrollToAnchor (args) {
-  var element = R.prop('element', args);
-  if (R.not(R.isNil(element))) {
-    window.scrollTo({
-      top: document.querySelector('#' + element).offsetTop - 250,
-      behavior: 'smooth'
-    });
-  };
-}

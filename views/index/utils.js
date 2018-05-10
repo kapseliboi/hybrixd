@@ -14,6 +14,15 @@ utils = {
       });
     }
   },
+  scrollToAnchor: function (args) {
+    var element = R.prop('element', args);
+    if (R.not(R.isNil(element))) {
+      window.scrollTo({
+        top: document.querySelector('#' + element).offsetTop - 250,
+      behavior: 'smooth'
+      });
+    };
+  },
   triggerEvent: function (el, type) {
     if ('createEvent' in document) {
       // modern browsers, IE9+
