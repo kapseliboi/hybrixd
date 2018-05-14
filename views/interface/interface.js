@@ -89,7 +89,7 @@ function main () {
   });
 
   assetsDetailsStream.subscribe(function (assetDetails) {
-    GL.initCount += 1;
+    GL.initCount += 1; // HACK!
     GL.assets = R.reduce(U.mkUpdatedAssets(assetDetails), [], GL.assets);
 
     // HACK: Assets can only be viewed when all details have been retrieved. Otherwise, transactions will not work.
