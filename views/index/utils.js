@@ -97,18 +97,36 @@ utils = {
     var normalizedAmount = Number(amount);
 
     function regularOrZeroedBalance (maxLen, balanceStr) {
-      var decimalNumberString = balanceStr.substring(2).split('');
-      var zeros = '0.' + R.takeWhile((n) => n === '0', decimalNumberString).reduce((baseStr, n) => baseStr + n, '');
-      var numbers = balanceStr.replace(zeros, '');
-      var defaultOrFormattedBalanceStr = balanceStr.includes('0.') ? mkAssetBalanceHtmlStr(zeros, numbers, maxLen) : balanceStr;
-
-      return defaultOrFormattedBalanceStr;
+      var balance = balanceStr.replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/, '$1');
+      return R.contains('.', balance)
+        ? formatStringWithDecimal(balance, maxLen)
+        : balance;
     }
 
-    function mkAssetBalanceHtmlStr (zeros, amountStr_, maxLen) {
-      var emptyOrBalanceEndHtmlStr = R.length(amountStr_) <= maxLen ? '' : '<span class="balance-end mini-balance">&hellip;</span>';
-      var numbersFormatted = amountStr_.slice(0, maxLen);
-      return '<span class="mini-balance">' + zeros + '</span>' + numbersFormatted + emptyOrBalanceEndHtmlStr;
+    function formatStringWithDecimal (balance, maxLen) {
+      var decimalNumberString = balance.split('.');
+      return R.equals(R.take(2, balance), '0.') ? formatBalanceBelowOne(maxLen, balance) : formatBalanceEqualOrGreaterThenOne(maxLen, balance);
+
+      function formatBalanceEqualOrGreaterThenOne (maxLen, balance) {
+        var first = balance.split('.')[0];
+        var decimals = balance.split('.')[1];
+        var emptyOrBalanceEndHtmlStr = decimals.length <= maxLen ? '' : '<span class="balance-end mini-balance">&hellip;</span>';
+        return first + '.' + R.take(maxLen, decimals) + emptyOrBalanceEndHtmlStr;
+      }
+
+      function formatBalanceBelowOne (maxLen, balance) {
+        var zeros = '0.' + R.compose(
+          R.reduce(R.concat, ''),
+          R.takeWhile(function (n) { return n === '0'; }),
+          R.split(''),
+          R.nth(1)
+        )(decimalNumberString);
+        var numbers = balance.replace(zeros, '');
+        var emptyOrBalanceEndHtmlStr = numbers.length <= maxLen ? '' : '<span class="balance-end mini-balance">&hellip;</span>';
+        var numbersFormatted = R.take(maxLen, numbers);
+        return '<span class="mini-balance">' + zeros + '</span>' + numbersFormatted + emptyOrBalanceEndHtmlStr;
+      }
+
     }
 
     function mkBalance (amount) {
@@ -118,14 +136,14 @@ utils = {
           R.always('0'),
           R.curry(regularOrZeroedBalance)(maxLengthSignificantDigits)
         ),
-        bigNumberToString,
+        function (n) { return n.toFixed(10); },
         toInt
       )(amount);
     }
 
     return R.isNil(normalizedAmount) || isNaN(normalizedAmount)
       ? '?'
-      : mkBalance(normalizedAmount);
+      : mkBalance(amount);
   },
   renderDataInDom: function (element, maxLengthSignificantDigits, data) {
     var formattedBalanceStr = U.formatFloatInHtmlStr(data, maxLengthSignificantDigits);
