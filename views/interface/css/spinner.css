@@ -33,25 +33,6 @@
 	transform: rotate(360deg);
   }
 }
-/* :not(:required) hides this rule from IE9 and below */
-.spinner-loader:not(:required) {
-  -moz-animation: spinner-loader 2500ms infinite linear;
-  -webkit-animation: spinner-loader 2500ms infinite linear;
-  animation: spinner-loader 2500ms infinite linear;
-  -moz-border-radius: 0.5em;
-  -webkit-border-radius: 0.5em;
-  border-radius: 0.5em;
-  -moz-box-shadow: rgba(0, 0, 51, 0.3) 1.5em 0 0 0, rgba(0, 0, 51, 0.3) 1.1em 1.1em 0 0, rgba(0, 0, 51, 0.3) 0 1.5em 0 0, rgba(0, 0, 51, 0.3) -1.1em 1.1em 0 0, rgba(0, 0, 51, 0.3) -1.5em 0 0 0, rgba(0, 0, 51, 0.3) -1.1em -1.1em 0 0, rgba(0, 0, 51, 0.3) 0 -1.5em 0 0, rgba(0, 0, 51, 0.3) 1.1em -1.1em 0 0;
-  -webkit-box-shadow: rgba(0, 0, 51, 0.3) 1.5em 0 0 0, rgba(0, 0, 51, 0.3) 1.1em 1.1em 0 0, rgba(0, 0, 51, 0.3) 0 1.5em 0 0, rgba(0, 0, 51, 0.3) -1.1em 1.1em 0 0, rgba(0, 0, 51, 0.3) -1.5em 0 0 0, rgba(0, 0, 51, 0.3) -1.1em -1.1em 0 0, rgba(0, 0, 51, 0.3) 0 -1.5em 0 0, rgba(0, 0, 51, 0.3) 1.1em -1.1em 0 0;
-  box-shadow: rgba(0, 0, 51, 0.3) 1.5em 0 0 0, rgba(0, 0, 51, 0.3) 1.1em 1.1em 0 0, rgba(0, 0, 51, 0.3) 0 1.5em 0 0, rgba(0, 0, 51, 0.3) -1.1em 1.1em 0 0, rgba(0, 0, 51, 0.3) -1.5em 0 0 0, rgba(0, 0, 51, 0.3) -1.1em -1.1em 0 0, rgba(0, 0, 51, 0.3) 0 -1.5em 0 0, rgba(0, 0, 51, 0.3) 1.1em -1.1em 0 0;
-  display: inline-block;
-  font-size: 10px;
-  width: 0.6em;
-  height: 0.6em;
-  margin: 1.5em;
-  overflow: hidden;
-  text-indent: 100%;
-}
 
 @keyframes fadeOut {
   to {
@@ -71,12 +52,11 @@
   box-shadow: rgba(0, 0, 51, 0.3) 1.5em 0 0 0, rgba(0, 0, 51, 0.3) 1.1em 1.1em 0 0, rgba(0, 0, 51, 0.3) 0 1.5em 0 0, rgba(0, 0, 51, 0.3) -1.1em 1.1em 0 0, rgba(0, 0, 51, 0.3) -1.5em 0 0 0, rgba(0, 0, 51, 0.3) -1.1em -1.1em 0 0, rgba(0, 0, 51, 0.3) 0 -1.5em 0 0, rgba(0, 0, 51, 0.3) 1.1em -1.1em 0 0;
   display: inline-block;
   font-size: 10px;
-  width: 1em;
-  height: 1em;
+  width: 0.6em;
+  height: 0.6em;
   margin: 1.5em;
   overflow: hidden;
   text-indent: 100%;
-  opacity: 1;
 }
 
 .spinner-loader.disabled-slow {
@@ -96,10 +76,10 @@
 
 .progress-radial svg {
   display: inline-block;
-  width: 0.6em;
-  height: 0.6em;
-  margin-left: -0.8em !important;
-  margin-bottom: 0.2em !important;
+        margin-left: auto;
+        margin-right: auto;
+  width: 1em;
+  height: 1em;
   -webkit-transform: rotate(270deg);
   transform: rotate(270deg);
   -webkit-transition: all 0.5s ease;
@@ -108,7 +88,8 @@
 
 .progress-radial .dot {
   display: inline-block;
-  
+	margin-left: auto;
+	margin-right: auto;
   background-color: #CCC;
   border-radius: 100%;
   -webkit-animation : scaleblink 1.0s infinite ease-in-out;
