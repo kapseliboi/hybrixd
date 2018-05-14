@@ -54,7 +54,6 @@ hy_content += fs.readFileSync('./js/assetInitialization.js');
 hy_content += fs.readFileSync('./js/valuations.js');
 hy_content += fs.readFileSync('./interface.js');	      // finally, take action
 hy_content += '}'+"\n";
-hy_content += fs.readFileSync('./js/topmenuset.js');	  // resets state of top menu
 hy_content += '</script>';
 
 hy_content += addscript('./js/sha256.js');          // fast SHA256 hashing
