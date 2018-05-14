@@ -101,18 +101,9 @@ hy_content += addsvg('./svg/slack.svg','slack');
 hy_content += addsvg('./svg/riot.svg','riot');
 hy_content += addsvg('./svg/bitcointalk.svg','bitcointalk');
 
-hy_content += '$("#dashboard-icon").html(svg[\'dashboard-o\']);';
-hy_content += '$("#assets-icon").html(svg[\'assets-o\']);';
-hy_content += '$("#trade-icon").html(svg[\'trade-o\']);';
-hy_content += '$("#chat-icon").html(svg[\'chat-o\']);';
-hy_content += '$("#apps-icon").html(svg[\'apps-o\']);';
-hy_content += '$("#other-icon").html(svg[\'other-o\']);';
-hy_content += '$("#logout-icon").html(svg[\'logout-o\']);';
-
+hy_content += 'document.querySelector("#logout-icon").innerHTML = svg[\'logout-o\'];';
 hy_content += addsvg('./svg/send.svg','send');
 hy_content += addsvg('./svg/receive.svg','receive');
-hy_content += '$("#user-icon").html(svg[\'user\']);';
-hy_content += '$("#topmenu-logout").html(svg[\'logout-alt\']);';
 hy_content += '</script>';
 
 // load in the page elements *after* Javascript insertion

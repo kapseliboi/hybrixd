@@ -10,7 +10,7 @@ ychan_obj = function (usercrypto, step, encdata) {
 };
 
 ychan_encode = function (usercrypto, step, txtdata) {
-  var sessionData = $('#session_data').text(); // fetch relevant info from #session_data
+  var sessionData = document.querySelector('#session_data').textContent; // fetch relevant info from #session_data
   var sessionSecData = getGeneralSessionData(usercrypto, step, sessionData);
 
   var cryptUtf8 = nacl.encode_utf8(txtdata);
@@ -27,7 +27,7 @@ ychan_encode = function (usercrypto, step, txtdata) {
 };
 
 ychan_decode = function (usercrypto, step, encdata) {
-  var sessionData = $('#session_data').text();
+  var sessionData = document.querySelector('#session_data').textContent;
   if (encdata == null) {
     txtdata = null;
   } else {
