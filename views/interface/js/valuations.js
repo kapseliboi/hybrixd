@@ -2,15 +2,13 @@ var fetch_ = fetch;
 
 valuations = {
   getDollarPrices: function (cb) {
-    $.ajax({
-      url: 'https://api.coinmarketcap.com/v1/ticker/?limit=0',
-      dataType: 'json'
-    })
-      .done(function (data) {
-        GL.coinMarketCapTickers = data;
-        cb();
-      })
-      .error(function (e) { console.log('Could not fetch valuations:', e); });
+    var url = 'https://api.coinmarketcap.com/v1/ticker/?limit=0';
+    var valuationsStream = Rx.Observable.fromPromise(U.fetchDataFromUrl(url, 'Could not fetch valuations.'));
+
+    valuationsStream.subscribe(function (coinMarketCapData) {
+      GL.coinMarketCapTickers = coinMarketCapData;
+      cb();
+    });
   },
   renderDollarPrice: function (symbolName, amount) {
     var assetSymbolUpperCase = symbolName.toUpperCase();
