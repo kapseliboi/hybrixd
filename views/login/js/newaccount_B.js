@@ -1,10 +1,4 @@
 // PRNG seeder and generator
-var downEvents = ['mousedown', 'touchstart'];
-var moveEvents = ['touchmove', 'mousemove'];
-
-R.forEach(increaseSeed, moveEvents);
-R.forEach(executeSeedTime, downEvents);
-
 PRNG = {};
 ﻿PRNG.seeder = {
   init: (function () {
@@ -189,3 +183,9 @@ function executeSeedTime (event) {
 function increaseSeed (event) {
   document.querySelector('#newaccountcontent').addEventListener(event, PRNG.seeder.seed);
 }
+
+var downEvents = ['mousedown', 'touchstart'];
+var moveEvents = ['touchmove', 'mousemove'];
+
+R.forEach(increaseSeed, moveEvents);
+R.forEach(executeSeedTime, downEvents);

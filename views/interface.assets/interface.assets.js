@@ -7,6 +7,10 @@ var H = hybridd;
 init.interface.assets = function (args) {
   // Expose functions globally
   changeManageButton = M.changeManageButton(M.renderManageButton); // TODO: Remove messy callback structure......
+  getAmountValue = function () {
+    var sendBalance = document.querySelector('#action-send .modal-send-balance').innerHTML;
+    document.querySelector('#modal-send-amount').value = sendBalance;
+  };
   U.setViewTab('assets'); // top menu UI change
 
   // INITIALIZE BUTTONS IN MANAGE ASSETS MODALS
