@@ -1,19 +1,25 @@
-// PRNG seeder and generator  
-PRNG = {}
+// PRNG seeder and generator
+var downEvents = ['mousedown', 'touchstart'];
+var moveEvents = ['touchmove', 'mousemove'];
+
+R.forEach(increaseSeed, moveEvents);
+R.forEach(executeSeedTime, downEvents);
+
+PRNG = {};
 ﻿PRNG.seeder = {
   init: (function () {
-    document.getElementById('generatekeyinput').value = "";
+    document.getElementById('generatekeyinput').value = '';
   })(),
 
   restart: function() {
     PRNG.seeder.seedCount=0; PRNG.seeder.isStillSeeding=true;
-    $('html').css('overflow', 'hidden');
+    document.querySelector('html').style.overflow = 'hidden';
     document.getElementById('newaccountmodal').style.display = 'block';
     document.getElementById('newaccountcontent').style.display = 'block';
     document.getElementById('generate').style.display = 'block';
     document.getElementById('mousemovelimit').innerHTML = '0%';
   },
-  
+
   // number of mouse movements to wait for
   seedLimit: (function () {
     var num = Crypto.util.randomBytes(12)[11];
@@ -24,9 +30,10 @@ PRNG = {}
   lastInputTime: new Date().getTime(),
   seedPoints: [],
   isStillSeeding: true,
-  
+
   // seed function exists to wait for mouse movement to add more entropy before generating an address
   seed: function (evt) {
+    console.log('evt', evt);
     if (!evt) var evt = window.event;
     var timeStamp = new Date().getTime();
     // seeding is over now we generate and display the address
@@ -41,8 +48,8 @@ PRNG = {}
         var clientX = evt.clientX;
         var clientY = evt.clientY;
       } else {
-        var clientX = evt.originalEvent.touches[0].pageX;
-        var clientY = evt.originalEvent.touches[0].pageY;
+        var clientX = evt.touches[0].pageX;
+        var clientY = evt.touches[0].pageY;
       }
       SecureRandom.seedInt16((clientX * clientY));
       PRNG.seeder.showPoint(clientX, clientY);
@@ -78,23 +85,23 @@ PRNG = {}
     var poolHex;
     if (SecureRandom.poolCopyOnInit != null) {
       poolHex = Crypto.util.bytesToHex(SecureRandom.poolCopyOnInit);
-      document.getElementById("seedpool").innerHTML = poolHex;
-      document.getElementById("seedpooldisplay").innerHTML = poolHex;
+      document.getElementById('seedpool').innerHTML = poolHex;
+      document.getElementById('seedpooldisplay').innerHTML = poolHex;
     }
     else {
       poolHex = Crypto.util.bytesToHex(SecureRandom.pool);
-      document.getElementById("seedpool").innerHTML = poolHex;
-      document.getElementById("seedpooldisplay").innerHTML = poolHex;
+      document.getElementById('seedpool').innerHTML = poolHex;
+      document.getElementById('seedpooldisplay').innerHTML = poolHex;
     }
-    var percentSeeded = Math.round((PRNG.seeder.seedCount / PRNG.seeder.seedLimit) * 100) + "%";
-    document.getElementById("mousemovelimit").innerHTML = percentSeeded;
+    var percentSeeded = Math.round((PRNG.seeder.seedCount / PRNG.seeder.seedLimit) * 100) + '%';
+    document.getElementById('mousemovelimit').innerHTML = percentSeeded;
   },
 
   showPoint: function (x, y) {
-    var div = document.createElement("div");
-    div.setAttribute("class", "seedpoint");
-    div.style.top = y + "px";
-    div.style.left = x + "px";
+    var div = document.createElement('div');
+    div.setAttribute('class', 'seedpoint');
+    div.style.top = y + 'px';
+    div.style.left = x + 'px';
     document.body.appendChild(div);
     PRNG.seeder.seedPoints.push(div);
   },
@@ -109,10 +116,10 @@ PRNG = {}
   seedingOver: function () {
     PRNG.seeder.isStillSeeding = false;
     // hide generator window
-    document.getElementById('generate').style.display = 'none';    
+    document.getElementById('generate').style.display = 'none';
     document.getElementById('newaccountcontent').style.display = 'none';
     document.getElementById('newaccountmodal').style.display = 'none';
-    $('html').css('overflow', '');
+    document.querySelector('html').style.overflow = 'scroll';
     PRNG.seeder.removePoints();
     // generate account using random data
     generateAccount(document.getElementById('seedpooldisplay').innerHTML);
@@ -125,10 +132,10 @@ function generateAccount(entropy) {
            High security wallets have a very long password, making them more secure.',function(highlevel) {
             if(highlevel) {
               var offset=Math.floor(Math.random() * (511-120))
-              var passwd=hexToBase32(entropy.substr(offset+20,60));              
+              var passwd=hexToBase32(entropy.substr(offset+20,60));
             } else {
               var offset=Math.floor(Math.random() * (511-60))
-              var passwd=hexToBase32(entropy.substr(offset+20,20));              
+              var passwd=hexToBase32(entropy.substr(offset+20,20));
             }
             //console.log( DJB2.hash(entropy.substr(offset,12).toLowerCase()+passwd.toUpperCase()).substr(4,4) );
             var userid=hexToBase32( entropy.substr(offset,12)+DJB2.hash(entropy.substr(offset,12).toUpperCase()).substr(0,4)+DJB2.hash(entropy.substr(offset,12).toLowerCase()+passwd.toUpperCase()).substr(4,4) );
@@ -170,24 +177,15 @@ function finalizeAccount(userid,passwd,entropy) {
     });
   document.getElementById('inputUserID').value=userid;
   document.getElementById('inputPasscode').value=passwd;
-  checkfields();
 }
 
-// translate screen swipes into mouse events for mobile
-$('#newaccountcontent').on("mousedown", function(event) {
-  SecureRandom.seedTime();
-});
+function executeSeedTime (event) {
+  document.querySelector('#newaccountcontent').addEventListener(event, function (e) {
+    SecureRandom.seedTime();
+    if (R.not(R.isNil(event.preventDefault))) event.preventDefault();
+  });
+}
 
-$('#newaccountcontent').on("touchstart", function(event) {
-  SecureRandom.seedTime();
-  event.preventDefault();
-});
-
-$('#newaccountcontent').on("touchmove", function(event) {
-  PRNG.seeder.seed(event);
-});
-
-$('#newaccountcontent').on("mousemove", function(event) {
-  PRNG.seeder.seed(event);
-});
-
+function increaseSeed (event) {
+  document.querySelector('#newaccountcontent').addEventListener(event, PRNG.seeder.seed);
+}
