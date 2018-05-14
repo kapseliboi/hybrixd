@@ -13,7 +13,10 @@ UItransform = {
     document.querySelector('#action-send .pure-button-send').classList.add('pure-button-primary');
     document.querySelector('#action-send').style.opacity = '1';
   },
-  txHideModal: function () { $('#action-send').css('opacity', '1').modal('hide'); }, // TODO: REMOVE JQUERY HERE. SOMEWHAT ANNOYING!!!! Modal refers to jquery plugin
+  txHideModal: function () {
+    document.querySelector('#action-send').style.opacity = 1;
+    document.querySelector('#action-send').modal('hide');
+  },
   setBalance: function (element, setBalance) { document.querySelector(element).innerHTML = setBalance; },
   deductBalance: function (element, newBalance) { document.querySelector(element).innerHTML = ('<span style="color:#6B6;">' + String(newBalance)) + '</span>'; }
 };
