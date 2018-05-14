@@ -1,13 +1,17 @@
+var Clipboard = clipboard;
+var Storage = storage;
 var Valuations = valuations;
 var M = manageAssets;
 var U = utils;
 var H = hybridd;
-var Storage = storage;
 
 init.interface.assets = function (args) {
   // Expose functions globally
   changeManageButton = M.changeManageButton(M.renderManageButton); // TODO: Remove messy callback structure......
   U.setViewTab('assets'); // top menu UI change
+
+  clipbSuccess = Clipboard.clipboardSuccess;
+  clipbError = Clipboard.clipboardError;
 
   // INITIALIZE BUTTONS IN MANAGE ASSETS MODALS
   document.querySelector('#send-transfer').onclick = sendTransfer;

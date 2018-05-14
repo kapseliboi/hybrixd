@@ -1,5 +1,5 @@
 clipboard = {
-  clipboardSucces: function () {
+  clipboardSuccess: function () {
     $('#action-receive .copied').fadeTo('fast', 1);
     $('#action-receive .copied').delay(10).fadeTo('fast', 0.3);
     $('#action-receive .copied').delay(10).fadeTo('fast', 1);
