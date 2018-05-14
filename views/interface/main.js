@@ -24,6 +24,7 @@ hy_content = ''; // variable to hold package content
 // CSS
 hy_content += '<style>';
 hy_content += fs.readFileSync('./css/spinner.css');		// Spinner for loading screens in CSS
+hy_content += fs.readFileSync('./css/clipboard.css');		// CLipboard transitions
 // DEPRECATED: already included in login -> hy_content += fs.readFileSync('./css/purecss.css');		// PureCSS
 hy_content += fs.readFileSync('./css/modal.css');		// CSS based modal boxes
 hy_content += fs.readFileSync('./css/base.css');		// custom styling for Internet of Coins, base (mobile)
