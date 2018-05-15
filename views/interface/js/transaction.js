@@ -1,8 +1,10 @@
 var U = utils;
-var Storage = storage
+var Storage = storage;
+
+var GLOBAL_ASSETS = GL.assets;
 
 sendTransaction = function (properties, onSucces, onError) {
-  var H = hybridd; // TODO: Factor up
+  var H = hybridd; // TODO: Factor up. Can't now, smt's up with dependency order.
 
   var asset = R.prop('asset', properties);
   var assetID = R.prop('symbol', asset);
@@ -16,8 +18,7 @@ sendTransaction = function (properties, onSucces, onError) {
 
   var modeFromStorageStream = Storage.Get_(modeStr);
   var transactionDataStream = Rx.Observable.of(transactionData);
-  var feeBaseStream = Rx.Observable.of(asset)
-      .map(checkBaseFeeBalance);
+  var feeBaseStream = Rx.Observable.of(asset).map(checkBaseFeeBalance(GLOBAL_ASSETS));
   var unspentStream = H.mkHybriddCallStream(unspentUrl)
       .map(checkProcessProgress)
       .retryWhen(function (errors) { return errors.delay(500); });
@@ -88,7 +89,7 @@ function doPushTransactionStream (z) {
   return H.mkHybriddCallStream(url)
     .map(function (processData) {
       var isProcessInProgress = R.isNil(R.prop('data', processData)) &&
-                                R.equals(R.prop('error', processData), 0);
+          R.equals(R.prop('error', processData), 0);
       if (isProcessInProgress) throw processData;
       return processData;
     })
@@ -98,7 +99,7 @@ function doPushTransactionStream (z) {
 function handleTransactionPushResult (res) {
   var transactionHasError = R.equals(R.prop('error', res), 1);
   var transactionIsValid = R.not(R.equals(typeof R.prop('data', res), 'undefined')) &&
-                           R.equals(R.prop('error', res), 0);
+      R.equals(R.prop('error', res), 0);
   if (transactionIsValid) {
     return 'Node sent transaction ID: ' + R.prop('data', res);
   } else if (transactionHasError) {
@@ -108,20 +109,23 @@ function handleTransactionPushResult (res) {
   }
 }
 
-function checkBaseFeeBalance (asset) {
-  var assetID = R.prop('id', asset);
-  var feeBase = R.prop('fee-symbol', asset);
-  var fee = R.prop('fee', asset);
-  var baseBalance = R.compose(
-    R.defaultTo(0),
-    R.path(['balance', 'amount']),
-    R.find(R.propEq('id', feeBase))
-  )(GL.assets); // TODO: Factor up;
+function checkBaseFeeBalance (assets) {
+  return function (a) {
+    var assetID = R.prop('id', a);
+    var feeBase = R.prop('fee-symbol', a);
+    var fee = R.prop('fee', a);
+    // TODO: mk into general function?
+    var baseBalance = R.compose(
+      R.defaultTo(0),
+      R.path(['balance', 'amount']),
+      R.find(R.propEq('id', feeBase))
+    )(assets);
 
-  if (baseBalance > fee) {
-    return true;
-  } else {
-    throw '<br><br>You do not have enough ' + R.toUpper(feeBase) + ' in your wallet to be able to send ' + R.toUpper(assetID) + ' tokens! Please make sure you have activated ' + R.toUpper(feeBase) + ' in the wallet.<br><br>';
+    if (baseBalance > fee) {
+      return true;
+    } else {
+      throw '<br><br>You do not have enough ' + R.toUpper(feeBase) + ' in your wallet to be able to send ' + R.toUpper(assetID) + ' tokens! Please make sure you have activated ' + R.toUpper(feeBase) + ' in the wallet.<br><br>';
+    }
   }
 }
 
@@ -168,7 +172,7 @@ function mkUnspentUrl (id, amount, publicKey, t) {
 
 function checkProcessProgress (processData) {
   var isProcessInProgress = R.isNil(R.prop('data', processData)) &&
-                            R.equals(R.prop('error', processData), 0);
+      R.equals(R.prop('error', processData), 0);
   if (isProcessInProgress) throw processData;
   return processData;
 };
