@@ -1,8 +1,10 @@
 var U = utils;
 var Storage = storage;
+var LZString_ = LZString;
 
 sendTransaction = function (properties, GLOBAL_ASSETS, modeHashes, onSucces, onError) {
   var H = hybridd; // TODO: Factor up. Can't now, smt's up with dependency order.
+  var UItransform_ = UItransform;
 
   var asset = R.prop('asset', properties);
   var assetID = R.prop('symbol', asset);
@@ -33,15 +35,15 @@ sendTransaction = function (properties, GLOBAL_ASSETS, modeHashes, onSucces, onE
       .flatMap(doPushTransactionStream)
       .map(handleTransactionPushResult);
 
-  UItransform.txStart();
+  UItransform_.txStart();
   doTransactionStream.subscribe(onSucces, onError);
 };
 
 function getDeterministicData (z) {
   var decodedData = R.nth(1, z);
   var deterministicData = R.compose(
-    activate,
-    LZString.decompressFromEncodedURIComponent
+    U.activate,
+    LZString_.decompressFromEncodedURIComponent
   )(decodedData);
 
   if (typeof deterministicData !== 'object' || deterministicData === {}) {

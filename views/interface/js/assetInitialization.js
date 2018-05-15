@@ -1,4 +1,5 @@
 var Storage = storage;
+var U = utils;
 
 initAsset = function (entry, fullmode, init) {
   var mode = fullmode.split('.')[0];
@@ -10,17 +11,6 @@ initAsset = function (entry, fullmode, init) {
     return modeHashStream
       .flatMap(getDeterministicData(entry, mode, submode, fullmode, init));
   } // else ?????
-};
-
-// activate (deterministic) code from a string
-activate = function (code) {
-  if (typeof code === 'string') {
-    eval('var deterministic = (function(){})(); ' + code); // interpret deterministic library into an object
-    return deterministic;
-  } else {
-    console.log('Cannot activate deterministic code!');
-    return function () {};
-  }
 };
 
 function mkAssetDetailsStream (init, dcode, submode, entry, fullmode) {
@@ -47,7 +37,7 @@ function mkAssetDetailsStream (init, dcode, submode, entry, fullmode) {
 }
 
 function mkDeterministicDetails (init, dcode, entry, submode, mode, assetDetailsResponse) {
-  var deterministic = activate(LZString.decompressFromEncodedURIComponent(dcode));
+  var deterministic = U.activate(LZString.decompressFromEncodedURIComponent(dcode));
   var keyGenBase = R.path(['data', 'keygen-base'], assetDetailsResponse);
   var seed = deterministicSeedGenerator(keyGenBase);
   var keys = deterministic.keys({symbol: entry, seed, mode: submode});
@@ -81,7 +71,7 @@ function setStorageAndMkAssetDetails (init, mode, submode, entry, fullmode) {
   return function (deterministicCodeResponse) {
     var err = R.prop('error', deterministicCodeResponse);
     if (typeof err !== 'undefined' && R.equals(err, 0)) {
-      var deterministic = deterministic = activate(LZString.decompressFromEncodedURIComponent(deterministicCodeResponse.data)); // decompress and make able to run the deterministic routine
+      var deterministic = deterministic = U.activate(LZString.decompressFromEncodedURIComponent(deterministicCodeResponse.data)); // decompress and make able to run the deterministic routine
       Storage.Set(assets.modehashes[mode] + '-LOCAL', R.prop('data', deterministicCodeResponse));
       return mkAssetDetailsStream(init, deterministic, submode, entry, fullmode);
     } else {

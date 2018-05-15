@@ -811,28 +811,6 @@ p {
   margin-right: 5px;
 }
 
-.content .table .asset-full-name {
-  height: 80%;
-  min-width: 200px;
-  position: absolute;
-  top: 10%;
-  left: 37px;
-  display: none;
-  white-space: nowrap;
-  padding: 5px;
-  background-color: #E9EAF1;
-  border: 1px solid #c3cAf1;
-  border-radius: 5px;
-  font-size: 1em;
-  color: #000000;
-  z-index: 10;
-}
-
-.content .table .icon:hover ~ .asset-full-name {
-  display: flex;
-  align-items: center;
-}
-
 .content .table .full-name {
   font-size: 1em;
   color: #939AA1;
