@@ -36,13 +36,15 @@ function sendTransfer () {
     loadSpinner();
     var symbol = document.querySelector('#action-send .modal-send-currency').getAttribute('asset');
     var asset = R.find(R.propEq('id', symbol), GL.assets);
+    var globalAssets = GL.assets; // TODO: Factor up
+    var modeHashes = R.prop('modehashes', assets); // TODO: Factor up
     sendTransaction({
       element: '.assets-main > .data .balance-' + symbol.replace(/\./g, '-'),
       asset,
       amount: Number(document.querySelector('#modal-send-amount').value.replace(/, /g, '.')), // Streamify!
       source: String(document.querySelector('#action-send .modal-send-addressfrom').innerHTML).trim(), // Streamify!
       target: String(document.querySelector('#modal-send-target').value.trim()) // Streamify!
-    }, hideModal, alertError);
+    }, globalAssets, modeHashes, hideModal, alertError);
   }
 
   function hideModal (data) {
