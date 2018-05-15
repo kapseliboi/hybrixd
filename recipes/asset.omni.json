@@ -20,7 +20,7 @@
        "stop(1,'Not yet implemented!')"
     ],
     "unspent" : [
-       "stop(1,'Not yet implemented!')"
+      "func('blockexplorer','exec',{target:{symbol:'$fee-symbol'}, command:['unspent','$1','$2']})"
     ],
     "balance" : [
       "time(32000)",
