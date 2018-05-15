@@ -1,10 +1,7 @@
 var U = utils;
 var Storage = storage;
 
-var GLOBAL_ASSETS = GL.assets;
-var ASSETS = assets;
-
-sendTransaction = function (properties, onSucces, onError) {
+sendTransaction = function (properties, GLOBAL_ASSETS, modeHashes, onSucces, onError) {
   var H = hybridd; // TODO: Factor up. Can't now, smt's up with dependency order.
 
   var asset = R.prop('asset', properties);
@@ -15,7 +12,7 @@ sendTransaction = function (properties, onSucces, onError) {
   var totalAmountStr = mkTotalAmountStr(transactionData, factor);
   var emptyOrPublicKeyString = mkEmptyOrPublicKeyString(asset);
   var unspentUrl = mkUnspentUrl(assetID, totalAmountStr, emptyOrPublicKeyString, transactionData);
-  var modeStr = mkModeHashStr(ASSETS, properties);
+  var modeStr = mkModeHashStr(modeHashes, properties);
 
   var modeFromStorageStream = Storage.Get_(modeStr);
   var transactionDataStream = Rx.Observable.of(transactionData);
@@ -127,7 +124,7 @@ function checkBaseFeeBalance (assets) {
     } else {
       throw '<br><br>You do not have enough ' + R.toUpper(feeBase) + ' in your wallet to be able to send ' + R.toUpper(assetID) + ' tokens! Please make sure you have activated ' + R.toUpper(feeBase) + ' in the wallet.<br><br>';
     }
-  }
+  };
 }
 
 function mkTransactionData (p) {
@@ -178,10 +175,10 @@ function checkProcessProgress (processData) {
   return processData;
 };
 
-function mkModeHashStr (assets, p) {
+function mkModeHashStr (modeHashes, p) {
   return R.compose(
     R.flip(R.concat)('-LOCAL'),
-    function (assetMode) { return R.path(['modehashes', assetMode], assets); },
+    R.prop(R.__, modeHashes),
     R.nth(0),
     U.splitAtDot,
     R.path(['asset', 'mode'])
