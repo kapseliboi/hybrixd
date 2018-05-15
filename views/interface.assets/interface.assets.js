@@ -42,7 +42,19 @@ function sendTransfer () {
       amount: Number(document.querySelector('#modal-send-amount').value.replace(/, /g, '.')), // Streamify!
       source: String(document.querySelector('#action-send .modal-send-addressfrom').innerHTML).trim(), // Streamify!
       target: String(document.querySelector('#modal-send-target').value.trim()) // Streamify!
-    });
+    }, hideModal, alertError);
+  }
+
+  function hideModal (data) {
+    UItransform.txStop();
+    UItransform.txHideModal();
+    console.log(data);
+  }
+
+  function alertError (err) {
+    UItransform.txStop();
+    alert('Error: ' + err);
+    console.log("err = ", err);
   }
 }
 

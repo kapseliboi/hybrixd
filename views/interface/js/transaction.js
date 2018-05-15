@@ -1,43 +1,26 @@
-sendTransaction = function (properties) {
-  var H = hybridd;
+sendTransaction = function (properties, onSucces, onError) {
+  var H = hybridd; // TODO: Factor up
+
   var asset = R.prop('asset', properties);
-  var assetID = R.path(['asset', 'symbol'], properties);
-  var transactionData = {
-    asset_: asset,
-    fee: Number(R.path(['asset', 'fee'], properties)),
-    amount: Number(R.prop('amount', properties)),
-    source_address: String(R.prop('source', properties)).trim(),
-    target_address: String(R.prop('target', properties)).trim()
-  };
+  var assetID = R.prop('symbol', asset);
+  var factor = R.prop('factor', asset);
 
-  var publicKey = R.path(['asset', 'keys', 'publicKey'], properties);
-  var assetHasValidPublicKey = typeof publicKey === 'undefined';
-  var emptyOrPublicKeyString = assetHasValidPublicKey ? '' : '/' + publicKey;
-
-  var factor = R.path(['asset', 'factor'], properties);
-  var totalAmount = fromInt(
-    toInt(R.prop('amount', transactionData), factor)
-      .plus(toInt(R.prop('fee', transactionData), factor), factor)
-    , factor).toString();
-  // prepare universal unspent query containing: source address / target address / amount / public key
-  var unspentUrl = 'a/' +
-      assetID +
-      '/unspent/' +
-      R.prop('source_address', transactionData) +
-      '/' +
-      totalAmount +
-      '/' +
-      R.prop('target_address', transactionData) +
-      emptyOrPublicKeyString;
+  var transactionData = mkTransactionData(properties);
+  var totalAmountStr = mkTotalAmountStr(transactionData, factor);
+  var emptyOrPublicKeyString = mkEmptyOrPublicKeyString(asset);
+  var unspentUrl = mkUnspentUrl(assetID, totalAmountStr, emptyOrPublicKeyString, transactionData);
 
   var assetMode = R.path(['asset', 'mode'], properties).split('.')[0];
-  var modeStr = assets.modehashes[assetMode] + '-LOCAL';
+  var modeStr = R.path(['modehashes', assetMode], assets) + '-LOCAL'; // Factor assets up
+
   var modeFromStorageStream = storage.Get_(modeStr);
   var transactionDataStream = Rx.Observable.of(transactionData);
   var feeBaseStream = Rx.Observable.of(asset).map(checkBaseFeeBalance);
-  var unspentStream = H.mkHybriddCallStream(unspentUrl) // Filter for errors
+  var unspentStream = H.mkHybriddCallStream(unspentUrl)
       .map(function (processData) {
-        if (R.isNil(R.prop('data', processData)) && R.equals(R.prop('error', processData), 0)) throw processData;
+        var isProcessInProgress = R.isNil(R.prop('data', processData)) &&
+            R.equals(R.prop('error', processData), 0);
+        if (isProcessInProgress) throw processData;
         return processData;
       })
       .retryWhen(function (errors) { return errors.delay(500); });
@@ -57,18 +40,6 @@ sendTransaction = function (properties) {
   UItransform.txStart();
   doTransactionStream.subscribe(onSucces, onError);
 };
-
-function onSucces (data) {
-  UItransform.txStop();
-  UItransform.txHideModal();
-  console.log(data);
-}
-
-function onError (err) {
-  UItransform.txStop();
-  alert('Error: ' + err);
-  console.log("err = ", err);
-}
 
 function getDeterministicData (z) {
   var decodedData = R.nth(1, z);
@@ -118,17 +89,21 @@ function doPushTransactionStream (z) {
   var url = 'a/' + assetID + '/push/' + transaction;
   return H.mkHybriddCallStream(url)
     .map(function (processData) {
-      if (R.isNil(R.prop('data', processData)) && R.equals(R.prop('error', processData), 0)) throw processData;
+      var isProcessInProgress = R.isNil(R.prop('data', processData)) &&
+          R.equals(R.prop('error', processData), 0);
+      if (isProcessInProgress) throw processData;
       return processData;
     })
     .retryWhen(function (errors) { return errors.delay(500); });
 }
 
 function handleTransactionPushResult (res) {
-  if (R.not(R.equals(typeof R.prop('data', res), 'undefined')) &&
-      R.equals(R.prop('error', res), 0)) {
+  var transactionHasError = R.equals(R.prop('error', res), 1);
+  var transactionIsValid = R.not(R.equals(typeof R.prop('data', res), 'undefined')) &&
+      R.equals(R.prop('error', res), 0);
+  if (transactionIsValid) {
     return 'Node sent transaction ID: ' + R.prop('data', res);
-  } else if (R.equals(R.prop('error', res), 1)) {
+  } else if (transactionHasError) {
     throw R.prop('data', res);
   } else {
     throw 'The transaction could not be sent by the hybridd node! Please try again.';
@@ -150,4 +125,45 @@ function checkBaseFeeBalance (asset) {
   } else {
     throw '<br><br>You do not have enough ' + R.toUpper(feeBase) + ' in your wallet to be able to send ' + R.toUpper(assetID) + ' tokens! Please make sure you have activated ' + R.toUpper(feeBase) + ' in the wallet.<br><br>';
   }
+}
+
+function mkTransactionData (p) {
+  var asset = R.prop('asset', p);
+  return {
+    asset_: asset,
+    fee: Number(R.prop('fee', asset)),
+    amount: Number(R.prop('amount', p)),
+    source_address: String(R.prop('source', p)).trim(),
+    target_address: String(R.prop('target', p)).trim()
+  };
+}
+
+function mkEmptyOrPublicKeyString (asset) {
+  return R.compose(
+    R.when(
+      function (key) { return R.not(R.equals('', key)); },
+      R.concat('/')
+    ),
+    R.defaultTo(''),
+    R.path(['keys', 'publicKey'])
+  )(asset);
+}
+
+function mkTotalAmountStr (t, factor) {
+  var amountBigNumber = toInt(R.prop('amount', t), factor);
+  var feeBigNumber = toInt(R.prop('fee', t), factor);
+  var amountWithFeeBigNumber = amountBigNumber.plus(feeBigNumber, factor);
+
+  return fromInt(amountWithFeeBigNumber, factor).toString();
+}
+
+// prepare universal unspent query containing: source address / target address / amount / public key
+function mkUnspentUrl (id, amount, publicKey, t) {
+  return 'a/' +
+    id +
+    '/unspent/' +
+    R.prop('source_address', t) + '/' +
+    amount + '/' +
+    R.prop('target_address', t) +
+    publicKey;
 }
