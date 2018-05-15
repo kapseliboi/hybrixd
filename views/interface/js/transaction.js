@@ -1,4 +1,5 @@
 var U = utils;
+var Storage = storage
 
 sendTransaction = function (properties, onSucces, onError) {
   var H = hybridd; // TODO: Factor up
@@ -13,9 +14,10 @@ sendTransaction = function (properties, onSucces, onError) {
   var unspentUrl = mkUnspentUrl(assetID, totalAmountStr, emptyOrPublicKeyString, transactionData);
   var modeStr = mkModeHashStr(properties);
 
-  var modeFromStorageStream = storage.Get_(modeStr);
+  var modeFromStorageStream = Storage.Get_(modeStr);
   var transactionDataStream = Rx.Observable.of(transactionData);
-  var feeBaseStream = Rx.Observable.of(asset).map(checkBaseFeeBalance);
+  var feeBaseStream = Rx.Observable.of(asset)
+      .map(checkBaseFeeBalance);
   var unspentStream = H.mkHybriddCallStream(unspentUrl)
       .map(checkProcessProgress)
       .retryWhen(function (errors) { return errors.delay(500); });
@@ -54,18 +56,19 @@ function getDeterministicTransactionData (z) {
   var unspent = R.prop('data', R.nth(0, z));
   var transactionData = R.nth(2, z);
   var deterministic_ = R.nth(4, z);
-  var factor = R.path(['asset_', 'factor'], transactionData);
+  var factor = R.path(['asset', 'factor'], transactionData);
+
   var data = {
-    mode: R.path(['asset_', 'mode'], transactionData).split('.')[1],
-    symbol: R.path(['asset_', 'symbol'], transactionData),
-    source: R.prop('source_address', transactionData),
-    target: R.prop('target_address', transactionData),
+    mode: R.path(['asset', 'mode'], transactionData).split('.')[1],
+    symbol: R.path(['asset', 'symbol'], transactionData),
+    source: R.prop('sourceAddress', transactionData),
+    target: R.prop('targetAddress', transactionData),
     amount: toInt(R.prop('amount', transactionData), factor),
     fee: toInt(R.prop('fee', transactionData), factor),
     factor: factor,
-    contract: R.path(['asset_', 'contract'], transactionData),
-    keys: R.path(['asset_', 'keys'], transactionData),
-    seed: R.path(['asset_', 'seed'], transactionData),
+    contract: R.path(['asset', 'contract'], transactionData),
+    keys: R.path(['asset', 'keys'], transactionData),
+    seed: R.path(['asset', 'seed'], transactionData),
     unspent
   };
 
@@ -74,7 +77,7 @@ function getDeterministicTransactionData (z) {
   if (R.isNil(checkTransaction)) {
     throw 'Sorry, the transaction could not be generated! Check if you have entered the right address.';
   } else {
-    return [checkTransaction, R.path(['asset_', 'symbol'], transactionData)];
+    return [checkTransaction, R.path(['asset', 'symbol'], transactionData)];
   }
 }
 
@@ -85,7 +88,7 @@ function doPushTransactionStream (z) {
   return H.mkHybriddCallStream(url)
     .map(function (processData) {
       var isProcessInProgress = R.isNil(R.prop('data', processData)) &&
-          R.equals(R.prop('error', processData), 0);
+                                R.equals(R.prop('error', processData), 0);
       if (isProcessInProgress) throw processData;
       return processData;
     })
@@ -95,7 +98,7 @@ function doPushTransactionStream (z) {
 function handleTransactionPushResult (res) {
   var transactionHasError = R.equals(R.prop('error', res), 1);
   var transactionIsValid = R.not(R.equals(typeof R.prop('data', res), 'undefined')) &&
-      R.equals(R.prop('error', res), 0);
+                           R.equals(R.prop('error', res), 0);
   if (transactionIsValid) {
     return 'Node sent transaction ID: ' + R.prop('data', res);
   } else if (transactionHasError) {
@@ -113,7 +116,7 @@ function checkBaseFeeBalance (asset) {
     R.defaultTo(0),
     R.path(['balance', 'amount']),
     R.find(R.propEq('id', feeBase))
-  )(GL.assets);
+  )(GL.assets); // TODO: Factor up;
 
   if (baseBalance > fee) {
     return true;
@@ -125,11 +128,11 @@ function checkBaseFeeBalance (asset) {
 function mkTransactionData (p) {
   var asset = R.prop('asset', p);
   return {
-    asset_: asset,
+    asset,
     fee: Number(R.prop('fee', asset)),
     amount: Number(R.prop('amount', p)),
-    source_address: String(R.prop('source', p)).trim(),
-    target_address: String(R.prop('target', p)).trim()
+    sourceAddress: String(R.prop('source', p)).trim(),
+    targetAddress: String(R.prop('target', p)).trim()
   };
 }
 
@@ -157,9 +160,9 @@ function mkUnspentUrl (id, amount, publicKey, t) {
   return 'a/' +
     id +
     '/unspent/' +
-    R.prop('source_address', t) + '/' +
+    R.prop('sourceAddress', t) + '/' +
     amount + '/' +
-    R.prop('target_address', t) +
+    R.prop('targetAddress', t) +
     publicKey;
 }
 
