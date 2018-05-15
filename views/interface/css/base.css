@@ -765,6 +765,7 @@ p {
 }
 
 .content .table .asset {
+  position: relative;
   text-transform: uppercase;
   font-size: 1.167em;
   font-weight: 700;
@@ -772,7 +773,7 @@ p {
 }
 
 .content .table .icon {
-  display:inline-block;
+  display: inline-block;
   vertical-align: middle;
   padding-right: 15px;
   margin-top: -3px;
@@ -808,6 +809,28 @@ p {
   width: 110px;
   color: #aaa;
   margin-right: 5px;
+}
+
+.content .table .asset-full-name {
+  height: 80%;
+  min-width: 200px;
+  position: absolute;
+  top: 10%;
+  left: 37px;
+  display: none;
+  white-space: nowrap;
+  padding: 5px;
+  background-color: #E9EAF1;
+  border: 1px solid #c3cAf1;
+  border-radius: 5px;
+  font-size: 1em;
+  color: #000000;
+  z-index: 10;
+}
+
+.content .table .icon:hover ~ .asset-full-name {
+  display: flex;
+  align-items: center;
 }
 
 .content .table .full-name {

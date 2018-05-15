@@ -18,7 +18,7 @@ sendTransaction = function (properties) {
   var totalAmount = fromInt(
     toInt(R.prop('amount', transactionData), factor)
       .plus(toInt(R.prop('fee', transactionData), factor), factor)
-  , factor).toString();
+    , factor).toString();
   // prepare universal unspent query containing: source address / target address / amount / public key
   var unspentUrl = 'a/' +
       assetID +

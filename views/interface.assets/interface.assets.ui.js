@@ -15,7 +15,7 @@ UItransform = {
   },
   txHideModal: function () {
     document.querySelector('#action-send').style.opacity = 1;
-    document.querySelector('#action-send').modal('hide');
+    $('#action-send').modal('hide');
   },
   setBalance: function (element, setBalance) { document.querySelector(element).innerHTML = setBalance; },
   deductBalance: function (element, newBalance) { document.querySelector(element).innerHTML = ('<span style="color:#6B6;">' + String(newBalance)) + '</span>'; }
@@ -54,7 +54,8 @@ function mkHtmlForAssets (str, asset) {
   var maybeStarActive = ' id="' + assetID.replace(/\./g, '_') + '" onclick=toggleStar("' + assetID + '") ';
   var icon = (symbolName in black.svgs) ? black.svgs[symbolName] : mkSvgIcon(symbolName);
 
-  var assetInfoHTMLStr = '<div id="asset-' + element + '" class="td col1 asset asset-' + element + '"><div class="icon">' + icon + '</div>' + assetID + '<div class="star"><a' + maybeStarActive + 'role="button">' + svg['star'] + '</a></div></div>';
+  var assetFullNameHtmlStr = '<div class="asset-full-name">' + R.prop('name', asset) + '</div>';
+  var assetInfoHTMLStr = '<div id="asset-' + element + '" class="td col1 asset asset-' + element + '"><div class="icon">' + icon + '</div>' + assetID + '<div class="star"><a' + maybeStarActive + 'role="button">' + svg['star'] + '</a></div>' + assetFullNameHtmlStr + '</div>';
   var assetBalanceHtmlStr = '<div class="td col2"><div class="balance balance-' + element + '">' + progressbar() + '</div></div>';
   var assetDollarValuationHtmlStr = '<div class="td col3"><div id="' + symbolName + '-dollar" class="dollars" style="color: #AAA;">n/a</div></div>';
   var assetSendBtnHtmlStr = '<a onclick=\'fillSend("' + assetID + '");\' href="#action-send" class="pure-button pure-button-large pure-button-primary" role="button" data-toggle="modal" disabled="disabled"><div class="icon">' + svg['send'] + '</div>Send</a>';
