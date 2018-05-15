@@ -17,12 +17,7 @@ sendTransaction = function (properties, onSucces, onError) {
   var transactionDataStream = Rx.Observable.of(transactionData);
   var feeBaseStream = Rx.Observable.of(asset).map(checkBaseFeeBalance);
   var unspentStream = H.mkHybriddCallStream(unspentUrl)
-      .map(function (processData) {
-        var isProcessInProgress = R.isNil(R.prop('data', processData)) &&
-            R.equals(R.prop('error', processData), 0);
-        if (isProcessInProgress) throw processData;
-        return processData;
-      })
+      .map(checkProcessProgress)
       .retryWhen(function (errors) { return errors.delay(500); });
 
   var doTransactionStream = Rx.Observable
@@ -166,4 +161,11 @@ function mkUnspentUrl (id, amount, publicKey, t) {
     amount + '/' +
     R.prop('target_address', t) +
     publicKey;
+}
+
+function checkProcessProgress (processData) {
+  var isProcessInProgress = R.isNil(R.prop('data', processData)) &&
+                            R.equals(R.prop('error', processData), 0);
+  if (isProcessInProgress) throw processData;
+  return processData;
 }
