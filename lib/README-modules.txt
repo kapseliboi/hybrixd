@@ -24,7 +24,7 @@ Output: Number
 
 fee
 Syntax: a/$ASSET/fee
-Description: transactie fee (for etheruem this is more complicated (“gas”) dus worst case guestimate) , later this should be updated with tick
+Description: transaction fee (for etheruem this is more complicated (“gas”) so worst case guestimate) , later this should be updated with tick
 Input: ???? TODO  (not constant, unclear which parameters could be used.)
 Output: Number
 
@@ -40,7 +40,7 @@ Description: Retrieve contract data
 Input: Address  (sourceaddress)
 Output: Contract data
 
-push             iets pushen naar blockchain (meestal signed transaction) doorsturen (bij ethereum contracts)
+push             push something to blockchain (usually signed transaction) forward (for ethereum contracts)
 Syntax: a/$ASSET/push/$TRANSACTION_STRING
 Input:
 
@@ -71,7 +71,7 @@ transfer
 test
 ?? debug?
 
-unspent        “prepare” pre-transacties acties/informatie ophalen.Transactie voorbereiden. (Legacy van Bitcoin, maar ook bruikbaar voor anderen  )
+unspent        “prepare” pre-transactions actions/information retrieval.Transaction preparation. (Legacy of Bitcoin, also useful for others  )
 Syntax: a/$ASSET/unspent/$SOURCE_ADDRESS/$TARGET_ADDRESS/$AMOUNT/$PUBLIC_KEY
 Output:
 For Blockexplorer (Bitcoin-like)
