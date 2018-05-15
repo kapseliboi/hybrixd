@@ -2,6 +2,7 @@ var U = utils;
 var Storage = storage;
 
 var GLOBAL_ASSETS = GL.assets;
+var ASSETS = assets;
 
 sendTransaction = function (properties, onSucces, onError) {
   var H = hybridd; // TODO: Factor up. Can't now, smt's up with dependency order.
@@ -14,7 +15,7 @@ sendTransaction = function (properties, onSucces, onError) {
   var totalAmountStr = mkTotalAmountStr(transactionData, factor);
   var emptyOrPublicKeyString = mkEmptyOrPublicKeyString(asset);
   var unspentUrl = mkUnspentUrl(assetID, totalAmountStr, emptyOrPublicKeyString, transactionData);
-  var modeStr = mkModeHashStr(properties);
+  var modeStr = mkModeHashStr(ASSETS, properties);
 
   var modeFromStorageStream = Storage.Get_(modeStr);
   var transactionDataStream = Rx.Observable.of(transactionData);
@@ -89,7 +90,7 @@ function doPushTransactionStream (z) {
   return H.mkHybriddCallStream(url)
     .map(function (processData) {
       var isProcessInProgress = R.isNil(R.prop('data', processData)) &&
-          R.equals(R.prop('error', processData), 0);
+                                R.equals(R.prop('error', processData), 0);
       if (isProcessInProgress) throw processData;
       return processData;
     })
@@ -99,7 +100,7 @@ function doPushTransactionStream (z) {
 function handleTransactionPushResult (res) {
   var transactionHasError = R.equals(R.prop('error', res), 1);
   var transactionIsValid = R.not(R.equals(typeof R.prop('data', res), 'undefined')) &&
-      R.equals(R.prop('error', res), 0);
+                           R.equals(R.prop('error', res), 0);
   if (transactionIsValid) {
     return 'Node sent transaction ID: ' + R.prop('data', res);
   } else if (transactionHasError) {
@@ -172,12 +173,12 @@ function mkUnspentUrl (id, amount, publicKey, t) {
 
 function checkProcessProgress (processData) {
   var isProcessInProgress = R.isNil(R.prop('data', processData)) &&
-      R.equals(R.prop('error', processData), 0);
+                            R.equals(R.prop('error', processData), 0);
   if (isProcessInProgress) throw processData;
   return processData;
 };
 
-function mkModeHashStr (p) {
+function mkModeHashStr (assets, p) {
   return R.compose(
     R.flip(R.concat)('-LOCAL'),
     function (assetMode) { return R.path(['modehashes', assetMode], assets); },
