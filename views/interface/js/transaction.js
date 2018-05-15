@@ -1,3 +1,5 @@
+var U = utils;
+
 sendTransaction = function (properties, onSucces, onError) {
   var H = hybridd; // TODO: Factor up
 
@@ -9,9 +11,7 @@ sendTransaction = function (properties, onSucces, onError) {
   var totalAmountStr = mkTotalAmountStr(transactionData, factor);
   var emptyOrPublicKeyString = mkEmptyOrPublicKeyString(asset);
   var unspentUrl = mkUnspentUrl(assetID, totalAmountStr, emptyOrPublicKeyString, transactionData);
-
-  var assetMode = R.path(['asset', 'mode'], properties).split('.')[0];
-  var modeStr = R.path(['modehashes', assetMode], assets) + '-LOCAL'; // Factor assets up
+  var modeStr = mkModeHashStr(properties);
 
   var modeFromStorageStream = storage.Get_(modeStr);
   var transactionDataStream = Rx.Observable.of(transactionData);
@@ -168,4 +168,14 @@ function checkProcessProgress (processData) {
                             R.equals(R.prop('error', processData), 0);
   if (isProcessInProgress) throw processData;
   return processData;
+};
+
+function mkModeHashStr (p) {
+  return R.compose(
+    R.flip(R.concat)('-LOCAL'),
+    function (assetMode) { return R.path(['modehashes', assetMode], assets); },
+    R.nth(0),
+    U.splitAtDot,
+    R.path(['asset', 'mode'])
+  )(p);
 }

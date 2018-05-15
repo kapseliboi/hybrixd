@@ -53,6 +53,9 @@ utils = {
   getTargetValue: function (e) {
     return e.target.value;
   },
+  splitAtDot: function  (s) {
+    return s.split('.');
+  },
   mkUpdatedAssets: function (details) {
     return function (assets, asset) {
       var assetOrUpdatedDetails = R.equals(R.prop('id', asset), R.prop('symbol', details))
