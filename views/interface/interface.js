@@ -13,6 +13,7 @@
 var POW = proofOfWork;
 var Valuations = valuations;
 var Storage = storage;
+var Icons = black;
 var U = utils;
 
 var path = 'api';
@@ -66,7 +67,8 @@ var assetsDetailsStream = storedUserDataStream
         initializeAsset(asset),
         R.prop('id')
       )(asset);
-    });
+    })
+    .map(addIcon)
 
 var initializationStream = Rx.Observable
     .combineLatest(
@@ -157,6 +159,14 @@ function initializeGlobalAssets (assets) {
     U.updateGlobalAssets,
     R.map(R.merge({balance: { amount: 0, lastTx: 0 }}))
   )(assets);
+}
+
+function addIcon (asset) {
+  return R.compose(
+    R.assoc('icon', R.__, asset),
+    U.mkIcon,
+    R.prop('symbol')
+  )(asset);
 }
 
 function decryptData (d) { return R.curry(zchan_obj)(GL.usercrypto)(GL.cur_step)(d); }

@@ -1,5 +1,6 @@
 var U = utils;
 var M = manageAssets;
+var Icons = black;
 
 var tableHTMLStr = '<div class="table">' +
     '<div class="thead">' +
@@ -45,7 +46,7 @@ var clearSearchBarStream = Rx.Observable
 
 function mkSearchedAssetHTMLStr (acc, entry) {
   var symbolName = entry.slice(entry.indexOf('.') + 1);
-  var icon = (symbolName in black.svgs) ? black.svgs[symbolName] : mkSvgIcon(symbolName);
+  var icon = U.mkIcon(symbolName);
   var entryExists = R.any(R.propEq('id', entry), GL.assets);
   var element = entry.replace('.', '-');
 

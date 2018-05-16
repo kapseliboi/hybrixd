@@ -50,13 +50,11 @@ var retrieveBalanceStream = Rx.Observable
 
 function mkHtmlForAssets (str, asset) {
   var assetID = R.prop('id', asset);
-  var symbolName = assetID.slice(assetID.indexOf('.') + 1);
+  var symbolName = R.prop('symbol', asset);
 
   var element = assetID.replace(/\./g, '-');
   var maybeStarActive = ' id="' + assetID.replace(/\./g, '_') + '" onclick=toggleStar("' + assetID + '") ';
-  var icon = R.has(symbolName, R.prop('svgs', Icons))
-      ? R.path(['svgs', symbolName], Icons)
-      : mkSvgIcon(symbolName);
+  var icon = R.prop('icon', asset);
 
   var assetInfoHTMLStr = '<div id="asset-' + element + '" class="td col1 asset asset-' + element + '"><div class="icon">' + icon + '</div>' + assetID + '<div class="star"><a' + maybeStarActive + 'role="button">' + R.prop('star', Svg) + '</a></div></div>';
   var assetBalanceHtmlStr = '<div class="td col2"><div class="balance balance-' + element + '">' + progressbar() + '</div></div>';
