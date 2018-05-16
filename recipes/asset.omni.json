@@ -2,11 +2,14 @@
   "symbol":"omni",
   "name":"Omni",
   "module":"quartz",
-  "mode":"omni.main",
-  "factor":6,
-  "fee":0.05,
-  "contract":"undefined",
-  "xhost":"wss://www.omniwallet.org",
+  "mode":"bitcoinjslib.omni",
+  "factor":8,
+  "fee":0.000035,
+  "fee-symbol":"btc",
+  "keygen-base":"btc",
+  "contract":"1",
+  "host":"https://api.omniexplorer.info",
+  "Xhost":"wss://www.omniwallet.org",
   "cache":120000,
   "throttle":5,
   "quartz":{
@@ -17,13 +20,26 @@
        "stop(1,'Not yet implemented!')"
     ],
     "unspent" : [
-       "stop(1,'Not yet implemented!')"
+      "func('blockexplorer','exec',{target:{symbol:'$fee-symbol'}, command:['unspent','$1','$2']})"
     ],
-     "balance" : [
-       "stop(1,'Not yet implemented!')"
+    "balance" : [
+      "time(32000)",
+      "curl('asset://$symbol','/v1/address/addr?addr=$1','POST','addr=$1',{'content-type':'application/x-www-form-urlencoded'})",
+      "tran('.balance',data,2,1)",
+      "stop(1,'Bad result!')",
+      "find({'id':'$contract'},data,1,2)",
+      "tran({value:'.value',in:'.pendingpos',out:'.pendingneg'},data,2,1)",
+      "pass(0)",
+      "time($cache,data)",
+      "form(parseInt(data.value)+parseInt(data.in)-parseInt(data.out),$factor,'reduce')"
     ],
     "push" : [
-       "stop(1,'Not yet implemented!')"
+      "stop(1,'NOT YET OPERATIONAL!')",
+      "tran('.value',data,2,1)",
+      "pass(0)",
+      "time($cache,data)",
+      "form(data,$factor,'reduce')",
+      "stop(1,'Not yet implemented!')"
     ],
     "factor" : [
       "pass('$factor')"
@@ -32,7 +48,7 @@
        "stop(1,'Not yet implemented!')"
     ],
     "contract" : [
-       "stop(1,'Not yet implemented!')"
+       "stop(0,'$contract')"
     ],
     "fee" : [
       "pass('$fee')"
