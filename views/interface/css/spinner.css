@@ -33,6 +33,12 @@
 	transform: rotate(360deg);
   }
 }
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+  }
+}
 /* :not(:required) hides this rule from IE9 and below */
 .spinner-loader:not(:required) {
   -moz-animation: spinner-loader 2500ms infinite linear;
@@ -53,7 +59,13 @@
   text-indent: 100%;
 }
 
+.spinner-loader.disabled-slow {
+  animation: fadeOut .5s ease-in 1 forwards;
+}
 
+.spinner-loader.disabled-fast {
+  animation: fadeOut .5s ease-in 1 forwards;
+}
 
 /* Radial progress indicator */
 .progress-radial {
@@ -64,10 +76,10 @@
 
 .progress-radial svg {
   display: inline-block;
-  width: 0.6em;
-  height: 0.6em;
-  margin-left: -0.8em !important;
-  margin-bottom: 0.2em !important;
+        margin-left: auto;
+        margin-right: auto;
+  width: 1em;
+  height: 1em;
   -webkit-transform: rotate(270deg);
   transform: rotate(270deg);
   -webkit-transition: all 0.5s ease;
@@ -76,7 +88,8 @@
 
 .progress-radial .dot {
   display: inline-block;
-  
+	margin-left: auto;
+	margin-right: auto;
   background-color: #CCC;
   border-radius: 100%;
   -webkit-animation : scaleblink 1.0s infinite ease-in-out;

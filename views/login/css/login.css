@@ -159,6 +159,14 @@ a {
   padding: 40px 30px;
 }
 
+#inputUserID {
+  text-transform: uppercase;
+}
+
+#inputPasscode {
+  text-transform: uppercase;
+}
+
 #login_container  #loginbutton {
   margin: 5px 0 0;
   padding: 9px 24px 13px 24px;
@@ -360,4 +368,3 @@ a {
   opacity: 0.3;
   z-index: 2147483647;
 }
-

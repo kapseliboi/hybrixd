@@ -1,0 +1,11 @@
+#action-receive .copied {
+  opacity: 0;
+  -webkit-transition: opacity 1.3s; /* Safari */
+  transition: opacity 1.3s;
+}
+
+#action-receive .copied.active {
+  opacity: 1;
+  -webkit-transition: opacity 0.8s; /* Safari */
+  transition: opacity 0.8s;
+}

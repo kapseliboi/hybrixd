@@ -1,154 +1,95 @@
+var U = utils;
 // User interface transformations
 UItransform = {
-  formatFloat : function(n) {
-    if(isNaN(n)) {
-      output = '?';
-    } else {
-      var balance = bigNumberToString((toInt(n)));
-      if (balance === "0") {
-        output = '0';
-      } else {
-        var maxlen = 11;   // amount of digits
-        output = balance.substr(0, maxlen);
-
-        if (balance.length > maxlen) {
-          output += '<span>&hellip;</span>';
-        }
-      }
-    }
-    return output;
-  },
-  txStart : function() {
+  txStart: function () {
     loadSpinner();
-    $('#action-send .pure-button-send').addClass('pure-button-disabled').removeClass('pure-button-primary');
-    $('#action-send').css('opacity', '0.7');
+    document.querySelector('#action-send .pure-button-send').classList.add('pure-button-disabled');
+    document.querySelector('#action-send .pure-button-send').classList.remove('pure-button-primary');
+    document.querySelector('#action-send').style.opacity = '0.7';
   },
-  txStop : function() {
+  txStop: function () {
     stopSpinner();
-    $('#action-send .pure-button-send').removeClass('pure-button-disabled').addClass('pure-button-primary');
-    $('#action-send').css('opacity', '1');
+    document.querySelector('#action-send .pure-button-send').classList.remove('pure-button-disabled');
+    document.querySelector('#action-send .pure-button-send').classList.add('pure-button-primary');
+    document.querySelector('#action-send').style.opacity = '1';
   },
-  txHideModal : function() {
-    $('#action-send').modal('hide').css('opacity', '1');
+  txHideModal: function () {
+    document.querySelector('#action-send').style.opacity = 1;
+    document.querySelector('#action-send').modal('hide');
   },
-  setBalance : function(element,setBalance) {
-    $(element).html(setBalance);
-  },
-  deductBalance : function(element,newBalance) {
-    $(element).html('<span style="color:#6B6;">'+String(newBalance))+'</span>';
-  }
-}
-
-$(".clearable").each(function() {
-
-  var $inp = $(this).find("input:text"),
-      $cle = $(this).find(".clearable__clear");
-
-  $inp.on("input", function(){
-    $cle.toggle(!!this.value);
-  });
-
-  $cle.on("touchstart click", function(e) {
-    e.preventDefault();
-    $inp.val("").trigger("input");
-  });
-
-});
-
-displayAssets = function displayAssets() {
-  balance = {}
-  balance.asset = [];
-  balance.amount = [];
-  balance.lasttx = [];
-
-  // create mode array of selected assets
-  var activeAssetsObj = {};
-  var i = 0;
-  for(i = 0; i < GL.assetsActive.length; ++i) {
-    if(typeof GL.assetmodes[GL.assetsActive[i]] !== 'undefined') {
-      activeAssetsObj[GL.assetsActive[i]] = GL.assetmodes[GL.assetsActive[i]];
-    }
-  }
-
-  var i = 0;
-  var output = '';
-  // create asset table
-  output+='<div class="table">';
-  output+='<div class="thead">';
-  output+='<div class="tr">';
-  output+='<div class="th col1 asset-title">Asset</div>';
-  output+='<div class="th col2">Balance</div>';
-  output+='<div class="th col3">Valuation</div>';
-  output+='<div class="th col4 actions"></div>';
-  output+='</div>';
-  output+='</div>';
-  output+='<div class="tbody">';
-  for (var entry in activeAssetsObj) {
-    var symbolName = entry.slice(entry.indexOf('.') + 1);
-    balance.asset[i] = entry;
-    balance.amount[i] = 0;
-    balance.lasttx[i] = 0;
-
-    var maybeAsset = GL.assetsStarred.find(function (starred) {
-      return starred.id === balance.asset[i];
-    });
-
-    var element=balance.asset[i].replace(/\./g,'-');
-    var maybeStarActive = maybeAsset === undefined ? '' : ' id="' + maybeAsset['id'].replace(/\./g, '_') + '" onclick=toggle_star(' + i + ') ';
-    var balanceInDollars = renderDollarPrice(symbolName, balance.amount[i]);
-    var icon = (symbolName in black.svgs) ? black.svgs[symbolName] : mkSvgIcon(symbolName);
-
-    // var starIsToggled=storage.Get(userStorageKey('ff00-0033'));
-    output+='<div class="tr">';
-    output+='<div id="asset-' + element + '" class="td col1 asset asset-'+element+'"><div class="icon">' + icon + '</div>'+entry+'<div class="star"><a' + maybeStarActive + 'role="button">' + svg['star'] + '</a></div></div>';
-    output+='<div class="td col2"><div class="balance balance-'+element+'">'+progressbar()+'</div></div>';
-    output+='<div class="td col3"><div id="' + symbolName + '-dollar" class="dollars" style="color: #AAA;">n/a</div></div>';
-    output+='<div class="td col4 actions">';
-    output+='<div class="assetbuttons assetbuttons-'+element+' disabled">';
-    output+='<a onclick=\'fill_send("'+entry+'");\' href="#action-send" class="pure-button pure-button-large pure-button-primary" role="button" data-toggle="modal" disabled="disabled"><div class="icon">'+svg['send']+'</div>Send</a>';
-    output+='<a onclick=\'fill_recv("'+entry+'");\' href="#action-receive" class="pure-button pure-button-large pure-button-secondary" role="button" data-toggle="modal" disabled="disabled"><div class="icon">'+svg['receive']+'</div>Receive</a>';
-    //output+='<a href="#action-advanced" class="pure-button pure-button-grey advanced-button" role="button" disabled="disabled"><div class="advanced-icon">'+svg['advanced']+'</div><span class="button-label">Advanced</span></a>';
-    output+='</div>';
-    output+='</div></div>';
-    i++;
-  }
-
-  output+='</div></div>';
-  // refresh assets
-  ui_assets({i:i,balance:balance,path:path});
-  intervals = setInterval( function(path) {
-    ui_assets({i:i,balance:balance,path:path});
-  },30000,path);
-
-  $('.assets-main > .data').html(output);	// insert new data into DOM
-
-  // render starred assets svgs
-  for (var i=0; i < GL.assetsStarred.length; i++) {
-    setStarredAssetClass(i, GL.assetsStarred[i]['starred']);
-  }
-
-  scrollToAnchor();
+  setBalance: function (element, setBalance) { document.querySelector(element).innerHTML = setBalance; },
+  deductBalance: function (element, newBalance) { document.querySelector(element).innerHTML = ('<span style="color:#6B6;">' + String(newBalance)) + '</span>'; }
 };
 
-// main asset management code
-$(document).ready( function() {
-  // fill advanced modal with work-in-progress icon
-  var output = '<div style="text-align: center; margin-left: auto; margin-right: auto; width: 30%; color: #CCC;">'+svg['cogs']+'</div>';
-  $('#advancedmodal').html(output);	// insert new data into DOM
+// Render sequence
+displayAssets = function (args) {
+  return function () {
+    document.querySelector('.assets-main > .data').innerHTML = mkHtmlToRender(GL.assets);
+    GL.assets.forEach(function (asset) { setStarredAssetClass(R.prop('id', asset), R.prop('starred', asset)); });
+    U.scrollToAnchor(args);
+    retrieveBalanceStream.subscribe(function (_) { uiAssets(); });
+  };
+};
 
-  // add icon
-  $('.manage-icon').html(svg['edit']);
-
-  // elements: MAIN
-  $('.assets-main .spinner-loader').fadeOut('slow', function () {
-    displayAssets();
-  });
-});
-
-function loadSpinner () {
-  document.querySelector('#action-send .spinner').classList.add('active');
+function mkHtmlToRender (assets) {
+  return R.compose(
+    mkAssetsInterfaceHtmlStr,
+    R.reduce(mkHtmlForAssets, '')
+  )(assets);
 }
 
-function stopSpinner () {
-  document.querySelector('#action-send .spinner').classList.remove('active');
+var stopBalanceStream = Rx.Observable
+    .fromEvent(document.querySelector('#topmenu-dashboard'), 'click');
+
+var retrieveBalanceStream = Rx.Observable
+    .interval(30000)
+    .startWith(0)
+    .takeUntil(stopBalanceStream);
+
+function mkHtmlForAssets (str, asset) {
+  var assetID = R.prop('id', asset);
+  var symbolName = assetID.slice(assetID.indexOf('.') + 1);
+
+  var element = assetID.replace(/\./g, '-');
+  var maybeStarActive = ' id="' + assetID.replace(/\./g, '_') + '" onclick=toggleStar("' + assetID + '") ';
+  var icon = (symbolName in black.svgs) ? black.svgs[symbolName] : mkSvgIcon(symbolName);
+
+  var assetInfoHTMLStr = '<div id="asset-' + element + '" class="td col1 asset asset-' + element + '"><div class="icon">' + icon + '</div>' + assetID + '<div class="star"><a' + maybeStarActive + 'role="button">' + svg['star'] + '</a></div></div>';
+  var assetBalanceHtmlStr = '<div class="td col2"><div class="balance balance-' + element + '">' + progressbar() + '</div></div>';
+  var assetDollarValuationHtmlStr = '<div class="td col3"><div id="' + symbolName + '-dollar" class="dollars" style="color: #AAA;">n/a</div></div>';
+  var assetSendBtnHtmlStr = '<a onclick=\'fillSend("' + assetID + '");\' href="#action-send" class="pure-button pure-button-large pure-button-primary" role="button" data-toggle="modal" disabled="disabled"><div class="icon">' + svg['send'] + '</div>Send</a>';
+  var assetReceiveBtnHtmlStr = '<a onclick=\'receiveAction("' + assetID + '");\' href="#action-receive" class="pure-button pure-button-large pure-button-secondary" role="button" data-toggle="modal" disabled="disabled"><div class="icon">' + svg['receive'] + '</div>Receive</a>';
+
+  var htmlToRender = '<div class="tr">' +
+      assetInfoHTMLStr +
+      assetBalanceHtmlStr +
+      assetDollarValuationHtmlStr +
+      '<div class="td col4 actions">' +
+      '<div class="assetbuttons assetbuttons-' + element + ' disabled">' +
+      assetSendBtnHtmlStr +
+      assetReceiveBtnHtmlStr +
+      '</div>' +
+      '</div>' +
+      '</div>';
+
+  return str + htmlToRender;
 }
+
+function mkAssetsInterfaceHtmlStr (assetsHTMLStr) {
+  return '<div class="table">' +
+    '<div class="thead">' +
+    '<div class="tr">' +
+    '<div class="th col1 asset-title">Asset</div>' +
+    '<div class="th col2">Balance</div>' +
+    '<div class="th col3">Valuation</div>' +
+    '<div class="th col4 actions"></div>' +
+    '</div>' +
+    '</div>' +
+    '<div class="tbody">' +
+    assetsHTMLStr +
+    '</div>' +
+    '</div>';
+}
+
+function loadSpinner () { document.querySelector('#action-send .spinner').classList.add('active'); }
+function stopSpinner () { document.querySelector('#action-send .spinner').classList.remove('active'); }
