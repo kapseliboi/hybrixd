@@ -126,7 +126,7 @@ function getNewMarketPrices () {
     .interval(5000);
 
   dollarPriceStream.subscribe(function (_) {
-    Valuations.getDollarPrices(() => {});
+    Valuations.getDollarPrices();
   });
 }
 

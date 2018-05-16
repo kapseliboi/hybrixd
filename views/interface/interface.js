@@ -76,7 +76,7 @@ var initializationStream = Rx.Observable
 
 // All synchronous dependencies. Make async with Streamzzzz
 function main () {
-  Valuations.getDollarPrices(function () { console.log('Fetched valuations.'); });
+  Valuations.getDollarPrices();
   intervals.pow = setInterval(POW.loopThroughProofOfWork, 120000); // once every two minutes, loop through proof-of-work queue
   // TODO: Separate data retrieval from DOM rendering. Dashboard should be rendered in any case.
   initializationStream.subscribe(initializeGlobalAssets);
