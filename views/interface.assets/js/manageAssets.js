@@ -1,4 +1,5 @@
 var U = utils;
+var Storage = storage;
 
 var manageAssets = {
   renderManageButton: function (element, asset, active) {
@@ -24,7 +25,7 @@ var manageAssets = {
 
         return R.equals(key, assetID) // TODO: factor assetID up.
           ? R.assoc(key, active, {})
-          : a;
+        : a;
       }
 
       // EFF ::
@@ -36,19 +37,10 @@ var manageAssets = {
   },
   saveAssetList: function (cb) {
     return function () {
-      var newActiveAssets = R.compose(
-        R.map(existingOrNewAssetEntry),
-        R.filter(function (a) {
-          return R.compose(
-            R.not,
-            R.isNil,
-            R.find(R.prop(a))
-          )(GL.assetSelect);
-        }),
-        R.keys
-      )(GL.assetnames);
+      var newActiveAssets = mkNewActiveAssets(GL.assetnames);
       var newActiveAssetsForStorage = R.map(R.pick(['id', 'starred']), newActiveAssets);
       var newAssetsToInitialize = R.filter(idDoesNotExist, newActiveAssetsForStorage);
+
       var assetsDetailsStream = R.isEmpty(newAssetsToInitialize)
           ? Rx.Observable.from([[]])
           : Rx.Observable.from(newAssetsToInitialize)
@@ -71,23 +63,13 @@ var manageAssets = {
         }, [], newActiveAssets);
 
         // GLOBAL STUFF
-        storage.Set(userStorageKey('ff00-0035'), userEncode(newActiveAssetsForStorage));
+        Storage.Set(userStorageKey('ff00-0035'), userEncode(newActiveAssetsForStorage));
         U.updateGlobalAssets(newGlobalAssets);
         cb(); // RE-RENDER VIEW
       });
     };
   },
   manageAssets: function () {
-    function mkAssetExistsObj (name) {
-      var assetAlreadyExists = R.compose(
-        R.not,
-        R.isNil,
-        R.find(R.propEq('id', name))
-      )(GL.assets);
-
-      return R.assoc(name, assetAlreadyExists, {});
-    }
-
     GL.assetSelect = R.compose(
       R.map(mkAssetExistsObj),
       R.keys
@@ -95,11 +77,37 @@ var manageAssets = {
   }
 };
 
+function mkAssetExistsObj (name) {
+  var assetAlreadyExists = R.compose(
+    R.not,
+    R.isNil,
+    R.find(R.propEq('id', name))
+  )(GL.assets);
+
+  return R.assoc(name, assetAlreadyExists, {});
+}
+
 function idDoesNotExist (asset) {
   return R.compose(
     R.not,
     R.any(R.propEq('id', asset.id))
   )(GL.assets);
+}
+
+function mkNewActiveAssets (names) {
+  R.compose(
+    R.map(existingOrNewAssetEntry),
+    R.filter(assetIsSelected),
+    R.keys
+  )(names);
+}
+
+function assetIsSelected (a) {
+  return R.compose(
+    R.not,
+    R.isNil,
+    R.find(R.prop(a))
+  )(GL.assetSelect);
 }
 
 function existingOrNewAssetEntry (assetName) {
