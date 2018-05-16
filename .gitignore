@@ -6,3 +6,4 @@ nodejs-runtime
 **/#.*.*
 .DS_Store
 storage/*
+common
