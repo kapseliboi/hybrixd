@@ -132,9 +132,20 @@ function matchSymbolWithData (key, data) {
 }
 
 function storedOrDefaultUserData (decodeUserData) {
+  var foo = R.all(R.allPass([
+        R.has('id'),
+        R.has('starred'),
+        R.compose(R.not, R.isEmpty)
+  ]))(decodeUserData)
   return R.compose(
     R.unless(
-      R.all(R.allPass([R.has('id'), R.has('starred')])),
+      R.allPass([
+        R.all(R.allPass([
+          R.has('id'),
+          R.has('starred')
+        ])),
+        R.compose(R.not, R.isEmpty)
+      ]),
       R.always(defaultAssetData)
     ),
     R.defaultTo(defaultAssetData)

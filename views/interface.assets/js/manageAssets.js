@@ -10,23 +10,49 @@ var manageAssets = {
     return '<a onclick="changeManageButton(\'' + element + '\',\'' + asset + '\',' + activeToggled + ');" class="pure-button ' + btnClass + '" role="button"><div class="actions-icon">' + svg[svgName] + '</div>' + btnText + '</a>';
   },
   changeManageButton: function (cb) {
-    return function (element, asset, active) {
-      GL.assetSelect[asset] = active;
-      document.querySelector('#manage-assets .assetbuttons-' + element).innerHTML = cb(element, asset, active);
+    return function (element, assetID, active) {
+
+      R.compose(
+        updateGlobalAssetsAndRenderInDom,
+        R.map(updateAsset)
+      )(GL.assetSelect);
+
+      function updateAsset (a) {
+        var key = R.compose(
+          R.nth(0),
+          R.keys
+        )(a);
+
+        return R.equals(key, assetID)
+          ? R.assoc(key, active, {})
+          : a;
+      }
+
+      // EFF ::
+      function updateGlobalAssetsAndRenderInDom (assets) {
+        GL.assetSelect = assets;
+        document.querySelector('#manage-assets .assetbuttons-' + element).innerHTML = cb(element, assetID, active);
+      }
     };
   },
   saveAssetList: function (cb) {
     return function () {
       var newActiveAssets = R.compose(
         R.map(existingOrNewAssetEntry),
-        R.filter(entryIsSelected),
+        R.filter(function (a) {
+          return R.compose(
+            R.not,
+            R.isNil,
+            R.find(R.prop(a))
+          )(GL.assetSelect);
+        }),
         R.keys
       )(GL.assetnames);
       var newActiveAssetsForStorage = R.map(R.pick(['id', 'starred']), newActiveAssets);
       var newAssetsToInitialize = R.filter(idDoesNotExist, newActiveAssetsForStorage);
       var assetsDetailsStream = R.isEmpty(newAssetsToInitialize)
-        ? Rx.Observable.from([[]])
-        : Rx.Observable.from(newAssetsToInitialize)
+          ? Rx.Observable.from([[]])
+          : Rx.Observable.from(newAssetsToInitialize)
           .flatMap(function (asset) {
             return R.compose(
               initializeAsset(asset),
@@ -53,17 +79,20 @@ var manageAssets = {
     };
   },
   manageAssets: function () {
-    GL.assetSelect = [];
-    for (var assetName in GL.assetnames) {
+    function mkAssetExistsObj (name) {
       var assetAlreadyExists = R.compose(
         R.not,
         R.isNil,
-        R.find(R.propEq('id', assetName))
+        R.find(R.propEq('id', name))
       )(GL.assets);
-      var hasCorrectType = typeof GL.assetSelect[assetName] === 'undefined' || typeof GL.assetSelect[assetName] === 'function';
 
-      GL.assetSelect[assetName] = hasCorrectType ? assetAlreadyExists : false;
+      return R.assoc(name, assetAlreadyExists, {});
     }
+
+    GL.assetSelect = R.compose(
+      R.map(mkAssetExistsObj),
+      R.keys
+    )(GL.assetnames);
   }
 };
 
@@ -81,5 +110,5 @@ function existingOrNewAssetEntry (assetName) {
     R.find(R.propEq('id', assetName))
   )(GL.assets);
 }
-function entryIsSelected (entry) { return GL.assetSelect[entry]; } // R.has...? R.hasIn???
+
 function initializeAsset (asset) { return function (entry) { return initAsset(entry, R.prop(entry, GL.assetmodes), asset); }; }
