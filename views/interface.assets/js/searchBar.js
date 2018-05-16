@@ -11,9 +11,8 @@ var tableHTMLStr = '<div class="table">' +
     '<div class="tbody">';
 
 var clearBtns = [
-  document.querySelector('.clearable__clear'),
-  document.querySelector('.manageBtnSave'),
-  document.querySelector('.manageBtnCancel')
+  document.querySelector('#manageAssetsBtn'),
+  document.querySelector('.clearable__clear')
 ];
 
 var clearBtnsStream = clearBtns

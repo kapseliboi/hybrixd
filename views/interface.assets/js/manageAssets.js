@@ -11,7 +11,6 @@ var manageAssets = {
   },
   changeManageButton: function (cb) {
     return function (element, assetID, active) {
-
       R.compose(
         updateGlobalAssetsAndRenderInDom,
         R.map(updateAsset)
@@ -23,7 +22,7 @@ var manageAssets = {
           R.keys
         )(a);
 
-        return R.equals(key, assetID)
+        return R.equals(key, assetID) // TODO: factor assetID up.
           ? R.assoc(key, active, {})
           : a;
       }
