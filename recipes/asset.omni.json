@@ -28,17 +28,18 @@
       "tran('.balance',data,2,1)",
       "stop(1,'Bad result!')",
       "find({'id':'$contract'},data,1,2)",
-      "tran('.value',data,2,1)",
+      "tran({value:'.value',in:'.pendingpos',out:'.pendingneg'},data,2,1)",
       "pass(0)",
       "time($cache,data)",
-      "form(data,$factor,'reduce')"
+      "form(parseInt(data.value)+parseInt(data.in)-parseInt(data.out),$factor,'reduce')"
     ],
     "push" : [
+      "stop(1,'NOT YET OPERATIONAL!')",
       "tran('.value',data,2,1)",
       "pass(0)",
       "time($cache,data)",
       "form(data,$factor,'reduce')",
-       "stop(1,'Not yet implemented!')"
+      "stop(1,'Not yet implemented!')"
     ],
     "factor" : [
       "pass('$factor')"
@@ -47,7 +48,7 @@
        "stop(1,'Not yet implemented!')"
     ],
     "contract" : [
-       "stop(1,'Not yet implemented!')"
+       "stop(0,'$contract')"
     ],
     "fee" : [
       "pass('$fee')"
