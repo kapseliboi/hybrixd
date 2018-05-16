@@ -87,7 +87,7 @@ toggleStar = function (assetID) {
   var isStarred = R.defaultTo(false, R.find(R.propEq('id', assetID, updatedGlobalAssets)));
   var starredForStorage = R.map(R.pickAll(['id', 'starred']), updatedGlobalAssets);
 
-  Storage.Set(userStorageKey('ff00-0034'), userEncode(starredForStorage));
+  Storage.Set(userStorageKey('ff00-0035'), userEncode(starredForStorage));
   U.updateGlobalAssets(updatedGlobalAssets);
   setStarredAssetClass(assetID, isStarred);
 };

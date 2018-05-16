@@ -54,7 +54,7 @@ var deterministicHashesResponseProcessStream = deterministicHashesStream
     })
     .map(function (modehashesResponse) { assets.modehashes = modehashesResponse.data; }); // TODO: MAKE PURE!!!!
 
-var storedUserDataStream = storage.Get_(userStorageKey('ff00-0034'))
+var storedUserDataStream = storage.Get_(userStorageKey('ff00-0035'))
     .map(userDecode)
     .map(storedOrDefaultUserData);
 
@@ -79,15 +79,7 @@ function main () {
   Valuations.getDollarPrices(function () { console.log('Fetched valuations.'); });
   intervals.pow = setInterval(POW.loopThroughProofOfWork, 120000); // once every two minutes, loop through proof-of-work queue
   // TODO: Separate data retrieval from DOM rendering. Dashboard should be rendered in any case.
-  initializationStream.subscribe(function (z) {
-    var globalAssets = R.compose(
-      R.map(R.merge({balance: { amount: 0, lastTx: 0 }})),
-      R.nth(0)
-    )(z);
-
-    U.updateGlobalAssets(globalAssets);
-  });
-
+  initializationStream.subscribe(initializeGlobalAssets);
   assetsDetailsStream.subscribe(function (assetDetails) {
     GL.initCount += 1; // HACK!
     GL.assets = R.reduce(U.mkUpdatedAssets(assetDetails), [], GL.assets);
@@ -135,14 +127,25 @@ function matchSymbolWithData (key, data) {
 
 // TODO: Make pure!!!
 function storedOrDefaultUserData (decodeUserData) {
-  var hasCorrectFormat = R.has('id', decodeUserData) && R.has('starred', decodeUserData);
   if (R.isNil(decodeUserData)) {
-    storage.Set(userStorageKey('ff00-0034'), userEncode(defaultAssetData));
+    storage.Set(userStorageKey('ff00-0035'), userEncode(defaultAssetData));
   }
 
-  return R.isNil(decodeUserData) && R.not(hasCorrectFormat)
-    ? defaultAssetData
-    : decodeUserData;
+  return R.compose(
+    R.unless(
+      R.all(R.allPass([R.has('id'), R.has('starred')])),
+      R.always(defaultAssetData)
+    ),
+    R.defaultTo(defaultAssetData)
+  )(decodeUserData);
+}
+
+function initializeGlobalAssets (assets) {
+  R.compose(
+    U.updateGlobalAssets,
+    R.map(R.merge({balance: { amount: 0, lastTx: 0 }})),
+    R.nth(0)
+  )(assets);
 }
 
 function fetchAssetsViews (args) { return function () { fetchview('interface.assets', args); }; }
