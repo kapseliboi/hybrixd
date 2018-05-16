@@ -78,9 +78,8 @@ var initializationStream = Rx.Observable
 function main () {
   Valuations.getDollarPrices();
   intervals.pow = setInterval(POW.loopThroughProofOfWork, 120000); // once every two minutes, loop through proof-of-work queue
-  // TODO: Separate data retrieval from DOM rendering. Dashboard should be rendered in any case.
   initializationStream.subscribe(initialize);
-  assetsDetailsStream.subscribe(updateAssetDetailsAndRenderDashboardView);
+  assetsDetailsStream.subscribe(updateAssetDetailsAndRenderDashboardView); // TODO: Separate data retrieval from DOM rendering. Dashboard should be rendered in any case.
 }
 
 // EFF ::

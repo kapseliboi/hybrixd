@@ -16,9 +16,8 @@ var clearBtns = [
   document.querySelector('.manageBtnCancel')
 ];
 
-var clearBtnsStream = clearBtns.map(function (elem) {
-  return Rx.Observable.fromEvent(elem, 'click');
-});
+var clearBtnsStream = clearBtns
+    .map(function (elem) { return Rx.Observable.fromEvent(elem, 'click'); });
 
 var searchAssetsStream = Rx.Observable
     .fromEvent(document.querySelector('#search-assets'), 'input')
@@ -74,7 +73,7 @@ function queryMatchesEntry (query) {
 
 clearSearchBarStream.subscribe();
 searchBarStream.subscribe(function (matchedEntries) {
-  var assetsHTMLStr = matchedEntries.reduce(mkSearchedAssetHTMLStr, '');
+  var assetsHTMLStr = R.reduce(mkSearchedAssetHTMLStr, '', matchedEntries);
   var output = tableHTMLStr + assetsHTMLStr + '</div></div>';
   document.querySelector('.data.manageAssets').innerHTML = output; // insert new data into DOM
 });
