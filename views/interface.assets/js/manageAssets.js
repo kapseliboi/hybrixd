@@ -25,7 +25,7 @@ var manageAssets = {
 
         return R.equals(key, assetID) // TODO: factor assetID up.
           ? R.assoc(key, active, {})
-        : a;
+          : a;
       }
 
       // EFF ::
@@ -90,7 +90,7 @@ function mkAssetExistsObj (name) {
 function idDoesNotExist (asset) {
   return R.compose(
     R.not,
-    R.any(R.propEq('id', asset.id))
+    R.any(R.propEq('id', R.prop('id', asset)))
   )(GL.assets);
 }
 

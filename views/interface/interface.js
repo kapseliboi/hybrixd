@@ -136,7 +136,7 @@ function storedOrDefaultUserData (decodeUserData) {
         R.has('id'),
         R.has('starred'),
         R.compose(R.not, R.isEmpty)
-  ]))(decodeUserData)
+  ]))(decodeUserData);
   return R.compose(
     R.unless(
       R.allPass([
