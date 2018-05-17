@@ -57,9 +57,6 @@ function exec(properties) {
 
   Object.assign(target, properties.target); // Overwrite candidate properties with explicitly defined target properties
 
-  console.log('Target log!: ')
-  console.log(target)
-
   var mode  = (typeof target.mode!=='undefined'?target.mode:null);
   var factor = (typeof target.factor !== 'undefined'?target.factor:8);
   var command = properties.command;
@@ -67,8 +64,6 @@ function exec(properties) {
   // set request to what command we are performing
   global.hybridd.proc[processID].request = properties.command;
   // initialization
-  console.log('Test line 1')
-  console.log(command)
   if(command[0]==='init') {
     // set up REST API connection
     if(typeof target.user !== 'undefined' && typeof target.pass !== 'undefined') {
@@ -78,7 +73,6 @@ function exec(properties) {
     subprocesses.push('logs(1,"module blockexplorer: initialized '+target.id+'")');
   } else {
     // handle standard cases here, and construct the sequential process list
-    console.log('Test line 2')
     switch(mode.split('.')[1]) {
     case 'blockr': // NB blockr has been depreciated, left here for reference
       switch(command[0]) {
@@ -127,10 +121,8 @@ function exec(properties) {
       }
       break;
     case 'cryptoid':
-      console.log('Test line 3')
       switch(properties.command[0]) {
       case 'balance':
-        console.log(command[1])
         subprocesses.push('logs(1,"test log message")');
         subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["?key=d8d21ccfe2fa&q=getbalance&a='+command[1]+'"]})');
         //subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["/addr/'+command[1]+'/unconfirmedBalance"]})');
@@ -138,7 +130,6 @@ function exec(properties) {
         subprocesses.push('stop( (isNaN(data[0])||isNaN(data[1])?1:0), fromInt((data[0]+data[1]),'+factor+') )');
         break;
       case 'unspent':
-        console.log('Test line 4')
         // example: https://blockexplorer.com/api/addr/[:addr]/utxo
         if(typeof command[1]!=='undefined') {
           subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["?key=d8d21ccfe2fa&q=unspent&active='+command[1]+'"]})');
