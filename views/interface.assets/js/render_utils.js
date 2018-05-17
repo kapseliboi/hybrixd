@@ -15,7 +15,7 @@ fillSend = function (assetID) {
     document.querySelector('#modal-send-target').value = '';
     document.querySelector('#modal-send-amount').value = '';
     document.querySelector('#action-send .modal-send-addressfrom').innerHTML = address;
-    document.querySelector('#action-send .modal-send-networkfee').innerHTML = formatFloat(fee) + ' ' + assetID.split('.')[0].toUpperCase();
+    document.querySelector('#action-send .modal-send-networkfee').innerHTML = formatFloat(fee) + ' ' + R.prop('fee-symbol', asset).toUpperCase();
     checkTx();
   }
 };
