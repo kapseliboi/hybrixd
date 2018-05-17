@@ -10,7 +10,7 @@
   "contract":"1",
   "host":"https://api.omniexplorer.info",
   "Xhost":"wss://www.omniwallet.org",
-  "cache":120000,
+  "cache":180000,
   "throttle":5,
   "quartz":{
     "init" : [
@@ -20,16 +20,16 @@
        "stop(1,'Not yet implemented!')"
     ],
     "unspent" : [
-      "func('blockexplorer','exec',{target:{symbol:'$fee-symbol'}, command:['unspent','$1','$2']})"
+      "func('blockexplorer','exec',{target:{symbol:'$fee-symbol'}, command:['unspent','$1','$fee']})"
     ],
     "balance" : [
-      "time(32000)",
+      "time(60000)",
       "curl('asset://$symbol','/v1/address/addr?addr=$1','POST','addr=$1',{'content-type':'application/x-www-form-urlencoded'})",
       "tran('.balance',data,2,1)",
       "stop(1,'Bad result!')",
       "find({'id':'$contract'},data,1,2)",
-      "tran({value:'.value',in:'.pendingpos',out:'.pendingneg'},data,2,1)",
-      "pass(0)",
+      "tran({value:'.value',in:'.pendingpos',out:'.pendingneg'},data,2,1,'0')",
+      "next(0,{value:'0',in:'0',out:'0'})",
       "time($cache,data)",
       "form(parseInt(data.value)+parseInt(data.in)-parseInt(data.out),$factor,'reduce')"
     ],
