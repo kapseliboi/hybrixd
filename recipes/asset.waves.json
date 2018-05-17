@@ -52,12 +52,16 @@
       "stop(1,'Transaction Failed! '+jstr(data))",
       "pass(data)"
     ],
-    "history" : [
-      "curl('asset://$symbol','/transactions/address/$1/limit/50]','GET')"
-    ],
     "contract" : [
       "pass('$contract')"
     ],
-    "unspent" : []
+    "unspent" : [],
+    "history" : [
+      "curl('$block-explorer-host','/transactions/address/$1/limit/50','GET')"
+    ],
+    "transaction" : [
+      "curl('$block-explorer-host','/transactions/info/$1','GET')"
+    ]
+
   }
 }
