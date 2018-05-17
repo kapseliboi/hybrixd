@@ -63,6 +63,7 @@ utils = {
       R.compose(
         R.assoc('icon', R.__, asset),
         mkIcon,
+        function (symbol) { return symbol.slice(symbol.indexOf('.') + 1); },
         R.prop('symbol')
       )
     )(asset);
