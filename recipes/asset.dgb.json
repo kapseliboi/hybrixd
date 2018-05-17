@@ -1,5 +1,5 @@
 {
-  "symbol":"dbg",
+  "symbol":"dgb",
   "name":"digibyte",
   "module":"quartz",
   "mode":"digibyte",
@@ -10,8 +10,8 @@
   "host":["http://127.0.0.1:14022/"],
   "cache":20000,
   "throttle":0.1,
-  "block-explorer-host": "https://chainz.cryptoid.info/dgb/",
   "pass": "d8d21ccfe2fa",
+  "block-explorer-host": "https://chainz.cryptoid.info/dgb/api.dws",
 
   "quartz":{
     "init" : [
@@ -23,12 +23,13 @@
       "logs(1,'module $symbol: '+(data?'connected':'failed connection')+' to host [$host]')"
     ],
     "unspent" : [
+      "logs(1, 'testoejfoiejfiowjef')",
       "func('blockexplorer','exec',{target:{symbol:'$symbol'}, command:['unspent','$1','$2']})"
     ],
      "balance" : [
       "test('$1',2,1,'$1')",
       "stop(1,'No source address')",
-      "curl('$block-explorer-host','/api.dws?key=$pass&q=getbalance&a=$1','GET')", 
+      "curl('$block-explorer-host','?key=$pass&q=getbalance&a=$1', 'GET', '',{Accept:'application/json','Content-Type':'application/json'})", 
       "test(data,2,1,data)",
       "stop(1,'No result!')",
       "time($cache,data)",
