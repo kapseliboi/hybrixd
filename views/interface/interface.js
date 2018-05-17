@@ -54,7 +54,8 @@ var deterministicHashesResponseProcessStream = deterministicHashesStream
       return Rx.Observable
         .fromPromise(hybriddReturnProcess(properties));
     })
-    .map(R.prop('data')); // VALIDATE?
+    .map(R.prop('data')) // VALIDATE?
+    .map(function (deterministicHashes) { assets.modehashes = deterministicHashes; }); // TODO: Make storedUserStream dependent on this stream!
 
 var storedUserDataStream = storage.Get_(userStorageKey('ff00-0035'))
     .map(userDecode)
@@ -68,7 +69,7 @@ var assetsDetailsStream = storedUserDataStream
         R.prop('id')
       )(asset);
     })
-    .map(addIcon)
+    .map(addIcon);
 
 var initializationStream = Rx.Observable
     .combineLatest(
@@ -86,15 +87,13 @@ function main () {
 
 // EFF ::
 function initialize (z) {
-    var globalAssets = R.nth(0, z);
-    var assetsModesAndNames = R.nth(1, z);
-    var deterministicHashes = R.nth(2, z);
+  var globalAssets = R.nth(0, z);
+  var assetsModesAndNames = R.nth(1, z);
 
-    GL.assetnames = mkAssetData(assetsModesAndNames, 'name');
-    GL.assetmodes = mkAssetData(assetsModesAndNames, 'mode');
-    assets.modehashes = deterministicHashes;
-    initializeGlobalAssets(globalAssets);
-    Storage.Set(userStorageKey('ff00-0035'), userEncode(globalAssets));
+  GL.assetnames = mkAssetData(assetsModesAndNames, 'name');
+  GL.assetmodes = mkAssetData(assetsModesAndNames, 'mode');
+  initializeGlobalAssets(globalAssets);
+  Storage.Set(userStorageKey('ff00-0035'), userEncode(globalAssets));
 }
 
 // EFF ::
@@ -134,11 +133,6 @@ function matchSymbolWithData (key, data) {
 }
 
 function storedOrDefaultUserData (decodeUserData) {
-  var foo = R.all(R.allPass([
-        R.has('id'),
-        R.has('starred'),
-        R.compose(R.not, R.isEmpty)
-  ]))(decodeUserData);
   return R.compose(
     R.unless(
       R.allPass([
@@ -162,10 +156,13 @@ function initializeGlobalAssets (assets) {
 }
 
 function addIcon (asset) {
-  return R.compose(
-    R.assoc('icon', R.__, asset),
-    U.mkIcon,
-    R.prop('symbol')
+  return R.when(
+    R.has('symbol'),
+    R.compose(
+      R.assoc('icon', R.__, asset),
+      U.mkIcon,
+      R.prop('symbol')
+    )
   )(asset);
 }
 
