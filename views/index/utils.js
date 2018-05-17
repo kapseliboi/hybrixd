@@ -74,7 +74,7 @@ utils = {
   getTargetValue: function (e) {
     return e.target.value;
   },
-  splitAtDot: function  (s) {
+  splitAtDot: function (s) {
     return s.split('.');
   },
   mkUpdatedAssets: function (details) {
@@ -259,4 +259,12 @@ mkIcon = function (symbol) {
   return R.has(symbol, R.prop('svgs', Icons))
     ? R.path(['svgs', symbol], Icons)
     : mkSvgIcon(symbol);
-}
+};
+
+// TODO: Mk into Utils fn, not prototype fn?
+String.prototype.mapReplace = function (map) {
+  var regex = [];
+  for(var key in map)
+    regex.push(key.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&'));
+  return this.replace(new RegExp(regex.join('|'), 'g'), R.flip(R.prop)(map));
+};

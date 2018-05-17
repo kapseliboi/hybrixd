@@ -3,7 +3,7 @@ var C = commonUtils;
 var A = animations;
 var S = loginInputStreams;
 var V = validations;
-var Utils = utils;
+var U = utils;
 
 var path = 'api';
 
@@ -37,6 +37,14 @@ var userSubmitStream = Rx.Observable
 var validatedUserCredentialsStream = userSubmitStream
     .withLatestFrom(S.credentialsStream)
     .map(mkCredentialsObj)
+    .map(R.map(function (v) {
+      return v.mapReplace({
+        '0': 'O',
+        '1': 'I',
+        '8': 'B',
+        '9': 'G'
+      });
+    }))
     .filter(hasValidCredentials);
 
 function createSessionStep0UrlAndData (z) {
@@ -118,7 +126,7 @@ function setSessionDataInElement (sessionHex) { document.querySelector('#session
 function hasValidCredentials (credentials) { return V.validateCredentials(R.prop('userID', credentials), R.prop('password', credentials)); }
 function mkCredentialsObj (z) { return { userID: R.path(['1', '0'], z), password: R.path(['1', '1'], z) }; }
 
-Utils.documentReady(function () {
+U.documentReady(function () {
   document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
   maybeOpenNewWalletModal(location);
   keyDownOnUserIDStream.subscribe(function (_) { document.querySelector('#inputPasscode').focus(); });
