@@ -150,7 +150,6 @@ utils = {
         var numbersFormatted = R.take(maxLen, numbers);
         return '<span class="mini-balance">' + zeros + '</span>' + numbersFormatted + emptyOrBalanceEndHtmlStr;
       }
-
     }
 
     function mkBalance (amount) {
@@ -160,7 +159,7 @@ utils = {
           R.always('0'),
           R.curry(regularOrZeroedBalance)(maxLengthSignificantDigits)
         ),
-        function (n) { return n.toFixed(10); },
+        function (n) { return n.toFixed(21); },
         toInt
       )(amount);
     }
