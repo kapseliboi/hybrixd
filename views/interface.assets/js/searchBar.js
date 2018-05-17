@@ -1,5 +1,6 @@
 var U = utils;
 var M = manageAssets;
+var Icons = black;
 
 var tableHTMLStr = '<div class="table">' +
     '<div class="thead">' +
@@ -11,14 +12,12 @@ var tableHTMLStr = '<div class="table">' +
     '<div class="tbody">';
 
 var clearBtns = [
-  document.querySelector('.clearable__clear'),
-  document.querySelector('.manageBtnSave'),
-  document.querySelector('.manageBtnCancel')
+  document.querySelector('#manageAssetsBtn'),
+  document.querySelector('.clearable__clear')
 ];
 
-var clearBtnsStream = clearBtns.map(function (elem) {
-  return Rx.Observable.fromEvent(elem, 'click');
-});
+var clearBtnsStream = clearBtns
+    .map(function (elem) { return Rx.Observable.fromEvent(elem, 'click'); });
 
 var searchAssetsStream = Rx.Observable
     .fromEvent(document.querySelector('#search-assets'), 'input')
@@ -47,7 +46,7 @@ var clearSearchBarStream = Rx.Observable
 
 function mkSearchedAssetHTMLStr (acc, entry) {
   var symbolName = entry.slice(entry.indexOf('.') + 1);
-  var icon = (symbolName in black.svgs) ? black.svgs[symbolName] : mkSvgIcon(symbolName);
+  var icon = U.mkIcon(symbolName);
   var entryExists = R.any(R.propEq('id', entry), GL.assets);
   var element = entry.replace('.', '-');
 
@@ -74,7 +73,7 @@ function queryMatchesEntry (query) {
 
 clearSearchBarStream.subscribe();
 searchBarStream.subscribe(function (matchedEntries) {
-  var assetsHTMLStr = matchedEntries.reduce(mkSearchedAssetHTMLStr, '');
+  var assetsHTMLStr = R.reduce(mkSearchedAssetHTMLStr, '', matchedEntries);
   var output = tableHTMLStr + assetsHTMLStr + '</div></div>';
   document.querySelector('.data.manageAssets').innerHTML = output; // insert new data into DOM
 });

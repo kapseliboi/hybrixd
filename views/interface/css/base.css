@@ -765,6 +765,7 @@ p {
 }
 
 .content .table .asset {
+  position: relative;
   text-transform: uppercase;
   font-size: 1.167em;
   font-weight: 700;
@@ -772,7 +773,7 @@ p {
 }
 
 .content .table .icon {
-  display:inline-block;
+  display: inline-block;
   vertical-align: middle;
   padding-right: 15px;
   margin-top: -3px;

@@ -12,6 +12,8 @@
 
 var POW = proofOfWork;
 var Valuations = valuations;
+var Storage = storage;
+var Icons = black;
 var U = utils;
 
 var path = 'api';
@@ -40,7 +42,7 @@ var defaultAssetData = [
 
 var assetsModesAndNamesStream = Rx.Observable
     .fromPromise(U.fetchDataFromUrl(assetModesUrl, 'Error retrieving asset details.'))
-    .map(setAssetsData);
+    .map(decryptData);
 
 var deterministicHashesStream = Rx.Observable
     .fromPromise(hybriddcall({r: '/s/deterministic/hashes', z: true}))
@@ -52,11 +54,11 @@ var deterministicHashesResponseProcessStream = deterministicHashesStream
       return Rx.Observable
         .fromPromise(hybriddReturnProcess(properties));
     })
-    .map(function (modehashesResponse) { assets.modehashes = modehashesResponse.data; }); // TODO: MAKE PURE!!!!
+    .map(R.prop('data')); // VALIDATE?
 
-var storedUserDataStream = storage.Get_(userStorageKey('ff00-0034'))
+var storedUserDataStream = storage.Get_(userStorageKey('ff00-0035'))
     .map(userDecode)
-    .map(storedOrDefaultUserData);
+    .map(storedOrDefaultUserData); // TODO: make pure!
 
 var assetsDetailsStream = storedUserDataStream
     .flatMap(a => a) // Flatten Array structure...
@@ -65,7 +67,8 @@ var assetsDetailsStream = storedUserDataStream
         initializeAsset(asset),
         R.prop('id')
       )(asset);
-    });
+    })
+    .map(addIcon)
 
 var initializationStream = Rx.Observable
     .combineLatest(
@@ -74,21 +77,28 @@ var initializationStream = Rx.Observable
       deterministicHashesResponseProcessStream
     );
 
-// All synchronous dependencies. Make async with Streamzzzz
 function main () {
-  Valuations.getDollarPrices(function () { console.log('Fetched valuations.'); });
+  Valuations.getDollarPrices();
   intervals.pow = setInterval(POW.loopThroughProofOfWork, 120000); // once every two minutes, loop through proof-of-work queue
-  // TODO: Separate data retrieval from DOM rendering. Dashboard should be rendered in any case.
-  initializationStream.subscribe(function (z) {
-    var globalAssets = R.compose(
-      R.map(R.merge({balance: { amount: 0, lastTx: 0 }})),
-      R.nth(0)
-    )(z);
+  initializationStream.subscribe(initialize);
+  assetsDetailsStream.subscribe(updateAssetDetailsAndRenderDashboardView); // TODO: Separate data retrieval from DOM rendering. Dashboard should be rendered in any case.
+}
 
-    U.updateGlobalAssets(globalAssets);
-  });
+// EFF ::
+function initialize (z) {
+    var globalAssets = R.nth(0, z);
+    var assetsModesAndNames = R.nth(1, z);
+    var deterministicHashes = R.nth(2, z);
 
-  assetsDetailsStream.subscribe(function (assetDetails) {
+    GL.assetnames = mkAssetData(assetsModesAndNames, 'name');
+    GL.assetmodes = mkAssetData(assetsModesAndNames, 'mode');
+    assets.modehashes = deterministicHashes;
+    initializeGlobalAssets(globalAssets);
+    Storage.Set(userStorageKey('ff00-0035'), userEncode(globalAssets));
+}
+
+// EFF ::
+function updateAssetDetailsAndRenderDashboardView (assetDetails) {
     GL.initCount += 1; // HACK!
     GL.assets = R.reduce(U.mkUpdatedAssets(assetDetails), [], GL.assets);
 
@@ -99,22 +109,12 @@ function main () {
 
       fetchview('interface.dashboard', args); // UNTIL VIEW IS RENDERED SEPARATELY:
     }
-  });
-}
+  }
 
 function initializeAsset (asset) {
   return function (entry) {
     return initAsset(entry, GL.assetmodes[entry], asset);
   };
-}
-
-function setAssetsData (assetModesData) {
-  var decryptedData = zchan_obj(GL.usercrypto, GL.cur_step, assetModesData);
-
-  GL.assetnames = mkAssetData(decryptedData, 'name');
-  GL.assetmodes = mkAssetData(decryptedData, 'mode');
-
-  return true;
 }
 
 function mkAssetData (data, key) {
@@ -133,18 +133,43 @@ function matchSymbolWithData (key, data) {
   );
 }
 
-// TODO: Make pure!!!
 function storedOrDefaultUserData (decodeUserData) {
-  var hasCorrectFormat = R.has('id', decodeUserData) && R.has('starred', decodeUserData);
-  if (R.isNil(decodeUserData)) {
-    storage.Set(userStorageKey('ff00-0034'), userEncode(defaultAssetData));
-  }
-
-  return R.isNil(decodeUserData) && R.not(hasCorrectFormat)
-    ? defaultAssetData
-    : decodeUserData;
+  var foo = R.all(R.allPass([
+        R.has('id'),
+        R.has('starred'),
+        R.compose(R.not, R.isEmpty)
+  ]))(decodeUserData);
+  return R.compose(
+    R.unless(
+      R.allPass([
+        R.all(R.allPass([
+          R.has('id'),
+          R.has('starred')
+        ])),
+        R.compose(R.not, R.isEmpty)
+      ]),
+      R.always(defaultAssetData)
+    ),
+    R.defaultTo(defaultAssetData)
+  )(decodeUserData);
 }
 
+function initializeGlobalAssets (assets) {
+  R.compose(
+    U.updateGlobalAssets,
+    R.map(R.merge({balance: { amount: 0, lastTx: 0 }}))
+  )(assets);
+}
+
+function addIcon (asset) {
+  return R.compose(
+    R.assoc('icon', R.__, asset),
+    U.mkIcon,
+    R.prop('symbol')
+  )(asset);
+}
+
+function decryptData (d) { return R.curry(zchan_obj)(GL.usercrypto)(GL.cur_step)(d); }
 function fetchAssetsViews (args) { return function () { fetchview('interface.assets', args); }; }
 
 main();
