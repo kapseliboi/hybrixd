@@ -1,4 +1,5 @@
 var Storage = storage;
+var U = utils;
 
 initAsset = function (entry, fullmode, init) {
   var mode = fullmode.split('.')[0];
@@ -6,24 +7,14 @@ initAsset = function (entry, fullmode, init) {
   var hashMode = R.path(['modehashes', mode], assets);
   // if the deterministic code is already cached client-side
   if (typeof hashMode !== 'undefined') {
-    var modeHashStream = Storage.Get_(assets.modehashes[mode] + '-LOCAL');
+    var modeHash = assets.modehashes[mode];
+    var modeHashStream = Storage.Get_(modeHash + '-LOCAL');
     return modeHashStream
       .flatMap(getDeterministicData(entry, mode, submode, fullmode, init));
   } // else ?????
 };
 
-// activate (deterministic) code from a string
-activate = function (code) {
-  if (typeof code === 'string') {
-    eval('var deterministic = (function(){})(); ' + code); // interpret deterministic library into an object
-    return deterministic;
-  } else {
-    console.log('Cannot activate deterministic code!');
-    return function () {};
-  }
-};
-
-function mkAssetDetailsStream (init, dcode, submode, entry, fullmode) {
+function mkAssetDetailsStream (init, dcode, submode, entry, fullmode, dterm) {
   var url = 'a/' + entry + '/details/';
 
   var assetDetailsStream = Rx.Observable
@@ -43,11 +34,11 @@ function mkAssetDetailsStream (init, dcode, submode, entry, fullmode) {
       .retryWhen(function (errors) { return errors.delay(500); });
 
   return assetDetailsResponseStream
-    .map(updateGlobalAssets(init, dcode, entry, submode, fullmode));
+    .map(updateGlobalAssets(init, dcode, entry, submode, fullmode, dterm));
 }
 
 function mkDeterministicDetails (init, dcode, entry, submode, mode, assetDetailsResponse) {
-  var deterministic = activate(LZString.decompressFromEncodedURIComponent(dcode));
+  var deterministic = U.activate(LZString.decompressFromEncodedURIComponent(dcode));
   var keyGenBase = R.path(['data', 'keygen-base'], assetDetailsResponse);
   var seed = deterministicSeedGenerator(keyGenBase);
   var keys = deterministic.keys({symbol: entry, seed, mode: submode});
@@ -77,20 +68,20 @@ function initializeDetermisticAndMkDetailsStream (dcode, submode, entry, fullmod
   return mkAssetDetailsStream(init, dcode, submode, entry, fullmode);
 }
 
-function setStorageAndMkAssetDetails (init, mode, submode, entry, fullmode) {
+function setStorageAndMkAssetDetails (init, mode, submode, entry, fullmode, dcode) {
   return function (deterministicCodeResponse) {
     var err = R.prop('error', deterministicCodeResponse);
     if (typeof err !== 'undefined' && R.equals(err, 0)) {
-      var deterministic = deterministic = activate(LZString.decompressFromEncodedURIComponent(deterministicCodeResponse.data)); // decompress and make able to run the deterministic routine
-      Storage.Set(assets.modehashes[mode] + '-LOCAL', R.prop('data', deterministicCodeResponse));
-      return mkAssetDetailsStream(init, deterministic, submode, entry, fullmode);
+      var dcode = R.prop('data', deterministicCodeResponse);
+      Storage.Set(assets.modehashes[mode] + '-LOCAL', dcode);
+      return mkAssetDetailsStream(init, dcode, submode, entry, fullmode);
     } else {
       return Rx.Observable.of({error: 'Could not set storage.'}); // TODO: Catch error properly!
     }
   };
 }
 
-function reinitializeMode (init, mode, submode, entry, fullmode) {
+function reinitializeMode (init, mode, submode, entry, fullmode, dcode) {
   var url = 's/deterministic/code/' + mode;
   var modeStream = Rx.Observable.fromPromise(hybriddcall({r: url, z: 0}));
   var modeResponseStream = modeStream
@@ -103,7 +94,7 @@ function reinitializeMode (init, mode, submode, entry, fullmode) {
         return processData;
       })
       .retryWhen(function (errors) { return errors.delay(1000); })
-      .map(setStorageAndMkAssetDetails(init, mode, submode, entry, fullmode));
+      .flatMap(setStorageAndMkAssetDetails(init, mode, submode, entry, fullmode));
 
   Storage.Del(assets.modehashes[mode] + '-LOCAL'); // TODO: Make pure!
   return modeResponseStream;

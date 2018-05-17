@@ -57,7 +57,7 @@ function render (assets) {
 function main (args) {
   var starredAssets = R.filter(R.propEq('starred', true), GL.assets);
 
-  document.querySelector('#userID').innerHTML = args.userid; // set user ID field in top bar
+  document.querySelector('#userID').innerHTML = R.prop('userid', args); // set user ID field in top bar
   U.setViewTab('dashboard'); // top menu UI change --> Sets element to active class
   U.documentReady(render(starredAssets));
 }

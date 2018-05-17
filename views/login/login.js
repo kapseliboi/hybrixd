@@ -18,6 +18,8 @@ session_step = 1; // Session step number at the end of login
 // - Remove global session_step --> Make into incremental counter (save in state)
 // - Remove Nacl as a global and save in some state
 // - Put Ctrl-S event in Stream
+// - Factor 'path' up
+// - Fix HACK for priority queue
 
 var keyDownOnUserIDStream = S.mkInputStream('#inputUserID');
 var keyDownOnPasswordStream = S.mkInputStream('#inputPasscode');
@@ -26,98 +28,23 @@ var loginBtnStream = Rx.Observable
     .fromEvent(document.querySelector('#loginbutton'), 'click')
     .filter(btnIsNotDisabled);
 
-var validatedUserCredentialsStream = Rx.Observable
+var userSubmitStream = Rx.Observable
     .merge(
       loginBtnStream,
       keyDownOnPasswordStream
-    )
+    );
+
+var validatedUserCredentialsStream = userSubmitStream
     .withLatestFrom(S.credentialsStream)
     .map(mkCredentialsObj)
     .filter(hasValidCredentials);
-
-var doRenderAndAnimationStuffStream =
-    validatedUserCredentialsStream
-    .map(function (_) {
-      setCSSTorenderButtonsToDisabled();
-      return A.startLoginAnimation();
-    });
-
-var sessionStepStream = Rx.Observable.of(0); // Make incremental with every call
-var randomNonceStream = Rx.Observable.of(nacl.crypto_box_random_nonce());
-
-var generatedKeysStream =
-    validatedUserCredentialsStream
-    .map(mkSessionKeys);
-
-var initialSessionDataStream = Rx.Observable
-    .combineLatest(
-      randomNonceStream,
-      sessionStepStream,
-      generatedKeysStream,
-      doRenderAndAnimationStuffStream
-    )
-    .map(createSessionStep0UrlAndData);
-
-var postSessionStep0DataStream =
-    initialSessionDataStream
-    .flatMap(initialSessionData =>
-             Rx.Observable.fromPromise(
-               S.mkSessionStepFetchPromise(initialSessionData, 'postSessionStep0Data')
-             ));
-
-var processSessionStep0ReplyStream = Rx.Observable
-    .zip(
-      postSessionStep0DataStream,
-      sessionStepStream // SESSIONSTEP NEEDS TO BE INCREMENTED HERE
-    )
-    .filter(R.compose(
-      nonceHasCorrectLength,
-      R.prop('nonce1'),
-      R.nth(0)
-    ))
-    .map(mkPostSessionStep1Url);
-
-var postSessionStep1DataStream =
-    processSessionStep0ReplyStream
-    .flatMap(function (sessionData) {
-      return Rx.Observable
-        .fromPromise(
-          S.mkSessionStepFetchPromise(sessionData, 'postSessionStep1Data'));
-    });
-
-var processSession1StepDataStream = Rx.Observable
-    .combineLatest(
-      postSessionStep1DataStream,
-      randomNonceStream,
-      generatedKeysStream
-    )
-    .map(mkSessionHexAndNonce);
-
-var fetchViewStream = Rx.Observable
-    .combineLatest(
-      generatedKeysStream,
-      randomNonceStream,
-      validatedUserCredentialsStream,
-      processSession1StepDataStream,
-      doRenderAndAnimationStuffStream
-    )
-    .map(function (z) {
-      var animationDisposable = R.nth(4, z);
-
-      A.stopLoginAnimation(animationDisposable);
-
-      fetchview('interface', {
-        user_keys: R.nth(0, z),
-        nonce: R.path(['3', 'current_nonce'], z),
-        userid: R.path(['2', 'userID'], z)
-      });
-    }); // Move fetchview to subscribe and use bufferCount
 
 function createSessionStep0UrlAndData (z) {
   var nonce = R.nth(0, z);
   var sessionStep = R.nth(1, z);
   var initialSessionData = C.generateInitialSessionData(nonce);
   return {
+    // TODO: Factor 'path' up
     url: path + 'x/' + R.prop('session_hexsign', initialSessionData) + '/' + sessionStep,
     initialSessionData
   };
@@ -140,10 +67,10 @@ function mkPostSessionStep1Url (z) {
   var nonce1 = R.path(['0', 'nonce1'], z);
   var sessionStep = z[1] + 1; // NOW SETTING SESSION STEP MANUALLY.....
   var initialSessionData = R.path(['0', 'initialSessionData'], z);
-  var sessionStep1Data = C.generateSecondarySessionData(nonce1, initialSessionData.session_hexkey, initialSessionData.session_signpair.signSk);
+  var sessionStep1Data = C.generateSecondarySessionData(nonce1, R.prop('session_hexkey', initialSessionData), R.path(['session_signpair', 'signSk'], initialSessionData));
 
   return {
-    url: path + 'x/' + R.prop('session_hexsign', initialSessionData) + '/' + sessionStep + '/' + sessionStep1Data.crypt_hex,
+    url: path + 'x/' + R.prop('session_hexsign', initialSessionData) + '/' + sessionStep + '/' + R.prop('crypt_hex', sessionStep1Data),
     initialSessionData,
     secondarySessionData: sessionStep1Data
   };
@@ -178,7 +105,7 @@ function maybeOpenNewWalletModal (location) {
   if (location.href.indexOf('#') !== -1) {
     var locationHref = location.href.substr(location.href.indexOf('#'));
     if (locationHref === '#new') {
-      PRNG.seeder.restart();
+      PRNG.seeder.restart(); // As found in: newaccount_b.js
       document.getElementById('newaccountmodal').style.display = 'block';
     }
   }
@@ -195,5 +122,80 @@ Utils.documentReady(function () {
   document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
   maybeOpenNewWalletModal(location);
   keyDownOnUserIDStream.subscribe(function (_) { document.querySelector('#inputPasscode').focus(); });
-  fetchViewStream.subscribe();
+  validatedUserCredentialsStream.subscribe(function (userCredentials) {
+    var validatedUserCredentialsStream_ = Rx.Observable.of(userCredentials);
+
+    var generatedKeysStream =
+        validatedUserCredentialsStream_
+        .map(mkSessionKeys);
+
+    var sessionStepStream = Rx.Observable.of(0); // Make incremental with every call
+    var randomNonceStream = Rx.Observable.of(nacl.crypto_box_random_nonce());
+
+    var initialSessionDataStream = Rx.Observable
+        .combineLatest(
+          randomNonceStream,
+          sessionStepStream,
+          generatedKeysStream
+        )
+        .map(createSessionStep0UrlAndData);
+
+    var postSessionStep0DataStream =
+        initialSessionDataStream
+        .flatMap(function (initialSessionData) {
+          return Rx.Observable.fromPromise(
+            S.mkSessionStepFetchPromise(initialSessionData, 'postSessionStep0Data')
+          );
+        });
+
+    var processSessionStep0ReplyStream = Rx.Observable
+        .zip(
+          postSessionStep0DataStream,
+          sessionStepStream // SESSIONSTEP NEEDS TO BE INCREMENTED HERE. Now gets incremented in mkPostSessionStep1Url
+        )
+        .filter(R.compose(
+          nonceHasCorrectLength,
+          R.prop('nonce1'),
+          R.nth(0)
+        ))
+        .map(mkPostSessionStep1Url);
+
+    var postSessionStep1DataStream =
+        processSessionStep0ReplyStream
+        .flatMap(function (sessionData) {
+          return Rx.Observable
+            .fromPromise(
+              S.mkSessionStepFetchPromise(sessionData, 'postSessionStep1Data'));
+        });
+
+    var processSession1StepDataStream = Rx.Observable
+        .combineLatest(
+          postSessionStep1DataStream,
+          randomNonceStream,
+          generatedKeysStream
+        )
+        .map(mkSessionHexAndNonce);
+
+    var fetchViewStream = Rx.Observable
+        .combineLatest(
+          generatedKeysStream,
+          randomNonceStream,
+          validatedUserCredentialsStream_,
+          processSession1StepDataStream
+        )
+        .map(function (z) {
+          fetchview('interface', {
+            user_keys: R.nth(0, z),
+            nonce: R.path(['3', 'current_nonce'], z),
+            userid: R.path(['2', 'userID'], z)
+          });
+        });
+
+    A.startLoginAnimation();
+    setCSSTorenderButtonsToDisabled();
+    // HACK! :( So that CSS gets rendered immediately and user gets feedback right away.
+    setTimeout(function () {
+      fetchViewStream.subscribe();
+    }, 500);
+  });
 });

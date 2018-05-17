@@ -36,13 +36,27 @@ function sendTransfer () {
     loadSpinner();
     var symbol = document.querySelector('#action-send .modal-send-currency').getAttribute('asset');
     var asset = R.find(R.propEq('id', symbol), GL.assets);
+    var globalAssets = GL.assets; // TODO: Factor up
+    var modeHashes = R.prop('modehashes', assets); // TODO: Factor up
     sendTransaction({
       element: '.assets-main > .data .balance-' + symbol.replace(/\./g, '-'),
       asset,
       amount: Number(document.querySelector('#modal-send-amount').value.replace(/, /g, '.')), // Streamify!
       source: String(document.querySelector('#action-send .modal-send-addressfrom').innerHTML).trim(), // Streamify!
       target: String(document.querySelector('#modal-send-target').value.trim()) // Streamify!
-    });
+    }, globalAssets, modeHashes, hideModal, alertError);
+  }
+
+  function hideModal (data) {
+    UItransform.txStop();
+    UItransform.txHideModal();
+    console.log(data);
+  }
+
+  function alertError (err) {
+    UItransform.txStop();
+    alert('Error: ' + err);
+    console.log("err = ", err);
   }
 }
 
@@ -73,7 +87,7 @@ toggleStar = function (assetID) {
   var isStarred = R.defaultTo(false, R.find(R.propEq('id', assetID, updatedGlobalAssets)));
   var starredForStorage = R.map(R.pickAll(['id', 'starred']), updatedGlobalAssets);
 
-  Storage.Set(userStorageKey('ff00-0034'), userEncode(starredForStorage));
+  Storage.Set(userStorageKey('ff00-0035'), userEncode(starredForStorage));
   U.updateGlobalAssets(updatedGlobalAssets);
   setStarredAssetClass(assetID, isStarred);
 };
@@ -112,7 +126,7 @@ function getNewMarketPrices () {
     .interval(5000);
 
   dollarPriceStream.subscribe(function (_) {
-    Valuations.getDollarPrices(() => {});
+    Valuations.getDollarPrices();
   });
 }
 

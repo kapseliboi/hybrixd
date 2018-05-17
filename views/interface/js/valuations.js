@@ -1,13 +1,12 @@
 var fetch_ = fetch;
 
 valuations = {
-  getDollarPrices: function (cb) {
+  getDollarPrices: function () {
     var url = 'https://api.coinmarketcap.com/v1/ticker/?limit=0';
     var valuationsStream = Rx.Observable.fromPromise(U.fetchDataFromUrl(url, 'Could not fetch valuations.'));
 
     valuationsStream.subscribe(function (coinMarketCapData) {
       GL.coinMarketCapTickers = coinMarketCapData;
-      cb();
     });
   },
   renderDollarPrice: function (symbolName, amount) {

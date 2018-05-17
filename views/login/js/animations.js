@@ -14,7 +14,7 @@ var blinkAnimationStream = Rx.Observable
     .map(function (_) { blink('arc0'); });
 
 var rotateLoginStream = Rx.Observable
-    .interval(1500)
+    .interval(1000)
     .startWith(0)
     .map(R.compose(
       rotateLogin,
@@ -22,7 +22,7 @@ var rotateLoginStream = Rx.Observable
     ));
 
 var dialLoginStream = Rx.Observable
-    .interval(1500)
+    .interval(1000)
     .startWith(0)
     .map(R.compose(
       dialLogin,
