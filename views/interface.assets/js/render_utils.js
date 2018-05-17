@@ -7,11 +7,11 @@ fillSend = function (assetID) {
   var fee = R.prop('fee', asset);
   if (R.not(R.isNil(balance)) && balance !== '?') {
     var spendable = !isToken(assetID) ? toInt(balance).minus(toInt(fee)) : toInt(balance);
-
     if (spendable < 0) { spendable = 0; }
+    var fixedSpendable = spendable.toFixed(21).replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/, '$1');
     document.querySelector('#action-send .modal-send-currency').innerHTML = assetID.toUpperCase();
     document.querySelector('#action-send .modal-send-currency').setAttribute('asset', assetID);
-    document.querySelector('#action-send .modal-send-balance').innerHTML = formatFloat(spendable);
+    document.querySelector('#action-send .modal-send-balance').innerHTML = fixedSpendable;
     document.querySelector('#modal-send-target').value = '';
     document.querySelector('#modal-send-amount').value = '';
     document.querySelector('#action-send .modal-send-addressfrom').innerHTML = address;
