@@ -46,7 +46,7 @@ var clearSearchBarStream = Rx.Observable
 
 function mkSearchedAssetHTMLStr (acc, entry) {
   var symbolName = entry.slice(entry.indexOf('.') + 1);
-  var icon = U.mkIcon(symbolName);
+  var icon = mkIcon(symbolName);
   var entryExists = R.any(R.propEq('id', entry), GL.assets);
   var element = entry.replace('.', '-');
 

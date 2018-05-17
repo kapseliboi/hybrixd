@@ -50,6 +50,7 @@ var manageAssets = {
               R.prop('id')
             )(asset);
           })
+          .map(U.addIcon)
           .bufferCount(R.length(newAssetsToInitialize));
 
       assetsDetailsStream.subscribe(assetsDetails => {
@@ -95,7 +96,7 @@ function idDoesNotExist (asset) {
 }
 
 function mkNewActiveAssets (names) {
-  R.compose(
+  return R.compose(
     R.map(existingOrNewAssetEntry),
     R.filter(assetIsSelected),
     R.keys
