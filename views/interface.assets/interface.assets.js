@@ -54,9 +54,11 @@ function sendTransfer () {
   }
 
   function alertError (err) {
-    UItransform.txStop();
-    alert('Error: ' + err);
-    console.log("err = ", err);
+    if (err !== 'Handling in deterministic.') {
+      UItransform.txStop();
+      alert('Error: ' + err);
+      console.log('err = ', err);
+    }
   }
 }
 

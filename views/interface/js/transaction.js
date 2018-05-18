@@ -56,8 +56,9 @@ function getDeterministicData (z) {
 function getDeterministicTransactionData (z) {
   var unspent = R.prop('data', R.nth(0, z));
   var transactionData = R.nth(2, z);
-  var deterministic_ = R.nth(4, z);
+  var deterministic = R.nth(4, z);
   var factor = R.path(['asset', 'factor'], transactionData);
+  var assetID = R.path(['asset', 'id'], transactionData);
 
   var data = {
     mode: R.path(['asset', 'mode'], transactionData).split('.')[1],
@@ -73,10 +74,10 @@ function getDeterministicTransactionData (z) {
     unspent
   };
 
-  var checkTransaction = deterministic_.transaction(data);
+  var checkTransaction = deterministic.transaction(data, handlePushInDeterministic(assetID));
 
   if (R.isNil(checkTransaction)) {
-    throw 'Sorry, the transaction could not be generated! Check if you have entered the right address.';
+    throw 'Handling in deterministic.';
   } else {
     return [checkTransaction, R.path(['asset', 'symbol'], transactionData)];
   }
@@ -106,6 +107,40 @@ function handleTransactionPushResult (res) {
     throw R.prop('data', res);
   } else {
     throw 'The transaction could not be sent by the hybridd node! Please try again.';
+  }
+}
+
+function handlePushInDeterministic (assetID) {
+  return function (txData) {
+    var H = hybridd; // TODO: Factor up. Can't now, smt's up with dependency order.
+    var url = 'a/' + assetID + '/push/' + txData;
+    var pushStream = H.mkHybriddCallStream(url)
+        .map(function (processData) {
+          var isProcessInProgress = R.isNil(R.prop('data', processData)) &&
+                                    R.equals(R.prop('error', processData), 0);
+          if (isProcessInProgress) throw processData;
+          return processData;
+        })
+        .retryWhen(function (errors) { return errors.delay(500); });
+
+    pushStream.subscribe(function (processResponse) {
+      var processData = R.prop('data', processResponse);
+      var dataIsValid = R.not(R.isNil(processData)) && R.equals(R.prop('error', processResponse), 0);
+      if (dataIsValid) {
+        // UItransform.deductBalance(p.element, p.balance);
+        setTimeout(function () {
+          UItransform.txStop();
+          UItransform.txHideModal();
+        }, 1000);
+        // push function returns TXID
+        logger('Node sent transaction ID: ' + processData);
+      } else {
+        UItransform.txStop();
+        // UItransform.setBalance(p.element,p.balorig);
+        logger('Error sending transaction: ' + processData);
+        alert('<br>Sorry! The transaction did not work.<br><br><br>This is the error returned:<br><br>' + processData + '<br>');
+      }
+    });
   }
 }
 
