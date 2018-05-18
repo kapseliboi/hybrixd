@@ -19,8 +19,12 @@ UItransform = {
     document.querySelector('#action-send').style.opacity = 1;
     $('#action-send').modal('hide');
   },
+  foo: function (assets) { renderBalances(assets); },
   setBalance: function (element, setBalance) { document.querySelector(element).innerHTML = setBalance; },
-  deductBalance: function (element, newBalance) { document.querySelector(element).innerHTML = ('<span style="color:#6B6;">' + String(newBalance)) + '</span>'; }
+  deductBalance: function (element, assetID, newBalance) {
+    document.querySelector(element).innerHTML = ('<span style="color:#6B6;">' + String(newBalance)) + '</span>';
+    renderDollarPriceInAsset(assetID, newBalance);
+  }
 };
 
 // Render sequence

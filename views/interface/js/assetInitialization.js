@@ -1,19 +1,20 @@
 var Storage = storage;
 var U = utils;
 
-initAsset = function (entry, fullmode, init) {
-  if(entry && typeof fullmode !== 'undefined') {
-    var mode = fullmode.split('.')[0];
-    var submode = fullmode.split('.')[1];
+initAsset = function (entry, fullMode, init) {
+  // Else should throw an error to keep things in Stream
+  if (R.not(R.isNil(entry)) && R.not(R.isNil(fullMode))) {
+    var mode = fullMode.split('.')[0];
+    var submode = fullMode.split('.')[1];
     var hashMode = R.path(['modehashes', mode], assets);
     // if the deterministic code is already cached client-side
     if (typeof hashMode !== 'undefined') {
       var modeHash = assets.modehashes[mode];
       var modeHashStream = Storage.Get_(modeHash + '-LOCAL');
       return modeHashStream
-        .flatMap(getDeterministicData(entry, mode, submode, fullmode, init));
+        .flatMap(getDeterministicData(entry, mode, submode, fullMode, init));
     } // else ?????
-  }
+  } // else ?????
 };
 
 function mkAssetDetailsStream (init, dcode, submode, entry, fullmode, dterm) {

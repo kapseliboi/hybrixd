@@ -47,10 +47,17 @@ function sendTransfer () {
     }, globalAssets, modeHashes, hideModal, alertError);
   }
 
-  function hideModal (data) {
+  function hideModal (z) {
+    var txData = R.nth(0, z);
+    var transactionID = R.nth(1, z);
+    UItransform.deductBalance(
+      R.prop('element', txData),
+      R.path(['asset', 'symbol'], txData),
+      R.prop('balanceAfterTransaction', txData)
+    );
     UItransform.txStop();
     UItransform.txHideModal();
-    console.log(data);
+    console.log(transactionID);
   }
 
   function alertError (err) {
@@ -95,12 +102,13 @@ toggleStar = function (assetID) {
 };
 
 function uiAssets () {
-  renderBalances();
+  var assets = GL.assets;
+  renderBalances(assets);
   getNewMarketPrices(); // Should be done on a higher level. Move to interface.js
 }
 
-function renderBalances () {
-  GL.assets.forEach(U.retrieveBalance(updateGlobalAssetsAndRenderDataInDOM, 11, '.assets-main > .data .balance-'));
+function renderBalances (assets) {
+  assets.forEach(U.retrieveBalance(updateGlobalAssetsAndRenderDataInDOM, 11, '.assets-main > .data .balance-'));
 }
 
 function updateGlobalAssetsAndRenderDataInDOM (element, numberOfSignificantDigits, sanitizedData, assetID) {

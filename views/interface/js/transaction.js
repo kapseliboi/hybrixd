@@ -10,7 +10,7 @@ sendTransaction = function (properties, GLOBAL_ASSETS, modeHashes, onSucces, onE
   var assetID = R.prop('symbol', asset);
   var factor = R.prop('factor', asset);
 
-  var transactionData = mkTransactionData(properties);
+  var transactionData = mkTransactionData(properties, factor);
   var totalAmountStr = mkTotalAmountStr(transactionData, factor);
   var emptyOrPublicKeyString = mkEmptyOrPublicKeyString(asset);
   var unspentUrl = mkUnspentUrl(assetID, totalAmountStr, emptyOrPublicKeyString, transactionData);
@@ -35,8 +35,14 @@ sendTransaction = function (properties, GLOBAL_ASSETS, modeHashes, onSucces, onE
       .flatMap(doPushTransactionStream)
       .map(handleTransactionPushResult);
 
+  var finalizeTransactionStream = Rx.Observable
+      .combineLatest(
+        transactionDataStream,
+        doTransactionStream
+      );
+
   UItransform_.txStart();
-  doTransactionStream.subscribe(onSucces, onError);
+  finalizeTransactionStream.subscribe(onSucces, onError);
 };
 
 function getDeterministicData (z) {
@@ -74,7 +80,7 @@ function getDeterministicTransactionData (z) {
     unspent
   };
 
-  var checkTransaction = deterministic.transaction(data, handlePushInDeterministic(assetID));
+  var checkTransaction = deterministic.transaction(data, handlePushInDeterministic(assetID, transactionData));
 
   if (R.isNil(checkTransaction)) {
     throw 'Handling in deterministic.';
@@ -110,7 +116,7 @@ function handleTransactionPushResult (res) {
   }
 }
 
-function handlePushInDeterministic (assetID) {
+function handlePushInDeterministic (assetID, transactionData) {
   return function (txData) {
     var H = hybridd; // TODO: Factor up. Can't now, smt's up with dependency order.
     var url = 'a/' + assetID + '/push/' + txData;
@@ -125,9 +131,10 @@ function handlePushInDeterministic (assetID) {
 
     pushStream.subscribe(function (processResponse) {
       var processData = R.prop('data', processResponse);
-      var dataIsValid = R.not(R.isNil(processData)) && R.equals(R.prop('error', processResponse), 0);
+      var dataIsValid = R.not(R.isNil(processData)) &&
+                        R.equals(R.prop('error', processResponse), 0);
       if (dataIsValid) {
-        // UItransform.deductBalance(p.element, p.balance);
+        UItransform.deductBalance(R.prop('element', transactionData), R.prop('balanceAfterTransaction', transactionData));
         setTimeout(function () {
           UItransform.txStop();
           UItransform.txHideModal();
@@ -136,7 +143,6 @@ function handlePushInDeterministic (assetID) {
         logger('Node sent transaction ID: ' + processData);
       } else {
         UItransform.txStop();
-        // UItransform.setBalance(p.element,p.balorig);
         logger('Error sending transaction: ' + processData);
         alert('<br>Sorry! The transaction did not work.<br><br><br>This is the error returned:<br><br>' + processData + '<br>');
       }
@@ -164,12 +170,33 @@ function checkBaseFeeBalance (assets) {
   };
 }
 
-function mkTransactionData (p) {
+function mkTransactionData (p, factor) {
   var asset = R.prop('asset', p);
+  var amount = Number(R.prop('amount', p));
+  var fee = Number(R.prop('fee', asset));
+  var originalBalance = toInt(R.path(['balance', 'amount'], asset));
+
+  function mkNewBalance (a) {
+    if (isToken(R.prop('symbol', a))) {
+      return fromInt(toInt(originalBalance, factor)
+                     .minus(toInt(amount, factor)),
+                     factor);
+    } else {
+      return fromInt(toInt(originalBalance, factor)
+                     .minus(toInt(amount, factor)
+                            .plus(toInt(fee, factor))),
+                     factor);
+    }
+  }
+
+  var balanceAfterTransaction = mkNewBalance(asset);
+
   return {
+    amount,
     asset,
-    fee: Number(R.prop('fee', asset)),
-    amount: Number(R.prop('amount', p)),
+    balanceAfterTransaction,
+    element: '.assets-main > .data .balance-' + R.prop('symbol', asset).replace(/\./g,'-'),
+    fee,
     sourceAddress: String(R.prop('source', p)).trim(),
     targetAddress: String(R.prop('target', p)).trim()
   };
