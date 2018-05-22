@@ -3,7 +3,7 @@ var U = utils;
 
 initAsset = function (entry, fullMode, init) {
   // Else should throw an error to keep things in Stream
-  if (R.not(R.isNil(entry)) && R.not(R.isNil(fullMode))) {
+  // if (R.not(R.isNil(entry)) && R.not(R.isNil(fullMode))) {
     var mode = fullMode.split('.')[0];
     var submode = fullMode.split('.')[1];
     var hashMode = R.path(['modehashes', mode], assets);
@@ -14,7 +14,7 @@ initAsset = function (entry, fullMode, init) {
       return modeHashStream
         .flatMap(getDeterministicData(entry, mode, submode, fullMode, init));
     } // else ?????
-  } // else ?????
+  // } // else ?????
 };
 
 function mkAssetDetailsStream (init, dcode, submode, entry, fullmode, dterm) {

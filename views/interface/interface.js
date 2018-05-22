@@ -63,6 +63,7 @@ var storedUserDataStream = storage.Get_(userStorageKey('ff00-0035'))
 
 var assetsDetailsStream = storedUserDataStream
     .flatMap(a => a) // Flatten Array structure...
+    .filter(existsInAssetNames) // TODO: Now REMOVES assets that have been disabed in the backed. Need to disable / notify user when this occurs.
     .flatMap(function (asset) {
       return R.compose(
         initializeAsset(asset),
@@ -149,10 +150,19 @@ function storedOrDefaultUserData (decodeUserData) {
 }
 
 function initializeGlobalAssets (assets) {
-  R.compose(
+  return R.compose(
     U.updateGlobalAssets,
-    R.map(R.merge({balance: { amount: 0, lastTx: 0 }}))
+    R.map(R.merge({balance: { amount: 0, lastTx: 0 }})),
+    R.filter(existsInAssetNames)
   )(assets);
+}
+
+function existsInAssetNames (asset) {
+  return R.compose(
+    R.defaultTo(false),
+    R.find(R.equals(R.prop('id', asset))),
+    R.keys
+  )(GL.assetnames);
 }
 
 function decryptData (d) { return R.curry(zchan_obj)(GL.usercrypto)(GL.cur_step)(d); }
