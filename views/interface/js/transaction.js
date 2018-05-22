@@ -132,9 +132,10 @@ function handlePushInDeterministic (assetID, transactionData) {
     pushStream.subscribe(function (processResponse) {
       var processData = R.prop('data', processResponse);
       var dataIsValid = R.not(R.isNil(processData)) &&
-                        R.equals(R.prop('error', processResponse), 0);
+                              R.equals(R.prop('error', processResponse), 0);
+      var newBalance = R.prop('balanceAfterTransaction', transactionData).toFixed(21);
       if (dataIsValid) {
-        UItransform.deductBalance(R.prop('element', transactionData), R.prop('balanceAfterTransaction', transactionData));
+        UItransform.deductBalance(R.prop('element', transactionData), assetID, newBalance);
         setTimeout(function () {
           UItransform.txStop();
           UItransform.txHideModal();
