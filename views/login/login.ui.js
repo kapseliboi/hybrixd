@@ -6,7 +6,7 @@ const S = loginInputStreams;
 // TODO: Give back some feedback to the user about incorrect credentials????
 const loginFormStateStream = S.credentialsStream
       .map(R.map(function (v) {
-        return v.mapReplace({
+        return v.mapReplaceEntries({
           '0': 'O',
           '1': 'I',
           '8': 'B',
