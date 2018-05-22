@@ -23,12 +23,12 @@
       "func('blockexplorer','exec',{target:{symbol:'$fee-symbol'}, command:['unspent','$1','$fee']})"
     ],
     "balance" : [
-      "time(60000)",
+      "time(120000)",
       "curl('asset://$symbol','/v1/address/addr?addr=$1','POST','addr=$1',{'content-type':'application/x-www-form-urlencoded'})",
       "tran('.balance',data,2,1)",
       "stop(1,'Bad result!')",
       "find({'id':'$contract'},data,1,2)",
-      "tran({value:'.value',in:'.pendingpos',out:'.pendingneg'},data,2,1,'0')",
+      "tran({value:'.value',in:'.pendingpos',out:'.pendingneg'},data,2,1)",
       "next(0,{value:'0',in:'0',out:'0'})",
       "time($cache,data)",
       "form(parseInt(data.value)+parseInt(data.in)-parseInt(data.out),$factor,'reduce')"
