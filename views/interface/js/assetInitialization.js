@@ -67,7 +67,12 @@ function mkAssetDetails (initialDetails, dcode, entry, submode, mode, assetDetai
 
 function updateGlobalAssets (init, dcode, entry, submode, mode) {
   return function (assetDetailsResponse) {
-    var hasKeyGenBase = R.not(R.isNil(R.prop('keygen-base', assetDetailsResponse)));
+    var hasKeyGenBase = R.compose(
+      R.not,
+      R.isNil,
+      R.prop('keygen-base')
+    )(assetDetailsResponse);
+
     return hasKeyGenBase
       ? mkAssetDetails(init, dcode, entry, submode, mode, assetDetailsResponse)
       : R.prop('data', assetDetailsResponse);
