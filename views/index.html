@@ -683,14 +683,11 @@ utils = {
     return currentTime.getTime();
   },
   addIcon: function (asset) {
-    return R.when(
-      R.has('symbol'),
-      R.compose(
-        R.assoc('icon', R.__, asset),
-        mkIcon,
-        function (symbol) { return symbol.slice(symbol.indexOf('.') + 1); },
-        R.prop('symbol')
-      )
+    return R.compose(
+      R.assoc('icon', R.__, asset),
+      mkIcon,
+      function (symbol) { return symbol.slice(symbol.indexOf('.') + 1); },
+      R.prop('id')
     )(asset);
   },
   updateGlobalAssets: function (a) {
