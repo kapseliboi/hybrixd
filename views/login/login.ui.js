@@ -1,18 +1,11 @@
 const C = commonUtils;
 const V = validations;
-const Utils = utils;
+const U = utils;
 const S = loginInputStreams;
 
 // TODO: Give back some feedback to the user about incorrect credentials????
 const loginFormStateStream = S.credentialsStream
-      .map(R.map(function (v) {
-        return v.mapReplaceEntries({
-          '0': 'O',
-          '1': 'I',
-          '8': 'B',
-          '9': 'G'
-        });
-      }))
+      .map(R.map(U.normalizeUserInput))
       .map(validateZippedCredentials)
       .map(renderLoginFormState);
 
@@ -41,7 +34,7 @@ function helpbutton () {
   alert('<h2>Welcome to the Internet of Coins wallet</h2><br><h3>I already have an account</h3>To sign in, you need to enter an account code and password that are both 16 characters long.<br><br><h3>I\'m new, I need a new account </h3>If you don\'t have sign in credentials yet, you can generate them by clicking on the "+ Create a new account" button, and the new credentials will be filled in for you.<br><br><h3>Do you still have questions?</h3>Please visit <a href="https://internetofcoins.org" target="_BLANK">our FAQ.</a><br><br>', {title: '', button: 'Close'});
 }
 
-Utils.documentReady(function () {
+U.documentReady(function () {
   const customAlert = new CustomAlert();
   loginFormStateStream.subscribe();
 });

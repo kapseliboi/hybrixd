@@ -5,14 +5,14 @@ var S = loginInputStreams;
 var V = validations;
 var U = utils;
 
-var path = 'api';
+var path = 'api'; // TODO: Factor up!
 
 ////////////////////////////////
 // GLOBAL STUFFZ ///////////////
 ////////////////////////////////
 
-nacl_factory.instantiate(function (naclinstance) { nacl = naclinstance; });
-session_step = 1; // Session step number at the end of login
+nacl_factory.instantiate(function (naclinstance) { nacl = naclinstance; }); // TODO
+session_step = 1; // Session step number at the end of login. TODO
 
 // TODO:
 // - Remove global session_step --> Make into incremental counter (save in state)
@@ -37,96 +37,10 @@ var userSubmitStream = Rx.Observable
 var validatedUserCredentialsStream = userSubmitStream
     .withLatestFrom(S.credentialsStream)
     .map(mkCredentialsObj)
-    .map(R.map(function (v) {
-      return v.mapReplaceEntries({
-        '0': 'O',
-        '1': 'I',
-        '8': 'B',
-        '9': 'G'
-      });
-    }))
+    .map(R.map(U.normalizeUserInput))
     .filter(hasValidCredentials);
 
-function createSessionStep0UrlAndData (z) {
-  var nonce = R.nth(0, z);
-  var sessionStep = R.nth(1, z);
-  var initialSessionData = C.generateInitialSessionData(nonce);
-  return {
-    // TODO: Factor 'path' up
-    url: path + 'x/' + R.prop('session_hexsign', initialSessionData) + '/' + sessionStep,
-    initialSessionData
-  };
-}
-
-function mkSessionHexAndNonce (z) {
-  var sessionStep1Data = R.path(['0', 'sessionStep1'], z);
-  var sessionData = R.mergeAll([
-    R.path(['0', 'initialSessionData'], z),
-    R.path(['0', 'secondarySessionData'], z),
-    sessionStep1Data,
-    { nonce: R.nth('1', z) },
-    { userKeys: R.nth('2', z) }
-  ]);
-
-  return C.sessionStep1Reply(sessionStep1Data, sessionData, setSessionDataInElement);
-}
-
-function mkPostSessionStep1Url (z) {
-  var nonce1 = R.path(['0', 'nonce1'], z);
-  var sessionStep = z[1] + 1; // NOW SETTING SESSION STEP MANUALLY.....
-  var initialSessionData = R.path(['0', 'initialSessionData'], z);
-  var sessionStep1Data = C.generateSecondarySessionData(nonce1, R.prop('session_hexkey', initialSessionData), R.path(['session_signpair', 'signSk'], initialSessionData));
-
-  return {
-    url: path + 'x/' + R.prop('session_hexsign', initialSessionData) + '/' + sessionStep + '/' + R.prop('crypt_hex', sessionStep1Data),
-    initialSessionData,
-    secondarySessionData: sessionStep1Data
-  };
-}
-
-// TODO: mk into Stream
-function handleCtrlSKeyEvent (e) {
-  var possible = [ e.key, e.keyIdentifier, e.keyCode, e.which ];
-
-  while (key === undefined && possible.length > 0) {
-    key = possible.pop();
-  }
-
-  if (key && (key === '115' || key === '83') && (e.ctrlKey || e.metaKey) && !(e.altKey)) {
-    e.preventDefault();
-    document.querySelector('#loginbutton').removeAttribute('disabled');
-    return false;
-  }
-  return true;
-}
-
-function setCSSTorenderButtonsToDisabled () {
-  var arcBackgroundColor = document.querySelector('#combinator').style.color;
-  document.querySelector('#loginbutton').classList.add('disabled');
-  document.querySelector('#arc0').style.backgroundColor = arcBackgroundColor;
-  document.querySelector('#generatebutton').setAttribute('disabled', 'disabled');
-  document.querySelector('#helpbutton').setAttribute('disabled', 'disabled');
-  document.querySelector('#combinatorwrap').style.opacity = 1;
-}
-
-function maybeOpenNewWalletModal (location) {
-  if (location.href.indexOf('#') !== -1) {
-    var locationHref = location.href.substr(location.href.indexOf('#'));
-    if (locationHref === '#new') {
-      PRNG.seeder.restart(); // As found in: newaccount_b.js
-      document.getElementById('newaccountmodal').style.display = 'block';
-    }
-  }
-}
-
-function nonceHasCorrectLength (nonce1) { return C.clean(nonce1).length === 48; }
-function btnIsNotDisabled (e) { return !e.target.parentElement.classList.contains('disabled'); }
-function mkSessionKeys (credentials) { return C.generateKeys(R.prop('password', credentials), R.prop('userID', credentials), 0); }
-function setSessionDataInElement (sessionHex) { document.querySelector('#session_data').textContent = sessionHex; }
-function hasValidCredentials (credentials) { return V.validateCredentials(R.prop('userID', credentials), R.prop('password', credentials)); }
-function mkCredentialsObj (z) { return { userID: R.path(['1', '0'], z), password: R.path(['1', '1'], z) }; }
-
-U.documentReady(function () {
+function main () {
   document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
   maybeOpenNewWalletModal(location);
   keyDownOnUserIDStream.subscribe(function (_) { document.querySelector('#inputPasscode').focus(); });
@@ -138,7 +52,7 @@ U.documentReady(function () {
         .map(mkSessionKeys);
 
     var sessionStepStream = Rx.Observable.of(0); // Make incremental with every call
-    var randomNonceStream = Rx.Observable.of(nacl.crypto_box_random_nonce());
+    var randomNonceStream = Rx.Observable.of(nacl.crypto_box_random_nonce()); // TODO
 
     var initialSessionDataStream = Rx.Observable
         .combineLatest(
@@ -206,4 +120,84 @@ U.documentReady(function () {
       fetchViewStream.subscribe();
     }, 500);
   });
-});
+}
+
+function createSessionStep0UrlAndData (z) {
+  var nonce = R.nth(0, z);
+  var sessionStep = R.nth(1, z);
+  var initialSessionData = C.generateInitialSessionData(nonce);
+  return {
+    url: path + 'x/' + R.prop('session_hexsign', initialSessionData) + '/' + sessionStep,
+    initialSessionData
+  };
+}
+
+function mkSessionHexAndNonce (z) {
+  var sessionStep1Data = R.path(['0', 'sessionStep1'], z);
+  var sessionData = R.mergeAll([
+    R.path(['0', 'initialSessionData'], z),
+    R.path(['0', 'secondarySessionData'], z),
+    sessionStep1Data,
+    { nonce: R.nth('1', z) },
+    { userKeys: R.nth('2', z) }
+  ]);
+
+  return C.sessionStep1Reply(sessionStep1Data, sessionData, setSessionDataInElement);
+}
+
+function mkPostSessionStep1Url (z) {
+  var nonce1 = R.path(['0', 'nonce1'], z);
+  var sessionStep = z[1] + 1; // TODO: NOW SETTING SESSION STEP MANUALLY.....
+  var initialSessionData = R.path(['0', 'initialSessionData'], z);
+  var sessionStep1Data = C.generateSecondarySessionData(nonce1, R.prop('session_hexkey', initialSessionData), R.path(['session_signpair', 'signSk'], initialSessionData));
+
+  return {
+    url: path + 'x/' + R.prop('session_hexsign', initialSessionData) + '/' + sessionStep + '/' + R.prop('crypt_hex', sessionStep1Data),
+    initialSessionData,
+    secondarySessionData: sessionStep1Data
+  };
+}
+
+// TODO: mk into Stream
+function handleCtrlSKeyEvent (e) {
+  var possible = [ e.key, e.keyIdentifier, e.keyCode, e.which ];
+
+  while (key === undefined && possible.length > 0) {
+    key = possible.pop();
+  }
+
+  if (key && (key === '115' || key === '83') && (e.ctrlKey || e.metaKey) && !(e.altKey)) {
+    e.preventDefault();
+    document.querySelector('#loginbutton').removeAttribute('disabled');
+    return false;
+  }
+  return true;
+}
+
+function setCSSTorenderButtonsToDisabled () {
+  var arcBackgroundColor = document.querySelector('#combinator').style.color;
+  document.querySelector('#loginbutton').classList.add('disabled');
+  document.querySelector('#arc0').style.backgroundColor = arcBackgroundColor;
+  document.querySelector('#generatebutton').setAttribute('disabled', 'disabled');
+  document.querySelector('#helpbutton').setAttribute('disabled', 'disabled');
+  document.querySelector('#combinatorwrap').style.opacity = 1;
+}
+
+function maybeOpenNewWalletModal (location) {
+  if (location.href.indexOf('#') !== -1) {
+    var locationHref = location.href.substr(location.href.indexOf('#'));
+    if (locationHref === '#new') {
+      PRNG.seeder.restart(); // As found in: newaccount_b.js
+      document.getElementById('newaccountmodal').style.display = 'block';
+    }
+  }
+}
+
+function nonceHasCorrectLength (nonce1) { return C.clean(nonce1).length === 48; }
+function btnIsNotDisabled (e) { return !e.target.parentElement.classList.contains('disabled'); }
+function mkSessionKeys (credentials) { return C.generateKeys(R.prop('password', credentials), R.prop('userID', credentials), 0); }
+function setSessionDataInElement (sessionHex) { document.querySelector('#session_data').textContent = sessionHex; }
+function hasValidCredentials (credentials) { return V.validateCredentials(R.prop('userID', credentials), R.prop('password', credentials)); }
+function mkCredentialsObj (z) { return { userID: R.path(['1', '0'], z), password: R.path(['1', '1'], z) }; }
+
+U.documentReady(main);

@@ -1,5 +1,13 @@
 var fetch_ = fetch;
 
+var KEY_MAPPING = {
+  '0': 'O',
+  '1': 'I',
+  '8': 'B',
+  '9': 'G'
+};
+
+
 utils = {
   documentReady: function (fn) {
     if (document.readyState !== 'loading') {
@@ -23,6 +31,9 @@ utils = {
       console.log('Cannot activate deterministic code!');
       return function () {};
     }
+  },
+  normalizeUserInput: function (v) {
+    return v.mapReplaceEntries(KEY_MAPPING);
   },
   scrollToAnchor: function (args) {
     var element = R.prop('element', args);
@@ -262,7 +273,7 @@ mkIcon = function (symbol) {
 };
 
 // TODO: Mk into Utils fn, not prototype fn?
-String.prototype.mapReplace = function (map) {
+String.prototype.mapReplaceEntries = function (map) {
   var regex = [];
   for(var key in map)
     regex.push(key.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&'));
