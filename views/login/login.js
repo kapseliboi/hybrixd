@@ -38,7 +38,7 @@ var validatedUserCredentialsStream = userSubmitStream
     .withLatestFrom(S.credentialsStream)
     .map(mkCredentialsObj)
     .map(R.map(function (v) {
-      return v.mapReplace({
+      return v.mapReplaceEntries({
         '0': 'O',
         '1': 'I',
         '8': 'B',
