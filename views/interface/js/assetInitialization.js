@@ -1,5 +1,6 @@
 var Storage = storage;
 var U = utils;
+var D = deterministic_;
 
 initAsset = function (entry, fullMode, init) {
   // Else should throw an error to keep things in Stream
@@ -43,7 +44,7 @@ function mkAssetDetailsStream (init, dcode, submode, entry, fullmode, dterm) {
 function mkDeterministicDetails (init, dcode, entry, submode, mode, assetDetailsResponse) {
   var deterministic = U.activate(LZString.decompressFromEncodedURIComponent(dcode));
   var keyGenBase = R.path(['data', 'keygen-base'], assetDetailsResponse);
-  var seed = deterministicSeedGenerator(keyGenBase);
+  var seed = D.seedGenerator(keyGenBase);
   var keys = deterministic.keys({symbol: entry, seed, mode: submode});
   var assetDetails = R.mergeAll([
         init,
@@ -67,17 +68,13 @@ function updateGlobalAssets (init, dcode, entry, submode, mode) {
   };
 }
 
-function initializeDetermisticAndMkDetailsStream (dcode, submode, entry, fullmode, init) {
-  return mkAssetDetailsStream(init, dcode, submode, entry, fullmode);
-}
-
 function setStorageAndMkAssetDetails (init, mode, submode, entry, fullmode, dcode) {
   return function (deterministicCodeResponse) {
     var err = R.prop('error', deterministicCodeResponse);
     if (typeof err !== 'undefined' && R.equals(err, 0)) {
       var dcode = R.prop('data', deterministicCodeResponse);
       Storage.Set(assets.modehashes[mode] + '-LOCAL', dcode);
-      return mkAssetDetailsStream(init, dcode, submode, entry, fullmode);
+      return mkAssetDetailsStream(dcode, submode, entry, fullmode, init);
     } else {
       return Rx.Observable.of({error: 'Could not set storage.'}); // TODO: Catch error properly!
     }
@@ -106,26 +103,7 @@ function reinitializeMode (init, mode, submode, entry, fullmode, dcode) {
 function getDeterministicData (entry, mode, submode, fullmode, init) {
   return function (dcode) {
     return R.not(R.isNil(dcode))
-      ? initializeDetermisticAndMkDetailsStream(dcode, submode, entry, fullmode, init)
+      ? mkAssetDetailsStream(init, dcode, submode, entry, fullmode, dcode)
       : reinitializeMode(init, mode, submode, entry, fullmode);
   };
-}
-
-// creates a unique seed for deterministic asset code
-function deterministicSeedGenerator (asset) {
-  // this salt need not be too long (if changed: adjust slice according to tests)
-  var salt = '1nT3rN3t0Fc01NsB1nD5tH3cRyPt05Ph3R3t093Th3Rf0Rp30Pl3L1k3M34nDy0U';
-  // slightly increases entropy by XOR obfuscating and mixing data with a key
-  function xorEntropyMix (key, str) {
-    var c = '';
-    var k = 0;
-    for (i = 0; i < str.length; i++) {
-      c += String.fromCharCode(str[i].charCodeAt(0).toString(10) ^ key[k].charCodeAt(0).toString(10)); // XORing with key
-      k++;
-      if (k >= key.length) { k = 0; }
-    }
-    return c;
-  }
-  // return deterministic seed
-  return UrlBase64.Encode(xorEntropyMix(nacl.to_hex(GL.usercrypto.user_keys.boxPk), xorEntropyMix(asset.split('.')[0], xorEntropyMix(salt, nacl.to_hex(GL.usercrypto.user_keys.boxSk))))).slice(0, -2);
 }
