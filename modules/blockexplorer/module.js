@@ -243,7 +243,7 @@ function post(properties) {
     if(typeof properties.command[2]!=='undefined') {
       var amount = toInt(properties.command[2],factor);
       if(amount.greaterThan(0)) {
-        result = functions.sortArrayByObjKey(result,"amount",true);
+        result = functions.sortArrayByObjKey(result,"amount",false);
         global.hybridd.proc[processID].progress = 0.75;
         unspentscnt = toInt(0,factor);
         var usedinputs = [];

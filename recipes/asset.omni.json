@@ -4,27 +4,28 @@
   "module":"quartz",
   "mode":"bitcoinjslib.omni",
   "factor":8,
-  "fee":0.000035,
+  "fee":0.0000894,
   "fee-symbol":"btc",
   "keygen-base":"btc",
   "contract":"1",
-  "host":"https://api.omniexplorer.info",
-  "Xhost":"wss://www.omniwallet.org",
+  "host":"https://www.omniwallet.org",
+  "blockexplorer":"https://api.omniexplorer.info",
   "cache":180000,
   "throttle":5,
   "quartz":{
     "init" : [
-       "stop(1,'Not yet implemented!')"
+      "stop(1,'Not yet implemented!')"
     ],
     "status" : [
-       "stop(1,'Not yet implemented!')"
+      "stop(1,'Not yet implemented!')"
     ],
     "unspent" : [
-      "func('blockexplorer','exec',{target:{symbol:'$fee-symbol'}, command:['unspent','$1','$fee']})"
+      "func('blockexplorer','exec',{target:{symbol:'$fee-symbol'}, command:['unspent','$1','$fee']})",
+      "pass({'unspents':data.unspents,'change':String(Number(data.change)+0.0000543)})"
     ],
     "balance" : [
       "time(120000)",
-      "curl('asset://$symbol','/v1/address/addr?addr=$1','POST','addr=$1',{'content-type':'application/x-www-form-urlencoded'})",
+      "curl('$blockexplorer','/v1/address/addr?addr=$1','POST','addr=$1',{'content-type':'application/x-www-form-urlencoded'})",
       "tran('.balance',data,2,1)",
       "stop(1,'Bad result!')",
       "find({'id':'$contract'},data,1,2)",

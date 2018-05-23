@@ -4,7 +4,7 @@
   "module":"quartz",
   "mode":"bitcoinjslib.counterparty",
   "factor":8,
-  "fee":0.000035,
+  "fee":0.0000894,
   "fee-symbol":"btc",
   "keygen-base":"btc",
   "contract":"XCP",
@@ -22,7 +22,8 @@
        "stop(1,'Not yet implemented!')"
     ],
     "unspent" : [
-      "func('blockexplorer','exec',{target:{symbol:'$fee-symbol'}, command:['unspent','$1','$fee']})"
+      "func('blockexplorer','exec',{target:{symbol:'$fee-symbol'}, command:['unspent','$1','$fee']})",
+      "pass({'unspents':data.unspents,'change':String(Number(data.change)+0.0000543)})"
     ],
     "balance" : [
       "time(32000)",
