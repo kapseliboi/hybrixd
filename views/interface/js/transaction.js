@@ -108,6 +108,7 @@ function handleTransactionPushResult (res) {
   var transactionIsValid = R.not(R.equals(typeof R.prop('data', res), 'undefined')) &&
                            R.equals(R.prop('error', res), 0);
   if (transactionIsValid) {
+    // TODO: RENDER DATA IN DOM;
     return 'Node sent transaction ID: ' + R.prop('data', res);
   } else if (transactionHasError) {
     throw R.prop('data', res);

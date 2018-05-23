@@ -2,22 +2,23 @@ var fetch_ = fetch;
 
 valuations = {
   getDollarPrices: function () {
-    var url = 'https://api.coinmarketcap.com/v1/ticker/?limit=0';
+    var url = 'https://api.coinmarketcap.com/v2/ticker/?limit=0';
     var valuationsStream = Rx.Observable.fromPromise(U.fetchDataFromUrl(url, 'Could not fetch valuations.'));
 
     valuationsStream.subscribe(function (coinMarketCapData) {
-      GL.coinMarketCapTickers = coinMarketCapData;
+      GL.coinMarketCapTickers = R.prop('data', coinMarketCapData);
     });
   },
   renderDollarPrice: function (symbolName, amount) {
     var assetSymbolUpperCase = symbolName.toUpperCase();
     var tickers = GL.coinMarketCapTickers;
-    var matchedTicker = tickers.filter(function (ticker) {
-      return ticker.symbol === assetSymbolUpperCase;
-    });
+    var matchedTicker = R.compose(
+      R.find(R.propEq('symbol', assetSymbolUpperCase)),
+      R.values
+    )(tickers);
 
-    return matchedTicker.length !== 0 && R.not(isNaN(amount))
-      ? '$' + (amount * matchedTicker[0].price_usd).toFixed(2)
+    return R.not(R.isNil(matchedTicker))
+      ? '$' + (amount * R.path(['quotes', 'USD', 'price'], matchedTicker)).toFixed(2)
       : 'n/a';
   }
 };
