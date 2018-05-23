@@ -6,13 +6,13 @@ initAsset = function (entry, fullMode, init) {
   // Else should throw an error to keep things in Stream
   var mode = fullMode.split('.')[0];
   var submode = fullMode.split('.')[1];
-  var hashMode = R.path(['modehashes', mode], assets);
+  var modeHash = R.path(['modehashes', mode], assets);
+
   // if the deterministic code is already cached client-side
-  if (typeof hashMode !== 'undefined') {
-    var modeHashStream = Storage.Get_(hashMode + '-LOCAL');
-    return modeHashStream
-      .flatMap(getDeterministicData(entry, mode, submode, fullMode, init));
-  } // else ?????
+  return R.not(R.isNil(modeHash))
+    ? Storage.Get_(modeHash + '-LOCAL')
+        .flatMap(getDeterministicData(entry, mode, submode, fullMode, init))
+    : Rx.Observable.of(init);
 };
 
 function mkAssetDetailsStream (init, dcode, submode, entry, fullmode) {

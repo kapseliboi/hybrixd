@@ -72,7 +72,7 @@ utils = {
     return R.compose(
       R.assoc('icon', R.__, asset),
       mkIcon,
-      function (symbol) { return symbol.slice(symbol.indexOf('.') + 1); },
+      function (id) { return id.slice(id.indexOf('.') + 1); },
       R.prop('id')
     )(asset);
   },
@@ -87,7 +87,7 @@ utils = {
   },
   mkUpdatedAssets: function (details) {
     return function (assets, asset) {
-      var assetOrUpdatedDetails = R.equals(R.prop('id', asset), R.prop('symbol', details))
+      var assetOrUpdatedDetails = R.equals(R.prop('id', asset), R.prop('id', details))
           ? R.merge(asset, details)
           : asset;
       return R.append(assetOrUpdatedDetails, assets);
