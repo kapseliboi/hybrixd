@@ -3,7 +3,6 @@ var Storage = storage;
 var D = deterministic_;
 
 initAsset = function (entry, fullMode, init) {
-  // Else should throw an error to keep things in Stream
   var mode = fullMode.split('.')[0];
   var submode = fullMode.split('.')[1];
   var modeHash = R.path(['modehashes', mode], assets);
@@ -12,7 +11,7 @@ initAsset = function (entry, fullMode, init) {
   return R.not(R.isNil(modeHash))
     ? Storage.Get_(modeHash + '-LOCAL')
         .flatMap(getDeterministicData(entry, mode, submode, fullMode, init))
-    : Rx.Observable.of(init);
+    : Rx.Observable.of(init); // TODO: Give asset 'disabled' prop?
 };
 
 function mkAssetDetailsStream (init, dcode, submode, entry, fullmode) {
@@ -39,6 +38,41 @@ function mkAssetDetailsStream (init, dcode, submode, entry, fullmode) {
     .map(updateAsset(init, dcode, entry, submode, fullmode));
 }
 
+// TODO: Split concerns and move effects up.
+function setStorageAndMkAssetDetails (init, mode, submode, entry, fullmode, dcode) {
+  return function (deterministicCodeResponse) {
+    var err = R.prop('error', deterministicCodeResponse);
+    var dcode = R.prop('data', deterministicCodeResponse);
+
+    Storage.Del(assets.modehashes[mode] + '-LOCAL');
+
+    if (typeof err !== 'undefined' && R.equals(err, 0)) {
+      Storage.Set(assets.modehashes[mode] + '-LOCAL', dcode);
+      return mkAssetDetailsStream(init, dcode, submode, entry, fullmode);
+    } else {
+      return Rx.Observable.of(init); // TODO: Catch error properly!
+    }
+  };
+}
+
+// TODO: Make pure!
+function reinitializeDeterministicMode (init, mode, submode, entry, fullmode, dcode) {
+  var url = 's/deterministic/code/' + mode;
+  var modeStream = Rx.Observable.fromPromise(hybriddcall({r: url, z: 0}));
+  var modeResponseStream = modeStream
+      .flatMap(function (properties) {
+        return Rx.Observable
+          .fromPromise(hybriddReturnProcess(properties));
+      })
+      .map(function (processData) {
+        if (R.isNil(R.prop('stopped', processData)) && R.prop('progress', processData) < 1) throw processData;
+        return processData;
+      })
+      .retryWhen(function (errors) { return errors.delay(1000); });
+
+  return modeResponseStream;
+}
+
 function mkAssetDetails (initialDetails, dcode, entry, submode, mode, assetDetails) {
   var keyGenBase = R.prop('keygen-base', assetDetails);
   var deterministicDetails = D.mkDeterministicDetails(dcode, entry, submode, mode, keyGenBase);
@@ -63,46 +97,11 @@ function updateAsset (init, dcode, entry, submode, mode) {
   };
 }
 
-// TODO: Split concerns
-function setStorageAndMkAssetDetails (init, mode, submode, entry, fullmode, dcode) {
-  return function (deterministicCodeResponse) {
-    var err = R.prop('error', deterministicCodeResponse);
-
-    Storage.Del(assets.modehashes[mode] + '-LOCAL');
-
-    if (typeof err !== 'undefined' && R.equals(err, 0)) {
-      var dcode = R.prop('data', deterministicCodeResponse);
-      Storage.Set(assets.modehashes[mode] + '-LOCAL', dcode);
-      return mkAssetDetailsStream(init, dcode, submode, entry, fullmode);
-    } else {
-      return Rx.Observable.of({error: 'Could not set storage.'}); // TODO: Catch error properly!
-    }
-  };
-}
-
-// TODO: Make pure!
-function reinitializeMode (init, mode, submode, entry, fullmode, dcode) {
-  var url = 's/deterministic/code/' + mode;
-  var modeStream = Rx.Observable.fromPromise(hybriddcall({r: url, z: 0}));
-  var modeResponseStream = modeStream
-      .flatMap(function (properties) {
-        return Rx.Observable
-          .fromPromise(hybriddReturnProcess(properties));
-      })
-      .map(function (processData) {
-        if (R.isNil(R.prop('stopped', processData)) && R.prop('progress', processData) < 1) throw processData;
-        return processData;
-      })
-      .retryWhen(function (errors) { return errors.delay(1000); })
-      .flatMap(setStorageAndMkAssetDetails(init, mode, submode, entry, fullmode));
-
-  return modeResponseStream;
-}
-
 function getDeterministicData (entry, mode, submode, fullmode, init) {
   return function (dcode) {
     return R.not(R.isNil(dcode))
       ? mkAssetDetailsStream(init, dcode, submode, entry, fullmode)
-      : reinitializeMode(init, mode, submode, entry, fullmode);
+      : reinitializeDeterministicMode(init, mode, submode, entry, fullmode)
+          .flatMap(setStorageAndMkAssetDetails(init, mode, submode, entry, fullmode));
   };
 }
