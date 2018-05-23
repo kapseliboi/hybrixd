@@ -38,32 +38,38 @@ function mkAssetDetailsStream (init, dcode, submode, entry, fullmode, dterm) {
       .retryWhen(function (errors) { return errors.delay(500); });
 
   return assetDetailsResponseStream
+    .map(R.prop('data'))
     .map(updateGlobalAssets(init, dcode, entry, submode, fullmode, dterm));
 }
 
-function mkDeterministicDetails (init, dcode, entry, submode, mode, assetDetailsResponse) {
+function mkDeterministicDetails (dcode, entry, submode, mode, keyGenBase) {
   var deterministic = U.activate(LZString.decompressFromEncodedURIComponent(dcode));
-  var keyGenBase = R.path(['data', 'keygen-base'], assetDetailsResponse);
   var seed = D.seedGenerator(keyGenBase);
   var keys = deterministic.keys({symbol: entry, seed, mode: submode});
-  var assetDetails = R.mergeAll([
-        init,
-        R.prop('data', assetDetailsResponse),
-        {
-          mode,
-          seed,
-          keys,
-          address: deterministic.address(Object.assign(keys, {mode: submode}))
-        }
-      ]);
-  return assetDetails;
+
+  return {
+    mode,
+    seed,
+    keys,
+    address: deterministic.address(Object.assign(keys, {mode: submode}))
+  };
+}
+
+function mkAssetDetails (initialDetails, dcode, entry, submode, mode, assetDetails) {
+  var keyGenBase = R.prop('keygen-base', assetDetails);
+  var deterministicDetails = mkDeterministicDetails(dcode, entry, submode, mode, keyGenBase);
+  return R.mergeAll([
+    initialDetails,
+    assetDetails,
+    deterministicDetails
+  ]);
 }
 
 function updateGlobalAssets (init, dcode, entry, submode, mode) {
   return function (assetDetailsResponse) {
-    var hasKeyGenBase = R.not(R.isNil(R.path(['data', 'keygen-base'], assetDetailsResponse)));
+    var hasKeyGenBase = R.not(R.isNil(R.prop('keygen-base', assetDetailsResponse)));
     return hasKeyGenBase
-      ? mkDeterministicDetails(init, dcode, entry, submode, mode, assetDetailsResponse)
+      ? mkAssetDetails(init, dcode, entry, submode, mode, assetDetailsResponse)
       : R.prop('data', assetDetailsResponse);
   };
 }
