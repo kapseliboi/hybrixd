@@ -16,9 +16,10 @@ valuations = {
       R.find(R.propEq('symbol', assetSymbolUpperCase)),
       R.values
     )(tickers);
+    var dollarPrice = (amount * R.path(['quotes', 'USD', 'price'], matchedTicker)).toFixed(2);
 
-    return R.not(R.isNil(matchedTicker))
-      ? '$' + (amount * R.path(['quotes', 'USD', 'price'], matchedTicker)).toFixed(2)
+    return R.not(isNaN(dollarPrice))
+      ? '$' + dollarPrice
       : 'n/a';
   }
 };

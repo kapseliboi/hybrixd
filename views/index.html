@@ -883,7 +883,7 @@ mkIcon = function (symbol) {
 };
 
 // TODO: Mk into Utils fn, not prototype fn?
-String.prototype.mapReplace = function (map) {
+String.prototype.mapReplaceEntries = function (map) {
   var regex = [];
   for(var key in map)
     regex.push(key.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&'));
