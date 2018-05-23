@@ -39,7 +39,7 @@ function mkAssetDetailsStream (init, dcode, submode, entry, fullmode, dterm) {
 
   return assetDetailsResponseStream
     .map(R.prop('data'))
-    .map(updateGlobalAssets(init, dcode, entry, submode, fullmode, dterm));
+    .map(updateAsset(init, dcode, entry, submode, fullmode, dterm));
 }
 
 function mkDeterministicDetails (dcode, entry, submode, mode, keyGenBase) {
@@ -65,17 +65,17 @@ function mkAssetDetails (initialDetails, dcode, entry, submode, mode, assetDetai
   ]);
 }
 
-function updateGlobalAssets (init, dcode, entry, submode, mode) {
-  return function (assetDetailsResponse) {
+function updateAsset (init, dcode, entry, submode, mode) {
+  return function (assetDetails) {
     var hasKeyGenBase = R.compose(
       R.not,
       R.isNil,
       R.prop('keygen-base')
-    )(assetDetailsResponse);
+    )(assetDetails);
 
     return hasKeyGenBase
-      ? mkAssetDetails(init, dcode, entry, submode, mode, assetDetailsResponse)
-      : R.prop('data', assetDetailsResponse);
+      ? mkAssetDetails(init, dcode, entry, submode, mode, assetDetails)
+      : assetDetails;
   };
 }
 
