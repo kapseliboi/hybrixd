@@ -60,11 +60,26 @@ function getDeterministicData (z) {
 }
 
 function getDeterministicTransactionData (z) {
-  var unspent = R.prop('data', R.nth(0, z));
   var transactionData = R.nth(2, z);
   var deterministic = R.nth(4, z);
   var factor = R.path(['asset', 'factor'], transactionData);
   var assetID = R.path(['asset', 'id'], transactionData);
+
+  var changeLens = R.lensProp('change');
+  var unspent = R.compose(
+    R.unless(
+      R.compose(
+        R.isNil,
+        R.view(changeLens)
+      ),
+      R.over(
+        changeLens,
+        R.flip(toInt)(factor)
+      )
+    ),
+    R.prop('data'),
+    R.nth(0)
+  )(z);
 
   var data = {
     mode: R.path(['asset', 'mode'], transactionData).split('.')[1],
@@ -79,6 +94,7 @@ function getDeterministicTransactionData (z) {
     seed: R.path(['asset', 'seed'], transactionData),
     unspent
   };
+  console.log("data = ", data);
 
   var checkTransaction = deterministic.transaction(data, handlePushInDeterministic(assetID, transactionData));
 
