@@ -1,5 +1,5 @@
 {
-  "id":"cryptoid.dgb",
+  "source":"cryptoid.dgb",
   "name":"chainz cryptoid Blockexplorer",
   "module":"blockexplorer",
   "mode":"digibyte.cryptoid",
