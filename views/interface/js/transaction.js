@@ -94,7 +94,6 @@ function getDeterministicTransactionData (z) {
     seed: R.path(['asset', 'seed'], transactionData),
     unspent
   };
-  console.log("data = ", data);
 
   var checkTransaction = deterministic.transaction(data, handlePushInDeterministic(assetID, transactionData));
 
