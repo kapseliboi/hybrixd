@@ -32,8 +32,8 @@ utils = {
       return function () {};
     }
   },
-  normalizeUserInput: function (v) {
-    return v.mapReplaceEntries(KEY_MAPPING);
+  normalizeUserInput: function (str) {
+    return mapReplaceEntries(KEY_MAPPING)(str);
   },
   scrollToAnchor: function (args) {
     var element = R.prop('element', args);
@@ -269,10 +269,13 @@ mkIcon = function (symbol) {
     : mkSvgIcon(symbol);
 };
 
-// TODO: Mk into Utils fn, not prototype fn?
-String.prototype.mapReplaceEntries = function (map) {
-  var regex = [];
-  for(var key in map)
-    regex.push(key.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&'));
-  return this.replace(new RegExp(regex.join('|'), 'g'), R.flip(R.prop)(map));
+mapReplaceEntries = function (map) {
+  var keys = R.keys(map);
+  var newMap = R.map(function (key) {
+    return key.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+  }, keys);
+
+  return function (str) {
+    return str.replace(new RegExp(newMap.join('|'), 'g'), R.flip(R.prop)(map));
+  };
 };
