@@ -50,6 +50,7 @@ hy_content += fs.readFileSync('./js/topmenu.js');			  // responsive top menu
 hy_content += fs.readFileSync('./js/ychan.js');
 hy_content += fs.readFileSync('./js/zchan.js');
 hy_content += fs.readFileSync('./js/hybriddcall.js');		// autonomous calls to hybridd
+hy_content += fs.readFileSync('./js/deterministic.js');
 hy_content += fs.readFileSync('./js/assetInitialization.js');
 hy_content += fs.readFileSync('./js/valuations.js');
 hy_content += fs.readFileSync('./interface.js');	      // finally, take action

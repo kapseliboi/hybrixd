@@ -32,8 +32,8 @@ utils = {
       return function () {};
     }
   },
-  normalizeUserInput: function (v) {
-    return v.mapReplaceEntries(KEY_MAPPING);
+  normalizeUserInput: function (str) {
+    return mapReplaceEntries(KEY_MAPPING)(str);
   },
   scrollToAnchor: function (args) {
     var element = R.prop('element', args);
@@ -69,14 +69,11 @@ utils = {
     return currentTime.getTime();
   },
   addIcon: function (asset) {
-    return R.when(
-      R.has('symbol'),
-      R.compose(
-        R.assoc('icon', R.__, asset),
-        mkIcon,
-        function (symbol) { return symbol.slice(symbol.indexOf('.') + 1); },
-        R.prop('symbol')
-      )
+    return R.compose(
+      R.assoc('icon', R.__, asset),
+      mkIcon,
+      function (id) { return id.slice(id.indexOf('.') + 1); },
+      R.prop('id')
     )(asset);
   },
   updateGlobalAssets: function (a) {
@@ -90,7 +87,7 @@ utils = {
   },
   mkUpdatedAssets: function (details) {
     return function (assets, asset) {
-      var assetOrUpdatedDetails = R.equals(R.prop('id', asset), R.prop('symbol', details))
+      var assetOrUpdatedDetails = R.equals(R.prop('id', asset), R.prop('id', details))
           ? R.merge(asset, details)
           : asset;
       return R.append(assetOrUpdatedDetails, assets);
@@ -272,10 +269,13 @@ mkIcon = function (symbol) {
     : mkSvgIcon(symbol);
 };
 
-// TODO: Mk into Utils fn, not prototype fn?
-String.prototype.mapReplaceEntries = function (map) {
-  var regex = [];
-  for(var key in map)
-    regex.push(key.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&'));
-  return this.replace(new RegExp(regex.join('|'), 'g'), R.flip(R.prop)(map));
+mapReplaceEntries = function (map) {
+  var keys = R.keys(map);
+  var newMap = R.map(function (key) {
+    return key.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+  }, keys);
+
+  return function (str) {
+    return str.replace(new RegExp(newMap.join('|'), 'g'), R.flip(R.prop)(map));
+  };
 };
