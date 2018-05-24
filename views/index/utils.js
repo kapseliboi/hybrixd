@@ -109,13 +109,15 @@ utils = {
           .retryWhen(function (errors) { return errors.delay(1000); });
 
       balanceStream.subscribe(function (balanceData) {
+        var currentBalance = R.path(['balance', 'amount'], asset);
         var sanitizedData = R.compose(
           R.defaultTo('n/a'),
           R.prop('data'),
           sanitizeServerObject
         )(balanceData);
+        var newBalance = lastKnownOrNewBalance(sanitizedData, currentBalance);
 
-        fn(element, numberOfSignificantDigits, sanitizedData, assetID);
+        fn(element, numberOfSignificantDigits, newBalance, assetID);
       });
     };
   },
@@ -173,7 +175,7 @@ utils = {
     }
 
     return R.isNil(normalizedAmount) || isNaN(normalizedAmount)
-      ? '?'
+      ? 'n/a'
       : mkBalance(amount);
   },
   renderDataInDom: function (element, maxLengthSignificantDigits, data) {
@@ -242,7 +244,13 @@ function sanitizeServerObject (res) {
       R.toString,
       R.identity
     ),
-    R.defaultTo('?'),
+    R.when(
+      R.anyPass([
+        R.equals('?'),
+        R.isNil
+      ]),
+      R.always('n/a')
+    ),
     R.prop('data')
   )(emptyOrIdentityObject);
 };
@@ -279,3 +287,11 @@ mapReplaceEntries = function (map) {
     return str.replace(new RegExp(newMap.join('|'), 'g'), R.flip(R.prop)(map));
   };
 };
+
+function lastKnownOrNewBalance (newData, currentBalance) {
+  var currentBalanceHasDefaultValue = R.not(isNaN(Number(currentBalance)));
+  return newData === 'n/a' &&
+    currentBalanceHasDefaultValue
+    ? currentBalance
+    : newData;
+}

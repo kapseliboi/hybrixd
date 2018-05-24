@@ -149,7 +149,7 @@ function toggleAssetButtons (element, assetID, balance) {
 
   balanceIsValid
     ? toggleTransactionButtons(element, assetbuttonsClass, 'remove', 'data-toggle', 'modal', 'disabled', balance)
-    : toggleTransactionButtons(element, assetbuttonsClass, 'add', 'disabled', 'disabled', 'data-toggle', '?');
+    : toggleTransactionButtons(element, assetbuttonsClass, 'add', 'disabled', 'disabled', 'data-toggle', 'n/a');
 }
 
 function toggleTransactionButtons (elem, query, addOrRemove, attrToSet, val, attrToRemove, attr) {

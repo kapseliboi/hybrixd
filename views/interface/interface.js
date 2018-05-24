@@ -152,7 +152,7 @@ function storedOrDefaultUserData (decodeUserData) {
 function initializeGlobalAssets (assets) {
   return R.compose(
     U.updateGlobalAssets,
-    R.map(R.merge({balance: { amount: 0, lastTx: 0 }})),
+    R.map(R.merge({balance: { amount: 'n/a', lastTx: 0 }})),
     R.filter(existsInAssetNames)
   )(assets);
 }
