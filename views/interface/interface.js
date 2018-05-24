@@ -40,6 +40,10 @@ var defaultAssetData = [
   { id: 'eth', starred: false }
 ];
 
+var dollarPriceStream = Rx.Observable
+    .interval(30000)
+    .startWith(0);
+
 var assetsModesAndNamesStream = Rx.Observable
     .fromPromise(U.fetchDataFromUrl(assetModesUrl, 'Error retrieving asset details.'))
     .map(decryptData);
@@ -80,10 +84,10 @@ var initializationStream = Rx.Observable
     );
 
 function main () {
-  Valuations.getDollarPrices();
   intervals.pow = setInterval(POW.loopThroughProofOfWork, 120000); // once every two minutes, loop through proof-of-work queue
   initializationStream.subscribe(initialize);
   assetsDetailsStream.subscribe(updateAssetDetailsAndRenderDashboardView); // TODO: Separate data retrieval from DOM rendering. Dashboard should be rendered in any case.
+  dollarPriceStream.subscribe(function (_) { Valuations.getDollarPrices(); });
 }
 
 // EFF ::

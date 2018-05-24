@@ -104,7 +104,6 @@ toggleStar = function (assetID) {
 function uiAssets () {
   var assets = GL.assets;
   renderBalances(assets);
-  getNewMarketPrices(); // Should be done on a higher level. Move to interface.js
 }
 
 function renderBalances (assets) {
@@ -129,15 +128,6 @@ function updateBalanceData (assets, assetID, amount) {
     return R.append(defaultOrUpdatedAsset, updatedAssets);
   }
   return R.reduce(updateBalances, [], assets);
-}
-
-function getNewMarketPrices () {
-  var dollarPriceStream = Rx.Observable
-    .interval(5000);
-
-  dollarPriceStream.subscribe(function (_) {
-    Valuations.getDollarPrices();
-  });
 }
 
 function toggleAssetButtons (element, assetID, balance) {
