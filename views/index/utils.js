@@ -127,6 +127,9 @@ utils = {
     });
     document.querySelector('#topmenu-' + target).classList.add('selected');
   },
+
+  btnIsNotDisabled: function  (e) { return !e.target.parentElement.classList.contains('disabled'); },
+
   formatFloatInHtmlStr: function (amount, maxLengthSignificantDigits) {
     var normalizedAmount = Number(amount);
 

@@ -1,4 +1,4 @@
-var Storage = storage;
+var Starred = starredAssets
 var Valuations = valuations;
 var M = manageAssets;
 var U = utils;
@@ -14,85 +14,67 @@ init.interface.assets = function (args) {
   U.setViewTab('assets'); // top menu UI change
 
   // INITIALIZE BUTTONS IN MANAGE ASSETS MODALS
-  document.querySelector('#send-transfer').onclick = sendTransfer;
   document.querySelector('#save-assetlist').onclick = M.saveAssetList(displayAssets());
 
   U.documentReady(displayAssets(args));
 };
 
-// Streamify!
-function sendTransfer () {
-  if (document.querySelector('#send-transfer').classList.contains('disabled')) {
-    // cannot send transaction
-  } else {
-    // send transfer
-    loadSpinner();
-    var symbol = document.querySelector('#action-send .modal-send-currency').getAttribute('asset');
-    var asset = R.find(R.propEq('id', symbol), GL.assets);
-    var globalAssets = GL.assets; // TODO: Factor up
-    var modeHashes = R.prop('modehashes', assets); // TODO: Factor up
-    sendTransaction({
-      element: '.assets-main > .data .balance-' + symbol.replace(/\./g, '-'),
-      asset,
-      amount: Number(document.querySelector('#modal-send-amount').value.replace(/, /g, '.')), // Streamify!
-      source: String(document.querySelector('#action-send .modal-send-addressfrom').innerHTML).trim(), // Streamify!
-      target: String(document.querySelector('#modal-send-target').value.trim()) // Streamify!
-    }, globalAssets, modeHashes, hideModal, alertError);
-  }
+var txAmountStream = Rx.Observable
+    .fromEvent(document.querySelector('#modal-send-amount'), 'input')
+    .map(U.getTargetValue);
 
-  function hideModal (z) {
-    var txData = R.nth(0, z);
-    var transactionID = R.nth(1, z);
-    UItransform.deductBalance(
-      R.prop('element', txData),
-      R.path(['asset', 'symbol'], txData),
-      R.prop('balanceAfterTransaction', txData)
+var txTargetAddressStream = Rx.Observable
+    .fromEvent(document.querySelector('#modal-send-target'), 'input')
+    .map(U.getTargetValue);
+// .map(validateAddress) // ENTER ADDRESS VALIDATIONS
+
+var sendTxButtonStream = Rx.Observable.fromEvent(document.querySelector('#send-transfer'), 'click')
+    .filter(U.btnIsNotDisabled);
+
+var transactionDataStream = Rx.Observable
+    .combineLatest(
+      txAmountStream,
+      txTargetAddressStream,
+      sendTxButtonStream
     );
-    UItransform.txStop();
-    UItransform.txHideModal();
-    console.log(transactionID);
-  }
 
-  function alertError (err) {
-    if (err !== 'Handling in deterministic.') {
-      UItransform.txStop();
-      alert('Error: ' + err);
-      console.log('err = ', err);
-    }
-  }
-}
-
-function setStarredAssetClass (assetID, isStarred) {
-  var id = '#' + assetID.replace(/\./g, '_'); // Mk into function. Being used elsewhere too.
-  var addOrRemoveClass = isStarred ? 'add' : 'remove';
-  document.querySelector(id + ' > svg').classList[addOrRemoveClass]('starred');
-}
-
-function maybeUpdateStarredProp (assetID) {
-  return function (acc, asset) {
-    var starredLens = R.lensProp('starred');
-    var toggledStarredValue = R.not(R.view(starredLens, asset));
-
-    return R.compose(
-      R.append(R.__, acc),
-      R.when(
-        function (a) { return R.equals(R.prop('id', a), assetID); },
-        R.set(starredLens, toggledStarredValue)
-      )
-    )(asset);
+function sendTransfer (z) {
+  var symbol = document.querySelector('#action-send .modal-send-currency').getAttribute('asset');
+  var asset = R.find(R.propEq('id', symbol), GL.assets); // TODO: Factor up
+  var globalAssets = GL.assets; // TODO: Factor up
+  var modeHashes = R.prop('modehashes', assets); // TODO: Factor up
+  var txData = {
+    element: '.assets-main > .data .balance-' + symbol.replace(/\./g, '-'),
+    asset,
+    amount: Number(R.nth(0, z)),
+    source: R.prop('address', asset).trim(),
+    target: String(R.nth(1, z)).trim()
   };
+
+  loadSpinner();
+  sendTransaction(txData, globalAssets, modeHashes, hideModal, alertError);
 }
 
-toggleStar = function (assetID) {
-  var globalAssets = GL.assets;
-  var updatedGlobalAssets = R.reduce(maybeUpdateStarredProp(assetID), [], globalAssets);
-  var isStarred = R.defaultTo(false, R.find(R.propEq('id', assetID, updatedGlobalAssets)));
-  var starredForStorage = R.map(R.pickAll(['id', 'starred']), updatedGlobalAssets);
+function hideModal (z) {
+  var txData = R.nth(0, z);
+  var transactionID = R.nth(1, z);
+  UItransform.deductBalance(
+    R.prop('element', txData),
+    R.path(['asset', 'symbol'], txData),
+    R.prop('balanceAfterTransaction', txData)
+  );
+  UItransform.txStop();
+  UItransform.txHideModal();
+  console.log(transactionID);
+}
 
-  Storage.Set(userStorageKey('ff00-0035'), userEncode(starredForStorage));
-  U.updateGlobalAssets(updatedGlobalAssets);
-  setStarredAssetClass(assetID, isStarred);
-};
+function alertError (err) {
+  if (err !== 'Handling in deterministic.') {
+    UItransform.txStop();
+    alert('Error: ' + err);
+    console.log('err = ', err);
+  }
+}
 
 function uiAssets () {
   var assets = GL.assets;
@@ -115,8 +97,8 @@ function updateBalanceData (assets, assetID, amount) {
     var amountLens = R.lensPath(['balance', 'amount']);
     var updatedBalanceAsset = R.set(amountLens, amount, asset);
     var defaultOrUpdatedAsset = R.equals(R.prop('id', asset), assetID)
-      ? updatedBalanceAsset
-      : asset;
+        ? updatedBalanceAsset
+        : asset;
 
     return R.append(defaultOrUpdatedAsset, updatedAssets);
   }
@@ -159,3 +141,5 @@ function renderDollarPriceInAsset (asset, amount) {
   var query = document.getElementById(symbolName + '-dollar');
   if (query !== null) { query.innerHTML = assetDollarPrice; }
 }
+
+transactionDataStream.subscribe(sendTransfer);

@@ -1,12 +1,13 @@
 var Clipboard = clipboard;
 
+// RENDERS THE RELEVANT INFORMATION IN THE TX MODAL
 fillSend = function (assetID) {
   var asset = R.find(R.propEq('id', assetID))(GL.assets);
   var balance = R.path(['balance', 'amount'], asset);
   var address = R.prop('address', asset);
   var fee = R.prop('fee', asset);
   if (R.not(R.isNil(balance)) && balance !== '?') {
-    var spendable = !isToken(assetID) ? toInt(balance).minus(toInt(fee)) : toInt(balance);
+    var spendable = !isToken(assetID) ? toInt(balance).minus(toInt(fee)) : toInt(balance); // Make into function!
     if (spendable < 0) { spendable = 0; }
     var fixedSpendable = spendable.toFixed(21).replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/, '$1');
     document.querySelector('#action-send .modal-send-currency').innerHTML = assetID.toUpperCase();
@@ -48,6 +49,22 @@ function mkNewQRCode (address) {
 
   return qrCode;
 }
+
+function toggleSendTxButton (z) {
+  var asset = R.nth(0);
+  var amountToSend = R.nth(1);
+  var targetAddress = R.nth(1);
+  var availableBalance = null // SPENDABLE AMOUNT
+
+  // TODO Validations
+  var txDetailsAreValid = !isNaN(amountToSend) &&
+      amountToSend > 0 &&
+      amountToSend <= availableBalance &&
+      targetAddress;
+
+  var classListMethod = txDetailsAreValid ? 'remove' : 'add';
+  document.querySelector('#action-send .pure-button-send').classList[classListMethod]('disabled');
+};
 
 checkTx = function () {
   var p = {
