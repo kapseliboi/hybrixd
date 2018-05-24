@@ -20,13 +20,6 @@ init.interface.assets = function (args) {
   U.documentReady(displayAssets(args));
 };
 
-function renderDollarPriceInAsset (asset, amount) {
-  var symbolName = asset.slice(asset.indexOf('.') + 1);
-  var assetDollarPrice = Valuations.renderDollarPrice(symbolName, amount);
-  var query = document.getElementById(symbolName + '-dollar');
-  if (query !== null) { query.innerHTML = assetDollarPrice; }
-}
-
 // Streamify!
 function sendTransfer () {
   if (document.querySelector('#send-transfer').classList.contains('disabled')) {
@@ -157,4 +150,12 @@ function toggleAttribute (attrToSet, val, attrToRemove) {
     elem.setAttribute(attrToSet, val);
     elem.removeAttribute(attrToRemove);
   };
+}
+
+
+function renderDollarPriceInAsset (asset, amount) {
+  var symbolName = asset.slice(asset.indexOf('.') + 1);
+  var assetDollarPrice = Valuations.renderDollarPrice(symbolName, amount);
+  var query = document.getElementById(symbolName + '-dollar');
+  if (query !== null) { query.innerHTML = assetDollarPrice; }
 }
