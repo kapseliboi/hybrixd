@@ -16,6 +16,7 @@ hy_content = ''; // variable to hold package content
 // load in the page elements to add to DOM
 hy_content += fs.readFileSync('./' + viewname + '.html');
 hy_content += '<script>';
+hy_content += fs.readFileSync('./js/asset.js');
 hy_content += fs.readFileSync('./js/manageAssets.js');
 hy_content += fs.readFileSync('./js/starredAssets.js');
 hy_content += fs.readFileSync('./js/searchBar.js');
