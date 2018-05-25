@@ -10,10 +10,6 @@ var A = asset;
 init.interface.assets = function (args) {
   // Expose functions globally
   changeManageButton = M.changeManageButton(M.renderManageButton); // TODO: Remove messy callback structure......
-  getAmountValue = function () {
-    var sendBalance = document.querySelector('#action-send .modal-send-balance').innerHTML;
-    document.querySelector('#modal-send-amount').value = sendBalance;
-  };
   U.setViewTab('assets'); // top menu UI change
   U.documentReady(main(args));
 };
@@ -77,10 +73,9 @@ function mkAssetButtonStream (query) {
 function initializeAssetsInterfaceStreams () {
   var sendAssetButtonStream = mkAssetButtonStream('sendAssetButton');
   var receiveAssetButtonStream = mkAssetButtonStream('receiveAssetButton');
-  var saveAssetListStream = Rx.Observable.fromEvent(document.querySelector('#save-assetlist'), 'click')
-
-  var stopBalanceStream = Rx.Observable
-      .fromEvent(document.querySelector('#topmenu-dashboard'), 'click');
+  var saveAssetListStream = Rx.Observable.fromEvent(document.querySelector('#save-assetlist'), 'click');
+  var maxAmountButtonStream = Rx.Observable.fromEvent(document.querySelector('.max-amount-button'), 'click')
+  var stopBalanceStream = Rx.Observable.fromEvent(document.querySelector('#topmenu-dashboard'), 'click');
 
   var retrieveBalanceStream = Rx.Observable
       .interval(30000)
@@ -88,6 +83,10 @@ function initializeAssetsInterfaceStreams () {
       .takeUntil(stopBalanceStream);
 
   retrieveBalanceStream.subscribe(function (_) { renderBalances(GL.assets); });
+  maxAmountButtonStream.subscribe(function (_) {
+    var sendBalance = document.querySelector('#action-send .modal-send-balance').innerHTML;
+    document.querySelector('#modal-send-amount').value = sendBalance;
+  });
   saveAssetListStream.subscribe(M.saveAssetList(main()));
   sendAssetButtonStream.subscribe(function (assetID) {
     SendAsset.renderAssetDetailsInModal(assetID);
