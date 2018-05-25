@@ -26,5 +26,33 @@ asset = {
         '</div>';
 
     return str + htmlToRender;
+  },
+  toggleAssetButtons: function  (element, assetID, balance) {
+    var assetbuttonsClass = '.assets-main > .data .assetbuttons-' + assetID.replace(/\./g, '-');
+    var balanceIsValid = R.allPass([
+      R.compose(R.not, R.isNil),
+      R.compose(R.not, isNaN)
+    ])(balance);
+
+    balanceIsValid
+      ? toggleTransactionButtons(element, assetbuttonsClass, 'remove', 'data-toggle', 'modal', 'disabled', balance)
+      : toggleTransactionButtons(element, assetbuttonsClass, 'add', 'disabled', 'disabled', 'data-toggle', 'n/a');
   }
 };
+
+function toggleTransactionButtons (elem, query, addOrRemove, attrToSet, val, attrToRemove, attr) {
+  // HACK! Bug is not breaking functionality, but hack is ugly nonetheless. Optimize!
+  var exists = R.not(R.isNil(document.querySelector(query))) || R.not(R.isNil(document.querySelector(elem)));
+  if (exists) {
+    document.querySelector(query).classList[addOrRemove]('disabled');
+    document.querySelectorAll(query + ' a').forEach(toggleAttribute(attrToSet, val, attrToRemove));
+    document.querySelector(elem).setAttribute('amount', attr);
+  }
+}
+
+function toggleAttribute (attrToSet, val, attrToRemove) {
+  return function (elem) {
+    elem.setAttribute(attrToSet, val);
+    elem.removeAttribute(attrToRemove);
+  };
+}
