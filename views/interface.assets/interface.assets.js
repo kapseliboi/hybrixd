@@ -19,63 +19,6 @@ init.interface.assets = function (args) {
   U.documentReady(displayAssets(args));
 };
 
-var txAmountStream = Rx.Observable
-    .fromEvent(document.querySelector('#modal-send-amount'), 'input')
-    .map(U.getTargetValue);
-
-var txTargetAddressStream = Rx.Observable
-    .fromEvent(document.querySelector('#modal-send-target'), 'input')
-    .map(U.getTargetValue);
-// .map(validateAddress) // ENTER ADDRESS VALIDATIONS
-
-var sendTxButtonStream = Rx.Observable.fromEvent(document.querySelector('#send-transfer'), 'click')
-    .filter(U.btnIsNotDisabled);
-
-var transactionDataStream = Rx.Observable
-    .combineLatest(
-      txAmountStream,
-      txTargetAddressStream,
-      sendTxButtonStream
-    );
-
-function sendTransfer (z) {
-  var symbol = document.querySelector('#action-send .modal-send-currency').getAttribute('asset');
-  var asset = R.find(R.propEq('id', symbol), GL.assets); // TODO: Factor up
-  var globalAssets = GL.assets; // TODO: Factor up
-  var modeHashes = R.prop('modehashes', assets); // TODO: Factor up
-  var txData = {
-    element: '.assets-main > .data .balance-' + symbol.replace(/\./g, '-'),
-    asset,
-    amount: Number(R.nth(0, z)),
-    source: R.prop('address', asset).trim(),
-    target: String(R.nth(1, z)).trim()
-  };
-
-  loadSpinner();
-  sendTransaction(txData, globalAssets, modeHashes, hideModal, alertError);
-}
-
-function hideModal (z) {
-  var txData = R.nth(0, z);
-  var transactionID = R.nth(1, z);
-  UItransform.deductBalance(
-    R.prop('element', txData),
-    R.path(['asset', 'symbol'], txData),
-    R.prop('balanceAfterTransaction', txData)
-  );
-  UItransform.txStop();
-  UItransform.txHideModal();
-  console.log(transactionID);
-}
-
-function alertError (err) {
-  if (err !== 'Handling in deterministic.') {
-    UItransform.txStop();
-    alert('Error: ' + err);
-    console.log('err = ', err);
-  }
-}
-
 function renderBalances (assets) {
   assets.forEach(U.retrieveBalance(updateGlobalAssetsAndRenderDataInDOM, 11, '.assets-main > .data .balance-'));
 }
@@ -106,5 +49,3 @@ function renderDollarPriceInAsset (asset, amount) {
   var query = document.getElementById(symbolName + '-dollar');
   if (query !== null) { query.innerHTML = assetDollarPrice; }
 }
-
-transactionDataStream.subscribe(sendTransfer);

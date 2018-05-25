@@ -11,6 +11,10 @@ receiveAsset = {
     document.querySelector('#action-receive .modal-receive-status').setAttribute('id', 'receivestatus-' + assetID);
 
     mkNewQRCode(assetAddress);
+  },
+  resetReceiveStatus: function () {
+    document.querySelector('#action-receive .modal-receive-status')
+      .setAttribute('id', 'receivestatus'); // reset status ID attribute to avoid needless polling
   }
 };
 

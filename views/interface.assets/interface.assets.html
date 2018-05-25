@@ -51,11 +51,11 @@
 
       <form class="pure-form pure-form-stacked">
 	<label for="target">Send to</label>
-	<input id="modal-send-target" type="text" placeholder="enter target address" class="inline" onkeydown = "checkTx();" oninput = "checkTx();" onpaste = "checkTx();" oncut = "checkTx();">
+	<input id="modal-send-target" type="text" placeholder="enter target address" class="inline">
 	<label for="amount">Send amount</label>
-	<input id="modal-send-amount" type="text" placeholder="enter quantity" class="inline" onkeydown = "checkTx();" oninput = "checkTx();" onpaste = "checkTx();" oncut = "checkTx();" style="width: 77%;">
+	<input id="modal-send-amount" type="text" placeholder="enter quantity" class="inline" style="width: 77%;">
         <!-- STREAMIFIY -->
-	<div onclick='getAmountValue(); checkTx();' class="pure-button pure-button-warning max-amount-button" aria-hidden="true" style="vertical-align: top;">MAX</div>
+	<div onclick='getAmountValue();' class="pure-button pure-button-warning max-amount-button" aria-hidden="true" style="vertical-align: top;">MAX</div>
       </form>
 
     </div>
@@ -88,7 +88,7 @@
       <div class="modal-receive-status" id="receivestatus" style="display: block; font-size: 3em;"></div><div class="modal-receive-status-text"></div>
     </div>
     <div class="modal-footer">
-      <button onclick="stopReceiveAction();" class="pure-button pure-button-secondary" data-dismiss="modal" aria-hidden="true">Close</button>
+      <button onclick="receiveAsset.resetReceiveStatus();" class="pure-button pure-button-secondary" data-dismiss="modal" aria-hidden="true">Close</button>
       <button id="modal-receive-button" data-clipboard-text="?" class="pure-button pure-button-xsmall pure-button-primary" aria-hidden="true">Copy address to clipboard</button>
     </div>
   </div>
