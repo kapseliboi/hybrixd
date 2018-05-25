@@ -15,10 +15,6 @@ init.interface.assets = function (args) {
     document.querySelector('#modal-send-amount').value = sendBalance;
   };
   U.setViewTab('assets'); // top menu UI change
-
-  // INITIALIZE BUTTONS IN MANAGE ASSETS MODALS
-  document.querySelector('#save-assetlist').onclick = M.saveAssetList(main());
-
   U.documentReady(main(args));
 };
 
@@ -81,6 +77,7 @@ function mkAssetButtonStream (query) {
 function initializeAssetsInterfaceStreams () {
   var sendAssetButtonStream = mkAssetButtonStream('sendAssetButton');
   var receiveAssetButtonStream = mkAssetButtonStream('receiveAssetButton');
+  var saveAssetListStream = Rx.Observable.fromEvent(document.querySelector('#save-assetlist'), 'click')
 
   var stopBalanceStream = Rx.Observable
       .fromEvent(document.querySelector('#topmenu-dashboard'), 'click');
@@ -91,6 +88,7 @@ function initializeAssetsInterfaceStreams () {
       .takeUntil(stopBalanceStream);
 
   retrieveBalanceStream.subscribe(function (_) { renderBalances(GL.assets); });
+  saveAssetListStream.subscribe(M.saveAssetList(main()));
   sendAssetButtonStream.subscribe(function (assetID) {
     SendAsset.renderAssetDetailsInModal(assetID);
     TxValidations.toggleSendButtonClass();
