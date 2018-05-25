@@ -22,10 +22,28 @@ UItransform = {
   },
   setBalance: function (element, setBalance) { document.querySelector(element).innerHTML = setBalance; },
   deductBalance: function (element, assetID, newBalance) {
-    document.querySelector(element).innerHTML = ('<span style="color:#6B6;">' + String(newBalance)) + '</span>';
+    var globalAssetsWithUpdatedAsset = R.reduce(R.curry(updateAssetBalance)(assetID)(newBalance), [], GL.assets);
+    // TODO: Validate balance String here.
+    document.querySelector(element).innerHTML = '<span style="color:#6B6;">' + U.formatFloatInHtmlStr(String(newBalance), 11) + '</span>';
     renderDollarPriceInAsset(assetID, newBalance);
+    U.updateGlobalAssets(globalAssetsWithUpdatedAsset);
   }
 };
+
+function updateAssetBalance (id, amount, newAssets, a) {
+  var lastTxLens = R.lensPath(['balance', 'lastTx']);
+  var newBalanceLens = R.lensPath(['balance', 'amount']);
+  return R.compose(
+    R.flip(R.append)(newAssets),
+    R.when(
+      R.propEq('id', id),
+      R.compose(
+        R.set(lastTxLens, Date.now()),
+        R.set(newBalanceLens, amount)
+          )
+    )
+  )(a);
+}
 
 function mkHtmlToRender (assets) {
   return R.compose(
