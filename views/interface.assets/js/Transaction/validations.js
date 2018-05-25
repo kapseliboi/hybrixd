@@ -1,9 +1,9 @@
 transactionValidations = {
-  toggleSendButtonClass: function () {
+  toggleSendButtonClass: function (a, target) {
     var p = {
       asset: document.querySelector('#action-send .modal-send-currency').getAttribute('asset'),
-      target_address: String(document.querySelector('#modal-send-target').value),
-      amount: Number(document.querySelector('#modal-send-amount').value),
+      target_address: target,
+      amount: Number(a),
       available: Number(document.querySelector('#action-send .modal-send-balance').innerHTML)
     };
     // TODO Validations
@@ -15,6 +15,8 @@ transactionValidations = {
 
     var classListMethod = txDetailsAreValid ? 'remove' : 'add';
     document.querySelector('#action-send .pure-button-send').classList[classListMethod]('disabled');
+
+    return txDetailsAreValid;
   }
 };
 
