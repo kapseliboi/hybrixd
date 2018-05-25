@@ -1,4 +1,5 @@
 var TxValidations = transactionValidations;
+var TxUtils = transactionUtils;
 
 sendAsset = {
   // RENDERS THE RELEVANT INFORMATION IN THE TX MODAL
@@ -49,22 +50,6 @@ var transactionDataStream = Rx.Observable
       sendTxButtonStream
     );
 
-function sendTransfer (z) {
-  var symbol = document.querySelector('#action-send .modal-send-currency').getAttribute('asset');
-  var asset = R.find(R.propEq('id', symbol), GL.assets); // TODO: Factor up
-  var globalAssets = GL.assets; // TODO: Factor up
-  var modeHashes = R.prop('modehashes', assets); // TODO: Factor up
-  var txData = {
-    element: '.assets-main > .data .balance-' + symbol.replace(/\./g, '-'),
-    asset,
-    amount: Number(R.nth(0, z)),
-    source: R.prop('address', asset).trim(),
-    target: String(R.nth(1, z)).trim()
-  };
-
-  sendTransaction(txData, globalAssets, modeHashes, hideModal, alertError);
-}
-
 function hideModal (z) {
   var txData = R.nth(0, z);
   var transactionID = R.nth(1, z);
@@ -91,6 +76,10 @@ validatedTxDetailsStream.subscribe(function (_) {
 });
 
 transactionDataStream.subscribe(function (z) {
+  var globalAssets = GL.assets; // TODO: Factor up
+  var txData = TxUtils.mkTransactionData(z, globalAssets);
+  var modeHashes = R.prop('modehashes', assets); // TODO: Factor up
+
   loadSpinner();
-  sendTransfer(z);
+  sendTransaction(txData, globalAssets, modeHashes, hideModal, alertError);
 });

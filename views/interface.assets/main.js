@@ -18,6 +18,7 @@ hy_content += fs.readFileSync('./' + viewname + '.html');
 hy_content += '<script>';
 hy_content += fs.readFileSync('./js/clipboard.js');
 hy_content += fs.readFileSync('./js/Transaction/validations.js');
+hy_content += fs.readFileSync('./js/Transaction/utils.js');
 hy_content += fs.readFileSync('./js/SendAsset/sendAsset.js');
 hy_content += fs.readFileSync('./js/ReceiveAsset/receiveAsset.js');
 hy_content += fs.readFileSync('./js/asset.js');

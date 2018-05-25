@@ -27,25 +27,6 @@ UItransform = {
   }
 };
 
-// Render sequence
-displayAssets = function (args) {
-  return function () {
-    var globalAssets = GL.assets;
-    document.querySelector('.assets-main > .data').innerHTML = mkHtmlToRender(GL.assets);
-    globalAssets.forEach(function (asset) { setStarredAssetClass(R.prop('id', asset), R.prop('starred', asset)); });
-    U.scrollToAnchor(args);
-    retrieveBalanceStream.subscribe(function (_) { renderBalances(globalAssets); });
-  };
-};
-
-var stopBalanceStream = Rx.Observable
-    .fromEvent(document.querySelector('#topmenu-dashboard'), 'click');
-
-var retrieveBalanceStream = Rx.Observable
-    .interval(30000)
-    .startWith(0)
-    .takeUntil(stopBalanceStream);
-
 function mkHtmlToRender (assets) {
   return R.compose(
     mkAssetsInterfaceHtmlStr,

@@ -14,10 +14,18 @@ init.interface.assets = function (args) {
   U.setViewTab('assets'); // top menu UI change
 
   // INITIALIZE BUTTONS IN MANAGE ASSETS MODALS
-  document.querySelector('#save-assetlist').onclick = M.saveAssetList(displayAssets());
+  document.querySelector('#save-assetlist').onclick = M.saveAssetList(main());
 
-  U.documentReady(displayAssets(args));
+  U.documentReady(main(args));
 };
+
+var stopBalanceStream = Rx.Observable
+    .fromEvent(document.querySelector('#topmenu-dashboard'), 'click');
+
+var retrieveBalanceStream = Rx.Observable
+    .interval(30000)
+    .startWith(0)
+    .takeUntil(stopBalanceStream);
 
 function renderBalances (assets) {
   assets.forEach(U.retrieveBalance(updateGlobalAssetsAndRenderDataInDOM, 11, '.assets-main > .data .balance-'));
@@ -49,3 +57,13 @@ function renderDollarPriceInAsset (asset, amount) {
   var query = document.getElementById(symbolName + '-dollar');
   if (query !== null) { query.innerHTML = assetDollarPrice; }
 }
+
+function main (args) {
+  return function () {
+    var globalAssets = GL.assets;
+    document.querySelector('.assets-main > .data').innerHTML = mkHtmlToRender(globalAssets);
+    globalAssets.forEach(function (asset) { setStarredAssetClass(R.prop('id', asset), R.prop('starred', asset)); });
+    U.scrollToAnchor(args);
+    retrieveBalanceStream.subscribe(function (_) { renderBalances(GL.assets); });
+  };
+};
