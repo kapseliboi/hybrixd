@@ -1,4 +1,3 @@
-var Starred = starredAssets
 var Valuations = valuations;
 var M = manageAssets;
 var U = utils;
@@ -74,11 +73,6 @@ function alertError (err) {
     alert('Error: ' + err);
     console.log('err = ', err);
   }
-}
-
-function uiAssets () {
-  var assets = GL.assets;
-  renderBalances(assets);
 }
 
 function renderBalances (assets) {

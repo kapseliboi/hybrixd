@@ -29,10 +29,11 @@ UItransform = {
 // Render sequence
 displayAssets = function (args) {
   return function () {
+    var globalAssets = GL.assets;
     document.querySelector('.assets-main > .data').innerHTML = mkHtmlToRender(GL.assets);
-    GL.assets.forEach(function (asset) { setStarredAssetClass(R.prop('id', asset), R.prop('starred', asset)); });
+    globalAssets.forEach(function (asset) { setStarredAssetClass(R.prop('id', asset), R.prop('starred', asset)); });
     U.scrollToAnchor(args);
-    retrieveBalanceStream.subscribe(function (_) { uiAssets(); });
+    retrieveBalanceStream.subscribe(function (_) { renderBalances(globalAssets); });
   };
 };
 
