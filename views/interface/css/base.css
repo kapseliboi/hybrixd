@@ -825,6 +825,7 @@ p {
   vertical-align: middle;
   padding-right: 8px;
   margin-top: -3px;
+  pointer-events: none;
 }
 
 .content .table .actions .assetbuttons .icon svg {

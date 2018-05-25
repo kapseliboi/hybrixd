@@ -57,17 +57,7 @@ function main (args) {
 
 function mkAssetButtonStream (query) {
   return Rx.Observable.fromEvent(document.querySelectorAll('.' + query), 'click')
-    .map(R.compose(
-      // TODO: Make safe!!! Now can return undefined === UNSAFE!
-      R.find(R.compose(
-        R.test(new RegExp(query)),
-        R.prop('className')
-      )),
-      R.prop('path')
-    ))
-    .map(function (elem) {
-      return elem.getAttribute('data');
-    });
+    .map(R.path(['target', 'attributes', 'data', 'value']));
 }
 
 function initializeAssetsInterfaceStreams () {
