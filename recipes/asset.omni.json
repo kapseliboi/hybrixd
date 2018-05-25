@@ -4,14 +4,14 @@
   "module":"quartz",
   "mode":"bitcoinjslib.omni",
   "factor":8,
-  "fee":0.0000894,
+  "fee":0.00004946,
   "fee-symbol":"btc",
   "keygen-base":"btc",
   "contract":"1",
   "host":"https://www.omniwallet.org",
   "blockexplorer":"https://api.omniexplorer.info",
   "cache":180000,
-  "throttle":5,
+  "throttle":0.1,
   "quartz":{
     "init" : [
       "stop(1,'Not yet implemented!')"
@@ -21,7 +21,7 @@
     ],
     "unspent" : [
       "func('blockexplorer','exec',{target:{symbol:'$fee-symbol'}, command:['unspent','$1','$fee']})",
-      "pass({'unspents':data.unspents,'change':String(Number(data.change)+0.0000543)})"
+      "pass({'unspents':data.unspents,'change':String(Number(data.change)+0.00000546)})"
     ],
     "balance" : [
       "time(120000)",
