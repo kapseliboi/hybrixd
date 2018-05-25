@@ -12,8 +12,8 @@ asset = {
     var assetInfoHTMLStr = '<div id="asset-' + element + '" class="td col1 asset asset-' + element + '"><div class="icon">' + icon + '</div>' + assetID + '<div class="star"><a' + maybeStarActive + 'role="button">' + R.prop('star', Svg) + '</a></div></div>';
     var assetBalanceHtmlStr = '<div class="td col2"><div class="balance balance-' + element + '">' + progressbar() + '</div></div>';
     var assetDollarValuationHtmlStr = '<div class="td col3"><div id="' + symbolName + '-dollar" class="dollars" style="color: #AAA;">n/a</div></div>';
-    var assetSendBtnHtmlStr = '<a onclick=\'sendAsset.renderAssetDetailsInModal("' + assetID + '");\' href="#action-send" class="pure-button pure-button-large pure-button-primary" role="button" data-toggle="modal" disabled="disabled"><div class="icon">' + R.prop('send', Svg) + '</div>Send</a>';
-    var assetReceiveBtnHtmlStr = '<a onclick=\'receiveAsset.renderAssetDetailsInModal("' + assetID + '");\' href="#action-receive" class="pure-button pure-button-large pure-button-secondary" role="button" data-toggle="modal" disabled="disabled"><div class="icon">' + R.prop('receive', Svg) + '</div>Receive</a>';
+    var assetSendBtnHtmlStr = '<a data="' + assetID + '" href="#action-send" class="pure-button pure-button-large pure-button-primary sendAssetButton" role="button" data-toggle="modal" disabled="disabled"><div class="icon">' + R.prop('send', Svg) + '</div>Send</a>';
+    var assetReceiveBtnHtmlStr = '<a data="' + assetID + '" href="#action-receive" class="pure-button pure-button-large pure-button-secondary receiveAssetButton" role="button" data-toggle="modal" disabled="disabled"><div class="icon">' + R.prop('receive', Svg) + '</div>Receive</a>';
 
     var htmlToRender = '<div class="tr">' +
         assetInfoHTMLStr +

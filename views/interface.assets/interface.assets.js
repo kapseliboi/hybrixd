@@ -1,4 +1,7 @@
 var Valuations = valuations;
+var TxValidations = transactionValidations;
+var SendAsset = sendAsset;
+var ReceiveAsset = receiveAsset;
 var M = manageAssets;
 var U = utils;
 var H = hybridd;
@@ -18,14 +21,6 @@ init.interface.assets = function (args) {
 
   U.documentReady(main(args));
 };
-
-var stopBalanceStream = Rx.Observable
-    .fromEvent(document.querySelector('#topmenu-dashboard'), 'click');
-
-var retrieveBalanceStream = Rx.Observable
-    .interval(30000)
-    .startWith(0)
-    .takeUntil(stopBalanceStream);
 
 function renderBalances (assets) {
   assets.forEach(U.retrieveBalance(updateGlobalAssetsAndRenderDataInDOM, 11, '.assets-main > .data .balance-'));
@@ -64,6 +59,43 @@ function main (args) {
     document.querySelector('.assets-main > .data').innerHTML = mkHtmlToRender(globalAssets);
     globalAssets.forEach(function (asset) { setStarredAssetClass(R.prop('id', asset), R.prop('starred', asset)); });
     U.scrollToAnchor(args);
-    retrieveBalanceStream.subscribe(function (_) { renderBalances(GL.assets); });
+    initializeAssetsInterfaceStreams();
   };
 };
+
+function mkAssetButtonStream (query) {
+  return Rx.Observable.fromEvent(document.querySelectorAll('.' + query), 'click')
+    .map(R.compose(
+      // TODO: Make safe!!! Now can return undefined === UNSAFE!
+      R.find(R.compose(
+        R.test(new RegExp(query)),
+        R.prop('className')
+      )),
+      R.prop('path')
+    ))
+    .map(function (elem) {
+      return elem.getAttribute('data');
+    });
+}
+
+function initializeAssetsInterfaceStreams () {
+  var sendAssetButtonStream = mkAssetButtonStream('sendAssetButton');
+  var receiveAssetButtonStream = mkAssetButtonStream('receiveAssetButton');
+
+  var stopBalanceStream = Rx.Observable
+      .fromEvent(document.querySelector('#topmenu-dashboard'), 'click');
+
+  var retrieveBalanceStream = Rx.Observable
+      .interval(30000)
+      .startWith(0)
+      .takeUntil(stopBalanceStream);
+
+  retrieveBalanceStream.subscribe(function (_) { renderBalances(GL.assets); });
+  sendAssetButtonStream.subscribe(function (assetID) {
+    SendAsset.renderAssetDetailsInModal(assetID);
+    TxValidations.toggleSendButtonClass();
+  });
+  receiveAssetButtonStream.subscribe(function (assetID) {
+    ReceiveAsset.renderAssetDetailsInModal(assetID);
+  });
+}
