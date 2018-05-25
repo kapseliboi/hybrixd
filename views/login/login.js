@@ -26,7 +26,7 @@ var keyDownOnPasswordStream = S.mkInputStream('#inputPasscode');
 
 var loginBtnStream = Rx.Observable
     .fromEvent(document.querySelector('#loginbutton'), 'click')
-    .filter(btnIsNotDisabled);
+    .filter(U.btnIsNotDisabled);
 
 var userSubmitStream = Rx.Observable
     .merge(
@@ -194,7 +194,6 @@ function maybeOpenNewWalletModal (location) {
 }
 
 function nonceHasCorrectLength (nonce1) { return C.clean(nonce1).length === 48; }
-function btnIsNotDisabled (e) { return !e.target.parentElement.classList.contains('disabled'); }
 function mkSessionKeys (credentials) { return C.generateKeys(R.prop('password', credentials), R.prop('userID', credentials), 0); }
 function setSessionDataInElement (sessionHex) { document.querySelector('#session_data').textContent = sessionHex; }
 function hasValidCredentials (credentials) { return V.validateCredentials(R.prop('userID', credentials), R.prop('password', credentials)); }

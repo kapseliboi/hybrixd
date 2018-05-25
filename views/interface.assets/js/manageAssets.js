@@ -112,9 +112,9 @@ function assetIsSelected (a) {
 }
 
 function existingOrNewAssetEntry (assetName) {
-  var foo = { id: assetName, starred: false, balance: {amount: 0, lastTx: 0} };
+  var defaultAsset = { id: assetName, starred: false, balance: {amount: 0, lastTx: 0} };
   return R.compose(
-    R.defaultTo(foo),
+    R.defaultTo(defaultAsset),
     R.find(R.propEq('id', assetName))
   )(GL.assets);
 }
