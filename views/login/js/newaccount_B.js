@@ -27,7 +27,7 @@ PRNG = {};
 
   // seed function exists to wait for mouse movement to add more entropy before generating an address
   seed: function (evt) {
-    console.log('evt', evt);
+    // DEBUG: console.log('evt', evt);
     if (!evt) var evt = window.event;
     var timeStamp = new Date().getTime();
     // seeding is over now we generate and display the address
@@ -171,6 +171,26 @@ function finalizeAccount(userid,passwd,entropy) {
     });
   document.getElementById('inputUserID').value=userid;
   document.getElementById('inputPasscode').value=passwd;
+  // FIXME: quick hack to make login work -> streamify!
+  if(V.validateCredentials(userid,passwd)) {
+    removeClass(document.getElementById('loginbutton'),'disabled');
+  }
+}
+
+function removeClass(element,className) {
+  var currentClassName = element.getAttribute("class");
+  if (typeof currentClassName!== "undefined" && currentClassName) {
+
+    var class2RemoveIndex = currentClassName.indexOf(className);
+    if (class2RemoveIndex != -1) {
+        var class2Remove = currentClassName.substr(class2RemoveIndex, className.length);
+        var updatedClassName = currentClassName.replace(class2Remove,"").trim();
+        element.setAttribute("class",updatedClassName);
+    }
+  }
+  else {
+    element.removeAttribute("class");   
+  } 
 }
 
 function executeSeedTime (event) {
