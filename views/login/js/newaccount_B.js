@@ -169,12 +169,16 @@ function finalizeAccount(userid,passwd,entropy) {
           }
         });
     });
-  document.getElementById('inputUserID').value=userid;
-  document.getElementById('inputPasscode').value=passwd;
+  // DEPRECATED:
+  // document.getElementById('inputUserID').value=userid;
+  // document.getElementById('inputPasscode').value=passwd;
+  
+  document.querySelector('#inputUserID').value = userid;
+  document.querySelector('#inputPasscode').value = passwd;
   // FIXME: quick hack to make login work -> streamify!
-  if(V.validateCredentials(userid,passwd)) {
-    removeClass(document.getElementById('loginbutton'),'disabled');
-  }
+  var U = utils;
+  U.triggerEvent(document.querySelector('#inputUserID'), 'input');
+  U.triggerEvent(document.querySelector('#inputPasscode'), 'input');
 }
 
 function removeClass(element,className) {
