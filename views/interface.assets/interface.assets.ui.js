@@ -1,6 +1,4 @@
 var U = utils;
-var Icons = black;
-var Svg = svg
 var A = asset;
 // User interface transformations
 UItransform = {
@@ -20,7 +18,6 @@ UItransform = {
     document.querySelector('#action-send').style.opacity = 1;
     $('#action-send').modal('hide');
   },
-  setBalance: function (element, setBalance) { document.querySelector(element).innerHTML = setBalance; },
   deductBalance: function (element, assetID, newBalance) {
     var globalAssetsWithUpdatedAsset = R.reduce(R.curry(updateAssetBalance)(assetID)(newBalance), [], GL.assets);
     // TODO: Validate balance String here.
@@ -40,7 +37,7 @@ function updateAssetBalance (id, amount, newAssets, a) {
       R.compose(
         R.set(lastTxLens, Date.now()),
         R.set(newBalanceLens, amount)
-          )
+      )
     )
   )(a);
 }

@@ -7,12 +7,55 @@ var U = utils;
 var H = hybridd;
 var A = asset;
 
+var BALANCE_RETRIEVAL_INTERVAL_MS = 30000;
+
 init.interface.assets = function (args) {
   // Expose functions globally
   changeManageButton = M.changeManageButton(M.renderManageButton); // TODO: Remove messy callback structure......
   U.setViewTab('assets'); // top menu UI change
   U.documentReady(main(args));
 };
+
+function main (args) {
+  return function () {
+    var globalAssets = GL.assets;
+    document.querySelector('.assets-main > .data').innerHTML = mkHtmlToRender(globalAssets);
+    globalAssets.forEach(function (asset) { setStarredAssetClass(R.prop('id', asset), R.prop('starred', asset)); });
+    U.scrollToAnchor(args);
+    initializeAssetsInterfaceStreams();
+  };
+}
+
+function initializeAssetsInterfaceStreams () {
+  var sendAssetButtonStream = mkAssetButtonStream('sendAssetButton');
+  var receiveAssetButtonStream = mkAssetButtonStream('receiveAssetButton');
+  var saveAssetListStream = Rx.Observable.fromEvent(document.querySelector('#save-assetlist'), 'click');
+  var maxAmountButtonStream = Rx.Observable.fromEvent(document.querySelector('.max-amount-button'), 'click');
+  var stopBalanceStream = Rx.Observable.fromEvent(document.querySelector('#topmenu-dashboard'), 'click');
+  var retrieveBalanceStream = Rx.Observable
+      .interval(BALANCE_RETRIEVAL_INTERVAL_MS)
+      .startWith(0)
+      .takeUntil(stopBalanceStream);
+
+  retrieveBalanceStream.subscribe(function (_) { renderBalances(GL.assets); });
+  maxAmountButtonStream.subscribe(function (_) {
+    var sendBalance = document.querySelector('#action-send .modal-send-balance').innerHTML;
+    document.querySelector('#modal-send-amount').value = sendBalance;
+  });
+  saveAssetListStream.subscribe(M.saveAssetList(main()));
+  sendAssetButtonStream.subscribe(function (assetID) {
+    SendAsset.renderAssetDetailsInModal(assetID);
+    TxValidations.toggleSendButtonClass();
+  });
+  receiveAssetButtonStream.subscribe(function (assetID) {
+    ReceiveAsset.renderAssetDetailsInModal(assetID);
+  });
+}
+
+function mkAssetButtonStream (query) {
+  return Rx.Observable.fromEvent(document.querySelectorAll('.' + query), 'click')
+    .map(R.path(['target', 'attributes', 'data', 'value']));
+}
 
 function renderBalances (assets) {
   assets.forEach(U.retrieveBalance(updateGlobalAssetsAndRenderDataInDOM, 11, '.assets-main > .data .balance-'));
@@ -43,46 +86,4 @@ function renderDollarPriceInAsset (asset, amount) {
   var assetDollarPrice = Valuations.renderDollarPrice(symbolName, amount);
   var query = document.getElementById(symbolName + '-dollar');
   if (query !== null) { query.innerHTML = assetDollarPrice; }
-}
-
-function main (args) {
-  return function () {
-    var globalAssets = GL.assets;
-    document.querySelector('.assets-main > .data').innerHTML = mkHtmlToRender(globalAssets);
-    globalAssets.forEach(function (asset) { setStarredAssetClass(R.prop('id', asset), R.prop('starred', asset)); });
-    U.scrollToAnchor(args);
-    initializeAssetsInterfaceStreams();
-  };
-};
-
-function mkAssetButtonStream (query) {
-  return Rx.Observable.fromEvent(document.querySelectorAll('.' + query), 'click')
-    .map(R.path(['target', 'attributes', 'data', 'value']));
-}
-
-function initializeAssetsInterfaceStreams () {
-  var sendAssetButtonStream = mkAssetButtonStream('sendAssetButton');
-  var receiveAssetButtonStream = mkAssetButtonStream('receiveAssetButton');
-  var saveAssetListStream = Rx.Observable.fromEvent(document.querySelector('#save-assetlist'), 'click');
-  var maxAmountButtonStream = Rx.Observable.fromEvent(document.querySelector('.max-amount-button'), 'click');
-  var stopBalanceStream = Rx.Observable.fromEvent(document.querySelector('#topmenu-dashboard'), 'click');
-
-  var retrieveBalanceStream = Rx.Observable
-      .interval(30000)
-      .startWith(0)
-      .takeUntil(stopBalanceStream);
-
-  retrieveBalanceStream.subscribe(function (_) { renderBalances(GL.assets); });
-  maxAmountButtonStream.subscribe(function (_) {
-    var sendBalance = document.querySelector('#action-send .modal-send-balance').innerHTML;
-    document.querySelector('#modal-send-amount').value = sendBalance;
-  });
-  saveAssetListStream.subscribe(M.saveAssetList(main()));
-  sendAssetButtonStream.subscribe(function (assetID) {
-    SendAsset.renderAssetDetailsInModal(assetID);
-    TxValidations.toggleSendButtonClass();
-  });
-  receiveAssetButtonStream.subscribe(function (assetID) {
-    ReceiveAsset.renderAssetDetailsInModal(assetID);
-  });
 }
