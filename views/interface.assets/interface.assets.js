@@ -8,6 +8,7 @@ var H = hybridd;
 var A = asset;
 
 var BALANCE_RETRIEVAL_INTERVAL_MS = 30000;
+var AMOUNT_OF_SIGNIFICANT_NUMBERS = 11;
 
 init.interface.assets = function (args) {
   // Expose functions globally
@@ -58,7 +59,7 @@ function mkAssetButtonStream (query) {
 }
 
 function renderBalances (assets) {
-  assets.forEach(U.retrieveBalance(updateGlobalAssetsAndRenderDataInDOM, 11, '.assets-main > .data .balance-'));
+  assets.forEach(U.retrieveBalance(updateGlobalAssetsAndRenderDataInDOM, AMOUNT_OF_SIGNIFICANT_NUMBERS, '.assets-main > .data .balance-'));
 }
 
 function updateGlobalAssetsAndRenderDataInDOM (element, numberOfSignificantDigits, sanitizedData, assetID) {

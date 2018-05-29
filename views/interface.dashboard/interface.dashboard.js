@@ -32,7 +32,7 @@ function renderStarredAssets (assets) {
       : UI.noStarredAssetsHTML;
 
   document.querySelector('.dashboard-balances .spinner-loader').classList.add('disabled-fast');
-  setTimeout(() => { document.querySelector('.dashboard-balances > .data').innerHTML = htmlToRender; }, 500); // Render new HTML string in DOM. 500 sec delay for fadeout. Should separate concern!
+  setTimeout(function () { document.querySelector('.dashboard-balances > .data').innerHTML = htmlToRender; }, 500); // Render new HTML string in DOM. 500 sec delay for fadeout. Should separate concern!
 }
 
 function setIntervalFunctions (assets) {
