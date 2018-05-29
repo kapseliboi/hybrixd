@@ -6,12 +6,14 @@ UItransform = {
     loadSpinner();
     document.querySelector('#action-send .pure-button-send').classList.add('pure-button-disabled');
     document.querySelector('#action-send .pure-button-send').classList.remove('pure-button-primary');
+    document.querySelector('#action-send .pure-button-cancel-tx').classList.add('pure-button-disabled');
     document.querySelector('#action-send').style.opacity = '0.7';
   },
   txStop: function () {
     stopSpinner();
     document.querySelector('#action-send .pure-button-send').classList.remove('pure-button-disabled');
     document.querySelector('#action-send .pure-button-send').classList.add('pure-button-primary');
+    document.querySelector('#action-send .pure-button-cancel-tx').classList.remove('pure-button-disabled');
     document.querySelector('#action-send').style.opacity = '1';
   },
   txHideModal: function () {
@@ -28,7 +30,6 @@ UItransform = {
     );
   }
 };
-
 
 function updateAssetBalanceData (id, amount, newAssets, a) {
   var lastTxLens = R.lensPath(['balance', 'lastTx']);
