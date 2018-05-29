@@ -29,6 +29,7 @@ UItransform = {
   }
 };
 
+
 function updateAssetBalanceData (id, amount, newAssets, a) {
   var lastTxLens = R.lensPath(['balance', 'lastTx']);
   var newBalanceLens = R.lensPath(['balance', 'amount']);
