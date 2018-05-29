@@ -64,7 +64,7 @@ function initializeAssetsInterfaceStreams () {
   var sendAssetButtonStream = mkAssetButtonStream('sendAssetButton');
   var receiveAssetButtonStream = mkAssetButtonStream('receiveAssetButton');
   var saveAssetListStream = Rx.Observable.fromEvent(document.querySelector('#save-assetlist'), 'click');
-  var maxAmountButtonStream = Rx.Observable.fromEvent(document.querySelector('.max-amount-button'), 'click')
+  var maxAmountButtonStream = Rx.Observable.fromEvent(document.querySelector('.max-amount-button'), 'click');
   var stopBalanceStream = Rx.Observable.fromEvent(document.querySelector('#topmenu-dashboard'), 'click');
 
   var retrieveBalanceStream = Rx.Observable
