@@ -19,15 +19,17 @@ UItransform = {
     $('#action-send').modal('hide');
   },
   deductBalance: function (element, assetID, newBalance) {
-    var globalAssetsWithUpdatedAsset = R.reduce(R.curry(updateAssetBalance)(assetID)(newBalance), [], GL.assets);
     // TODO: Validate balance String here.
     document.querySelector(element).innerHTML = '<span style="color:#6B6;">' + U.formatFloatInHtmlStr(String(newBalance), 11) + '</span>';
     renderDollarPriceInAsset(assetID, newBalance);
-    U.updateGlobalAssets(globalAssetsWithUpdatedAsset);
+    R.compose(
+      U.updateGlobalAssets,
+      R.reduce(R.curry(updateAssetBalanceData)(assetID)(newBalance), [])
+    );
   }
 };
 
-function updateAssetBalance (id, amount, newAssets, a) {
+function updateAssetBalanceData (id, amount, newAssets, a) {
   var lastTxLens = R.lensPath(['balance', 'lastTx']);
   var newBalanceLens = R.lensPath(['balance', 'amount']);
   return R.compose(
