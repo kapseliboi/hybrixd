@@ -1,9 +1,0 @@
-{
-  "author": "Joachim de Koning",
-  "name": "meta",
-  "description": "meta level Internet of Coins module",
-  "version": "1",
-  "engines": {
-    "node": "*"
-  }
-}
