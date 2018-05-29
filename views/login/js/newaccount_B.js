@@ -1,4 +1,4 @@
-// PRNG seeder and generator  
+// PRNG seeder and generator
 PRNG = {}
 ﻿PRNG.seeder = {
   init: (function () {
@@ -13,7 +13,7 @@ PRNG = {}
     document.getElementById('generate').style.display = 'block';
     document.getElementById('mousemovelimit').innerHTML = '0%';
   },
-  
+
   // number of mouse movements to wait for
   seedLimit: (function () {
     var num = Crypto.util.randomBytes(12)[11];
@@ -24,7 +24,7 @@ PRNG = {}
   lastInputTime: new Date().getTime(),
   seedPoints: [],
   isStillSeeding: true,
-  
+
   // seed function exists to wait for mouse movement to add more entropy before generating an address
   seed: function (evt) {
     if (!evt) var evt = window.event;
@@ -109,7 +109,7 @@ PRNG = {}
   seedingOver: function () {
     PRNG.seeder.isStillSeeding = false;
     // hide generator window
-    document.getElementById('generate').style.display = 'none';    
+    document.getElementById('generate').style.display = 'none';
     document.getElementById('newaccountcontent').style.display = 'none';
     document.getElementById('newaccountmodal').style.display = 'none';
     $('html').css('overflow', '');
@@ -120,15 +120,15 @@ PRNG = {}
 };
 
 function generateAccount(entropy) {
-  confirm('<h3>Choose your level of security</h3> Do you want a medium or high security wallet? <br><br> A medium security wallet has a much shorter password, which is easier to remember. \
+  confirm('<h2>Choose your level of security</h2> <h3>Do you want a medium or high security wallet?<h3> A medium security wallet has a much shorter password, which is easier to remember. \
            However, we do advise not to store more than a month\'s wage worth of value in a medium security wallet.\
            High security wallets have a very long password, making them more secure.',function(highlevel) {
             if(highlevel) {
               var offset=Math.floor(Math.random() * (511-120))
-              var passwd=hexToBase32(entropy.substr(offset+20,60));              
+              var passwd=hexToBase32(entropy.substr(offset+20,60));
             } else {
               var offset=Math.floor(Math.random() * (511-60))
-              var passwd=hexToBase32(entropy.substr(offset+20,20));              
+              var passwd=hexToBase32(entropy.substr(offset+20,20));
             }
             //console.log( DJB2.hash(entropy.substr(offset,12).toLowerCase()+passwd.toUpperCase()).substr(4,4) );
             var userid=hexToBase32( entropy.substr(offset,12)+DJB2.hash(entropy.substr(offset,12).toUpperCase()).substr(0,4)+DJB2.hash(entropy.substr(offset,12).toLowerCase()+passwd.toUpperCase()).substr(4,4) );
@@ -149,10 +149,10 @@ function generateAccount(entropy) {
 function finalizeAccount(userid,passwd,entropy) {
   alert('<h2>Your account has been created!</h2> Please <u>write down</u> these login details and put them in a safe place. If you lose them, you can <u>never ever</u> log into your wallet again! <br/><br/> \
     <div class="login-credentials"><table><tbody><tr style="border-bottom: 1px solid #D9E3EB;"><td>Account ID: </td><td class="credential">'+userid+'</td></tr><tr><td>Password: </td><td class="credential">'+passwd+'</td></tr></tbody></table></div> \
-    <br/>We cannot help you recover the keys, so they are <u>your responsibility</u>! <br/>Have a lot of fun using Internet of Coins! <br /><br /> <span class="beta-warning"><span style="font-size: 1em;">⚠</span> WARNING: This wallet is still in beta.<br />Do not yet store large amounts of value on it!</span> <br>',
+    <br/>We cannot help you recover the keys, so they are <u>your responsibility</u>! <br/>Have a lot of fun using Internet of Coins! <br /><br /> <span class="warning"><span style="font-size: 1em;">⚠</span> WARNING: This wallet is still in beta.<br />Do not yet store large amounts of value on it!</span> <br>',
     {title: '', button: 'Continue'},
     function(){
-      confirm('<h3>Your account has been created!</h3> Did you write down your login details and put them in a safe place? If not, you will get new login credentials.',function(redo) {
+      confirm('<h2>Your account has been created!</h2> Did you write down your login details and put them in a safe place? If not, you will get new login credentials.',function(redo) {
           if(redo) {
             generateAccount(entropy);
           }

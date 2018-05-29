@@ -1,0 +1,93 @@
+// -- Dashboard styles ----------------------------------------------------
+
+.content > .dashboard-balances {
+  margin-top: 0.2em;
+
+  .balance {
+    @include transition(all 1s ease);
+    display: inline-block;
+    min-width: 100%;
+    padding: 12px;
+    text-align: center;
+    vertical-align: top;
+    margin: 0 0 1.5em;
+    border-radius: 0.5em;
+    cursor: pointer;
+
+    @include breakpoint(small) {
+      min-width: 30%;
+    }
+    @include breakpoint(medium) {
+      min-width: 120px;
+    }
+    .icon {
+      margin-top: -35px;
+
+      svg {
+        width: 50px;
+        height: 50px;
+      }
+    }
+    h5 {
+      @include font-size(14);
+      color: $darker-grey;
+      text-transform: uppercase;
+      margin: 10px 0 0;
+      font-weight: $semi-bold;
+    }
+    h3 {
+      @include font-size(22);
+      color: $button-primary;
+      font-weight: $semi-bold;
+      margin: 10px 0 0;
+      padding: 0;
+
+      &.balance:hover {
+        background: transparent;
+      }
+    }
+    .mini-balance {
+      @include font-size(14);
+      font-weight: $regular;
+    }
+    &:hover {
+      background: $light-grey;
+    }
+  }
+  .no-starred-message {
+    //font-size: 1em;
+    font-style: italic;
+    color: $darker-grey;
+  }
+  .data > .balance {
+    border: 1px solid $light-grey;
+    margin: 30px 5px 10px;
+
+    @include breakpoint(small) {
+      margin: 30px 1.5% 10px;
+    }
+    @include breakpoint(medium) {
+      margin: 30px 10px 10px;
+    }
+  }
+}
+.content > .dashboard-community {
+  @include breakpoint(medium) {
+    margin-left: 0;
+    margin-right: 0.5%;
+  }
+}
+.content > .dashboard-faq {
+  @include breakpoint(medium) {
+    margin-left: 0.25%;
+    margin-right: 0.25%;
+  }
+}
+.content > .dashboard-updates {
+  @include breakpoint(medium) {
+    margin-left: 0.5%;
+    margin-right: 0;
+  }
+}
+
+
