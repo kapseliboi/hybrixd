@@ -62,6 +62,7 @@ function getDeterministicData (z) {
 function getDeterministicTransactionData (z) {
   var transactionData = R.nth(2, z);
   var deterministic = R.nth(4, z);
+  var asset = R.prop('asset', transactionData);
   var factor = R.path(['asset', 'factor'], transactionData);
   var assetID = R.path(['asset', 'id'], transactionData);
   // var fee = R.nth(3, z)
@@ -82,13 +83,26 @@ function getDeterministicTransactionData (z) {
     R.nth(0)
   )(z);
 
+  var feeSymbolEqualsId = R.equals(
+    R.prop('id', asset),
+    R.prop('fee-symbol', asset)
+  );
+  var feeFactor = feeSymbolEqualsId
+      ? R.prop('factor', asset)
+      : R.compose(
+        R.prop('factor'),
+        R.find(
+          R.propEq('id', R.prop('fee-symbol', asset)
+                  ))
+      )(GL.assets);
+
   var data = {
     mode: R.path(['asset', 'mode'], transactionData).split('.')[1],
     symbol: R.path(['asset', 'symbol'], transactionData),
     source: R.prop('sourceAddress', transactionData),
     target: R.prop('targetAddress', transactionData),
     amount: toInt(R.prop('amount', transactionData), factor),
-    fee: toInt(R.prop('fee', transactionData), factor),
+    fee: toInt(R.prop('fee', transactionData), feeFactor),
     factor: factor,
     contract: R.path(['asset', 'contract'], transactionData),
     keys: R.path(['asset', 'keys'], transactionData),
