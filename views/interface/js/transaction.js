@@ -248,7 +248,6 @@ function mkEmptyOrPublicKeyString (asset) {
 
 function mkTotalAmountStr (t, factor) {
   var asset = R.prop('asset', t);
-  var amountBigNumber = toInt(R.prop('amount', t), factor);
   var feeSymbolEqualsId = R.equals(
     R.prop('id', asset),
     R.prop('fee-symbol', asset)
@@ -262,10 +261,11 @@ function mkTotalAmountStr (t, factor) {
                   ))
       )(GL.assets);
 
+  var amountBigNumber = toInt(R.prop('amount', t), feeFactor);
   var feeBigNumber = toInt(R.prop('fee', t), feeFactor);
-  var amountWithFeeBigNumber = amountBigNumber.plus(feeBigNumber, factor);
+  var amountWithFeeBigNumber = amountBigNumber.plus(feeBigNumber, feeFactor);
 
-  return fromInt(amountWithFeeBigNumber, factor).toString();
+  return fromInt(amountWithFeeBigNumber, feeFactor).toString();
 }
 
 // prepare universal unspent query containing: source address / target address / amount / public key
