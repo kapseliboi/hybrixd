@@ -31,7 +31,7 @@ var storage = (function() {
           return Rx.Observable
             .fromPromise(hybriddReturnProcess(properties));
         })
-        .map(data => {
+        .map(function (data) {
           if (R.isNil(R.prop('stopped', data)) && R.prop('progress', data) < 1) throw data;
           return data;
         })
@@ -58,30 +58,29 @@ var storage = (function() {
               ? remoteIsNewer(storekey)
               : remoteIsOlder(storekey, metaData);
           } else {
-            return noChangesBetweenRemoteAndLocal(storekey, metaData);
+            return remoteIsOlder(storekey, metaData);
+            // return noChangesBetweenRemoteAndLocal(storekey, metaData);
           }
         })
 
     function remoteIsNewer (storeKey) {
-      var fooStream = Rx.Observable
+      var storageGetStream = Rx.Observable
           .fromPromise(hybriddcall({r:'s/storage/get/' + storeKey, z: 0}))
 
-      var barStream = fooStream
+      var storageGetResponseStream = storageGetStream
           .flatMap(function (properties) {
             return Rx.Observable
               .fromPromise(hybriddReturnProcess(properties));
           })
-          .map(data => {
+          .map(function (data) {
             if (R.isNil(R.prop('stopped', data)) && R.prop('progress', data) < 1) throw data;
             return data;
           })
           .retryWhen(function (errors) { return errors.delay(1000); })
           .flatMap(function (object) {
-            console.log("object = ", object);
             var dataExists = typeof object.data === 'undefined' ||
                 object.data === null ||
                 object.data === 'null'
-            console.log("dataExists = ", dataExists);
             if (dataExists) {
               return Rx.Observable
                 .fromPromise(localforage.getItem(storeKey))
@@ -89,16 +88,14 @@ var storage = (function() {
               try {
                 localforage.setItem(storeKey, object.data);
                 localforage.setItem(storeKey+'.meta',{time:Date.now(), hash: DJB2.hash(object.data)});
-                return Rx.Observable.of(object)
-                // return true;
+                return Rx.Observable.of(object.data)
               } catch (e) {
-                return Rx.Observable.of(object)
-                // return false;
+                // TODO: throw error!
+                return Rx.Observable.of(object.data)
               }
-              return Rx.Observable.of(objec)
             }
           });
-      return barStream;
+      return storageGetResponseStream;
     }
 
     function remoteIsOlder (storeKey, metaData) {
@@ -121,12 +118,11 @@ var storage = (function() {
               })
               .retryWhen(function (errors) { return errors.delay(1000); })
               .map(function (object) {
-                console.log("object = ", object);
-                console.log('Remote is older.')
+                // Add to Proof of Work queue.
                 if (typeof object.data === 'string' &&
-                    GL.powqueue.indexOf(metaData.res) !== -1) {
-                  GL.powqueue.push(storekey + '/' + object.data);
-              }
+                    GL.powqueue.indexOf(metaData.res) === -1) {
+                  GL.powqueue.push(storekey + '/' + R.prop('data', object));
+                }
                 return value
               })
 

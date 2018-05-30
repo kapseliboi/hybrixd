@@ -1,6 +1,5 @@
 var proofOfWork_ = {
   loopThroughProofOfWork: function () {
-    console.log('looping.');
     var req = GL.powqueue.shift();
     if (typeof req !== 'undefined') {
       // attempt to send proof-of-work to node
