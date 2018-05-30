@@ -14,9 +14,9 @@ var storage = (function() {
   var Sync = function(storekey) {
 
     var storageMetaStream = Rx.Observable
-        .fromPromise(hybriddcall({r: '/s/storage/meta/' + storekey, z: false}))
+        .fromPromise(hybriddcall({r: 'e/storage/meta/' + storekey, z: false}))
         .filter(R.propEq('error', 0))
-        .map(R.merge({r: '/s/storage/meta/' + storekey, z: true}));
+        .map(R.merge({r: 'e/storage/meta/' + storekey, z: true}));
 
     var localForageStream = Rx.Observable
         .fromPromise(localforage.getItem(storekey + '.meta'))
@@ -65,7 +65,7 @@ var storage = (function() {
 
     function remoteIsNewer (storeKey) {
       var storageGetStream = Rx.Observable
-          .fromPromise(hybriddcall({r:'s/storage/get/' + storeKey, z: 0}))
+          .fromPromise(hybriddcall({r:'e/storage/get/' + storeKey, z: 0}))
 
       var storageGetResponseStream = storageGetStream
           .flatMap(function (properties) {
@@ -105,7 +105,7 @@ var storage = (function() {
                      .catch(e => console.log('e', e)))
         .flatMap(function (value) {
           var setStorageCallStream =  Rx.Observable
-              .fromPromise(hybriddcall({r: 's/storage/set/' + storekey + '/' + value, z: false }))
+              .fromPromise(hybriddcall({r: 'e/storage/set/' + storekey + '/' + value, z: false }))
 
           var setStorageResponseStream = setStorageCallStream
               .flatMap(function (properties) {
