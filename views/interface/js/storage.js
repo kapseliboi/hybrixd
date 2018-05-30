@@ -60,7 +60,8 @@ var storage = (function() {
               ? remoteIsNewer(storekey)
               : remoteIsOlder(storekey, metaData);
           } else {
-            return noChangesBetweenRemoteAndLocal(storekey, metaData);
+            return remoteIsOlder(storekey, metaData);
+            // return noChangesBetweenRemoteAndLocal(storekey, metaData);
           }
         })
 
