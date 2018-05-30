@@ -64,6 +64,7 @@ function getDeterministicTransactionData (z) {
   var deterministic = R.nth(4, z);
   var factor = R.path(['asset', 'factor'], transactionData);
   var assetID = R.path(['asset', 'id'], transactionData);
+  // var fee = R.nth(3, z)
 
   var changeLens = R.lensProp('change');
   var unspent = R.compose(
@@ -191,6 +192,7 @@ function mkTransactionData (p, factor) {
   var asset = R.prop('asset', p);
   var amount = Number(R.prop('amount', p));
   var fee = Number(R.prop('fee', asset));
+
   var originalBalance = toInt(R.path(['balance', 'amount'], asset));
 
   function mkNewBalance (a) {
@@ -231,8 +233,22 @@ function mkEmptyOrPublicKeyString (asset) {
 }
 
 function mkTotalAmountStr (t, factor) {
+  var asset = R.prop('asset', t);
   var amountBigNumber = toInt(R.prop('amount', t), factor);
-  var feeBigNumber = toInt(R.prop('fee', t), factor);
+  var feeSymbolEqualsId = R.equals(
+    R.prop('id', asset),
+    R.prop('fee-symbol', asset)
+  );
+  var feeFactor = feeSymbolEqualsId
+      ? R.prop('factor', asset)
+      : R.compose(
+        R.prop('factor'),
+        R.find(
+          R.propEq('id', R.prop('fee-symbol', asset)
+                  ))
+      )(GL.assets);
+
+  var feeBigNumber = toInt(R.prop('fee', t), feeFactor);
   var amountWithFeeBigNumber = amountBigNumber.plus(feeBigNumber, factor);
 
   return fromInt(amountWithFeeBigNumber, factor).toString();
