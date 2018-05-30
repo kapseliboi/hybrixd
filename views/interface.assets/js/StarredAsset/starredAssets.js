@@ -1,3 +1,5 @@
+var U = utils;
+
 function setStarredAssetClass (assetID, isStarred) {
   var id = '#' + assetID.replace(/\./g, '_'); // Mk into function. Being used elsewhere too.
   var addOrRemoveClass = isStarred ? 'add' : 'remove';
@@ -22,8 +24,12 @@ function maybeUpdateStarredProp (assetID) {
 toggleStar = function (assetID) {
   var globalAssets = GL.assets;
   var updatedGlobalAssets = R.reduce(maybeUpdateStarredProp(assetID), [], globalAssets);
-  var isStarred = R.defaultTo(false, R.find(R.propEq('id', assetID, updatedGlobalAssets)));
   var starredForStorage = R.map(R.pickAll(['id', 'starred']), updatedGlobalAssets);
+  var isStarred = R.compose(
+    R.defaultTo(false),
+    R.prop('starred'),
+    R.find(R.propEq('id', assetID))
+  )(updatedGlobalAssets);
 
   Storage.Set(userStorageKey('ff00-0035'), userEncode(starredForStorage));
   U.updateGlobalAssets(updatedGlobalAssets);

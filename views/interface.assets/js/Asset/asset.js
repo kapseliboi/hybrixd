@@ -1,4 +1,5 @@
 // TODO: Replace all HTML onclicks for streamified events.
+var Svg = svg;
 
 asset = {
   mkAssetHTML: function (str, asset) {

@@ -1,6 +1,4 @@
 var U = utils;
-var Icons = black;
-var Svg = svg
 var A = asset;
 // User interface transformations
 UItransform = {
@@ -8,29 +6,32 @@ UItransform = {
     loadSpinner();
     document.querySelector('#action-send .pure-button-send').classList.add('pure-button-disabled');
     document.querySelector('#action-send .pure-button-send').classList.remove('pure-button-primary');
+    document.querySelector('#action-send .pure-button-cancel-tx').classList.add('pure-button-disabled');
     document.querySelector('#action-send').style.opacity = '0.7';
   },
   txStop: function () {
     stopSpinner();
     document.querySelector('#action-send .pure-button-send').classList.remove('pure-button-disabled');
     document.querySelector('#action-send .pure-button-send').classList.add('pure-button-primary');
+    document.querySelector('#action-send .pure-button-cancel-tx').classList.remove('pure-button-disabled');
     document.querySelector('#action-send').style.opacity = '1';
   },
   txHideModal: function () {
     document.querySelector('#action-send').style.opacity = 1;
     $('#action-send').modal('hide');
   },
-  setBalance: function (element, setBalance) { document.querySelector(element).innerHTML = setBalance; },
   deductBalance: function (element, assetID, newBalance) {
-    var globalAssetsWithUpdatedAsset = R.reduce(R.curry(updateAssetBalance)(assetID)(newBalance), [], GL.assets);
     // TODO: Validate balance String here.
     document.querySelector(element).innerHTML = '<span style="color:#6B6;">' + U.formatFloatInHtmlStr(String(newBalance), 11) + '</span>';
     renderDollarPriceInAsset(assetID, newBalance);
-    U.updateGlobalAssets(globalAssetsWithUpdatedAsset);
+    R.compose(
+      U.updateGlobalAssets,
+      R.reduce(R.curry(updateAssetBalanceData)(assetID)(newBalance), [])
+    );
   }
 };
 
-function updateAssetBalance (id, amount, newAssets, a) {
+function updateAssetBalanceData (id, amount, newAssets, a) {
   var lastTxLens = R.lensPath(['balance', 'lastTx']);
   var newBalanceLens = R.lensPath(['balance', 'amount']);
   return R.compose(
@@ -40,7 +41,7 @@ function updateAssetBalance (id, amount, newAssets, a) {
       R.compose(
         R.set(lastTxLens, Date.now()),
         R.set(newBalanceLens, amount)
-          )
+      )
     )
   )(a);
 }
