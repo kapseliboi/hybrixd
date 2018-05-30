@@ -133,18 +133,23 @@ mkdir -p $OUTPATH/views/interface/svg
 cp views/interface/svg/*.svg $OUTPATH/views/interface/svg/
 
 mkdir -p $OUTPATH/views/interface.assets/js
-mkdir $OUTPATH/views/interface.assets/js/ReceiveAsset > /dev/null
+mkdir $OUTPATH/views/interface.assets/js/Asset > /dev/null
+mkdir $OUTPATH/views/interface.assets/js/Clipboard > /dev/null
+mkdir $OUTPATH/views/interface.assets/js/ManageAssets > /dev/null
+mkdir $OUTPATH/views/interface.assets/js/ReceiveAsset    > /dev/null
+mkdir $OUTPATH/views/interface.assets/js/SearchBar    > /dev/null
 mkdir $OUTPATH/views/interface.assets/js/SendAsset    > /dev/null
+mkdir $OUTPATH/views/interface.assets/js/StarredAsset    > /dev/null
 mkdir $OUTPATH/views/interface.assets/js/Transaction  > /dev/null
 cp views/interface.assets/main.js $OUTPATH/views/interface.assets/
 cp views/interface.assets/*.html $OUTPATH/views/interface.assets/
 $UGLIFY views/interface.assets/interface.assets.js > $OUTPATH/views/interface.assets/interface.assets.js
 $UGLIFY views/interface.assets/interface.assets.ui.js > $OUTPATH/views/interface.assets/interface.assets.ui.js
-$UGLIFY views/interface.assets/js/asset.js > $OUTPATH/views/interface.assets/js/asset.js
-$UGLIFY views/interface.assets/js/clipboard.js > $OUTPATH/views/interface.assets/js/clipboard.js
-$UGLIFY views/interface.assets/js/manageAssets.js > $OUTPATH/views/interface.assets/js/manageAssets.js
-$UGLIFY views/interface.assets/js/searchBar.js > $OUTPATH/views/interface.assets/js/searchBar.js
-$UGLIFY views/interface.assets/js/starredAssets.js > $OUTPATH/views/interface.assets/js/starredAssets.js
+$UGLIFY views/interface.assets/js/Asset/asset.js > $OUTPATH/views/interface.assets/js/Asset/asset.js
+$UGLIFY views/interface.assets/js/Clipboard/clipboard.js > $OUTPATH/views/interface.assets/js/Clipboard/clipboard.js
+$UGLIFY views/interface.assets/js/ManageAssets/manageAssets.js > $OUTPATH/views/interface.assets/js/ManageAssets/manageAssets.js
+$UGLIFY views/interface.assets/js/SearchBar/searchBar.js > $OUTPATH/views/interface.assets/js/SearchBar/searchBar.js
+$UGLIFY views/interface.assets/js/StarredAsset/starredAssets.js > $OUTPATH/views/interface.assets/js/StarredAsset/starredAssets.js
 $UGLIFY views/interface.assets/js/ReceiveAsset/receiveAsset.js > $OUTPATH/views/interface.assets/js/ReceiveAsset/receiveAsset.js
 $UGLIFY views/interface.assets/js/SendAsset/sendAsset.js > $OUTPATH/views/interface.assets/js/SendAsset/sendAsset.js
 $UGLIFY views/interface.assets/js/Transaction/utils.js > $OUTPATH/views/interface.assets/js/Transaction/utils.js
