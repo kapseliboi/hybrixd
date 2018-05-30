@@ -59,7 +59,7 @@ var storage = (function() {
 
     function remoteIsNewer (storeKey) {
       return Rx.Observable
-        .fromPromise(hybriddcall({r:'s/storage/get/' + storeKey, z:0}))
+        .fromPromise(hybriddcall({r:'s/storage/get/' + storeKey, z: 0}))
         .flatMap(function (object) {
           var dataExists = typeof object.data === 'undefined' ||
               object.data === null ||
@@ -86,8 +86,30 @@ var storage = (function() {
         .fromPromise(localforage.getItem(storeKey)
                      .then(r => r)
                      .catch(e => console.log('e', e)))
-        .map(value => {
-          return value
+        .flatMap(function (value) {
+          var setStorageCallStream =  Rx.Observable
+              .fromPromise(hybriddcall({r: 's/storage/set/' + storekey + '/' + value, z: false }))
+
+          var setStorageResponseStream = setStorageCallStream
+              .flatMap(function (properties) {
+                return Rx.Observable
+                  .fromPromise(hybriddReturnProcess(properties));
+              })
+              .map(data => {
+                if (R.isNil(R.prop('stopped', data)) && R.prop('progress', data) < 1) throw data;
+                return data;
+              })
+              .map(function (object) {
+                console.log("object = ", object.data);
+                console.log('Remote is older.')
+                if (typeof object.data === 'string' &&
+                    GL.powqueue.indexOf(metaData.res) === -1) {
+                  GL.powqueue.push(storekey + '/' + object.data);
+              }
+                return value
+              })
+
+          return setStorageResponseStream;
         })
     }
 
@@ -117,9 +139,7 @@ var storage = (function() {
         hash: DJB2.hash(storevalue)
       });
       if (storekey.substr(-6)!=='-LOCAL') {
-        setTimeout(function(storekey) {
-          Sync(storekey);
-        }, 2000,storekey);
+        return Sync(storekey);
       }
     },
 

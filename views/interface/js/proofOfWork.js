@@ -1,5 +1,6 @@
-const proofOfWork = {
+var proofOfWork_ = {
   loopThroughProofOfWork: function () {
+    console.log('looping.');
     var req = GL.powqueue.shift();
     if (typeof req !== 'undefined') {
       // attempt to send proof-of-work to node
@@ -11,8 +12,25 @@ const proofOfWork = {
 function submitProofOfWork (req) {
   return function (proof) {
     const proofOfWorkStr = req.split('/')[0] + '/' + proof;
+    var url = 's/storage/pow/' + proofOfWorkStr;
     logger('Submitting storage proof: ' + proofOfWorkStr);
-    hybriddcall({r: 's/storage/pow/' + proofOfWorkStr, z: 0}, 0, function (object) {});
+
+    var hybriddCallStream = Rx.Observable
+        .fromPromise(hybriddcall({r: url, z: false}))
+        .filter(R.propEq('error', 0))
+        .map(R.merge({r: url, z: true}));
+
+    var hybriddCallResponseStream = hybriddCallStream
+        .flatMap(function (properties) {
+          return Rx.Observable
+            .fromPromise(hybriddReturnProcess(properties));
+        })
+        .map(data => {
+          if (R.isNil(R.prop('stopped', data)) && R.prop('progress', data) < 1) throw data;
+          return data;
+        });
+
+    hybriddCallResponseStream.subscribe(function (_) {});
   };
 }
 

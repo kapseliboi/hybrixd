@@ -10,7 +10,7 @@
 // - Async: Fetch valuations
 // - Async: Initialize Proof of Work loop
 
-var POW = proofOfWork;
+var POW = proofOfWork_;
 var Valuations = valuations;
 var Storage = storage;
 var Icons = black;
@@ -83,8 +83,11 @@ var initializationStream = Rx.Observable
       deterministicHashesResponseProcessStream
     );
 
+var powQueueIntervalStream = Rx.Observable
+    .interval(30000);
+
 function main () {
-  intervals.pow = setInterval(POW.loopThroughProofOfWork, 120000); // once every two minutes, loop through proof-of-work queue
+  powQueueIntervalStream.subscribe(function (_) { POW.loopThroughProofOfWork(); } ); // once every two minutes, loop through proof-of-work queue
   initializationStream.subscribe(initialize);
   assetsDetailsStream.subscribe(updateAssetDetailsAndRenderDashboardView); // TODO: Separate data retrieval from DOM rendering. Dashboard should be rendered in any case.
   dollarPriceStream.subscribe(function (_) { Valuations.getDollarPrices(); });

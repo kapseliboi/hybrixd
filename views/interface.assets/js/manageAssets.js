@@ -64,7 +64,8 @@ var manageAssets = {
         }, [], newActiveAssets);
 
         // GLOBAL STUFF
-        Storage.Set(userStorageKey('ff00-0035'), userEncode(newActiveAssetsForStorage));
+        Storage.Set(userStorageKey('ff00-0035'), userEncode(newActiveAssetsForStorage))
+          .subscribe(function (_) {});
         U.updateGlobalAssets(newGlobalAssets);
         cb(); // RE-RENDER VIEW
       });
