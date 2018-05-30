@@ -60,8 +60,7 @@ var storage = (function() {
               ? remoteIsNewer(storekey)
               : remoteIsOlder(storekey, metaData);
           } else {
-            return remoteIsOlder(storekey, metaData);
-            // return noChangesBetweenRemoteAndLocal(storekey, metaData);
+            return noChangesBetweenRemoteAndLocal(storekey, metaData);
           }
         })
 
@@ -107,7 +106,7 @@ var storage = (function() {
                      .catch(e => console.log('e', e)))
         .flatMap(function (value) {
           var setStorageCallStream =  Rx.Observable
-              .fromPromise(hybriddcall({r: 'e/storage/set/' + storekey + '/' + value, z: false }))
+              .fromPromise(hybriddcall({r: 'e/storage/set/' + storekey + '/' + value, z: true }))
 
           var setStorageResponseStream = setStorageCallStream
               .flatMap(function (properties) {
