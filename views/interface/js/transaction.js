@@ -62,8 +62,10 @@ function getDeterministicData (z) {
 function getDeterministicTransactionData (z) {
   var transactionData = R.nth(2, z);
   var deterministic = R.nth(4, z);
+  var asset = R.prop('asset', transactionData);
   var factor = R.path(['asset', 'factor'], transactionData);
   var assetID = R.path(['asset', 'id'], transactionData);
+  // var fee = R.nth(3, z)
 
   var changeLens = R.lensProp('change');
   var unspent = R.compose(
@@ -81,13 +83,26 @@ function getDeterministicTransactionData (z) {
     R.nth(0)
   )(z);
 
+  var feeSymbolEqualsId = R.equals(
+    R.prop('id', asset),
+    R.prop('fee-symbol', asset)
+  );
+  var feeFactor = feeSymbolEqualsId
+      ? R.prop('factor', asset)
+      : R.compose(
+        R.prop('factor'),
+        R.find(
+          R.propEq('id', R.prop('fee-symbol', asset)
+                  ))
+      )(GL.assets);
+
   var data = {
     mode: R.path(['asset', 'mode'], transactionData).split('.')[1],
     symbol: R.path(['asset', 'symbol'], transactionData),
     source: R.prop('sourceAddress', transactionData),
     target: R.prop('targetAddress', transactionData),
     amount: toInt(R.prop('amount', transactionData), factor),
-    fee: toInt(R.prop('fee', transactionData), factor),
+    fee: toInt(R.prop('fee', transactionData), feeFactor),
     factor: factor,
     contract: R.path(['asset', 'contract'], transactionData),
     keys: R.path(['asset', 'keys'], transactionData),
@@ -191,6 +206,7 @@ function mkTransactionData (p, factor) {
   var asset = R.prop('asset', p);
   var amount = Number(R.prop('amount', p));
   var fee = Number(R.prop('fee', asset));
+
   var originalBalance = toInt(R.path(['balance', 'amount'], asset));
 
   function mkNewBalance (a) {
@@ -231,11 +247,25 @@ function mkEmptyOrPublicKeyString (asset) {
 }
 
 function mkTotalAmountStr (t, factor) {
-  var amountBigNumber = toInt(R.prop('amount', t), factor);
-  var feeBigNumber = toInt(R.prop('fee', t), factor);
-  var amountWithFeeBigNumber = amountBigNumber.plus(feeBigNumber, factor);
+  var asset = R.prop('asset', t);
+  var feeSymbolEqualsId = R.equals(
+    R.prop('id', asset),
+    R.prop('fee-symbol', asset)
+  );
+  var feeFactor = feeSymbolEqualsId
+      ? R.prop('factor', asset)
+      : R.compose(
+        R.prop('factor'),
+        R.find(
+          R.propEq('id', R.prop('fee-symbol', asset)
+                  ))
+      )(GL.assets);
 
-  return fromInt(amountWithFeeBigNumber, factor).toString();
+  var amountBigNumber = toInt(R.prop('amount', t), feeFactor);
+  var feeBigNumber = toInt(R.prop('fee', t), feeFactor);
+  var amountWithFeeBigNumber = amountBigNumber.plus(feeBigNumber, feeFactor);
+
+  return fromInt(amountWithFeeBigNumber, feeFactor).toString();
 }
 
 // prepare universal unspent query containing: source address / target address / amount / public key
