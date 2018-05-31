@@ -102,7 +102,8 @@ function initialize (z) {
   GL.assetnames = mkAssetData(assetsModesAndNames, 'name');
   GL.assetmodes = mkAssetData(assetsModesAndNames, 'mode');
   initializeGlobalAssets(globalAssets);
-  Storage.Set(userStorageKey('ff00-0035'), userEncode(globalAssets));
+  Storage.Set(userStorageKey('ff00-0035'), userEncode(globalAssets))
+    .subscribe(function (_) {});
 }
 
 // EFF ::

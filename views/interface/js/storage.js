@@ -46,12 +46,12 @@ var storage = (function() {
 
     var compareStream = Rx.Observable
         .combineLatest(
-          storageMetaResponseProcessStream,
-          localForageStream
+          localForageStream,
+          storageMetaResponseProcessStream
         )
         .flatMap(function (z) {
-          var metaData = R.nth(0, z)
-          var localMetaData = R.nth(1, z)
+          var localMetaData = R.nth(0, z)
+          var metaData = R.nth(1, z)
 
           if (metaData.hash !== localMetaData.hash) {
             return metaData.time > localMetaData.time
