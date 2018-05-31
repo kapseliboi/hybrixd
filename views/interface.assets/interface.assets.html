@@ -94,6 +94,23 @@
   </div>
 </div>
 
+<div id="action-generate" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="ModalLabel">Generate Address</h2>
+    </div>
+    <div class="modal-body">
+      <p>This asset requires a manual address generation. Click on the button below to create a new <span class="modal-generate-address-asset"></span> address. <br></p>
+
+      <div class="modal-receive-status" id="receivestatus" style="display: block; font-size: 3em;"></div><div class="modal-generate-address-asset-name-text"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="pure-button pure-button-secondary" data-dismiss="modal" aria-hidden="true">Close</button>
+      <button id="modal-generate-address-button" data-clipboard-text="?" class="pure-button pure-button-xsmall pure-button-primary" aria-hidden="true">Generate address</button>
+    </div>
+  </div>
+</div>
+
 <div id="action-advanced" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
   <div class="modal-content">
     <div class="modal-header">

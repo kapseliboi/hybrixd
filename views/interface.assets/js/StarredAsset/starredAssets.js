@@ -31,7 +31,8 @@ toggleStar = function (assetID) {
     R.find(R.propEq('id', assetID))
   )(updatedGlobalAssets);
 
-  Storage.Set(userStorageKey('ff00-0035'), userEncode(starredForStorage));
+  Storage.Set(userStorageKey('ff00-0035'), userEncode(starredForStorage))
+    .subscribe();
   U.updateGlobalAssets(updatedGlobalAssets);
   setStarredAssetClass(assetID, isStarred);
 };
