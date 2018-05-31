@@ -41,8 +41,8 @@ asset = {
     ])(balance);
 
     balanceIsValid
-      ? toggleTransactionButtons(element, assetbuttonsClass, 'remove', 'data-toggle', 'modal', 'disabled', balance)
-      : toggleTransactionButtons(element, assetbuttonsClass, 'add', 'disabled', 'disabled', 'data-toggle', 'n/a');
+      ? toggleTransactionButtons(element, assetbuttonsClass, 'hide', 'data-toggle', 'modal', 'disabled', balance)
+      : toggleTransactionButtons(element, assetbuttonsClass, 'show', 'disabled', 'disabled', 'data-toggle', 'n/a');
   }
 };
 

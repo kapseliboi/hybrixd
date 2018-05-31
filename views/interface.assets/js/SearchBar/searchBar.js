@@ -6,7 +6,7 @@ var tableHTMLStr = '<div class="table">' +
     '<div class="thead">' +
     '<div class="tr">' +
     '<div class="th col1">Asset</div>' +
-    '<div class="th col2" style="text-align:right;">Add / remove from wallet</div>' +
+    '<div class="th col2" style="text-align:right;">show / hide in wallet</div>' +
     '</div>' +
     '</div>' +
     '<div class="tbody">';

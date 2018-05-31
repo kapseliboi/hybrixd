@@ -76,8 +76,8 @@ hy_content += addsvg('./svg/circle.svg','circle');
 hy_content += addsvg('./svg/actions.svg','actions');
 hy_content += addsvg('./svg/edit.svg','edit');
 hy_content += addsvg('./svg/star.svg','star');
-hy_content += addsvg('./svg/add.svg','add');
-hy_content += addsvg('./svg/remove.svg','remove');
+hy_content += addsvg('./svg/show.svg','show');
+hy_content += addsvg('./svg/hide.svg','hide');
 hy_content += addsvg('./svg/logout-alt.svg','logout-alt');
 hy_content += addsvg('./svg/chevron-right.svg','chevron-right');
 
