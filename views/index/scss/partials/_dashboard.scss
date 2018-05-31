@@ -4,7 +4,6 @@
   margin-top: 0.2em;
 
   .balance {
-    @include transition(all 1s ease);
     display: inline-block;
     min-width: 100%;
     padding: 12px;
@@ -13,7 +12,7 @@
     margin: 0 0 1.5em;
     border-radius: 0.5em;
     cursor: pointer;
-
+    @include transition(all 1s ease);
     @include breakpoint(small) {
       min-width: 30%;
     }
@@ -24,38 +23,41 @@
       margin-top: -35px;
 
       svg {
-        width: 50px;
-        height: 50px;
+        width: 40px;
+        height: 40px;
+
+        @include breakpoint(small) {
+          width: 50px;
+          height: 50px;
+        }
       }
     }
     h5 {
-      @include font-size(14);
       color: $darker-grey;
       text-transform: uppercase;
       margin: 10px 0 0;
       font-weight: $semi-bold;
+      @include font-size(14);
     }
     h3 {
-      @include font-size(22);
       color: $button-primary;
       font-weight: $semi-bold;
       margin: 10px 0 0;
       padding: 0;
-
+      @include font-size(22);
       &.balance:hover {
         background: transparent;
       }
     }
     .mini-balance {
-      @include font-size(14);
       font-weight: $regular;
+      @include font-size(14);
     }
     &:hover {
       background: $light-grey;
     }
   }
   .no-starred-message {
-    //font-size: 1em;
     font-style: italic;
     color: $darker-grey;
   }

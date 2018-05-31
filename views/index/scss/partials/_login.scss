@@ -7,6 +7,7 @@
   text-align: center;
   display: block;
   margin: 0 auto;
+  @include user-select(none);
 
   .logo {
     width: 80%;
@@ -18,6 +19,10 @@
       width: 90%;
       margin-top: 80px;
     }
+  }
+
+  input {
+    @include user-select(all);
   }
 
   .pure-button {
@@ -125,6 +130,7 @@
   max-height: 100vh;
   z-index: 2147483647;
   text-align: center;
+  @include user-select(none);
 }
 
 #generate {

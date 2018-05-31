@@ -12,6 +12,7 @@
   @include box-shadow(0,2px,0,rgba(white,0.4),true);
   @include border-radius(4px);
   @include font-size(12);
+  @include user-select(none);
 
   .advanced-icon {
     display: inline-block;
@@ -105,6 +106,10 @@
       }
     }
   }
+}
+
+.social-icons{
+  @include user-select(none);
 }
 
 .social-icons > div {

@@ -32,6 +32,7 @@
     .col2,
     .col3,
     .col4 {
+      @include user-select(text);
       @include breakpoint(xxsmall) {
         display:block;
         width: 100%;
@@ -71,7 +72,7 @@
     .col4 {
       float: left;
       width: 100%;
-
+      @include user-select(none);
       @include breakpoint(small) {
         //padding: 0;
       }
@@ -85,6 +86,7 @@
     }
     .thead {
       display: none;
+      @include user-select(none);
 
       @include breakpoint(medium) {
         display: block;
@@ -421,6 +423,7 @@
   border-radius: 6px;
   color: #13212D;
   letter-spacing: 1px;
+  @include user-select(all);
 }
 #action-send {
   .modal-body {
@@ -445,7 +448,7 @@
       float:right;
     }
   }
-  .modal-send-networkfee {
+  .modal-send-networkfee, .modal-send-balance, .modal-send-currency {
     display: inline-block;
     color: #4DA1FF;
     word-wrap: break-word;

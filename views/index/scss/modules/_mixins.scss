@@ -259,7 +259,6 @@
 
 // -------------------------------------------------------------------
 
-
 @mixin transition($transition...) {
     -moz-transition:    $transition;
     -o-transition:      $transition;
@@ -267,3 +266,15 @@
     transition:         $transition;
 }
 
+// -------------------------------------------------------------------
+
+// User select
+
+// -------------------------------------------------------------------
+
+@mixin user-select($user-select) {
+  -webkit-user-select: $user-select;
+  -moz-user-select: $user-select;
+  -ms-user-select: $user-select;
+  user-select: $user-select;
+}

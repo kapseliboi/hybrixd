@@ -16,6 +16,7 @@ body {
   font-family: $base-font-family;
   font-weight: $base-font-weight;
   @include font-size(12);
+  @include user-select(none);
 }
 
 h2 {
@@ -104,8 +105,6 @@ p {
 }
 
 .content {
-  @include transition(all 2s ease-in); /* Safari */
-  @include border-radius(6px);
   text-align: center;
   margin: 3.5em auto;
   padding-top: 2.5em;
@@ -113,9 +112,9 @@ p {
   width: 90%;
   max-width: 1600px;
   background: $bg-color-light;
-
   padding: 1em;
-
+  @include transition(all 2s ease-in);
+  @include border-radius(6px);
   @include breakpoint(medium) {
     padding: 1.8em;
   }
@@ -148,12 +147,12 @@ p {
       height: 58px;
 
       & > h2 {
-        @include font-size(16);
         margin: 0;
         color: $text-header-color;
         font-weight: $bold;
         padding: 18px 20px;
         display: inline-block;
+        @include font-size(16);
       }
     }
     .data {

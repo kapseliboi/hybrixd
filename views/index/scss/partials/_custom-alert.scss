@@ -28,6 +28,7 @@
   @include border-radius(5px);
   @include box-shadow(0,0,10px,rgba(black,0.3));
   @include box-sizing(border-box);
+  @include user-select(none);
   @include breakpoint(xsmall) {
     top: 5%;
     left: 50%;
@@ -87,6 +88,7 @@
           max-width: 17.5em;
           font-weight: $light;
           word-break: break-all;
+          @include user-select(all);
           @include breakpoint(xxsmall) {
             padding: 0px 12px 12px;
           }

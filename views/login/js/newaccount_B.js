@@ -120,7 +120,7 @@ PRNG = {}
 };
 
 function generateAccount(entropy) {
-  confirm('<h2>Choose your level of security</h2> <h3>Do you want a medium or high security wallet?<h3> A medium security wallet has a much shorter password, which is easier to remember. \
+  confirm('<h2>Choose your level of security</h2> <h3>Do you want a medium or high security wallet?</h3> A medium security wallet has a much shorter password, which is easier to remember. \
            However, we do advise not to store more than a month\'s wage worth of value in a medium security wallet.\
            High security wallets have a very long password, making them more secure.',function(highlevel) {
             if(highlevel) {
