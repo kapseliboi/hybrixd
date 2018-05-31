@@ -38,88 +38,113 @@ var validatedUserCredentialsStream = userSubmitStream
     .withLatestFrom(S.credentialsStream)
     .map(mkCredentialsObj)
     .map(R.map(U.normalizeUserInput))
-    .filter(hasValidCredentials);
+    .map(function (c) {
+      return hasValidCredentials(c)
+        ? c
+        : { error: 1, msg: 'It seems the credentials you entered are incorrect. Please check your username and password and try again.' };
+    });
 
 function main () {
   document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
   maybeOpenNewWalletModal(location);
+  S.credentialsStream.subscribe(disableUserNotificationBox);
   keyDownOnUserIDStream.subscribe(function (_) { document.querySelector('#inputPasscode').focus(); });
-  validatedUserCredentialsStream.subscribe(function (userCredentials) {
-    var validatedUserCredentialsStream_ = Rx.Observable.of(userCredentials);
+  validatedUserCredentialsStream.subscribe(continueLoginOrNotifyUser);
+}
 
-    var generatedKeysStream =
-        validatedUserCredentialsStream_
-        .map(mkSessionKeys);
+function continueLoginOrNotifyUser (credentialsOrError) {
+  R.ifElse(
+    R.has('error'),
+    notifyUserOfIncorrectCredentials,
+    processLoginDetails
+  )(credentialsOrError);
+}
 
-    var sessionStepStream = Rx.Observable.of(0); // Make incremental with every call
-    var randomNonceStream = Rx.Observable.of(nacl.crypto_box_random_nonce()); // TODO
+function processLoginDetails (userCredentials) {
+  var validatedUserCredentialsStream_ = Rx.Observable.of(userCredentials);
 
-    var initialSessionDataStream = Rx.Observable
-        .combineLatest(
-          randomNonceStream,
-          sessionStepStream,
-          generatedKeysStream
-        )
-        .map(createSessionStep0UrlAndData);
+  var generatedKeysStream =
+      validatedUserCredentialsStream_
+      .map(mkSessionKeys);
 
-    var postSessionStep0DataStream =
-        initialSessionDataStream
-        .flatMap(function (initialSessionData) {
-          return Rx.Observable.fromPromise(
-            S.mkSessionStepFetchPromise(initialSessionData, 'postSessionStep0Data')
-          );
+  var sessionStepStream = Rx.Observable.of(0); // Make incremental with every call
+  var randomNonceStream = Rx.Observable.of(nacl.crypto_box_random_nonce()); // TODO
+
+  var initialSessionDataStream = Rx.Observable
+      .combineLatest(
+        randomNonceStream,
+        sessionStepStream,
+        generatedKeysStream
+      )
+      .map(createSessionStep0UrlAndData);
+
+  var postSessionStep0DataStream =
+      initialSessionDataStream
+      .flatMap(function (initialSessionData) {
+        return Rx.Observable.fromPromise(
+          S.mkSessionStepFetchPromise(initialSessionData, 'postSessionStep0Data')
+        );
+      });
+
+  var processSessionStep0ReplyStream = Rx.Observable
+      .zip(
+        postSessionStep0DataStream,
+        sessionStepStream // SESSIONSTEP NEEDS TO BE INCREMENTED HERE. Now gets incremented in mkPostSessionStep1Url
+      )
+      .filter(R.compose(
+        nonceHasCorrectLength,
+        R.prop('nonce1'),
+        R.nth(0)
+      ))
+      .map(mkPostSessionStep1Url);
+
+  var postSessionStep1DataStream =
+      processSessionStep0ReplyStream
+      .flatMap(function (sessionData) {
+        return Rx.Observable
+          .fromPromise(
+            S.mkSessionStepFetchPromise(sessionData, 'postSessionStep1Data'));
+      });
+
+  var processSession1StepDataStream = Rx.Observable
+      .combineLatest(
+        postSessionStep1DataStream,
+        randomNonceStream,
+        generatedKeysStream
+      )
+      .map(mkSessionHexAndNonce);
+
+  var fetchViewStream = Rx.Observable
+      .combineLatest(
+        generatedKeysStream,
+        randomNonceStream,
+        validatedUserCredentialsStream_,
+        processSession1StepDataStream
+      )
+      .map(function (z) {
+        fetchview('interface', {
+          user_keys: R.nth(0, z),
+          nonce: R.path(['3', 'current_nonce'], z),
+          userid: R.path(['2', 'userID'], z)
         });
+      });
 
-    var processSessionStep0ReplyStream = Rx.Observable
-        .zip(
-          postSessionStep0DataStream,
-          sessionStepStream // SESSIONSTEP NEEDS TO BE INCREMENTED HERE. Now gets incremented in mkPostSessionStep1Url
-        )
-        .filter(R.compose(
-          nonceHasCorrectLength,
-          R.prop('nonce1'),
-          R.nth(0)
-        ))
-        .map(mkPostSessionStep1Url);
+  A.startLoginAnimation();
+  setCSSTorenderButtonsToDisabled();
+  // HACK! :( So that CSS gets rendered immediately and user gets feedback right away.
+  setTimeout(function () {
+    fetchViewStream.subscribe();
+  }, 500);
+}
 
-    var postSessionStep1DataStream =
-        processSessionStep0ReplyStream
-        .flatMap(function (sessionData) {
-          return Rx.Observable
-            .fromPromise(
-              S.mkSessionStepFetchPromise(sessionData, 'postSessionStep1Data'));
-        });
+function notifyUserOfIncorrectCredentials (err) {
+  document.querySelector('.user-login-notification').classList.add('active');
+  document.querySelector('.user-login-notification').innerHTML = R.prop('msg', err);
+}
 
-    var processSession1StepDataStream = Rx.Observable
-        .combineLatest(
-          postSessionStep1DataStream,
-          randomNonceStream,
-          generatedKeysStream
-        )
-        .map(mkSessionHexAndNonce);
-
-    var fetchViewStream = Rx.Observable
-        .combineLatest(
-          generatedKeysStream,
-          randomNonceStream,
-          validatedUserCredentialsStream_,
-          processSession1StepDataStream
-        )
-        .map(function (z) {
-          fetchview('interface', {
-            user_keys: R.nth(0, z),
-            nonce: R.path(['3', 'current_nonce'], z),
-            userid: R.path(['2', 'userID'], z)
-          });
-        });
-
-    A.startLoginAnimation();
-    setCSSTorenderButtonsToDisabled();
-    // HACK! :( So that CSS gets rendered immediately and user gets feedback right away.
-    setTimeout(function () {
-      fetchViewStream.subscribe();
-    }, 500);
-  });
+function disableUserNotificationBox (_) {
+  document.querySelector('.user-login-notification').classList.remove('active');
+  document.querySelector('.user-login-notification').innerHTML = '';
 }
 
 function createSessionStep0UrlAndData (z) {

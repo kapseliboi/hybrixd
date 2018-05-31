@@ -36,5 +36,5 @@ function helpbutton () {
 
 U.documentReady(function () {
   const customAlert = new CustomAlert();
-  loginFormStateStream.subscribe();
+  // loginFormStateStream.subscribe();
 });

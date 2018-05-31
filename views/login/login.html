@@ -7,7 +7,7 @@
       <form id="loginform" class="pure-form">
         <input name="userid" type="text" id="inputUserID" class="form-control" placeholder="Account ID" required autofocus/>
         <input name="passcode" type="password" id="inputPasscode" class="form-control" placeholder="Password" required/>
-        <a id="loginbutton" class="click pure-button pure-button-large pure-button-primary disabled">
+        <a id="loginbutton" class="click pure-button pure-button-large pure-button-primary">
           <div id="loginbuttoncontent">
             <div id="loginwrap">Sign in</div>
             <div id="combinatorwrap">
@@ -20,6 +20,7 @@
             </div>
           </div>
         </a>
+        <div class="user-login-notification"></div>
         <span class="or">or</span>
         <a id="generatebutton" class="pure-button pure-button-large pure-button-secondary" onclick="PRNG.seeder.restart(); document.getElementById('newaccountmodal').style.display = 'block';">
           <span>Create a new account</span>
