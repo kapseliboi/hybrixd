@@ -12,7 +12,7 @@
   height: 60px;
   width: 100%;
 
-  @include breakpoint(xlarge) {
+  @include breakpoint(medium) {
     width: 90%;
     height: 50px;
     max-width: 1600px;
@@ -27,7 +27,7 @@
     vertical-align: middle;
     -webkit-font-smoothing: antialiased;
 
-    @include breakpoint(xlarge) {
+    @include breakpoint(medium) {
       display: inline-block;
     }
 
@@ -36,7 +36,7 @@
       font-weight: $semi-bold;
       text-align: center;
 
-      @include breakpoint(xlarge) {
+      @include breakpoint(medium) {
         font-size: 1.33em;
       }
 
@@ -46,7 +46,7 @@
         font-weight: $semi-bold;
         opacity: 0.8;
 
-        @include breakpoint(xlarge) {
+        @include breakpoint(medium) {
           font-weight: $semi-bold;
           padding: 17px 20px 16px;
         }
@@ -54,7 +54,7 @@
         .m-icon {
           padding-bottom: 5px;
 
-          @include breakpoint(xlarge) {
+          @include breakpoint(medium) {
             display: none;
           }
         }
@@ -67,14 +67,14 @@
           font-weight: $bold;
           opacity: 1;
 
-          @include breakpoint(xlarge) {
+          @include breakpoint(medium) {
             @include border-top-radius(4px);
             background: $bg-color-light;
             color: $text-header-color;
           }
 
           &:hover {
-            @include breakpoint(xlarge) {
+            @include breakpoint(medium) {
               @include border-top-radius(4px);
               background: $bg-color-light;
               color: #13212D;
@@ -102,7 +102,7 @@
     position: relative;
     padding-top: 1.2em 0 6em;
 
-    @include breakpoint(xlarge) {
+    @include breakpoint(medium) {
       padding-left: 1em;
     }
 
@@ -112,7 +112,7 @@
       position: relative;
       padding: 0;
 
-      @include breakpoint(xlarge) {
+      @include breakpoint(medium) {
         width: moz-fit-content;
         width: fit-content;
       }
@@ -123,7 +123,7 @@
         padding-left: 0;
         padding-right: 0;
 
-        @include breakpoint(xlarge) {
+        @include breakpoint(medium) {
           margin-right: 10px;
           width: 70px;
         }
@@ -137,7 +137,7 @@
       top: 3px;
       right: 0;
 
-      @include breakpoint(xlarge) {
+      @include breakpoint(medium) {
         display: none;
       }
 
@@ -172,7 +172,7 @@
     position: absolute;
     z-index: 100;
 
-    @include breakpoint(xlarge) {
+    @include breakpoint(medium) {
       border-top: none;
     }
 
@@ -184,7 +184,7 @@
       text-align: center;
       padding: 10px 0 10px 0;
 
-      @include breakpoint(xlarge) {
+      @include breakpoint(medium) {
         background-color: transparent;
         text-align: left;
         padding: 0;
@@ -195,7 +195,7 @@
       .topmenu-logout-inline {
         display: inline-block;
 
-        @include breakpoint(xlarge) {
+        @include breakpoint(medium) {
           display: none;
         }
       }
@@ -210,7 +210,7 @@
       @include breakpoint(medium) {
         height: 60px;
       }
-      @include breakpoint(xlarge) {
+      @include breakpoint(medium) {
         opacity: 1;
         width: -moz-fit-content;
         width: fit-content;
@@ -238,7 +238,7 @@
         &.selected {
           opacity: 1;
 
-          @include breakpoint(xlarge) {
+          @include breakpoint(medium) {
             color: black;
           }
         }
@@ -250,7 +250,7 @@
       }
     }
     &.custom-menu-tucked {
-      @include breakpoint(xlarge) {
+      @include breakpoint(medium) {
         background-color: transparent;
         z-index: 1;
         top: 0;
@@ -262,7 +262,7 @@
         opacity: 0;
         opacity: 1\9;
 
-        @include breakpoint(xlarge) {
+        @include breakpoint(medium) {
           @include translateX(0);
           opacity: 1;
         }
@@ -282,7 +282,7 @@
       overflow: hidden;
       opacity: 0;
 
-      @include breakpoint(xlarge) {
+      @include breakpoint(medium) {
         background-color: transparent;
         z-index: 1;
         top: 0;
@@ -296,7 +296,7 @@
       white-space: normal;
       width: 100%;
 
-      @include breakpoint(xlarge) {
+      @include breakpoint(medium) {
         padding: 0;
         width: -moz-fit-content;
         width: fit-content;
@@ -310,7 +310,7 @@
     width: 100%;
     text-align: center;
 
-    @include breakpoint(xlarge) {
+    @include breakpoint(medium) {
       position: absolute;
       top: 7px;
       right: 0;
@@ -326,7 +326,7 @@
       margin-right: 0;
       letter-spacing: 1px;
       @include user-select(all);
-      @include breakpoint(xlarge) {
+      @include breakpoint(medium) {
         margin-top: 1.5em;
         margin-right: 2.5em;
         height: auto;
@@ -343,7 +343,7 @@
       display: none;
       vertical-align: middle;
 
-      @include breakpoint(xlarge) {
+      @include breakpoint(medium) {
         display:inline-block;
         width: 85px;
         vertical-align: middle;

@@ -256,10 +256,6 @@
     input {
       margin: 0;
       width: 300px;
-
-      @include breakpoint(medium) {
-        width: 600px;
-      }
     }
   }
   .table {
@@ -454,6 +450,7 @@
     word-wrap: break-word;
     font-weight: 600;
   }
+
   .modal-send-addressfrom-wrap {
     display: block;
     text-align: left;
