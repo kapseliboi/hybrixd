@@ -91,6 +91,7 @@ function main () {
   initializationStream.subscribe(initialize);
   assetsDetailsStream.subscribe(updateAssetDetailsAndRenderDashboardView); // TODO: Separate data retrieval from DOM rendering. Dashboard should be rendered in any case.
   dollarPriceStream.subscribe(function (_) { Valuations.getDollarPrices(); });
+  alertOnBeforeUnload();
 }
 
 // EFF ::
@@ -170,6 +171,13 @@ function existsInAssetNames (asset) {
     R.find(R.equals(R.prop('id', asset))),
     R.keys
   )(GL.assetnames);
+}
+
+function alertOnBeforeUnload () {
+  function warning () {
+    return 'Are you sure you want to leave?';
+  }
+  window.onbeforeunload = warning;
 }
 
 function decryptData (d) { return R.curry(zchan_obj)(GL.usercrypto)(GL.cur_step)(d); }
