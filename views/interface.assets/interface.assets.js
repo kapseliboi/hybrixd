@@ -44,6 +44,7 @@ function initializeAssetsInterfaceStreams () {
   maxAmountButtonStream.subscribe(function (_) {
     var sendBalance = document.querySelector('#action-send .modal-send-balance').innerHTML;
     document.querySelector('#modal-send-amount').value = sendBalance;
+    U.triggerEvent(document.querySelector('#modal-send-amount'), 'input');
   });
   saveAssetListStream.subscribe(M.saveAssetList(main()));
   sendAssetButtonStream.subscribe(function (assetID) {
