@@ -73,8 +73,13 @@
     @include border-radius(4px);
   }
 
+  #generateform {
+    padding: 30px 0;
+    background: #fff;
+  }
+
   #generatebutton {
-    margin: 0;
+    margin: 0 50px;
   }
 
   #alertbutton {
