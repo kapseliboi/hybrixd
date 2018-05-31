@@ -3,13 +3,13 @@
 .pure-button {
   display: inline-block;
   margin: 2px;
-  padding: 8px 16px 7px 16px;
+  padding: 8px 16px;
   min-height: 32px;
   background: $button-standard;
   color: white;
   font-weight: $semi-bold;
   white-space: normal;
-  @include box-shadow(0,2px,0,rgba(white,0.4),true);
+  @include box-shadow(0,2px,1px,#eee);
   @include border-radius(4px);
   @include font-size(12);
   @include user-select(none);
@@ -26,6 +26,10 @@
       height: 16px;
     }
   }
+  &:hover {
+    background-image: none;
+    opacity: 0.8;
+  }
 }
 
 .pure-button-fw {
@@ -34,7 +38,7 @@
 
 .pure-button-large {
   min-height: 40px;
-  padding: 9px 23px 10px;
+  padding: 10px 23px;
   @include font-size(14);
 }
 
