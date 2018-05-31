@@ -51,9 +51,7 @@ var storage = (function() {
         )
         .flatMap(function (z) {
           var metaData = R.nth(0, z)
-          console.log("metaData = ", metaData);
           var localMetaData = R.nth(1, z)
-          console.log("localMetaData = ", localMetaData);
 
           if (metaData.hash !== localMetaData.hash) {
             return metaData.time > localMetaData.time
@@ -158,6 +156,8 @@ var storage = (function() {
       });
       if (storekey.substr(-6)!=='-LOCAL') {
         return Sync(storekey);
+      } else {
+        return Rx.Observable.of(storevalue)
       }
     },
 
