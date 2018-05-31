@@ -1,0 +1,135 @@
+/******************************************************************
+TABLET LANDSCAPE STYLING: 900px and up
+******************************************************************/
+
+@media (min-width: 900px) {
+
+  .custom-menu-bottom .break {
+    display: none;
+  }
+
+  .custom-menu-bottom .pure-menu-link {
+    height: 60px;
+  }
+
+  /*****************************************************************/
+  /* CONTENT */
+
+  .content {
+    padding: 1.8em;
+  }
+
+  .content > .databox {
+    width: 49.1%;
+    margin: 0.5%;
+  }
+
+  .button-label {
+    display: inline;
+  }
+
+  /*****************************************************************/
+  /* DASHBOARD */
+
+  .content > .dashboard-balances .balance {
+    min-width: 120px;
+  }
+
+  .content > .dashboard-balances .data > .balance {
+      margin: 30px 10px 10px;
+  }
+
+  .content > .dashboard-community,
+  .content > .dashboard-transactions,
+  .content > .dashboard-chat {
+    margin-left: 0;
+    margin-right: 0.5%;
+  }
+
+  .content > .dashboard-faq,
+  .content > .dashboard-trade,
+  .content > .dashboard-apps {
+    margin-left: 0.5%;
+    margin-right: 0;
+  }
+
+  /*****************************************************************/
+  /* ASSETS */
+
+  .content .table .thead {
+    display: block;
+  }
+
+  .content > .assets-main .table .tr {
+    padding: 0 15px;
+  }
+
+  .content > .assets-main .table .col1,
+  .content > .assets-main .table .col2,
+  .content > .assets-main .table .col3,
+  .content > .assets-main .table .col4 {
+    width: 27%;
+    float: none;
+    display: inline-block;
+    padding: 11px 0 10px;
+    vertical-align: middle;
+    line-height: 40px;
+  }
+
+  .content > .assets-main .table .th {
+    line-height: 20px;
+  }
+
+  .content > .assets-main .table .col4 {
+    width: 19%;
+  }
+
+  .content .table .col1 .icon {
+  }
+
+  .content .table .col1 .icon svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .content > .assets-main .table .col2,
+  .content > .assets-main .table .col3 {
+    text-align: left;
+  }
+
+  .content .table .balance, .content .table .dollars {
+    padding: 13px 0;
+    line-height: 40px;
+  }
+
+  .content .table .balance div {
+    float: left;
+  }
+
+  .content .table .balance:before,
+  .content .table .dollars:before {
+    content: "";
+    width: 0;
+    display: inline-block;
+  }
+
+  .content .table .actions .assetbuttons {
+    display: block;
+    text-align: right;
+  }
+
+  .content .table .actions .assetbuttons .pure-button {
+    margin: 2px 0;
+    width: 130px;
+  }
+
+  .content .table .actions .pure-button {
+    display: inline-block;
+    float: none;
+  }
+
+  .content > #manage-assets .modal-header input {
+    width: 600px;
+  }
+
+}

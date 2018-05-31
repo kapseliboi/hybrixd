@@ -1,0 +1,207 @@
+/******************************************************************
+DESKTOP STYLING: 1200px and up
+******************************************************************/
+
+@media (min-width: 1200px) {
+
+  /*****************************************************************/
+  /* TOP MENU */
+
+  .custom-menu-wrapper {
+    width: 90%;
+    height: 50px;
+    max-width: 1600px;
+  }
+
+  .custom-menu {
+    display: inline-block;
+  }
+
+  .custom-menu .pure-menu-item {
+    font-size: 1.33em;
+  }
+
+  .pure-menu-list.custom-menu-tucked, .pure-menu-horizontal.custom-menu-tucked {
+    background-color: transparent;
+    z-index: 1;
+    top: 0;
+    opacity: 1;
+    overflow: visible;
+  }
+
+  .pure-menu-horizontal.pure-menu-scrollable {
+    padding: 0;
+    width: -moz-fit-content;
+    width: fit-content;
+  }
+
+  .pure-menu-list {
+    background-color: transparent;
+    text-align: left;
+    padding: 0;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+
+  }
+
+  .custom-menu-top {
+    padding-left: 1em;
+  }
+
+  .custom-menu-brand {
+    width: moz-fit-content;
+    width: fit-content;
+  }
+  .custom-menu-brand img {
+    margin-top: 0;
+    margin-right: 10px;
+    width: 70px;
+  }
+
+  .custom-menu-toggle {
+    display: none;
+  }
+
+  .custom-menu-bottom {
+    border-top: none;
+  }
+
+  .custom-menu-bottom .m-icon {
+    display: none;
+  }
+
+  .custom-menu-bottom .pure-menu-link {
+    opacity: 1;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    -webkit-transform: translateX(0);
+    -moz-transform: translateX(0);
+    -ms-transform: translateX(0);
+    transform: translateX(0);
+  }
+
+  .custom-menu-bottom.custom-menu-tucked .pure-menu-link {
+    -webkit-transform: translateX(0);
+    -moz-transform: translateX(0);
+    -ms-transform: translateX(0);
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  .custom-menu .pure-menu-link,
+  .custom-menu .pure-menu-heading {
+    font-weight: 600;
+  }
+
+  .custom-menu .pure-menu-link {
+    padding: 17px 20px 16px;
+  }
+
+  .custom-menu .pure-menu-link.selected {
+    background: #F4F7F9;
+    color: #323C47;
+    border-radius: 4px 4px 0px 0px;
+  }
+
+  .custom-menu .pure-menu-link.selected:hover {
+    background: #F4F7F9;
+    color: #13212D;
+    border-radius: 4px 4px 0px 0px;
+  }
+
+  #topmenu-assets.active.selected {
+    color: #000;
+  }
+
+  /* menu tooltip */
+  .custom-menu .disabled #tooltip {
+    display: block;
+  }
+
+  /* user menu */
+  #topmenu-right {
+    position: absolute;
+    top: 7px;
+    right: 0;
+    text-align: right;
+  }
+
+  #userID {
+    margin-top: 1.5em;
+    margin-right: 2.5em;
+    height: auto;
+    font-size: 1.16em;
+  }
+
+  #topmenu-logout {
+    display:inline-block;
+    width: 85px;
+    vertical-align: middle;
+    margin-bottom: 4px;
+    margin-top: -1px;
+    margin-right: 0.5em;
+    cursor: pointer;
+    cursor: hand;
+  }
+
+  .topmenu-logout-inline {
+    display: none;
+  }
+
+  /*****************************************************************/
+  /* CONTENT */
+
+  .content {
+    max-width: 1600px;
+    margin-top: -1.4em;
+  }
+
+  /*
+  .content > .databox {
+    width: 23.8%;
+    margin: 0.5%;
+  }
+  */
+
+  /*****************************************************************/
+  /* DASHBOARD */
+
+  .content > .dashboard-transactions {
+    margin-left: 0;
+  }
+
+  .content > .dashboard-apps {
+    margin-right: 0;
+  }
+
+  .content > .dashboard-balances .balance {
+  }
+
+  /*****************************************************************/
+  /* ASSETS */
+
+  .content > .assets-main .table .col1,
+  .content > .assets-main .table .col2,
+  .content > .assets-main .table .col3,
+  .content > .assets-main .table .col4 {
+    width: 24.5%;
+    padding: 0;
+  }
+
+  .content > .assets-main .table .col4 {
+    width: 26.5%;
+  }
+
+  .content > .assets-main .table .th {
+    padding: 10px 0;
+  }
+
+  .content .table .actions .assetbuttons .pure-button {
+    width: unset;
+    margin: 2px 0 2px 5px;
+  }
+
+}
