@@ -7,6 +7,12 @@ lzma = require('../../lib/crypto/lz-string.js');
 
 hy_content = ''; // variable to hold package content
 
+// load in the style sheets
+hy_content += '<style>'+fs.readFileSync('./css/pure-min.css')+'</style>';
+hy_content += '<style>'+fs.readFileSync('./css/buttons.css')+'</style>';
+hy_content += '<style>'+fs.readFileSync('./css/login.css')+'</style>';
+hy_content += '<style>'+fs.readFileSync('./css/custom-alert.css')+'</style>';
+
 // custom-alert code to replace ugly alert boxes with a minimalist solution
 hy_content += '<script>'+fs.readFileSync('./js/custom-alert.min.js')+'</script>';
 

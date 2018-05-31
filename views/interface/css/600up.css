@@ -1,0 +1,58 @@
+/******************************************************************
+TABLET PORTRAIT STYLING: 600px and up
+******************************************************************/
+
+@media (min-width: 600px) {
+
+/*****************************************************************/
+ /* DASHBOARD */
+
+.content > .dashboard-balances .balance {
+  min-width: 30%;
+}
+.content > .dashboard-balances .data > .balance {
+  margin: 30px 1.5% 10px;
+}
+
+.social-icons > div {
+  display: inline-block;
+}
+/*****************************************************************/
+ /* ASSETS */
+
+.content > .assets-main .table .tr {
+  padding: 20px 10px;
+}
+.content .table .col1 .icon svg {
+  width: 30px;
+  height: 30px;
+}
+
+.content > .assets-main .table .col1 {
+  width: 50%;
+  padding-bottom: 0;
+}
+
+.content > .assets-main .table .col2 {
+  padding: 5px;
+  width: 50%;
+  float: right;
+  text-align: right;
+}
+
+.content > .assets-main .table .col3 {
+  padding: 5px;
+  width: 50%;
+  float: right;
+  text-align: right;
+}
+
+.content > .assets-main .table .col4 {
+  padding: 0;
+}
+
+.content > #manage-assets .icon, .content > #manage-assets .asset,  .content > #manage-assets .full-name {
+  display: inline-block;
+  vertical-align: middle;
+  padding: 8px 5px;
+}
