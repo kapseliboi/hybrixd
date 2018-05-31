@@ -9,7 +9,7 @@
   color: white;
   font-weight: $semi-bold;
   white-space: normal;
-  @include box-shadow(0,2px,1px,#eee);
+  @include box-shadow(0,2px,1px,rgba(black,.05));
   @include border-radius(4px);
   @include font-size(12);
   @include user-select(none);
