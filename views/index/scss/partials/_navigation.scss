@@ -1,0 +1,377 @@
+// -- Navigation styles ----------------------------------------------------
+
+.custom-menu-bg {
+  background: transparent;
+}
+
+.custom-menu-wrapper {
+  overflow: visible;
+  margin: 0 auto 2.5em auto;
+  white-space: nowrap;
+  position: relative;
+  height: 60px;
+  width: 100%;
+
+  @include breakpoint(medium) {
+    width: 90%;
+    height: 50px;
+    max-width: 1600px;
+  }
+
+  a {
+    border: none;
+  }
+  .custom-menu {
+    display: block;
+    width: auto;
+    vertical-align: middle;
+    -webkit-font-smoothing: antialiased;
+
+    @include breakpoint(medium) {
+      display: inline-block;
+    }
+
+    .pure-menu-item {
+      padding: 12px 0 0 10px;
+      font-weight: $semi-bold;
+      text-align: center;
+
+      @include breakpoint(medium) {
+        font-size: 1.33em;
+      }
+
+      .pure-menu-link,
+      .pure-menu-heading {
+        color: white;
+        font-weight: $semi-bold;
+        opacity: 0.8;
+
+        @include breakpoint(medium) {
+          font-weight: $semi-bold;
+          padding: 17px 20px 16px;
+        }
+
+        .m-icon {
+          padding-bottom: 5px;
+
+          @include breakpoint(medium) {
+            display: none;
+          }
+        }
+        &:hover {
+          background-color: transparent;
+          text-shadow: 0px 0px 5px white;
+          opacity: 0.9;
+        }
+        &.selected {
+          font-weight: $bold;
+          opacity: 1;
+
+          @include breakpoint(medium) {
+            @include border-top-radius(4px);
+            background: $bg-color-light;
+            color: $text-header-color;
+          }
+
+          &:hover {
+            @include breakpoint(medium) {
+              @include border-top-radius(4px);
+              background: $bg-color-light;
+              color: #13212D;
+            }
+          }
+        }
+      }
+    }
+    .disabled {
+      cursor: default;
+      color: rgba(white, .2);
+      text-shadow: none;
+      position: relative;
+
+      .m-icon {
+        opacity: .2;
+      }
+      &:hover {
+        text-shadow: none;
+      }
+    }
+  }
+  // -- Menu part #1 with logo --------------------------------
+  .custom-menu-top {
+    position: relative;
+    padding-top: 1.2em 0 6em;
+
+    @include breakpoint(medium) {
+      padding-left: 1em;
+    }
+
+    .custom-menu-brand {
+      display: block;
+      text-align: center;
+      position: relative;
+      padding: 0;
+
+      @include breakpoint(medium) {
+        width: moz-fit-content;
+        width: fit-content;
+      }
+
+      img {
+        height: 36px;
+        margin-top: 15px;
+        padding-left: 0;
+        padding-right: 0;
+
+        @include breakpoint(medium) {
+          margin-right: 10px;
+          width: 70px;
+        }
+      }
+    }
+    .custom-menu-toggle {
+      width: 44px;
+      height: 44px;
+      display: block;
+      position: absolute;
+      top: 3px;
+      right: 0;
+
+      @include breakpoint(medium) {
+        display: none;
+      }
+
+      .bar {
+        @includde border-radius(100px);
+        @include transition(all 0.5s);
+        background-color: white;
+        display: block;
+        width: 20px;
+        height: 2px;
+        position: absolute;
+        top: 22px;
+        right: 12px;
+
+        &:first-child {
+          @include translateY(-6px);
+        }
+      }
+    }
+    .custom-menu-toggle.x {
+      .bar {
+        @include rotate(45deg);
+
+        &:first-child {
+          @include rotate(-45deg);
+        }
+      }
+    }
+  }
+  // -- Menu part #2 with navigation --------------------------------
+  .custom-menu-bottom {
+    position: absolute;
+    z-index: 100;
+
+    @include breakpoint(medium) {
+      border-top: none;
+    }
+
+    .pure-menu-list {
+      @include box-shadow(0px, 2px, 6px, rgba(11, 21, 28, 0.41));
+      transition: all 0.5s ease;
+      background-color: #1E2032;
+      width: 100%;
+      text-align: center;
+      padding: 10px 0 10px 0;
+
+      @include breakpoint(medium) {
+        background-color: transparent;
+        text-align: left;
+        padding: 0;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+      }
+      .topmenu-logout-inline {
+        display: inline-block;
+
+        @include breakpoint(medium) {
+          display: none;
+        }
+      }
+    }
+    .pure-menu-link {
+      @include translateX(0);
+      @include transition(all 0.2s);
+      opacity: 1;
+      width: 100px;
+      height: 80px;
+
+      @include breakpoint(medium) {
+        height: 60px;
+      }
+      @include breakpoint(medium) {
+        opacity: 1;
+        width: -moz-fit-content;
+        width: fit-content;
+        height: -moz-fit-content;
+        height: fit-content;
+        @include translateX(0);
+      }
+    }
+    // Yes, this is redundant, but as long we work with JQuery,
+    // which is the problem atm, we do this with css
+    #topmenu-assets {
+      cursor: default;
+      opacity: 0.3;
+      text-shadow: none;
+
+      &.active {
+        cursor: pointer;
+        opacity: 1;
+        text-shadow: none;
+        position: relative;
+
+        &:hover {
+          text-shadow: 0px 0px 5px white;
+        }
+        &.selected {
+          opacity: 1;
+
+          @include breakpoint(medium) {
+            color: black;
+          }
+        }
+      }
+    }
+    .break {
+      @include breakpoint(medium) {
+        display: none;
+      }
+    }
+    &.custom-menu-tucked {
+      @include breakpoint(medium) {
+        background-color: transparent;
+        z-index: 1;
+        top: 0;
+        opacity: 1;
+        overflow: visible;
+      }
+      .pure-menu-link {
+        @include translateX(-140px);
+        opacity: 0;
+        opacity: 1\9;
+
+        @include breakpoint(medium) {
+          @include translateX(0);
+          opacity: 1;
+        }
+      }
+      .pure-menu-active > .pure-menu-link,
+      .pure-menu-link:hover,
+      .pure-menu-link:focus {
+        background: none;
+      }
+    }
+  }
+  .pure-menu-horizontal {
+    &.custom-menu-tucked {
+      z-index: -1;
+      top: 45px;
+      position: absolute;
+      overflow: hidden;
+      opacity: 0;
+
+      @include breakpoint(medium) {
+        background-color: transparent;
+        z-index: 1;
+        top: 0;
+        opacity: 1;
+        overflow: visible;
+      }
+    }
+    &.pure-menu-scrollable {
+      overflow: visible;
+      padding: 0;
+      white-space: normal;
+      width: 100%;
+
+      @include breakpoint(medium) {
+        padding: 0;
+        width: -moz-fit-content;
+        width: fit-content;
+      }
+    }
+  }
+  // -- Menu part #3 with user info and logout --------------------------------
+  #topmenu-right {
+    position: absolute;
+    top: 3.3em;
+    width: 100%;
+    text-align: center;
+
+    @include breakpoint(medium) {
+      position: absolute;
+      top: 7px;
+      right: 0;
+      text-align: right;
+    }
+
+    #userID {
+      display: inline-block;
+      height: 3.2em;
+      color: rgba(white, 0.5);
+      font-weight: $regular;
+      margin-top: 30px;
+      margin-right: 0;
+      letter-spacing: 1px;
+      @include user-select(all);
+      @include breakpoint(medium) {
+        margin-top: 1.5em;
+        margin-right: 2.5em;
+        height: auto;
+        font-size: 1.16em;
+      }
+
+      &:before {
+        content: "Account ID: ";
+        letter-spacing: 0;
+      }
+    }
+
+    .topmenu-logout {
+      display: none;
+      vertical-align: middle;
+
+      @include breakpoint(medium) {
+        display:inline-block;
+        width: 85px;
+        vertical-align: middle;
+        margin-bottom: 4px;
+        margin-top: -1px;
+        margin-right: 0.5em;
+        cursor: pointer;
+        cursor: hand;
+      }
+
+      svg {
+        vertical-align: middle;
+      }
+      &:after {
+        content: "Sign out";
+        vertical-align: middle;
+        color: white;
+        margin: 10px;
+        display: inline-block;
+        //font-size: 1.16em;
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
