@@ -21,6 +21,7 @@ hy_content += fs.readFileSync('./js/Transaction/validations.js');
 hy_content += fs.readFileSync('./js/Transaction/utils.js');
 hy_content += fs.readFileSync('./js/SendAsset/sendAsset.js');
 hy_content += fs.readFileSync('./js/ReceiveAsset/receiveAsset.js');
+hy_content += fs.readFileSync('./js/GenerateAddress/generateAddress.js');
 hy_content += fs.readFileSync('./js/Asset/asset.js');
 hy_content += fs.readFileSync('./js/ManageAssets/manageAssets.js');
 hy_content += fs.readFileSync('./js/StarredAsset/starredAssets.js');

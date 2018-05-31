@@ -15,6 +15,9 @@ asset = {
     var assetDollarValuationHtmlStr = '<div class="td col3"><div id="' + symbolName + '-dollar" class="dollars" style="color: #AAA;">n/a</div></div>';
     var assetSendBtnHtmlStr = '<div data="' + assetID + '" href="#action-send" class="pure-button pure-button-large pure-button-primary sendAssetButton" role="button" data-toggle="modal" disabled="disabled"><div class="icon">' + R.prop('send', Svg) + '</div>Send</div>';
     var assetReceiveBtnHtmlStr = '<div data="' + assetID + '" href="#action-receive" class="pure-button pure-button-large pure-button-secondary receiveAssetButton" role="button" data-toggle="modal" disabled="disabled"><div class="icon">' + R.prop('receive', Svg) + '</div>Receive</div>';
+    var assetGenerateBtnHtmlStr = '<div data="' + assetID + '" href="#action-generate" class="pure-button pure-button-large pure-button-secondary generateAddressButton" role="button" data-toggle="modal" disabled="disabled"><div class="icon">' + R.prop('receive', Svg) + '</div>Generate</div>';
+
+    var receiveOrGenerateBtn = assetID === 'bts' ? assetGenerateBtnHtmlStr : assetReceiveBtnHtmlStr;
 
     var htmlToRender = '<div class="tr">' +
         assetInfoHTMLStr +
@@ -23,7 +26,7 @@ asset = {
         '<div class="td col4 actions">' +
         '<div class="assetbuttons assetbuttons-' + element + ' disabled">' +
         assetSendBtnHtmlStr +
-        assetReceiveBtnHtmlStr +
+        receiveOrGenerateBtn +
         '</div>' +
         '</div>' +
         '</div>';

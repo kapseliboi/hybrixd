@@ -14,7 +14,7 @@ deterministic_ = {
       address: deterministic.address(Object.assign(keys, {mode: submode}))
     };
   }
-}
+};
 
 function seedGenerator (asset) {
   // this salt need not be too long (if changed: adjust slice according to tests)
