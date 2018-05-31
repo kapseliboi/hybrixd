@@ -15,14 +15,14 @@ var storage = (function() {
 
     var storageMetaStream = Rx.Observable
         .fromPromise(hybriddcall({r: 'e/storage/meta/' + storekey, z: false}))
-        .filter(R.propEq('error', 0))
-        .map(R.merge({r: 'e/storage/meta/' + storekey, z: true}));
+        .filter(R.propEq('error', 0));
+        // really needed? -> .map(R.merge({r: 'e/storage/meta/' + storekey, z: false}));
 
     var localForageStream = Rx.Observable
         .fromPromise(localforage.getItem(storekey + '.meta'))
         .map(function (localMetaData) {
           return R.isNil(localMetaData)
-            ? { time: 0, hash: 0 }
+            ? { time: 0, hash: null }
           : localMetaData;
         })
 
@@ -52,7 +52,7 @@ var storage = (function() {
         .flatMap(function (z) {
           var localMetaData = R.nth(0, z)
           var metaData = R.nth(1, z)
-
+          // DEBUG: console.log(JSON.stringify(localMetaData)+' <> '+JSON.stringify(metaData));
           if (metaData.hash !== localMetaData.hash) {
             return metaData.time > localMetaData.time
               ? remoteIsNewer(storekey)
@@ -63,8 +63,9 @@ var storage = (function() {
         })
 
     function remoteIsNewer (storeKey) {
+      console.log('Decentralized storage: local data being updated');
       var storageGetStream = Rx.Observable
-          .fromPromise(hybriddcall({r:'e/storage/get/' + storeKey, z: 0}))
+          .fromPromise(hybriddcall({r:'e/storage/get/' + storeKey, z: true}))
 
       var storageGetResponseStream = storageGetStream
           .flatMap(function (properties) {
@@ -98,6 +99,7 @@ var storage = (function() {
     }
 
     function remoteIsOlder (storeKey, metaData) {
+      console.log('Decentralized storage: remote data being updated');
       return Rx.Observable
         .fromPromise(localforage.getItem(storeKey)
                      .then(r => r)
@@ -112,7 +114,7 @@ var storage = (function() {
                   .fromPromise(hybriddReturnProcess(properties));
               })
               .map(data => {
-                if (R.isNil(R.prop('stopped', data)) && R.prop('progress', data) < 1) throw data;
+                if (!R.isNil(R.prop('stopped', data)) && R.prop('progress', data) < 1) throw data;
                 return data;
               })
               .retryWhen(function (errors) { return errors.delay(1000); })
@@ -130,6 +132,7 @@ var storage = (function() {
     }
 
     function noChangesBetweenRemoteAndLocal (storeKey, metaData) {
+      console.log('Decentralized storage: no changes detected');
       return Rx.Observable
         .fromPromise(localforage.getItem(storeKey))
         .map(function(value) {
@@ -149,16 +152,17 @@ var storage = (function() {
   var storage = {
 
     Set : function (storekey, storevalue) {
-      localforage.setItem(storekey, storevalue);
       localforage.setItem(storekey + '.meta',{
         time: Date.now(),
         hash: DJB2.hash(storevalue)
       });
+      localforage.setItem(storekey, storevalue);
       if (storekey.substr(-6)!=='-LOCAL') {
-        return Sync(storekey);
-      } else {
-        return Rx.Observable.of(storevalue)
+        setTimeout( function(storekey) {
+          Sync(storekey).subscribe();
+        },5000,storekey);
       }
+      return Rx.Observable.of(storevalue)
     },
 
     Get : function (storekey, postfunction) {

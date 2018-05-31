@@ -32,7 +32,7 @@ toggleStar = function (assetID) {
   )(updatedGlobalAssets);
 
   Storage.Set(userStorageKey('ff00-0035'), userEncode(starredForStorage))
-    .subscribe(function (_) {});
+    .subscribe();
   U.updateGlobalAssets(updatedGlobalAssets);
   setStarredAssetClass(assetID, isStarred);
 };
