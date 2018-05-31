@@ -2151,7 +2151,10 @@ pre .support.value {
     .custom-menu-wrapper .custom-menu-bottom.custom-menu-tucked .pure-menu-active > .pure-menu-link,
     .custom-menu-wrapper .custom-menu-bottom.custom-menu-tucked .pure-menu-link:hover,
     .custom-menu-wrapper .custom-menu-bottom.custom-menu-tucked .pure-menu-link:focus {
-      background: none; }
+      background: transparent; }
+    @media (min-width: 900px) {
+      .custom-menu-wrapper .custom-menu-bottom.custom-menu-tucked .pure-menu-link.selected:focus {
+        background: #F4F7F9; } }
   .custom-menu-wrapper .pure-menu-horizontal.custom-menu-tucked {
     z-index: -1;
     top: 45px;
@@ -2766,3 +2769,6 @@ pre .support.value {
 
 .display-assets-link {
   cursor: pointer; }
+
+.elem {
+  width: 123px; }
