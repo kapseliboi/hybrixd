@@ -21,6 +21,19 @@ function addsvg(file,index) {
 
 hy_content = ''; // variable to hold package content
 
+// CSS
+hy_content += '<style>';
+hy_content += fs.readFileSync('./css/spinner.css');		// Spinner for loading screens in CSS
+hy_content += fs.readFileSync('./css/clipboard.css');		// CLipboard transitions
+// DEPRECATED: already included in login -> hy_content += fs.readFileSync('./css/purecss.css');		// PureCSS
+hy_content += fs.readFileSync('./css/modal.css');		// CSS based modal boxes
+hy_content += fs.readFileSync('./css/base.css');		// custom styling for Internet of Coins, base (mobile)
+hy_content += fs.readFileSync('./css/600up.css');		// custom styling for Internet of Coins, tablet portrait
+hy_content += fs.readFileSync('./css/900up.css');		// custom styling for Internet of Coins, tablet landscape
+hy_content += fs.readFileSync('./css/1200up.css');		// custom styling for Internet of Coins, desktop
+hy_content += fs.readFileSync('./css/1800up.css');		// custom styling for Internet of Coins, big desktop
+hy_content += '</style>';
+
 // JS
 hy_content += addscript('../../lib/crypto/urlbase64.js');	    // URL safe base 64 encoding
 hy_content += addscript('../../lib/crypto/decimal-light.js');	// arbitrary length decimals
