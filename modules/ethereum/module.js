@@ -9,23 +9,13 @@ var functions = require('../../lib/functions');
 
 // exports
 exports.init = init;
-exports.tick = tick;
 exports.exec = exec;
-exports.stop = stop;
 exports.link = link;
 exports.post = post;
 
 // initialization function
 function init() {
   modules.initexec('ethereum',['init']);
-}
-
-// stop function
-function stop() {
-}
-
-// scheduled ticker function
-function tick(properties) {
 }
 
 // standard functions of an asset store results in a process superglobal -> global.hybridd.process[processID]
@@ -62,6 +52,15 @@ function exec(properties) {
       subprocesses.push('logs(1,"module ethereum: "+(data?"connected":"failed connection")+" to ['+target.symbol+'] host '+target.host+'")');
     }
     break;
+  case 'cron':
+    if(!isToken(target.symbol)) {
+      // refresh fee
+      subprocesses.push('func("ethereum","link",{target:'+jstr(target)+',command:["eth_gasPrice"]})');
+      subprocesses.push('func("ethereum","post",{target:'+jstr(target)+',command:["init"],data:data,data})');
+      subprocesses.push('pass( (data != null && typeof data.result=="string" && data.result[1]=="x" ? 1 : 0) )');
+      subprocesses.push('logs(1,"module ethereum: dynamic fee adjusted")');
+    }
+    break;
   case 'status':
     // set up init probe command to check if Altcoin RPC is responding and connected
     subprocesses.push('func("ethereum","link",{target:'+jstr(target)+',command:["eth_protocolVersion"]})');
@@ -77,7 +76,7 @@ function exec(properties) {
     if(!isToken(target.symbol)) {
       fee = (typeof target.fee!='undefined'?target.fee:null);
     } else {
-      fee = (typeof global.hybridd.asset[base].fee != 'undefined'?global.hybridd.asset[base].fee*2.465:null);
+      fee = (typeof global.hybridd.asset[base].fee != 'undefined'?global.hybridd.asset[base].fee*5:null);
       factor = (typeof global.hybridd.asset[base].factor != 'undefined'?global.hybridd.asset[base].factor:null);
     }
     subprocesses.push('stop(('+jstr(fee)+'!==null && '+jstr(factor)+'!==null?0:1),'+(fee!=null && factor!=null?'"'+padFloat(fee,factor)+'"':null)+')');
