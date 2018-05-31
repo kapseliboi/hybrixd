@@ -89,6 +89,8 @@ hy_content += addsvg('./svg/slack.svg','slack');
 hy_content += addsvg('./svg/riot.svg','riot');
 hy_content += addsvg('./svg/bitcointalk.svg','bitcointalk');
 
+hy_content += 'document.querySelector("#dashboard-icon").innerHTML = svg[\'dashboard-o\'];';
+hy_content += 'document.querySelector("#assets-icon").innerHTML = svg[\'assets-o\'];';
 hy_content += 'document.querySelector("#logout-icon").innerHTML = svg[\'logout-o\'];';
 hy_content += addsvg('./svg/send.svg','send');
 hy_content += addsvg('./svg/receive.svg','receive');
