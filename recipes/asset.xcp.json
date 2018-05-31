@@ -4,7 +4,7 @@
   "module":"quartz",
   "mode":"bitcoinjslib.counterparty",
   "factor":8,
-  "fee":0.000035,
+  "fee":0.00004946,
   "fee-symbol":"btc",
   "keygen-base":"btc",
   "contract":"XCP",
@@ -22,13 +22,8 @@
        "stop(1,'Not yet implemented!')"
     ],
     "unspent" : [
-      "form($2,$factor,'atomic')",
-      "form($fee,$factor,'atomic')",
-      "coll(2)",
-      "curl('$host_unspent','/api/','POST',{'jsonrpc':'2.0','id':0,'method':'create_send','params':{'source':'$1','destination':'$3','asset':'$contract','quantity':parseInt(data[0]),'fee':parseInt(data[1]),'allow_unconfirmed_inputs':true,'disable_utxo_locks':true}},{'content-type':'text/plain'})",
       "func('blockexplorer','exec',{target:{symbol:'$fee-symbol'}, command:['unspent','$1','$fee']})",
-      "coll(2)",
-      "pass({'unspents':data[1].unspents,'change':data[1].change,'unsignedtx':data[0].result})"
+      "pass({'unspents':data.unspents,'change':String(Number(data.change)+0.00000546)})"
     ],
     "balance" : [
       "time(32000)",

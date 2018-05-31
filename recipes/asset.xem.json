@@ -30,7 +30,7 @@
       "pass(data)"
     ],
      "balance" : [
-      "time(15000)",
+      "time(32000)",
       "test('$contract'==='undefined',1,6)",
       "curl('asset://$symbol','/account/get?address='+'$1'.replace(/-/g,''),'GET')",
       "tran('.account.balance',data,2,1)",

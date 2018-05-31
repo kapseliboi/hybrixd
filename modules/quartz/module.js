@@ -35,13 +35,14 @@ function preprocess(command,recipe,xpath){
   re = /[$]([_a-zA-Z][\w\-]*)::([_\w\-]*)/g; // Search for "$recipeId::propertyId"
   parsedCommand =  parsedCommand.replace(re, function(full,recipeId,propertyId) {
     var recipe;
-
     if(global.hybridd.asset.hasOwnProperty(recipeId)){
       recipe = global.hybridd.asset[recipeId];
     }else if(global.hybridd.source.hasOwnProperty(recipeId)){
       recipe = global.hybridd.source[recipeId];
+    }else if(global.hybridd.engine.hasOwnProperty(recipeId)){
+      recipe = global.hybridd.engine[recipeId];
     }else{
-      console.log(` [!] Error: Recipe "${recipeId}" for "${full}" not found. Neither asset nor source.`);
+      console.log(` [!] Error: Recipe "${recipeId}" for "${full}" not found. Neither asset, engine or source.`);
       return full;
     }
 
@@ -107,6 +108,8 @@ function exec(properties) {
   var recipe = properties.target; // The recipe object
 
   var id; // This variable will contain the recipe.id for sources or the recipe.symbol for assets
+  var engine; // This variable will contain the recipe.id for sources or the recipe.symbol for assets
+  var source; // This variable will contain the recipe.id for sources or the recipe.symbol for assets
   var list; // This variable will contain the global.hybridd.source for sources or global.hybridd.asset for assets
   var base; // This variable will contain the base part of the symbol (the part before the '.' ) for assets
   var token;  // This variable will contain the token part of the symbol (the part after the '.' ) for assets
@@ -119,11 +122,14 @@ function exec(properties) {
     if(symbolSplit.length>0){
       token = symbolSplit[1];
     }
-  }else if(recipe.hasOwnProperty("id")){ // If recipe defines a source
-    id = recipe.id;
+  }else if(recipe.hasOwnProperty("source")){ // If recipe defines a source
+    id = recipe.source;
     list = global.hybridd.source;
+  }else if(recipe.hasOwnProperty("engine")){ // If recipe defines an engine
+    id = recipe.engine;
+    list = global.hybridd.engine;
   }else{
-    console.log(' [i] Error: recipe file contains neither asset symbol nor source id.');
+    console.log(' [i] Error: recipe file contains neither asset symbol nor engine or source id.');
   }
 
   global.hybridd.proc[processID].request = properties.command;   // set request to what command we are performing
@@ -167,11 +173,13 @@ function exec(properties) {
     addSubprocesses(subprocesses,recipe.quartz[command],recipe,properties.command);
 
   } else {
+    
     if(global.hybridd.defaultQuartz.hasOwnProperty('quartz') && global.hybridd.defaultQuartz.quartz.hasOwnProperty(command)){
       addSubprocesses(subprocesses,global.hybridd.defaultQuartz.quartz[command],recipe,properties.command);
     }else{
       subprocesses.push('stop(1,"Recipe function \''+command+'\' not supported for \''+id+'\'.")');
     }
+    
   }
 
   // fire the Qrtz-language program into the subprocess queue

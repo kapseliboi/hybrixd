@@ -10,6 +10,7 @@
   "host-alts":["wss://dex.rnglab.org","wss://api.bts.blckchnd.com","wss://bitshares.crypto.fans/ws","wss://eu.openledger.info/ws","wss://dexnode.net/ws","wss://bitshares-api.wancloud.io/ws","wss://japan.bitshares.apasia.tech/ws","wss://openledger.hk/ws","wss://bit.btsabc.org/ws","wss://bitshares.nu/ws","wss://bitshares.openledger.info/ws","wss://bitshares.openledger.info/ws"],
   "cache":120000,
   "throttle":5,
+  "generated":"once",
   "quartz":{
     "init" : [
       "curl('asset://$symbol','','',{'method': 'call', 'params': [1, 'login', ['', '']], 'id': Math.floor(Math.random()*10000)})",
@@ -19,8 +20,17 @@
       "stop(1,'Not yet implemented!')"
     ],
     "unspent" : [
-      "curl('asset://$symbol','','',{method:'call',params:[0,'get_key_references',[['$1']]], id: Math.floor(Math.random()*10000)})",
-      "pass(data)"
+      "curl('wss://bitshares.crypto.fans/ws','','',{'method': 'call', 'params': [1, 'login', ['', '']], 'id': 1})",
+      "test(data.result,2,1)",
+      "stop(1,'Log in for validation unsuccesfull.')",
+      "curl('wss://bitshares.crypto.fans/ws','','',{'method':'call', 'params':[0,'get_account_by_name',['$1']], id: 2})",
+      "tran('.result.id',data,2,1)",
+      "stop(1,'Source Id could not be found.')",
+      "curl('wss://bitshares.crypto.fans/ws','','',{'method':'call', 'params':[0,'get_account_by_name',['$3']], id: 2})",
+      "tran('.result.id',data,2,1)",
+      "stop(1,'Target Id could not be found.')",
+      "coll(5)",
+      "stop(0,{source:data[0],target:data[3]})"
     ],
     "balance" : [
       "curl('asset://$symbol','','',{'method':'call', 'params':[0,'get_named_account_balances',['$1',['$contract']]], id: Math.floor(Math.random()*10000)})",
@@ -37,6 +47,17 @@
       "stop(1,'No result!')",
       "pass(data)"
     ],
+
+    "validate" : [
+      "curl('wss://bitshares.crypto.fans/ws','','',{'method': 'call', 'params': [1, 'login', ['', '']], 'id': 1})",
+      "test(data.result,2,1)",
+      "stop(1,'Log in for validation unsuccesfull.')",
+      "curl('wss://bitshares.crypto.fans/ws','','',{'method':'call', 'params':[0,'get_account_by_name',['$1']], id: 2})",
+      "test(data.result,2,1)",
+      "stop(0,'unregistered')",
+      "stop(0,'valid')"
+    ],
+
     "factor" : [
       "pass('$factor')"
     ],
@@ -48,6 +69,12 @@
     ],
     "fee" : [
       "pass('$fee')"
+    ],
+    "history" : [
+      "curl('asset://$symbol','','',{'method':'call', 'params':[0,'get_account_history',['$1']], id: Math.floor(Math.random()*10000)})"
+    ],
+    "transaction" : [
+      "curl('asset://$symbol','','',{'method':'call', 'params':[0,'get_recent_transaction_by_id',['$1']], id: Math.floor(Math.random()*10000)})"
     ]
   }
 }

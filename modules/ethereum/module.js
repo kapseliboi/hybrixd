@@ -134,14 +134,11 @@ function exec(properties) {
   case 'details':
     var symbol = target.symbol;
     var name = target.name;
-    //var mode; already defined
-    //var factor; already defined
     var fee;
     if(!isToken(target.symbol)) {
       fee = (typeof target.fee!='undefined'?target.fee:null);
     } else {
       fee = (typeof global.hybridd.asset[base].fee != 'undefined'?global.hybridd.asset[base].fee*2.465:null);
-      factor = (typeof global.hybridd.asset[base].factor != 'undefined'?global.hybridd.asset[base].factor:null);
     }
     fee  = fee&&factor?padFloat(fee,factor):null;
     var contract = (typeof target.contract != 'undefined'?target.contract:null);

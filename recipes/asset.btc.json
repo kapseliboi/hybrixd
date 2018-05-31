@@ -34,7 +34,9 @@
       "stop(1,'Broadcast failed!')",
       "tran('.result',data,2,1)",
       "stop(1,'No result!')",
-      "pass(data)"
+      "test(data[0]===true,2,1,data)",
+      "stop(1,data[1])",
+      "pass(data[1])"
     ],
     "factor" : [
       "pass('$factor')"

@@ -1,80 +1,186 @@
+// - Get assetmodes and names
+// - Get modehashes
+// - Retrieve user's assets from storage
+// - Initialize user assets
 
-  // fill local usercrypto object with keys and nonce later on
-  GL = {
-    usercrypto:{ user_keys: args.user_keys, nonce: args.nonce },
-    powqueue:[],
-    coinMarketCapTickers: []
-  };
+// NOPE \/\/\/ Render DOM independently!!!!
+//   When ready:
+// - Fetch view: dashboard
 
-  // retrieve modes supported by node
-  GL.cur_step = next_step();
-  $.ajax({ url: path+zchan(GL.usercrypto,GL.cur_step,'l/asset/modes'),
-    success: function(object){
-      object = zchan_obj(GL.usercrypto,GL.cur_step,object);
-      GL.assetmodes=object.data;
-      // retrieve names supported by node
-      GL.cur_step = next_step();
-      $.ajax({ url: path+zchan(GL.usercrypto,GL.cur_step,'l/asset/names'),
-        success: function(object){
-          object = zchan_obj(GL.usercrypto,GL.cur_step,object);
-          GL.assetnames=object.data;
+// - Async: Fetch valuations
+// - Async: Initialize Proof of Work loop
 
-          getDollarPrices(function () {
-            console.log('Fetched prices')
-          });
-          // Switch to dashboard view
-          fetchview('interface.dashboard',args);
-        }
-      });
-    }
-  });
+var POW = proofOfWork_;
+var Valuations = valuations;
+var Storage = storage;
+var Icons = black;
+var U = utils;
 
-  // once every two minutes, loop through proof-of-work queue
-  intervals.pow = setInterval(function() {
-    var req = GL.powqueue.shift();
-    if(typeof req !== 'undefined') {
-      // attempt to send proof-of-work to node
-      proofOfWork.solve(req.split('/')[1],
-        function(proof){
-          // DEBUG:
-          logger('submitting storage proof: '+req.split('/')[0]+'/'+proof);
-          hybriddcall({r:'s/storage/pow/'+req.split('/')[0]+'/'+proof,z:0},0, function(object) {});
-        },
-        function(){
-          // DEBUG:
-          logger('failed storage proof: '+req.split('/')[0]);
-        }
-      );
-    }
-  },120000);
+var path = 'api';
 
-getDollarPrices = function (cb) {
-  $.ajax({
-    url: 'https://api.coinmarketcap.com/v1/ticker/?limit=0',
-    dataType: 'json'
-  })
-    .done(function (data) {
-      GL.coinMarketCapTickers = data;
-      cb();
+GL = {
+  assets: [],
+  assetnames: {},
+  assetmodes: {},
+  coinMarketCapTickers: [],
+  powqueue: [],
+  usercrypto: {
+    user_keys: args.user_keys,
+    nonce: args.nonce
+  },
+  initCount: 0
+};
+
+// Don't move this yet, as the cur_step is needed by assetModesUrl. Synchronous coding!
+GL.cur_step = nextStep();
+var assetModesUrl = path + zchan(GL.usercrypto, GL.cur_step, 'l/asset/details');
+
+var defaultAssetData = [
+  { id: 'btc', starred: false },
+  { id: 'eth', starred: false }
+];
+
+var dollarPriceStream = Rx.Observable
+    .interval(30000)
+    .startWith(0);
+
+var assetsModesAndNamesStream = Rx.Observable
+    .fromPromise(U.fetchDataFromUrl(assetModesUrl, 'Error retrieving asset details.'))
+    .map(decryptData);
+
+var deterministicHashesStream = Rx.Observable
+    .fromPromise(hybriddcall({r: '/s/deterministic/hashes', z: true}))
+    .filter(R.propEq('error', 0))
+    .map(R.merge({r: '/s/deterministic/hashes', z: true}));
+
+var deterministicHashesResponseProcessStream = deterministicHashesStream
+    .flatMap(function (properties) {
+      return Rx.Observable
+        .fromPromise(hybriddReturnProcess(properties));
     })
-    .error(function (e) {
-    });
-};
+    .map(R.prop('data')) // VALIDATE?
+    .map(function (deterministicHashes) { assets.modehashes = deterministicHashes; }); // TODO: Make storedUserStream dependent on this stream!
 
-renderDollarPrice = function (symbolName, assetAmount) {
-  var assetSymbolUpperCase = symbolName.toUpperCase();
-  var tickers = GL.coinMarketCapTickers;
-  var matchedTicker = tickers.filter(function (ticker) {
-    return ticker.symbol === assetSymbolUpperCase;
-  });
+var storedUserDataStream = storage.Get_(userStorageKey('ff00-0035'))
+    .map(userDecode)
+    .map(storedOrDefaultUserData); // TODO: make pure!
 
-  return matchedTicker.length !== 0
-    ? '$' + (assetAmount * matchedTicker[0].price_usd).toFixed(2)
-    : 'n/a';
-};
+var assetsDetailsStream = storedUserDataStream
+    .flatMap(a => a) // Flatten Array structure...
+    .filter(existsInAssetNames) // TODO: Now REMOVES assets that have been disabed in the backed. Need to disable / notify user when this occurs.
+    .flatMap(function (asset) {
+      return R.compose(
+        initializeAsset(asset),
+        R.prop('id')
+      )(asset);
+    })
+    .map(U.addIcon);
 
-mkSvgIcon = function (symbolName) {
-  var firstLetterCapitalized = symbolName.slice(0, 1).toUpperCase();
+var initializationStream = Rx.Observable
+    .combineLatest(
+      storedUserDataStream,
+      assetsModesAndNamesStream,
+      deterministicHashesResponseProcessStream
+    );
 
-  return '<svg width="50px" height="50px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <g id="Asset-view" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="Symbols" transform="translate(-367.000000, -248.000000)" fill-rule="nonzero" fill="#000000"> <g id="error" transform="translate(367.000000, 248.000000)"> <path d="M25.016,0.016 C38.8656595,0.016 50.016,11.1663405 50.016,25.016 C50.016,38.8656595 38.8656595,50.016 25.016,50.016 C11.1663405,50.016 0.016,38.8656595 0.016,25.016 C0.016,11.1663405 11.1663405,0.016 25.016,0.016 Z" id="Shape"></path> <text x="50%" y="72%" text-anchor="middle" fill="white" style="font-size: 30px; font-weight: 200;">' + firstLetterCapitalized + '</text> </g> </g> </g> </svg>';
-};
+var powQueueIntervalStream = Rx.Observable
+    .interval(30000);
+
+function main () {
+  powQueueIntervalStream.subscribe(function (_) { POW.loopThroughProofOfWork(); } ); // once every two minutes, loop through proof-of-work queue
+  initializationStream.subscribe(initialize);
+  assetsDetailsStream.subscribe(updateAssetDetailsAndRenderDashboardView); // TODO: Separate data retrieval from DOM rendering. Dashboard should be rendered in any case.
+  dollarPriceStream.subscribe(function (_) { Valuations.getDollarPrices(); });
+  alertOnBeforeUnload();
+}
+
+// EFF ::
+function initialize (z) {
+  var globalAssets = R.nth(0, z);
+  var assetsModesAndNames = R.nth(1, z);
+
+  GL.assetnames = mkAssetData(assetsModesAndNames, 'name');
+  GL.assetmodes = mkAssetData(assetsModesAndNames, 'mode');
+  initializeGlobalAssets(globalAssets);
+  Storage.Set(userStorageKey('ff00-0035'), userEncode(globalAssets));
+}
+
+// EFF ::
+function updateAssetDetailsAndRenderDashboardView (assetDetails) {
+    GL.initCount += 1; // HACK!
+    GL.assets = R.reduce(U.mkUpdatedAssets(assetDetails), [], GL.assets);
+
+    // HACK: Assets can only be viewed when all details have been retrieved. Otherwise, transactions will not work.
+    if (GL.initCount === R.length(GL.assets)) {
+      document.querySelector('#topmenu-assets').onclick = fetchAssetsViews(pass_args);
+      document.querySelector('#topmenu-assets').classList.add('active');
+
+      fetchview('interface.dashboard', args); // UNTIL VIEW IS RENDERED SEPARATELY:
+    }
+  }
+
+function initializeAsset (asset) {
+  return function (entry) {
+    return initAsset(entry, GL.assetmodes[entry], asset);
+  };
+}
+
+function mkAssetData (data, key) {
+  return R.compose(
+    R.mergeAll,
+    R.map(R.curry(matchSymbolWithData)(key)),
+    R.prop('data')
+  )(data);
+}
+
+function matchSymbolWithData (key, data) {
+  return R.assoc(
+    R.prop('symbol', data),
+    R.prop(key, data),
+    {}
+  );
+}
+
+function storedOrDefaultUserData (decodeUserData) {
+  return R.compose(
+    R.unless(
+      R.allPass([
+        R.all(R.allPass([
+          R.has('id'),
+          R.has('starred')
+        ])),
+        R.compose(R.not, R.isEmpty)
+      ]),
+      R.always(defaultAssetData)
+    ),
+    R.defaultTo(defaultAssetData)
+  )(decodeUserData);
+}
+
+function initializeGlobalAssets (assets) {
+  return R.compose(
+    U.updateGlobalAssets,
+    R.map(R.merge({balance: { amount: 'n/a', lastTx: 0 }})),
+    R.filter(existsInAssetNames)
+  )(assets);
+}
+
+function existsInAssetNames (asset) {
+  return R.compose(
+    R.defaultTo(false),
+    R.find(R.equals(R.prop('id', asset))),
+    R.keys
+  )(GL.assetnames);
+}
+
+function alertOnBeforeUnload () {
+  function warning () {
+    return 'Are you sure you want to leave?';
+  }
+  window.onbeforeunload = warning;
+}
+
+function decryptData (d) { return R.curry(zchan_obj)(GL.usercrypto)(GL.cur_step)(d); }
+function fetchAssetsViews (args) { return function () { fetchview('interface.assets', args); }; }
+
+main();

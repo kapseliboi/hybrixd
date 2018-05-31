@@ -1,16 +1,18 @@
 // hybrid_connect.js - connects to closest hybrid daemon
 //
-// (c)2016-2017 metasync r&d / internet of coins project 
+// (c)2016-2017 metasync r&d / internet of coins project
 //
-$(document).ready(function() {
-	init = {};
-	cached = {};
+
+$(document).ready(function () {
+  init = {};
+  cached = {};
   fetchview_path = null;
   fetchview_time = 0;
-	path = 'api/';
+  path = 'api/';
   console.log('Starting hybridd-connect...');
-	// fetch the login view
-	fetchview('login',{});
+
+  // fetch the login view
+  fetchview('login', {});
 });
 
 function fetchview(viewpath,args) {
@@ -22,7 +24,7 @@ function fetchview(viewpath,args) {
     // run the safely initialized object through its sub-object id
     // subelement abstractor calls init.viewname
     if(typeof args == 'undefined') { args = false; }
-    initialize = function(data,accessor) {
+    initialize = function (data, accessor) {
       var keys = accessor.split('.');
       var result = data;
       while (keys.length > 0) {
@@ -33,25 +35,25 @@ function fetchview(viewpath,args) {
       }
       return result;
     }
-    // check if view available in cache  
+    // check if view available in cache
     var cacheIdx = 'view:'+viewpath;
     var data = cacheGet(cacheIdx,600000);
     if(!data) {
-      // fetch  
+      // fetch
       $.ajax({
         url: path+'v/'+viewpath,
-        dataType: 'json'       
+        dataType: 'json'
       })
-      .done(function(data) {
-        cacheAdd(cacheIdx,data);
-        activateview(viewpath,args,data);
-        fetchview_path=viewpath;
-      });
+        .done(function(data) {
+          cacheAdd(cacheIdx,data);
+          activateview(viewpath,args,data);
+          fetchview_path=viewpath;
+        });
     } else {
       if(fetchview_time<Date.now()-2000) {
         fetchview_time=Date.now();
         activateview(viewpath,args,data);
-        fetchview_path=viewpath;  
+        fetchview_path=viewpath;
       }
     }
   }
@@ -63,18 +65,21 @@ function activateview(viewpath,args,data) {
   // verify the signature
   // decompress pack into hy_view
   var hy_target = data['target'];
-  var hy_view = LZString.decompressFromEncodedURIComponent(data['pack']); 
+  var hy_view = LZString.decompressFromEncodedURIComponent(data['pack']);
   // DEBUG console.log(hy_view);
   // put hy_view into hy_frame
   $(hy_target).html(hy_view);
   // run init.subframe if it exists, and contains a non-empty function
-  if(typeof initialize !== 'undefined' && JSON.stringify(initialize) != '{}') { 
-    initialize(init,viewpath)(args); 
+  if(typeof initialize !== 'undefined' && JSON.stringify(initialize) !== '{}') {
+    var initialized = initialize(init, viewpath);
+    if (typeof initialized !== 'object') {
+      initialized(args);
+    }
   }
 }
 
 cacheAdd = function(index,data) {
-  // DEBUG: console.log(' [D] cache added for index: '+index);  
+  // DEBUG: console.log(' [D] cache added for index: '+index);
   cached[index] = [Date.now(),data];
 }
 

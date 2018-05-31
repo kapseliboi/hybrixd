@@ -107,7 +107,7 @@ function exec(properties) {
     break;
   case 'push':
     var deterministic_script = (typeof properties.command[1] != 'undefined'?properties.command[1]:false);
-    if(0 && deterministic_script) {
+    if(deterministic_script) {
       subprocesses.push('func("nxt","link",{target:'+jstr(target)+',command:["broadcastTransaction",["transactionBytes='+deterministic_script+'"]]})');
       // returns: { "requestProcessingTime": 4, "fullHash": "3a304584f20cf3d2cbbdd9698ff9a166427005ab98fbe9ca4ad6253651ee81f1", "transaction": "15200507403046301754" }
       subprocesses.push('stop((typeof data.transaction==="undefined"?1:0),(typeof data.transaction==="undefined"?data.errorDescription:data.transaction))');
