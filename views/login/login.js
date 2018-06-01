@@ -45,6 +45,9 @@ function main () {
   maybeOpenNewWalletModal(location);
   keyDownOnUserIDStream.subscribe(function (_) { document.querySelector('#inputPasscode').focus(); });
   validatedUserCredentialsStream.subscribe(function (userCredentials) {
+    // FLIP LOGIN FORM
+    document.querySelector('.flipper').classList.add('active');
+
     var validatedUserCredentialsStream_ = Rx.Observable.of(userCredentials);
 
     var generatedKeysStream =
