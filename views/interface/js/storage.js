@@ -114,7 +114,7 @@ var storage = (function() {
                   .fromPromise(hybriddReturnProcess(properties));
               })
               .map(data => {
-                if (!R.isNil(R.prop('stopped', data)) && R.prop('progress', data) < 1) throw data;
+                if (R.isNil(R.prop('stopped', data)) && R.prop('progress', data) < 1) throw data;
                 return data;
               })
               .retryWhen(function (errors) { return errors.delay(1000); })
