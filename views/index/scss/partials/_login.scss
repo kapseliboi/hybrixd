@@ -74,8 +74,15 @@
   }
 
   #generateform {
-    padding: 30px 0;
+    padding: 10px 0 30px 0;
     background: #fff;
+  }
+
+  #generateform p {
+    color: #000;
+    border-bottom: 1px solid #aaa;
+    padding: 0 50px 20px 50px;
+    text-align: left;
   }
 
   #generatebutton {
@@ -89,7 +96,7 @@
     &:hover {
       cursor: pointer;
       color: $secondary-color;
-       @include opacity(1);
+      @include opacity(1);
     }
   }
 
@@ -99,7 +106,7 @@
 
     &:hover {
       color: white;
-       @include opacity(0.9);
+      @include opacity(0.9);
       cursor: pointer;
     }
   }
@@ -169,4 +176,71 @@
   background: $secondary-color;
   z-index: 2147483647;
   @include opacity(0.3);
+}
+
+////////////////////////////////////
+// Flip card example
+////////////////////////////////////
+.foo {
+  width: 100%;
+  // max-width: 380px;
+  color: white;
+  text-align: center;
+  display: block;
+  margin: 0 auto;
+}
+
+.flip-container {
+  perspective: 600px;
+  width: 100%;
+  color: white;
+  text-align: center;
+  display: block;
+}
+/* flip the pane when hovered */
+.flip-container:hover .flipper, .flip-container.hover .flipper {
+  transform: rotateY(180deg);
+}
+
+/* flip speed goes here */
+.flipper {
+  transition: 1s;
+  transform-style: preserve-3d;
+
+  position: relative;
+  height: 300px;
+  width: 380px;
+}
+
+.login-flip-front, .login-flip-back {
+  backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* front pane, placed above back */
+.login-flip-front {
+  z-index: 2;
+  /* for firefox 31 */
+  transform: rotateY(0deg);
+}
+
+/* back, initially hidden pane */
+.login-flip-back {
+  width: 100%;
+  height: 270px;
+  background: #fff;
+  transform: rotateY(180deg);
+}
+
+.login-flip-back p {
+  color: #000;
+}
+
+.progress-bar {
+  margin: 100px 0 0 50px;
+  height: 20px;
+  width: 120px;
+  background: green;
 }
