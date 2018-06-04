@@ -75,29 +75,25 @@ function doAssetInitialisation (z) {
   var powQueueIntervalStream = Rx.Observable
       .interval(30000);
 
-  // EFF ::
-  function updateAssetDetailsAndRenderDashboardView (assetDetails) {
-    GL.initCount += 1; // HACK!
-    GL.assets = R.reduce(U.mkUpdatedAssets(assetDetails), [], GL.assets);
-
-    // HACK: Assets can only be viewed when all details have been retrieved. Otherwise, transactions will not work.
-    if (GL.initCount === R.length(GL.assets)) {
-      fetchview('interface', {
-        user_keys: R.nth(0, z),
-        nonce: R.path(['3', 'current_nonce'], z),
-        userid: R.path(['2', 'userID'], z)
-      });
-      // HACK: Fix race condition for now.......
-      setTimeout(function () {
-        fetchview('interface.dashboard', args); // UNTIL VIEW IS RENDERED SEPARATELY:
-      }, 500);
-    }
-  }
-
   animationStream.subscribe();
-  powQueueIntervalStream.subscribe(function (_) { POW.loopThroughProofOfWork(); } ); // once every two minutes, loop through proof-of-work queue
+  powQueueIntervalStream.subscribe(function (_) { POW.loopThroughProofOfWork(); }); // once every two minutes, loop through proof-of-work queue
   initializationStream.subscribe(initialize_);
   assetsDetailsStream.subscribe(updateAssetDetailsAndRenderDashboardView); // TODO: Separate data retrieval from DOM rendering. Dashboard should be rendered in any case.
+}
+
+// EFF ::
+function updateAssetDetailsAndRenderDashboardView (assetDetails) {
+  GL.initCount += 1; // HACK!
+  GL.assets = R.reduce(U.mkUpdatedAssets(assetDetails), [], GL.assets);
+
+  // HACK: Assets can only be viewed when all details have been retrieved. Otherwise, transactions will not work.
+  if (GL.initCount === R.length(GL.assets)) {
+    fetchview('interface', {
+      user_keys: R.nth(0, z),
+      nonce: R.path(['3', 'current_nonce'], z),
+      userid: R.path(['2', 'userID'], z)
+    });
+  }
 }
 
 function storedOrDefaultUserData (decodeUserData) {

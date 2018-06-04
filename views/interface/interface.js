@@ -1,17 +1,4 @@
-// - Get assetmodes and names
-// - Get modehashes
-// - Retrieve user's assets from storage
-// - Initialize user assets
-
-// NOPE \/\/\/ Render DOM independently!!!!
-//   When ready:
-// - Fetch view: dashboard
-
-// - Async: Fetch valuations
-// - Async: Initialize Proof of Work loop
-
 var Valuations = valuations;
-var path = 'api';
 
 var dollarPriceStream = Rx.Observable
     .interval(30000)
@@ -22,6 +9,7 @@ function main () {
   document.querySelector('#topmenu-assets').classList.add('active');
   dollarPriceStream.subscribe(function (_) { Valuations.getDollarPrices(); });
   alertOnBeforeUnload();
+  fetchview('interface.dashboard', args); // UNTIL VIEW IS RENDERED SEPARATELY:
 }
 
 function alertOnBeforeUnload () {
