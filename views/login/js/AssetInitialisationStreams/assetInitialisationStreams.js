@@ -1,6 +1,14 @@
 var A = animations;
 var U = utils;
 
+var path = 'api';
+
+var ANIMATION_STEPS = R.compose(
+  R.dec,
+  R.length,
+  R.keys
+)(A.progressMessages);
+
 var defaultAssetData = [
   { id: 'btc', starred: false },
   { id: 'eth', starred: false }
@@ -8,12 +16,10 @@ var defaultAssetData = [
 
 function doAssetInitialisation (z) {
   GL.cur_step = nextStep();
-  function mkAssetModesUrl () {
-    return path + zchan(GL.usercrypto, GL.cur_step, 'l/asset/details');
-  }
+  var assetsModesUrl = path + zchan(GL.usercrypto, GL.cur_step, 'l/asset/details');
 
   var assetsModesAndNamesStream = Rx.Observable
-      .fromPromise(U.fetchDataFromUrl(mkAssetModesUrl(), 'Error retrieving asset details.'))
+      .fromPromise(U.fetchDataFromUrl(assetsModesUrl, 'Error retrieving asset details.'))
       .map(decryptData);
 
   var initialAnimationStateStream = Rx.Observable.interval(200)
@@ -30,11 +36,11 @@ function doAssetInitialisation (z) {
           .fromPromise(hybriddReturnProcess(properties));
       })
       .map(R.prop('data')) // VALIDATE?
-      .map(function (deterministicHashes) { assets.modehashes = deterministicHashes; }) // TODO: Make storedUserStream dependent on this stream!
+      .map(function (deterministicHashes) { assets.modehashes = deterministicHashes; }); // TODO: Make storedUserStream dependent on this stream!
 
   var storedUserDataStream = Storage.Get_(userStorageKey('ff00-0035'))
       .map(userDecode)
-      .map(storedOrDefaultUserData) // TODO: make pure!
+      .map(storedOrDefaultUserData); // TODO: make pure!
 
   var assetsDetailsStream = storedUserDataStream
       .flatMap(a => a) // Flatten Array structure...
@@ -63,7 +69,7 @@ function doAssetInitialisation (z) {
         assetsDetailsStream
       )
       .scan(function (acc, curr) { return acc + 1; })
-      .map(function (n) { return n <= 6 ? n : 6; })
+      .map(function (n) { return n <= ANIMATION_STEPS ? n : ANIMATION_STEPS; })
       .map(A.doProgressAnimation);
 
   var powQueueIntervalStream = Rx.Observable
