@@ -54,7 +54,7 @@ var validatedUserCredentialsStream = userSubmitStream
     .withLatestFrom(S.credentialsStream)
     .map(mkCredentialsObj)
     .map(R.map(U.normalizeUserInput))
-    .filter(hasValidCredentials);
+    .filter(V.hasValidCredentials);
 
 function main () {
   document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
@@ -92,7 +92,7 @@ function main () {
           sessionStepStream // SESSIONSTEP NEEDS TO BE INCREMENTED HERE. Now gets incremented in mkPostSessionStep1Url
         )
         .filter(R.compose(
-          nonceHasCorrectLength,
+          V.nonceHasCorrectLength,
           R.prop('nonce1'),
           R.nth(0)
         ))
@@ -211,10 +211,8 @@ function maybeOpenNewWalletModal (location) {
   }
 }
 
-function nonceHasCorrectLength (nonce1) { return C.clean(nonce1).length === 48; }
 function mkSessionKeys (credentials) { return C.generateKeys(R.prop('password', credentials), R.prop('userID', credentials), 0); }
 function setSessionDataInElement (sessionHex) { document.querySelector('#session_data').textContent = sessionHex; }
-function hasValidCredentials (credentials) { return V.validateCredentials(R.prop('userID', credentials), R.prop('password', credentials)); }
 function mkCredentialsObj (z) { return { userID: R.path(['1', '0'], z), password: R.path(['1', '1'], z) }; }
 
 U.documentReady(main);
