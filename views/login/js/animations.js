@@ -125,6 +125,15 @@ var animationStream = Rx.Observable
       dialLoginStream
     );
 
+function doProgressAnimation (step) {
+  var elemExists = R.not(R.isNil(document.querySelector('.progress-bar'))) &&
+                   R.not(R.isNil(document.querySelector('.progress-text')));
+  if (elemExists) {
+    document.querySelector('.progress-bar').style.width = R.path([step, 'weight'], progressMessages);
+    document.querySelector('.progress-text').innerHTML = R.path([step, 'message'], progressMessages);
+  }
+}
+
 function disposeCurrentDisposable (disposable) { disposable.dispose(); }
 function startLoginAnimation () { return animationStream.subscribe(); }
 function stopLoginAnimation (d) {
@@ -135,5 +144,6 @@ function stopLoginAnimation (d) {
 animations = {
   startLoginAnimation,
   stopLoginAnimation,
+  doProgressAnimation,
   progressMessages
 };

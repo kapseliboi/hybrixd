@@ -7,6 +7,7 @@ var U = utils;
 
 var POW = proofOfWork_;
 var Storage = storage;
+var AssetInitialisationStreams = assetInitialisationStreams;
 
 var path = 'api'; // TODO: Factor up!
 var args = {};
@@ -18,21 +19,12 @@ GL = {
   coinMarketCapTickers: [],
   powqueue: [],
   usercrypto: {},
-  // usercrypto: {
-  //   user_keys: args.user_keys,
-  //   nonce: args.nonce
-  // },
   initCount: 0
 };
 
 // Don't move this yet, as the cur_step is needed by assetModesUrl. Synchronous coding!
 nacl_factory.instantiate(function (naclinstance) { nacl = naclinstance; }); // TODO
 session_step = 1; // Session step number at the end of login. TODO
-
-var defaultAssetData = [
-  { id: 'btc', starred: false },
-  { id: 'eth', starred: false }
-];
 
 ////////////////////////////////
 // GLOBAL STUFFZ ///////////////
@@ -129,24 +121,20 @@ function main () {
           validatedUserCredentialsStream_,
           processSession1StepDataStream
         )
-        .map(function (z) {
-          GL.usercrypto = {
-            user_keys: R.nth(0, z),
-            nonce: R.path(['3', 'current_nonce'], z)
-          };
-          return z
-        })
-        .delay(500);
+        .delay(500); // Delay so progressbar animation looks smoother.
 
     A.startLoginAnimation();
     setCSSTorenderButtonsToDisabled();
     // HACK! :( So that CSS gets rendered immediately and user gets feedback right away.
     setTimeout(function () {
-      // FLIP LOGIN FORM
-      document.querySelector('.flipper').classList.add('active');
+      document.querySelector('.flipper').classList.add('active'); // FLIP LOGIN FORM
       document.querySelector('#generateform').classList.add('inactive');
-      fetchViewStream.subscribe(function (z) {
-        main_(z);
+      fetchViewStream.subscribe(function (userSessionData) {
+        GL.usercrypto = {
+          user_keys: R.nth(0, userSessionData),
+          nonce: R.path(['3', 'current_nonce'], userSessionData)
+        };
+        AssetInitialisationStreams.doAssetInitialisation(userSessionData);
       });
     }, 500);
   });
@@ -223,173 +211,10 @@ function maybeOpenNewWalletModal (location) {
   }
 }
 
-// EFF ::
-function initialize_ (z) {
-  var globalAssets = R.nth(0, z);
-  var assetsModesAndNames = R.nth(1, z);
-
-  GL.assetnames = mkAssetData(assetsModesAndNames, 'name');
-  GL.assetmodes = mkAssetData(assetsModesAndNames, 'mode');
-  initializeGlobalAssets(globalAssets);
-  Storage.Set(userStorageKey('ff00-0035'), userEncode(globalAssets));
-}
-
-function initializeAsset (asset) {
-  return function (entry) {
-    return initAsset(entry, GL.assetmodes[entry], asset);
-  };
-}
-
-function mkAssetData (data, key) {
-  return R.compose(
-    R.mergeAll,
-    R.map(R.curry(matchSymbolWithData)(key)),
-    R.prop('data')
-  )(data);
-}
-
-function matchSymbolWithData (key, data) {
-  return R.assoc(
-    R.prop('symbol', data),
-    R.prop(key, data),
-    {}
-  );
-}
-
-function storedOrDefaultUserData (decodeUserData) {
-  return R.compose(
-    R.unless(
-      R.allPass([
-        R.all(R.allPass([
-          R.has('id'),
-          R.has('starred')
-        ])),
-        R.compose(R.not, R.isEmpty)
-      ]),
-      R.always(defaultAssetData)
-    ),
-    R.defaultTo(defaultAssetData)
-  )(decodeUserData);
-}
-
-function initializeGlobalAssets (assets) {
-  return R.compose(
-    U.updateGlobalAssets,
-    R.map(R.merge({balance: { amount: 'n/a', lastTx: 0 }})),
-    R.filter(existsInAssetNames)
-  )(assets);
-}
-
-function existsInAssetNames (asset) {
-  return R.compose(
-    R.defaultTo(false),
-    R.find(R.equals(R.prop('id', asset))),
-    R.keys
-  )(GL.assetnames);
-}
-
-function decryptData (d) { return R.curry(zchan_obj)(GL.usercrypto)(GL.cur_step)(d); }
 function nonceHasCorrectLength (nonce1) { return C.clean(nonce1).length === 48; }
 function mkSessionKeys (credentials) { return C.generateKeys(R.prop('password', credentials), R.prop('userID', credentials), 0); }
 function setSessionDataInElement (sessionHex) { document.querySelector('#session_data').textContent = sessionHex; }
 function hasValidCredentials (credentials) { return V.validateCredentials(R.prop('userID', credentials), R.prop('password', credentials)); }
 function mkCredentialsObj (z) { return { userID: R.path(['1', '0'], z), password: R.path(['1', '1'], z) }; }
-
-function main_ (z) {
-  GL.cur_step = nextStep();
-  function mkAssetModesUrl () {
-    return path + zchan(GL.usercrypto, GL.cur_step, 'l/asset/details');
-  }
-
-  var assetsModesAndNamesStream = Rx.Observable
-      .fromPromise(U.fetchDataFromUrl(mkAssetModesUrl(), 'Error retrieving asset details.'))
-      .map(decryptData);
-
-  var initialAnimationStateStream = Rx.Observable.interval(200)
-      .startWith(0)
-      .take(2);
-
-  var deterministicHashesStream = Rx.Observable
-      .fromPromise(hybriddcall({r: '/s/deterministic/hashes', z: true}))
-      .filter(R.propEq('error', 0));
-
-  var deterministicHashesResponseProcessStream = deterministicHashesStream
-      .flatMap(function (properties) {
-        return Rx.Observable
-          .fromPromise(hybriddReturnProcess(properties));
-      })
-      .map(R.prop('data')) // VALIDATE?
-      .map(function (deterministicHashes) { assets.modehashes = deterministicHashes; }) // TODO: Make storedUserStream dependent on this stream!
-
-  var storedUserDataStream = Storage.Get_(userStorageKey('ff00-0035'))
-      .map(userDecode)
-      .map(storedOrDefaultUserData) // TODO: make pure!
-
-  var assetsDetailsStream = storedUserDataStream
-      .flatMap(a => a) // Flatten Array structure...
-      .filter(existsInAssetNames) // TODO: Now REMOVES assets that have been disabed in the backed. Need to disable / notify user when this occurs.
-      .flatMap(function (asset) {
-        return R.compose(
-          initializeAsset(asset),
-          R.prop('id')
-        )(asset);
-      })
-      .map(U.addIcon);
-
-  var initializationStream = Rx.Observable
-      .combineLatest(
-        storedUserDataStream,
-        assetsModesAndNamesStream,
-        deterministicHashesResponseProcessStream
-      );
-
-  var animationStream = Rx.Observable
-      .concat(
-        initialAnimationStateStream,
-        storedUserDataStream,
-        assetsModesAndNamesStream,
-        deterministicHashesResponseProcessStream,
-        assetsDetailsStream
-      )
-      .scan(function (acc, curr) { return acc + 1; })
-      .map(function (n) { return n <= 6 ? n : 6; })
-      .map(doProgressAnimation);
-
-  var powQueueIntervalStream = Rx.Observable
-      .interval(30000);
-
-  // EFF ::
-  function updateAssetDetailsAndRenderDashboardView (assetDetails) {
-    GL.initCount += 1; // HACK!
-    GL.assets = R.reduce(U.mkUpdatedAssets(assetDetails), [], GL.assets);
-
-    // HACK: Assets can only be viewed when all details have been retrieved. Otherwise, transactions will not work.
-    if (GL.initCount === R.length(GL.assets)) {
-      fetchview('interface', {
-        user_keys: R.nth(0, z),
-        nonce: R.path(['3', 'current_nonce'], z),
-        userid: R.path(['2', 'userID'], z)
-      });
-      // HACK: Fix race condition for now.......
-      setTimeout(function () {
-        fetchview('interface.dashboard', args); // UNTIL VIEW IS RENDERED SEPARATELY:
-      }, 500)
-    }
-  }
-
-  animationStream.subscribe();
-  powQueueIntervalStream.subscribe(function (_) { POW.loopThroughProofOfWork(); } ); // once every two minutes, loop through proof-of-work queue
-  initializationStream.subscribe(initialize_);
-  assetsDetailsStream.subscribe(updateAssetDetailsAndRenderDashboardView); // TODO: Separate data retrieval from DOM rendering. Dashboard should be rendered in any case.
-}
-
-function doProgressAnimation (step) {
-  var elemExists = R.not(R.isNil(document.querySelector('.progress-bar'))) &&
-                   R.not(R.isNil(document.querySelector('.progress-text')));
-  if (elemExists) {
-    document.querySelector('.progress-bar').style.width = R.path([step, 'weight'], A.progressMessages);
-    document.querySelector('.progress-text').innerHTML = R.path([step, 'message'], A.progressMessages);
-  }
-}
 
 U.documentReady(main);
