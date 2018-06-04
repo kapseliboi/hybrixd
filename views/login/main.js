@@ -25,9 +25,15 @@ hy_content += '<script>'+fs.readFileSync('../../lib/crypto/nacl.js')+'</script>'
 // including sjcl (pbkdf2 sha256 for key generation)
 hy_content += '<script>'+fs.readFileSync('../../lib/crypto/sjcl.js')+'</script>';
 
+hy_content += '<script>' + fs.readFileSync('../../lib/crypto/urlbase64.js') + '</script>';	    // URL safe base 64 encoding
+hy_content += '<script>' + fs.readFileSync('../../lib/crypto/decimal-light.js') + '</script>';	// arbitrary length decimals
+hy_content += '<script>' + fs.readFileSync('../../lib/crypto/hex2dec.js') + '</script>';	      // arbitrary length decimals
+hy_content += '<script>' + fs.readFileSync('../../lib/crypto/proof.js') + '</script>';	        // proof-of-work library
+hy_content += '<script>' + fs.readFileSync('./../interface/js/sha256.js')  + '</script>';          // fast SHA256 hashing
+hy_content += '<script>' + fs.readFileSync('./../interface/js/globalobjects.js') + '</script>';	// global objects/functions
+
 // Add global variables
 hy_content += '<script>'+fs.readFileSync('./js/globals.js')+'</script>';
-
 hy_content += '<script>'+fs.readFileSync('./js/animations.js')+'</script>'; // Add login animations
 hy_content += '<script>'+fs.readFileSync('./js/loginStreams.js')+'</script>';
 hy_content += '<script>'+fs.readFileSync('./js/validations.js')+'</script>'; // Add login validations

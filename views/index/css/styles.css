@@ -1496,7 +1496,14 @@ pre .support.value {
     /* stops bg color from leaking outside the border: */ }
   #login_container #generateform {
     padding: 10px 0 30px 0;
+    opacity: 1;
     background: #fff; }
+  #login_container #generateform.inactive {
+    -webkit-transition: opacity 0.5s ease-in-out;
+    -moz-transition: opacity 0.5s ease-in-out;
+    -ms-transition: opacity 0.5s ease-in-out;
+    -o-transition: opacity 0.5s ease-in-out;
+    opacity: 0; }
   #login_container #generateform p {
     color: #000;
     border-bottom: 1px solid #aaa;
@@ -1602,7 +1609,7 @@ pre .support.value {
 
 /* flip speed goes here */
 .flipper {
-  transition: 1s;
+  transition: 1.5s;
   transform-style: preserve-3d;
   position: relative;
   height: 300px;
@@ -1635,10 +1642,17 @@ pre .support.value {
   color: #000; }
 
 .progress-bar {
+  transition: 0.5s;
   margin: 100px 0 0 50px;
   height: 20px;
-  width: 120px;
+  width: 0;
+  max-width: 280px;
   background: green; }
+
+.progress-text {
+  color: #000;
+  padding: 20px;
+}
 
 @-moz-keyframes spinner-loader {
   0% {

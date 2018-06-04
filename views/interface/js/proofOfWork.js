@@ -1,4 +1,4 @@
-var proofOfWork_ = {
+proofOfWork_ = {
   loopThroughProofOfWork: function () {
     var req = GL.powqueue.shift();
     if (typeof req !== 'undefined') {

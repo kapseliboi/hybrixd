@@ -29,21 +29,30 @@ hy_page += '<div id="hy_frame"></div>';
 // followed by jquery (so to make ajax calls)
 hy_page += '<script>'+fs.readFileSync('./jquery-1.12.4.min.js')+'</script>';
 
+// UTILS
+hy_page += '<script>'+fs.readFileSync('./utils.js')+'</script>';
+
+hy_page += '<script>' + fs.readFileSync('./../files/svg/black.js') + '</script>';
+
+hy_page += '<script>' + fs.readFileSync('./../interface/js/deterministic.js') + '</script>';
+hy_page += '<script>' + fs.readFileSync('./../interface/js/ychan.js') + '</script>';
+hy_page += '<script>' + fs.readFileSync('./../interface/js/zchan.js') + '</script>';
+hy_page += '<script>' + fs.readFileSync('./../interface/js/proofOfWork.js') + '</script>';
+hy_page += '<script>' + fs.readFileSync('./../interface/js/storage.js') + '</script>';
+hy_page += '<script>' + fs.readFileSync('./../interface/js/hybriddcall.js') + '</script>';
+hy_page += '<script>' + fs.readFileSync('./../interface/js/assetInitialization.js') + '</script>';
+
 // lzma-decompressor
 hy_page += '<script>'+fs.readFileSync('../../lib/crypto/lz-string.js')+'</script>';
 
 // and finally the hybrid connector
 hy_page += '<script>'+fs.readFileSync('./hy_connect.js')+'</script>';
 
-// UTILS
-hy_page += '<script>'+fs.readFileSync('./utils.js')+'</script>';
-
 // RAmda
 hy_page += '<script>'+fs.readFileSync('./ramda.min.js')+'</script>';
 
 // RxJS
 hy_page += '<script>'+fs.readFileSync('./rx.min.js')+'</script>';
-// hy_page += '<script>'+fs.readFileSync('./rx.lite.js')+'</script>';
 
 // COMMON UTILS BETWEEN WEB AND CLI WALLET
 hy_page += '<script>'+fs.readFileSync('./../../common/index.js')+'</script>';

@@ -29,7 +29,6 @@ hy_content += addscript('../../lib/crypto/proof.js');	        // proof-of-work l
 
 hy_content += '<script>';
 hy_content += fs.readFileSync('./js/globalobjects.js');	// global objects/functions
-hy_content += fs.readFileSync('./js/utils.js');
 hy_content += "\n"+'pass_args = {};';
 hy_content += 'init.interface = function(args) {';
 hy_content += 'pass_args = args;';							        // pass args along DOM to toplevel buttons
@@ -55,7 +54,6 @@ hy_content += addscript('./js/transaction.js');     // deterministic transaction
 // SVG
 hy_content += '<script>';
 hy_content += 'svg={};';
-hy_content += fs.readFileSync('./../files/svg/black.js');
 hy_content += addsvg('./svg/cogs.svg','cogs');
 hy_content += addsvg('./svg/user.svg','user');
 hy_content += addsvg('./svg/advanced.svg','advanced');

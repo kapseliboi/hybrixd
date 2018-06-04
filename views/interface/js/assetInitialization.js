@@ -1,6 +1,5 @@
 var Storage = storage;
-// var U = utils;
-var D = deterministic_;
+var Deterministic = deterministic_;
 
 initAsset = function (entry, fullMode, init) {
   var mode = fullMode.split('.')[0];
@@ -75,7 +74,7 @@ function reinitializeDeterministicMode (init, mode, submode, entry, fullmode, dc
 
 function mkAssetDetails (initialDetails, dcode, entry, submode, mode, assetDetails) {
   var keyGenBase = R.prop('keygen-base', assetDetails);
-  var deterministicDetails = D.mkDeterministicDetails(dcode, entry, submode, mode, keyGenBase);
+  var deterministicDetails = Deterministic.mkDeterministicDetails(dcode, entry, submode, mode, keyGenBase);
   return R.mergeAll([
     initialDetails,
     assetDetails,
