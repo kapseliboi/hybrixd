@@ -28,7 +28,7 @@ function exec(properties) {
   var base = target.symbol.split('.')[0];     // in case of token fallback to base asset
   var mode  = target.mode;
   var factor = (typeof target.factor != 'undefined'?target.factor:null);
-  var tokenfeeMultiply = 4;   // [!] must be the same as value in deterministic module
+  var tokenfeeMultiply = 5;   // [!] must be the same as value in deterministic module
   var subprocesses = [];
   // set request to what command we are performing
   global.hybridd.proc[processID].request = properties.command;
@@ -76,11 +76,12 @@ function exec(properties) {
     var fee;
     if(!isToken(target.symbol)) {
       fee = (typeof target.fee!='undefined'?target.fee:null);
+      fee = fee&&factor?padFloat(fee,factor):null;
     } else {
       fee = (typeof global.hybridd.asset[base].fee != 'undefined'?global.hybridd.asset[base].fee*tokenfeeMultiply:null);
-      feeFactor = (typeof global.hybridd.asset[base].factor != 'undefined'?global.hybridd.asset[base].factor:null);
+      var feeFactor = (typeof global.hybridd.asset[base].factor != 'undefined'?global.hybridd.asset[base].factor:null);
+      fee = fee&&feeFactor?padFloat(fee,feeFactor):null;
     }
-    fee  = fee&&feeFactor?padFloat(fee,feeFactor):null;
     subprocesses.push('stop(('+jstr(fee)+'!==null && '+jstr(feeFactor)+'!==null?0:1),'+(fee!=null && factor!=null?'"'+fee+'"':null)+')');
     break;
   case 'balance':
@@ -138,11 +139,12 @@ function exec(properties) {
     var fee;
     if(!isToken(target.symbol)) {
       fee = (typeof target.fee!='undefined'?target.fee:null);
+      fee = fee&&factor?padFloat(fee,factor):null;
     } else {
       fee = (typeof global.hybridd.asset[base].fee != 'undefined'?global.hybridd.asset[base].fee*tokenfeeMultiply:null);
-      feeFactor = (typeof global.hybridd.asset[base].factor != 'undefined'?global.hybridd.asset[base].factor:null);
+      var feeFactor = (typeof global.hybridd.asset[base].factor != 'undefined'?global.hybridd.asset[base].factor:null);
+      fee = fee&&feeFactor?padFloat(fee,feeFactor):null;
     }
-    fee  = fee&&feeFactor?padFloat(fee,feeFactor):null;
     var contract = (typeof target.contract != 'undefined'?target.contract:null);
 
     subprocesses.push("stop(0,{symbol:'"+symbol+"', name:'"+name+"',mode:'"+mode+"',fee:'"+fee+"',contract:'"+contract+"',factor:'"+factor+"','keygen-base':'"+base+"','fee-symbol':'"+base+"'})");
