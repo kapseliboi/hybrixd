@@ -268,6 +268,7 @@ for the data to be returned. (Combining fork and read)
 target:       A string containing on of the following options
 - "asset://base[.mode]"
 - "source://base[.mode]"
+- "enigine://base[.mode]"
 xpath:         A string containg the command path. "command/a/b"
 calls command using $1 = "a", $2 = "b"
 data:         Optional data to be passed to the new process
@@ -276,6 +277,22 @@ data:         Optional data to be passed to the new process
 Examples:
   call("asset://dummy","balance/abc")          // Retrieve the
   dummy balans for address abc
+
+
+
+ each(container,target,xpath)
+
+loop through elements of a container execute a given function for each
+element.
+target:       A string containing on of the following options
+- "asset://base[.mode]"
+- "source://base[.mode]"
+- "enigine://base[.mode]"
+xpath:         A string containg the command path. "command/a/b"
+
+Examples:
+  each(["a","b","c"], "asset://dummy","test")        calls
+  asset://dummy/test with data = {key=0, value="a"} and further
 
 
  poke(var [,data] )

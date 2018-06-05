@@ -27,7 +27,7 @@ UItransform = {
     R.compose(
       U.updateGlobalAssets,
       R.reduce(R.curry(updateAssetBalanceData)(assetID)(newBalance), [])
-    );
+    )(GL.assets);
   }
 };
 

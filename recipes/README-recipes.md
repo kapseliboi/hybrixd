@@ -70,6 +70,16 @@ module-deterministic  The name of the client side code implementation  (TODO TO 
 factor
 fee                   A number representing the fee associated with transfering assets
 
+generated
+Discription: A string indicating whether an address needs to
+be generated
+never : no generation needed,
+once : generation only needed once,
+always : generation each time you want to receive a transferr
+Example: "never", "once", "always"
+
+
+
 host                  A string or array of strings containing the hosts
 
 

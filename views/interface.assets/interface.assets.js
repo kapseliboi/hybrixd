@@ -2,6 +2,7 @@ var Valuations = valuations;
 var TxValidations = transactionValidations;
 var SendAsset = sendAsset;
 var ReceiveAsset = receiveAsset;
+var GenerateAddress = generateAddress
 var M = manageAssets;
 var U = utils;
 var H = hybridd;
@@ -30,6 +31,7 @@ function main (args) {
 function initializeAssetsInterfaceStreams () {
   var sendAssetButtonStream = mkAssetButtonStream('sendAssetButton');
   var receiveAssetButtonStream = mkAssetButtonStream('receiveAssetButton');
+  var generateAddressButtonStream = mkAssetButtonStream('generateAddressButton');
   var saveAssetListStream = Rx.Observable.fromEvent(document.querySelector('#save-assetlist'), 'click');
   var maxAmountButtonStream = Rx.Observable.fromEvent(document.querySelector('.max-amount-button'), 'click');
   var stopBalanceStream = Rx.Observable.fromEvent(document.querySelector('#topmenu-dashboard'), 'click');
@@ -42,6 +44,7 @@ function initializeAssetsInterfaceStreams () {
   maxAmountButtonStream.subscribe(function (_) {
     var sendBalance = document.querySelector('#action-send .modal-send-balance').innerHTML;
     document.querySelector('#modal-send-amount').value = sendBalance;
+    U.triggerEvent(document.querySelector('#modal-send-amount'), 'input');
   });
   saveAssetListStream.subscribe(M.saveAssetList(main()));
   sendAssetButtonStream.subscribe(function (assetID) {
@@ -50,6 +53,9 @@ function initializeAssetsInterfaceStreams () {
   });
   receiveAssetButtonStream.subscribe(function (assetID) {
     ReceiveAsset.renderAssetDetailsInModal(assetID);
+  });
+  generateAddressButtonStream.subscribe(function (assetID) {
+    GenerateAddress.render(assetID);
   });
 }
 

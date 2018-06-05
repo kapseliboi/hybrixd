@@ -1,7 +1,7 @@
 Command list
 
 command= asset|source/$ASSET/$COMMAND/$1/$2/...
-$COMMAND = $0 = init|status|factor|fee|balance|transfer|test|history|unspent|contract
+$COMMAND = $0 = init|status|factor|fee|balance|transfer|history|unspent|contract|validate
 
 init
 Syntax: a/$ASSET/init
@@ -40,8 +40,15 @@ Description: Retrieve contract data
 Input: Address  (sourceaddress)
 Output: Contract data
 
-push             push something to blockchain (usually signed transaction) forward (for ethereum contracts)
+validate
+Syntax a/$ASSET/validate/$SOURCE_ADDRESS
+Description: check if address is valid (and registerded)
+Input: Address  (sourceaddress)
+Output: "valid"|"invalid"|"unregistered"
+
+push
 Syntax: a/$ASSET/push/$TRANSACTION_STRING
+Description: push something to blockchain (usually signed transaction) forward (for ethereum contracts)
 Input:
 
 transactionObject = {
