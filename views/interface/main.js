@@ -90,6 +90,7 @@ hy_content += addsvg('./svg/bitcointalk.svg','bitcointalk');
 hy_content += 'document.querySelector("#dashboard-icon").innerHTML = svg[\'dashboard-o\'];';
 hy_content += 'document.querySelector("#assets-icon").innerHTML = svg[\'assets-o\'];';
 hy_content += 'document.querySelector("#logout-icon").innerHTML = svg[\'logout-o\'];';
+hy_content += 'document.querySelector("#topmenu-logout").innerHTML = svg[\'logout-alt\'];';
 hy_content += addsvg('./svg/send.svg','send');
 hy_content += addsvg('./svg/receive.svg','receive');
 hy_content += '</script>';

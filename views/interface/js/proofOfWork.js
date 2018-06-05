@@ -12,7 +12,7 @@ function submitProofOfWork (req) {
   return function (proof) {
     const proofOfWorkStr = req.split('/')[0] + '/' + proof;
     var url = 's/storage/pow/' + proofOfWorkStr;
-    logger('Submitting storage proof: ' + proofOfWorkStr);
+    logger('submitting storage proof: ' + proofOfWorkStr);
 
     var hybriddCallStream = Rx.Observable
         .fromPromise(hybriddcall({r: url, z: false}))
@@ -34,6 +34,5 @@ function submitProofOfWork (req) {
 }
 
 function failedProofOfWork (req) {
-  // DEBUG:
-  logger('failed storage proof: ' + req.split('/')[0]);
+  // DEBUG: logger('failed storage proof: ' + req.split('/')[0]);
 }

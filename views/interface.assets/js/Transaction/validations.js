@@ -11,7 +11,8 @@ transactionValidations = {
         p.amount > 0 &&
         p.amount <=
         p.available &&
-        R.not(R.isNil(p.target_address));
+        R.not(R.isNil(p.target_address)) &&
+        R.not(R.equals(p.target_address, ''));
 
     var classListMethod = txDetailsAreValid ? 'remove' : 'add';
     document.querySelector('#action-send .pure-button-send').classList[classListMethod]('disabled');
