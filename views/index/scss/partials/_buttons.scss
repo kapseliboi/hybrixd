@@ -8,6 +8,7 @@
   background: $button-standard;
   color: white;
   font-weight: $semi-bold;
+  user-select: none;
   white-space: normal;
   @include box-shadow(0,2px,1px,rgba(black,.05));
   @include border-radius(4px);
@@ -24,6 +25,7 @@
     svg {
       width: 16px;
       height: 16px;
+      user-select: none;
     }
   }
   &:hover {
@@ -149,12 +151,4 @@
   &:hover div {
     @include scale(1.1);
   }
-}
-
-.pure-button {
-  user-select: none;;
-}
-
-.pure-button svg {
-  user-select: none;;
 }

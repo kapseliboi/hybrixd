@@ -1006,6 +1006,7 @@ p {
   background: #B5C0C8;
   color: white;
   font-weight: 600;
+  user-select: none;
   white-space: normal;
   -webkit-box-shadow: 0 2px 1px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: 0 2px 1px rgba(0, 0, 0, 0.05);
@@ -1028,7 +1029,8 @@ p {
     float: left; }
     .pure-button .advanced-icon svg {
       width: 16px;
-      height: 16px; }
+      height: 16px;
+      user-select: none; }
   .pure-button:hover {
     background-image: none;
     opacity: 0.8; }
@@ -1133,12 +1135,6 @@ p {
     -ms-transform: scale(1.1);
     -webkit-transform: scale(1.1);
     transform: scale(1.1); }
-
-.pure-button {
-  user-select: none; }
-
-.pure-button svg {
-  user-select: none; }
 
 /*!
  * Bootstrap v2.3.2
