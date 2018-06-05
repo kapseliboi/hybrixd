@@ -165,16 +165,3 @@
   z-index: 2147483647;
   @include opacity(0.3);
 }
-
-.user-login-notification {
-  display: none;
-  color: red;
-  background: pink;
-  border: 3px solid red;
-  font-size: 16px;
-  margin-top: 40px;
-}
-
-.user-login-notification.active {
-  display: block;
-}

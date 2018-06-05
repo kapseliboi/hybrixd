@@ -910,7 +910,10 @@ p {
   font-weight: 600; }
 
 .pure-form input[type=text]:focus, .pure-form input[type=password]:focus {
-  border: 1px solid #7174D8; }
+  border: 1px solid #4DA1FF;
+  -webkit-box-shadow: 0 0 5px rgba(77, 161, 255, 0.5);
+  -moz-box-shadow: 0 0 5px rgba(77, 161, 255, 0.5);
+  box-shadow: 0 0 5px rgba(77, 161, 255, 0.5); }
 
 ::-webkit-input-placeholder {
   letter-spacing: 0px;
@@ -931,6 +934,21 @@ p {
   letter-spacing: 0px;
   color: #B5C0C8;
   font-weight: 400; }
+
+.user-login-notification {
+  display: none;
+  color: #FF6D4A;
+  background: rgba(255, 109, 74, 0.2);
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  background-clip: padding-box;
+  /* stops bg color from leaking outside the border: */
+  padding: 10px;
+  margin-top: 15px;
+  font-weight: 600; }
+
+.user-login-notification.active {
+  display: block; }
 
 .table {
   width: 100%;
@@ -1580,17 +1598,6 @@ pre .support.value {
   z-index: 2147483647;
   opacity: 0.3;
   filter: alpha(opacity=30); }
-
-.user-login-notification {
-  display: none;
-  color: red;
-  background: pink;
-  border: 3px solid red;
-  font-size: 16px;
-  margin-top: 40px; }
-
-.user-login-notification.active {
-  display: block; }
 
 @-moz-keyframes spinner-loader {
   0% {
