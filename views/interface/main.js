@@ -21,19 +21,6 @@ function addsvg(file,index) {
 
 hy_content = ''; // variable to hold package content
 
-// CSS
-hy_content += '<style>';
-hy_content += fs.readFileSync('./css/spinner.css');		// Spinner for loading screens in CSS
-hy_content += fs.readFileSync('./css/clipboard.css');		// CLipboard transitions
-// DEPRECATED: already included in login -> hy_content += fs.readFileSync('./css/purecss.css');		// PureCSS
-hy_content += fs.readFileSync('./css/modal.css');		// CSS based modal boxes
-hy_content += fs.readFileSync('./css/base.css');		// custom styling for Internet of Coins, base (mobile)
-hy_content += fs.readFileSync('./css/600up.css');		// custom styling for Internet of Coins, tablet portrait
-hy_content += fs.readFileSync('./css/900up.css');		// custom styling for Internet of Coins, tablet landscape
-hy_content += fs.readFileSync('./css/1200up.css');		// custom styling for Internet of Coins, desktop
-hy_content += fs.readFileSync('./css/1800up.css');		// custom styling for Internet of Coins, big desktop
-hy_content += '</style>';
-
 // JS
 hy_content += addscript('../../lib/crypto/urlbase64.js');	    // URL safe base 64 encoding
 hy_content += addscript('../../lib/crypto/decimal-light.js');	// arbitrary length decimals
@@ -102,7 +89,10 @@ hy_content += addsvg('./svg/slack.svg','slack');
 hy_content += addsvg('./svg/riot.svg','riot');
 hy_content += addsvg('./svg/bitcointalk.svg','bitcointalk');
 
+hy_content += 'document.querySelector("#dashboard-icon").innerHTML = svg[\'dashboard-o\'];';
+hy_content += 'document.querySelector("#assets-icon").innerHTML = svg[\'assets-o\'];';
 hy_content += 'document.querySelector("#logout-icon").innerHTML = svg[\'logout-o\'];';
+hy_content += 'document.querySelector("#topmenu-logout").innerHTML = svg[\'logout-alt\'];';
 hy_content += addsvg('./svg/send.svg','send');
 hy_content += addsvg('./svg/receive.svg','receive');
 hy_content += '</script>';
