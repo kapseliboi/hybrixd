@@ -76,6 +76,16 @@
   #generateform {
     padding: 10px 0 30px 0;
     background: #fff;
+    opacity: 1;
+  }
+
+  #generateform.inactive {
+    -webkit-transition: opacity 0.6s ease-in-out;
+    -moz-transition: opacity 0.6s ease-in-out;
+    -ms-transition: opacity 0.6s ease-in-out;
+    -o-transition: opacity 0.6s ease-in-out;
+    transition: opacity 0.6s ease-in-out;
+    opacity: 0;
   }
 
   #generateform p {
@@ -242,6 +252,12 @@
 .progress-bar {
   margin: 100px 0 0 50px;
   height: 20px;
-  width: 120px;
+  width: 0px;
+  max-width: 280px;
   background: green;
+}
+
+.progress-text {
+  color: #000;
+  padding: 40px;
 }
