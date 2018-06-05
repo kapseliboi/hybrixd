@@ -2,37 +2,37 @@ var progressMessages = {
   0: {
     step: 0,
     weight: '10%',
-    message: 'Setting up new session.'
+    message: 'Setting up new session...'
   },
   1: {
     step: 1,
     weight: '20%',
-    message: 'Retrieving your personal data.'
+    message: 'Retrieving your personal data...'
   },
   2: {
     step: 2,
     weight: '30%',
-    message: 'Generating wallet.'
+    message: 'Generating wallet...'
   },
   3: {
     step: 3,
     weight: '40%',
-    message: 'Gathering blockchain information.'
+    message: 'Gathering blockchain information...'
   },
   4: {
     step: 4,
     weight: '55%',
-    message: 'Loading your assets.'
+    message: 'Loading your assets...'
   },
   5: {
     step: 5,
     weight: '75%',
-    message: 'Finalizing wallet.'
+    message: 'Finalizing wallet...'
   },
   6: {
     step: 6,
     weight: '90%',
-    message: 'Almost there.'
+    message: 'Almost there!'
   }
 };
 

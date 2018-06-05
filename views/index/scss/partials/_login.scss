@@ -30,12 +30,12 @@
     display: block;
   }
 
-  #loginform {
+  #loginform, #generateform {
     display: inline-block;
     width: 100%;
-    margin: 40px 0;
+    margin: 40px 0 20px;
     background: white;
-    padding: 40px 30px;
+    padding: 30px;
     @include border-radius(4px);
   }
 
@@ -74,9 +74,8 @@
   }
 
   #generateform {
-    padding: 10px 0 30px 0;
-    background: #fff;
-    opacity: 1;
+    padding: 0;
+    margin: 0 0 40px;
   }
 
   #generateform.inactive {
@@ -90,13 +89,14 @@
 
   #generateform p {
     color: #000;
-    border-bottom: 1px solid #aaa;
-    padding: 0 50px 20px 50px;
+    @include font-size(16);
+    border-bottom: 1px solid $border-color;
+    padding: 10px 30px 20px;
     text-align: left;
   }
 
   #generatebutton {
-    margin: 0 50px;
+    margin: 30px;
   }
 
   #alertbutton {
@@ -214,7 +214,7 @@
   transform-style: preserve-3d;
 
   position: relative;
-  height: 300px;
+  height: 280px;
   width: 380px;
 }
 
@@ -238,26 +238,47 @@
 
 /* back, initially hidden pane */
 .login-flip-back {
-  margin: 40px 0;
+  margin: 40px 0 20px;
   width: 100%;
-  height: 225px;
+  //height: 225px;
   background: #fff;
+  @include border-radius(4px);
   transform: rotateY(180deg);
+  padding: 30px;
+}
+
+.login-flip-back-content {
+  @include border-radius(4px);
+  background: rgba($highlight,.1);
+  padding: 20px;
+  text-align: left;
 }
 
 .login-flip-back p {
-  color: #000;
+  color: $highlight;
+  font-weight: $semi-bold;
+  margin: 0;
+  padding: 0;
+}
+
+.progress-bar-wrapper {
+  width: 100%;
+  height: 20px;
+  margin: 30px 0 10px;
+  padding: 3px;
+  background: rgba($highlight,.2);
+  @include border-radius(10px);
 }
 
 .progress-bar {
-  margin: 100px 0 0 50px;
-  height: 20px;
+  height: 14px;
   width: 0px;
   max-width: 280px;
-  background: green;
+  @include border-radius(7px);
+  background: $highlight;
 }
 
 .progress-text {
-  color: #000;
-  padding: 40px;
+  color: $highlight;
+  font-weight: $semi-bold;
 }
