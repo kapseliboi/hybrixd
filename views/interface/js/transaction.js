@@ -65,6 +65,7 @@ function getDeterministicTransactionData (z) {
   var asset = R.prop('asset', transactionData);
   var factor = R.path(['asset', 'factor'], transactionData);
   var assetID = R.path(['asset', 'id'], transactionData);
+  // var fee = R.nth(3, z)
 
   var changeLens = R.lensProp('change');
   var unspent = R.compose(

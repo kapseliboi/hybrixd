@@ -135,7 +135,6 @@ cp views/interface/svg/*.svg $OUTPATH/views/interface/svg/
 mkdir -p $OUTPATH/views/interface.assets/js
 mkdir $OUTPATH/views/interface.assets/js/Asset > /dev/null
 mkdir $OUTPATH/views/interface.assets/js/Clipboard > /dev/null
-mkdir $OUTPATH/views/interface.assets/js/GenerateAddress > /dev/null
 mkdir $OUTPATH/views/interface.assets/js/ManageAssets > /dev/null
 mkdir $OUTPATH/views/interface.assets/js/ReceiveAsset    > /dev/null
 mkdir $OUTPATH/views/interface.assets/js/SearchBar    > /dev/null
@@ -148,7 +147,6 @@ $UGLIFY views/interface.assets/interface.assets.js > $OUTPATH/views/interface.as
 $UGLIFY views/interface.assets/interface.assets.ui.js > $OUTPATH/views/interface.assets/interface.assets.ui.js
 $UGLIFY views/interface.assets/js/Asset/asset.js > $OUTPATH/views/interface.assets/js/Asset/asset.js
 $UGLIFY views/interface.assets/js/Clipboard/clipboard.js > $OUTPATH/views/interface.assets/js/Clipboard/clipboard.js
-$UGLIFY views/interface.assets/js/GenerateAddress/generateAddress.js > $OUTPATH/views/interface.assets/js/GenerateAddress/generateAddress.js
 $UGLIFY views/interface.assets/js/ManageAssets/manageAssets.js > $OUTPATH/views/interface.assets/js/ManageAssets/manageAssets.js
 $UGLIFY views/interface.assets/js/SearchBar/searchBar.js > $OUTPATH/views/interface.assets/js/SearchBar/searchBar.js
 $UGLIFY views/interface.assets/js/StarredAsset/starredAssets.js > $OUTPATH/views/interface.assets/js/StarredAsset/starredAssets.js

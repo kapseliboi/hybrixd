@@ -65,7 +65,7 @@ var manageAssets = {
 
         // GLOBAL STUFF
         Storage.Set(userStorageKey('ff00-0035'), userEncode(newActiveAssetsForStorage))
-          .subscribe();
+          .subscribe(function (_) {});
         U.updateGlobalAssets(newGlobalAssets);
         cb(); // RE-RENDER VIEW
       });

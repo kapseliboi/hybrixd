@@ -27,4 +27,3 @@ var generateAddressBtnStream = Rx.Observable.fromEvent(document.querySelector('#
     .map(R.path(['target', 'attributes', 'data', 'value']));
 
 generateAddressBtnStream.subscribe(R.curry(generateAddress.generateAddress)(assets)(GL.assets)(GL.assetmodes)(LZString));
-

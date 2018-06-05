@@ -46,8 +46,7 @@ function setStorageAndMkAssetDetails (init, mode, submode, entry, fullmode, dcod
     Storage.Del(assets.modehashes[mode] + '-LOCAL');
 
     if (typeof err !== 'undefined' && R.equals(err, 0)) {
-      Storage.Set(assets.modehashes[mode] + '-LOCAL', dcode)
-        .subscribe();
+      Storage.Set(assets.modehashes[mode] + '-LOCAL', dcode);
       return mkAssetDetailsStream(init, dcode, submode, entry, fullmode);
     } else {
       return Rx.Observable.of(init); // TODO: Catch error properly!
