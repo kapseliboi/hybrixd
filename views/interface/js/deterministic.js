@@ -4,15 +4,19 @@ var U = utils;
 deterministic_ = {
   mkDeterministicDetails: function (dcode, entry, submode, mode, keyGenBase) {
     var deterministic = U.activate(LZString.decompressFromEncodedURIComponent(dcode));
-    var seed = seedGenerator(keyGenBase);
-    var keys = deterministic.keys({symbol: entry, seed, mode: submode});
+    if (typeof deterministic !== 'undefined') {
+      var seed = seedGenerator(keyGenBase);
+      var keys = deterministic.keys({symbol: entry, seed, mode: submode});
 
-    return {
-      mode,
-      seed,
-      keys,
-      address: deterministic.address(Object.assign(keys, {mode: submode}))
-    };
+      return {
+        mode,
+        seed,
+        keys,
+        address: deterministic.address(Object.assign(keys, {mode: submode}))
+      };
+    } else {
+      return false;
+    }
   }
 };
 

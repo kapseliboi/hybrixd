@@ -19,61 +19,61 @@ function doAssetInitialisation (z) {
   var assetsModesUrl = path + zchan(GL.usercrypto, GL.cur_step, 'l/asset/details');
 
   var assetsModesAndNamesStream = Rx.Observable
-      .fromPromise(U.fetchDataFromUrl(assetsModesUrl, 'Error retrieving asset details.'))
-      .map(decryptData);
+    .fromPromise(U.fetchDataFromUrl(assetsModesUrl, 'Error retrieving asset details.'))
+    .map(decryptData);
 
   var initialAnimationStateStream = Rx.Observable.interval(200)
-      .startWith(0)
-      .take(2);
+    .startWith(0)
+    .take(2);
 
   var deterministicHashesStream = Rx.Observable
-      .fromPromise(hybriddcall({r: '/s/deterministic/hashes', z: true}))
-      .filter(R.propEq('error', 0));
+    .fromPromise(hybriddcall({r: '/s/deterministic/hashes', z: true}))
+    .filter(R.propEq('error', 0));
 
   var deterministicHashesResponseProcessStream = deterministicHashesStream
-      .flatMap(function (properties) {
-        return Rx.Observable
-          .fromPromise(hybriddReturnProcess(properties));
-      })
-      .map(R.prop('data')) // VALIDATE?
-      .map(function (deterministicHashes) { assets.modehashes = deterministicHashes; }); // TODO: Make storedUserStream dependent on this stream!
+    .flatMap(function (properties) {
+      return Rx.Observable
+        .fromPromise(hybriddReturnProcess(properties));
+    })
+    .map(R.prop('data')) // VALIDATE?
+    .map(function (deterministicHashes) { assets.modehashes = deterministicHashes; }); // TODO: Make storedUserStream dependent on this stream!
 
   var storedUserDataStream = Storage.Get_(userStorageKey('ff00-0035'))
-      .map(userDecode)
-      .map(storedOrDefaultUserData); // TODO: make pure!
+    .map(userDecode)
+    .map(storedOrDefaultUserData); // TODO: make pure!
 
   var assetsDetailsStream = storedUserDataStream
-      .flatMap(a => a) // Flatten Array structure...
-      .filter(existsInAssetNames) // TODO: Now REMOVES assets that have been disabed in the backed. Need to disable / notify user when this occurs.
-      .flatMap(function (asset) {
-        return R.compose(
-          initializeAsset(asset),
-          R.prop('id')
-        )(asset);
-      })
-      .map(U.addIcon);
+    .flatMap(a => a) // Flatten Array structure...
+    .filter(existsInAssetNames) // TODO: Now REMOVES assets that have been disabed in the backed. Need to disable / notify user when this occurs.
+    .flatMap(function (asset) {
+      return R.compose(
+        initializeAsset(asset),
+        R.prop('id')
+      )(asset);
+    })
+    .map(U.addIcon);
 
   var initializationStream = Rx.Observable
-      .combineLatest(
-        storedUserDataStream,
-        assetsModesAndNamesStream,
-        deterministicHashesResponseProcessStream
-      );
+    .combineLatest(
+      storedUserDataStream,
+      assetsModesAndNamesStream,
+      deterministicHashesResponseProcessStream
+    );
 
   var animationStream = Rx.Observable
-      .concat(
-        initialAnimationStateStream,
-        storedUserDataStream,
-        assetsModesAndNamesStream,
-        deterministicHashesResponseProcessStream,
-        assetsDetailsStream
-      )
-      .scan(function (acc, curr) { return acc + 1; })
-      .map(function (n) { return n <= ANIMATION_STEPS ? n : ANIMATION_STEPS; })
-      .map(A.doProgressAnimation);
+    .concat(
+      initialAnimationStateStream,
+      storedUserDataStream,
+      assetsModesAndNamesStream,
+      deterministicHashesResponseProcessStream,
+      assetsDetailsStream
+    )
+    .scan(function (acc, curr) { return acc + 1; })
+    .map(function (n) { return n <= ANIMATION_STEPS ? n : ANIMATION_STEPS; })
+    .map(A.doProgressAnimation);
 
   var powQueueIntervalStream = Rx.Observable
-      .interval(30000);
+    .interval(30000);
 
   animationStream.subscribe();
   powQueueIntervalStream.subscribe(function (_) { POW.loopThroughProofOfWork(); }); // once every two minutes, loop through proof-of-work queue
@@ -165,4 +165,4 @@ function decryptData (d) { return R.curry(zchan_obj)(GL.usercrypto)(GL.cur_step)
 
 assetInitialisationStreams = {
   doAssetInitialisation
-}
+};

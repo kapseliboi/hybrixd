@@ -26,9 +26,9 @@ GL = {
 nacl_factory.instantiate(function (naclinstance) { nacl = naclinstance; }); // TODO
 session_step = 1; // Session step number at the end of login. TODO
 
-////////////////////////////////
+/// /////////////////////////////
 // GLOBAL STUFFZ ///////////////
-////////////////////////////////
+/// /////////////////////////////
 
 // TODO:
 // - Remove global session_step --> Make into incremental counter (save in state)
@@ -41,103 +41,128 @@ var keyDownOnUserIDStream = S.mkInputStream('#inputUserID');
 var keyDownOnPasswordStream = S.mkInputStream('#inputPasscode');
 
 var loginBtnStream = Rx.Observable
-    .fromEvent(document.querySelector('#loginbutton'), 'click')
-    .filter(U.btnIsNotDisabled);
+  .fromEvent(document.querySelector('#loginbutton'), 'click')
+  .filter(U.btnIsNotDisabled);
 
 var userSubmitStream = Rx.Observable
-    .merge(
-      loginBtnStream,
-      keyDownOnPasswordStream
-    );
+  .merge(
+    loginBtnStream,
+    keyDownOnPasswordStream
+  );
 
 var validatedUserCredentialsStream = userSubmitStream
-    .withLatestFrom(S.credentialsStream)
-    .map(mkCredentialsObj)
-    .map(R.map(U.normalizeUserInput))
-    .filter(V.hasValidCredentials);
+  .withLatestFrom(S.credentialsStream)
+  .map(mkCredentialsObj)
+  .map(R.map(U.normalizeUserInput))
+  .map(function (c) {
+    return hasValidCredentials(c)
+      ? c
+      : { error: 1, msg: 'It seems the credentials you entered are incorrect. Please check your username and password and try again.' };
+  });
 
 function main () {
   document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
   maybeOpenNewWalletModal(location);
+  S.credentialsStream.subscribe(disableUserNotificationBox);
   keyDownOnUserIDStream.subscribe(function (_) { document.querySelector('#inputPasscode').focus(); });
-  validatedUserCredentialsStream.subscribe(function (userCredentials) {
-    var validatedUserCredentialsStream_ = Rx.Observable.of(userCredentials);
+  validatedUserCredentialsStream.subscribe(continueLoginOrNotifyUser);
+}
 
-    var generatedKeysStream =
-        validatedUserCredentialsStream_
+function processLoginDetails (userCredentials) {
+  var validatedUserCredentialsStream_ = Rx.Observable.of(userCredentials);
+
+  var generatedKeysStream =
+      validatedUserCredentialsStream_
         .map(mkSessionKeys);
 
-    var sessionStepStream = Rx.Observable.of(0); // Make incremental with every call
-    var randomNonceStream = Rx.Observable.of(nacl.crypto_box_random_nonce()); // TODO
+  var sessionStepStream = Rx.Observable.of(0); // Make incremental with every call
+  var randomNonceStream = Rx.Observable.of(nacl.crypto_box_random_nonce()); // TODO
 
-    var initialSessionDataStream = Rx.Observable
-        .combineLatest(
-          randomNonceStream,
-          sessionStepStream,
-          generatedKeysStream
-        )
-        .map(createSessionStep0UrlAndData);
+  var initialSessionDataStream = Rx.Observable
+    .combineLatest(
+      randomNonceStream,
+      sessionStepStream,
+      generatedKeysStream
+    )
+    .map(createSessionStep0UrlAndData);
 
-    var postSessionStep0DataStream =
-        initialSessionDataStream
+  var postSessionStep0DataStream =
+      initialSessionDataStream
         .flatMap(function (initialSessionData) {
           return Rx.Observable.fromPromise(
             S.mkSessionStepFetchPromise(initialSessionData, 'postSessionStep0Data')
           );
         });
 
-    var processSessionStep0ReplyStream = Rx.Observable
-        .zip(
-          postSessionStep0DataStream,
-          sessionStepStream // SESSIONSTEP NEEDS TO BE INCREMENTED HERE. Now gets incremented in mkPostSessionStep1Url
-        )
-        .filter(R.compose(
-          V.nonceHasCorrectLength,
-          R.prop('nonce1'),
-          R.nth(0)
-        ))
-        .map(mkPostSessionStep1Url);
+  var processSessionStep0ReplyStream = Rx.Observable
+    .zip(
+      postSessionStep0DataStream,
+      sessionStepStream // SESSIONSTEP NEEDS TO BE INCREMENTED HERE. Now gets incremented in mkPostSessionStep1Url
+    )
+    .filter(R.compose(
+      V.nonceHasCorrectLength,
+      R.prop('nonce1'),
+      R.nth(0)
+    ))
+    .map(mkPostSessionStep1Url);
 
-    var postSessionStep1DataStream =
-        processSessionStep0ReplyStream
+  var postSessionStep1DataStream =
+      processSessionStep0ReplyStream
         .flatMap(function (sessionData) {
           return Rx.Observable
             .fromPromise(
               S.mkSessionStepFetchPromise(sessionData, 'postSessionStep1Data'));
         });
 
-    var processSession1StepDataStream = Rx.Observable
-        .combineLatest(
-          postSessionStep1DataStream,
-          randomNonceStream,
-          generatedKeysStream
-        )
-        .map(mkSessionHexAndNonce);
+  var processSession1StepDataStream = Rx.Observable
+    .combineLatest(
+      postSessionStep1DataStream,
+      randomNonceStream,
+      generatedKeysStream
+    )
+    .map(mkSessionHexAndNonce);
 
-    var fetchViewStream = Rx.Observable
-        .combineLatest(
-          generatedKeysStream,
-          randomNonceStream,
-          validatedUserCredentialsStream_,
-          processSession1StepDataStream
-        )
-        .delay(500); // Delay so progressbar animation looks smoother.
+  var fetchViewStream = Rx.Observable
+    .combineLatest(
+      generatedKeysStream,
+      randomNonceStream,
+      validatedUserCredentialsStream_,
+      processSession1StepDataStream
+    )
+    .delay(500); // Delay so progressbar animation looks smoother.
 
-    A.startLoginAnimation();
-    setCSSTorenderButtonsToDisabled();
-    // HACK! :( So that CSS gets rendered immediately and user gets feedback right away.
-    setTimeout(function () {
-      document.querySelector('.flipper').classList.add('active'); // FLIP LOGIN FORM
-      document.querySelector('#generateform').classList.add('inactive');
-      fetchViewStream.subscribe(function (userSessionData) {
-        GL.usercrypto = {
-          user_keys: R.nth(0, userSessionData),
-          nonce: R.path(['3', 'current_nonce'], userSessionData)
-        };
-        AssetInitialisationStreams.doAssetInitialisation(userSessionData);
-      });
-    }, 500);
-  });
+  A.startLoginAnimation();
+  setCSSTorenderButtonsToDisabled();
+  // HACK! :( So that CSS gets rendered immediately and user gets feedback right away.
+  setTimeout(function () {
+    document.querySelector('.flipper').classList.add('active'); // FLIP LOGIN FORM
+    document.querySelector('#generateform').classList.add('inactive');
+    fetchViewStream.subscribe(function (userSessionData) {
+      GL.usercrypto = {
+        user_keys: R.nth(0, userSessionData),
+        nonce: R.path(['3', 'current_nonce'], userSessionData)
+      };
+      AssetInitialisationStreams.doAssetInitialisation(userSessionData);
+    });
+  }, 500);
+}
+
+function continueLoginOrNotifyUser (credentialsOrError) {
+  R.ifElse(
+    R.has('error'),
+    notifyUserOfIncorrectCredentials,
+    processLoginDetails
+  )(credentialsOrError);
+}
+
+function notifyUserOfIncorrectCredentials (err) {
+  document.querySelector('.user-login-notification').classList.add('active');
+  document.querySelector('.user-login-notification').innerHTML = R.prop('msg', err);
+}
+
+function disableUserNotificationBox (_) {
+  document.querySelector('.user-login-notification').classList.remove('active');
+  document.querySelector('.user-login-notification').innerHTML = '';
 }
 
 function createSessionStep0UrlAndData (z) {
@@ -180,7 +205,7 @@ function mkPostSessionStep1Url (z) {
 function handleCtrlSKeyEvent (e) {
   var possible = [ e.key, e.keyIdentifier, e.keyCode, e.which ];
 
-  while (key === undefined && possible.length > 0) {
+  while (R.isNil(key) && possible.length > 0) {
     key = possible.pop();
   }
 

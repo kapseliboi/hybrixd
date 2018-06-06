@@ -910,7 +910,10 @@ p {
   font-weight: 600; }
 
 .pure-form input[type=text]:focus, .pure-form input[type=password]:focus {
-  border: 1px solid #7174D8; }
+  border: 1px solid #4DA1FF;
+  -webkit-box-shadow: 0 0 5px rgba(77, 161, 255, 0.5);
+  -moz-box-shadow: 0 0 5px rgba(77, 161, 255, 0.5);
+  box-shadow: 0 0 5px rgba(77, 161, 255, 0.5); }
 
 ::-webkit-input-placeholder {
   letter-spacing: 0px;
@@ -931,6 +934,21 @@ p {
   letter-spacing: 0px;
   color: #B5C0C8;
   font-weight: 400; }
+
+.user-login-notification {
+  display: none;
+  color: #FF6D4A;
+  background: rgba(255, 109, 74, 0.2);
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  background-clip: padding-box;
+  /* stops bg color from leaking outside the border: */
+  padding: 10px;
+  margin-top: 15px;
+  font-weight: 600; }
+
+.user-login-notification.active {
+  display: block; }
 
 .table {
   width: 100%;
@@ -1020,6 +1038,12 @@ p {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none; }
+  .pure-button svg {
+    user-select: none;
+    pointer-events: none; }
+  .pure-button .icon {
+    user-select: none;
+    pointer-events: none; }
   .pure-button .advanced-icon {
     display: inline-block;
     padding: 0 7px 0px 0px;
@@ -1028,7 +1052,8 @@ p {
     float: left; }
     .pure-button .advanced-icon svg {
       width: 16px;
-      height: 16px; }
+      height: 16px;
+      user-select: none; }
 
 .pure-button-fw {
   min-width: 152px; }
@@ -1453,6 +1478,8 @@ pre .support.value {
   #login_container .pure-button {
     margin: 10px 0;
     display: block; }
+  #login_container #loginform {
+    position: relative; }
   #login_container #loginform, #login_container #generateform {
     display: inline-block;
     width: 100%;
@@ -1611,16 +1638,29 @@ pre .support.value {
 
 /* flip speed goes here */
 .flipper {
+  -webkit-transition: 1s;
+  -moz-transition: 1s;
+  -o-transition: 1s;
   transition: 1s;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -ms-transform-style: preserve-3d;
   transform-style: preserve-3d;
   position: relative;
-  height: 280px;
+  min-height: 280px;
   width: 380px; }
 
 .flipper.active {
-  transform: rotateY(180deg); }
+  -webkit-transform: rotateY(180deg);
+  /* Ch <36, Saf 5.1+, iOS < 9.2, An =<4.4.4 */
+  -ms-transform: rotateY(180deg);
+  /* IE 9 */
+  transform: rotateY(180deg);
+  /* IE 10, Fx 16+, Op 12.1+ */ }
 
 .login-flip-front, .login-flip-back {
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
   backface-visibility: hidden;
   position: absolute;
   top: 0;
@@ -1630,7 +1670,12 @@ pre .support.value {
 .login-flip-front {
   z-index: 2;
   /* for firefox 31 */
-  transform: rotateY(0deg); }
+  -webkit-transform: rotateY(0deg);
+  /* Ch <36, Saf 5.1+, iOS < 9.2, An =<4.4.4 */
+  -ms-transform: rotateY(0deg);
+  /* IE 9 */
+  transform: rotateY(0deg);
+  /* IE 10, Fx 16+, Op 12.1+ */ }
 
 /* back, initially hidden pane */
 .login-flip-back {
@@ -1641,6 +1686,9 @@ pre .support.value {
   border-radius: 4px;
   background-clip: padding-box;
   /* stops bg color from leaking outside the border: */
+  -webkit-transform: rotateY(180deg);
+  -ms-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
   transform: rotateY(180deg);
   padding: 30px; }
 
@@ -2873,6 +2921,19 @@ pre .support.value {
 .display-assets-link {
   cursor: pointer; }
 
+#action-receive .copied {
+  opacity: 0;
+  -webkit-transition: opacity 1.3s;
+  /* Safari */
+  transition: opacity 1.3s;
+  z-index: 99; }
+
+#action-receive .copied.active {
+  opacity: 1;
+  -webkit-transition: opacity 0.8s;
+  /* Safari */
+  transition: opacity 0.8s; }
+
 .elem {
   width: 123px; }
 </style></head><body id="body"><div id="hy_frame"></div><script>/*! jQuery v1.12.4 | (c) jQuery Foundation | jquery.org/license */
@@ -3404,15 +3465,19 @@ function lastKnownOrNewBalance (newData, currentBalance) {
 deterministic_ = {
   mkDeterministicDetails: function (dcode, entry, submode, mode, keyGenBase) {
     var deterministic = U.activate(LZString.decompressFromEncodedURIComponent(dcode));
-    var seed = seedGenerator(keyGenBase);
-    var keys = deterministic.keys({symbol: entry, seed, mode: submode});
+    if (typeof deterministic !== 'undefined') {
+      var seed = seedGenerator(keyGenBase);
+      var keys = deterministic.keys({symbol: entry, seed, mode: submode});
 
-    return {
-      mode,
-      seed,
-      keys,
-      address: deterministic.address(Object.assign(keys, {mode: submode}))
-    };
+      return {
+        mode,
+        seed,
+        keys,
+        address: deterministic.address(Object.assign(keys, {mode: submode}))
+      };
+    } else {
+      return false;
+    }
   }
 };
 

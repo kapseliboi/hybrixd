@@ -11,10 +11,9 @@
             <input name="userid" type="text" id="inputUserID" class="form-control" placeholder="Account ID" required autofocus/>
             <input name="passcode" type="password" id="inputPasscode" class="form-control" placeholder="Password" required/>
 
-            <a id="loginbutton" class="click pure-button pure-button-large pure-button-primary disabled">
+            <a id="loginbutton" class="click pure-button pure-button-large pure-button-primary">
               <div id="loginbuttoncontent">
                 <div id="loginwrap">Sign in</div>
-
                 <div id="combinatorwrap">
                   <div id="combinator">
                     <div id="arc1" class="click"></div>
@@ -25,6 +24,7 @@
                 </div>
               </div>
             </a>
+            <div class="user-login-notification"></div>
           </form>
           <div class="login-flip-back">
             <div class="login-flip-back-content">
@@ -47,6 +47,7 @@
         <p>
           Do you want a new wallet?
         </p>
+
         <a id="generatebutton" class="pure-button pure-button-large pure-button-secondary" onclick="PRNG.seeder.restart(); document.getElementById('newaccountmodal').style.display = 'block';">
           <span>Create a new account</span>
         </a>

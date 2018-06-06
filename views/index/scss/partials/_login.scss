@@ -30,6 +30,10 @@
     display: block;
   }
 
+  #loginform {
+    position: relative;
+  }
+
   #loginform, #generateform {
     display: inline-block;
     width: 100%;
@@ -210,19 +214,29 @@
 
 /* flip speed goes here */
 .flipper {
+  -webkit-transition: 1s;
+  -moz-transition: 1s;
+  -o-transition: 1s;
   transition: 1s;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -ms-transform-style: preserve-3d;
   transform-style: preserve-3d;
 
   position: relative;
-  height: 280px;
+  min-height: 280px;
   width: 380px;
 }
 
 .flipper.active {
-  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg); /* Ch <36, Saf 5.1+, iOS < 9.2, An =<4.4.4 */
+  -ms-transform: rotateY(180deg); /* IE 9 */
+  transform: rotateY(180deg); /* IE 10, Fx 16+, Op 12.1+ */
 }
 
 .login-flip-front, .login-flip-back {
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
   backface-visibility: hidden;
   position: absolute;
   top: 0;
@@ -233,7 +247,9 @@
 .login-flip-front {
   z-index: 2;
   /* for firefox 31 */
-  transform: rotateY(0deg);
+  -webkit-transform: rotateY(0deg); /* Ch <36, Saf 5.1+, iOS < 9.2, An =<4.4.4 */
+  -ms-transform: rotateY(0deg); /* IE 9 */
+  transform: rotateY(0deg); /* IE 10, Fx 16+, Op 12.1+ */
 }
 
 /* back, initially hidden pane */
@@ -243,6 +259,9 @@
   //height: 225px;
   background: #fff;
   @include border-radius(4px);
+  -webkit-transform: rotateY(180deg);
+  -ms-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
   transform: rotateY(180deg);
   padding: 30px;
 }
