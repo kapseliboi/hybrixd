@@ -28,7 +28,7 @@ function exec(properties) {
   var base = target.symbol.split('.')[0];     // in case of token fallback to base asset
   var mode  = target.mode;
   var factor = (typeof target.factor != 'undefined'?target.factor:null);
-  var tokenfeeMultiply = 5;   // [!] must be the same as value in deterministic module
+  var tokenfeeMultiply = 15;   // [!] must be the same as value in deterministic module
   var subprocesses = [];
   // set request to what command we are performing
   global.hybridd.proc[processID].request = properties.command;
