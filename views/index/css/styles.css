@@ -1006,7 +1006,6 @@ p {
   background: #B5C0C8;
   color: white;
   font-weight: 600;
-  user-select: none;
   white-space: normal;
   -webkit-box-shadow: 0 2px 1px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: 0 2px 1px rgba(0, 0, 0, 0.05);
@@ -1021,6 +1020,12 @@ p {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none; }
+  .pure-button svg {
+    user-select: none;
+    pointer-events: none; }
+  .pure-button .icon {
+    user-select: none;
+    pointer-events: none; }
   .pure-button .advanced-icon {
     display: inline-block;
     padding: 0 7px 0px 0px;
