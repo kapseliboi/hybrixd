@@ -1,7 +1,10 @@
+// -- Clipboard styles ----------------------------------------------------
+
 #action-receive .copied {
   opacity: 0;
   -webkit-transition: opacity 1.3s; /* Safari */
   transition: opacity 1.3s;
+  z-index: 99;
 }
 
 #action-receive .copied.active {
