@@ -1038,6 +1038,12 @@ p {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none; }
+  .pure-button svg {
+    user-select: none;
+    pointer-events: none; }
+  .pure-button .icon {
+    user-select: none;
+    pointer-events: none; }
   .pure-button .advanced-icon {
     display: inline-block;
     padding: 0 7px 0px 0px;
@@ -1046,7 +1052,8 @@ p {
     float: left; }
     .pure-button .advanced-icon svg {
       width: 16px;
-      height: 16px; }
+      height: 16px;
+      user-select: none; }
   .pure-button:hover {
     background-image: none;
     opacity: 0.8; }
@@ -2790,6 +2797,19 @@ pre .support.value {
 
 .display-assets-link {
   cursor: pointer; }
+
+#action-receive .copied {
+  opacity: 0;
+  -webkit-transition: opacity 1.3s;
+  /* Safari */
+  transition: opacity 1.3s;
+  z-index: 99; }
+
+#action-receive .copied.active {
+  opacity: 1;
+  -webkit-transition: opacity 0.8s;
+  /* Safari */
+  transition: opacity 0.8s; }
 
 .elem {
   width: 123px; }
