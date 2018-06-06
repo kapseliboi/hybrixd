@@ -1,0 +1,163 @@
+// -- Button styles ----------------------------------------------------
+
+.pure-button {
+  display: inline-block;
+  margin: 2px;
+  padding: 8px 16px;
+  min-height: 32px;
+  background: $button-standard;
+  color: white;
+  font-weight: $semi-bold;
+  white-space: normal;
+  @include box-shadow(0,2px,1px,rgba(black,.05));
+  @include border-radius(4px);
+  @include font-size(12);
+  @include user-select(none);
+
+  svg {
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .icon {
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .advanced-icon {
+    display: inline-block;
+    padding: 0 7px 0px 0px;
+    vertical-align: middle;
+    margin-top: 1px;
+    float:left;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      user-select: none;
+    }
+  }
+  &:hover {
+    background-image: none;
+    opacity: 0.8;
+  }
+}
+
+.pure-button-fw {
+  min-width: 152px;
+}
+
+.pure-button-large {
+  min-height: 40px;
+  padding: 10px 23px;
+  @include font-size(14);
+}
+
+.pure-button-success {
+  background: $button-success;
+}
+
+.pure-button-warning {
+  background: $button-warning;
+}
+
+.pure-button-error {
+  background: $button-error;
+}
+
+.pure-button-primary {
+  background: $button-primary;
+}
+
+.pure-button-secondary {
+  background: $button-secondary;
+}
+
+.pure-button-misc {
+  background: $button-misc;
+}
+
+.disabled, .pure-button[disabled] {
+  opacity: 0.6;
+  cursor: default;
+  box-shadow: none;
+  background-image: none;
+}
+
+.disabled:hover, .pure-button[disabled]:hover {
+  background-image: none;
+}
+
+.button-label {
+  @include breakpoint(medium) {
+    display: inline;
+  }
+}
+
+.btn-right-link {
+  a {
+    @include transition(all 100ms ease-in-out);
+    border: none;
+    text-decoration: none;
+    color: $primary-color;
+    font-weight: $semi-bold;
+
+    span {
+      vertical-align: middle;
+    }
+    .chevron-right {
+      @include transition(all 100ms ease-in-out);
+      display: inline-block;
+      margin-left: 10px;
+
+      svg {
+        height: 25px;
+      }
+    }
+    &:hover {
+
+      .chevron-right {
+        margin-left: 10px;
+      }
+    }
+  }
+}
+
+.social-icons{
+  @include user-select(none);
+}
+
+.social-icons > div {
+  display: block;
+  margin: 10px 35px 10px 0;
+
+  @include breakpoint(small) {
+    display: inline-block;
+  }
+  div {
+    @include transition(all 400ms ease-in-out);
+    margin-right: 10px;
+    display: inline-block;
+    vertical-align: middle;
+
+    svg {
+      height: 40px;
+      width: 40px;
+    }
+  }
+  span {
+    vertical-align: middle;
+  }
+  a {
+    border: none;
+    text-decoration: none;
+    color: $darker-grey;
+
+    &:hover {
+      color: $text-body-color;
+    }
+  }
+  &:hover div {
+    @include scale(1.1);
+  }
+}

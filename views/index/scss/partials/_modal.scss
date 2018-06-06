@@ -1,0 +1,337 @@
+// -- Button styles ----------------------------------------------------
+
+/*!
+ * Bootstrap v2.3.2
+ *
+ * Copyright 2012 Twitter, Inc
+ * Licensed under the Apache License v2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Designed and built with all the love in the world @twitter by @mdo and @fat.
+ */
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  background-color: $bg-color-dark;
+
+  &.fade {
+    opacity: 0;
+  }
+}
+.modal-backdrop,
+.modal-backdrop.fade.in {
+  opacity: 0.9;
+  filter: alpha(opacity=90);
+}
+
+.modal {
+  @include box-shadow(0, 3px, 7px, rgba(black, 0.3));
+  @include border-radius(6px);
+  @include user-select(none);
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  z-index: 1050;
+  width: 96%;
+  margin-left: -48%;
+  background-color: #FFF;
+  border: none;
+  outline: none;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding-box;
+          background-clip: padding-box;
+
+  &.fade {
+    top: -25%;
+    @include transition(opacity 0.3s linear, top 0.3s ease-out);
+  }
+  &.fade.in {
+    top: 10px;
+  }
+  &.fade.in.wide {
+    @include transition(none);
+    top: 0;
+    left: 0;
+    height: fit-content;
+    min-height: 100%;
+    width: 100%;
+    margin-left: 0;
+    max-width: 100vw;
+    margin-bottom: 0;
+    overflow: none;
+
+    h2 {
+      font-size: 1.3em;
+      text-align: left;
+    }
+    .modal-header {
+      min-height: 125px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 123456;
+      background: white;
+      width: 100%;
+    }
+    .modal-body {
+      height: fit-content;
+      width: 100%;
+      overflow-y: auto;
+      padding-top: 150px;
+      padding-bottom: 100px;
+    }
+    .modal-footer {
+      height: 10%;
+      min-height: 75px;
+      width: 100%;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      border-top: 1px $light-grey solid;
+    }
+  }
+}
+
+@media (min-width: 600px) {
+  .modal {
+    top: 10%;
+    left: 50%;
+    z-index: 1050;
+    width: 560px;
+    margin-left: -280px;
+  }
+  .modal.fade.in {
+    top: 10%;
+  }
+  .modal.fade.in.wide {
+    background: #F5F5F5;
+    min-height: 60%;
+    top: 10%;
+    left: 50%;
+    z-index: 1050;
+    width: 560px;
+    margin-left: -280px;
+
+    .modal-header {
+      position: unset;
+      background: white;
+      border-radius: 6px 6px 0 0;
+      height: 18%;
+      min-height: 125px;
+    }
+    .modal-body {
+      height: 67%;
+      padding-top: 20px;
+      padding-bottom:20px;
+      overflow-y: auto;
+      background: white;
+      border-bottom: 1px $light-grey solid;
+    }
+    .modal-footer {
+      position: unset;
+      height: 10%;
+      min-height: 75px;
+      border: none;
+      box-shadow: none;
+    }
+  }
+}
+
+@media (min-width: 600px) and (max-height: 650px) {
+  .modal.fade.in.wide {
+    top: 0;
+    left: 0;
+    height: fit-content;
+    min-height: 100%;
+    width: 100%;
+    margin-left: 0;
+    max-width: 100vw;
+    margin-bottom: 0;
+    overflow: none;
+
+    .modal-header {
+      min-height: 125px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 123456;
+      background: white;
+      width: 100%;
+    }
+    .modal-body {
+      height: fit-content;
+      width: 100%;
+      overflow-y: auto;
+      padding-top: 150px;
+      padding-bottom: 100px;
+    }
+    .modal-footer {
+      height: 10%;
+      min-height: 75px;
+      width: 100%;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      border-top: 1px $light-grey solid;
+    }
+  }
+}
+
+@media (max-height: 650px) {
+  .modal.fade.in.wide {
+    .modal-header {
+      position: unset;
+    }
+    .modal-body {
+      padding-top: 20px;
+    }
+  }
+}
+
+@media (min-width: 600px) and (min-height: 650px) {
+  .modal {
+    top: 6%;
+  }
+  .modal.fade.in.wide {
+    .modal-body {
+      height: 360px;
+    }
+  }
+}
+@media (min-width: 600px) and (min-height: 750px) {
+  .modal {
+    top: 6%;
+  }
+  .modal.fade.in.wide {
+    .modal-body {
+      height: 450px;
+    }
+  }
+}
+@media (min-width: 600px) and (min-height: 850px) {
+  .modal {
+    top: 10%;
+  }
+  .modal.fade.in.wide {
+    .modal-body {
+      height: 500px;
+    }
+  }
+}
+
+.modal-header {
+  padding: 9px 25px;
+  border-bottom: 1px solid $light-grey;
+
+  .close {
+    margin-top: 2px;
+  }
+
+  h3 {
+    margin: 0;
+    line-height: 30px;
+  }
+}
+.modal-body {
+  position: relative;
+  padding: 25px;
+}
+.modal-form {
+  margin-bottom: 0;
+}
+.modal-footer {
+  @include border-bottom-radius(6px);
+  @include box-shadow(0, 1px, 0, white, true);
+  padding: 15px 25px 25px;
+  margin-bottom: 0;
+  text-align: right;
+  background-color: white;
+  border-top: 1px solid $light-grey;
+
+  .btn + .btn {
+    margin-bottom: 0;
+    margin-left: 5px;
+  }
+  .btn-group .btn + .btn {
+    margin-left: -1px;
+  }
+  .btn-block + .btn-block {
+    margin-left: 0;
+  }
+  &:before,
+  &:after {
+    display: table;
+    line-height: 0;
+    content: "";
+  }
+  &:after {
+    clear: both;
+  }
+}
+.fade {
+  opacity: 0;
+  @include transition(opacity 0.15s linear);
+}
+.fade.in {
+  opacity: 1;
+}
+
+/**
+ * Baby Blue theme for RainbowJS
+ *
+ * @author tilomitra
+ */
+
+pre .comment {
+    color: #999;
+}
+
+pre .tag,
+pre .tag-name,
+pre .support.tag-name {
+    color: rgb(85, 85, 85);
+}
+
+pre .keyword,
+pre .css-property,
+pre .vendor-prefix,
+pre .sass,
+pre .class,
+pre .id,
+pre .css-value,
+pre .entity.function,
+pre .storage.function {
+    font-weight: bold;
+}
+
+pre .css-property,
+pre .css-value,
+pre .vendor-prefix,
+pre .support.namespace {
+    color: #333;
+}
+
+pre .constant.numeric,
+pre .keyword.unit,
+pre .hex-color {
+    font-weight: normal;
+    color: #099;
+}
+
+pre .attribute,
+pre .variable,
+pre .support {
+    color:  #757575; /* skinbuilder block-page-text-normal with #1f8dd6 as primary */
+}
+
+pre .string,
+pre .support.value  {
+    font-weight: normal;
+    color: #3b8bba; /* skinbuilder block-mine-text-low with #1f8dd6 as primary */
+}
+
