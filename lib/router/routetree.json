@@ -24,7 +24,7 @@
         }
       },
       "details":{
-        "_this": "Retrieve the fee symbol TODO",
+        "_this": "Retrieve the details TODO",
         "_response": "TODO"
       },
       "factor":{
