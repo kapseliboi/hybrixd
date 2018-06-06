@@ -49,6 +49,21 @@ cd hybridd
 ./coldstart_hybridd
 ```
 
+## coding contributions
+
+If you want to have the feeling of working in master, please create your own working branch as follows:
+git checkout master
+git checkout -b username-development
+git merge my-old-branch
+
+Voila! Now you're working in a copy of master, without destroying master.
+My own development branch will be called: agent725-development
+If you ever need to start with a clean slate, you can destroy your own development branch after merging it to master, or branching it to a backup.
+
+Then you simply branch out from master again to start over.
+
+Result: master stays untouched. Only well-tested branches get merged there.
+
 ## coding standards
 
 Our coding principles
