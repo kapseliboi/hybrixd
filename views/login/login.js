@@ -131,7 +131,6 @@ function processLoginDetails (userCredentials) {
     )
     .delay(500); // Delay so progressbar animation looks smoother.
 
-  A.startLoginAnimation();
   setCSSTorenderButtonsToDisabled();
   // HACK! :( So that CSS gets rendered immediately and user gets feedback right away.
   setTimeout(function () {
@@ -218,12 +217,11 @@ function handleCtrlSKeyEvent (e) {
 }
 
 function setCSSTorenderButtonsToDisabled () {
-  var arcBackgroundColor = document.querySelector('#combinator').style.color;
+  document.querySelector('#loginbutton .spinner-loader').classList.add('active');
   document.querySelector('#loginbutton').classList.add('disabled');
-  document.querySelector('#arc0').style.backgroundColor = arcBackgroundColor;
+  document.querySelector('#loginwrap').innerHTML = '';
   document.querySelector('#generatebutton').setAttribute('disabled', 'disabled');
   document.querySelector('#helpbutton').setAttribute('disabled', 'disabled');
-  document.querySelector('#combinatorwrap').style.opacity = 1;
 }
 
 function maybeOpenNewWalletModal (location) {
