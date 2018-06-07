@@ -19,6 +19,7 @@
 .pure-form select, .pure-form textarea {
   @include border-radius(4px);
   @include font-size(14);
+  @include transition(all 0.3s ease-in);
   background: white;
   border: 1px solid $border-color;
   box-shadow: none;
