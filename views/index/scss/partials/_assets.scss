@@ -482,7 +482,7 @@
   .copied {
     display: inline-block;
     float: right;
-    transition: all 1s ease;
+    @include transition(all 0.3s ease);
     font-size: 1em;
     background: #3ACE6C;
     color: #FFF;
@@ -491,6 +491,7 @@
     border-radius: 4px;
     margin-top: -37px;
     margin-right: 10px;
+    z-index: 123456789;
   }
   #qrcode {
     display: inline-block;

@@ -1,7 +1,7 @@
 clipboard = {
   clipboardSuccess: function () {
     Rx.Observable.of(false)
-      .delay(1300)
+      .delay(1200)
       .startWith(true)
       .subscribe(function (isActive) {
         document.querySelector('#action-receive .copied').classList.toggle('active', isActive);
