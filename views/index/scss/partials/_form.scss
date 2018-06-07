@@ -51,7 +51,7 @@
   height: 0;
   color: $error;
   background: rgba($error, 0.2);
-  margin-top: 15px;
+  margin-top: 0;
   font-weight: $semi-bold;
 
 }
@@ -60,4 +60,5 @@
   height: 81px;
   opacity: 1;
   padding: 15px;
+  margin-top: 15px;
 }
