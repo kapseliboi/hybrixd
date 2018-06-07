@@ -15,7 +15,7 @@ body {
   font-family: $base-font-family;
   font-weight: $base-font-weight;
   @include font-size(12);
-  //@include user-select(none);
+  @include user-select(none);
 }
 
 h2 {
