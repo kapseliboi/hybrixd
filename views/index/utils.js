@@ -8,7 +8,6 @@ var KEY_MAPPING = {
   '9': 'G'
 };
 
-
 utils = {
   documentReady: function (fn) {
     if (document.readyState !== 'loading') {
@@ -43,7 +42,7 @@ utils = {
         top: document.querySelector('#' + element).offsetTop - 250,
         behavior: 'smooth'
       });
-    };
+    }
   },
   triggerEvent: function (el, type) {
     if ('createEvent' in document) {
@@ -53,20 +52,20 @@ utils = {
       el.dispatchEvent(e);
     } else {
       // IE 8
-      var e = document.createEventObject();
-      e.eventType = type;
-      el.fireEvent('on' + e.eventType, e);
+      var newEvent = document.createEventObject();
+      newEvent.eventType = type;
+      el.fireEvent('on' + newEvent.eventType, newEvent);
     }
   },
   fetchDataFromUrl: function (url, errStr) {
     return fetch_(url)
       .then(r => r.json()
-            .then(r => r)
-            .catch(e => console.log(errStr, e)))
+        .then(r => r)
+        .catch(e => console.log(errStr, e)))
       .catch(e => console.log(errStr, e));
   },
   getCurrentTime: function () {
-    var currentTime = new Date;
+    var currentTime = new Date();
     return currentTime.getTime();
   },
   addIcon: function (asset) {
@@ -89,8 +88,8 @@ utils = {
   mkUpdatedAssets: function (details) {
     return function (assets, asset) {
       var assetOrUpdatedDetails = R.equals(R.prop('id', asset), R.prop('id', details))
-          ? R.merge(asset, details)
-          : asset;
+        ? R.merge(asset, details)
+        : asset;
       return R.append(assetOrUpdatedDetails, assets);
     };
   },
@@ -104,19 +103,19 @@ utils = {
       var url = 'a/' + assetID + '/balance/' + assetAddress;
 
       var balanceStream = H.mkHybriddCallStream(url)
-          .map(data => {
-            if (R.isNil(R.prop('stopped', data)) && R.prop('progress', data) < 1) throw data;
-            return data;
-          })
-          .retryWhen(function (errors) { return errors.delay(1000); })
-          .map(function (balanceData) {
-            var lastTxTime = R.path(['balance', 'lastTx'], asset);
-            var currentTime = Date.now();
+        .map(data => {
+          if (R.isNil(R.prop('stopped', data)) && R.prop('progress', data) < 1) throw data;
+          return data;
+        })
+        .retryWhen(function (errors) { return errors.delay(1000); })
+        .map(function (balanceData) {
+          var lastTxTime = R.path(['balance', 'lastTx'], asset);
+          var currentTime = Date.now();
 
-            return currentTime > lastTxTime + BALANCE_UPDATE_BUFFER_TIME_MS
-              ? balanceData
-              : { data: currentBalance };
-          });
+          return currentTime > lastTxTime + BALANCE_UPDATE_BUFFER_TIME_MS
+            ? balanceData
+            : { data: currentBalance };
+        });
 
       balanceStream.subscribe(function (balanceData) {
         var currentBalance = R.path(['balance', 'amount'], asset);
@@ -266,7 +265,7 @@ function sanitizeServerObject (res) {
     ),
     R.prop('data')
   )(emptyOrIdentityObject);
-};
+}
 
 function renderElementInDom (query, data) {
   var element = document.querySelector(query);
@@ -280,7 +279,7 @@ function mkSvgIcon (symbolName) {
   var firstLetterCapitalized = symbolName.slice(0, 1).toUpperCase();
 
   return '<svg width="50px" height="50px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <g id="Asset-view" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="Symbols" transform="translate(-367.000000, -248.000000)" fill-rule="nonzero" fill="#000000"> <g id="error" transform="translate(367.000000, 248.000000)"> <path d="M25.016,0.016 C38.8656595,0.016 50.016,11.1663405 50.016,25.016 C50.016,38.8656595 38.8656595,50.016 25.016,50.016 C11.1663405,50.016 0.016,38.8656595 0.016,25.016 C0.016,11.1663405 11.1663405,0.016 25.016,0.016 Z" id="Shape"></path> <text x="50%" y="72%" text-anchor="middle" fill="white" style="font-size: 30px; font-weight: 200;">' + firstLetterCapitalized + '</text> </g> </g> </g> </svg>';
-};
+}
 
 mkIcon = function (symbol) {
   var Icons = black; // TODO: Factor up;
@@ -293,7 +292,7 @@ mkIcon = function (symbol) {
 mapReplaceEntries = function (map) {
   var keys = R.keys(map);
   var newMap = R.map(function (key) {
-    return key.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+    return key.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
   }, keys);
 
   return function (str) {

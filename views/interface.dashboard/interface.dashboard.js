@@ -16,20 +16,20 @@ var socialMediaIcons = [
 ];
 
 var stopBalanceStream = Rx.Observable
-    .fromEvent(document.querySelector('#topmenu-assets'), 'click');
+  .fromEvent(document.querySelector('#topmenu-assets'), 'click');
 
 var retrieveBalanceStream = Rx.Observable
-    .interval(60000)
-    .startWith(0)
-    .delay(500) // HACK! Delay balance retrieval somewhat. Retrieval is sometimes faster than DOM rendering, so can't render right away.....
-    .takeUntil(stopBalanceStream);
+  .interval(60000)
+  .startWith(0)
+  .delay(500) // HACK! Delay balance retrieval somewhat. Retrieval is sometimes faster than DOM rendering, so can't render right away.....
+  .takeUntil(stopBalanceStream);
 
 function renderStarredAssets (assets) {
   var starredAssetsHTML = R.reduce(UI.mkHtmlForStarredAssets, '', assets);
 
   var htmlToRender = R.not(R.isEmpty(assets))
-      ? starredAssetsHTML
-      : UI.noStarredAssetsHTML;
+    ? starredAssetsHTML
+    : UI.noStarredAssetsHTML;
 
   document.querySelector('.dashboard-balances .spinner-loader').classList.add('disabled-fast');
   setTimeout(function () { document.querySelector('.dashboard-balances > .data').innerHTML = htmlToRender; }, 500); // Render new HTML string in DOM. 500 sec delay for fadeout. Should separate concern!
