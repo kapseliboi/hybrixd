@@ -136,6 +136,8 @@ function processLoginDetails (userCredentials) {
   setTimeout(function () {
     document.querySelector('.flipper').classList.add('active'); // FLIP LOGIN FORM
     document.querySelector('#generateform').classList.add('inactive');
+    document.querySelector('#alertbutton').classList.add('inactive');
+    document.querySelector('#helpbutton').classList.add('inactive');
     fetchViewStream.subscribe(function (userSessionData) {
       GL.usercrypto = {
         user_keys: R.nth(0, userSessionData),
