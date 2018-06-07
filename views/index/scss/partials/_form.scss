@@ -28,6 +28,7 @@
   color: $text-body-color !important;
   letter-spacing: 1px;
   font-weight: $semi-bold;
+  display: inline-block;
 }
 
 .pure-form input[type=text]:focus, .pure-form input[type=password]:focus {
