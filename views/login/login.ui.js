@@ -5,9 +5,9 @@ const S = loginInputStreams;
 
 // TODO: Give back some feedback to the user about incorrect credentials????
 const loginFormStateStream = S.credentialsStream
-      .map(R.map(U.normalizeUserInput))
-      .map(validateZippedCredentials)
-      .map(renderLoginFormState);
+  .map(R.map(U.normalizeUserInput))
+  .map(validateZippedCredentials)
+  .map(renderLoginFormState);
 
 function renderLoginFormState (hasValidCredentials) {
   const borderColor = hasValidCredentials ? '#D9E3EB' : 'transparent';
@@ -36,5 +36,5 @@ function helpbutton () {
 
 U.documentReady(function () {
   const customAlert = new CustomAlert();
-  loginFormStateStream.subscribe();
+  // loginFormStateStream.subscribe();
 });

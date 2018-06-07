@@ -911,7 +911,10 @@ p {
   display: inline-block; }
 
 .pure-form input[type=text]:focus, .pure-form input[type=password]:focus {
-  border: 1px solid #7174D8; }
+  border: 1px solid #4DA1FF;
+  -webkit-box-shadow: 0 0 5px rgba(77, 161, 255, 0.5);
+  -moz-box-shadow: 0 0 5px rgba(77, 161, 255, 0.5);
+  box-shadow: 0 0 5px rgba(77, 161, 255, 0.5); }
 
 ::-webkit-input-placeholder {
   letter-spacing: 0px;
@@ -932,6 +935,21 @@ p {
   letter-spacing: 0px;
   color: #B5C0C8;
   font-weight: 400; }
+
+.user-login-notification {
+  display: none;
+  color: #FF6D4A;
+  background: rgba(255, 109, 74, 0.2);
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  background-clip: padding-box;
+  /* stops bg color from leaking outside the border: */
+  padding: 10px;
+  margin-top: 15px;
+  font-weight: 600; }
+
+.user-login-notification.active {
+  display: block; }
 
 .table {
   width: 100%;
@@ -1021,6 +1039,12 @@ p {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none; }
+  .pure-button svg {
+    user-select: none;
+    pointer-events: none; }
+  .pure-button .icon {
+    user-select: none;
+    pointer-events: none; }
   .pure-button .advanced-icon {
     display: inline-block;
     padding: 0 7px 0px 0px;
@@ -1029,7 +1053,8 @@ p {
     float: left; }
     .pure-button .advanced-icon svg {
       width: 16px;
-      height: 16px; }
+      height: 16px;
+      user-select: none; }
 
 .pure-button-fw {
   min-width: 152px; }
@@ -1454,6 +1479,8 @@ pre .support.value {
   #login_container .pure-button {
     margin: 10px 0;
     display: block; }
+  #login_container #loginform {
+    position: relative; }
   #login_container #loginform, #login_container #generateform {
     display: inline-block;
     width: 100%;
@@ -1467,6 +1494,10 @@ pre .support.value {
   #login_container #loginbutton {
     margin: 5px 0 0;
     padding: 10px 24px; }
+  #login_container #loginbutton .spinner-loader {
+    display: none; }
+  #login_container #loginbutton .spinner-loader.active {
+    display: block; }
   #login_container #loginbuttoncontent {
     display: inline-block;
     width: 100%; }
@@ -1596,7 +1627,7 @@ pre .support.value {
   opacity: 0.3;
   filter: alpha(opacity=30); }
 
-.foo {
+.login-flip-card {
   width: 100%;
   color: white;
   text-align: center;
@@ -1612,19 +1643,32 @@ pre .support.value {
 
 /* flip speed goes here */
 .flipper {
+  -webkit-transition: 1s;
+  -moz-transition: 1s;
+  -o-transition: 1s;
   transition: 1s;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -ms-transform-style: preserve-3d;
   transform-style: preserve-3d;
   position: relative;
-  height: 280px;
+  min-height: 280px;
   width: 100%; }
   @media (min-width: 600px) {
     .flipper {
       width: 380px; } }
 
 .flipper.active {
-  transform: rotateY(180deg); }
+  -webkit-transform: rotateY(180deg);
+  /* Ch <36, Saf 5.1+, iOS < 9.2, An =<4.4.4 */
+  -ms-transform: rotateY(180deg);
+  /* IE 9 */
+  transform: rotateY(180deg);
+  /* IE 10, Fx 16+, Op 12.1+ */ }
 
 .login-flip-front, .login-flip-back {
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
   backface-visibility: hidden;
   position: absolute;
   top: 0;
@@ -1634,7 +1678,12 @@ pre .support.value {
 .login-flip-front {
   z-index: 2;
   /* for firefox 31 */
-  transform: rotateY(0deg); }
+  -webkit-transform: rotateY(0deg);
+  /* Ch <36, Saf 5.1+, iOS < 9.2, An =<4.4.4 */
+  -ms-transform: rotateY(0deg);
+  /* IE 9 */
+  transform: rotateY(0deg);
+  /* IE 10, Fx 16+, Op 12.1+ */ }
 
 /* back, initially hidden pane */
 .login-flip-back {
@@ -1645,6 +1694,9 @@ pre .support.value {
   border-radius: 4px;
   background-clip: padding-box;
   /* stops bg color from leaking outside the border: */
+  -webkit-transform: rotateY(180deg);
+  -ms-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
   transform: rotateY(180deg);
   padding: 30px; }
 
@@ -1752,13 +1804,13 @@ pre .support.value {
   overflow: hidden;
   text-indent: 100%; }
 
-.spinner-loader.small:not(:required) {
-  -moz-box-shadow: rgba(255, 255, 255, 0.3) 0.7em 0 0 0, rgba(255, 255, 255, 0.3) 0.5em 0.5em 0 0, rgba(255, 255, 255, 0.3) 0 0.7em 0 0, rgba(255, 255, 255, 0.3) -0.5em 0.5em 0 0, rgba(255, 255, 255, 0.3) -0.7em 0 0 0, rgba(255, 255, 255, 0.3) -0.5em -0.5em 0 0, rgba(255, 255, 255, 0.3) 0 -0.7em 0 0, rgba(255, 255, 255, 0.3) 0.5em -0.5em 0 0;
-  -webkit-box-shadow: rgba(255, 255, 255, 0.3) 0.7em 0 0 0, rgba(255, 255, 255, 0.3) 0.5em 0.5em 0 0, rgba(255, 255, 255, 0.3) 0 0.7em 0 0, rgba(255, 255, 255, 0.3) -0.5em 0.5em 0 0, rgba(255, 255, 255, 0.3) -0.7em 0 0 0, rgba(255, 255, 255, 0.3) -0.5em -0.5em 0 0, rgba(255, 255, 255, 0.3) 0 -0.7em 0 0, rgba(255, 255, 255, 0.3) 0.5em -0.5em 0 0;
-  box-shadow: rgba(255, 255, 255, 0.3) 0.7em 0 0 0, rgba(255, 255, 255, 0.3) 0.5em 0.5em 0 0, rgba(255, 255, 255, 0.3) 0 0.7em 0 0, rgba(255, 255, 255, 0.3) -0.5em 0.5em 0 0, rgba(255, 255, 255, 0.3) -0.7em 0 0 0, rgba(255, 255, 255, 0.3) -0.5em -0.5em 0 0, rgba(255, 255, 255, 0.3) 0 -0.7em 0 0, rgba(255, 255, 255, 0.3) 0.5em -0.5em 0 0;
-  margin: 1em;
+#loginbutton .spinner-loader:not(:required) {
+  -moz-box-shadow: rgba(255, 255, 255, 0.5) 0.7em 0 0 0, rgba(255, 255, 255, 0.5) 0.5em 0.5em 0 0, rgba(255, 255, 255, 0.5) 0 0.7em 0 0, rgba(255, 255, 255, 0.5) -0.5em 0.5em 0 0, rgba(255, 255, 255, 0.5) -0.7em 0 0 0, rgba(255, 255, 255, 0.5) -0.5em -0.5em 0 0, rgba(255, 255, 255, 0.5) 0 -0.7em 0 0, rgba(255, 255, 255, 0.5) 0.5em -0.5em 0 0;
+  -webkit-box-shadow: rgba(255, 255, 255, 0.5) 0.7em 0 0 0, rgba(255, 255, 255, 0.5) 0.5em 0.5em 0 0, rgba(255, 255, 255, 0.5) 0 0.7em 0 0, rgba(255, 255, 255, 0.5) -0.5em 0.5em 0 0, rgba(255, 255, 255, 0.5) -0.7em 0 0 0, rgba(255, 255, 255, 0.5) -0.5em -0.5em 0 0, rgba(255, 255, 255, 0.5) 0 -0.7em 0 0, rgba(255, 255, 255, 0.5) 0.5em -0.5em 0 0;
+  box-shadow: rgba(255, 255, 255, 0.5) 0.7em 0 0 0, rgba(255, 255, 255, 0.5) 0.5em 0.5em 0 0, rgba(255, 255, 255, 0.5) 0 0.7em 0 0, rgba(255, 255, 255, 0.5) -0.5em 0.5em 0 0, rgba(255, 255, 255, 0.5) -0.7em 0 0 0, rgba(255, 255, 255, 0.5) -0.5em -0.5em 0 0, rgba(255, 255, 255, 0.5) 0 -0.7em 0 0, rgba(255, 255, 255, 0.5) 0.5em -0.5em 0 0;
   width: 0.4em;
-  height: 0.4em; }
+  height: 0.4em;
+  margin: 1em auto; }
 
 /* Radial progress indicator */
 .progress-radial {
@@ -1808,91 +1860,6 @@ pre .support.value {
     -webkit-transform: scale(1);
     transform: scale(1);
     opacity: 0; } }
-
-#combinatorwrap {
-  display: inline;
-  vertical-align: middle;
-  background-color: rgba(255, 255, 255, 0.3);
-  width: 16px;
-  height: 16px;
-  -moz-transition: all 0.5s ease;
-  -o-transition: all 0.5s ease;
-  -webkit-transition: all 0.5s ease;
-  transition: all 0.5s ease;
-  opacity: 0;
-  filter: alpha(opacity=0);
-  -moz-transform: scale(1.5);
-  -o-transform: scale(1.5);
-  -ms-transform: scale(1.5);
-  -webkit-transform: scale(1.5);
-  transform: scale(1.5);
-  -webkit-border-radius: 100%;
-  border-radius: 100%;
-  background-clip: padding-box;
-  /* stops bg color from leaking outside the border: */
-  float: right;
-  margin-top: -12px; }
-
-#combinator, #arc0, #arc1, #arc2, #arc3 {
-  -moz-transition: ease-in all 0.5s;
-  -o-transition: ease-in all 0.5s;
-  -webkit-transition: ease-in all 0.5s;
-  transition: ease-in all 0.5s; }
-
-#combinator {
-  color: white;
-  background-color: transparent;
-  position: relative;
-  margin: auto; }
-
-#arc0 {
-  border-radius: 50%;
-  border: 1px solid;
-  height: 4px;
-  width: 4px;
-  top: 6px;
-  left: 6px;
-  position: absolute; }
-
-#arc1 {
-  border: 1px solid;
-  height: 16px;
-  width: 16px;
-  position: absolute;
-  -webkit-border-radius: 50%;
-  border-radius: 50%;
-  background-clip: padding-box;
-  /* stops bg color from leaking outside the border: */ }
-
-#arc2 {
-  border-left: 1px solid;
-  border-right: 1px solid;
-  border-top: 1px solid transparent;
-  border-bottom: 1px solid transparent;
-  height: 8px;
-  width: 8px;
-  top: 4px;
-  left: 4px;
-  position: absolute;
-  -webkit-border-radius: 50%;
-  border-radius: 50%;
-  background-clip: padding-box;
-  /* stops bg color from leaking outside the border: */ }
-
-#arc3 {
-  border-left: 1px solid;
-  border-right: 1px solid;
-  border-top: 1px solid transparent;
-  border-bottom: 1px solid transparent;
-  height: 12px;
-  width: 12px;
-  top: 2px;
-  left: 2px;
-  position: absolute;
-  -webkit-border-radius: 50%;
-  border-radius: 50%;
-  background-clip: padding-box;
-  /* stops bg color from leaking outside the border: */ }
 
 #customalert-overlay, #customconfirm-overlay {
   display: none;
@@ -2884,6 +2851,19 @@ pre .support.value {
 
 .display-assets-link {
   cursor: pointer; }
+
+#action-receive .copied {
+  opacity: 0;
+  -webkit-transition: opacity 1.3s;
+  /* Safari */
+  transition: opacity 1.3s;
+  z-index: 99; }
+
+#action-receive .copied.active {
+  opacity: 1;
+  -webkit-transition: opacity 0.8s;
+  /* Safari */
+  transition: opacity 0.8s; }
 
 .elem {
   width: 123px; }
