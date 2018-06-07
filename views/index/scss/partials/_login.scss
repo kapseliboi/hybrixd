@@ -22,7 +22,7 @@
   }
 
   input {
-    @include user-select(all);
+    @include user-select(auto);
   }
 
   .pure-button {
