@@ -4,9 +4,9 @@ var Storage = storage;
 var manageAssets = {
   renderManageButton: function (element, asset, active) {
     var activeToggled = R.not(active);
-    var btnText = active ? 'Remove' : 'Add';
+    var btnText = active ? 'Hide' : 'Show';
     var btnClass = active ? 'pure-button-error selectedAsset' : 'pure-button-success';
-    var svgName = active ? 'remove' : 'add';
+    var svgName = active ? 'hide' : 'show';
 
     return '<a onclick="changeManageButton(\'' + element + '\',\'' + asset + '\',' + activeToggled + ');" class="pure-button ' + btnClass + '" role="button"><div class="actions-icon">' + svg[svgName] + '</div>' + btnText + '</a>';
   },
