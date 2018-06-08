@@ -2,13 +2,15 @@
 
 #action-receive .copied {
   opacity: 0;
-  -webkit-transition: opacity 1.3s; /* Safari */
-  transition: opacity 1.3s;
-  z-index: 99;
+  -webkit-transition: all 0.2s; /* Safari */
+  transition: all 0.2s;
+  z-index: 123456789;
 }
 
 #action-receive .copied.active {
-  opacity: 1;
-  -webkit-transition: opacity 0.8s; /* Safari */
-  transition: opacity 0.8s;
+  opacity: 0.9;
+  -webkit-transition: all 0.2s; /* Safari */
+  transition: all 0.2s;
+  z-index: 123456789;
+  position: relative;
 }

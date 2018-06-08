@@ -2767,7 +2767,10 @@ pre .support.value {
 #action-receive .copied {
   display: inline-block;
   float: right;
-  transition: all 1s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
   font-size: 1em;
   background: #3ACE6C;
   color: #FFF;
@@ -2775,7 +2778,8 @@ pre .support.value {
   padding: 4px 8px;
   border-radius: 4px;
   margin-top: -37px;
-  margin-right: 10px; }
+  margin-right: 10px;
+  z-index: 123456789; }
 
 #action-receive #qrcode {
   display: inline-block; }
@@ -2785,16 +2789,18 @@ pre .support.value {
 
 #action-receive .copied {
   opacity: 0;
-  -webkit-transition: opacity 1.3s;
+  -webkit-transition: all 0.2s;
   /* Safari */
-  transition: opacity 1.3s;
-  z-index: 99; }
+  transition: all 0.2s;
+  z-index: 123456789; }
 
 #action-receive .copied.active {
-  opacity: 1;
-  -webkit-transition: opacity 0.8s;
+  opacity: 0.9;
+  -webkit-transition: all 0.2s;
   /* Safari */
-  transition: opacity 0.8s; }
+  transition: all 0.2s;
+  z-index: 123456789;
+  position: relative; }
 
 .elem {
   width: 123px; }
