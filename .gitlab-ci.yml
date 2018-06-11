@@ -1,0 +1,6 @@
+before_script:
+  - ./coldstart_hybridd
+
+compile:
+  script:
+    - ./views/compileviews
