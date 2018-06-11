@@ -57,8 +57,10 @@
           "_list" : "source_address",
           "_ref" : {
             "_list" : "target_address",
+            "_this" : "TODO",
             "_ref" : {
               "_list" : "ammount",
+              "_this" : "TODO",
               "_ref" : {
                 "_list" : "public_key",
                 "_this" : "Retrieve the unspent. Unspent is a bitcoin related term that in hybridd is used for pretransactional data. Bitcoin: unspent means available inputs for creating a transaction. Ethereum: unspent means the most recent nonce of the cryptocurrency account needed for constructing a transaction.  NXT: unspent means the server reply information needed to construct a deterministic transaction.",
