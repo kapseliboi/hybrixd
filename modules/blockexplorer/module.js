@@ -116,18 +116,27 @@ function exec(properties) {
           subprocesses.push('stop(1,"Please specify an address!")');
         }
         break;
+      case 'transaction':
+        subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["/tx/'+command[1]+'"]})');
+        //TODO format data
+        subprocesses.push('stop(0,data)');
+        break;
+      case 'history':
+        subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["/txs/?address='+command[1]+'"]})');
+        //TODO format data
+        subprocesses.push('stop(0,data)');
+        break;
       default:
         subprocesses.push('stop(1,"Source function not supported!")');
       }
       break;
-    case 'cryptoid':
+
+    case 'cryptoid': // https://chainz.cryptoid.info/api.dws
       switch(properties.command[0]) {
       case 'balance':
         subprocesses.push('logs(1,"test log message")');
         subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["?key=d8d21ccfe2fa&q=getbalance&a='+command[1]+'"]})');
-        //subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["/addr/'+command[1]+'/unconfirmedBalance"]})');
-        subprocesses.push('coll(2)');
-        subprocesses.push('stop( (isNaN(data[0])||isNaN(data[1])?1:0), fromInt((data[0]+data[1]),'+factor+') )');
+        subprocesses.push('stop( (isNaN(data?1:0), fromInt(data,'+factor+') )');
         break;
       case 'unspent':
         // example: https://blockexplorer.com/api/addr/[:addr]/utxo
@@ -136,6 +145,22 @@ function exec(properties) {
           //subprocesses.push('func("blockexplorer","post",{target:'+jstr(target)+',command:'+jstr(command)+',data:data})');
         } else {
           subprocesses.push('stop(1,"Please specify an address!")');
+        }
+        break;
+      case 'history':
+        if(typeof command[1]!=='undefined') {
+          subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["?key=d8d21ccfe2fa&q=lasttxs&a='+command[1]+'"]})');
+          //TODO format data
+        } else {
+          subprocesses.push('stop(1,"Please specify an address!")');
+        }
+        break;
+      case 'transaction':
+        if(typeof command[1]!=='undefined') {
+          subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["?key=d8d21ccfe2fa&q=txinfo&t='+command[1]+'"]})');
+          //TODO format data
+        } else {
+          subprocesses.push('stop(1,"Please specify a transaction id!")');
         }
         break;
       default:
