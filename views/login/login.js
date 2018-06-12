@@ -1,12 +1,9 @@
 // hy_login.js - contains javascript for login, encryption and session authentication
 var C = commonUtils;
-var A = animations;
 var S = loginInputStreams;
 var V = validations;
 var U = utils;
 
-var POW = proofOfWork_;
-var Storage = storage;
 var AssetInitialisationStreams = assetInitialisationStreams;
 
 var path = 'api'; // TODO: Factor up!
