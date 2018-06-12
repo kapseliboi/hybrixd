@@ -126,7 +126,7 @@ function initialize_ (z) {
 function initializeGlobalAssets (assets) {
   return R.compose(
     U.updateGlobalAssets,
-    R.map(R.merge({balance: { amount: 'n/a', lastTx: 0 }})),
+    R.map(R.merge({balance: { amount: 'n/a', lastTx: 0, lastUpdateTime: 0}})),
     R.filter(existsInAssetNames)
   )(assets);
 }

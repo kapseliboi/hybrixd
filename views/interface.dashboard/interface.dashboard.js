@@ -39,16 +39,63 @@ function getGlobalAssets () {
   return GL.assets;
 }
 
-function setIntervalFunctions () {
-  retrieveBalanceStream.subscribe(function (_) {
-    var assets = getGlobalAssets();
-    assets.forEach(function (asset) {
-      R.compose(
-        R.curry(U.renderDataInDom)('.dashboard-balances > .data > .balance > .balance-' + R.prop('id', asset), AMOUNT_OF_SIGNIFICANT_DIGITS),
-        R.path(['balance', 'amount'])
-      )(asset);
+function findAsset (assetID) {
+  return R.find(
+    R.compose(
+      R.equals(assetID),
+      R.prop('id')
+    ),
+    getGlobalAssets()
+  );
+}
+
+function assetOrError (asset) {
+  var hasBeenUpdated = R.compose(
+    R.compose(
+      R.not,
+      R.equals(0)
+    ),
+    R.path(['balance', 'lastUpdateTime'])
+  )(asset);
+
+  if (hasBeenUpdated) {
+    return asset;
+  } else {
+    throw {error: 1, msg: 'Balance has not been updated yet.'};
+  }
+}
+
+function setIntervalFunctions (assetsIDs) {
+  var assetsIDsStream = Rx.Observable.from(assetsIDs)
+    .flatMap(function (assetID) {
+      return Rx.Observable.of(assetID)
+        .map(findAsset)
+        .map(assetOrError)
+        .retryWhen(function (errors) { return errors.delay(500); })
+        .map(function (asset) {
+          R.compose(
+            R.curry(U.renderDataInDom)('.dashboard-balances > .data > .balance > .balance-' + R.prop('id', asset), AMOUNT_OF_SIGNIFICANT_DIGITS), // TODO: factor up!
+            R.path(['balance', 'amount'])
+          )(asset);
+        });
     });
-  });
+
+  var initAssetsIDsStream = retrieveBalanceStream
+    .flatMap(function (_) {
+      return assetsIDsStream;
+    });
+
+  initAssetsIDsStream.subscribe();
+
+  // retrieveBalanceStream.subscribe(function (_) {
+  //   var assets = getGlobalAssets(); // TODO: Factor up --> Move to stream.
+  //   assets.forEach(function (asset) {
+  //     R.compose(
+  //       R.curry(U.renderDataInDom)('.dashboard-balances > .data > .balance > .balance-' + R.prop('id', asset), AMOUNT_OF_SIGNIFICANT_DIGITS),
+  //       R.path(['balance', 'amount'])
+  //     )(asset);
+  //   });
+  // });
 }
 
 function renderSvgIcon (icon) {
@@ -58,8 +105,9 @@ function renderSvgIcon (icon) {
 
 function render (assets) {
   return function () {
+    var starredAssetsIDs = R.map(R.prop('id'), assets);
     renderStarredAssets(assets);
-    setIntervalFunctions(assets);
+    setIntervalFunctions(starredAssetsIDs);
     socialMediaIcons.forEach(renderSvgIcon);
   };
 }
