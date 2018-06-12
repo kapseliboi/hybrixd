@@ -51,7 +51,7 @@ function assetOrError (asset) {
   }
 }
 
-function setIntervalFunctions (assetsIDs) {
+function setIntervalFunctions (q, n, assetsIDs) {
   var assetsIDsStream = Rx.Observable.from(assetsIDs)
     .flatMap(function (assetID) {
       return Rx.Observable.of(assetID)
@@ -60,7 +60,7 @@ function setIntervalFunctions (assetsIDs) {
         .retryWhen(function (errors) { return errors.delay(500); })
         .map(function (asset) {
           R.compose(
-            R.curry(U.renderDataInDom)('.dashboard-balances > .data > .balance > .balance-' + R.prop('id', asset), AMOUNT_OF_SIGNIFICANT_DIGITS), // TODO: factor up!
+            R.curry(U.renderDataInDom)(q + R.prop('id', asset), n), // TODO: factor up!
             R.path(['balance', 'amount'])
           )(asset);
         });
@@ -82,8 +82,9 @@ function renderSvgIcon (icon) {
 function render (assets) {
   return function () {
     var starredAssetsIDs = R.map(R.prop('id'), assets);
+    var queryStr = '.dashboard-balances > .data > .balance > .balance-';
     renderStarredAssets(assets);
-    setIntervalFunctions(starredAssetsIDs);
+    setIntervalFunctions(queryStr, AMOUNT_OF_SIGNIFICANT_DIGITS, starredAssetsIDs);
     socialMediaIcons.forEach(renderSvgIcon);
   };
 }
