@@ -35,9 +35,19 @@ function renderStarredAssets (assets) {
   setTimeout(function () { document.querySelector('.dashboard-balances > .data').innerHTML = htmlToRender; }, 500); // Render new HTML string in DOM. 500 sec delay for fadeout. Should separate concern!
 }
 
-function setIntervalFunctions (assets) {
+function getGlobalAssets () {
+  return GL.assets;
+}
+
+function setIntervalFunctions () {
   retrieveBalanceStream.subscribe(function (_) {
-    assets.forEach(U.retrieveBalance(U.renderDataInDom, AMOUNT_OF_SIGNIFICANT_DIGITS, '.dashboard-balances > .data > .balance > .balance-'));
+    var assets = getGlobalAssets();
+    assets.forEach(function (asset) {
+      R.compose(
+        R.curry(U.renderDataInDom)('.dashboard-balances > .data > .balance > .balance-' + R.prop('id', asset), AMOUNT_OF_SIGNIFICANT_DIGITS),
+        R.path(['balance', 'amount'])
+      )(asset);
+    });
   });
 }
 
