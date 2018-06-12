@@ -1,13 +1,13 @@
-var fetch_ = fetch
+var fetch_ = fetch;
 var U = utils;
 
 const userIdInputStr = Rx.Observable
-      .fromEvent(document.querySelector('#inputUserID'), 'input')
-      .map(U.getTargetValue);
+  .fromEvent(document.querySelector('#inputUserID'), 'input')
+  .map(U.getTargetValue);
 
 const passwordInputStream = Rx.Observable
-      .fromEvent(document.querySelector('#inputPasscode'), 'input')
-      .map(U.getTargetValue);
+  .fromEvent(document.querySelector('#inputPasscode'), 'input')
+  .map(U.getTargetValue);
 
 loginInputStreams = {
   credentialsStream: Rx.Observable
@@ -20,16 +20,17 @@ loginInputStreams = {
   },
 
   mkSessionStepFetchPromise: function (sessionData, stepNameStr) {
-  return fetch_(sessionData.url)
-    .then(r => r.json()
-          .then(stepData => {
+    return fetch_(sessionData.url)
+      .then(function (r) {
+        return r.json()
+          .then(function (stepData) {
             var defaultOrAssociatedStepData = stepNameStr === 'postSessionStep1Data'
-                ? R.assoc('sessionStep1', stepData, {})
-                : stepData
-
+              ? R.assoc('sessionStep1', stepData, {})
+              : stepData;
             return R.merge(sessionData, defaultOrAssociatedStepData);
           })
-          .catch(e => console.log(stepNameStr + ': Error retrieving data:', e)))
-    .catch(e => console.log('Error fetching data:', e));
-}
+          .catch(function (e) { throw e; });
+      })
+      .catch(function (e) { throw e; });
+  }
 };
