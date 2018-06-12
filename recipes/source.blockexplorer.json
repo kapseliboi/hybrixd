@@ -1,0 +1,26 @@
+{
+  "source":"blockexplorer",
+  "name":"Blockexplorer",
+  "module":"blockexplorer",
+  "router" : {
+    "command" : {
+      "_this":"Execute a direct command.",
+      "_access":"root"
+    },
+    "_ref":{
+      "_list":"source",
+      "balance" : {
+        "_ref":{
+          "_list" : "address",
+          "_this" : "Retrieve the balance."
+        }
+      },
+      "unspent" : {
+        "_ref":{
+          "_list" : "address",
+          "_this" : "Retrieve the unspents."
+        }
+      }
+    }
+  }
+}
