@@ -55,7 +55,7 @@ var validatedUserCredentialsStream = userSubmitStream
   .map(mkCredentialsObj)
   .map(R.map(U.normalizeUserInput))
   .map(function (c) {
-    return hasValidCredentials(c)
+    return V.hasValidCredentials(c)
       ? c
       : { error: 1, msg: 'It seems the credentials you entered are incorrect. Please check your username and password and try again.' };
   });
@@ -135,14 +135,16 @@ function processLoginDetails (userCredentials) {
   doFlipOverAnimation();
   // HACK! :( So that CSS gets rendered immediately and user gets feedback right away.
   setTimeout(function () {
-    fetchViewStream.subscribe(function (userSessionData) {
-      GL.usercrypto = {
-        user_keys: R.nth(0, userSessionData),
-        nonce: R.path(['3', 'current_nonce'], userSessionData)
-      };
-      AssetInitialisationStreams.doAssetInitialisation(userSessionData);
-    });
+    fetchViewStream.subscribe(initialiseAssets, resetFlipOverAnimation);
   }, 500);
+}
+
+function initialiseAssets (userSessionData) {
+  GL.usercrypto = {
+    user_keys: R.nth(0, userSessionData),
+    nonce: R.path(['3', 'current_nonce'], userSessionData)
+  };
+  AssetInitialisationStreams.doAssetInitialisation(userSessionData);
 }
 
 function doFlipOverAnimation () {
@@ -150,6 +152,13 @@ function doFlipOverAnimation () {
   document.querySelector('#generateform').classList.add('inactive');
   document.querySelector('#alertbutton').classList.add('inactive');
   document.querySelector('#helpbutton').classList.add('inactive');
+}
+
+function resetFlipOverAnimation () {
+  document.querySelector('.flipper').classList.remove('active'); // FLIP LOGIN FORM BACK
+  document.querySelector('#generateform').classList.remove('inactive');
+  document.querySelector('#alertbutton').classList.remove('inactive');
+  document.querySelector('#helpbutton').classList.remove('inactive');
 }
 
 function continueLoginOrNotifyUser (credentialsOrError) {
