@@ -139,7 +139,8 @@ function processLoginDetails (userCredentials) {
     fetchViewStream.subscribe(function (userSessionData) {
       GL.usercrypto = {
         user_keys: R.nth(0, userSessionData),
-        nonce: R.path(['3', 'current_nonce'], userSessionData)
+        nonce: R.path(['3', 'current_nonce'], userSessionData),
+        userid: R.path(['2', 'userID'], userSessionData)
       };
       AssetInitialisationStreams.doAssetInitialisation(userSessionData);
     });

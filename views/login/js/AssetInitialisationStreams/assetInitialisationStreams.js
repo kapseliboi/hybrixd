@@ -88,11 +88,7 @@ function updateAssetDetailsAndRenderDashboardView (assetDetails) {
 
   // HACK: Assets can only be viewed when all details have been retrieved. Otherwise, transactions will not work.
   if (GL.initCount === R.length(GL.assets)) {
-    fetchview('interface', {
-      user_keys: R.nth(0, z),
-      nonce: R.path(['3', 'current_nonce'], z),
-      userid: R.path(['2', 'userID'], z)
-    });
+    fetchview('interface');
   }
 }
 
