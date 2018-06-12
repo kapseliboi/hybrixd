@@ -35,20 +35,6 @@ function renderStarredAssets (assets) {
   setTimeout(function () { document.querySelector('.dashboard-balances > .data').innerHTML = htmlToRender; }, 500); // Render new HTML string in DOM. 500 sec delay for fadeout. Should separate concern!
 }
 
-function getGlobalAssets () {
-  return GL.assets;
-}
-
-function findAsset (assetID) {
-  return R.find(
-    R.compose(
-      R.equals(assetID),
-      R.prop('id')
-    ),
-    getGlobalAssets()
-  );
-}
-
 function assetOrError (asset) {
   var hasBeenUpdated = R.compose(
     R.compose(
@@ -69,7 +55,7 @@ function setIntervalFunctions (assetsIDs) {
   var assetsIDsStream = Rx.Observable.from(assetsIDs)
     .flatMap(function (assetID) {
       return Rx.Observable.of(assetID)
-        .map(findAsset)
+        .map(U.findAsset)
         .map(assetOrError)
         .retryWhen(function (errors) { return errors.delay(500); })
         .map(function (asset) {
@@ -86,16 +72,6 @@ function setIntervalFunctions (assetsIDs) {
     });
 
   initAssetsIDsStream.subscribe();
-
-  // retrieveBalanceStream.subscribe(function (_) {
-  //   var assets = getGlobalAssets(); // TODO: Factor up --> Move to stream.
-  //   assets.forEach(function (asset) {
-  //     R.compose(
-  //       R.curry(U.renderDataInDom)('.dashboard-balances > .data > .balance > .balance-' + R.prop('id', asset), AMOUNT_OF_SIGNIFICANT_DIGITS),
-  //       R.path(['balance', 'amount'])
-  //     )(asset);
-  //   });
-  // });
 }
 
 function renderSvgIcon (icon) {

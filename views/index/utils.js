@@ -76,6 +76,21 @@ utils = {
       R.prop('id')
     )(asset);
   },
+  getGlobalAssets: function () {
+    return GL.assets;
+  },
+  // TODO: Ref to getGlobalAssets --> Move all functions outside of object and make new object that refs outside functions.
+  findAsset: function (assetID) {
+    return R.find(
+      R.compose(
+        R.equals(assetID),
+        R.prop('id')
+      ),
+      (function () {
+        return GL.assets;
+      }())
+    );
+  },
   updateGlobalAssets: function (a) {
     GL.assets = a;
   },
