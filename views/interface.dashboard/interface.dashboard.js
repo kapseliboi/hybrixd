@@ -21,7 +21,6 @@ var stopBalanceStream = Rx.Observable
 var retrieveBalanceStream = Rx.Observable
   .interval(60000)
   .startWith(0)
-  .delay(500) // HACK! Delay balance retrieval somewhat. Retrieval is sometimes faster than DOM rendering, so can't render right away.....
   .takeUntil(stopBalanceStream);
 
 function renderStarredAssets (assets) {
@@ -51,7 +50,7 @@ function assetOrError (asset) {
   }
 }
 
-function setIntervalFunctions (q, n, assetsIDs) {
+function renderBalances (q, n, assetsIDs) {
   var assetsIDsStream = Rx.Observable.from(assetsIDs)
     .flatMap(function (assetID) {
       return Rx.Observable.of(assetID)
@@ -60,7 +59,7 @@ function setIntervalFunctions (q, n, assetsIDs) {
         .retryWhen(function (errors) { return errors.delay(500); })
         .map(function (asset) {
           R.compose(
-            R.curry(U.renderDataInDom)(q + R.prop('id', asset), n), // TODO: factor up!
+            R.curry(U.renderDataInDom)(q + R.prop('id', asset), n),
             R.path(['balance', 'amount'])
           )(asset);
         });
@@ -84,7 +83,7 @@ function render (assets) {
     var starredAssetsIDs = R.map(R.prop('id'), assets);
     var queryStr = '.dashboard-balances > .data > .balance > .balance-';
     renderStarredAssets(assets);
-    setIntervalFunctions(queryStr, AMOUNT_OF_SIGNIFICANT_DIGITS, starredAssetsIDs);
+    renderBalances(queryStr, AMOUNT_OF_SIGNIFICANT_DIGITS, starredAssetsIDs);
     socialMediaIcons.forEach(renderSvgIcon);
   };
 }
