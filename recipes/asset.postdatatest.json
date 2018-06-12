@@ -1,0 +1,14 @@
+{
+  "symbol":"postdatatest",
+  "name":"postdatatest",
+  "module":"quartz",
+  "mode":"postdatatest",
+  "quartz":{
+
+    "contract" : [
+      "pass(data)"
+    ]
+
+
+  }
+}
