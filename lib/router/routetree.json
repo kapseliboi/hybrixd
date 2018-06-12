@@ -5,7 +5,6 @@
     "_this" : "List all available assets",
     "_ref":{
       "_list":"asset",
-      "address":"TODO",
       "balance":{
         "_ref" : {
           "_list" : "address",
@@ -39,7 +38,18 @@
         "_this": "Retrieve the fee symbol TODO",
         "_response": "TODO"
       },
-      "history":"Retrieve asset history TODO",
+      "history":{
+        "_ref" : {
+          "_list" : "address",
+          "_this": "Retrieve the history TODO"
+        }
+      },
+      "transaction":{
+        "_ref" : {
+          "_list" : "transaction_id",
+          "_this": "Retrieve the details for a transaction."
+        }
+      },
       "push":{
         "_ref" : {
           "_list" : "transaction",
