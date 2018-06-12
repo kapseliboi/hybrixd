@@ -132,24 +132,24 @@ function exec(properties) {
       break;
 
     case 'cryptoid': // https://chainz.cryptoid.info/api.dws
+      var cryptoidApiKey = 'd8d21ccfe2fa&q=lasttxs';
       switch(properties.command[0]) {
       case 'balance':
         subprocesses.push('logs(1,"test log message")');
-        subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["?key=d8d21ccfe2fa&q=getbalance&a='+command[1]+'"]})');
+        subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["?key='+cryptoidApiKey+'&q=getbalance&a='+command[1]+'"]})');
         subprocesses.push('stop( (isNaN(data?1:0), fromInt(data,'+factor+') )');
         break;
       case 'unspent':
         // example: https://blockexplorer.com/api/addr/[:addr]/utxo
         if(typeof command[1]!=='undefined') {
-          subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["?key=d8d21ccfe2fa&q=unspent&active='+command[1]+'"]})');
-          //subprocesses.push('func("blockexplorer","post",{target:'+jstr(target)+',command:'+jstr(command)+',data:data})');
+          subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["?key='+cryptoidApiKey+'&q=unspent&active='+command[1]+'"]})');
         } else {
           subprocesses.push('stop(1,"Please specify an address!")');
         }
         break;
       case 'history':
         if(typeof command[1]!=='undefined') {
-          subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["?key=d8d21ccfe2fa&q=lasttxs&a='+command[1]+'"]})');
+          subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["?key='+cryptoidApiKey+'&a='+command[1]+'"]})');
           //TODO format data
         } else {
           subprocesses.push('stop(1,"Please specify an address!")');
@@ -157,7 +157,7 @@ function exec(properties) {
         break;
       case 'transaction':
         if(typeof command[1]!=='undefined') {
-          subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["?key=d8d21ccfe2fa&q=txinfo&t='+command[1]+'"]})');
+          subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["?key='+cryptoidApiKey+'&q=txinfo&t='+command[1]+'"]})');
           //TODO format data
         } else {
           subprocesses.push('stop(1,"Please specify a transaction id!")');
