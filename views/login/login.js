@@ -132,12 +132,9 @@ function processLoginDetails (userCredentials) {
     .delay(500); // Delay so progressbar animation looks smoother.
 
   setCSSTorenderButtonsToDisabled();
+  doFlipOverAnimation();
   // HACK! :( So that CSS gets rendered immediately and user gets feedback right away.
   setTimeout(function () {
-    document.querySelector('.flipper').classList.add('active'); // FLIP LOGIN FORM
-    document.querySelector('#generateform').classList.add('inactive');
-    document.querySelector('#alertbutton').classList.add('inactive');
-    document.querySelector('#helpbutton').classList.add('inactive');
     fetchViewStream.subscribe(function (userSessionData) {
       GL.usercrypto = {
         user_keys: R.nth(0, userSessionData),
@@ -146,6 +143,13 @@ function processLoginDetails (userCredentials) {
       AssetInitialisationStreams.doAssetInitialisation(userSessionData);
     });
   }, 500);
+}
+
+function doFlipOverAnimation () {
+  document.querySelector('.flipper').classList.add('active'); // FLIP LOGIN FORM
+  document.querySelector('#generateform').classList.add('inactive');
+  document.querySelector('#alertbutton').classList.add('inactive');
+  document.querySelector('#helpbutton').classList.add('inactive');
 }
 
 function continueLoginOrNotifyUser (credentialsOrError) {
