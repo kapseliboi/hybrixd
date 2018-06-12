@@ -132,7 +132,7 @@ function processLoginDetails (userCredentials) {
   doFlipOverAnimation();
   // HACK! :( So that CSS gets rendered immediately and user gets feedback right away.
   setTimeout(function () {
-    fetchViewStream.subscribe(initialiseAssets, resetFlipOverAnimation);
+    fetchViewStream.subscribe(initialiseAssets);
   }, 500);
 }
 
