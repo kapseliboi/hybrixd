@@ -26,8 +26,8 @@ UItransform = {
     renderDollarPriceInAsset(assetID, newBalance);
     R.compose(
       U.updateGlobalAssets,
-      R.reduce(R.curry(updateAssetBalanceData)(assetID)(newBalance), [])
-    );
+      R.reduce(R.curry(updateAssetBalanceData)(assetID, newBalance), [])
+    )(GL.assets);
   }
 };
 
