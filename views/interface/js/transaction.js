@@ -270,7 +270,6 @@ function mkTotalAmountStr (t, factor) {
 
 // prepare universal unspent query containing: source address / target address / amount / public key
 function mkUnspentUrl (id, amount, publicKey, t) {
-  console.log('publicKey = ', publicKey);
   return 'a/' +
     id +
     '/unspent/' +
@@ -281,7 +280,6 @@ function mkUnspentUrl (id, amount, publicKey, t) {
 }
 
 function checkProcessProgress (processData) {
-  console.log('processData = ', processData);
   var isProcessInProgress = R.isNil(R.prop('data', processData)) &&
                             R.equals(R.prop('error', processData), 0);
   if (isProcessInProgress) throw processData;
