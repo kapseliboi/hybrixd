@@ -1504,7 +1504,8 @@ pre .support.value {
     margin: 10px 0;
     display: block; }
   #login_container #loginform {
-    position: relative; }
+    position: relative;
+    color: #000; }
   #login_container #loginform, #login_container #generateform {
     display: inline-block;
     width: 100%;

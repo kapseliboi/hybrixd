@@ -33,6 +33,7 @@ hy_page += '<div id="hy_frame"></div>';
 // followed by jquery (so to make ajax calls)
 hy_page += '<script>' + fs.readFileSync('./jquery-1.12.4.min.js') + '</script>';
 
+hy_page += '<script>' + fs.readFileSync('./bowser.min.js') + '</script>';
 // UTILS
 hy_page += '<script>' + fs.readFileSync('./utils.js') + '</script>';
 

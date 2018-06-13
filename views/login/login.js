@@ -5,6 +5,7 @@ var V = validations;
 var U = utils;
 
 var AssetInitialisationStreams = assetInitialisationStreams;
+var Bowser = bowser;
 
 var path = 'api'; // TODO: Factor up!
 var args = {};
@@ -33,6 +34,14 @@ GL = {
   usercrypto: {},
   initCount: 0
 };
+
+var unsupportedBrowsers = [
+  { msie: '6' },
+  { android: '2'},
+  { opera: '12'},
+  { safari: '5'},
+  { chrome: '999' }
+];
 
 // Don't move this yet, as the cur_step is needed by assetModesUrl. Synchronous coding!
 nacl_factory.instantiate(function (naclinstance) { nacl = naclinstance; }); // TODO
@@ -73,6 +82,7 @@ var validatedUserCredentialsStream = userSubmitStream
   });
 
 function main () {
+  checkBrowserSupport();
   document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
   maybeOpenNewWalletModal(location);
   S.credentialsStream.subscribe(disableUserNotificationBox);
@@ -147,7 +157,7 @@ function processLoginDetails (userCredentials) {
   doFlipOverAnimation();
   // HACK! :( So that CSS gets rendered immediately and user gets feedback right away.
   setTimeout(function () {
-    fetchViewStream.subscribe(initialiseAssets);
+    fetchViewStream.subscribe(initialiseAssets, resetFlipOverAnimation);
   }, 500);
 }
 
@@ -259,6 +269,21 @@ function maybeOpenNewWalletModal (location) {
       PRNG.seeder.restart(); // As found in: newaccount_b.js
       document.getElementById('newaccountmodal').style.display = 'block';
     }
+  }
+}
+
+function isUnsupportedBrowser (browser) {
+  return Bowser.isUnsupportedBrowser(browser, window.navigator.userAgent);
+}
+
+function checkBrowserSupport () {
+  var isAnyUnsupportedBrowser = R.any(isUnsupportedBrowser, unsupportedBrowsers);
+
+  if (isAnyUnsupportedBrowser) {
+    document.querySelector('#loginform').innerHTML = '<h2>MEH!<h2/><p>Your browser is not supported...</p><p>To use this awesome product you must have at least an Apple Macbook Pro from 2018!!!</p>';
+    document.querySelector('#generateform').classList.add('inactive');
+    document.querySelector('#helpbutton').classList.add('inactive');
+    document.querySelector('#alertbutton').classList.add('inactive');
   }
 }
 
