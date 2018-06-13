@@ -1,5 +1,6 @@
 var A = animations;
 var U = utils;
+var POW = proofOfWork_;
 
 var path = 'api';
 

@@ -46,21 +46,11 @@
   #loginbutton {
     margin: 5px 0 0;
     padding: 10px 24px;
+    @include transition(all 0.3s ease-in-out);
   }
 
   #loginbutton .spinner-loader{
     display: none;
-    margin: 1.5em auto;
-    font-size: 7px;
-    color: #fff;
-    box-shadow: rgba(255, 255, 255, 1) 1.5em 0 0 0,
-    rgba(255, 255, 255, 1) 1.1em 1.1em 0 0,
-    rgba(255, 255, 255, 1) 0 1.5em 0 0,
-    rgba(255, 255, 255, 1) -1.1em 1.1em 0 0,
-    rgba(255, 255, 255, 1) -1.5em 0 0 0,
-    rgba(255, 255, 255, 1) -1.1em -1.1em 0 0,
-    rgba(255, 255, 255, 1) 0 -1.5em 0 0,
-    rgba(255, 255, 255, 1) 1.1em -1.1em 0
   }
 
   #loginbutton .spinner-loader.active{
@@ -91,9 +81,16 @@
     margin: 0.5em 0 1.8em;
     font-weight: $semi-bold;
     border: none;
+    opacity: 1;
     @include transition(all 0.2s ease-in-out);
     @include font-size(14);
     @include border-radius(4px);
+  }
+
+  #helpbutton.inactive,
+  #alertbutton.inactive {
+    opacity: 0;
+    @include transition(opacity 0.6s ease-in-out);
   }
 
   #generateform {
@@ -211,9 +208,10 @@
   @include opacity(0.3);
 }
 
-////////////////////////////////////
-// Flip card example
-////////////////////////////////////
+// -------------------------------------------------------------------
+// -- Flip card
+// -------------------------------------------------------------------
+
 .login-flip-card {
   width: 100%;
   // max-width: 380px;
@@ -244,7 +242,11 @@
 
   position: relative;
   min-height: 280px;
-  width: 380px;
+  width: 100%;
+
+  @include breakpoint(small) {
+    width: 380px;
+  }
 }
 
 .flipper.active {
@@ -310,9 +312,10 @@
 
 .progress-bar {
   height: 14px;
-  width: 0px;
+  width: 10%;
   max-width: 280px;
   @include border-radius(7px);
+  @include transition(all 0.5s ease-in-out);
   background: $highlight;
 }
 

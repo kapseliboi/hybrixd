@@ -1,12 +1,9 @@
 // hy_login.js - contains javascript for login, encryption and session authentication
 var C = commonUtils;
-var A = animations;
 var S = loginInputStreams;
 var V = validations;
 var U = utils;
 
-var POW = proofOfWork_;
-var Storage = storage;
 var AssetInitialisationStreams = assetInitialisationStreams;
 
 var path = 'api'; // TODO: Factor up!
@@ -70,7 +67,7 @@ var validatedUserCredentialsStream = userSubmitStream
   .map(mkCredentialsObj)
   .map(R.map(U.normalizeUserInput))
   .map(function (c) {
-    return hasValidCredentials(c)
+    return V.hasValidCredentials(c)
       ? c
       : { error: 1, msg: 'It seems the credentials you entered are incorrect. Please check your username and password and try again.' };
   });
@@ -147,19 +144,34 @@ function processLoginDetails (userCredentials) {
     .delay(500); // Delay so progressbar animation looks smoother.
 
   setCSSTorenderButtonsToDisabled();
+  doFlipOverAnimation();
   // HACK! :( So that CSS gets rendered immediately and user gets feedback right away.
   setTimeout(function () {
-    document.querySelector('.flipper').classList.add('active'); // FLIP LOGIN FORM
-    document.querySelector('#generateform').classList.add('inactive');
-    fetchViewStream.subscribe(function (userSessionData) {
-      GL.usercrypto = {
-        user_keys: R.nth(0, userSessionData),
-        nonce: R.path(['3', 'current_nonce'], userSessionData),
-        userid: R.path(['2', 'userID'], userSessionData)
-      };
-      AssetInitialisationStreams.doAssetInitialisation(userSessionData);
-    });
+    fetchViewStream.subscribe(initialiseAssets);
   }, 500);
+}
+
+function initialiseAssets (userSessionData) {
+  GL.usercrypto = {
+    user_keys: R.nth(0, userSessionData),
+    nonce: R.path(['3', 'current_nonce'], userSessionData),
+    userid: R.path(['2', 'userID'], userSessionData)
+  };
+  AssetInitialisationStreams.doAssetInitialisation(userSessionData);
+}
+
+function doFlipOverAnimation () {
+  document.querySelector('.flipper').classList.add('active'); // FLIP LOGIN FORM
+  document.querySelector('#generateform').classList.add('inactive');
+  document.querySelector('#alertbutton').classList.add('inactive');
+  document.querySelector('#helpbutton').classList.add('inactive');
+}
+
+function resetFlipOverAnimation () {
+  document.querySelector('.flipper').classList.remove('active'); // FLIP LOGIN FORM BACK
+  document.querySelector('#generateform').classList.remove('inactive');
+  document.querySelector('#alertbutton').classList.remove('inactive');
+  document.querySelector('#helpbutton').classList.remove('inactive');
 }
 
 function continueLoginOrNotifyUser (credentialsOrError) {
