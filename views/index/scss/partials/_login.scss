@@ -323,3 +323,18 @@
   color: $highlight;
   font-weight: $semi-bold;
 }
+.javascript-warning{
+  width: 90%;
+  background-color: #fff;
+  color: #000;
+  max-width: 380px;
+  text-align: center;
+  display: block;
+  margin: 0 auto;
+  padding: 30px;
+  @include border-radius(4px);
+  @include user-select(none);
+  @include breakpoint(medium) {
+    margin-top: 80px;
+  }
+}
