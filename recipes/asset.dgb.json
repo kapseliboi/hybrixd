@@ -3,8 +3,6 @@
   "name":"digibyte",
   "module":"quartz",
   "mode":"digibyte",
-  "user":"placeholder_user",
-  "pass":"placeholder_password",
   "factor":8,
   "fee":0.0001,
   "host":["http://127.0.0.1:14022/"],
@@ -12,7 +10,6 @@
   "throttle":0.1,
   "pass": "d8d21ccfe2fa",
   "block-explorer-host": "https://chainz.cryptoid.info/dgb/api.dws",
-
   "quartz":{
     "init" : [
       "curl('asset://$symbol','','POST',{jsonrpc:'1.0',id:Math.floor(Math.random()*10000),method:'getinfo',params:[]},{'content-type':'text/plain'})",
@@ -23,10 +20,9 @@
       "logs(1,'module $symbol: '+(data?'connected':'failed connection')+' to host [$host]')"
     ],
     "unspent" : [
-      "logs(1, 'testoejfoiejfiowjef')",
       "func('blockexplorer','exec',{command:['$symbol','unspent','$1','$2']})"
     ],
-     "balance" : [
+    "balance" : [
       "test('$1',2,1,'$1')",
       "stop(1,'No source address')",
       "curl('$block-explorer-host','?key=$pass&q=getbalance&a=$1', 'GET', '',{Accept:'application/json','Content-Type':'application/json'})",
@@ -46,7 +42,25 @@
     "factor" : [
       "pass('$factor')"
     ],
-    "history" : [],
+    "transaction" : [
+      "test('$1',2,1,'$1')",
+      "stop(1,'No transaction id.')",
+      "curl('$block-explorer-host','?key=$pass&q=txinfo&t=$1', 'GET', '',{Accept:'application/json','Content-Type':'application/json'})",
+      "tran({id:'.hash',ammount:'.total_input',timestamp:'.timestamp',symbol:'dgb',source:'unknown',target:'unknown', fee:'.fees'},data,2,1)",
+      "stop(1,'error')",
+      "stop(0,data)"
+    ],
+    "history" : [
+      "test('$1',2,1,'$1')",
+      "stop(1,'No target address.')",
+      "curl('$block-explorer-host','?key=$pass&q=lasttxs&a=$1', 'GET', '',{Accept:'application/json','Content-Type':'application/json'})",
+      "each(data,'asset://$symbol','subhistory')"
+    ],
+    "subhistory" : [
+      "tran({id:'.value.hash',ammount:'.value.total',timestamp:'.value.time',symbol:'dgb',source:'unknown',target:'unknown'},data,2,1)",
+      "stop(1,'error')",
+      "stop(0,data)"
+    ],
     "contract" : [],
     "fee" : [
       "pass('$fee')"
