@@ -1,5 +1,5 @@
-var BALANCE_UPDATE_BUFFER_TIME_MS = 300000; // 3 minutes.
 var H = hybridd;
+var BALANCE_UPDATE_BUFFER_TIME_MS = 300000; // 3 minutes.
 
 function mkBalanceStream (asset) {
   var assetID = R.prop('id', asset);
@@ -17,6 +17,51 @@ function mkBalanceStream (asset) {
     .map(R.curry(normalizeBalance)(asset)); // When balance has a previously correct amount, but now returns incorrect, we keep the previously known value.
 
   return balanceStream;
+}
+
+function assetOrError (asset) {
+  var hasBeenUpdated = R.compose(
+    R.compose(
+      R.not,
+      R.equals(0)
+    ),
+    R.path(['balance', 'lastUpdateTime'])
+  )(asset);
+
+  if (hasBeenUpdated) {
+    return asset;
+  } else {
+    throw {error: 1, msg: 'Balance has not been updated yet.'};
+  }
+}
+
+function mkRenderBalancesStream (intervalStream, q, n, assetsIDs) {
+  var assetsIDsStream = Rx.Observable.from(assetsIDs)
+    .flatMap(function (assetID) {
+      return Rx.Observable.of(assetID)
+        .map(U.findAsset)
+        .map(assetOrError)
+        .retryWhen(function (errors) { return errors.delay(500); })
+        .delay(500) // HACK: Make sure assets are rendered in DOM before rendering balances in elements.
+        .map(function (asset) {
+          var hyphenizedID = R.compose(
+            R.replace('.', '-'),
+            R.prop('id')
+          )(asset);
+
+          R.compose(
+            R.curry(U.renderDataInDom)(q + hyphenizedID, n),
+            R.path(['balance', 'amount'])
+          )(asset);
+        });
+    });
+
+  var initAssetsIDsStream = intervalStream
+    .flatMap(function (_) {
+      return assetsIDsStream;
+    });
+
+  return initAssetsIDsStream;
 }
 
 // Add timestamp?
@@ -67,18 +112,13 @@ function currentOrUpdatedBalance (currentBalance, asset, balanceData) {
     : { data: currentBalance };
 }
 
-// MOVE: Utility function
-function retrieveLatestGlobalAssets () {
-  return GL.assets;
-}
-
 function updateAssetsBalances (assets) {
   R.forEach(function (asset) {
     Balance.mkBalanceStream(asset)
       .map(R.curry(updateAssetBalance)(asset))
       .subscribe(R.compose(
         U.updateGlobalAssets,
-        R.curry(updateAssets)(retrieveLatestGlobalAssets)
+        R.curry(updateAssets)(U.getGlobalAssets)
       ));
   }, assets);
 }
@@ -105,5 +145,6 @@ function updateAssetBalance (a, balance) {
 
 balance = {
   mkBalanceStream,
-  updateAssetsBalances
+  updateAssetsBalances,
+  mkRenderBalancesStream
 };

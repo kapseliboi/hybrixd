@@ -2,14 +2,15 @@ var Valuations = valuations;
 var TxValidations = transactionValidations;
 var SendAsset = sendAsset;
 var ReceiveAsset = receiveAsset;
-var GenerateAddress = generateAddress
+var GenerateAddress = generateAddress;
+var Balance = balance;
 var M = manageAssets;
 var U = utils;
 var H = hybridd;
 var A = asset;
 
 var BALANCE_RETRIEVAL_INTERVAL_MS = 30000;
-var AMOUNT_OF_SIGNIFICANT_NUMBERS = 11;
+var AMOUNT_OF_SIGNIFICANT_DIGITS = 11;
 
 init.interface.assets = function (args) {
   // Expose functions globally
@@ -24,11 +25,12 @@ function main (args) {
     document.querySelector('.assets-main > .data').innerHTML = mkHtmlToRender(globalAssets);
     globalAssets.forEach(function (asset) { setStarredAssetClass(R.prop('id', asset), R.prop('starred', asset)); });
     U.scrollToAnchor(args);
-    initializeAssetsInterfaceStreams();
+    initializeAssetsInterfaceStreams(globalAssets);
   };
 }
 
-function initializeAssetsInterfaceStreams () {
+function initializeAssetsInterfaceStreams (assets) {
+  var assetsIDs = R.map(R.prop('id'), assets);
   var sendAssetButtonStream = mkAssetButtonStream('sendAssetButton');
   var receiveAssetButtonStream = mkAssetButtonStream('receiveAssetButton');
   var generateAddressButtonStream = mkAssetButtonStream('generateAddressButton');
@@ -36,11 +38,11 @@ function initializeAssetsInterfaceStreams () {
   var maxAmountButtonStream = Rx.Observable.fromEvent(document.querySelector('.max-amount-button'), 'click');
   var stopBalanceStream = Rx.Observable.fromEvent(document.querySelector('#topmenu-dashboard'), 'click');
   var retrieveBalanceStream = Rx.Observable
-      .interval(BALANCE_RETRIEVAL_INTERVAL_MS)
-      .startWith(0)
-      .takeUntil(stopBalanceStream);
+    .interval(BALANCE_RETRIEVAL_INTERVAL_MS)
+    .startWith(0)
+    .takeUntil(stopBalanceStream);
 
-  retrieveBalanceStream.subscribe(function (_) { renderBalances(GL.assets); });
+  Balance.mkRenderBalancesStream(retrieveBalanceStream, '.assets-main > .data .balance-', AMOUNT_OF_SIGNIFICANT_DIGITS, assetsIDs).subscribe();
   maxAmountButtonStream.subscribe(function (_) {
     var sendBalance = document.querySelector('#action-send .modal-send-balance').innerHTML;
     document.querySelector('#modal-send-amount').value = sendBalance;
@@ -63,14 +65,9 @@ function mkAssetButtonStream (query) {
     .map(R.path(['target', 'attributes', 'data', 'value']));
 }
 
-function renderBalances (assets) {
-  assets.forEach(U.retrieveBalance(updateGlobalAssetsAndRenderDataInDOM, AMOUNT_OF_SIGNIFICANT_NUMBERS, '.assets-main > .data .balance-'));
-}
-
-function updateGlobalAssetsAndRenderDataInDOM (element, numberOfSignificantDigits, sanitizedData, assetID) {
+function updateGlobalAssetsAndRenderDataInDOM (element, sanitizedData, assetID) {
   A.toggleAssetButtons(element, assetID, Number(sanitizedData));
   U.updateGlobalAssets(updateBalanceData(GL.assets, assetID, sanitizedData));
-  U.renderDataInDom(element, numberOfSignificantDigits, sanitizedData);
   renderDollarPriceInAsset(assetID, Number(sanitizedData));
 }
 
@@ -79,8 +76,8 @@ function updateBalanceData (assets, assetID, amount) {
     var amountLens = R.lensPath(['balance', 'amount']);
     var updatedBalanceAsset = R.set(amountLens, amount, asset);
     var defaultOrUpdatedAsset = R.equals(R.prop('id', asset), assetID)
-        ? updatedBalanceAsset
-        : asset;
+      ? updatedBalanceAsset
+      : asset;
 
     return R.append(defaultOrUpdatedAsset, updatedAssets);
   }

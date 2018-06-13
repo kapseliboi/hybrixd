@@ -2,8 +2,10 @@ var U = utils;
 var H = hybridd;
 var UI = dashboardUI;
 var SVG = svg;
+var Balance = balance;
 
 var AMOUNT_OF_SIGNIFICANT_DIGITS = 5;
+var BALANCE_RENDER_INTERVAL_MS = 60000;
 
 var socialMediaIcons = [
   // {class: '.manage-icon', svg: 'edit'},
@@ -19,8 +21,12 @@ var stopBalanceStream = Rx.Observable
   .fromEvent(document.querySelector('#topmenu-assets'), 'click');
 
 var retrieveBalanceStream = Rx.Observable
-  .interval(60000)
+  .interval(BALANCE_RENDER_INTERVAL_MS)
   .startWith(0)
+  .map(_ => {
+    console.log('_ = ', _);
+    return _;
+  })
   .takeUntil(stopBalanceStream);
 
 function renderStarredAssets (assets) {
@@ -34,45 +40,6 @@ function renderStarredAssets (assets) {
   setTimeout(function () { document.querySelector('.dashboard-balances > .data').innerHTML = htmlToRender; }, 500); // Render new HTML string in DOM. 500 sec delay for fadeout. Should separate concern!
 }
 
-function assetOrError (asset) {
-  var hasBeenUpdated = R.compose(
-    R.compose(
-      R.not,
-      R.equals(0)
-    ),
-    R.path(['balance', 'lastUpdateTime'])
-  )(asset);
-
-  if (hasBeenUpdated) {
-    return asset;
-  } else {
-    throw {error: 1, msg: 'Balance has not been updated yet.'};
-  }
-}
-
-function renderBalances (q, n, assetsIDs) {
-  var assetsIDsStream = Rx.Observable.from(assetsIDs)
-    .flatMap(function (assetID) {
-      return Rx.Observable.of(assetID)
-        .map(U.findAsset)
-        .map(assetOrError)
-        .retryWhen(function (errors) { return errors.delay(500); })
-        .map(function (asset) {
-          R.compose(
-            R.curry(U.renderDataInDom)(q + R.prop('id', asset), n),
-            R.path(['balance', 'amount'])
-          )(asset);
-        });
-    });
-
-  var initAssetsIDsStream = retrieveBalanceStream
-    .flatMap(function (_) {
-      return assetsIDsStream;
-    });
-
-  initAssetsIDsStream.subscribe();
-}
-
 function renderSvgIcon (icon) {
   var iconName = R.prop('svg', icon);
   document.querySelector(icon.class).innerHTML = R.prop(iconName, SVG);
@@ -83,7 +50,9 @@ function render (assets) {
     var starredAssetsIDs = R.map(R.prop('id'), assets);
     var queryStr = '.dashboard-balances > .data > .balance > .balance-';
     renderStarredAssets(assets);
-    renderBalances(queryStr, AMOUNT_OF_SIGNIFICANT_DIGITS, starredAssetsIDs);
+    Balance.mkRenderBalancesStream(retrieveBalanceStream, queryStr, AMOUNT_OF_SIGNIFICANT_DIGITS, starredAssetsIDs)
+      .delay(500) // HACK: Make sure assets are rendered in DOM before rendering balances in elements.
+      .subscribe();
     socialMediaIcons.forEach(renderSvgIcon);
   };
 }
