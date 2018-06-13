@@ -1,0 +1,14 @@
+{
+  "source":"validator",
+  "name":"Validator",
+  "module":"validator",
+  "router" : {
+    "_ref" : {
+      "_list" : "symbol",
+      "_ref" : {
+        "_list" : "address",
+        "_this" : "test"
+      }
+    }
+  }
+}
