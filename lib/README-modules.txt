@@ -1,106 +1,41 @@
-Command list
+# Modules
 
-command= asset|source/$ASSET/$COMMAND/$1/$2/...
-$COMMAND = $0 = init|status|factor|fee|balance|transfer|history|unspent|contract|validate
+There are two different types of modules ($TYPE)
 
-init
-Syntax: a/$ASSET/init
-Description: initialize the module. Setup REST client, confirm host is responding, unpack module-deterministic lmza
-Input: none
-Output: none
-Result: log message whether initialization has succeeded or failed
+- Sources : Output only
+- Engines : Input and Output
 
-status
-Syntax: a/$ASSET/status
-Description: check the status. Note: not used yet, needs standardization
-Input: none (expected to be purely state)
-Output: ?? Version, Up/Down/Error message/latency?
+A module consists of a folder `$HYBRIDD_HOME/modules/$MODULE_NAME`
+containing at least the following files:
 
-factor
-Syntax: a/$ASSET/factor
-Description: get the multiplication factor 10^n  (perhaps power or base would be more aptly named)
-Input: none (expected to be constant)
-Output: Number
+- `module.js`         The main code
+- `package.json`      The package information
 
-fee
-Syntax: a/$ASSET/fee
-Description: transaction fee (for etheruem this is more complicated (“gas”) so worst case guestimate) , later this should be updated with tick
-Input: ???? TODO  (not constant, unclear which parameters could be used.)
-Output: Number
+and a recipe `$HYBRIDD_HOME/recipes/$TYPE.$MODULE_NAME.json`.
 
-balance
-Syntax: a/$ASSET/balance/$SOURCE_ADDRESS
-Description: account balance
-Input: Address  (sourceaddress)
-Output: Number (formatted using factor)
 
-contract
-Syntax a/$ASSET/contract/$SOURCE_ADDRESS
-Description: Retrieve contract data
-Input: Address  (sourceaddress)
-Output: Contract data
+## module.js
 
-validate
-Syntax a/$ASSET/validate/$SOURCE_ADDRESS
-Description: check if address is valid (and registerded)
-Input: Address  (sourceaddress)
-Output: "valid"|"invalid"|"unregistered"
+should export at least the following two functions:
 
-push
-Syntax: a/$ASSET/push/$TRANSACTION_STRING
-Description: push something to blockchain (usually signed transaction) forward (for ethereum contracts)
-Input:
+exports.init = init;
+exports.exec = exec;
 
-transactionObject = {
-  mode:assets.mode[p.asset].split('.')[1],
-  source:p.source_address,
-  target:p.target_address,
-  amount:toInt(p.amount,assets.fact[p.asset]),
-  fee:toInt(p.fee,assets.fact[p.base]),
-  factor:assets.fact[p.asset],
-  contract:assets.cntr[p.asset],
-  keys:assets.keys[p.asset],
-  seed:assets.seed[p.asset],
-  unspent:unspent
+function init(){
+   // do whatever is needed to initialize
 }
 
-Transformation: Modules deterministic is used to transform the transaction object into a string  (deterministic.transaction(transactionObject))
+Init is called upon initialization of the module.
 
-Output: Succes/Failure?
-
-address
-?? counterpart module
-
-
-transfer
-?? legacy?
-
-test
-?? debug?
-
-unspent        “prepare” pre-transactions actions/information retrieval.Transaction preparation. (Legacy of Bitcoin, also useful for others  )
-Syntax: a/$ASSET/unspent/$SOURCE_ADDRESS/$TARGET_ADDRESS/$AMOUNT/$PUBLIC_KEY
-Output:
-For Blockexplorer (Bitcoin-like)
-{
- unspents:[{txid:, txn:,script: $SCRIPT}],
- change:$CHANGE
+function exec(properties) {
+  /*
+  properties = {
+    command,  // xpath of the request for example ["source,","storage","set","hello","world"]
+    processID,
+    target // the target recipe
+  }
+  */
 }
-with $SCRIPT the scriptPubKey  and $CHANGE een float.
 
-For Ethereum:
-{
- nonce:$NONCE
-}
-with $NONCE a number
-
-
-
-
-history
-?? TODO get transaction history
-
-transferlist,confirm [Only for Meta Module]
-??
-
-get,set,pow,del,meta [Only for Storage Module]
+Exec is called throught the router. For example the API call
+"/source/mysource/do/it" will call exec({command:["do","it"], processID,target })
