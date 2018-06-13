@@ -12,6 +12,21 @@ var AssetInitialisationStreams = assetInitialisationStreams;
 var path = 'api'; // TODO: Factor up!
 var args = {};
 
+assets = {
+  count: 0, // amount of assets
+  init: [], // initialization status
+  mode: {}, // mode of assets
+  modehashes: {}, // mode hashes
+  seed: {}, // cryptoseeds of assets
+  keys: {}, // keys of assets
+  addr: {}, // public addresses of assets
+  cntr: {}, // stored contract pointer, location or address
+  fact: {}, // factor of assets
+  fees: {}, // fees of assets
+  fsym: {}, // fees of assets
+  base: {} // fees of assets
+};
+
 GL = {
   assets: [],
   assetnames: {},

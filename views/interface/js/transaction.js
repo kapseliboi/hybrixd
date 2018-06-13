@@ -20,26 +20,26 @@ sendTransaction = function (properties, GLOBAL_ASSETS, modeHashes, onSucces, onE
   var transactionDataStream = Rx.Observable.of(transactionData);
   var feeBaseStream = Rx.Observable.of(asset).map(checkBaseFeeBalance(GLOBAL_ASSETS));
   var unspentStream = H.mkHybriddCallStream(unspentUrl)
-      .map(checkProcessProgress)
-      .retryWhen(function (errors) { return errors.delay(500); });
+    .map(checkProcessProgress)
+    .retryWhen(function (errors) { return errors.delay(500); });
 
   var doTransactionStream = Rx.Observable
-      .combineLatest(
-        unspentStream,
-        modeFromStorageStream,
-        transactionDataStream,
-        feeBaseStream
-      )
-      .map(getDeterministicData)
-      .map(getDeterministicTransactionData)
-      .flatMap(doPushTransactionStream)
-      .map(handleTransactionPushResult);
+    .combineLatest(
+      unspentStream,
+      modeFromStorageStream,
+      transactionDataStream,
+      feeBaseStream
+    )
+    .map(getDeterministicData)
+    .map(getDeterministicTransactionData)
+    .flatMap(doPushTransactionStream)
+    .map(handleTransactionPushResult);
 
   var finalizeTransactionStream = Rx.Observable
-      .combineLatest(
-        transactionDataStream,
-        doTransactionStream
-      );
+    .combineLatest(
+      transactionDataStream,
+      doTransactionStream
+    );
 
   UItransform_.txStart();
   finalizeTransactionStream.subscribe(onSucces, onError);
@@ -88,13 +88,13 @@ function getDeterministicTransactionData (z) {
     R.prop('fee-symbol', asset)
   );
   var feeFactor = feeSymbolEqualsId
-      ? R.prop('factor', asset)
-      : R.compose(
-        R.prop('factor'),
-        R.find(
-          R.propEq('id', R.prop('fee-symbol', asset)
-                  ))
-      )(GL.assets);
+    ? R.prop('factor', asset)
+    : R.compose(
+      R.prop('factor'),
+      R.find(
+        R.propEq('id', R.prop('fee-symbol', asset)
+        ))
+    )(GL.assets);
 
   var data = {
     mode: R.path(['asset', 'mode'], transactionData).split('.')[1],
@@ -152,13 +152,13 @@ function handlePushInDeterministic (assetID, transactionData) {
     var H = hybridd; // TODO: Factor up. Can't now, smt's up with dependency order.
     var url = 'a/' + assetID + '/push/' + txData;
     var pushStream = H.mkHybriddCallStream(url)
-        .map(function (processData) {
-          var isProcessInProgress = R.isNil(R.prop('data', processData)) &&
+      .map(function (processData) {
+        var isProcessInProgress = R.isNil(R.prop('data', processData)) &&
                                     R.equals(R.prop('error', processData), 0);
-          if (isProcessInProgress) throw processData;
-          return processData;
-        })
-        .retryWhen(function (errors) { return errors.delay(500); });
+        if (isProcessInProgress) throw processData;
+        return processData;
+      })
+      .retryWhen(function (errors) { return errors.delay(500); });
 
     pushStream.subscribe(function (processResponse) {
       var processData = R.prop('data', processResponse);
@@ -179,7 +179,7 @@ function handlePushInDeterministic (assetID, transactionData) {
         alert('<br>Sorry! The transaction did not work.<br><br><br>This is the error returned:<br><br>' + processData + '<br>');
       }
     });
-  }
+  };
 }
 
 function checkBaseFeeBalance (assets) {
@@ -212,13 +212,13 @@ function mkTransactionData (p, factor) {
   function mkNewBalance (a) {
     if (isToken(R.prop('symbol', a))) {
       return fromInt(toInt(originalBalance, factor)
-                     .minus(toInt(amount, factor)),
-                     factor);
+        .minus(toInt(amount, factor)),
+      factor);
     } else {
       return fromInt(toInt(originalBalance, factor)
-                     .minus(toInt(amount, factor)
-                            .plus(toInt(fee, factor))),
-                     factor);
+        .minus(toInt(amount, factor)
+          .plus(toInt(fee, factor))),
+      factor);
     }
   }
 
@@ -228,7 +228,7 @@ function mkTransactionData (p, factor) {
     amount,
     asset,
     balanceAfterTransaction,
-    element: '.assets-main > .data .balance-' + R.prop('symbol', asset).replace(/\./g,'-'),
+    element: '.assets-main > .data .balance-' + R.prop('symbol', asset).replace(/\./g, '-'),
     fee,
     sourceAddress: String(R.prop('source', p)).trim(),
     targetAddress: String(R.prop('target', p)).trim()
@@ -253,13 +253,13 @@ function mkTotalAmountStr (t, factor) {
     R.prop('fee-symbol', asset)
   );
   var feeFactor = feeSymbolEqualsId
-      ? R.prop('factor', asset)
-      : R.compose(
-        R.prop('factor'),
-        R.find(
-          R.propEq('id', R.prop('fee-symbol', asset)
-                  ))
-      )(GL.assets);
+    ? R.prop('factor', asset)
+    : R.compose(
+      R.prop('factor'),
+      R.find(
+        R.propEq('id', R.prop('fee-symbol', asset)
+        ))
+    )(GL.assets);
 
   var amountBigNumber = toInt(R.prop('amount', t), feeFactor);
   var feeBigNumber = toInt(R.prop('fee', t), feeFactor);
@@ -270,6 +270,7 @@ function mkTotalAmountStr (t, factor) {
 
 // prepare universal unspent query containing: source address / target address / amount / public key
 function mkUnspentUrl (id, amount, publicKey, t) {
+  console.log('publicKey = ', publicKey);
   return 'a/' +
     id +
     '/unspent/' +
@@ -280,11 +281,12 @@ function mkUnspentUrl (id, amount, publicKey, t) {
 }
 
 function checkProcessProgress (processData) {
+  console.log('processData = ', processData);
   var isProcessInProgress = R.isNil(R.prop('data', processData)) &&
                             R.equals(R.prop('error', processData), 0);
   if (isProcessInProgress) throw processData;
   return processData;
-};
+}
 
 function mkModeHashStr (modeHashes, p) {
   return R.compose(

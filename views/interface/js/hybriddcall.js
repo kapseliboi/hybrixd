@@ -4,7 +4,7 @@ hybridd = {
   mkHybriddCallStream: function (url) {
     var hybriddCallStream = Rx.Observable
       .fromPromise(hybriddcall({r: url, z: true}))
-      .filter(R.propEq('error', 0))
+      .filter(R.propEq('error', 0)) // TODO Handle errors.
       .map(R.merge({r: url, z: true}));
 
     var hybriddCallResponseStream = hybriddCallStream

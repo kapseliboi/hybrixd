@@ -49,6 +49,7 @@ function mkRenderBalancesStream (intervalStream, q, n, assetsIDs) {
             R.prop('id')
           )(asset);
           var assetQuery = q + hyphenizedID;
+          // TODO move to subscribe
           R.compose(
             R.curry(U.renderDataInDom)(assetQuery, n),
             R.path(['balance', 'amount'])
