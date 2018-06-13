@@ -38,7 +38,7 @@ function exec(properties) {
       subprocesses.push("stop(0,'invalid')");
     }
   }catch(e){
-    subprocesses.push("stop(1,'erro')");
+    subprocesses.push("stop(1,'Symbol is not supported by wallet-address-validator')");
   }
 
   // fire the Qrtz-language program into the subprocess queue
