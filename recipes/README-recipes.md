@@ -23,9 +23,11 @@ required, for sources an id.
 
 ## Filename
 
+For assets the filename is defined as `/recipes/asset.$SYMBOL.json` or `/recipes/token.$SYMBOL.json`
+
 For sources the filename is defined as `/recipes/source.$TYPE.$ID.json`
 
-For Assets the filename is defined as `/recipes/asset.$SYMBOL.json` or `/recipes/token.$SYMBOL.json`
+For engines the filename is defined as `/recipes/engine.$NAME.json`
 
 ## Properties:
 
@@ -35,11 +37,15 @@ Discription: A string containing the symbol. This is used as the main idenitfier
 Format: "$base[.$token]"
 Examples: "BTC", "ETH.SHIFT"
 
-id
+source
 (Only required for sources)
 Discription:
-Format: "$BlockExplorerId.$modus"
-Examaples: "abe.bitcoin", "insight.litecoin"
+Examples: "abe.bitcoin", "insight.litecoin", "deterministic"
+
+engine
+(Only required for engines)
+Discription:
+Examples: "storage"
 
 name
 Discription: A string containing the display name (for pretty printing).
@@ -103,6 +109,8 @@ https://www.npmjs.com/package/node-rest-client#options-parameters )
 
 
 quartz                Defines the quartz code.
+
+router                Defines the routing definitions
 
 ## Quartz
 

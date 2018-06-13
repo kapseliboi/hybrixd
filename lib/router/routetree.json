@@ -24,7 +24,7 @@
         }
       },
       "details":{
-        "_this": "Retrieve the fee symbol TODO",
+        "_this": "Retrieve the details TODO",
         "_response": "TODO"
       },
       "factor":{
@@ -57,8 +57,10 @@
           "_list" : "source_address",
           "_ref" : {
             "_list" : "target_address",
+            "_this" : "TODO",
             "_ref" : {
               "_list" : "ammount",
+              "_this" : "TODO",
               "_ref" : {
                 "_list" : "public_key",
                 "_this" : "Retrieve the unspent. Unspent is a bitcoin related term that in hybridd is used for pretransactional data. Bitcoin: unspent means available inputs for creating a transaction. Ethereum: unspent means the most recent nonce of the cryptocurrency account needed for constructing a transaction.  NXT: unspent means the server reply information needed to construct a deterministic transaction.",
@@ -123,14 +125,7 @@
   "e":{"_alias":"engine"},
   "engine":{
     "_help":"Engines are scriptable modules that can be built to do a variety of tasks.",
-    "_this":"List available engines.",
-    "storage" : {
-      "get":"Get data from storage",
-      "set":"Set data in storage",
-      "del":"Delete data from storage",
-      "pow":"Provide proof-of-work for long term storage",
-      "meta":"Access metadata in storage"
-    }
+    "_this":"List available engines."
   },
   "h":{"_alias":"help"},
   "help":{
@@ -192,49 +187,7 @@
   "s":{"_alias":"source"},
   "source":{
     "_help":"Sources are read-only information providers.",
-    "_this":"List available sources.",
-    "storage" : {
-      "get":"Get data from storage",
-      "set":"Set data in storage",
-      "del":"Delete data from storage",
-      "pow":"Provide proof-of-work for long term storage",
-      "meta":"Access metadata in storage"
-    },
-    "deterministic": {
-      "command" : {
-        "_this":"Execute a direct command.",
-        "_access":"root"
-      },
-      "assets":"List available assets.",
-      "code": {
-        "_ref":{
-          "_list" : "mode",
-          "_this" : "Returns the lzma compressed deterministic blobs (client side code) for a `$MODE` ."
-        }
-      },
-      "hash":  {
-        "_ref":{
-          "_list" : "mode",
-          "_this" : "Returns the DJB2 hash of the deterministic blobs (client side code) for `$MODE` ."
-        }
-      },
-      "hashes":"Returns the DJB2 hash of all deterministic blobs (client side code).",
-      "modes":"List available modes."
-    },
-    "blockexplorer": {
-      "command" : {
-        "_this":"Execute a direct command.",
-        "_access":"root"
-      },
-      "_ref":{
-        "_list":"source",
-        "balance" : "Retrieve the balance. TODO",
-        "command" : "Execute a command TODO",
-        "status" : "Retrieve the status TODO",
-        "unspent"  : "Retrieve the unspent TODO"
-      }
-
-    }
+    "_this":"List available sources."
   },
   "v":{"_alias":"view"},
   "view":{

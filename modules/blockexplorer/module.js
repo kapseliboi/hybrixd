@@ -39,46 +39,67 @@ function tick(properties) {
 // http://docs.electrum.org/en/latest/protocol.html
 function exec(properties) {
 
-  // decode our serialized properties
-  var processID = properties.processID;
-  var target = {};
+  /*
+    command paths:
 
-  if(typeof properties.target.symbol !== 'undefined'){ // If no explicit target properties are passed, retrieve them using symbol
-    var candidates = []; // List of block explorer sources that can handle this symbol
-    for(var id in global.hybridd.source){ //find the block explorer sources that can handle this symbol
-      if(id.split('.')[1]===properties.target.symbol){
-        candidates.push(global.hybridd.source[id]);
-      }
-    }
-    if(candidates.length){
-      target = candidates[Math.floor((Math.random() * candidates.length))]; // Choose random candidate TODO sort based on a scoring
-    }
-  }
+    /source/blockexplorer/init -> init
+    /source/blockexplorer/$SYMBOL/balance -> $SYMBOL/balance
+    /source/blockexplorer/$SYMBOL/unspents -> $SYMBOL/balance
 
-  Object.assign(target, properties.target); // Overwrite candidate properties with explicitly defined target properties
-
-  var mode  = (typeof target.mode!=='undefined'?target.mode:null);
-  var factor = (typeof target.factor !== 'undefined'?target.factor:8);
+  */
   var command = properties.command;
+  var processID = properties.processID;
+
   var subprocesses = [];
   // set request to what command we are performing
   global.hybridd.proc[processID].request = properties.command;
-  // initialization
-  if(command[0]==='init') {
+
+  if(command[0] === "init"){
     // set up REST API connection
+
+    var target =  properties.target;
+
     if(typeof target.user !== 'undefined' && typeof target.pass !== 'undefined') {
       var options_auth={user:target.user,password:target.pass};
       global.hybridd.source[target.id].link = new Client(options_auth);
-    } else { global.hybridd.source[target.id].link = new Client(); }
+    } else {
+      global.hybridd.source[target.id].link = new Client();
+    }
     subprocesses.push('logs(1,"module blockexplorer: initialized '+target.id+'")');
-  } else {
+  }else{
+
+    var symbol = command[0];
+    var symbolCommand = command[1];
+    var address = command[2];
+
+    var target = {};
+
+    var candidates = []; // List of block explorer sources that can handle $SYMBOL
+    for(var id in global.hybridd.source){ //find the block explorer sources that can handle $SYMBOL
+      if(id.split('.')[1]===symbol){ // the blockexplorer id === $BLOCKEXPLORER.$SYMBOL
+        if(global.hybridd.source[id].hasOwnProperty("module") && global.hybridd.source[id].module === "blockexplorer"){ //check if source is blockexplorer
+          candidates.push(global.hybridd.source[id]);
+        }
+      }
+    }
+    var blockexplorer;
+    if(candidates.length){
+      target = candidates[Math.floor((Math.random() * candidates.length))]; // Choose random candidate TODO sort based on a scoring
+      blockexplorer = target.source.split('.')[0];
+    }else{
+      blockexplorer="";
+    }
+
+    var factor = (typeof target.factor !== 'undefined'?target.factor:8);
+    var command = properties.command;
+
     // handle standard cases here, and construct the sequential process list
-    switch(mode.split('.')[1]) {
+    switch(blockexplorer) {
     case 'blockr': // NB blockr has been depreciated, left here for reference
-      switch(command[0]) {
+      switch(symbolCommand) {
       case 'balance':
-        if(typeof command[1]!=='undefined') {
-          subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["/address/balance/'+command[1]+'?confirmations=0"]})');
+        if(typeof address!=='undefined') {
+          subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["/address/balance/'+address+'?confirmations=0"]})');
           subprocesses.push('test((typeof data.data!=="undefined" && typeof data.data.balance!=="undefined" && !isNaN(data.data.balance)),2,1,data)')
           subprocesses.push('stop(1,null)');
           subprocesses.push('stop(0, padFloat(data.data.balance,'+factor+') )');
@@ -89,7 +110,7 @@ function exec(properties) {
       case 'unspent':
         // example: http://btc.blockr.io/api/v1/address/unspent/
         if(typeof command[1]!=='undefined') {
-          subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["/address/unspent/'+command[1]+'"]})');
+          subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["/address/unspent/'+address+'"]})');
           subprocesses.push('func("blockexplorer","post",{target:'+jstr(target)+',command:'+jstr(command)+',data:data})');
         } else {
           subprocesses.push('stop(1,"Please specify an address!")');
@@ -100,17 +121,17 @@ function exec(properties) {
       }
       break;
     case 'insight':
-      switch(properties.command[0]) {
+      switch(symbolCommand) {
       case 'balance':
-        subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["/addr/'+command[1]+'/balance"]})');
-        subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["/addr/'+command[1]+'/unconfirmedBalance"]})');
+        subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["/addr/'+address+'/balance"]})');
+        subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["/addr/'+address+'/unconfirmedBalance"]})');
         subprocesses.push('coll(2)');
         subprocesses.push('stop( (isNaN(data[0])||isNaN(data[1])?1:0), fromInt((data[0]+data[1]),'+factor+') )');
         break;
       case 'unspent':
         // example: https://blockexplorer.com/api/addr/[:addr]/utxo
         if(typeof command[1]!=='undefined') {
-          subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["/addr/'+command[1]+'/utxo"]})');
+          subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["/addr/'+address+'/utxo"]})');
           subprocesses.push('func("blockexplorer","post",{target:'+jstr(target)+',command:'+jstr(command)+',data:data})');
         } else {
           subprocesses.push('stop(1,"Please specify an address!")');
@@ -130,26 +151,24 @@ function exec(properties) {
         subprocesses.push('stop(1,"Source function not supported!")');
       }
       break;
-
     case 'cryptoid': // https://chainz.cryptoid.info/api.dws
       var cryptoidApiKey = 'd8d21ccfe2fa&q=lasttxs';
       switch(properties.command[0]) {
       case 'balance':
-        subprocesses.push('logs(1,"test log message")');
         subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["?key='+cryptoidApiKey+'&q=getbalance&a='+command[1]+'"]})');
         subprocesses.push('stop( (isNaN(data?1:0), fromInt(data,'+factor+') )');
         break;
       case 'unspent':
         // example: https://blockexplorer.com/api/addr/[:addr]/utxo
         if(typeof command[1]!=='undefined') {
-          subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["?key='+cryptoidApiKey+'&q=unspent&active='+command[1]+'"]})');
+          subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["?key='+cryptoidApiKey+'&q=unspent&active='+address+'"]})');
         } else {
           subprocesses.push('stop(1,"Please specify an address!")');
         }
         break;
       case 'history':
         if(typeof command[1]!=='undefined') {
-          subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["?key='+cryptoidApiKey+'&a='+command[1]+'"]})');
+          subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["?key='+cryptoidApiKey+'q=lasttxs&a='+command[1]+'"]})');
           //TODO format data
         } else {
           subprocesses.push('stop(1,"Please specify an address!")');
@@ -168,7 +187,7 @@ function exec(properties) {
       }
       break;
     case 'abe':
-      switch(properties.command[0]) {
+      switch(symbolCommand) {
       case 'balance':
         subprocesses.push('stop(1,"NOT YET SUPPORTED!")');
         /*
@@ -180,7 +199,7 @@ function exec(properties) {
       case 'unspent':
         // example: http://explorer.litecoin.net/unspent/LYmpJZm1WrP5FSnxwkV2TTo5SkAF4Eha31
         if(typeof command[1]!=='undefined') {
-          subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["/unspent/'+command[1]+'"]})');
+          subprocesses.push('func("blockexplorer","link",{target:'+jstr(target)+',command:["/unspent/'+address+'"]})');
           subprocesses.push('func("blockexplorer","post",{target:'+jstr(target)+',command:'+jstr(command)+',data:data})');
         } else {
           subprocesses.push('stop(1,"Please specify an address!")');
@@ -194,6 +213,7 @@ function exec(properties) {
       subprocesses.push('stop(1,"Configured source type is not supported!")');
     }
   }
+
   // fire the Qrtz-language program into the subprocess queue
   scheduler.fire(processID,subprocesses);
 }

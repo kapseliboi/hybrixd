@@ -20,7 +20,7 @@
       "logs(1,'module $symbol: '+(data?'connected':'failed connection')+' to host [$host]')"
     ],
     "unspent" : [
-      "func('blockexplorer','exec',{target:{symbol:'$symbol'}, command:['unspent','$1','$2']})"
+      "func('blockexplorer','exec',{command:['$symbol','unspent','$1','$2']})"
     ],
     "balance" : [
       "test('$1',2,1,'$1')",

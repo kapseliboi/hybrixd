@@ -1,0 +1,23 @@
+{
+  "source":"blockexplorer",
+  "name":"Blockexplorer",
+  "module":"blockexplorer",
+  "mode":"blockexplorer",
+  "router" : {
+    "_ref":{
+      "_list":"symbol",
+      "balance" : {
+        "_ref":{
+          "_list" : "address",
+          "_this" : "Retrieve the balance at one of the available blockexplorers for $SYMBOL."
+        }
+      },
+      "unspent" : {
+        "_ref":{
+          "_list" : "address",
+          "_this" : "Retrieve the unspents at one of the available blockexplorers for $SYMBOL."
+        }
+      }
+    }
+  }
+}
