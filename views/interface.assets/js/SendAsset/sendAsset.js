@@ -9,10 +9,12 @@ sendAsset = {
     var balance = R.path(['balance', 'amount'], asset);
     var address = R.prop('address', asset);
     var fee = R.prop('fee', asset);
+    var ethTokenFactoredBufferOrZeroAmount = zeroOrEthTokenBufferAmount(asset);
+
     if (R.not(R.isNil(balance)) && balance !== 'n/a') {
       var spendable = !isToken(assetID)
-          ? toInt(balance).minus(toInt(fee))
-          : toInt(balance); // Make into function!
+        ? toInt(balance).minus(toInt(fee))
+        : toInt(balance).minus(toInt(ethTokenFactoredBufferOrZeroAmount));
       if (spendable < 0) { spendable = 0; }
       var fixedSpendable = spendable.toFixed(21).replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/, '$1');
 
@@ -21,26 +23,35 @@ sendAsset = {
   }
 };
 
+function zeroOrEthTokenBufferAmount (asset) {
+  var factor = Number(R.prop('factor', asset));
+  var keybase = R.prop('keygen-base', asset);
+  var smallestUnit = 10 / Math.pow(10, R.inc(factor));
+  return R.equals(keybase, 'eth')
+    ? smallestUnit
+    : 0;
+}
+
 var txAmountStream = Rx.Observable
-    .fromEvent(document.querySelector('#modal-send-amount'), 'input')
-    .map(U.getTargetValue);
+  .fromEvent(document.querySelector('#modal-send-amount'), 'input')
+  .map(U.getTargetValue);
 
 var txTargetAddressStream = Rx.Observable
-    .fromEvent(document.querySelector('#modal-send-target'), 'input')
-    .map(U.getTargetValue);
+  .fromEvent(document.querySelector('#modal-send-target'), 'input')
+  .map(U.getTargetValue);
 // .map(validateAddress) // ENTER ADDRESS VALIDATIONS
 
 var validatedTxDetailsStream = Rx.Observable
-    .combineLatest(
-      txAmountStream,
-      txTargetAddressStream
-    );
+  .combineLatest(
+    txAmountStream,
+    txTargetAddressStream
+  );
 
 var sendTxButtonStream = Rx.Observable.fromEvent(document.querySelector('#send-transfer'), 'click')
-    .filter(U.btnIsNotDisabled);
+  .filter(U.btnIsNotDisabled);
 
 var transactionDataStream = sendTxButtonStream
-    .withLatestFrom(validatedTxDetailsStream);
+  .withLatestFrom(validatedTxDetailsStream);
 
 function hideModal (z) {
   var txData = R.nth(0, z);

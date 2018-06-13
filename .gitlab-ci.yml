@@ -1,0 +1,5 @@
+before_script:
+
+compile:
+  script:
+    - ./views/compileviews.sh

@@ -48,7 +48,7 @@
 
         @include breakpoint(medium) {
           font-weight: $semi-bold;
-          padding: 17px 20px 16px;
+          padding: 14px 20px 18px;
         }
 
         .m-icon {
@@ -61,7 +61,7 @@
         &:hover {
           background-color: transparent;
           text-shadow: 0px 0px 5px white;
-          opacity: 0.9;
+          opacity: 1;
         }
         &.selected {
           font-weight: $bold;
@@ -330,7 +330,7 @@
         margin-top: 1.5em;
         margin-right: 2.5em;
         height: auto;
-        font-size: 1.16em;
+        @include font-size(12);
       }
 
       &:before {
@@ -358,12 +358,12 @@
         vertical-align: middle;
       }
       &:after {
-        content: "Sign out";
+        content: "Log out";
         vertical-align: middle;
         color: white;
         margin: 10px;
         display: inline-block;
-        //font-size: 1.16em;
+        @include font-size(12);
       }
     }
   }

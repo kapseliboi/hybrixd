@@ -1,6 +1,3 @@
-.elem {
-  width: 123px; }
-
 /*!
 Pure v0.6.2
 Copyright 2013 Yahoo!
@@ -906,8 +903,13 @@ p {
   -o-transition: all 0.3s ease-in;
   -webkit-transition: all 0.3s ease-in;
   transition: all 0.3s ease-in;
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
   background: white;
   border: 1px solid #D9E3EB;
+  border-color: #D9E3EB !important;
   box-shadow: none;
   margin-bottom: 10px;
   width: 100%;
@@ -918,10 +920,12 @@ p {
   display: inline-block; }
 
 .pure-form input[type=text]:focus, .pure-form input[type=password]:focus {
-  border: 1px solid #4DA1FF;
-  -webkit-box-shadow: 0 0 5px rgba(77, 161, 255, 0.5);
-  -moz-box-shadow: 0 0 5px rgba(77, 161, 255, 0.5);
-  box-shadow: 0 0 5px rgba(77, 161, 255, 0.5); }
+  /* <<<<<<< HEAD */
+  /*   border: 1px solid $highlight; */
+  /*   @include box-shadow(0, 0, 5px, rgba($highlight, .5)); */
+  /* ======= */
+  border: 1px solid #7174D8;
+  border-color: #7174D8 !important; }
 
 ::-webkit-input-placeholder {
   letter-spacing: 0px;
@@ -1492,10 +1496,10 @@ pre .support.value {
         width: 90%;
         margin-top: 80px; } }
   #login_container input {
-    -webkit-user-select: all;
-    -moz-user-select: all;
-    -ms-user-select: all;
-    user-select: all; }
+    -webkit-user-select: auto;
+    -moz-user-select: auto;
+    -ms-user-select: auto;
+    user-select: auto; }
   #login_container .pure-button {
     margin: 10px 0;
     display: block; }
@@ -2060,7 +2064,7 @@ pre .support.value {
           .custom-menu-wrapper .custom-menu .pure-menu-item .pure-menu-link,
           .custom-menu-wrapper .custom-menu .pure-menu-item .pure-menu-heading {
             font-weight: 600;
-            padding: 17px 20px 16px; } }
+            padding: 14px 20px 18px; } }
         .custom-menu-wrapper .custom-menu .pure-menu-item .pure-menu-link .m-icon,
         .custom-menu-wrapper .custom-menu .pure-menu-item .pure-menu-heading .m-icon {
           padding-bottom: 5px; }
@@ -2072,7 +2076,7 @@ pre .support.value {
         .custom-menu-wrapper .custom-menu .pure-menu-item .pure-menu-heading:hover {
           background-color: transparent;
           text-shadow: 0px 0px 5px white;
-          opacity: 0.9; }
+          opacity: 1; }
         .custom-menu-wrapper .custom-menu .pure-menu-item .pure-menu-link.selected,
         .custom-menu-wrapper .custom-menu .pure-menu-item .pure-menu-heading.selected {
           font-weight: 700;
@@ -2324,7 +2328,8 @@ pre .support.value {
           margin-top: 1.5em;
           margin-right: 2.5em;
           height: auto;
-          font-size: 1.16em; } }
+          font-size: 12px;
+          font-size: 0.75rem; } }
       .custom-menu-wrapper #topmenu-right #userID:before {
         content: "Account ID: ";
         letter-spacing: 0; }
@@ -2344,11 +2349,13 @@ pre .support.value {
       .custom-menu-wrapper #topmenu-right .topmenu-logout svg {
         vertical-align: middle; }
       .custom-menu-wrapper #topmenu-right .topmenu-logout:after {
-        content: "Sign out";
+        content: "Log out";
         vertical-align: middle;
         color: white;
         margin: 10px;
-        display: inline-block; }
+        display: inline-block;
+        font-size: 12px;
+        font-size: 0.75rem; }
 
 .content > .dashboard-balances {
   margin-top: 0.2em; }
@@ -2872,7 +2879,10 @@ pre .support.value {
 #action-receive .copied {
   display: inline-block;
   float: right;
-  transition: all 1s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
   font-size: 1em;
   background: #3ACE6C;
   color: #FFF;
@@ -2880,7 +2890,8 @@ pre .support.value {
   padding: 4px 8px;
   border-radius: 4px;
   margin-top: -37px;
-  margin-right: 10px; }
+  margin-right: 10px;
+  z-index: 123456789; }
 
 #action-receive #qrcode {
   display: inline-block; }
@@ -2890,13 +2901,18 @@ pre .support.value {
 
 #action-receive .copied {
   opacity: 0;
-  -webkit-transition: opacity 1.3s;
+  -webkit-transition: all 0.2s;
   /* Safari */
-  transition: opacity 1.3s;
-  z-index: 99; }
+  transition: all 0.2s;
+  z-index: 123456789; }
 
 #action-receive .copied.active {
-  opacity: 1;
-  -webkit-transition: opacity 0.8s;
+  opacity: 0.9;
+  -webkit-transition: all 0.2s;
   /* Safari */
-  transition: opacity 0.8s; }
+  transition: all 0.2s;
+  z-index: 123456789;
+  position: relative; }
+
+.elem {
+  width: 123px; }

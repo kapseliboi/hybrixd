@@ -14,7 +14,7 @@
 <div id="manage-assets" class="modal hide fade wide" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
   <div class="modal-content">
     <div class="modal-header">
-      <h2 id="ModalLabel">Add and remove assets from your wallet</h2>
+      <h2 id="ModalLabel">Manage the assets in your wallet</h2>
       <form class="pure-form pure-form-stacked">
 	<span class="clearable">
 	  <input id="search-assets" type="text" placeholder="Type to search..." class="inline" onkeydown = "" oninput = "" onpaste = "" oncut = "">
@@ -100,13 +100,18 @@
       <h2 id="ModalLabel">Generate Address</h2>
     </div>
     <div class="modal-body">
+      <p>Bitshares requires a manual address generation.
+      <br>However, the Bitshares faucets are currently not working correctly.
+      <br>We have notified the Bitshares community and are looking to resolve this issue.<br></p>
+      <!--}
       <p>This asset requires a manual address generation. Click on the button below to create a new <span class="modal-generate-address-asset"></span> address. <br></p>
+      <-->
 
       <div class="modal-receive-status" id="receivestatus" style="display: block; font-size: 3em;"></div><div class="modal-generate-address-asset-name-text"></div>
     </div>
     <div class="modal-footer">
-      <button class="pure-button pure-button-secondary" data-dismiss="modal" aria-hidden="true">Close</button>
-      <button id="modal-generate-address-button" data-clipboard-text="?" class="pure-button pure-button-xsmall pure-button-primary" aria-hidden="true">Generate address</button>
+      <button class="pure-button pure-button-secondary" data-dismiss="modal" aria-hidden="true">Cancel</button>
+      <button id="modal-generate-address-button" data-clipboard-text="?" class="pure-button pure-button-xsmall pure-button-primary disabled" aria-hidden="true">Generate address</button>
     </div>
   </div>
 </div>

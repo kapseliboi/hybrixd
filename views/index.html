@@ -899,8 +899,17 @@ p {
   /* stops bg color from leaking outside the border: */
   font-size: 14px;
   font-size: 0.875rem;
+  -moz-transition: all 0.3s ease-in;
+  -o-transition: all 0.3s ease-in;
+  -webkit-transition: all 0.3s ease-in;
+  transition: all 0.3s ease-in;
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
   background: white;
   border: 1px solid #D9E3EB;
+  border-color: #D9E3EB !important;
   box-shadow: none;
   margin-bottom: 10px;
   width: 100%;
@@ -911,10 +920,12 @@ p {
   display: inline-block; }
 
 .pure-form input[type=text]:focus, .pure-form input[type=password]:focus {
-  border: 1px solid #4DA1FF;
-  -webkit-box-shadow: 0 0 5px rgba(77, 161, 255, 0.5);
-  -moz-box-shadow: 0 0 5px rgba(77, 161, 255, 0.5);
-  box-shadow: 0 0 5px rgba(77, 161, 255, 0.5); }
+  /* <<<<<<< HEAD */
+  /*   border: 1px solid $highlight; */
+  /*   @include box-shadow(0, 0, 5px, rgba($highlight, .5)); */
+  /* ======= */
+  border: 1px solid #7174D8;
+  border-color: #7174D8 !important; }
 
 ::-webkit-input-placeholder {
   letter-spacing: 0px;
@@ -937,19 +948,32 @@ p {
   font-weight: 400; }
 
 .user-login-notification {
-  display: none;
-  color: #FF6D4A;
-  background: rgba(255, 109, 74, 0.2);
   -webkit-border-radius: 4px;
   border-radius: 4px;
   background-clip: padding-box;
   /* stops bg color from leaking outside the border: */
-  padding: 10px;
-  margin-top: 15px;
+  -moz-transition: all 0.3s ease-out;
+  -o-transition: all 0.3s ease-out;
+  -webkit-transition: all 0.3s ease-out;
+  transition: all 0.3s ease-out;
+  display: block;
+  padding: 0 15px;
+  opacity: 0;
+  height: 0;
+  color: #FF6D4A;
+  background: rgba(255, 109, 74, 0.2);
+  margin-top: 0;
   font-weight: 600; }
 
 .user-login-notification.active {
-  display: block; }
+  -moz-transition: all 0.4s ease-in-out;
+  -o-transition: all 0.4s ease-in-out;
+  -webkit-transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease-in-out;
+  height: 81px;
+  opacity: 1;
+  padding: 15px;
+  margin-top: 15px; }
 
 .table {
   width: 100%;
@@ -1472,10 +1496,10 @@ pre .support.value {
         width: 90%;
         margin-top: 80px; } }
   #login_container input {
-    -webkit-user-select: all;
-    -moz-user-select: all;
-    -ms-user-select: all;
-    user-select: all; }
+    -webkit-user-select: auto;
+    -moz-user-select: auto;
+    -ms-user-select: auto;
+    user-select: auto; }
   #login_container .pure-button {
     margin: 10px 0;
     display: block; }
@@ -1493,7 +1517,11 @@ pre .support.value {
     /* stops bg color from leaking outside the border: */ }
   #login_container #loginbutton {
     margin: 5px 0 0;
-    padding: 10px 24px; }
+    padding: 10px 24px;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out; }
   #login_container #loginbutton .spinner-loader {
     display: none; }
   #login_container #loginbutton .spinner-loader.active {
@@ -1516,6 +1544,7 @@ pre .support.value {
     margin: 0.5em 0 1.8em;
     font-weight: 600;
     border: none;
+    opacity: 1;
     -moz-transition: all 0.2s ease-in-out;
     -o-transition: all 0.2s ease-in-out;
     -webkit-transition: all 0.2s ease-in-out;
@@ -1526,6 +1555,13 @@ pre .support.value {
     border-radius: 4px;
     background-clip: padding-box;
     /* stops bg color from leaking outside the border: */ }
+  #login_container #helpbutton.inactive,
+  #login_container #alertbutton.inactive {
+    opacity: 0;
+    -moz-transition: opacity 0.6s ease-in-out;
+    -o-transition: opacity 0.6s ease-in-out;
+    -webkit-transition: opacity 0.6s ease-in-out;
+    transition: opacity 0.6s ease-in-out; }
   #login_container #generateform {
     padding: 0;
     margin: 0 0 40px; }
@@ -1728,12 +1764,16 @@ pre .support.value {
 
 .progress-bar {
   height: 14px;
-  width: 0px;
+  width: 10%;
   max-width: 280px;
   -webkit-border-radius: 7px;
   border-radius: 7px;
   background-clip: padding-box;
   /* stops bg color from leaking outside the border: */
+  -moz-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  -webkit-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
   background: #4DA1FF; }
 
 .progress-text {
@@ -2024,7 +2064,7 @@ pre .support.value {
           .custom-menu-wrapper .custom-menu .pure-menu-item .pure-menu-link,
           .custom-menu-wrapper .custom-menu .pure-menu-item .pure-menu-heading {
             font-weight: 600;
-            padding: 17px 20px 16px; } }
+            padding: 14px 20px 18px; } }
         .custom-menu-wrapper .custom-menu .pure-menu-item .pure-menu-link .m-icon,
         .custom-menu-wrapper .custom-menu .pure-menu-item .pure-menu-heading .m-icon {
           padding-bottom: 5px; }
@@ -2036,7 +2076,7 @@ pre .support.value {
         .custom-menu-wrapper .custom-menu .pure-menu-item .pure-menu-heading:hover {
           background-color: transparent;
           text-shadow: 0px 0px 5px white;
-          opacity: 0.9; }
+          opacity: 1; }
         .custom-menu-wrapper .custom-menu .pure-menu-item .pure-menu-link.selected,
         .custom-menu-wrapper .custom-menu .pure-menu-item .pure-menu-heading.selected {
           font-weight: 700;
@@ -2288,7 +2328,8 @@ pre .support.value {
           margin-top: 1.5em;
           margin-right: 2.5em;
           height: auto;
-          font-size: 1.16em; } }
+          font-size: 12px;
+          font-size: 0.75rem; } }
       .custom-menu-wrapper #topmenu-right #userID:before {
         content: "Account ID: ";
         letter-spacing: 0; }
@@ -2308,11 +2349,13 @@ pre .support.value {
       .custom-menu-wrapper #topmenu-right .topmenu-logout svg {
         vertical-align: middle; }
       .custom-menu-wrapper #topmenu-right .topmenu-logout:after {
-        content: "Sign out";
+        content: "Log out";
         vertical-align: middle;
         color: white;
         margin: 10px;
-        display: inline-block; }
+        display: inline-block;
+        font-size: 12px;
+        font-size: 0.75rem; }
 
 .content > .dashboard-balances {
   margin-top: 0.2em; }
@@ -2836,7 +2879,10 @@ pre .support.value {
 #action-receive .copied {
   display: inline-block;
   float: right;
-  transition: all 1s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
   font-size: 1em;
   background: #3ACE6C;
   color: #FFF;
@@ -2844,7 +2890,8 @@ pre .support.value {
   padding: 4px 8px;
   border-radius: 4px;
   margin-top: -37px;
-  margin-right: 10px; }
+  margin-right: 10px;
+  z-index: 123456789; }
 
 #action-receive #qrcode {
   display: inline-block; }
@@ -2854,16 +2901,18 @@ pre .support.value {
 
 #action-receive .copied {
   opacity: 0;
-  -webkit-transition: opacity 1.3s;
+  -webkit-transition: all 0.2s;
   /* Safari */
-  transition: opacity 1.3s;
-  z-index: 99; }
+  transition: all 0.2s;
+  z-index: 123456789; }
 
 #action-receive .copied.active {
-  opacity: 1;
-  -webkit-transition: opacity 0.8s;
+  opacity: 0.9;
+  -webkit-transition: all 0.2s;
   /* Safari */
-  transition: opacity 0.8s; }
+  transition: all 0.2s;
+  z-index: 123456789;
+  position: relative; }
 
 .elem {
   width: 123px; }
@@ -2881,7 +2930,6 @@ var KEY_MAPPING = {
   '8': 'B',
   '9': 'G'
 };
-
 
 utils = {
   documentReady: function (fn) {
@@ -2917,7 +2965,7 @@ utils = {
         top: document.querySelector('#' + element).offsetTop - 250,
         behavior: 'smooth'
       });
-    };
+    }
   },
   triggerEvent: function (el, type) {
     if ('createEvent' in document) {
@@ -2927,20 +2975,20 @@ utils = {
       el.dispatchEvent(e);
     } else {
       // IE 8
-      var e = document.createEventObject();
-      e.eventType = type;
-      el.fireEvent('on' + e.eventType, e);
+      var newEvent = document.createEventObject();
+      newEvent.eventType = type;
+      el.fireEvent('on' + newEvent.eventType, newEvent);
     }
   },
   fetchDataFromUrl: function (url, errStr) {
     return fetch_(url)
       .then(r => r.json()
-            .then(r => r)
-            .catch(e => console.log(errStr, e)))
+        .then(r => r)
+        .catch(e => console.log(errStr, e)))
       .catch(e => console.log(errStr, e));
   },
   getCurrentTime: function () {
-    var currentTime = new Date;
+    var currentTime = new Date();
     return currentTime.getTime();
   },
   addIcon: function (asset) {
@@ -2950,6 +2998,21 @@ utils = {
       function (id) { return id.slice(id.indexOf('.') + 1); },
       R.prop('id')
     )(asset);
+  },
+  getGlobalAssets: function () {
+    return GL.assets;
+  },
+  // TODO: Ref to getGlobalAssets --> Move all functions outside of object and make new object that refs outside functions.
+  findAsset: function (assetID) {
+    return R.find(
+      R.compose(
+        R.equals(assetID),
+        R.prop('id')
+      ),
+      (function () {
+        return GL.assets;
+      }())
+    );
   },
   updateGlobalAssets: function (a) {
     GL.assets = a;
@@ -2963,8 +3026,8 @@ utils = {
   mkUpdatedAssets: function (details) {
     return function (assets, asset) {
       var assetOrUpdatedDetails = R.equals(R.prop('id', asset), R.prop('id', details))
-          ? R.merge(asset, details)
-          : asset;
+        ? R.merge(asset, details)
+        : asset;
       return R.append(assetOrUpdatedDetails, assets);
     };
   },
@@ -2978,19 +3041,19 @@ utils = {
       var url = 'a/' + assetID + '/balance/' + assetAddress;
 
       var balanceStream = H.mkHybriddCallStream(url)
-          .map(data => {
-            if (R.isNil(R.prop('stopped', data)) && R.prop('progress', data) < 1) throw data;
-            return data;
-          })
-          .retryWhen(function (errors) { return errors.delay(1000); })
-          .map(function (balanceData) {
-            var lastTxTime = R.path(['balance', 'lastTx'], asset);
-            var currentTime = Date.now();
+        .map(data => {
+          if (R.isNil(R.prop('stopped', data)) && R.prop('progress', data) < 1) throw data;
+          return data;
+        })
+        .retryWhen(function (errors) { return errors.delay(1000); })
+        .map(function (balanceData) {
+          var lastTxTime = R.path(['balance', 'lastTx'], asset);
+          var currentTime = Date.now();
 
-            return currentTime > lastTxTime + BALANCE_UPDATE_BUFFER_TIME_MS
-              ? balanceData
-              : { data: currentBalance };
-          });
+          return currentTime > lastTxTime + BALANCE_UPDATE_BUFFER_TIME_MS
+            ? balanceData
+            : { data: currentBalance };
+        });
 
       balanceStream.subscribe(function (balanceData) {
         var currentBalance = R.path(['balance', 'amount'], asset);
@@ -3140,7 +3203,7 @@ function sanitizeServerObject (res) {
     ),
     R.prop('data')
   )(emptyOrIdentityObject);
-};
+}
 
 function renderElementInDom (query, data) {
   var element = document.querySelector(query);
@@ -3154,7 +3217,7 @@ function mkSvgIcon (symbolName) {
   var firstLetterCapitalized = symbolName.slice(0, 1).toUpperCase();
 
   return '<svg width="50px" height="50px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <g id="Asset-view" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="Symbols" transform="translate(-367.000000, -248.000000)" fill-rule="nonzero" fill="#000000"> <g id="error" transform="translate(367.000000, 248.000000)"> <path d="M25.016,0.016 C38.8656595,0.016 50.016,11.1663405 50.016,25.016 C50.016,38.8656595 38.8656595,50.016 25.016,50.016 C11.1663405,50.016 0.016,38.8656595 0.016,25.016 C0.016,11.1663405 11.1663405,0.016 25.016,0.016 Z" id="Shape"></path> <text x="50%" y="72%" text-anchor="middle" fill="white" style="font-size: 30px; font-weight: 200;">' + firstLetterCapitalized + '</text> </g> </g> </g> </svg>';
-};
+}
 
 mkIcon = function (symbol) {
   var Icons = black; // TODO: Factor up;
@@ -3167,7 +3230,7 @@ mkIcon = function (symbol) {
 mapReplaceEntries = function (map) {
   var keys = R.keys(map);
   var newMap = R.map(function (key) {
-    return key.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+    return key.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
   }, keys);
 
   return function (str) {
@@ -3396,21 +3459,33 @@ function lastKnownOrNewBalance (newData, currentBalance) {
 deterministic_ = {
   mkDeterministicDetails: function (dcode, entry, submode, mode, keyGenBase) {
     var deterministic = U.activate(LZString.decompressFromEncodedURIComponent(dcode));
-    if (typeof deterministic !== 'undefined') {
-      var seed = seedGenerator(keyGenBase);
-      var keys = deterministic.keys({symbol: entry, seed, mode: submode});
 
-      return {
-        mode,
-        seed,
-        keys,
-        address: deterministic.address(Object.assign(keys, {mode: submode}))
-      };
-    } else {
-      return false;
-    }
+    var defaultDetails = {
+      mode,
+      seed: null,
+      keys: null,
+      address: null
+    };
+
+    return R.ifElse(
+      R.isNil,
+      R.always(defaultDetails),
+      R.curry(generateDetails)(entry, keyGenBase, mode, submode)
+    )(deterministic);
   }
 };
+
+function generateDetails (entry, keyGenBase, mode, submode, deterministic) {
+  var seed = seedGenerator(keyGenBase);
+  var keys = deterministic.keys({symbol: entry, seed, mode: submode});
+
+  return {
+    mode,
+    seed,
+    keys,
+    address: deterministic.address(Object.assign(keys, {mode: submode}))
+  };
+}
 
 function seedGenerator (asset) {
   // this salt need not be too long (if changed: adjust slice according to tests)
@@ -3805,7 +3880,7 @@ hybridd = {
   mkHybriddCallStream: function (url) {
     var hybriddCallStream = Rx.Observable
       .fromPromise(hybriddcall({r: url, z: true}))
-      .filter(R.propEq('error', 0))
+      .filter(R.propEq('error', 0)) // TODO Handle errors.
       .map(R.merge({r: url, z: true}));
 
     var hybriddCallResponseStream = hybriddCallStream
