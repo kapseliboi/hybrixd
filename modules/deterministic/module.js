@@ -18,7 +18,7 @@ function init() {
   var hashes = {};
   var mode = '';
   for (var asset in global.hybridd.asset) {
-    mode = (typeof global.hybridd.asset[asset].mode!='undefined'?global.hybridd.asset[asset].mode:false);
+    mode = (typeof global.hybridd.asset[asset].mode!=='undefined'?global.hybridd.asset[asset].mode:false);
     if( mode ) {
       // index the modes
       assets[asset] = mode;
@@ -28,7 +28,7 @@ function init() {
       //modes[mode.split('.')[0]].push(asset);
       // hash the deterministic packages
       var filename = '../modules/deterministic/'+mode.split('.')[0]+'/deterministic.js.lzma';
-      if (typeof hashes[mode.split('.')[0]]=='undefined' && fs.existsSync(filename)) {
+      if (typeof hashes[mode.split('.')[0]]==='undefined' && fs.existsSync(filename)) {
         hashes[mode.split('.')[0]] = DJB2.hash(String(fs.readFileSync(filename)));
         console.log(' [i] module deterministic: hashed mode '+mode.split('.')[0]);
       }
@@ -60,7 +60,7 @@ function exec(properties) {
   var target = properties.target;
   var mode  = target.mode;
   var type  = target.type;
-  var factor = (typeof target.factor != 'undefined'?target.factor:8);
+  var factor = (typeof target.factor !== 'undefined'?target.factor:8);
   var command = properties.command;
   if(typeof command[1]!=='undefined') {
     var symbol = command[1].toLowerCase();

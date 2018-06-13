@@ -1,0 +1,11 @@
+{
+  "source":"test",
+  "name":"test",
+  "module":"quartz",
+  "router" : {
+    "test": "test"
+  },
+  "quartz" : {
+    "test" : ["logs(1,'test')"]
+  }
+}

@@ -40,12 +40,12 @@ Examples: "BTC", "ETH.SHIFT"
 source
 (Only required for sources)
 Discription:
-Examaples: "abe.bitcoin", "insight.litecoin", "deterministic"
+Examples: "abe.bitcoin", "insight.litecoin", "deterministic"
 
 engine
 (Only required for engines)
 Discription:
-Examaples: "storage"
+Examples: "storage"
 
 name
 Discription: A string containing the display name (for pretty printing).
