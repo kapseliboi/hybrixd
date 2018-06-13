@@ -899,6 +899,10 @@ p {
   /* stops bg color from leaking outside the border: */
   font-size: 14px;
   font-size: 0.875rem;
+  -moz-transition: all 0.3s ease-in;
+  -o-transition: all 0.3s ease-in;
+  -webkit-transition: all 0.3s ease-in;
+  transition: all 0.3s ease-in;
   background: white;
   border: 1px solid #D9E3EB;
   box-shadow: none;
@@ -937,19 +941,32 @@ p {
   font-weight: 400; }
 
 .user-login-notification {
-  display: none;
-  color: #FF6D4A;
-  background: rgba(255, 109, 74, 0.2);
   -webkit-border-radius: 4px;
   border-radius: 4px;
   background-clip: padding-box;
   /* stops bg color from leaking outside the border: */
-  padding: 10px;
-  margin-top: 15px;
+  -moz-transition: all 0.3s ease-out;
+  -o-transition: all 0.3s ease-out;
+  -webkit-transition: all 0.3s ease-out;
+  transition: all 0.3s ease-out;
+  display: block;
+  padding: 0 15px;
+  opacity: 0;
+  height: 0;
+  color: #FF6D4A;
+  background: rgba(255, 109, 74, 0.2);
+  margin-top: 0;
   font-weight: 600; }
 
 .user-login-notification.active {
-  display: block; }
+  -moz-transition: all 0.4s ease-in-out;
+  -o-transition: all 0.4s ease-in-out;
+  -webkit-transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease-in-out;
+  height: 81px;
+  opacity: 1;
+  padding: 15px;
+  margin-top: 15px; }
 
 .table {
   width: 100%;
@@ -1493,7 +1510,11 @@ pre .support.value {
     /* stops bg color from leaking outside the border: */ }
   #login_container #loginbutton {
     margin: 5px 0 0;
-    padding: 10px 24px; }
+    padding: 10px 24px;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out; }
   #login_container #loginbutton .spinner-loader {
     display: none; }
   #login_container #loginbutton .spinner-loader.active {
@@ -1516,6 +1537,7 @@ pre .support.value {
     margin: 0.5em 0 1.8em;
     font-weight: 600;
     border: none;
+    opacity: 1;
     -moz-transition: all 0.2s ease-in-out;
     -o-transition: all 0.2s ease-in-out;
     -webkit-transition: all 0.2s ease-in-out;
@@ -1526,6 +1548,13 @@ pre .support.value {
     border-radius: 4px;
     background-clip: padding-box;
     /* stops bg color from leaking outside the border: */ }
+  #login_container #helpbutton.inactive,
+  #login_container #alertbutton.inactive {
+    opacity: 0;
+    -moz-transition: opacity 0.6s ease-in-out;
+    -o-transition: opacity 0.6s ease-in-out;
+    -webkit-transition: opacity 0.6s ease-in-out;
+    transition: opacity 0.6s ease-in-out; }
   #login_container #generateform {
     padding: 0;
     margin: 0 0 40px; }
@@ -1728,12 +1757,16 @@ pre .support.value {
 
 .progress-bar {
   height: 14px;
-  width: 0px;
+  width: 10%;
   max-width: 280px;
   -webkit-border-radius: 7px;
   border-radius: 7px;
   background-clip: padding-box;
   /* stops bg color from leaking outside the border: */
+  -moz-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  -webkit-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
   background: #4DA1FF; }
 
 .progress-text {

@@ -1,7 +1,7 @@
 var progressMessages = {
   0: {
     step: 0,
-    weight: '10%',
+    weight: '15%',
     message: 'Setting up new session...'
   },
   1: {
@@ -48,24 +48,24 @@ function blink (target) {
 }
 
 var blinkAnimationStream = Rx.Observable
-    .interval(750)
-    .map(function (_) { blink('arc0'); });
+  .interval(750)
+  .map(function (_) { blink('arc0'); });
 
 var rotateLoginStream = Rx.Observable
-    .interval(1000)
-    .startWith(0)
-    .map(R.compose(
-      rotateLogin,
-      R.modulo(4)
-    ));
+  .interval(1000)
+  .startWith(0)
+  .map(R.compose(
+    rotateLogin,
+    R.modulo(4)
+  ));
 
 var dialLoginStream = Rx.Observable
-    .interval(1000)
-    .startWith(0)
-    .map(R.compose(
-      dialLogin,
-      R.modulo(4)
-    ));
+  .interval(1000)
+  .startWith(0)
+  .map(R.compose(
+    dialLogin,
+    R.modulo(4)
+  ));
 
 function rotateLogin (turn) {
   var el = document.querySelector('#arc3');
@@ -119,11 +119,11 @@ function dialLogin (turn) {
 }
 
 var animationStream = Rx.Observable
-    .merge(
-      blinkAnimationStream,
-      rotateLoginStream,
-      dialLoginStream
-    );
+  .merge(
+    blinkAnimationStream,
+    rotateLoginStream,
+    dialLoginStream
+  );
 
 function doProgressAnimation (step) {
   var elemExists = R.not(R.isNil(document.querySelector('.progress-bar'))) &&
