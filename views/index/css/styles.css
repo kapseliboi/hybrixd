@@ -720,10 +720,7 @@ body {
   font-weight: 400;
   font-size: 12px;
   font-size: 0.75rem;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none; }
+  /* @include user-select(none); */ }
 
 h2 {
   margin-top: 30px;
@@ -920,10 +917,6 @@ p {
   display: inline-block; }
 
 .pure-form input[type=text]:focus, .pure-form input[type=password]:focus {
-  /* <<<<<<< HEAD */
-  /*   border: 1px solid $highlight; */
-  /*   @include box-shadow(0, 0, 5px, rgba($highlight, .5)); */
-  /* ======= */
   border: 1px solid #7174D8;
   border-color: #7174D8 !important; }
 
@@ -2276,7 +2269,10 @@ pre .support.value {
     .custom-menu-wrapper .custom-menu-bottom.custom-menu-tucked .pure-menu-active > .pure-menu-link,
     .custom-menu-wrapper .custom-menu-bottom.custom-menu-tucked .pure-menu-link:hover,
     .custom-menu-wrapper .custom-menu-bottom.custom-menu-tucked .pure-menu-link:focus {
-      background: none; }
+      background: transparent; }
+    @media (min-width: 900px) {
+      .custom-menu-wrapper .custom-menu-bottom.custom-menu-tucked .pure-menu-link.selected:focus {
+        background: #F4F7F9; } }
   .custom-menu-wrapper .pure-menu-horizontal.custom-menu-tucked {
     z-index: -1;
     top: 45px;

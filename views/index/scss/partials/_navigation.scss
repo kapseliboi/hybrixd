@@ -270,7 +270,12 @@
       .pure-menu-active > .pure-menu-link,
       .pure-menu-link:hover,
       .pure-menu-link:focus {
-        background: none;
+        background: transparent;
+      }
+      .pure-menu-link.selected:focus {
+        @include breakpoint(medium) {
+          background: $bg-color-light;
+        }
       }
     }
   }
@@ -368,10 +373,3 @@
     }
   }
 }
-
-
-
-
-
-
-

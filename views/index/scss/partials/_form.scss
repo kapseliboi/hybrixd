@@ -34,10 +34,6 @@
 }
 
 .pure-form input[type=text]:focus, .pure-form input[type=password]:focus {
-/* <<<<<<< HEAD */
-/*   border: 1px solid $highlight; */
-/*   @include box-shadow(0, 0, 5px, rgba($highlight, .5)); */
-/* ======= */
   border: 1px solid $primary-color;
   border-color: $primary-color !important;
 }
