@@ -34,7 +34,9 @@ function init() {
       }
     }
   }
-  global.hybridd.source['deterministic']={module:'deterministic',assets:assets,modes:modes,hashes:hashes};
+  global.hybridd.source['deterministic'].assets=assets;
+  global.hybridd.source['deterministic'].modes=modes;
+  global.hybridd.source['deterministic'].hashes=hashes;
 }
 
 // stop function
@@ -51,68 +53,69 @@ function tick(properties) {
 // child processes are waited on, and the parent process is then updated by the postprocess() function
 // http://docs.electrum.org/en/latest/protocol.html
 function exec(properties) {
-	// decode our serialized properties
-	var processID = properties.processID;
-	//var source = properties.source;
-	var target = properties.target;
-	var mode  = target.mode;
-	var type  = target.type;
-	var factor = (typeof target.factor != 'undefined'?target.factor:8);
+
+  // decode our serialized properties
+  var processID = properties.processID;
+  //var source = properties.source;
+  var target = properties.target;
+  var mode  = target.mode;
+  var type  = target.type;
+  var factor = (typeof target.factor != 'undefined'?target.factor:8);
   var command = properties.command;
   if(typeof command[1]!=='undefined') {
     var symbol = command[1].toLowerCase();
     var base = symbol.split('.')[0];
   }
-	var subprocesses = [];	
-	// set request to what command we are performing
-	global.hybridd.proc[processID].request = properties.command;
-	// handle standard cases here, and construct the sequential process list
+  var subprocesses = [];
+  // set request to what command we are performing
+  global.hybridd.proc[processID].request = properties.command;
+  // handle standard cases here, and construct the sequential process list
   switch(command[0]) {
-    case 'assets':
-        subprocesses.push('stop(0,'+jstr(global.hybridd.source['deterministic'].assets)+')');
+  case 'assets':
+    subprocesses.push('stop(0,'+jstr(global.hybridd.source['deterministic'].assets)+')');
     break;
-    case 'modes':
-        subprocesses.push('stop(0,'+jstr(global.hybridd.source['deterministic'].modes)+')');
+  case 'modes':
+    subprocesses.push('stop(0,'+jstr(global.hybridd.source['deterministic'].modes)+')');
     break;
-    case 'hashes':
-        subprocesses.push('stop(0,'+jstr(global.hybridd.source['deterministic'].hashes)+')');
+  case 'hashes':
+    subprocesses.push('stop(0,'+jstr(global.hybridd.source['deterministic'].hashes)+')');
     break;
-    case 'hash':
-      if(base) {
-        var modetype = base;
-        for (var entry in global.hybridd.source['deterministic'].modes) {
-          if(global.hybridd.source['deterministic'].modes[entry].indexOf(symbol)!==-1) {
-            modetype = entry;
-          }
+  case 'hash':
+    if(base) {
+      var modetype = base;
+      for (var entry in global.hybridd.source['deterministic'].modes) {
+        if(global.hybridd.source['deterministic'].modes[entry].indexOf(symbol)!==-1) {
+          modetype = entry;
         }
-        var basemode = modetype.split('.')[0];
-        if(typeof global.hybridd.source['deterministic'].hashes[basemode]!=='undefined') {
-          subprocesses.push('stop(0,{deterministic:"'+modetype+'",hash:"'+global.hybridd.source['deterministic'].hashes[basemode]+'"})');
-        } else {
-          subprocesses.push('stop(1,"Error: Mode or symbol does not exist!")');
-        }
-      } else {
-        subprocesses.push('stop(1,"Error: Please specify a mode or symbol!")');
       }
-    break;
-    case 'code':
-      if(typeof command[1]!='undefined' && command[1]) {
-        var filename = '../modules/deterministic/'+command[1]+'/deterministic.js.lzma';
-        if (fs.existsSync(filename)) {
-          // read deterministic.js and push data into process scheduler
-          var lzmapack = fs.readFileSync(filename);
-          // return compressed deterministic code object
-          subprocesses.push('time(8000)');          
-          subprocesses.push('stop(0,"'+lzmapack+'")');          
-        } else {
-          subprocesses.push('stop(404,"Error: Mode does not exist!")');
-        }
+      var basemode = modetype.split('.')[0];
+      if(typeof global.hybridd.source['deterministic'].hashes[basemode]!=='undefined') {
+        subprocesses.push('stop(0,{deterministic:"'+modetype+'",hash:"'+global.hybridd.source['deterministic'].hashes[basemode]+'"})');
       } else {
-        subprocesses.push('stop(1,"Error: Please specify a mode! Example: /source/deterministic/code/altcoin")');
-      }    
+        subprocesses.push('stop(1,"Error: Mode or symbol does not exist!")');
+      }
+    } else {
+      subprocesses.push('stop(1,"Error: Please specify a mode or symbol!")');
+    }
     break;
-    default:
-      subprocesses.push('stop(1,"Source function not supported!")');
+  case 'code':
+    if(typeof command[1]!='undefined' && command[1]) {
+      var filename = '../modules/deterministic/'+command[1]+'/deterministic.js.lzma';
+      if (fs.existsSync(filename)) {
+        // read deterministic.js and push data into process scheduler
+        var lzmapack = fs.readFileSync(filename);
+        // return compressed deterministic code object
+        subprocesses.push('time(8000)');
+        subprocesses.push('stop(0,"'+lzmapack+'")');
+      } else {
+        subprocesses.push('stop(404,"Error: Mode does not exist!")');
+      }
+    } else {
+      subprocesses.push('stop(1,"Error: Please specify a mode! Example: /source/deterministic/code/altcoin")');
+    }
+    break;
+  default:
+    subprocesses.push('stop(1,"Source function not supported!")');
   }
   // fire the Qrtz-language program into the subprocess queue
   scheduler.fire(processID,subprocesses);

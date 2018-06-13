@@ -19,7 +19,7 @@
       "stop(1,'Not yet implemented!')"
     ],
     "unspent" : [
-      "func('blockexplorer','exec',{target:{symbol:'$fee-symbol'}, command:['unspent','$1','$fee']})",
+      "func('blockexplorer','exec',{command:['$fee-symbol','unspent','$1','$fee']})",
       "pass({'unspents':data.unspents,'change':String(Number(data.change)+0.00000546)})"
     ],
     "balance" : [
