@@ -41,8 +41,11 @@ function initializeAssetsInterfaceStreams (assets) {
     .interval(BALANCE_RETRIEVAL_INTERVAL_MS)
     .startWith(0)
     .takeUntil(stopBalanceStream);
-
-  Balance.mkRenderBalancesStream(retrieveBalanceStream, '.assets-main > .data .balance-', AMOUNT_OF_SIGNIFICANT_DIGITS, assetsIDs).subscribe();
+  var renderBalancesStream = Balance.mkRenderBalancesStream(retrieveBalanceStream, '.assets-main > .data .balance-', AMOUNT_OF_SIGNIFICANT_DIGITS, assetsIDs);
+  renderBalancesStream.subscribe();
+  renderBalancesStream
+    .map(updateGlobalAssetsAndRenderDataInDOM)
+    .subscribe();
   maxAmountButtonStream.subscribe(function (_) {
     var sendBalance = document.querySelector('#action-send .modal-send-balance').innerHTML;
     document.querySelector('#modal-send-amount').value = sendBalance;
@@ -65,10 +68,12 @@ function mkAssetButtonStream (query) {
     .map(R.path(['target', 'attributes', 'data', 'value']));
 }
 
-function updateGlobalAssetsAndRenderDataInDOM (element, sanitizedData, assetID) {
-  A.toggleAssetButtons(element, assetID, Number(sanitizedData));
-  U.updateGlobalAssets(updateBalanceData(GL.assets, assetID, sanitizedData));
-  renderDollarPriceInAsset(assetID, Number(sanitizedData));
+function updateGlobalAssetsAndRenderDataInDOM (balanceData) {
+  var elem = R.prop('element', balanceData);
+  var id = R.prop('assetID', balanceData);
+  var n = R.prop('amountStr', balanceData);
+  A.toggleAssetButtons(elem, id, Number(n));
+  renderDollarPriceInAsset(id, Number(n));
 }
 
 function updateBalanceData (assets, assetID, amount) {

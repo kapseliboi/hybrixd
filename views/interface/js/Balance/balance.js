@@ -48,11 +48,17 @@ function mkRenderBalancesStream (intervalStream, q, n, assetsIDs) {
             R.replace('.', '-'),
             R.prop('id')
           )(asset);
-
+          var assetQuery = q + hyphenizedID;
           R.compose(
-            R.curry(U.renderDataInDom)(q + hyphenizedID, n),
+            R.curry(U.renderDataInDom)(assetQuery, n),
             R.path(['balance', 'amount'])
           )(asset);
+
+          return {
+            element: assetQuery,
+            assetID,
+            amountStr: R.path(['balance', 'amount'], asset)
+          };
         });
     });
 
