@@ -23,10 +23,6 @@ var stopBalanceStream = Rx.Observable
 var retrieveBalanceStream = Rx.Observable
   .interval(BALANCE_RENDER_INTERVAL_MS)
   .startWith(0)
-  .map(_ => {
-    console.log('_ = ', _);
-    return _;
-  })
   .takeUntil(stopBalanceStream);
 
 function renderStarredAssets (assets) {
@@ -51,7 +47,6 @@ function render (assets) {
     var queryStr = '.dashboard-balances > .data > .balance > .balance-';
     renderStarredAssets(assets);
     Balance.mkRenderBalancesStream(retrieveBalanceStream, queryStr, AMOUNT_OF_SIGNIFICANT_DIGITS, starredAssetsIDs)
-      .delay(500) // HACK: Make sure assets are rendered in DOM before rendering balances in elements.
       .subscribe();
     socialMediaIcons.forEach(renderSvgIcon);
   };
