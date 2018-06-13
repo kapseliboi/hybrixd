@@ -6,6 +6,13 @@ WHEREAMI=`pwd`
 
 DARWIN_FLAG=`uname -a | grep "Darwin"`
 
+if [ ! -f "$WHEREAMI/common/index.js" ]; then
+  git clone git@gitlab.com:iochq/ioc-tools.git
+  mkdir common
+  cp ioc-tools/index.js common/index.js
+  rm -rf ioc-tools
+fi
+
 if [ ! -d "$WHEREAMI/nodejs-runtime" ]; then
   git clone https://github.com/internetofcoins/nodejs-runtime
 fi
