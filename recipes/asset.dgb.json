@@ -24,12 +24,12 @@
     ],
     "unspent" : [
       "logs(1, 'testoejfoiejfiowjef')",
-      "func('blockexplorer','exec',{target:{symbol:'$symbol'}, command:['unspent','$1','$2']})"
+      "func('blockexplorer','exec',{command:['$symbol','unspent','$1','$2']})"
     ],
      "balance" : [
       "test('$1',2,1,'$1')",
       "stop(1,'No source address')",
-      "curl('$block-explorer-host','?key=$pass&q=getbalance&a=$1', 'GET', '',{Accept:'application/json','Content-Type':'application/json'})", 
+      "curl('$block-explorer-host','?key=$pass&q=getbalance&a=$1', 'GET', '',{Accept:'application/json','Content-Type':'application/json'})",
       "test(data,2,1,data)",
       "stop(1,'No result!')",
       "time($cache,data)",
