@@ -1,0 +1,35 @@
+{
+  "source":"blockexplorer",
+  "name":"Blockexplorer",
+  "module":"blockexplorer",
+  "mode":"blockexplorer",
+  "router" : {
+    "_ref":{
+      "_list":"symbol",
+      "balance" : {
+        "_ref":{
+          "_list" : "address",
+          "_this" : "Retrieve the balance at one of the available blockexplorers."
+        }
+      },
+      "history" : {
+        "_ref":{
+          "_list" : "address",
+          "_this" : "Retrieve the transaction history for an address at one of the available blockexplorers.."
+        }
+      },
+      "transaction" : {
+        "_ref":{
+          "_list" : "transaction_id",
+          "_this" : "Retrieve the transaction details for a given transaction at one of the available blockexplorers."
+        }
+      },
+      "unspent" : {
+        "_ref":{
+          "_list" : "address",
+          "_this" : "Retrieve the unspents at one of the available blockexplorers for $SYMBOL."
+        }
+      }
+    }
+  }
+}

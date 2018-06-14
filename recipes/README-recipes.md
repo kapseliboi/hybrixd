@@ -9,12 +9,15 @@ does something and returns something:
 ```
 source.foo.json
 {
-  "symbol" :"foo",
-  "host" : "localhost:123",
-  "cache" : 12000,
-  "quartz" : {
+"symbol" :"foo",
+    "host" : "localhost:123",
+    "cache" : 12000,
+    "quartz" : {
     "balance" : ["dosomething", "returnsomething"]
-  }
+    },
+    "router" : {
+        "balance" : "Does something and then returns something to the user."
+    }
 }
 ```
 
@@ -23,9 +26,11 @@ required, for sources an id.
 
 ## Filename
 
+For assets the filename is defined as `/recipes/asset.$SYMBOL.json` or `/recipes/token.$SYMBOL.json`
+
 For sources the filename is defined as `/recipes/source.$TYPE.$ID.json`
 
-For Assets the filename is defined as `/recipes/asset.$SYMBOL.json` or `/recipes/token.$SYMBOL.json`
+For engines the filename is defined as `/recipes/engine.$NAME.json`
 
 ## Properties:
 
@@ -35,11 +40,15 @@ Discription: A string containing the symbol. This is used as the main idenitfier
 Format: "$base[.$token]"
 Examples: "BTC", "ETH.SHIFT"
 
-id
+source
 (Only required for sources)
 Discription:
-Format: "$BlockExplorerId.$modus"
-Examaples: "abe.bitcoin", "insight.litecoin"
+Examples: "abe.bitcoin", "insight.litecoin", "deterministic"
+
+engine
+(Only required for engines)
+Discription:
+Examples: "storage"
 
 name
 Discription: A string containing the display name (for pretty printing).
@@ -54,21 +63,39 @@ modus
 Discription: A string containing the internal asset identifier.
 Example: "bitcoin","ethereum"
 
+contract
+(Only required for token assets)
+Description: The unique identifier for an asset token
+
+originator
+(Only required for token assets)
+Description: The creator or origin address for an asset token
+
 import
 Discription: A string or array of strings containing the id's /
 symbols of the recipes from which this recipe should inherit
 properties. Cf Import section below
 Example: "btc", ["btc","eth"] , "btc::host"
 
-type
-(Only required for sources)
-Examples: "blockexplorer","storage","deterministic", "meta" (to be removed)
+module:
+Discription:  The name of the server/node side code implementation
 
-module                The name of the server/node side code implementation
-module-deterministic  The name of the client side code implementation  (TODO TO BE RENAMED!)
+module-deterministic
+(Only required for assets)
+Discription: The name of the client side code implementation  (TODO TO BE RENAMED!)
 
 factor
-fee                   A number representing the fee associated with transfering assets
+(Only required for assets)
+Discription: The number of decimal digits used for this asset.
+
+fee
+(Only required for assets)
+Discription: A number representing the fee associated with
+transfering assets
+
+fee-symbol
+(Optional for assets)
+Discription: the symbol in which the fee is calculated
 
 generated
 Discription: A string indicating whether an address needs to
@@ -101,8 +128,11 @@ https://www.npmjs.com/package/node-rest-client#options-parameters )
 [responseConfig]
 
 
-
 quartz                Defines the quartz code.
+
+router                Defines the routing definitions. See
+$HYBRIDD/lib/router/README-router.txt
+
 
 ## Quartz
 

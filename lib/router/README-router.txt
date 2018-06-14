@@ -1,13 +1,20 @@
+# Router
+
 Examples of paths:
 
-/command/reload         Reloads hybridd d
-/asset/btc/balance      Returns the balance of bitcoin asset
+/command/reload         Reloads hybridd
+/asset/btc/balance/1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX      Returns the
+balance of bitcoin asset for address 1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX
 
 Files
 
-routetree.json      describes possible REST API paths
-router.js           first level routing
-router/[node].js    describes the routing for /[node]/...
+routetree.json            Describes possible REST API paths
+router.js                 First level routing
+router/[node].js          Describes the routing for /[node]/...
+
+recipes/engine.*.json     These files contain the routing specific to each
+engine.
+recipes/source.*.json     These files contain the routing specific to each source.
 
 Features
 
@@ -64,7 +71,6 @@ Example
 _list Describes a dynamic list.
 _ref  Indicates that this path node should be part of a dynamic list
 
-
 Example:
 
 {
@@ -79,18 +85,4 @@ Example:
 
 /asset/x/hello  executes hello for asset x if asset x exists. Error otherwise.
 
-_ref  See _ref
-
 _this See _help
-
-_valid Indicates that the path is valid dispite wat follows. It is left up to the underlying code to do any error handling and help messaging
-
-Example:
-
-{
-  "xpath":{
-    "_valid":true
-  }
-}
-
-/xpath/hello/world/hello/moon/.../hello/stars   is a valid command.

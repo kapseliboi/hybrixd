@@ -1,5 +1,4 @@
-*** PROCESS SCHEDULER INSTRUCTIONS ***
-
+# Scheduler
 
 
  data <= variable
@@ -109,9 +108,7 @@ function:   Name of the javascript function.
 data:       Store data in this subprocess data field. (Passed to parent process on stop.)
 
 Examples:
-  stop(1)                         // stop processing and set error to 1
-  stop(0,"Everything is ok.")     // stop processing, set no error, and put "Everything is ok." in main process data field
-  stop(404,"HELP! Not found.")    // stop processing, set error to 404, and put "HELP! Not found." in main process data field
+  func('blockexplorer','exec',{command:['btc','balance','$1']})
 
 
  stop(err [,data] )
@@ -164,19 +161,24 @@ Checks if properties exist in testObject and uses that to pass a
 transformed object. On success of the check the function jumps to valid or next,
 if not it passes the testObject to invalid.
 
-property: A (or nested array/dicationary of) strings containing string
-          values or the property paths to test (Example: "foo.bar")
+property: A (or nested array/dicationary of) strings containing
+          - explicit values (Example: "Hello")
+          - property paths to test and pass (prefixed with ".") (Example: ".foo.bar")
+          - expressions (prefixed with "=") (Example: "=a+b", "=.foo.bar|default")
+
 
 data:     Store data in this subprocess data field.
 valid:    Amount of instructions lines to jump when property exists.           (1 = jump forward 1 instruction, -2 = jump backward two instructions)
 invalid:  Amount of instructions lines to jump when property does not exist.   (1 = jump forward 1 instruction, -2 = jump backward two instructions)
 
 Examples:
-  tran(".foo",2,{foo:"bar"})                  // Passes "bar" to next
-  tran (".foo.bar[2]",2,{foo:{bar:[0,1,5]}})   // Passes 5 to next
-  tran (".foo.bar[2]",2,{foo:"bar"})           // Jumps 2 instructions and passes {foo:"bar"}
-  tran ([".foo",".hello"],2,{foo:"bar",hello:"world"})           // Passes ["bar","world"] to next
-  tran ({a:".foo",b:".hello",c:"test"},2,{foo:"bar",hello:"world"})  // Passes {a:"bar", b:"world", c:"test"} to next
+  tran(".foo",1,2,{foo:"bar"})                                         // Passes "bar" to next
+  tran (".foo.bar[2]",1,2,{foo:{bar:[0,1,5]}})                         // Passes 5 to next
+  tran (".foo.bar[2]",1,2,{foo:"bar"})                                 // Jumps 2 instructions and passes {foo:"bar"}
+  tran ([".foo",".hello"],1,2,{foo:"bar",hello:"world"})               // Passes ["bar","world"] to next
+  tran ({a:".foo",b:".hello",c:"test"},1,2,{foo:"bar",hello:"world"})  // Passes {a:"bar", b:"world", c:"test"} to next
+  tran("=.hello|default",1,2,{hello:"world"})                          // Passes "world" to next
+  tran("=.hello|default",1,2,{foo:"bar"})                              // Passes "default" to next
 
 
 
@@ -232,6 +234,7 @@ create a new process by calling the xpath command on target
 target:       A string containing on of the following options
 - "asset://base[.mode]"
 - "source://base[.mode]"
+- "engine://base[.mode]"
 xpath:         A string containg the command path. "command/a/b"
 calls command using $1 = "a", $2 = "b"
 data:         Optional data to be passed to the new process
@@ -241,8 +244,8 @@ of the current process.
 
 
 Examples:
-  fork("asset://dummy","balance/abc")          // Starts a process to retrieve the
-  dummy balans for address abc
+  fork("asset://dummy","balance/abc")          // Starts a process to
+  retrieve the dummy balans for address abc
 
  read(processIDs,millisecs)
 
@@ -255,10 +258,9 @@ are finished
 
 
 Examples:
-  read("123456")          //Wait for process 123456 to finish and
-  return its data.
-  read(["123456","654321"])          //Wait for processes 123456 and 654321 to finish and
-  return their data combined into an array.
+  read("123456")                   //Wait for process 123456 to finish and return its data.
+  read(["123456","654321"])        //Wait for processes 123456 and
+  654321 to finish and return their data combined into an array.
 
 
  call(target,xpath,[data])
