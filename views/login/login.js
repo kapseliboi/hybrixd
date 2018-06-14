@@ -5,7 +5,7 @@ var V = validations;
 var U = utils;
 
 var AssetInitialisationStreams = assetInitialisationStreams;
-var Bowser = bowser;
+var BrowserSupport = browserSupport;
 
 var path = 'api'; // TODO: Factor up!
 var args = {};
@@ -34,14 +34,6 @@ GL = {
   usercrypto: {},
   initCount: 0
 };
-
-var unsupportedBrowsers = [
-  { msie: '6' },
-  { android: '2'},
-  { opera: '12'},
-  { safari: '5'},
-  { chrome: '999' }
-];
 
 // Don't move this yet, as the cur_step is needed by assetModesUrl. Synchronous coding!
 nacl_factory.instantiate(function (naclinstance) { nacl = naclinstance; }); // TODO
@@ -82,7 +74,7 @@ var validatedUserCredentialsStream = userSubmitStream
   });
 
 function main () {
-  checkBrowserSupport();
+  BrowserSupport.checkBrowserSupport(window.navigator.userAgent);
   document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
   maybeOpenNewWalletModal(location);
   S.credentialsStream.subscribe(disableUserNotificationBox);
@@ -269,21 +261,6 @@ function maybeOpenNewWalletModal (location) {
       PRNG.seeder.restart(); // As found in: newaccount_b.js
       document.getElementById('newaccountmodal').style.display = 'block';
     }
-  }
-}
-
-function isUnsupportedBrowser (browser) {
-  return Bowser.isUnsupportedBrowser(browser, window.navigator.userAgent);
-}
-
-function checkBrowserSupport () {
-  var isAnyUnsupportedBrowser = R.any(isUnsupportedBrowser, unsupportedBrowsers);
-
-  if (isAnyUnsupportedBrowser) {
-    document.querySelector('#loginform').innerHTML = '<h2 class="loginbox-title">Your browser is not supported</h2><p class="loginbox-text">We’re sorry, but you’re using a browser we don’t support. To use the Internet of Coins wallet, please upgrade to the latest version of <a href="https://www.mozilla.org/en-US/firefox/new/" target="_blank">Firefox</a>, <a href="https://www.google.com/chrome/" target="_blank">Chrome</a>, <a href="https://support.apple.com/downloads/safari" target="_blank">Safari</a> or <a href="https://www.microsoft.com/en-us/download/internet-explorer.aspx" target="_blank">Internet Explorer</a></p><p class="loginbox-text">Please visit <a href="https://internetofcoins.org/faq#browser-support" target="_blank">our FAQ</a> for more information about browser support. </p>';
-    document.querySelector('#generateform').classList.add('inactive');
-    document.querySelector('#helpbutton').classList.add('inactive');
-    document.querySelector('#alertbutton').classList.add('inactive');
   }
 }
 
