@@ -63,23 +63,36 @@ var userSubmitStream = Rx.Observable
     keyDownOnPasswordStream
   );
 
+var bar = S.credentialsStream
+  .flatMap(c => Rx.Observable.of(c)
+    .map(disableUserNotificationBox));
+
 var validatedUserCredentialsStream = userSubmitStream
-  .withLatestFrom(S.credentialsStream)
+  .withLatestFrom(bar)
   .map(mkCredentialsObj)
-  .map(R.map(U.normalizeUserInput))
-  .map(function (c) {
+  .map(R.map(U.normalizeUserInput));
+
+var foo = validatedUserCredentialsStream
+  .map(c => {
+    var err = { error: 1, msg: 'It seems the credentials you entered are incorrect. Please check your username and password and try again.' };
     return V.hasValidCredentials(c)
       ? c
-      : { error: 1, msg: 'It seems the credentials you entered are incorrect. Please check your username and password and try again.' };
-  });
+      : notifyUserOfIncorrectCredentials(err);
+  })
+  .filter(R.compose(
+    R.not,
+    R.has('error'))
+  );
 
 function main () {
   BrowserSupport.checkBrowserSupport(window.navigator.userAgent);
   document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
   maybeOpenNewWalletModal(location);
-  S.credentialsStream.subscribe(disableUserNotificationBox);
+
+  // S.credentialsStream.subscribe(disableUserNotificationBox);
   keyDownOnUserIDStream.subscribe(function (_) { document.querySelector('#inputPasscode').focus(); });
-  validatedUserCredentialsStream.subscribe(continueLoginOrNotifyUser);
+  foo.subscribe(z => { console.log('correct, z'); });
+  // .flatMap(continueLoginOrNotifyUser)
 }
 
 function processLoginDetails (userCredentials) {
@@ -143,17 +156,20 @@ function processLoginDetails (userCredentials) {
       validatedUserCredentialsStream_,
       processSession1StepDataStream
     )
-    .delay(500); // Delay so progressbar animation looks smoother.
-
-  setCSSTorenderButtonsToDisabled();
-  doFlipOverAnimation();
-  // HACK! :( So that CSS gets rendered immediately and user gets feedback right away.
-  setTimeout(function () {
-    fetchViewStream.subscribe(initialiseAssets, resetFlipOverAnimation);
-  }, 500);
+    .map(z => {
+      setCSSTorenderButtonsToDisabled();
+      doFlipOverAnimation();
+      return initialiseAssets(z);
+    });
+    // .flatMap(AssetInitialisationStreams.doAssetInitialisation);
+  // // HACK! :( So that CSS gets rendered immediately and user gets feedback right away.
+  // setTimeout(function () {
+  return fetchViewStream;
+  // }, 500);
 }
 
 function initialiseAssets (userSessionData) {
+  return;
   GL.usercrypto = {
     user_keys: R.nth(0, userSessionData),
     nonce: R.path(['3', 'current_nonce'], userSessionData),
@@ -169,29 +185,21 @@ function doFlipOverAnimation () {
   document.querySelector('#helpbutton').classList.add('inactive');
 }
 
-function resetFlipOverAnimation () {
-  document.querySelector('.flipper').classList.remove('active'); // FLIP LOGIN FORM BACK
-  document.querySelector('#generateform').classList.remove('inactive');
-  document.querySelector('#alertbutton').classList.remove('inactive');
-  document.querySelector('#helpbutton').classList.remove('inactive');
-}
-
-function continueLoginOrNotifyUser (credentialsOrError) {
-  R.ifElse(
-    R.has('error'),
-    notifyUserOfIncorrectCredentials,
-    processLoginDetails
-  )(credentialsOrError);
-}
-
+// Eff (dom :: DOM) Error
 function notifyUserOfIncorrectCredentials (err) {
   document.querySelector('.user-login-notification').classList.add('active');
   document.querySelector('.user-login-notification').innerHTML = R.prop('msg', err);
+  return err;
 }
 
-function disableUserNotificationBox (_) {
-  document.querySelector('.user-login-notification').classList.remove('active');
-  document.querySelector('.user-login-notification').innerHTML = '';
+// Eff (dom :: DOM) Credentials
+function disableUserNotificationBox (c) {
+  var notificationElement = document.querySelector('.user-login-notification');
+  if (notificationElement.classList.contains('active')) {
+    notificationElement.classList.remove('active');
+    notificationElement.innerHTML = '';
+  }
+  return c;
 }
 
 function createSessionStep0UrlAndData (z) {
@@ -269,3 +277,7 @@ function setSessionDataInElement (sessionHex) { document.querySelector('#session
 function mkCredentialsObj (z) { return { userID: R.path(['1', '0'], z), password: R.path(['1', '1'], z) }; }
 
 U.documentReady(main);
+
+loginModule = {
+  validatedUserCredentialsStream
+};

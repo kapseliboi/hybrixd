@@ -1,5 +1,6 @@
 var A = animations;
 var U = utils;
+var S = loginInputStreams;
 var POW = proofOfWork_;
 
 var path = 'api';
@@ -41,6 +42,9 @@ function doAssetInitialisation (z) {
 
   var storedUserDataStream = Storage.Get_(userStorageKey('ff00-0035'))
     .map(userDecode)
+    .map(_ => {
+      throw 'meh';
+    })
     .map(storedOrDefaultUserData); // TODO: make pure!
 
   var assetsDetailsStream = storedUserDataStream
@@ -52,14 +56,22 @@ function doAssetInitialisation (z) {
         R.prop('id')
       )(asset);
     })
-    .map(U.addIcon);
+    .map(U.addIcon)
+    .retry(_ => {
+      resetFlipOverAnimation();
+      return Rx.Observable.of(_);
+    });
 
   var initializationStream = Rx.Observable
     .combineLatest(
       storedUserDataStream,
       assetsModesAndNamesStream,
       deterministicHashesResponseProcessStream
-    );
+    )
+    .retry(_ => {
+      resetFlipOverAnimation();
+      return Rx.Observable.of(_);
+    });
 
   var animationStream = Rx.Observable
     .concat(
@@ -71,19 +83,36 @@ function doAssetInitialisation (z) {
     )
     .scan(function (acc, curr) { return acc + 1; })
     .map(function (n) { return n <= ANIMATION_STEPS ? n : ANIMATION_STEPS; })
-    .map(A.doProgressAnimation);
+    .map(A.doProgressAnimation)
+    .retry(_ => {
+      resetFlipOverAnimation();
+      return Rx.Observable.of(_);
+    });
 
   var powQueueIntervalStream = Rx.Observable
     .interval(30000);
 
-  animationStream.subscribe();
-  powQueueIntervalStream.subscribe(function (_) { POW.loopThroughProofOfWork(); }); // once every two minutes, loop through proof-of-work queue
-  initializationStream.subscribe(initialize_);
-  assetsDetailsStream.subscribe(updateAssetDetailsAndRenderDashboardView); // TODO: Separate data retrieval from DOM rendering. Dashboard should be rendered in any case.
+  // animationStream.subscribe();
+  // powQueueIntervalStream.subscribe(function (_) { POW.loopThroughProofOfWork(); }); // once every two minutes, loop through proof-of-work queue
+  // initializationStream.subscribe(initialize_);
+  // assetsDetailsStream.subscribe(updateAssetDetailsAndRenderDashboardView); // TODO: Separate data retrieval from DOM rendering. Dashboard should be rendered in any case.
+  return assetsDetailsStream;
+}
+
+function resetFlipOverAnimation () {
+  document.querySelector('.flipper').classList.remove('active'); // FLIP LOGIN FORM BACK
+  document.querySelector('#generateform').classList.remove('inactive');
+  document.querySelector('#alertbutton').classList.remove('inactive');
+  document.querySelector('#helpbutton').classList.remove('inactive');
+  document.querySelector('.user-login-notification').classList.add('active');
+  document.querySelector('.user-login-notification').innerHTML = 'Something went wrong while loading your wallet. </br> </br> Please try again.';
+  loginModule.validatedUserCredentialsStream.subscribe(loginModule.continueLoginOrNotifyUser);
+  S.credentialsStream.subscribe(loginModule.disableUserNotificationBox);
 }
 
 // EFF ::
 function updateAssetDetailsAndRenderDashboardView (assetDetails) {
+  if (R.equals(assetDetails, 'meh')) { return; }
   GL.initCount += 1; // HACK!
   GL.assets = R.reduce(U.mkUpdatedAssets(assetDetails), [], GL.assets);
 
@@ -111,6 +140,7 @@ function storedOrDefaultUserData (decodeUserData) {
 
 // EFF ::
 function initialize_ (z) {
+  if (R.equals(z, 'meh')) { return; }
   var globalAssets = R.nth(0, z);
   var assetsModesAndNames = R.nth(1, z);
 
