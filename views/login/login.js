@@ -63,17 +63,20 @@ var userSubmitStream = Rx.Observable
     keyDownOnPasswordStream
   );
 
-var bar = S.credentialsStream
+var credentialsStream = S.credentialsStream
   .flatMap(c => Rx.Observable.of(c)
     .map(disableUserNotificationBox));
 
 var validatedUserCredentialsStream = userSubmitStream
-  .withLatestFrom(bar)
+  .withLatestFrom(credentialsStream)
   .map(mkCredentialsObj)
   .map(R.map(U.normalizeUserInput));
 
-var foo = validatedUserCredentialsStream
+// TODO: Research if throw can be used.
+// Now it's failing because .retry doesn't restart fromEvent 'input' events.
+var credentialsOrErrorStream = validatedUserCredentialsStream
   .map(c => {
+    console.log('c = ', c);
     var err = { error: 1, msg: 'It seems the credentials you entered are incorrect. Please check your username and password and try again.' };
     return V.hasValidCredentials(c)
       ? c
@@ -89,14 +92,24 @@ function main () {
   document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
   maybeOpenNewWalletModal(location);
 
-  // S.credentialsStream.subscribe(disableUserNotificationBox);
   keyDownOnUserIDStream.subscribe(function (_) { document.querySelector('#inputPasscode').focus(); });
-  foo.subscribe(z => { console.log('correct, z'); });
-  // .flatMap(continueLoginOrNotifyUser)
+  credentialsOrErrorStream
+    .flatMap(processLoginDetails);
+  // .subscribe();
 }
 
 function processLoginDetails (userCredentials) {
-  var validatedUserCredentialsStream_ = Rx.Observable.of(userCredentials);
+  var validatedUserCredentialsStream_ = Rx.Observable.of(userCredentials)
+    .map(_ => {
+      console.log('_ = ', _);
+      throw 'meh';
+    })
+    .retryWhen(e => {
+      e.pipe(
+        e.tap(console.log(':(')),
+        e.delay(100)
+      );
+    });
 
   var generatedKeysStream =
       validatedUserCredentialsStream_

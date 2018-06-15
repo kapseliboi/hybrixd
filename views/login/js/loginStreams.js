@@ -1,9 +1,21 @@
 var fetch_ = fetch;
 var U = utils;
 
-const userIdInputStr = Rx.Observable
+var userIdInputStr = Rx.Observable
   .fromEvent(document.querySelector('#inputUserID'), 'input')
-  .map(U.getTargetValue);
+  .map(U.getTargetValue)
+  .map(_ => {
+    throw 'Error';
+  })
+  .retryWhen(e => {
+    e.pipe(
+      e.tap(console.log('Something went wrong...')),
+      e.delay(500)
+    );
+  })
+  .subscribe(v => {
+    console.log('Got value, nothing happened.');
+  });
 
 const passwordInputStream = Rx.Observable
   .fromEvent(document.querySelector('#inputPasscode'), 'input')
