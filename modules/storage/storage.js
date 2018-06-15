@@ -2,9 +2,9 @@
 // depends on localforage.nopromises.min.js
 
 var storage = (function() {
-  
+
   var storepath = require('path').normalize(process.cwd()+'/../storage/');
-  
+
   function makeDir(dirname) {
     if (fs.existsSync(dirname)) {
       return true;
@@ -12,7 +12,7 @@ var storage = (function() {
     fs.mkdirSync(dirname);
   }
 
-	var storage = {	  
+	var storage = {
 
     Set : function(storekey, storevalue, meta) {
       try {
@@ -34,11 +34,11 @@ var storage = (function() {
     },
 
     Get : function(storekey, postfunction) {
-      if(typeof storekey=='string') {
+      if(typeof storekey === 'string') {
         var fold = storekey.substr(0,2)+'/';
         if(fs.existsSync(storepath+fold+storekey)) {
           try {
-            if(typeof postfunction == 'function') {
+            if(typeof postfunction === 'function') {
                 postfunction( String(fs.readFileSync(storepath+fold+storekey)) );
                 if(fs.existsSync(storepath+fold+storekey+'.meta')) {
                   var meta = JSON.parse(String(fs.readFileSync(storepath+fold+storekey+'.meta')));
@@ -47,12 +47,12 @@ var storage = (function() {
                 }
             }
           } catch(e) {
-            if(typeof postfunction == 'function') {
+            if(typeof postfunction === 'function') {
               postfunction(null);
             }
           }
-        } else { if(typeof postfunction == 'function') { postfunction(null); } }
-      } else { if(typeof postfunction == 'function') { postfunction(null); } }
+        } else { if(typeof postfunction === 'function') { postfunction(null); } }
+      } else { if(typeof postfunction === 'function') { postfunction(null); } }
     },
 
     Del : function(storekey) {
@@ -65,9 +65,9 @@ var storage = (function() {
         return false;
       }
     },
-    
+
     GetMeta : function(storekey, postfunction) {
-      if(typeof storekey=='string') {
+      if(typeof storekey === 'string') {
         var fold = storekey.substr(0,2)+'/';
         if(fs.existsSync(storepath+fold+storekey+'.meta')) {
           try {
@@ -96,7 +96,7 @@ var storage = (function() {
       } catch(e) {
         return false;
       }
-    },    
+    },
 
     AutoClean : function() {
       console.log(" [.] module storage: storage auto-clean scan");
@@ -126,9 +126,9 @@ var storage = (function() {
                       } catch(e) {
                         console.log(" [!] module storage: failed to purge stale storage " + dataelement);
                       }
-                      
+
                     }
-                  }                  
+                  }
                 }
               });
             });
@@ -136,7 +136,7 @@ var storage = (function() {
         });
       });
       return 1;
-    } 
+    }
 
   }
 

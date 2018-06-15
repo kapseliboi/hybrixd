@@ -2,6 +2,7 @@
   "engine":"storage",
   "name":"Storage engine placeholder.",
   "module":"storage",
+  "cron" : 300,
   "router" : {
     "get":{
       "_ref" : {
