@@ -48,43 +48,49 @@ session_step = 1; // Session step number at the end of login. TODO
 // - Remove Nacl as a global and save in some state
 // - Put Ctrl-S event in Stream
 // - Factor 'path' up
+
 // - Fix HACK for priority queue
 
 var keyDownOnUserIDStream = S.mkInputStream('#inputUserID');
 var keyDownOnPasswordStream = S.mkInputStream('#inputPasscode');
 
-var loginBtnStream = Rx.Observable
-  .fromEvent(document.querySelector('#loginbutton'), 'click')
-  .filter(U.btnIsNotDisabled);
-
-var userSubmitStream = Rx.Observable
-  .merge(
-    loginBtnStream,
-    keyDownOnPasswordStream
+var loginBtnStream = rxjs.fromEvent(document.querySelector('#loginbutton'), 'click')
+  .pipe(
+    rxjs.operators.filter(U.btnIsNotDisabled)
   );
 
+var userSubmitStream = rxjs.merge(
+  loginBtnStream,
+  keyDownOnPasswordStream
+);
+
 var credentialsStream = S.credentialsStream
-  .flatMap(c => Rx.Observable.of(c)
-    .map(disableUserNotificationBox));
+  .pipe(
+    rxjs.operators.map(disableUserNotificationBox)
+  );
 
 var validatedUserCredentialsStream = userSubmitStream
-  .withLatestFrom(credentialsStream)
-  .map(mkCredentialsObj)
-  .map(R.map(U.normalizeUserInput));
+  .pipe(
+    rxjs.operators.withLatestFrom(credentialsStream)
+  );
 
-// TODO: Research if throw can be used.
-// Now it's failing because .retry doesn't restart fromEvent 'input' events.
 var credentialsOrErrorStream = validatedUserCredentialsStream
-  .map(c => {
-    console.log('c = ', c);
-    var err = { error: 1, msg: 'It seems the credentials you entered are incorrect. Please check your username and password and try again.' };
-    return V.hasValidCredentials(c)
-      ? c
-      : notifyUserOfIncorrectCredentials(err);
-  })
-  .filter(R.compose(
-    R.not,
-    R.has('error'))
+  .pipe(
+    rxjs.operators.map(mkCredentialsObj),
+    rxjs.operators.map(R.map(U.normalizeUserInput)),
+    rxjs.operators.switchMap(value => {
+      return rxjs.of(value)
+        .pipe(
+          rxjs.operators.map(c => {
+            if (V.hasValidCredentials(c)) {
+              return c;
+            } else {
+              throw { error: 1, msg: 'It seems the credentials you entered are incorrect. Please check your username and password and try again.' };
+            }
+          }),
+          rxjs.operators.catchError(e => rxjs.of(e))
+        );
+    })
   );
 
 function main () {
@@ -92,94 +98,98 @@ function main () {
   document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
   maybeOpenNewWalletModal(location);
 
-  keyDownOnUserIDStream.subscribe(function (_) { document.querySelector('#inputPasscode').focus(); });
-  credentialsOrErrorStream
-    .flatMap(processLoginDetails);
+  // keyDownOnUserIDStream.subscribe(function (_) { document.querySelector('#inputPasscode').focus(); });
+  credentialsOrErrorStream.subscribe(_ => {
+    R.has('error', _)
+      ? notifyUserOfIncorrectCredentials(_)
+      : console.log('Welcome stranger!');
+  });
+  //   .flatMap(processLoginDetails);
   // .subscribe();
 }
 
-function processLoginDetails (userCredentials) {
-  var validatedUserCredentialsStream_ = Rx.Observable.of(userCredentials)
-    .map(_ => {
-      console.log('_ = ', _);
-      throw 'meh';
-    })
-    .retryWhen(e => {
-      e.pipe(
-        e.tap(console.log(':(')),
-        e.delay(100)
-      );
-    });
+// function processLoginDetails (userCredentials) {
+//   var validatedUserCredentialsStream_ = Rx.Observable.of(userCredentials)
+//     .map(_ => {
+//       console.log('_ = ', _);
+//       throw 'meh';
+//     })
+//     .retryWhen(e => {
+//       e.pipe(
+//         e.tap(console.log(':(')),
+//         e.delay(100)
+//       );
+//     });
 
-  var generatedKeysStream =
-      validatedUserCredentialsStream_
-        .map(mkSessionKeys);
+//   var generatedKeysStream =
+//       validatedUserCredentialsStream_
+//         .map(mkSessionKeys);
 
-  var sessionStepStream = Rx.Observable.of(0); // Make incremental with every call
-  var randomNonceStream = Rx.Observable.of(nacl.crypto_box_random_nonce()); // TODO
+//   var sessionStepStream = Rx.Observable.of(0); // Make incremental with every call
+//   var randomNonceStream = Rx.Observable.of(nacl.crypto_box_random_nonce()); // TODO
 
-  var initialSessionDataStream = Rx.Observable
-    .combineLatest(
-      randomNonceStream,
-      sessionStepStream,
-      generatedKeysStream
-    )
-    .map(createSessionStep0UrlAndData);
+//   var initialSessionDataStream = Rx.Observable
+//     .combineLatest(
+//       randomNonceStream,
+//       sessionStepStream,
+//       generatedKeysStream
+//     )
+//     .map(createSessionStep0UrlAndData);
 
-  var postSessionStep0DataStream =
-      initialSessionDataStream
-        .flatMap(function (initialSessionData) {
-          return Rx.Observable.fromPromise(
-            S.mkSessionStepFetchPromise(initialSessionData, 'postSessionStep0Data')
-          );
-        });
+//   var postSessionStep0DataStream =
+//       initialSessionDataStream
+//         .flatMap(function (initialSessionData) {
+//           return Rx.Observable.fromPromise(
+//             S.mkSessionStepFetchPromise(initialSessionData, 'postSessionStep0Data')
+//           );
+//         });
 
-  var processSessionStep0ReplyStream = Rx.Observable
-    .zip(
-      postSessionStep0DataStream,
-      sessionStepStream // SESSIONSTEP NEEDS TO BE INCREMENTED HERE. Now gets incremented in mkPostSessionStep1Url
-    )
-    .filter(R.compose(
-      V.nonceHasCorrectLength,
-      R.prop('nonce1'),
-      R.nth(0)
-    ))
-    .map(mkPostSessionStep1Url);
+//   var processSessionStep0ReplyStream = Rx.Observable
+//     .zip(
+//       postSessionStep0DataStream,
+//       sessionStepStream // SESSIONSTEP NEEDS TO BE INCREMENTED HERE. Now gets incremented in mkPostSessionStep1Url
+//     )
+//     .filter(R.compose(
+//       V.nonceHasCorrectLength,
+//       R.prop('nonce1'),
+//       R.nth(0)
+//     ))
+//     .map(mkPostSessionStep1Url);
 
-  var postSessionStep1DataStream =
-      processSessionStep0ReplyStream
-        .flatMap(function (sessionData) {
-          return Rx.Observable
-            .fromPromise(
-              S.mkSessionStepFetchPromise(sessionData, 'postSessionStep1Data'));
-        });
+//   var postSessionStep1DataStream =
+//       processSessionStep0ReplyStream
+//         .flatMap(function (sessionData) {
+//           return Rx.Observable
+//             .fromPromise(
+//               S.mkSessionStepFetchPromise(sessionData, 'postSessionStep1Data'));
+//         });
 
-  var processSession1StepDataStream = Rx.Observable
-    .combineLatest(
-      postSessionStep1DataStream,
-      randomNonceStream,
-      generatedKeysStream
-    )
-    .map(mkSessionHexAndNonce);
+//   var processSession1StepDataStream = Rx.Observable
+//     .combineLatest(
+//       postSessionStep1DataStream,
+//       randomNonceStream,
+//       generatedKeysStream
+//     )
+//     .map(mkSessionHexAndNonce);
 
-  var fetchViewStream = Rx.Observable
-    .combineLatest(
-      generatedKeysStream,
-      randomNonceStream,
-      validatedUserCredentialsStream_,
-      processSession1StepDataStream
-    )
-    .map(z => {
-      setCSSTorenderButtonsToDisabled();
-      doFlipOverAnimation();
-      return initialiseAssets(z);
-    });
-    // .flatMap(AssetInitialisationStreams.doAssetInitialisation);
-  // // HACK! :( So that CSS gets rendered immediately and user gets feedback right away.
-  // setTimeout(function () {
-  return fetchViewStream;
-  // }, 500);
-}
+//   var fetchViewStream = Rx.Observable
+//     .combineLatest(
+//       generatedKeysStream,
+//       randomNonceStream,
+//       validatedUserCredentialsStream_,
+//       processSession1StepDataStream
+//     )
+//     .map(z => {
+//       setCSSTorenderButtonsToDisabled();
+//       doFlipOverAnimation();
+//       return initialiseAssets(z);
+//     });
+//     // .flatMap(AssetInitialisationStreams.doAssetInitialisation);
+//   // // HACK! :( So that CSS gets rendered immediately and user gets feedback right away.
+//   // setTimeout(function () {
+//   return fetchViewStream;
+//   // }, 500);
+// }
 
 function initialiseAssets (userSessionData) {
   return;
@@ -202,7 +212,6 @@ function doFlipOverAnimation () {
 function notifyUserOfIncorrectCredentials (err) {
   document.querySelector('.user-login-notification').classList.add('active');
   document.querySelector('.user-login-notification').innerHTML = R.prop('msg', err);
-  return err;
 }
 
 // Eff (dom :: DOM) Credentials
@@ -287,10 +296,12 @@ function maybeOpenNewWalletModal (location) {
 
 function mkSessionKeys (credentials) { return C.generateKeys(R.prop('password', credentials), R.prop('userID', credentials), 0); }
 function setSessionDataInElement (sessionHex) { document.querySelector('#session_data').textContent = sessionHex; }
-function mkCredentialsObj (z) { return { userID: R.path(['1', '0'], z), password: R.path(['1', '1'], z) }; }
+function mkCredentialsObj (z) {
+  return { userID: R.path(['1', '0'], z), password: R.path(['1', '1'], z) };
+}
 
 U.documentReady(main);
 
-loginModule = {
-  validatedUserCredentialsStream
-};
+// loginModule = {
+//   validatedUserCredentialsStream
+// };

@@ -47,103 +47,104 @@ function blink (target) {
   }
 }
 
-var blinkAnimationStream = Rx.Observable
-  .interval(750)
-  .map(function (_) { blink('arc0'); });
+// var blinkAnimationStream = interval(750)
+//   .pipe(
+//     map(function (_) { blink('arc0'); })
+//   );
 
-var rotateLoginStream = Rx.Observable
-  .interval(1000)
-  .startWith(0)
-  .map(R.compose(
-    rotateLogin,
-    R.modulo(4)
-  ));
+// var rotateLoginStream = Rx.Observable
+//   .interval(1000)
+//   .startWith(0)
+//   .map(R.compose(
+//     rotateLogin,
+//     R.modulo(4)
+//   ));
 
-var dialLoginStream = Rx.Observable
-  .interval(1000)
-  .startWith(0)
-  .map(R.compose(
-    dialLogin,
-    R.modulo(4)
-  ));
+// var dialLoginStream = Rx.Observable
+//   .interval(1000)
+//   .startWith(0)
+//   .map(R.compose(
+//     dialLogin,
+//     R.modulo(4)
+//   ));
 
-function rotateLogin (turn) {
-  var el = document.querySelector('#arc3');
-  var bgcl = 'transparent';
+// function rotateLogin (turn) {
+//   var el = document.querySelector('#arc3');
+//   var bgcl = 'transparent';
 
-  if (el != null) {
-    if (el.style['border-left'] === '1px solid ' + bgcl) {
-      el.style['border-left'] = '1px solid';
-      el.style['border-right'] = '1px solid';
-      el.style['border-top'] = '1px solid ' + bgcl;
-      el.style['border-bottom'] = '1px solid ' + bgcl;
-    } else {
-      el.style['border-left'] = '1px solid ' + bgcl;
-      el.style['border-right'] = '1px solid ' + bgcl;
-      el.style['border-top'] = '1px solid';
-      el.style['border-bottom'] = '1px solid';
-    }
-  }
-}
+//   if (el != null) {
+//     if (el.style['border-left'] === '1px solid ' + bgcl) {
+//       el.style['border-left'] = '1px solid';
+//       el.style['border-right'] = '1px solid';
+//       el.style['border-top'] = '1px solid ' + bgcl;
+//       el.style['border-bottom'] = '1px solid ' + bgcl;
+//     } else {
+//       el.style['border-left'] = '1px solid ' + bgcl;
+//       el.style['border-right'] = '1px solid ' + bgcl;
+//       el.style['border-top'] = '1px solid';
+//       el.style['border-bottom'] = '1px solid';
+//     }
+//   }
+// }
 
-function dialLogin (turn) {
-  var el = document.querySelector('#arc2');
-  var bgcl = 'transparent';
+// function dialLogin (turn) {
+//   var el = document.querySelector('#arc2');
+//   var bgcl = 'transparent';
 
-  if (el != null) {
-    if (turn === 0) {
-      el.style['border-left'] = '1px solid';
-      el.style['border-top'] = '1px solid ' + bgcl;
-      el.style['border-right'] = '1px solid ' + bgcl;
-      el.style['border-bottom'] = '1px solid ' + bgcl;
-    }
-    if (turn === 1) {
-      el.style['border-left'] = '1px solid';
-      el.style['border-top'] = '1px solid';
-      el.style['border-right'] = '1px solid ' + bgcl;
-      el.style['border-bottom'] = '1px solid ' + bgcl;
-    }
-    if (turn === 2) {
-      el.style['border-left'] = '1px solid';
-      el.style['border-top'] = '1px solid';
-      el.style['border-right'] = '1px solid';
-      el.style['border-bottom'] = '1px solid ' + bgcl;
-    }
-    if (turn === 3) {
-      el.style['border-left'] = '1px solid';
-      el.style['border-top'] = '1px solid';
-      el.style['border-right'] = '1px solid';
-      el.style['border-bottom'] = '1px solid';
-    }
-  }
-}
+//   if (el != null) {
+//     if (turn === 0) {
+//       el.style['border-left'] = '1px solid';
+//       el.style['border-top'] = '1px solid ' + bgcl;
+//       el.style['border-right'] = '1px solid ' + bgcl;
+//       el.style['border-bottom'] = '1px solid ' + bgcl;
+//     }
+//     if (turn === 1) {
+//       el.style['border-left'] = '1px solid';
+//       el.style['border-top'] = '1px solid';
+//       el.style['border-right'] = '1px solid ' + bgcl;
+//       el.style['border-bottom'] = '1px solid ' + bgcl;
+//     }
+//     if (turn === 2) {
+//       el.style['border-left'] = '1px solid';
+//       el.style['border-top'] = '1px solid';
+//       el.style['border-right'] = '1px solid';
+//       el.style['border-bottom'] = '1px solid ' + bgcl;
+//     }
+//     if (turn === 3) {
+//       el.style['border-left'] = '1px solid';
+//       el.style['border-top'] = '1px solid';
+//       el.style['border-right'] = '1px solid';
+//       el.style['border-bottom'] = '1px solid';
+//     }
+//   }
+// }
 
-var animationStream = Rx.Observable
-  .merge(
-    blinkAnimationStream,
-    rotateLoginStream,
-    dialLoginStream
-  );
+// var animationStream = Rx.Observable
+//   .merge(
+//     blinkAnimationStream,
+//     rotateLoginStream,
+//     dialLoginStream
+//   );
 
-function doProgressAnimation (step) {
-  var elemExists = R.not(R.isNil(document.querySelector('.progress-bar'))) &&
-                   R.not(R.isNil(document.querySelector('.progress-text')));
-  if (elemExists) {
-    document.querySelector('.progress-bar').style.width = R.path([step, 'weight'], progressMessages);
-    document.querySelector('.progress-text').innerHTML = R.path([step, 'message'], progressMessages);
-  }
-}
+// function doProgressAnimation (step) {
+//   var elemExists = R.not(R.isNil(document.querySelector('.progress-bar'))) &&
+//                    R.not(R.isNil(document.querySelector('.progress-text')));
+//   if (elemExists) {
+//     document.querySelector('.progress-bar').style.width = R.path([step, 'weight'], progressMessages);
+//     document.querySelector('.progress-text').innerHTML = R.path([step, 'message'], progressMessages);
+//   }
+// }
 
-function disposeCurrentDisposable (disposable) { disposable.dispose(); }
-function startLoginAnimation () { return animationStream.subscribe(); }
-function stopLoginAnimation (d) {
-  R.forEach(disposeCurrentDisposable, R.path(['m', 'current', 'disposables'], d));
-  d.dispose();
-}
+// function disposeCurrentDisposable (disposable) { disposable.dispose(); }
+// function startLoginAnimation () { return animationStream.subscribe(); }
+// function stopLoginAnimation (d) {
+//   R.forEach(disposeCurrentDisposable, R.path(['m', 'current', 'disposables'], d));
+//   d.dispose();
+// }
 
 animations = {
-  startLoginAnimation,
-  stopLoginAnimation,
-  doProgressAnimation,
+  // startLoginAnimation,
+  // stopLoginAnimation,
+  // doProgressAnimation,
   progressMessages
 };
