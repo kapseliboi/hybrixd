@@ -5,7 +5,6 @@
     "_this" : "List all available assets",
     "_ref":{
       "_list":"asset",
-      "address":"TODO",
       "balance":{
         "_ref" : {
           "_list" : "address",
@@ -22,6 +21,10 @@
             {"error":0,"info":"Process data.","id":"1519829634775083","progress":1,"started":1519829634775,"stopped":1519829634778,"data":"0xf230b790E05390FC8295F4d3F60332c93BEd42e2"}
           ]
         }
+      },
+      "cron":{
+        "_access" : "root",
+        "_this" : "Perform scheduled tasks."
       },
       "details":{
         "_this": "Retrieve the details TODO",
@@ -46,6 +49,10 @@
           "_this":"Push a signed transaction to the blockchain.",
           "_response" : "{\"error\":0,\"info\":\"Process data.\",\"id\":\"1519830244168082\",\"progress\":1,\"started\":1519830244168,\"stopped\":1519830244173,\"data\":$TRANSACTION_ID}"
         }
+      },
+      "init":{
+        "_access" : "root",
+        "_this" : "Perform initialization tasks."
       },
       "keygen-base":{
         "_this": "Retrieve the keygen-base TODO",
