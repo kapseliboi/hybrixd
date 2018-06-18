@@ -37,8 +37,8 @@ hy_content += '<script>' + fs.readFileSync('./js/globals.js') + '</script>';
 hy_content += '<script>' + fs.readFileSync('./js/animations.js') + '</script>'; // Add login animations
 hy_content += '<script>' + fs.readFileSync('./js/loginStreams.js') + '</script>';
 hy_content += '<script>' + fs.readFileSync('./js/Validations/validations.js') + '</script>'; // Add login animations
-hy_content += '<script>' + fs.readFileSync('./js/AssetInitialisationStreams/assetInitialisationStreams.js') + '</script>'; // Add login validations
 hy_content += '<script>' + fs.readFileSync('./js/UserCredentialValidation/UserCredentialValidation.js') + '</script>'; // Add login validations
+hy_content += '<script>' + fs.readFileSync('./js/AssetInitialisationStreams/assetInitialisationStreams.js') + '</script>'; // Add login validations
 hy_content += '<script>' + fs.readFileSync('./js/BrowserSupport/browserSupport.js') + '</script>'; // Add login validations
 hy_content += '<script>' + fs.readFileSync('./js/validations.js') + '</script>'; // Add login validations
 

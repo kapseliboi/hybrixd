@@ -78,14 +78,7 @@ function handle (assets) {
     }(assets));
 }
 
-function notifyUserOfIncorrectCredentials (err) {
-  console.log('err = ', err);
-  document.querySelector('.user-login-notification').classList.add('active');
-  document.querySelector('.user-login-notification').innerHTML = R.prop('msg', err);
-}
-
 function processLoginDetails (userCredentials) {
-  console.log('userCredentials = ', userCredentials);
   var validatedUserCredentialsStream_ = rxjs.of(userCredentials)
     .pipe(
       rxjs.operators.tap(function (_) { doFlipOverAnimation(); })

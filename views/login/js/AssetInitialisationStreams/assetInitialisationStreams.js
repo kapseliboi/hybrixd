@@ -2,6 +2,7 @@ var A = animations;
 var U = utils;
 var S = loginInputStreams;
 var POW = proofOfWork_;
+var UserCredentialsValidation = userCredentialsValidation;
 
 var path = 'api';
 
@@ -35,30 +36,60 @@ function doAssetInitialisation (z) {
   var deterministicHashesStream = rxjs
     .from(hybriddcall({r: '/s/deterministic/hashes', z: true}))
     .pipe(
-      rxjs.operators.filter(R.propEq('error', 0))
+      rxjs.operators.switchMap(value => {
+        return rxjs.of(value)
+          .pipe(
+            rxjs.operators.map(function (deterministicHashesResponse) {
+              if (R.not(R.propEq('error', 0))) {
+                throw { error: 1, msg: 'Could not start process.'};
+              } else {
+                return deterministicHashesResponse;
+              }
+            }),
+            rxjs.operators.catchError(e => rxjs.of(e)
+              .pipe(
+                rxjs.operators.tap(resetFlipOverAnimation),
+                rxjs.operators.tap(function (_) {
+                  UserCredentialsValidation.setCSSTorenderButtonsToEnabled();
+                })
+              )
+            )
+          );
+      }),
+      rxjs.operators.filter(R.compose(
+        R.propEq('error', 0)
+      ))
     );
 
   var deterministicHashesResponseProcessStream = deterministicHashesStream
     .pipe(
-      rxjs.operators.flatMap(function (properties) {
-        return rxjs
-          .from(hybriddReturnProcess(properties));
-      }),
-      rxjs.operators.map(R.when(
-        R.propEq('error', 1),
-        function (_) { throw _; }
-      )),
-      // rxjs.operators.map(_ => {
-      //   throw { error: 1, msg: 'meh'};
-      // }),
       rxjs.operators.switchMap(value => {
         return rxjs.of(value)
           .pipe(
-            rxjs.operators.catchError(e => rxjs.of(e))
+            rxjs.operators.flatMap(function (properties) {
+              return rxjs
+                .from(hybriddReturnProcess(properties));
+            }),
+            rxjs.operators.map(function (deterministicHashesProcessResponse) {
+              if (R.not(R.propEq('error', 0, deterministicHashesProcessResponse))) {
+                throw { error: 1, msg: 'Error retrieving process.'};
+              } else {
+                return deterministicHashesProcessResponse;
+              }
+            }),
+            rxjs.operators.catchError(e => rxjs.of(e)
+              .pipe(
+                rxjs.operators.tap(resetFlipOverAnimation),
+                rxjs.operators.tap(function (_) { UserCredentialsValidation.setCSSTorenderButtonsToEnabled(); })
+              )
+            )
           );
       }),
+      rxjs.operators.filter(R.compose(
+        R.propEq('error', 0)
+      )),
       rxjs.operators.map(R.prop('data')), // VALIDATE?
-      rxjs.operators.map(function (deterministicHashes) { assets.modehashes = deterministicHashes; }) // TODO: Make storedUserStream dependent on this stream!
+      rxjs.operators.map(function (deterministicHashes) { assets.modehashes = deterministicHashes; }) // TODO: Make storedUserStream dependent on this stream! USE TAP
     );
 
   var storedUserDataStream = Storage.Get_(userStorageKey('ff00-0035'))
@@ -130,15 +161,13 @@ function doAssetInitialisation (z) {
   return assetsDetailsStream;
 }
 
-function resetFlipOverAnimation () {
+function resetFlipOverAnimation (e) {
   document.querySelector('.flipper').classList.remove('active'); // FLIP LOGIN FORM BACK
   document.querySelector('#generateform').classList.remove('inactive');
   document.querySelector('#alertbutton').classList.remove('inactive');
   document.querySelector('#helpbutton').classList.remove('inactive');
   document.querySelector('.user-login-notification').classList.add('active');
-  document.querySelector('.user-login-notification').innerHTML = 'Something went wrong while loading your wallet. </br> </br> Please try again.';
-  loginModule.validatedUserCredentialsStream.subscribe(loginModule.continueLoginOrNotifyUser);
-  S.credentialsStream.subscribe(loginModule.disableUserNotificationBox);
+  document.querySelector('.user-login-notification').innerHTML = R.prop('msg', e);
 }
 
 // EFF ::

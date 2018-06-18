@@ -31,7 +31,7 @@ var credentialsOrErrorStream = validatedUserCredentialsStream
   .pipe(
     rxjs.operators.map(mkCredentialsObj),
     rxjs.operators.map(R.map(U.normalizeUserInput)),
-    rxjs.operators.switchMap(value => {
+    rxjs.operators.switchMap(function (value) {
       return rxjs.of(value)
         .pipe(
           rxjs.operators.map(c => {
@@ -89,5 +89,6 @@ function setCSSTorenderButtonsToDisabled () {
 function mkCredentialsObj (z) { return { userID: R.path(['1', '0'], z), password: R.path(['1', '1'], z) }; }
 
 userCredentialsValidation = {
-  credentialsOrErrorStream
+  credentialsOrErrorStream,
+  setCSSTorenderButtonsToEnabled
 };
