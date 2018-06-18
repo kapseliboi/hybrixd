@@ -54,6 +54,7 @@ hy_page += '<script>' + fs.readFileSync('./../interface/js/deterministic.js') + 
 hy_page += '<script>' + fs.readFileSync('./../interface/js/ychan.js') + '</script>';
 hy_page += '<script>' + fs.readFileSync('./../interface/js/zchan.js') + '</script>';
 hy_page += '<script>' + fs.readFileSync('./../interface/js/proofOfWork.js') + '</script>';
+hy_page += '<script>' + fs.readFileSync('./../interface/js/storage_.js') + '</script>';
 hy_page += '<script>' + fs.readFileSync('./../interface/js/storage.js') + '</script>';
 hy_page += '<script>' + fs.readFileSync('./../interface/js/hybriddcall.js') + '</script>';
 hy_page += '<script>' + fs.readFileSync('./../interface/js/assetInitialization.js') + '</script>';
@@ -69,7 +70,6 @@ hy_page += '<script>' + fs.readFileSync('./ramda.min.js') + '</script>';
 
 // RxJS
 hy_page += '<script>' + fs.readFileSync('./rx.min.js') + '</script>';
-
 // COMMON UTILS BETWEEN WEB AND CLI WALLET
 hy_page += '<script>' + fs.readFileSync('./../../common/index.js') + '</script>';
 

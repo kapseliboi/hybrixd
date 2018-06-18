@@ -4,27 +4,27 @@ const U = utils;
 const S = loginInputStreams;
 
 // TODO: Give back some feedback to the user about incorrect credentials????
-const loginFormStateStream = S.credentialsStream
-  .map(R.map(U.normalizeUserInput))
-  .map(validateZippedCredentials)
-  .map(renderLoginFormState);
+// const loginFormStateStream = S.credentialsStream
+//   .map(R.map(U.normalizeUserInput))
+//   .map(validateZippedCredentials)
+//   .map(renderLoginFormState);
 
-function renderLoginFormState (hasValidCredentials) {
-  const borderColor = hasValidCredentials ? '#D9E3EB' : 'transparent';
-  const addOrRemove = hasValidCredentials ? 'remove' : 'add';
+// function renderLoginFormState (hasValidCredentials) {
+//   const borderColor = hasValidCredentials ? '#D9E3EB' : 'transparent';
+//   const addOrRemove = hasValidCredentials ? 'remove' : 'add';
 
-  renderLoginFormToEnabledState(addOrRemove, borderColor);
-}
+//   renderLoginFormToEnabledState(addOrRemove, borderColor);
+// }
 
-function renderLoginFormToEnabledState (addOrRemove, color) {
-  document.querySelector('#loginbutton').classList[addOrRemove]('disabled');
-  document.querySelector('#loginform input[type=text]').style.borderColor = color;
-  document.querySelector('#loginform input[type=password]').style.borderColor = color;
-}
+// function renderLoginFormToEnabledState (addOrRemove, color) {
+//   document.querySelector('#loginbutton').classList[addOrRemove]('disabled');
+//   document.querySelector('#loginform input[type=text]').style.borderColor = color;
+//   document.querySelector('#loginform input[type=password]').style.borderColor = color;
+// }
 
-function validateZippedCredentials (z) {
-  return V.validateCredentials(z[0], z[1]);
-}
+// function validateZippedCredentials (z) {
+//   return V.validateCredentials(z[0], z[1]);
+// }
 
 function alertbutton () {
   alert('<div class="alert-header">⚠</div><br><h2>WARNING: Do not store large value in this wallet!</h2><br>We\'re making every effort towards a secure design, and do not store any wallet file or data on this computer. Regardless, we cannot guarantee the security of your cryptocurrency in this stage of the project!<br><br>', {title: '', button: 'Yes, I understand'});

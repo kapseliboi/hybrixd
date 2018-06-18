@@ -20,60 +20,86 @@ function doAssetInitialisation (z) {
   GL.cur_step = nextStep();
   var assetsModesUrl = path + zchan(GL.usercrypto, GL.cur_step, 'l/asset/details');
 
-  var assetsModesAndNamesStream = Rx.Observable
-    .fromPromise(U.fetchDataFromUrl(assetsModesUrl, 'Error retrieving asset details.'))
-    .map(decryptData);
+  var assetsModesAndNamesStream = rxjs
+    .from(U.fetchDataFromUrl(assetsModesUrl, 'Error retrieving asset details.'))
+    .pipe(
+      rxjs.operators.map(decryptData)
+    );
 
-  var initialAnimationStateStream = Rx.Observable.interval(200)
-    .startWith(0)
-    .take(2);
+  var initialAnimationStateStream = rxjs.interval(200)
+    .pipe(
+      rxjs.operators.startWith(0),
+      rxjs.operators.take(2)
+    );
 
-  var deterministicHashesStream = Rx.Observable
-    .fromPromise(hybriddcall({r: '/s/deterministic/hashes', z: true}))
-    .filter(R.propEq('error', 0));
+  var deterministicHashesStream = rxjs
+    .from(hybriddcall({r: '/s/deterministic/hashes', z: true}))
+    .pipe(
+      rxjs.operators.filter(R.propEq('error', 0))
+    );
 
   var deterministicHashesResponseProcessStream = deterministicHashesStream
-    .flatMap(function (properties) {
-      return Rx.Observable
-        .fromPromise(hybriddReturnProcess(properties));
-    })
-    .map(R.prop('data')) // VALIDATE?
-    .map(function (deterministicHashes) { assets.modehashes = deterministicHashes; }); // TODO: Make storedUserStream dependent on this stream!
+    .pipe(
+      rxjs.operators.flatMap(function (properties) {
+        return rxjs
+          .from(hybriddReturnProcess(properties));
+      }),
+      rxjs.operators.map(R.when(
+        R.propEq('error', 1),
+        function (_) { throw _; }
+      )),
+      rxjs.operators.switchMap(value => {
+        return rxjs.of(value)
+          .pipe(
+            rxjs.operators.catchError(e => rxjs.of(e))
+          );
+      }),
+      rxjs.operators.map(R.prop('data')), // VALIDATE?
+      rxjs.operators.map(function (deterministicHashes) { assets.modehashes = deterministicHashes; }) // TODO: Make storedUserStream dependent on this stream!
+    );
 
   var storedUserDataStream = Storage.Get_(userStorageKey('ff00-0035'))
-    .map(userDecode)
-    .map(_ => {
-      throw 'meh';
-    })
-    .map(storedOrDefaultUserData); // TODO: make pure!
+    .pipe(
+      rxjs.operators.map(userDecode),
+      rxjs.operators.map(storedOrDefaultUserData) // TODO: make pure!
+    );
 
-  var assetsDetailsStream = storedUserDataStream
-    .flatMap(a => a) // Flatten Array structure...
-    .filter(existsInAssetNames) // TODO: Now REMOVES assets that have been disabed in the backed. Need to disable / notify user when this occurs.
-    .flatMap(function (asset) {
-      return R.compose(
-        initializeAsset(asset),
-        R.prop('id')
-      )(asset);
-    })
-    .map(U.addIcon)
-    .retry(_ => {
-      resetFlipOverAnimation();
-      return Rx.Observable.of(_);
-    });
-
-  var initializationStream = Rx.Observable
+  var initializationStream = rxjs
     .combineLatest(
       storedUserDataStream,
       assetsModesAndNamesStream,
       deterministicHashesResponseProcessStream
     )
-    .retry(_ => {
-      resetFlipOverAnimation();
-      return Rx.Observable.of(_);
-    });
+    .pipe(
+      rxjs.operators.tap(initialize_)
+    );
 
-  var animationStream = Rx.Observable
+  var assetsDetailsStream = initializationStream
+    .pipe(
+      rxjs.operators.flatMap(function (initializedData) {
+        return rxjs.of(initializedData)
+          .pipe(
+            rxjs.operators.map(R.nth(0)),
+            rxjs.operators.flatMap(a => a), // Flatten Array structure...
+            rxjs.operators.filter(existsInAssetNames), // TODO: Now REMOVES assets that have been disabled in the backend. Need to disable / notify user when this occurs.
+            rxjs.operators.flatMap(function (asset) {
+              return R.compose(
+                initializeAsset(asset),
+                R.prop('id')
+              )(asset);
+            }),
+            rxjs.operators.map(U.addIcon),
+            rxjs.operators.bufferCount(R.length(R.nth(0, initializedData)))
+          );
+      })
+    );
+
+    // .retry(_ => {
+    //   resetFlipOverAnimation();
+    //   return Rx.Observable.of(_);
+    // });
+
+  var animationStream = rxjs
     .concat(
       initialAnimationStateStream,
       storedUserDataStream,
@@ -81,15 +107,17 @@ function doAssetInitialisation (z) {
       deterministicHashesResponseProcessStream,
       assetsDetailsStream
     )
-    .scan(function (acc, curr) { return acc + 1; })
-    .map(function (n) { return n <= ANIMATION_STEPS ? n : ANIMATION_STEPS; })
-    .map(A.doProgressAnimation)
-    .retry(_ => {
-      resetFlipOverAnimation();
-      return Rx.Observable.of(_);
-    });
+    .pipe(
+      rxjs.operators.scan(function (acc, curr) { return acc + 1; }),
+      rxjs.operators.map(function (n) { return n <= ANIMATION_STEPS ? n : ANIMATION_STEPS; }),
+      rxjs.operators.map(A.doProgressAnimation),
+      rxjs.operators.retry(_ => {
+        resetFlipOverAnimation();
+        return rxjs.of(_);
+      })
+    );
 
-  var powQueueIntervalStream = Rx.Observable
+  var powQueueIntervalStream = rxjs
     .interval(30000);
 
   // animationStream.subscribe();
@@ -140,7 +168,6 @@ function storedOrDefaultUserData (decodeUserData) {
 
 // EFF ::
 function initialize_ (z) {
-  if (R.equals(z, 'meh')) { return; }
   var globalAssets = R.nth(0, z);
   var assetsModesAndNames = R.nth(1, z);
 
@@ -148,6 +175,8 @@ function initialize_ (z) {
   GL.assetmodes = mkAssetData(assetsModesAndNames, 'mode');
   initializeGlobalAssets(globalAssets);
   Storage.Set(userStorageKey('ff00-0035'), userEncode(globalAssets));
+
+  return z;
 }
 
 function initializeGlobalAssets (assets) {
