@@ -62,7 +62,8 @@ function main () {
   keyDownOnUserIDStream.subscribe(function (_) { document.querySelector('#inputPasscode').focus(); });
   UserCredentialsValidation.credentialsOrErrorStream
     .pipe(
-      rxjs.operators.flatMap(processLoginDetails)
+      rxjs.operators.flatMap(processLoginDetails),
+      rxjs.operators.flatMap(initialiseAssets)
     )
     .subscribe(handle);
 }
@@ -77,8 +78,18 @@ function handle (assets) {
     }(assets));
 }
 
+function notifyUserOfIncorrectCredentials (err) {
+  console.log('err = ', err);
+  document.querySelector('.user-login-notification').classList.add('active');
+  document.querySelector('.user-login-notification').innerHTML = R.prop('msg', err);
+}
+
 function processLoginDetails (userCredentials) {
-  var validatedUserCredentialsStream_ = rxjs.of(userCredentials);
+  console.log('userCredentials = ', userCredentials);
+  var validatedUserCredentialsStream_ = rxjs.of(userCredentials)
+    .pipe(
+      rxjs.operators.tap(function (_) { doFlipOverAnimation(); })
+    );
 
   var generatedKeysStream =
       validatedUserCredentialsStream_
@@ -174,16 +185,9 @@ function processLoginDetails (userCredentials) {
     randomNonceStream,
     validatedUserCredentialsStream_,
     processSession1StepDataStream
-  )
-    .pipe(
-      rxjs.operators.flatMap(z => {
-        setCSSTorenderButtonsToDisabled();
-        doFlipOverAnimation();
-        return initialiseAssets(z);
-      })
-    );
+  );
 
-    // .flatMap(AssetInitialisationStreams.doAssetInitialisation);
+  // .flatMap(AssetInitialisationStreams.doAssetInitialisation);
   // // HACK! :( So that CSS gets rendered immediately and user gets feedback right away.
   // setTimeout(function () {
   return fetchViewStream;
@@ -197,20 +201,6 @@ function initialiseAssets (userSessionData) {
     userid: R.path(['2', 'userID'], userSessionData)
   };
   return AssetInitialisationStreams.doAssetInitialisation(userSessionData);
-}
-
-function doFlipOverAnimation () {
-  document.querySelector('.flipper').classList.add('active'); // FLIP LOGIN FORM
-  document.querySelector('#generateform').classList.add('inactive');
-  document.querySelector('#alertbutton').classList.add('inactive');
-  document.querySelector('#helpbutton').classList.add('inactive');
-}
-
-// Eff (dom :: DOM) Error
-function notifyUserOfIncorrectCredentials (err) {
-  console.log('err = ', err);
-  document.querySelector('.user-login-notification').classList.add('active');
-  document.querySelector('.user-login-notification').innerHTML = R.prop('msg', err);
 }
 
 function createSessionStep0UrlAndData (z) {
@@ -265,14 +255,6 @@ function handleCtrlSKeyEvent (e) {
   return true;
 }
 
-function setCSSTorenderButtonsToDisabled () {
-  document.querySelector('#loginbutton .spinner-loader').classList.add('active');
-  document.querySelector('#loginbutton').classList.add('disabled');
-  document.querySelector('#loginwrap').innerHTML = '';
-  document.querySelector('#generatebutton').setAttribute('disabled', 'disabled');
-  document.querySelector('#helpbutton').setAttribute('disabled', 'disabled');
-}
-
 function maybeOpenNewWalletModal (location) {
   if (location.href.indexOf('#') !== -1) {
     var locationHref = location.href.substr(location.href.indexOf('#'));
@@ -281,6 +263,13 @@ function maybeOpenNewWalletModal (location) {
       document.getElementById('newaccountmodal').style.display = 'block';
     }
   }
+}
+
+function doFlipOverAnimation () {
+  document.querySelector('.flipper').classList.add('active'); // FLIP LOGIN FORM
+  document.querySelector('#generateform').classList.add('inactive');
+  document.querySelector('#alertbutton').classList.add('inactive');
+  document.querySelector('#helpbutton').classList.add('inactive');
 }
 
 function mkSessionKeys (credentials) { return C.generateKeys(R.prop('password', credentials), R.prop('userID', credentials), 0); }

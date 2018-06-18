@@ -48,6 +48,9 @@ function doAssetInitialisation (z) {
         R.propEq('error', 1),
         function (_) { throw _; }
       )),
+      // rxjs.operators.map(_ => {
+      //   throw { error: 1, msg: 'meh'};
+      // }),
       rxjs.operators.switchMap(value => {
         return rxjs.of(value)
           .pipe(
