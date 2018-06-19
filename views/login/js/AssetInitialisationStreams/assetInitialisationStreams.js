@@ -46,15 +46,7 @@ function doAssetInitialisation (z) {
                 return deterministicHashesResponse;
               }
             }),
-            rxjs.operators.catchError(function (e) {
-              return rxjs.of(e)
-                .pipe(
-                  rxjs.operators.tap(resetFlipOverAnimation),
-                  rxjs.operators.tap(function (_) { UserCredentialsValidation.setCSSTorenderButtonsToEnabled(); }),
-                  rxjs.operators.tap(function (_) { toggleLoginSpinner('remove'); }),
-                  rxjs.operators.tap(function (_) { setLoginButtonText('Sign in'); })
-                );
-            })
+            rxjs.operators.catchError(resetLoginFlipOverErrorStream)
           );
       }),
       rxjs.operators.filter(R.propEq('error', 0))
@@ -76,15 +68,7 @@ function doAssetInitialisation (z) {
                 return deterministicHashesProcessResponse;
               }
             }),
-            rxjs.operators.catchError(function (e) {
-              return rxjs.of(e)
-                .pipe(
-                  rxjs.operators.tap(resetFlipOverAnimation),
-                  rxjs.operators.tap(function (_) { UserCredentialsValidation.setCSSTorenderButtonsToEnabled(); }),
-                  rxjs.operators.tap(function (_) { toggleLoginSpinner('remove'); }),
-                  rxjs.operators.tap(function (_) { setLoginButtonText('Sign in'); })
-                );
-            })
+            rxjs.operators.catchError(resetLoginFlipOverErrorStream)
           );
       }),
       rxjs.operators.filter(R.propEq('error', 0)),
@@ -170,6 +154,16 @@ resetFlipOverAnimation = function (e) {
   document.querySelector('.user-login-notification').classList.add('active');
   document.querySelector('.user-login-notification').innerHTML = R.prop('msg', e);
 };
+
+function resetLoginFlipOverErrorStream (e) {
+  return rxjs.of(e)
+    .pipe(
+      rxjs.operators.tap(resetFlipOverAnimation),
+      rxjs.operators.tap(function (_) { UserCredentialsValidation.setCSSTorenderButtonsToEnabled(); }),
+      rxjs.operators.tap(function (_) { toggleLoginSpinner('remove'); }),
+      rxjs.operators.tap(function (_) { setLoginButtonText('Sign in'); })
+    );
+}
 
 // EFF ::
 function updateAssetDetailsAndRenderDashboardView (assetDetails) {
