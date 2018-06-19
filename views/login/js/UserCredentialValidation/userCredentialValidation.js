@@ -43,7 +43,9 @@ var credentialsOrErrorStream = validatedUserCredentialsStream
           }),
           rxjs.operators.catchError(e => rxjs.of(e)
             .pipe(
-              rxjs.operators.tap(notifyUserOfIncorrectCredentials)
+              rxjs.operators.tap(notifyUserOfIncorrectCredentials),
+              rxjs.operators.tap(function (_) { toggleLoginSpinner('remove'); }),
+              rxjs.operators.tap(function (_) { setLoginButtonText('Sign in'); })
             ))
         );
     }),
@@ -70,12 +72,18 @@ function disableUserNotificationBox (c) {
   return c;
 }
 
+function toggleLoginSpinner (addOrRemove) {
+  document.querySelector('#loginbutton .spinner-loader').classList[addOrRemove]('active');
+}
+
 function setCSSTorenderButtonsToEnabled () {
-  document.querySelector('#loginbutton .spinner-loader').classList.remove('active');
   document.querySelector('#loginbutton').classList.remove('disabled');
-  document.querySelector('#loginwrap').innerHTML = 'Sign in';
   document.querySelector('#generatebutton').removeAttribute('disabled');
   document.querySelector('#helpbutton').removeAttribute('disabled');
+}
+
+function setLoginButtonText (str) {
+  document.querySelector('#loginwrap').innerHTML = str;
 }
 
 function setCSSTorenderButtonsToDisabled () {

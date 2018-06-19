@@ -46,14 +46,15 @@ function doAssetInitialisation (z) {
                 return deterministicHashesResponse;
               }
             }),
-            rxjs.operators.catchError(e => rxjs.of(e)
-              .pipe(
-                rxjs.operators.tap(resetFlipOverAnimation),
-                rxjs.operators.tap(function (_) {
-                  UserCredentialsValidation.setCSSTorenderButtonsToEnabled();
-                })
-              )
-            )
+            rxjs.operators.catchError(function (e) {
+              return rxjs.of(e)
+                .pipe(
+                  rxjs.operators.tap(resetFlipOverAnimation),
+                  rxjs.operators.tap(function (_) { UserCredentialsValidation.setCSSTorenderButtonsToEnabled(); }),
+                  rxjs.operators.tap(function (_) { toggleLoginSpinner('remove'); }),
+                  rxjs.operators.tap(function (_) { setLoginButtonText('Sign in'); })
+                );
+            })
           );
       }),
       rxjs.operators.filter(R.propEq('error', 0))
@@ -75,12 +76,15 @@ function doAssetInitialisation (z) {
                 return deterministicHashesProcessResponse;
               }
             }),
-            rxjs.operators.catchError(e => rxjs.of(e)
-              .pipe(
-                rxjs.operators.tap(resetFlipOverAnimation),
-                rxjs.operators.tap(function (_) { UserCredentialsValidation.setCSSTorenderButtonsToEnabled(); })
-              )
-            )
+            rxjs.operators.catchError(function (e) {
+              return rxjs.of(e)
+                .pipe(
+                  rxjs.operators.tap(resetFlipOverAnimation),
+                  rxjs.operators.tap(function (_) { UserCredentialsValidation.setCSSTorenderButtonsToEnabled(); }),
+                  rxjs.operators.tap(function (_) { toggleLoginSpinner('remove'); }),
+                  rxjs.operators.tap(function (_) { setLoginButtonText('Sign in'); })
+                );
+            })
           );
       }),
       rxjs.operators.filter(R.propEq('error', 0)),

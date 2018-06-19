@@ -69,13 +69,8 @@ function main () {
 }
 
 function handle (assets) {
-  R.any(R.has('error'), assets)
-    ? notifyUserOfIncorrectCredentials(assets) // Handle errors fn here...
-    : (function (z) {
-      console.log('z = ', z);
-      U.updateGlobalAssets(z);
-      fetchview('interface');
-    }(assets));
+  U.updateGlobalAssets(z);
+  fetchview('interface');
 }
 
 function processLoginDetails (userCredentials) {
