@@ -114,27 +114,39 @@ function processLoginDetails (userCredentials) {
   var postSessionStep0DataStream =
       initialSessionDataStream
         .pipe(
-          rxjs.operators.flatMap(function (initialSessionData) {
-            return rxjs.from(
-              S.mkSessionStepFetchPromise(initialSessionData, 'postSessionStep0Data')
-            );
-          }),
-          rxjs.operators.map(R.when(
-            R.propEq('error', 1),
-            function (_) { throw _; }
-          )),
           rxjs.operators.switchMap(value => {
             return rxjs.of(value)
               .pipe(
-                rxjs.operators.catchError(e => rxjs.of(e))
+                rxjs.operators.flatMap(function (initialSessionData) {
+                  return rxjs.from(
+                    S.mkSessionStepFetchPromise(initialSessionData, 'postSessionStep0Data')
+                  );
+                }),
+                rxjs.operators.map(function (deterministicHashesProcessResponse) {
+                  if (R.not(R.propEq('error', 0, deterministicHashesProcessResponse))) {
+                    throw { error: 1, msg: 'Error posting session step 0.'};
+                  } else {
+                    return deterministicHashesProcessResponse;
+                  }
+                }),
+                rxjs.operators.catchError(e => rxjs.of(e)
+                  .pipe(
+                    rxjs.operators.tap(resetFlipOverAnimation),
+                    rxjs.operators.tap(function (_) { UserCredentialsValidation.setCSSTorenderButtonsToEnabled(); })
+                  )
+                )
               );
+          }),
+          rxjs.operators.filter(_ => {
+            return R.propEq('error', 0, _);
           })
         );
 
-  var processSessionStep0ReplyStream = rxjs.zip(
-    postSessionStep0DataStream,
-    sessionStepStream // SESSIONSTEP NEEDS TO BE INCREMENTED HERE. Now gets incremented in mkPostSessionStep1Url
-  )
+  var processSessionStep0ReplyStream = rxjs
+    .zip(
+      postSessionStep0DataStream,
+      sessionStepStream // SESSIONSTEP NEEDS TO BE INCREMENTED HERE. Now gets incremented in mkPostSessionStep1Url
+    )
     .pipe(
       rxjs.operators.filter(R.compose(
         V.nonceHasCorrectLength,
@@ -147,20 +159,38 @@ function processLoginDetails (userCredentials) {
   var postSessionStep1DataStream =
       processSessionStep0ReplyStream
         .pipe(
-          rxjs.operators.flatMap(function (sessionData) {
-            return rxjs.from(
-              S.mkSessionStepFetchPromise(sessionData, 'postSessionStep1Data'));
-          }),
-          rxjs.operators.map(R.when(
-            R.propEq('error', 1),
-            function (_) { throw _; }
-          )),
           rxjs.operators.switchMap(value => {
             return rxjs.of(value)
               .pipe(
-                rxjs.operators.catchError(e => rxjs.of(e))
+                rxjs.operators.flatMap(function (initialSessionData) {
+                  return rxjs.from(
+                    S.mkSessionStepFetchPromise(initialSessionData, 'postSessionStep1Data')
+                  );
+                }),
+                rxjs.operators.map(function (sessionStep1Response) {
+                  var responseHasErrors = R.compose(
+                    R.not,
+                    R.pathEq(['sessionStep1', 'error'], 0)
+                  )(sessionStep1Response);
+
+                  if (responseHasErrors) {
+                    throw { error: 1, msg: 'Error posting session step 1.'};
+                  } else {
+                    return sessionStep1Response;
+                  }
+                }),
+                rxjs.operators.catchError(e => rxjs.of(e)
+                  .pipe(
+                    rxjs.operators.tap(resetFlipOverAnimation),
+                    rxjs.operators.tap(function (_) { UserCredentialsValidation.setCSSTorenderButtonsToEnabled(); })
+                  )
+                )
               );
-          })
+          }),
+          rxjs.operators.filter(R.compose(
+            R.not,
+            R.has('error')
+          ))
         );
 
   var processSession1StepDataStream = rxjs

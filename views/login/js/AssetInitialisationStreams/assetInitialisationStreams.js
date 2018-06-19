@@ -56,9 +56,7 @@ function doAssetInitialisation (z) {
             )
           );
       }),
-      rxjs.operators.filter(R.compose(
-        R.propEq('error', 0)
-      ))
+      rxjs.operators.filter(R.propEq('error', 0))
     );
 
   var deterministicHashesResponseProcessStream = deterministicHashesStream
@@ -72,7 +70,7 @@ function doAssetInitialisation (z) {
             }),
             rxjs.operators.map(function (deterministicHashesProcessResponse) {
               if (R.not(R.propEq('error', 0, deterministicHashesProcessResponse))) {
-                throw { error: 1, msg: 'Error retrieving process.'};
+                throw { error: 1, msg: 'Error retrieving deterministic hashes..'};
               } else {
                 return deterministicHashesProcessResponse;
               }
@@ -85,9 +83,7 @@ function doAssetInitialisation (z) {
             )
           );
       }),
-      rxjs.operators.filter(R.compose(
-        R.propEq('error', 0)
-      )),
+      rxjs.operators.filter(R.propEq('error', 0)),
       rxjs.operators.map(R.prop('data')), // VALIDATE?
       rxjs.operators.map(function (deterministicHashes) { assets.modehashes = deterministicHashes; }) // TODO: Make storedUserStream dependent on this stream! USE TAP
     );
@@ -115,7 +111,7 @@ function doAssetInitialisation (z) {
           .pipe(
             rxjs.operators.map(R.nth(0)),
             rxjs.operators.flatMap(a => a), // Flatten Array structure...
-            rxjs.operators.filter(existsInAssetNames), // TODO: Now REMOVES assets that have been disabled in the backend. Need to disable / notify user when this occurs.
+            rxjs.operators.filter(existsInAssetNames), // TODO: Now IGNORES assets that have been disabled in the backend. Need to disable / notify user when this occurs.
             rxjs.operators.flatMap(function (asset) {
               return R.compose(
                 initializeAsset(asset),
@@ -161,14 +157,15 @@ function doAssetInitialisation (z) {
   return assetsDetailsStream;
 }
 
-function resetFlipOverAnimation (e) {
+// TODO factor up
+resetFlipOverAnimation = function (e) {
   document.querySelector('.flipper').classList.remove('active'); // FLIP LOGIN FORM BACK
   document.querySelector('#generateform').classList.remove('inactive');
   document.querySelector('#alertbutton').classList.remove('inactive');
   document.querySelector('#helpbutton').classList.remove('inactive');
   document.querySelector('.user-login-notification').classList.add('active');
   document.querySelector('.user-login-notification').innerHTML = R.prop('msg', e);
-}
+};
 
 // EFF ::
 function updateAssetDetailsAndRenderDashboardView (assetDetails) {
