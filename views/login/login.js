@@ -4,6 +4,7 @@ var S = loginInputStreams;
 var V = validations;
 var U = utils;
 
+var UserFeedback = userFeedback;
 var AssetInitialisationStreams = assetInitialisationStreams;
 var UserCredentialsValidation = userCredentialsValidation;
 var BrowserSupport = browserSupport;
@@ -60,12 +61,14 @@ function main () {
   maybeOpenNewWalletModal(location);
 
   keyDownOnUserIDStream.subscribe(function (_) { document.querySelector('#inputPasscode').focus(); });
-  UserCredentialsValidation.credentialsOrErrorStream
-    .pipe(
-      rxjs.operators.flatMap(processLoginDetails),
-      rxjs.operators.flatMap(initialiseAssets)
-    )
-    .subscribe(handle);
+  setTimeout(function () {
+    UserCredentialsValidation.credentialsOrErrorStream
+      .pipe(
+        rxjs.operators.flatMap(processLoginDetails),
+        rxjs.operators.flatMap(initialiseAssets)
+      )
+      .subscribe(handle);
+  }, 500);
 }
 
 function handle (assets) {
@@ -74,10 +77,7 @@ function handle (assets) {
 }
 
 function processLoginDetails (userCredentials) {
-  var validatedUserCredentialsStream_ = rxjs.of(userCredentials)
-    .pipe(
-      rxjs.operators.tap(function (_) { doFlipOverAnimation(); })
-    );
+  var validatedUserCredentialsStream_ = rxjs.of(userCredentials);
 
   var generatedKeysStream =
       validatedUserCredentialsStream_
@@ -88,18 +88,7 @@ function processLoginDetails (userCredentials) {
   var sessionStepStream = rxjs.of(0); // Make incremental with every call
   var randomNonceStream = rxjs.of(nacl) // TODO
     .pipe(
-      rxjs.operators.switchMap(naclInstance => {
-        return rxjs.of(naclInstance)
-          .pipe(
-            rxjs.operators.map(nacl_ => nacl_.crypto_box_random_nonce()),
-            rxjs.operators.catchError(e => rxjs.of({ error: 1, msg: 'Something unexpected happened. Please try again.' + e })
-              .pipe(
-                rxjs.operators.tap(notifyUserOfIncorrectCredentials),
-                rxjs.operators.tap(function (_) { console.log('Nacl threw an error:', e); })
-              )
-            )
-          );
-      }),
+      rxjs.operators.switchMap(randomNonceOrErrorHandlingStream),
       rxjs.operators.filter(R.compose(
         R.not,
         R.has('error')
@@ -113,35 +102,14 @@ function processLoginDetails (userCredentials) {
       generatedKeysStream
     )
     .pipe(
-      rxjs.operators.map(createSessionStep0UrlAndData)
+      rxjs.operators.map(createSessionStep0UrlAndData),
+      rxjs.operators.tap(function (_) { doFlipOverAnimation(); })
     );
 
   var postSessionStep0DataStream =
       initialSessionDataStream
         .pipe(
-          rxjs.operators.switchMap(value => {
-            return rxjs.of(value)
-              .pipe(
-                rxjs.operators.flatMap(function (initialSessionData) {
-                  return rxjs.from(
-                    S.mkSessionStepFetchPromise(initialSessionData, 'postSessionStep0Data')
-                  );
-                }),
-                rxjs.operators.map(function (deterministicHashesProcessResponse) {
-                  if (R.not(R.propEq('error', 0, deterministicHashesProcessResponse))) {
-                    throw { error: 1, msg: 'Error posting session step 0.'};
-                  } else {
-                    return deterministicHashesProcessResponse;
-                  }
-                }),
-                rxjs.operators.catchError(e => rxjs.of(e)
-                  .pipe(
-                    rxjs.operators.tap(resetFlipOverAnimation),
-                    rxjs.operators.tap(function (_) { UserCredentialsValidation.setCSSTorenderButtonsToEnabled(); })
-                  )
-                )
-              );
-          }),
+          rxjs.operators.switchMap(sessionStep0OrErrorHandlingStream),
           rxjs.operators.filter(_ => {
             return R.propEq('error', 0, _);
           })
@@ -164,34 +132,7 @@ function processLoginDetails (userCredentials) {
   var postSessionStep1DataStream =
       processSessionStep0ReplyStream
         .pipe(
-          rxjs.operators.switchMap(value => {
-            return rxjs.of(value)
-              .pipe(
-                rxjs.operators.flatMap(function (initialSessionData) {
-                  return rxjs.from(
-                    S.mkSessionStepFetchPromise(initialSessionData, 'postSessionStep1Data')
-                  );
-                }),
-                rxjs.operators.map(function (sessionStep1Response) {
-                  var responseHasErrors = R.compose(
-                    R.not,
-                    R.pathEq(['sessionStep1', 'error'], 0)
-                  )(sessionStep1Response);
-
-                  if (responseHasErrors) {
-                    throw { error: 1, msg: 'Error posting session step 1.'};
-                  } else {
-                    return sessionStep1Response;
-                  }
-                }),
-                rxjs.operators.catchError(e => rxjs.of(e)
-                  .pipe(
-                    rxjs.operators.tap(resetFlipOverAnimation),
-                    rxjs.operators.tap(function (_) { UserCredentialsValidation.setCSSTorenderButtonsToEnabled(); })
-                  )
-                )
-              );
-          }),
+          rxjs.operators.switchMap(sessionStep1OrErrorHandlingStream),
           rxjs.operators.filter(R.compose(
             R.not,
             R.has('error')
@@ -298,6 +239,78 @@ function doFlipOverAnimation () {
   document.querySelector('#generateform').classList.add('inactive');
   document.querySelector('#alertbutton').classList.add('inactive');
   document.querySelector('#helpbutton').classList.add('inactive');
+}
+
+function sessionStep0OrErrorHandlingStream (sessionStep0Data) {
+  return rxjs.of(sessionStep0Data)
+    .pipe(
+      rxjs.operators.flatMap(function (initialSessionData) {
+        return rxjs.from(
+          S.mkSessionStepFetchPromise(initialSessionData, 'postSessionStep0Data')
+        );
+      }),
+      rxjs.operators.map(function (deterministicHashesProcessResponse) {
+        if (R.not(R.propEq('error', 0, deterministicHashesProcessResponse))) {
+          throw { error: 1, msg: 'Error posting session step 0.'};
+        } else {
+          return deterministicHashesProcessResponse;
+        }
+      }),
+      rxjs.operators.catchError(function (e) {
+        return rxjs.of(e)
+          .pipe(
+            rxjs.operators.tap(UserFeedback.resetFlipOverAnimation),
+            rxjs.operators.tap(function (_) { UserCredentialsValidation.setCSSTorenderButtonsToEnabled(); })
+          );
+      })
+    );
+}
+
+function randomNonceOrErrorHandlingStream (naclInstance) {
+  return rxjs.of(naclInstance)
+    .pipe(
+      rxjs.operators.map(function (nacl_) { return nacl_.crypto_box_random_nonce(); }),
+      rxjs.operators.catchError(function (e) {
+        return rxjs.of({ error: 1, msg: 'Something unexpected happened. Please try again.' + e })
+          .pipe(
+            rxjs.operators.tap(UserFeedback.notifyUserOfIncorrectCredentials),
+            rxjs.operators.tap(function (_) { UserFeedback.toggleLoginSpinner('remove'); }),
+            rxjs.operators.tap(function (_) { UserFeedback.setLoginButtonText('Sign in'); }),
+            rxjs.operators.tap(function (_) { UserFeedback.setCSSTorenderButtonsToEnabled(); }),
+            rxjs.operators.tap(function (_) { console.log('Nacl threw an error:', e); })
+          );
+      })
+    );
+}
+
+function sessionStep1OrErrorHandlingStream (sessionStep1Data) {
+  return rxjs.of(sessionStep1Data)
+    .pipe(
+      rxjs.operators.flatMap(function (initialSessionData) {
+        return rxjs.from(
+          S.mkSessionStepFetchPromise(initialSessionData, 'postSessionStep1Data')
+        );
+      }),
+      rxjs.operators.map(function (sessionStep1Response) {
+        var responseHasErrors = R.compose(
+          R.not,
+          R.pathEq(['sessionStep1', 'error'], 0)
+        )(sessionStep1Response);
+
+        if (responseHasErrors) {
+          throw { error: 1, msg: 'Error posting session step 1.'};
+        } else {
+          return sessionStep1Response;
+        }
+      }),
+      rxjs.operators.catchError(function (e) {
+        return rxjs.of(e)
+          .pipe(
+            rxjs.operators.tap(UserFeedback.resetFlipOverAnimation),
+            rxjs.operators.tap(function (_) { UserFeedback.setCSSTorenderButtonsToEnabled(); })
+          );
+      })
+    );
 }
 
 function mkSessionKeys (credentials) { return C.generateKeys(R.prop('password', credentials), R.prop('userID', credentials), 0); }

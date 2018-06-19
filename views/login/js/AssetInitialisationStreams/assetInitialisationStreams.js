@@ -3,6 +3,7 @@ var U = utils;
 var S = loginInputStreams;
 var POW = proofOfWork_;
 var UserCredentialsValidation = userCredentialsValidation;
+var UserFeedback = userFeedback;
 
 var path = 'api';
 
@@ -112,11 +113,6 @@ function doAssetInitialisation (z) {
       })
     );
 
-    // .retry(_ => {
-    //   resetFlipOverAnimation();
-    //   return Rx.Observable.of(_);
-    // });
-
   var animationStream = rxjs
     .concat(
       initialAnimationStateStream,
@@ -128,41 +124,17 @@ function doAssetInitialisation (z) {
     .pipe(
       rxjs.operators.scan(function (acc, curr) { return acc + 1; }),
       rxjs.operators.map(function (n) { return n <= ANIMATION_STEPS ? n : ANIMATION_STEPS; }),
-      rxjs.operators.map(A.doProgressAnimation),
-      rxjs.operators.retry(_ => {
-        resetFlipOverAnimation();
-        return rxjs.of(_);
-      })
+      rxjs.operators.map(A.doProgressAnimation)
     );
 
   var powQueueIntervalStream = rxjs
     .interval(30000);
 
-  // animationStream.subscribe();
+  animationStream.subscribe();
   // powQueueIntervalStream.subscribe(function (_) { POW.loopThroughProofOfWork(); }); // once every two minutes, loop through proof-of-work queue
   // initializationStream.subscribe(initialize_);
   // assetsDetailsStream.subscribe(updateAssetDetailsAndRenderDashboardView); // TODO: Separate data retrieval from DOM rendering. Dashboard should be rendered in any case.
   return assetsDetailsStream;
-}
-
-// TODO factor up
-resetFlipOverAnimation = function (e) {
-  document.querySelector('.flipper').classList.remove('active'); // FLIP LOGIN FORM BACK
-  document.querySelector('#generateform').classList.remove('inactive');
-  document.querySelector('#alertbutton').classList.remove('inactive');
-  document.querySelector('#helpbutton').classList.remove('inactive');
-  document.querySelector('.user-login-notification').classList.add('active');
-  document.querySelector('.user-login-notification').innerHTML = R.prop('msg', e);
-};
-
-function resetLoginFlipOverErrorStream (e) {
-  return rxjs.of(e)
-    .pipe(
-      rxjs.operators.tap(resetFlipOverAnimation),
-      rxjs.operators.tap(function (_) { UserCredentialsValidation.setCSSTorenderButtonsToEnabled(); }),
-      rxjs.operators.tap(function (_) { toggleLoginSpinner('remove'); }),
-      rxjs.operators.tap(function (_) { setLoginButtonText('Sign in'); })
-    );
 }
 
 // EFF ::

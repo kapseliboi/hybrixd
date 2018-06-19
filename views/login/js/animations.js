@@ -21,12 +21,12 @@ var progressMessages = {
   },
   4: {
     step: 4,
-    weight: '55%',
+    weight: '65%',
     message: 'Loading your assets...'
   },
   5: {
     step: 5,
-    weight: '75%',
+    weight: '90%',
     message: 'Finalizing wallet...'
   },
   6: {
