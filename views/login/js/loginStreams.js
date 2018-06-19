@@ -28,7 +28,6 @@ function mkSessionStepFetchPromise (sessionData, stepNameStr) {
     .then(function (r) {
       return r.json()
         .then(function (stepData) {
-          console.log('stepData = ', stepData);
           var defaultOrAssociatedStepData = stepNameStr === 'postSessionStep1Data'
             ? R.assoc('sessionStep1', stepData, {})
             : stepData;

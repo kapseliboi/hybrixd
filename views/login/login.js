@@ -91,14 +91,24 @@ function processLoginDetails (userCredentials) {
         );
 
   var sessionStepStream = rxjs.of(0); // Make incremental with every call
-  var randomNonceStream = rxjs.of(nacl.crypto_box_random_nonce()) // TODO
+  var randomNonceStream = rxjs.of(nacl) // TODO
     .pipe(
-      rxjs.operators.switchMap(value => {
-        return rxjs.of(value)
+      rxjs.operators.switchMap(naclInstance => {
+        return rxjs.of(naclInstance)
           .pipe(
-            rxjs.operators.catchError(e => rxjs.of(e))
+            rxjs.operators.map(nacl_ => nacl_.crypto_box_random_nonce()),
+            rxjs.operators.catchError(e => rxjs.of({ error: 1, msg: 'Something unexpected happened. Please try again.' + e })
+              .pipe(
+                rxjs.operators.tap(notifyUserOfIncorrectCredentials),
+                rxjs.operators.tap(function (_) { console.log('Nacl threw an error:', e); })
+              )
+            )
           );
-      })
+      }),
+      rxjs.operators.filter(R.compose(
+        R.not,
+        R.has('error')
+      ))
     );
 
   var initialSessionDataStream = rxjs
