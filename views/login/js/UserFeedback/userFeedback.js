@@ -57,6 +57,13 @@ function setCSSTorenderButtonsToDisabled () {
   document.querySelector('#helpbutton').setAttribute('disabled', 'disabled');
 }
 
+function doFlipOverAnimation () {
+  document.querySelector('.flipper').classList.add('active'); // FLIP LOGIN FORM
+  document.querySelector('#generateform').classList.add('inactive');
+  document.querySelector('#alertbutton').classList.add('inactive');
+  document.querySelector('#helpbutton').classList.add('inactive');
+}
+
 userFeedback = {
   notifyUserOfIncorrectCredentials,
   disableUserNotificationBox,
@@ -64,5 +71,7 @@ userFeedback = {
   setCSSTorenderButtonsToEnabled,
   setLoginButtonText,
   setCSSTorenderButtonsToDisabled,
-  resetFlipOverAnimation
+  resetLoginFlipOverErrorStream,
+  resetFlipOverAnimation,
+  doFlipOverAnimation
 };

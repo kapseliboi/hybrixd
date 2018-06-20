@@ -1,13 +1,15 @@
 // hy_login.js - contains javascript for login, encryption and session authentication
+var A = animations;
 var C = commonUtils;
 var S = loginInputStreams;
-var V = validations;
 var U = utils;
+var V = validations;
 
-var UserFeedback = userFeedback;
-var AssetInitialisationStreams = assetInitialisationStreams;
-var UserCredentialsValidation = userCredentialsValidation;
+var AssetInitialisation = assetInitialisation;
 var BrowserSupport = browserSupport;
+var SessionData = sessionData;
+var UserCredentialsValidation = userCredentialsValidation;
+var UserFeedback = userFeedback;
 
 var path = 'api'; // TODO: Factor up!
 var args = {};
@@ -57,155 +59,33 @@ var keyDownOnUserIDStream = S.mkInputStream('#inputUserID');
 
 function main () {
   BrowserSupport.checkBrowserSupport(window.navigator.userAgent);
-  document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
   maybeOpenNewWalletModal(location);
-
+  document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
   keyDownOnUserIDStream.subscribe(function (_) { document.querySelector('#inputPasscode').focus(); });
-  setTimeout(function () {
-    UserCredentialsValidation.credentialsOrErrorStream
-      .pipe(
-        rxjs.operators.flatMap(processLoginDetails),
-        rxjs.operators.flatMap(initialiseAssets)
-      )
-      .subscribe(handle);
-  }, 500);
+  UserCredentialsValidation.credentialsOrErrorStream
+    .pipe(
+      rxjs.operators.tap(function (_) { UserFeedback.doFlipOverAnimation(); }),
+      rxjs.operators.delay(10), // HACK: Delay data somewhat so browser gives priority to DOM manipulation instead of initiating all further streams.
+      rxjs.operators.flatMap(R.curry(SessionData.mkSessionDataStream)(A.subject, nacl)), // TODO: Remove global dependency
+      rxjs.operators.tap(updateUserCrypto),
+      rxjs.operators.flatMap(R.curry(AssetInitialisation.mkAssetInitializationStream)(A.subject)),
+      rxjs.operators.tap(U.updateGlobalAssets)
+    )
+    .subscribe(renderInterface);
+  A.subject
+    .pipe(
+      rxjs.operators.mapTo(1),
+      rxjs.operators.scan(R.inc, 0),
+      rxjs.operators.filter(R.lt(R.__, R.inc(A.ANIMATION_STEPS))),
+      rxjs.operators.tap(A.doProgressAnimation)
+    )
+    .subscribe(_ => {
+      console.log('Some stuff came through:', _);
+    });
 }
 
-function handle (assets) {
-  U.updateGlobalAssets(z);
+function renderInterface (assets) {
   fetchview('interface');
-}
-
-function processLoginDetails (userCredentials) {
-  var validatedUserCredentialsStream_ = rxjs.of(userCredentials);
-
-  var generatedKeysStream =
-      validatedUserCredentialsStream_
-        .pipe(
-          rxjs.operators.map(mkSessionKeys)
-        );
-
-  var sessionStepStream = rxjs.of(0); // Make incremental with every call
-  var randomNonceStream = rxjs.of(nacl) // TODO
-    .pipe(
-      rxjs.operators.switchMap(randomNonceOrErrorHandlingStream),
-      rxjs.operators.filter(R.compose(
-        R.not,
-        R.has('error')
-      ))
-    );
-
-  var initialSessionDataStream = rxjs
-    .combineLatest(
-      randomNonceStream,
-      sessionStepStream,
-      generatedKeysStream
-    )
-    .pipe(
-      rxjs.operators.map(createSessionStep0UrlAndData),
-      rxjs.operators.tap(function (_) { doFlipOverAnimation(); })
-    );
-
-  var postSessionStep0DataStream =
-      initialSessionDataStream
-        .pipe(
-          rxjs.operators.switchMap(sessionStep0OrErrorHandlingStream),
-          rxjs.operators.filter(_ => {
-            return R.propEq('error', 0, _);
-          })
-        );
-
-  var processSessionStep0ReplyStream = rxjs
-    .zip(
-      postSessionStep0DataStream,
-      sessionStepStream // SESSIONSTEP NEEDS TO BE INCREMENTED HERE. Now gets incremented in mkPostSessionStep1Url
-    )
-    .pipe(
-      rxjs.operators.filter(R.compose(
-        V.nonceHasCorrectLength,
-        R.prop('nonce1'),
-        R.nth(0)
-      )),
-      rxjs.operators.map(mkPostSessionStep1Url)
-    );
-
-  var postSessionStep1DataStream =
-      processSessionStep0ReplyStream
-        .pipe(
-          rxjs.operators.switchMap(sessionStep1OrErrorHandlingStream),
-          rxjs.operators.filter(R.compose(
-            R.not,
-            R.has('error')
-          ))
-        );
-
-  var processSession1StepDataStream = rxjs
-    .combineLatest(
-      postSessionStep1DataStream,
-      randomNonceStream,
-      generatedKeysStream
-    )
-    .pipe(
-      rxjs.operators.map(mkSessionHexAndNonce)
-    );
-
-  var fetchViewStream = rxjs.combineLatest(
-    generatedKeysStream,
-    randomNonceStream,
-    validatedUserCredentialsStream_,
-    processSession1StepDataStream
-  );
-
-  // .flatMap(AssetInitialisationStreams.doAssetInitialisation);
-  // // HACK! :( So that CSS gets rendered immediately and user gets feedback right away.
-  // setTimeout(function () {
-  return fetchViewStream;
-  // }, 500);
-}
-
-function initialiseAssets (userSessionData) {
-  GL.usercrypto = {
-    user_keys: R.nth(0, userSessionData),
-    nonce: R.path(['3', 'current_nonce'], userSessionData),
-    userid: R.path(['2', 'userID'], userSessionData)
-  };
-  return AssetInitialisationStreams.doAssetInitialisation(userSessionData);
-}
-
-function createSessionStep0UrlAndData (z) {
-  var nonce = R.nth(0, z);
-  var sessionStep = R.nth(1, z);
-  var initialSessionData = C.generateInitialSessionData(nonce);
-  return {
-    url: path + 'x/' + R.prop('session_hexsign', initialSessionData) + '/' + sessionStep,
-    initialSessionData
-  };
-}
-
-function mkSessionHexAndNonce (z) {
-  var sessionStep1Data = R.path(['0', 'sessionStep1'], z);
-  var sessionData = R.mergeAll([
-    R.path(['0', 'initialSessionData'], z),
-    R.path(['0', 'secondarySessionData'], z),
-    sessionStep1Data,
-    { nonce: R.nth('1', z) },
-    { userKeys: R.nth('2', z) }
-  ]);
-
-  return C.sessionStep1Reply(sessionStep1Data, sessionData, setSessionDataInElement);
-}
-
-function mkPostSessionStep1Url (z) {
-  var nonce1 = R.path(['0', 'nonce1'], z);
-  var sessionStep = z[1] + 1; // TODO: NOW SETTING SESSION STEP MANUALLY.....
-  var initialSessionData = R.path(['0', 'initialSessionData'], z);
-  var sessionStep1Data = C.generateSecondarySessionData(nonce1, R.prop('session_hexkey', initialSessionData), R.path(['session_signpair', 'signSk'], initialSessionData));
-
-  return {
-    url: path + 'x/' + R.prop('session_hexsign', initialSessionData) + '/' + sessionStep + '/' + R.prop('crypt_hex', sessionStep1Data),
-    initialSessionData,
-    secondarySessionData: sessionStep1Data
-  };
 }
 
 // TODO: mk into Stream
@@ -234,90 +114,12 @@ function maybeOpenNewWalletModal (location) {
   }
 }
 
-function doFlipOverAnimation () {
-  document.querySelector('.flipper').classList.add('active'); // FLIP LOGIN FORM
-  document.querySelector('#generateform').classList.add('inactive');
-  document.querySelector('#alertbutton').classList.add('inactive');
-  document.querySelector('#helpbutton').classList.add('inactive');
+function updateUserCrypto (userSessionData) {
+  GL.usercrypto = {
+    user_keys: R.nth(0, userSessionData),
+    nonce: R.path(['3', 'current_nonce'], userSessionData),
+    userid: R.path(['2', 'userID'], userSessionData)
+  };
 }
-
-function sessionStep0OrErrorHandlingStream (sessionStep0Data) {
-  return rxjs.of(sessionStep0Data)
-    .pipe(
-      rxjs.operators.flatMap(function (initialSessionData) {
-        return rxjs.from(
-          S.mkSessionStepFetchPromise(initialSessionData, 'postSessionStep0Data')
-        );
-      }),
-      rxjs.operators.map(function (deterministicHashesProcessResponse) {
-        if (R.not(R.propEq('error', 0, deterministicHashesProcessResponse))) {
-          throw { error: 1, msg: 'Error posting session step 0.'};
-        } else {
-          return deterministicHashesProcessResponse;
-        }
-      }),
-      rxjs.operators.catchError(function (e) {
-        return rxjs.of(e)
-          .pipe(
-            rxjs.operators.tap(UserFeedback.resetFlipOverAnimation),
-            rxjs.operators.tap(function (_) { UserCredentialsValidation.setCSSTorenderButtonsToEnabled(); })
-          );
-      })
-    );
-}
-
-function randomNonceOrErrorHandlingStream (naclInstance) {
-  return rxjs.of(naclInstance)
-    .pipe(
-      rxjs.operators.map(function (nacl_) { return nacl_.crypto_box_random_nonce(); }),
-      rxjs.operators.catchError(function (e) {
-        return rxjs.of({ error: 1, msg: 'Something unexpected happened. Please try again.' + e })
-          .pipe(
-            rxjs.operators.tap(UserFeedback.notifyUserOfIncorrectCredentials),
-            rxjs.operators.tap(function (_) { UserFeedback.toggleLoginSpinner('remove'); }),
-            rxjs.operators.tap(function (_) { UserFeedback.setLoginButtonText('Sign in'); }),
-            rxjs.operators.tap(function (_) { UserFeedback.setCSSTorenderButtonsToEnabled(); }),
-            rxjs.operators.tap(function (_) { console.log('Nacl threw an error:', e); })
-          );
-      })
-    );
-}
-
-function sessionStep1OrErrorHandlingStream (sessionStep1Data) {
-  return rxjs.of(sessionStep1Data)
-    .pipe(
-      rxjs.operators.flatMap(function (initialSessionData) {
-        return rxjs.from(
-          S.mkSessionStepFetchPromise(initialSessionData, 'postSessionStep1Data')
-        );
-      }),
-      rxjs.operators.map(function (sessionStep1Response) {
-        var responseHasErrors = R.compose(
-          R.not,
-          R.pathEq(['sessionStep1', 'error'], 0)
-        )(sessionStep1Response);
-
-        if (responseHasErrors) {
-          throw { error: 1, msg: 'Error posting session step 1.'};
-        } else {
-          return sessionStep1Response;
-        }
-      }),
-      rxjs.operators.catchError(function (e) {
-        return rxjs.of(e)
-          .pipe(
-            rxjs.operators.tap(UserFeedback.resetFlipOverAnimation),
-            rxjs.operators.tap(function (_) { UserFeedback.setCSSTorenderButtonsToEnabled(); })
-          );
-      })
-    );
-}
-
-function mkSessionKeys (credentials) { return C.generateKeys(R.prop('password', credentials), R.prop('userID', credentials), 0); }
-function setSessionDataInElement (sessionHex) { document.querySelector('#session_data').textContent = sessionHex; }
 
 U.documentReady(main);
-
-// loginModule = {
-//   validatedUserCredentialsStream
-// };

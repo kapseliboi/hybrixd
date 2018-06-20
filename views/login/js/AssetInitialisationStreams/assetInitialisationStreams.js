@@ -1,24 +1,15 @@
 var A = animations;
 var U = utils;
-var S = loginInputStreams;
-var POW = proofOfWork_;
-var UserCredentialsValidation = userCredentialsValidation;
 var UserFeedback = userFeedback;
 
 var path = 'api';
-
-var ANIMATION_STEPS = R.compose(
-  R.dec,
-  R.length,
-  R.keys
-)(A.progressMessages);
 
 var defaultAssetData = [
   { id: 'btc', starred: false },
   { id: 'eth', starred: false }
 ];
 
-function doAssetInitialisation (z) {
+function mkAssetInitializationStream (loginAnimationSubject, z) {
   GL.cur_step = nextStep();
   var assetsModesUrl = path + zchan(GL.usercrypto, GL.cur_step, 'l/asset/details');
 
@@ -26,12 +17,6 @@ function doAssetInitialisation (z) {
     .from(U.fetchDataFromUrl(assetsModesUrl, 'Error retrieving asset details.'))
     .pipe(
       rxjs.operators.map(decryptData)
-    );
-
-  var initialAnimationStateStream = rxjs.interval(200)
-    .pipe(
-      rxjs.operators.startWith(0),
-      rxjs.operators.take(2)
     );
 
   var deterministicHashesStream = rxjs
@@ -47,7 +32,7 @@ function doAssetInitialisation (z) {
                 return deterministicHashesResponse;
               }
             }),
-            rxjs.operators.catchError(resetLoginFlipOverErrorStream)
+            rxjs.operators.catchError(UserFeedback.resetLoginFlipOverErrorStream)
           );
       }),
       rxjs.operators.filter(R.propEq('error', 0))
@@ -69,7 +54,7 @@ function doAssetInitialisation (z) {
                 return deterministicHashesProcessResponse;
               }
             }),
-            rxjs.operators.catchError(resetLoginFlipOverErrorStream)
+            rxjs.operators.catchError(UserFeedback.resetLoginFlipOverErrorStream)
           );
       }),
       rxjs.operators.filter(R.propEq('error', 0)),
@@ -108,45 +93,31 @@ function doAssetInitialisation (z) {
               )(asset);
             }),
             rxjs.operators.map(U.addIcon),
-            rxjs.operators.bufferCount(R.length(R.nth(0, initializedData)))
+            rxjs.operators.bufferCount(R.length(R.nth(0, initializedData))),
+            rxjs.operators.map(R.assoc('detailedAssets', R.__, {}))
           );
       })
     );
 
-  var animationStream = rxjs
+  var detailedAssetsStream = rxjs
     .concat(
-      initialAnimationStateStream,
+      // assetsModesAndNamesStream,
+      // deterministicHashesResponseProcessStream,
       storedUserDataStream,
-      assetsModesAndNamesStream,
-      deterministicHashesResponseProcessStream,
+      // initializationStream,
       assetsDetailsStream
     )
     .pipe(
-      rxjs.operators.scan(function (acc, curr) { return acc + 1; }),
-      rxjs.operators.map(function (n) { return n <= ANIMATION_STEPS ? n : ANIMATION_STEPS; }),
-      rxjs.operators.map(A.doProgressAnimation)
+      rxjs.operators.tap(val => loginAnimationSubject.next(val)),
+      rxjs.operators.delay(500), // HACK: Delay data somewhat so browser gives priority to DOM manipulation instead of initiating all further streams.
+      rxjs.operators.filter(R.compose(
+        R.has('detailedAssets'),
+        R.defaultTo({})
+      )),
+      rxjs.operators.map(R.prop('detailedAssets'))
     );
 
-  var powQueueIntervalStream = rxjs
-    .interval(30000);
-
-  animationStream.subscribe();
-  // powQueueIntervalStream.subscribe(function (_) { POW.loopThroughProofOfWork(); }); // once every two minutes, loop through proof-of-work queue
-  // initializationStream.subscribe(initialize_);
-  // assetsDetailsStream.subscribe(updateAssetDetailsAndRenderDashboardView); // TODO: Separate data retrieval from DOM rendering. Dashboard should be rendered in any case.
-  return assetsDetailsStream;
-}
-
-// EFF ::
-function updateAssetDetailsAndRenderDashboardView (assetDetails) {
-  if (R.equals(assetDetails, 'meh')) { return; }
-  GL.initCount += 1; // HACK!
-  GL.assets = R.reduce(U.mkUpdatedAssets(assetDetails), [], GL.assets);
-
-  // HACK: Assets can only be viewed when all details have been retrieved. Otherwise, transactions will not work.
-  if (GL.initCount === R.length(GL.assets)) {
-    fetchview('interface');
-  }
+  return detailedAssetsStream;
 }
 
 function storedOrDefaultUserData (decodeUserData) {
@@ -196,7 +167,7 @@ function existsInAssetNames (asset) {
 
 function initializeAsset (asset) {
   return function (entry) {
-    return initAsset(entry, GL.assetmodes[entry], asset); // interface/js/assetInitialisation
+    return initAsset(entry, GL.assetmodes[entry], asset); // TODO: interface/js/assetInitialisation
   };
 }
 
@@ -218,6 +189,6 @@ function matchSymbolWithData (key, data) {
 
 function decryptData (d) { return R.curry(zchan_obj)(GL.usercrypto)(GL.cur_step)(d); }
 
-assetInitialisationStreams = {
-  doAssetInitialisation
+assetInitialisation = {
+  mkAssetInitializationStream
 };
