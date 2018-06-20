@@ -75,7 +75,7 @@ function mkAssetInitializationStream (loginAnimationSubject, z) {
       deterministicHashesResponseProcessStream
     )
     .pipe(
-      rxjs.operators.tap(initialize_)
+      rxjs.operators.map(initialize_)
     );
 
   var assetsDetailsStream = initializationStream
@@ -103,7 +103,7 @@ function mkAssetInitializationStream (loginAnimationSubject, z) {
     .concat(
       // assetsModesAndNamesStream,
       // deterministicHashesResponseProcessStream,
-      storedUserDataStream,
+      // storedUserDataStream,
       // initializationStream,
       assetsDetailsStream
     )

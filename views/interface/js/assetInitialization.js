@@ -67,7 +67,7 @@ function setStorageAndMkAssetDetails (init, mode, submode, entry, fullmode, dcod
 }
 
 // TODO: Make pure!
-function reinitializeDeterministicMode (init, mode, submode, entry, fullmode, dcode) {
+function reinitializeDeterministicMode (init, mode, submode, entry, fullmode) {
   var url = 's/deterministic/code/' + mode;
   var modeStream = rxjs.from(hybriddcall({r: url, z: 0}));
   var modeResponseStream = modeStream
@@ -80,7 +80,11 @@ function reinitializeDeterministicMode (init, mode, submode, entry, fullmode, dc
         if (R.isNil(R.prop('stopped', processData)) && R.prop('progress', processData) < 1) throw processData;
         return processData;
       }),
-      rxjs.operators.retryWhen(function (errors) { return errors.delay(1000); })
+      rxjs.operators.retryWhen(function (errors) {
+        return errors.pipe(
+          rxjs.operators.delayWhen(_ => rxjs.timer(1000))
+        );
+      })
     );
 
   return modeResponseStream;
@@ -115,6 +119,8 @@ function getDeterministicData (entry, mode, submode, fullmode, init) {
     return R.not(R.isNil(dcode))
       ? mkAssetDetailsStream(init, dcode, submode, entry, fullmode)
       : reinitializeDeterministicMode(init, mode, submode, entry, fullmode)
-        .flatMap(setStorageAndMkAssetDetails(init, mode, submode, entry, fullmode));
+        .pipe(
+          rxjs.operators.flatMap(setStorageAndMkAssetDetails(init, mode, submode, entry, fullmode))
+        );
   };
 }

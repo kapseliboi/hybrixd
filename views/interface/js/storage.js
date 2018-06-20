@@ -8,6 +8,7 @@ var storage = (function () {
     https://localforage.github.io/localForage
     (c) 2013-2017 Mozilla, Apache License 2.0
   */
+
   storage_;
 
   var Sync = function (storekey) {
@@ -177,11 +178,14 @@ var storage = (function () {
   var storage = {
 
     Set: function (storekey, storevalue) {
-      localforage.setItem(storekey, storevalue);
-      localforage.setItem(storekey + '.meta', {
-        time: Date.now(),
-        hash: DJB2.hash(storevalue)
-      });
+      return rxjs
+        .merge(
+          rxjs.from(localforage.setItem(storekey, storevalue)),
+          rxjs.from(localforage.setItem(storekey + '.meta', {
+            time: Date.now(),
+            hash: DJB2.hash(storevalue)
+          }))
+        );
       if (storekey.substr(-6) !== '-LOCAL') {
         return Sync(storekey);
       } else {

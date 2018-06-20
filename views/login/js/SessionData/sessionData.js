@@ -98,7 +98,7 @@ function mkSessionDataStream (loginAnimationSubject, nacl, userCredentials) {
       sessionDataStreamReal
     )
     .pipe(
-      rxjs.operators.tap(val => loginAnimationSubject.next(val)),
+      // rxjs.operators.tap(val => loginAnimationSubject.next(val)),
       rxjs.operators.filter(R.compose(
         R.has('sessionData'),
         R.defaultTo({})
