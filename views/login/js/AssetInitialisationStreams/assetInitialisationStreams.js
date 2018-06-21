@@ -93,31 +93,31 @@ function mkAssetInitializationStream (loginAnimationSubject, z) {
               )(asset);
             }),
             rxjs.operators.map(U.addIcon),
-            rxjs.operators.bufferCount(R.length(R.nth(0, initializedData))),
-            rxjs.operators.map(R.assoc('detailedAssets', R.__, {}))
+            rxjs.operators.bufferCount(R.length(R.nth(0, initializedData)))
+            // rxjs.operators.map(R.assoc('detailedAssets', R.__, {}))
           );
       })
     );
 
-  var detailedAssetsStream = rxjs
-    .concat(
-      // assetsModesAndNamesStream,
-      // deterministicHashesResponseProcessStream,
-      // storedUserDataStream,
-      // initializationStream,
-      assetsDetailsStream
-    )
-    .pipe(
-      rxjs.operators.tap(val => loginAnimationSubject.next(val)),
-      rxjs.operators.delay(500), // HACK: Delay data somewhat so browser gives priority to DOM manipulation instead of initiating all further streams.
-      rxjs.operators.filter(R.compose(
-        R.has('detailedAssets'),
-        R.defaultTo({})
-      )),
-      rxjs.operators.map(R.prop('detailedAssets'))
-    );
+  // var detailedAssetsStream = rxjs
+  //   .concat(
+  //     // assetsModesAndNamesStream,
+  //     // deterministicHashesResponseProcessStream,
+  //     // storedUserDataStream,
+  //     // initializationStream,
+  //     assetsDetailsStream
+  //   )
+  //   .pipe(
+  //     // rxjs.operators.tap(val => loginAnimationSubject.next(val)),
+  //     rxjs.operators.delay(500), // HACK: Delay data somewhat so browser gives priority to DOM manipulation instead of initiating all further streams.
+  //     rxjs.operators.filter(R.compose(
+  //       R.has('detailedAssets'),
+  //       R.defaultTo({})
+  //     )),
+  //     rxjs.operators.map(R.prop('detailedAssets'))
+  //   );
 
-  return detailedAssetsStream;
+  return assetsDetailsStream;
 }
 
 function storedOrDefaultUserData (decodeUserData) {

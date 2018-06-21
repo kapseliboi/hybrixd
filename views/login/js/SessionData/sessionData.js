@@ -79,34 +79,34 @@ function mkSessionDataStream (loginAnimationSubject, nacl, userCredentials) {
       randomNonceStream,
       validatedUserCredentialsStream_,
       processSession1StepDataStream
-    )
-    .pipe(
-      rxjs.operators.map(R.assoc('sessionData', R.__, {}))
     );
+    // .pipe(
+    //   rxjs.operators.map(R.assoc('sessionData', R.__, {}))
+    // );
 
-  var sessionDataStream = rxjs
-    .merge(
-      validatedUserCredentialsStream_,
-      generatedKeysStream,
-      sessionStepStream,
-      randomNonceStream,
-      initialSessionDataStream,
-      // postSessionStep0DataStream,
-      // processSessionStep0ReplyStream,
-      // postSessionStep1DataStream,
-      // processSession1StepDataStream,
-      sessionDataStreamReal
-    )
-    .pipe(
-      // rxjs.operators.tap(val => loginAnimationSubject.next(val)),
-      rxjs.operators.filter(R.compose(
-        R.has('sessionData'),
-        R.defaultTo({})
-      )),
-      rxjs.operators.map(R.prop('sessionData'))
-    );
+  // var sessionDataStream = rxjs
+  //   .merge(
+  //     validatedUserCredentialsStream_,
+  //     generatedKeysStream,
+  //     sessionStepStream,
+  //     randomNonceStream,
+  //     initialSessionDataStream,
+  //     // postSessionStep0DataStream,
+  //     // processSessionStep0ReplyStream,
+  //     // postSessionStep1DataStream,
+  //     // processSession1StepDataStream,
+  //     sessionDataStreamReal
+  //   )
+  //   .pipe(
+  //     // rxjs.operators.tap(val => loginAnimationSubject.next(val)),
+  //     rxjs.operators.filter(R.compose(
+  //       R.has('sessionData'),
+  //       R.defaultTo({})
+  //     )),
+  //     rxjs.operators.map(R.prop('sessionData'))
+  //   );
 
-  return sessionDataStream;
+  return sessionDataStreamReal;
 }
 
 function createSessionStep0UrlAndData (z) {

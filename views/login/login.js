@@ -85,6 +85,7 @@ function main () {
 }
 
 function renderInterface (assets) {
+  console.log('assets = ', assets);
   fetchview('interface');
 }
 
@@ -115,6 +116,7 @@ function maybeOpenNewWalletModal (location) {
 }
 
 function updateUserCrypto (userSessionData) {
+  console.log('userSessionData = ', userSessionData);
   GL.usercrypto = {
     user_keys: R.nth(0, userSessionData),
     nonce: R.path(['3', 'current_nonce'], userSessionData),
