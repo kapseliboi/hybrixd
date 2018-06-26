@@ -4,7 +4,7 @@ To add a new asset (crypto currency/token) the following needs to be created:
 
 Recipe: a json file containing the data/properties for the asset *)
         Reference: hybridd/recipes/README-recipes.txt
-        File: hybridd/recipes/asset.$NAME.json
+        File: hybridd/recipes/asset.$NAME.json OR token.$BASE.$NAME.json
 Module: The server(node) side programmatic implementation of an asset **)
         Reference: hybridd/lib/README-modules.txt
         Directory: hybridd/modules/$NAME
@@ -16,5 +16,3 @@ Deterministic-Module: The client side programmatic implementation of an asset. T
 
 **) Note that by using the Quartz module the server side code can be described in the recipe as well
         Reference: hybridd/lib/README-scheduler.txt
-
-

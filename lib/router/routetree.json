@@ -5,47 +5,54 @@
     "_this" : "List all available assets",
     "_ref":{
       "_list":"asset",
-      "address":"TODO",
       "balance":{
         "_ref" : {
           "_list" : "address",
-          "_this": "Retrieve the balance TODO",
+          "_this": "Retrieve the balance for a given address.",
           "_response": {"error":0,"info":"Process data.","id":"1519829438958324","progress":1,"started":1519829438958,"stopped":1519829440606,"data":"0.025106200000000000"}
         }
       },
       "contract":{
         "_ref" : {
           "_list" : "address",
-          "_this": "Retrieve the contract details TODO",
+          "_this": "Retrieve the unique identifier for an asset token.",
           "_response": [
             {"error":1,"info":"Process data.","id":"1519829579467984","progress":1,"started":1519829579467,"stopped":1519829579499,"data":"Error: Not a contract address!"},
             {"error":0,"info":"Process data.","id":"1519829634775083","progress":1,"started":1519829634775,"stopped":1519829634778,"data":"0xf230b790E05390FC8295F4d3F60332c93BEd42e2"}
           ]
         }
       },
+      "cron":{
+        "_access" : "root",
+        "_this" : "Perform scheduled tasks."
+      },
       "details":{
-        "_this": "Retrieve the fee symbol TODO",
+        "_this": "Retrieve the details TODO",
         "_response": "TODO"
       },
       "factor":{
-        "_this": "Retrieve the factor TODO",
+        "_this": "Retrieve the factor. The number of decimal digits used for this asset.",
         "_response": {"error":0,"info":"Process data.","id":"1519829794292742","progress":1,"started":1519829794292,"stopped":1519829794316,"data":"18"}
       },
       "fee":{
-        "_this": "Retrieve the fee TODO",
+        "_this": "Retrieve the transaction fee (For etheruem this is more complicated (“gas”) so worst case guestimate which is updated frequently)",
         "_response": {"error":0,"info":"Process data.","id":"1519830189432904","progress":1,"started":1519830189432,"stopped":1519830189437,"data":"0.000420000000000000"}
       },
       "fee-symbol":{
-        "_this": "Retrieve the fee symbol TODO",
+        "_this": "Retrieve the symbol in which the fee is calculated.",
         "_response": "TODO"
       },
       "history":"Retrieve asset history TODO",
       "push":{
         "_ref" : {
           "_list" : "transaction",
-          "_this":"Push a signed transaction.",
+          "_this":"Push a signed transaction to the blockchain.",
           "_response" : "{\"error\":0,\"info\":\"Process data.\",\"id\":\"1519830244168082\",\"progress\":1,\"started\":1519830244168,\"stopped\":1519830244173,\"data\":$TRANSACTION_ID}"
         }
+      },
+      "init":{
+        "_access" : "root",
+        "_this" : "Perform initialization tasks."
       },
       "keygen-base":{
         "_this": "Retrieve the keygen-base TODO",
@@ -57,8 +64,10 @@
           "_list" : "source_address",
           "_ref" : {
             "_list" : "target_address",
+            "_this" : "TODO",
             "_ref" : {
               "_list" : "ammount",
+              "_this" : "TODO",
               "_ref" : {
                 "_list" : "public_key",
                 "_this" : "Retrieve the unspent. Unspent is a bitcoin related term that in hybridd is used for pretransactional data. Bitcoin: unspent means available inputs for creating a transaction. Ethereum: unspent means the most recent nonce of the cryptocurrency account needed for constructing a transaction.  NXT: unspent means the server reply information needed to construct a deterministic transaction.",
@@ -123,14 +132,7 @@
   "e":{"_alias":"engine"},
   "engine":{
     "_help":"Engines are scriptable modules that can be built to do a variety of tasks.",
-    "_this":"List available engines.",
-    "storage" : {
-      "get":"Get data from storage",
-      "set":"Set data in storage",
-      "del":"Delete data from storage",
-      "pow":"Provide proof-of-work for long term storage",
-      "meta":"Access metadata in storage"
-    }
+    "_this":"List available engines."
   },
   "h":{"_alias":"help"},
   "help":{
@@ -192,49 +194,7 @@
   "s":{"_alias":"source"},
   "source":{
     "_help":"Sources are read-only information providers.",
-    "_this":"List available sources.",
-    "storage" : {
-      "get":"Get data from storage",
-      "set":"Set data in storage",
-      "del":"Delete data from storage",
-      "pow":"Provide proof-of-work for long term storage",
-      "meta":"Access metadata in storage"
-    },
-    "deterministic": {
-      "command" : {
-        "_this":"Execute a direct command.",
-        "_access":"root"
-      },
-      "assets":"List available assets.",
-      "code": {
-        "_ref":{
-          "_list" : "mode",
-          "_this" : "Returns the lzma compressed deterministic blobs (client side code) for a `$MODE` ."
-        }
-      },
-      "hash":  {
-        "_ref":{
-          "_list" : "mode",
-          "_this" : "Returns the DJB2 hash of the deterministic blobs (client side code) for `$MODE` ."
-        }
-      },
-      "hashes":"Returns the DJB2 hash of all deterministic blobs (client side code).",
-      "modes":"List available modes."
-    },
-    "blockexplorer": {
-      "command" : {
-        "_this":"Execute a direct command.",
-        "_access":"root"
-      },
-      "_ref":{
-        "_list":"source",
-        "balance" : "Retrieve the balance. TODO",
-        "command" : "Execute a command TODO",
-        "status" : "Retrieve the status TODO",
-        "unspent"  : "Retrieve the unspent TODO"
-      }
-
-    }
+    "_this":"List available sources."
   },
   "v":{"_alias":"view"},
   "view":{
