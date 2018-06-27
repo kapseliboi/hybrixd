@@ -136,8 +136,7 @@
   },
   "h":{"_alias":"help"},
   "help":{
-    "_this" : "Display help as html.",
-    "_valid" : "true"
+    "_this" : "Display help as html."
   },
   "n":{"_alias":"network"},
   "net":{"_alias":"network"},
