@@ -22,6 +22,10 @@
           ]
         }
       },
+      "cron":{
+        "_access" : "root",
+        "_this" : "Perform scheduled tasks."
+      },
       "details":{
         "_this": "Retrieve the details TODO",
         "_response": "TODO"
@@ -56,6 +60,10 @@
           "_this":"Push a signed transaction to the blockchain.",
           "_response" : "{\"error\":0,\"info\":\"Process data.\",\"id\":\"1519830244168082\",\"progress\":1,\"started\":1519830244168,\"stopped\":1519830244173,\"data\":$TRANSACTION_ID}"
         }
+      },
+      "init":{
+        "_access" : "root",
+        "_this" : "Perform initialization tasks."
       },
       "keygen-base":{
         "_this": "Retrieve the keygen-base TODO",

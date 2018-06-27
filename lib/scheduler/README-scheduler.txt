@@ -172,13 +172,13 @@ valid:    Amount of instructions lines to jump when property exists.           (
 invalid:  Amount of instructions lines to jump when property does not exist.   (1 = jump forward 1 instruction, -2 = jump backward two instructions)
 
 Examples:
-  tran(".foo",1,2,{foo:"bar"})                                         // Passes "bar" to next
-  tran (".foo.bar[2]",1,2,{foo:{bar:[0,1,5]}})                         // Passes 5 to next
-  tran (".foo.bar[2]",1,2,{foo:"bar"})                                 // Jumps 2 instructions and passes {foo:"bar"}
-  tran ([".foo",".hello"],1,2,{foo:"bar",hello:"world"})               // Passes ["bar","world"] to next
-  tran ({a:".foo",b:".hello",c:"test"},1,2,{foo:"bar",hello:"world"})  // Passes {a:"bar", b:"world", c:"test"} to next
-  tran("=.hello|default",1,2,{hello:"world"})                          // Passes "world" to next
-  tran("=.hello|default",1,2,{foo:"bar"})                              // Passes "default" to next
+  tran(".foo",{foo:"bar"},1,2)                                         // Passes "bar" to next
+  tran (".foo.bar[2]",{foo:{bar:[0,1,5]}},1,2)                         // Passes 5 to next
+  tran (".foo.bar[2]",{foo:"bar"},1,2)                                 // Jumps 2 instructions and passes {foo:"bar"}
+  tran ([".foo",".hello"],{foo:"bar",hello:"world"},1,2)               // Passes ["bar","world"] to next
+  tran ({a:".foo",b:".hello",c:"test"},{foo:"bar",hello:"world"},1,2)  // Passes {a:"bar", b:"world", c:"test"} to next
+  tran("=.hello|default",{hello:"world"},1,2)                          // Passes "world" to next
+  tran("=.hello|default",{foo:"bar"},1,2)                              // Passes "default" to next
 
 
 

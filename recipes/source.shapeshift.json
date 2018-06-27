@@ -1,0 +1,196 @@
+{
+  "source":"shapeshift",
+  "name":"Shape Shift",
+  "module":"quartz",
+  "mode":"shapeshift",
+  "host":"https://shapeshift.io",
+  "cache":1000,
+  "throttle":3,
+  "quartz" :{
+    "rate" :
+    [
+      "curl('source://$source','/rate/$1_$2','GET')",
+      "tran('.rate',data,1,2)",
+      "stop(0,data)",
+      "stop(1,'Error: '+data.error)"
+    ],
+    "limit" :
+    [
+      "curl('source://$source','/limit/$1_$2','GET')",
+      "tran('.limit',data,1,2)",
+      "stop(0,data)",
+      "stop(1,'Error: '+data.error)"
+    ],
+    "marketinfo" :
+    [
+      "curl('source://$source','/marketinfo/$1_$2','GET')",
+      "tran({rate:''.rate',limit:''.limit',min:''.min',minerFee:''.minerFee',},data,1,2)",
+      "stop(0,data)",
+      "stop(1,'Error: '+data.error)"
+    ],
+    "recenttx" :
+    [
+      "curl('source://$source','/recenttx/$1','GET')",
+      "stop(0,data)"
+    ],
+    "txstat" :
+    [
+      "curl('source://$source','/txstat/$1','GET')",
+      "stop(0,data)"
+    ],
+    "timeremaining" :
+    [
+      "curl('source://$source','/timeremaining/$1','GET')",
+      "tran('.seconds_remaining',data,1,2)",
+      "stop(0,data)",
+      "stop(1,'Error: '+data.error)"
+    ],
+    "getcoins" :
+    [
+      "curl('source://$source','/getcoins','GET')",
+      "stop(0,data)"
+    ],
+    "recenttx" :
+    [
+      "curl('source://$source','/recenttx/$1','GET')",
+      "stop(0,data)"
+    ],
+    "txbyapikey" :
+    [
+      "curl('source://$source','/txbyapikey/$1','GET')",
+      "stop(0,data)"
+    ],
+    "txbyaddress" :
+    [
+      "curl('source://$source','/txbyaddress/$1/$2','GET')",
+      "stop(0,data)"
+    ],
+    "validateAddress" :
+    [
+      "curl('source://$source','/validateAddress/$1/$2','GET')",
+      "stop(0,data)"
+    ],
+    "shift" :
+    [
+      "curl('source://$source','/shift','POST',data)",
+      "stop(0,data)"
+    ],
+    "mail" :
+    [
+      "curl('source://$source','/mail','POST',{email:'$1',txid:'$2'})",
+      "tran('.status',data,1,2)",
+      "stop(0,'Success. Email receipt sent.')",
+      "stop(1,'Error: '+data.error)"
+    ],
+     "sendamount" :
+    [
+      "curl('source://$source','/shift','POST',data)",
+      "stop(0,data)"
+    ],
+    "cancelpending" :
+    [
+      "curl('source://$source','/cancelpending','POST',{address:'$1'})",
+      "tran('.success',data,1,2)",
+      "stop(0,'Success. Pending Transaction cancelled')",
+      "stop(1,'Error: '+data.error)"
+    ]
+  },
+  "router":{
+    "rate" : {
+      "_ref" : {
+        "_list" : "symbol",
+        "_ref" : {
+          "_list" : "symbol",
+          "_this" : "Retrieve the exchange rate."
+        }
+      }
+    },
+    "limit" : {
+      "_ref" : {
+        "_list" : "symbol",
+        "_ref" : {
+          "_list" : "symbol",
+          "_this" : "Retrieve the deposit limit."
+        }
+      }
+    },
+    "marketinfo":{
+      "rate" : {
+        "_ref" : {
+          "_list" : "symbol",
+          "_ref" : {
+            "_list" : "symbol",
+            "_this" : "Retrieve the market info. (rate, limit, minimum limit, miner fee)"
+          }
+        }
+      }
+    },
+    "recenttx" : {
+      "_this" : "Get a list of the 5 most recent transactions.",
+      "_ref" : {
+        "_list" : "max",
+        "_this" : "Get a list of the most recent transactions max must be between 1 and 50."
+      }
+    },
+    "txstat" : {
+      "_ref" : {
+        "_list" : "address",
+        "_this" : "This returns the status of the most recent deposit transaction to the address."
+      }
+    },
+    "timeremaining" : {
+      "_ref" : {
+        "_list" : "address",
+        "_this" : "When a transaction is created with a fixed amount requested there is a 10 minute window for the deposit. After the 10 minute window if the deposit has not been received the transaction expires and a new one must be created. This api call returns how many seconds are left before the transaction expires. Please note that if the address is a ripple address,."
+      }
+    },
+    "getcoins" : "Get a list of all the currencies that Shapeshift currently supports at any given time. The list will include the name, symbol, availability status, and an icon link for each.",
+    "txbyapikey" : {
+      "_ref" : {
+        "_list" : "apikey",
+        "_this" : "Allows vendors to get a list of all transactions that have ever been done using a specific API key. Transactions are created with an affilliate PUBLIC KEY, but they are looked up using the linked PRIVATE KEY, to protect the privacy of our affiliates' account details."
+      }
+    },
+    "txbyaddress" : {
+      "_ref" : {
+        "_list" : "address",
+        "_ref" : {
+          "_list" : "apikey",
+          "_this" : "Allows vendors to get a list of all transactions that have ever been sent to one of their addresses. The affilliate's PRIVATE KEY must be provided, and will only return transactions that were sent to output address AND were created using / linked to the affiliate's PUBLIC KEY. Please note that if the address is a ripple address."
+        }
+      }
+    },
+    "validateAddress" : {
+      "_ref" : {
+        "_list" : "address",
+        "_ref" : {
+          "_list" : "coinSymbol",
+          "_this" : "Allows user to verify that their receiving address is a valid address according to a given wallet daemon. If isvalid returns true, this address is valid according to the coin daemon indicated by the currency symbol.."
+        }
+      }
+    },
+    "shift" : {
+      "_this" : "The primary data input into ShapeShift.",
+      "_method" : "post"
+    },
+    "mail" : {
+      "_ref" : {
+        "_list" : "email",
+        "_ref" : {
+          "_list" : "transaction_id",
+          "_this" : "This call requests a receipt for a transaction. The email address will be added to the conduit associated with that transaction as well. (Soon it will also send receipts to subsequent transactions on that conduit)"
+        }
+      }
+    },
+    "sendamount" : {
+      "_this" : "This call allows you to request a fixed amount to be sent to the withdrawal address. You provide a withdrawal address and the amount you want sent to it. We return the amount to deposit and the address to deposit to. This allows you to use shapeshift as a payment mechanism. This call also allows you to request a quoted price on the amount of a transaction without a withdrawal address.",
+      "_method" : "post"
+    },
+    "cancelpending" : {
+      "_ref" : {
+        "_list" : "address",
+        "_this" : "This call allows you to request for canceling a pending transaction by the deposit address. If there is fund sent to the deposit address, this pending transaction cannot be canceled."
+      }
+    }
+  }
+}
