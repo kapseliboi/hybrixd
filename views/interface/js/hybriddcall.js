@@ -26,7 +26,9 @@ hybriddcall = function (properties) {
 
   return fetch(urlrequest)
     .then(r => r.json()
-      .then(encodedResult => zchanOrYchanEncryptionObj(reqmethod, usercrypto)(step)(encodedResult)) // TODO: Factor out decoding!!!
+      .then(encodedResult => {
+        return zchanOrYchanEncryptionObj(reqmethod, usercrypto)(step)(encodedResult); // TODO: Factor out decoding!!!
+      })
       .catch(e => console.log('Error hybriddCall', e)))
     .catch(e => console.log('Error hybriddCall', e));
 };

@@ -21,6 +21,7 @@ function mkAssetDetailsStream (init, dcode, submode, entry, fullmode) {
   var assetDetailsStream = rxjs
     .from(hybriddcall({r: url, z: false}))
     .pipe(
+      rxjs.operators.tap(x => console.log('foo', entry, x)),
       rxjs.operators.filter(R.propEq('error', 0)),
       rxjs.operators.map(R.merge({r: '/s/deterministic/hashes', z: true}))
     );

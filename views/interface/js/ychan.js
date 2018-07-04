@@ -47,7 +47,9 @@ ychan_decode = function (usercrypto, step, encdata) {
         sessionSecData.clientSessionSecKey
       );
       var txtdata = nacl.decode_utf8(cryptBin);
-    } else { txtdata = null; }
+    } else {
+      txtdata = null;
+    }
   }
   return txtdata;
 };
