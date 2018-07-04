@@ -17,7 +17,7 @@ asset = {
     var assetReceiveBtnHtmlStr = '<div data="' + assetID + '" href="#action-receive" class="pure-button pure-button-large pure-button-secondary receiveAssetButton" role="button" data-toggle="modal" disabled="disabled"><div class="icon">' + R.prop('receive', Svg) + '</div>Receive</div>';
     var assetGenerateBtnHtmlStr = '<div data="' + assetID + '" href="#action-generate" class="pure-button pure-button-large pure-button-secondary generateAddressButton" role="button" data-toggle="modal" disabled="disabled"><div class="icon">' + R.prop('receive', Svg) + '</div>Receive</div>';
 
-    var receiveOrGenerateBtn = assetID === 'bts' ? assetGenerateBtnHtmlStr : assetReceiveBtnHtmlStr;
+    var receiveOrGenerateBtn = assetID.substr(0,3) === 'bts' ? assetGenerateBtnHtmlStr : assetReceiveBtnHtmlStr;
 
     var htmlToRender = '<div class="tr">' +
         assetInfoHTMLStr +
