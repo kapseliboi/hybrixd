@@ -11,7 +11,9 @@ generateAddress = {
     var asset = R.find(R.propEq('id', assetID))(globalAssets);
 
     Storage.Get_(modeHash + '-LOCAL')
-      .map(R.curry(retrieveNewAddress)(asset))
+      .pipe(
+        rxjs.operators.map(R.curry(retrieveNewAddress)(asset))
+      )
       .subscribe();
 
     function retrieveNewAddress (asset, dcode) {
@@ -23,7 +25,9 @@ generateAddress = {
   }
 };
 
-var generateAddressBtnStream = Rx.Observable.fromEvent(document.querySelector('#modal-generate-address-button'), 'click')
-    .map(R.path(['target', 'attributes', 'data', 'value']));
+var generateAddressBtnStream = rxjs.fromEvent(document.querySelector('#modal-generate-address-button'), 'click')
+  .pipe(
+    rxjs.operators.map(R.path(['target', 'attributes', 'data', 'value']))
+  );
 
 generateAddressBtnStream.subscribe(R.curry(generateAddress.generateAddress)(assets)(GL.assets)(GL.assetmodes)(LZString));

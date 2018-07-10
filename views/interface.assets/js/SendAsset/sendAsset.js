@@ -32,26 +32,34 @@ function zeroOrEthTokenBufferAmount (asset) {
     : 0;
 }
 
-var txAmountStream = Rx.Observable
+var txAmountStream = rxjs
   .fromEvent(document.querySelector('#modal-send-amount'), 'input')
-  .map(U.getTargetValue);
+  .pipe(
+    rxjs.operators.map(U.getTargetValue)
+  );
 
-var txTargetAddressStream = Rx.Observable
+var txTargetAddressStream = rxjs
   .fromEvent(document.querySelector('#modal-send-target'), 'input')
-  .map(U.getTargetValue);
+  .pipe(
+    rxjs.operators.map(U.getTargetValue)
+  );
 // .map(validateAddress) // ENTER ADDRESS VALIDATIONS
 
-var validatedTxDetailsStream = Rx.Observable
+var validatedTxDetailsStream = rxjs
   .combineLatest(
     txAmountStream,
     txTargetAddressStream
   );
 
-var sendTxButtonStream = Rx.Observable.fromEvent(document.querySelector('#send-transfer'), 'click')
-  .filter(U.btnIsNotDisabled);
+var sendTxButtonStream = rxjs.fromEvent(document.querySelector('#send-transfer'), 'click')
+  .pipe(
+    rxjs.operators.filter(U.btnIsNotDisabled)
+  );
 
 var transactionDataStream = sendTxButtonStream
-  .withLatestFrom(validatedTxDetailsStream);
+  .pipe(
+    rxjs.operators.withLatestFrom(validatedTxDetailsStream)
+  );
 
 function hideModal (z) {
   var txData = R.nth(0, z);

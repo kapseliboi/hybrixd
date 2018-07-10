@@ -6,7 +6,6 @@ var GenerateAddress = generateAddress;
 var Balance = balance;
 var M = manageAssets;
 var U = utils;
-var H = hybridd;
 var A = asset;
 
 var BALANCE_RETRIEVAL_INTERVAL_MS = 30000;
@@ -34,17 +33,21 @@ function initializeAssetsInterfaceStreams (assets) {
   var sendAssetButtonStream = mkAssetButtonStream('sendAssetButton');
   var receiveAssetButtonStream = mkAssetButtonStream('receiveAssetButton');
   var generateAddressButtonStream = mkAssetButtonStream('generateAddressButton');
-  var saveAssetListStream = Rx.Observable.fromEvent(document.querySelector('#save-assetlist'), 'click');
-  var maxAmountButtonStream = Rx.Observable.fromEvent(document.querySelector('.max-amount-button'), 'click');
-  var stopBalanceStream = Rx.Observable.fromEvent(document.querySelector('#topmenu-dashboard'), 'click');
-  var retrieveBalanceStream = Rx.Observable
+  var saveAssetListStream = rxjs.fromEvent(document.querySelector('#save-assetlist'), 'click');
+  var maxAmountButtonStream = rxjs.fromEvent(document.querySelector('.max-amount-button'), 'click');
+  var stopBalanceStream = rxjs.fromEvent(document.querySelector('#topmenu-dashboard'), 'click');
+  var retrieveBalanceStream = rxjs
     .interval(BALANCE_RETRIEVAL_INTERVAL_MS)
-    .startWith(0)
-    .takeUntil(stopBalanceStream);
+    .pipe(
+      rxjs.operators.startWith(0),
+      rxjs.operators.takeUntil(stopBalanceStream)
+    );
   var renderBalancesStream = Balance.mkRenderBalancesStream(retrieveBalanceStream, '.assets-main > .data .balance-', AMOUNT_OF_SIGNIFICANT_DIGITS, assetsIDs);
   renderBalancesStream.subscribe();
   renderBalancesStream
-    .map(updateGlobalAssetsAndRenderDataInDOM)
+    .pipe(
+      rxjs.operators.tap(updateGlobalAssetsAndRenderDataInDOM)
+    )
     .subscribe();
   maxAmountButtonStream.subscribe(function (_) {
     var sendBalance = document.querySelector('#action-send .modal-send-balance').innerHTML;
@@ -64,8 +67,10 @@ function initializeAssetsInterfaceStreams (assets) {
 }
 
 function mkAssetButtonStream (query) {
-  return Rx.Observable.fromEvent(document.querySelectorAll('.' + query), 'click')
-    .map(R.path(['target', 'attributes', 'data', 'value']));
+  return rxjs.fromEvent(document.querySelectorAll('.' + query), 'click')
+    .pipe(
+      rxjs.operators.map(R.path(['target', 'attributes', 'data', 'value']))
+    );
 }
 
 function updateGlobalAssetsAndRenderDataInDOM (balanceData) {

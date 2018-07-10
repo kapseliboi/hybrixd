@@ -17,25 +17,40 @@ sendTransaction = function (properties, GLOBAL_ASSETS, modeHashes, onSucces, onE
   var modeStr = mkModeHashStr(modeHashes, properties);
 
   var modeFromStorageStream = Storage.Get_(modeStr);
-  var transactionDataStream = Rx.Observable.of(transactionData);
-  var feeBaseStream = Rx.Observable.of(asset).map(checkBaseFeeBalance(GLOBAL_ASSETS));
-  var unspentStream = H.mkHybriddCallStream(unspentUrl)
-    .map(checkProcessProgress)
-    .retryWhen(function (errors) { return errors.delay(500); });
+  var transactionDataStream = rxjs.of(transactionData);
+  var feeBaseStream = rxjs.of(asset)
+    .pipe(
+      rxjs.operators.map(checkBaseFeeBalance(GLOBAL_ASSETS))
+    );
 
-  var doTransactionStream = Rx.Observable
+  var unspentStream = H.mkHybriddCallStream(unspentUrl)
+    .pipe(
+      rxjs.operators.tap(a => console.log('lala123', a)),
+      rxjs.operators.map(checkProcessProgress),
+      rxjs.operators.retryWhen(function (errors) {
+        return errors.pipe(
+          rxjs.operators.delayWhen(function (_) {
+            return rxjs.timer(1000);
+          })
+        );
+      })
+    );
+
+  var doTransactionStream = rxjs
     .combineLatest(
       unspentStream,
       modeFromStorageStream,
       transactionDataStream,
       feeBaseStream
     )
-    .map(getDeterministicData)
-    .map(getDeterministicTransactionData)
-    .flatMap(doPushTransactionStream)
-    .map(handleTransactionPushResult);
+    .pipe(
+      rxjs.operators.map(getDeterministicData),
+      rxjs.operators.map(getDeterministicTransactionData),
+      rxjs.operators.flatMap(doPushTransactionStream),
+      rxjs.operators.map(handleTransactionPushResult)
+    );
 
-  var finalizeTransactionStream = Rx.Observable
+  var finalizeTransactionStream = rxjs
     .combineLatest(
       transactionDataStream,
       doTransactionStream
@@ -46,6 +61,7 @@ sendTransaction = function (properties, GLOBAL_ASSETS, modeHashes, onSucces, onE
 };
 
 function getDeterministicData (z) {
+  console.log('z = ', z);
   var decodedData = R.nth(1, z);
   var deterministicData = R.compose(
     U.activate,
@@ -124,13 +140,22 @@ function doPushTransactionStream (z) {
   var assetID = R.nth(1, z);
   var url = 'a/' + assetID + '/push/' + transaction;
   return H.mkHybriddCallStream(url)
-    .map(function (processData) {
-      var isProcessInProgress = R.isNil(R.prop('data', processData)) &&
-                                R.equals(R.prop('error', processData), 0);
-      if (isProcessInProgress) throw processData;
-      return processData;
-    })
-    .retryWhen(function (errors) { return errors.delay(500); });
+    .pipe(
+      rxjs.operators.map(function (processData) {
+        var isProcessInProgress = R.isNil(R.prop('data', processData)) &&
+                                  R.equals(R.prop('error', processData), 0);
+        if (isProcessInProgress) throw processData;
+        return processData;
+      }),
+      rxjs.operators.retryWhen(function (errors) {
+        console.log('errors = ', errors);
+        return errors.pipe(
+          rxjs.operators.delayWhen(function (_) {
+            return rxjs.timer(1000);
+          })
+        );
+      })
+    );
 }
 
 function handleTransactionPushResult (res) {
@@ -158,7 +183,13 @@ function handlePushInDeterministic (assetID, transactionData) {
         if (isProcessInProgress) throw processData;
         return processData;
       })
-      .retryWhen(function (errors) { return errors.delay(500); });
+      .retryWhen(function (errors) {
+        return errors.pipe(
+          rxjs.operators.delayWhen(function (_) {
+            return rxjs.timer(1000);
+          })
+        );
+      });
 
     pushStream.subscribe(function (processResponse) {
       var processData = R.prop('data', processResponse);

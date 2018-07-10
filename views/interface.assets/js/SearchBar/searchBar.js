@@ -16,33 +16,38 @@ var clearBtns = [
   document.querySelector('.clearable__clear')
 ];
 
-var clearBtnsStream = clearBtns
-    .map(function (elem) { return Rx.Observable.fromEvent(elem, 'click'); });
+var clearBtnsStream = R.map(function (elem) { return rxjs.fromEvent(elem, 'click'); }, clearBtns);
 
-var searchAssetsStream = Rx.Observable
-    .fromEvent(document.querySelector('#search-assets'), 'input')
-    .startWith({target: {value: ''}})
-    .map(U.getTargetValue);
+var searchAssetsStream = rxjs
+  .fromEvent(document.querySelector('#search-assets'), 'input')
+  .pipe(
+    rxjs.operators.startWith({target: {value: ''}}),
+    rxjs.operators.map(U.getTargetValue)
+  );
 
 var searchBarStream = searchAssetsStream
-    .map(R.toLower)
-    .map(query => {
+  .pipe(
+    rxjs.operators.map(R.toLower),
+    rxjs.operators.map(query => {
       return R.compose(
         R.keys,
         R.fromPairs,
         R.filter(queryMatchesEntry(query)),
         R.toPairs
       )(GL.assetnames);
-    });
+    })
+  );
 
-var clearSearchBarStream = Rx.Observable
+var clearSearchBarStream = rxjs
   .merge(clearBtnsStream)
-    .map(function (_) {
+  .pipe(
+    rxjs.operators.tap(function (_) {
       var searchBar = document.querySelector('#search-assets');
       searchBar.innerHTML = '';
       searchBar.value = '';
       U.triggerEvent(searchBar, 'input');
-    });
+    })
+  );
 
 function mkSearchedAssetHTMLStr (acc, entry) {
   var symbolName = entry.slice(entry.indexOf('.') + 1);

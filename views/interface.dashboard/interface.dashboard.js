@@ -50,9 +50,7 @@ function render (assets) {
     renderStarredAssets(assets);
     socialMediaIcons.forEach(renderSvgIcon);
     Balance.mkRenderBalancesStream(retrieveBalanceStream, queryStr, AMOUNT_OF_SIGNIFICANT_DIGITS, starredAssetsIDs)
-      .subscribe(a => {
-        console.log('a = ', a);
-      });
+      .subscribe();
   };
 }
 
