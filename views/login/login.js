@@ -72,20 +72,9 @@ function main () {
       rxjs.operators.tap(U.updateGlobalAssets)
     )
     .subscribe(renderInterface);
-  A.subject
-    .pipe(
-      rxjs.operators.mapTo(1),
-      rxjs.operators.scan(R.inc, 0),
-      rxjs.operators.filter(R.lt(R.__, R.inc(A.ANIMATION_STEPS))),
-      rxjs.operators.tap(A.doProgressAnimation)
-    )
-    .subscribe(_ => {
-      console.log('Some stuff came through:', _);
-    });
 }
 
 function renderInterface (assets) {
-  console.log('assets = ', assets);
   fetchview('interface');
 }
 
@@ -116,7 +105,6 @@ function maybeOpenNewWalletModal (location) {
 }
 
 function updateUserCrypto (userSessionData) {
-  console.log('userSessionData = ', userSessionData);
   GL.usercrypto = {
     user_keys: R.nth(0, userSessionData),
     nonce: R.path(['3', 'current_nonce'], userSessionData),

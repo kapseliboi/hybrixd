@@ -40,7 +40,7 @@ function mkAssetInitializationStream (loginAnimationSubject, z) {
 
   var deterministicHashesResponseProcessStream = deterministicHashesStream
     .pipe(
-      rxjs.operators.switchMap(value => {
+      rxjs.operators.switchMap(function (value) {
         return rxjs.of(value)
           .pipe(
             rxjs.operators.flatMap(function (properties) {
@@ -84,7 +84,7 @@ function mkAssetInitializationStream (loginAnimationSubject, z) {
         return rxjs.of(initializedData)
           .pipe(
             rxjs.operators.map(R.nth(0)),
-            rxjs.operators.flatMap(a => a), // Flatten Array structure...
+            rxjs.operators.flatMap(function (a) { return a; }), // Flatten Array structure...
             rxjs.operators.filter(existsInAssetNames), // TODO: Now IGNORES assets that have been disabled in the backend. Need to disable / notify user when this occurs.
             rxjs.operators.flatMap(function (asset) {
               return R.compose(
@@ -94,28 +94,36 @@ function mkAssetInitializationStream (loginAnimationSubject, z) {
             }),
             rxjs.operators.map(U.addIcon),
             rxjs.operators.bufferCount(R.length(R.nth(0, initializedData)))
-            // rxjs.operators.map(R.assoc('detailedAssets', R.__, {}))
           );
       })
     );
 
-  // var detailedAssetsStream = rxjs
-  //   .concat(
-  //     // assetsModesAndNamesStream,
-  //     // deterministicHashesResponseProcessStream,
-  //     // storedUserDataStream,
-  //     // initializationStream,
-  //     assetsDetailsStream
-  //   )
-  //   .pipe(
-  //     // rxjs.operators.tap(val => loginAnimationSubject.next(val)),
-  //     rxjs.operators.delay(500), // HACK: Delay data somewhat so browser gives priority to DOM manipulation instead of initiating all further streams.
-  //     rxjs.operators.filter(R.compose(
-  //       R.has('detailedAssets'),
-  //       R.defaultTo({})
-  //     )),
-  //     rxjs.operators.map(R.prop('detailedAssets'))
-  //   );
+  var finalizedWalletStream = rxjs.empty()
+    .pipe(
+      rxjs.operators.withLatestFrom(assetsDetailsStream)
+    );
+
+  var assetsDetailsAnimationStream = rxjs
+    .merge(
+      A.initialAnimationStateStream(1),
+      assetsModesAndNamesStream,
+      deterministicHashesResponseProcessStream,
+      storedUserDataStream,
+      initializationStream,
+      finalizedWalletStream
+    )
+    .pipe(
+      rxjs.operators.scan(R.inc),
+      rxjs.operators.map(R.when(
+        R.lte(A.ANIMATION_STEPS),
+        R.always(A.ANIMATION_STEPS)
+      )),
+      rxjs.operators.tap(a => console.log('a', a)),
+      rxjs.operators.map(A.doProgressAnimation)
+    );
+
+  // TODO: Refactor. Can''t modularize now, because CSS is not being rendered at the same time streams are being initialized.
+  assetsDetailsAnimationStream.subscribe();
 
   return assetsDetailsStream;
 }

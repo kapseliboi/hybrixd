@@ -29,48 +29,24 @@ var progressMessages = {
   5: {
     step: 5,
     weight: '90%',
-    message: 'Finalizing wallet...'
+    message: 'Loading personal settings...'
   },
   6: {
     step: 6,
-    weight: '90%',
-    message: 'Almost there!'
+    weight: '95%',
+    message: 'Finalizing wallet...'
   }
 };
 
 var ANIMATION_STEPS = 10;
 
-// var ANIMATION_STEPS = R.compose(
-//   R.dec,
-//   R.length,
-//   R.keys
-// )(progressMessages);
-
-function blink (target) {
-  var el = document.getElementById(target);
-  if (el != null && typeof el.style !== 'undefined') {
-    if (typeof el.style.visibility !== 'undefined' && el.style.visibility === 'hidden') {
-      el.style.visibility = 'visible';
-    } else {
-      el.style.visibility = 'hidden';
-    }
-  }
+function initialAnimationStateStream (n) {
+  return rxjs.interval(200)
+    .pipe(
+      rxjs.operators.startWith(n),
+      rxjs.operators.take(2)
+    );
 }
-
-var initialAnimationStateStream = rxjs.interval(200)
-  .pipe(
-    rxjs.operators.startWith(0),
-    rxjs.operators.take(2)
-  );
-
-var loginAnimationStream = initialAnimationStateStream
-  .pipe(
-    rxjs.operators.scan(R.inc),
-    rxjs.operators.map(function (n) {
-      console.log('n = ', n); return n <= ANIMATION_STEPS ? n : ANIMATION_STEPS;
-    }),
-    rxjs.operators.map(doProgressAnimation)
-  );
 
 function doProgressAnimation (step) {
   var elemExists = R.not(R.isNil(document.querySelector('.progress-bar'))) &&
@@ -89,7 +65,6 @@ function defaultOrMaxSteps (n) {
 animations = {
   ANIMATION_STEPS,
   defaultOrMaxSteps,
-  loginAnimationStream,
   initialAnimationStateStream,
   doProgressAnimation,
   progressMessages,

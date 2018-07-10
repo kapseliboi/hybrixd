@@ -2,16 +2,20 @@ var U = utils;
 
 hybridd = {
   mkHybriddCallStream: function (url) {
-    var hybriddCallStream = Rx.Observable
-      .fromPromise(hybriddcall({r: url, z: true}))
-      .filter(R.propEq('error', 0)) // TODO Handle errors.
-      .map(R.merge({r: url, z: true}));
+    var hybriddCallStream = rxjs
+      .from(hybriddcall({r: url, z: true}))
+      .pipe(
+        rxjs.operators.filter(R.propEq('error', 0)), // TODO Handle errors.
+        rxjs.operators.map(R.merge({r: url, z: true}))
+      );
 
     var hybriddCallResponseStream = hybriddCallStream
-      .flatMap(function (properties) {
-        return Rx.Observable
-          .fromPromise(hybriddReturnProcess(properties));
-      });
+      .pipe(
+        rxjs.operators.flatMap(function (properties) {
+          return rxjs
+            .from(hybriddReturnProcess(properties));
+        })
+      );
 
     return hybriddCallResponseStream;
   }

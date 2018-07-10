@@ -17,13 +17,15 @@ var socialMediaIcons = [
   {class: '.chevron-right', svg: 'chevron-right'}
 ];
 
-var stopBalanceStream = Rx.Observable
+var stopBalanceStream = rxjs
   .fromEvent(document.querySelector('#topmenu-assets'), 'click');
 
-var retrieveBalanceStream = Rx.Observable
+var retrieveBalanceStream = rxjs
   .interval(BALANCE_RENDER_INTERVAL_MS)
-  .startWith(0)
-  .takeUntil(stopBalanceStream);
+  .pipe(
+    rxjs.operators.startWith(0),
+    rxjs.operators.takeUntil(stopBalanceStream)
+  );
 
 function renderStarredAssets (assets) {
   var starredAssetsHTML = R.reduce(UI.mkHtmlForStarredAssets, '', assets);
