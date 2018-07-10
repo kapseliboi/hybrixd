@@ -48,9 +48,11 @@ function render (assets) {
     var starredAssetsIDs = R.map(R.prop('id'), assets);
     var queryStr = '.dashboard-balances > .data > .balance > .balance-';
     renderStarredAssets(assets);
-    Balance.mkRenderBalancesStream(retrieveBalanceStream, queryStr, AMOUNT_OF_SIGNIFICANT_DIGITS, starredAssetsIDs)
-      .subscribe();
     socialMediaIcons.forEach(renderSvgIcon);
+    Balance.mkRenderBalancesStream(retrieveBalanceStream, queryStr, AMOUNT_OF_SIGNIFICANT_DIGITS, starredAssetsIDs)
+      .subscribe(a => {
+        console.log('a = ', a);
+      });
   };
 }
 

@@ -13,7 +13,13 @@ function mkBalanceStream (asset) {
         if (R.isNil(R.prop('stopped', data)) && R.prop('progress', data) < 1) throw data;
         return data;
       }),
-      rxjs.operators.retryWhen(function (errors) { return rxjs.timer(1000); }),
+      rxjs.operators.retryWhen(function (errors) {
+        return errors.pipe(
+          rxjs.operators.delayWhen(function (_) {
+            return rxjs.timer(1000);
+          })
+        );
+      }),
       rxjs.operators.map(R.curry(currentOrUpdatedBalance)(currentBalance, asset)),
       rxjs.operators.map(R.curry(normalizeBalance)(asset)) // When balance has a previously correct amount, but now returns incorrect, we keep the previously known value.
     );
@@ -45,7 +51,13 @@ function mkRenderBalancesStream (intervalStream, q, n, assetsIDs) {
           .pipe(
             rxjs.operators.map(U.findAsset),
             rxjs.operators.map(assetOrError),
-            rxjs.operators.retryWhen(function (errors) { return errors.delay(500); }),
+            rxjs.operators.retryWhen(function (errors) {
+              return errors.pipe(
+                rxjs.operators.delayWhen(function (_) {
+                  return rxjs.timer(500);
+                })
+              );
+            }), // RACE CONDITION!
             rxjs.operators.delay(500), // HACK: Make sure assets are rendered in DOM before rendering balances in elements.
             rxjs.operators.map(function (asset) {
               var hyphenizedID = R.compose(

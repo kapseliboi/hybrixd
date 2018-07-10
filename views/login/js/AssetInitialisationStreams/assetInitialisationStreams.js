@@ -83,7 +83,6 @@ function mkAssetInitializationStream (loginAnimationSubject, z) {
       rxjs.operators.flatMap(function (initializedData) {
         return rxjs.of(initializedData)
           .pipe(
-            rxjs.operators.map(R.nth(0)),
             rxjs.operators.flatMap(function (a) { return a; }), // Flatten Array structure...
             rxjs.operators.filter(existsInAssetNames), // TODO: Now IGNORES assets that have been disabled in the backend. Need to disable / notify user when this occurs.
             rxjs.operators.flatMap(function (asset) {
@@ -93,7 +92,7 @@ function mkAssetInitializationStream (loginAnimationSubject, z) {
               )(asset);
             }),
             rxjs.operators.map(U.addIcon),
-            rxjs.operators.bufferCount(R.length(R.nth(0, initializedData)))
+            rxjs.operators.bufferCount(R.length(initializedData))
           );
       })
     );
@@ -148,18 +147,19 @@ function storedOrDefaultUserData (decodeUserData) {
 function initialize_ (z) {
   var globalAssets = R.nth(0, z);
   var assetsModesAndNames = R.nth(1, z);
+  var initializedGlobalAssets = initializeGlobalAssets(globalAssets);
 
+  // TODO: Make pure!
   GL.assetnames = mkAssetData(assetsModesAndNames, 'name');
   GL.assetmodes = mkAssetData(assetsModesAndNames, 'mode');
-  initializeGlobalAssets(globalAssets);
   Storage.Set(userStorageKey('ff00-0035'), userEncode(globalAssets));
+  U.updateGlobalAssets(initializedGlobalAssets);
 
-  return z;
+  return initializedGlobalAssets;
 }
 
 function initializeGlobalAssets (assets) {
   return R.compose(
-    U.updateGlobalAssets,
     R.map(R.merge({balance: { amount: 'n/a', lastTx: 0, lastUpdateTime: 0}})),
     R.filter(existsInAssetNames)
   )(assets);
