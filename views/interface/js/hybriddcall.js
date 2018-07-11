@@ -14,9 +14,6 @@ hybridd = {
         rxjs.operators.flatMap(function (properties) {
           return rxjs
             .from(hybriddReturnProcess(properties));
-          // .pipe(
-          //   // rxjs.operators.tap(a => console.log('data', a))
-          // );
         })
       );
 
