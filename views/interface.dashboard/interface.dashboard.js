@@ -35,7 +35,7 @@ function renderStarredAssets (assets) {
     : UI.noStarredAssetsHTML;
 
   document.querySelector('.dashboard-balances .spinner-loader').classList.add('disabled-fast');
-  setTimeout(function () { document.querySelector('.dashboard-balances > .data').innerHTML = htmlToRender; }, 500); // Render new HTML string in DOM. 500 sec delay for fadeout. Should separate concern!
+  document.querySelector('.dashboard-balances > .data').innerHTML = htmlToRender;
 }
 
 function renderSvgIcon (icon) {
