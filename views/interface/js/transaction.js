@@ -177,19 +177,21 @@ function handlePushInDeterministic (assetID, transactionData) {
     var H = hybridd; // TODO: Factor up. Can't now, smt's up with dependency order.
     var url = 'a/' + assetID + '/push/' + txData;
     var pushStream = H.mkHybriddCallStream(url)
-      .map(function (processData) {
-        var isProcessInProgress = R.isNil(R.prop('data', processData)) &&
+      .pipe(
+        rxjs.operators.map(function (processData) {
+          var isProcessInProgress = R.isNil(R.prop('data', processData)) &&
                                     R.equals(R.prop('error', processData), 0);
-        if (isProcessInProgress) throw processData;
-        return processData;
-      })
-      .retryWhen(function (errors) {
-        return errors.pipe(
-          rxjs.operators.delayWhen(function (_) {
-            return rxjs.timer(1000);
-          })
-        );
-      });
+          if (isProcessInProgress) throw processData;
+          return processData;
+        }),
+        rxjs.operators.retryWhen(function (errors) {
+          return errors.pipe(
+            rxjs.operators.delayWhen(function (_) {
+              return rxjs.timer(1000);
+            })
+          );
+        })
+      );
 
     pushStream.subscribe(function (processResponse) {
       var processData = R.prop('data', processResponse);

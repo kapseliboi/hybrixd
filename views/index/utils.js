@@ -118,19 +118,21 @@ utils = {
       var url = 'a/' + assetID + '/balance/' + assetAddress;
 
       var balanceStream = H.mkHybriddCallStream(url)
-        .map(data => {
-          if (R.isNil(R.prop('stopped', data)) && R.prop('progress', data) < 1) throw data;
-          return data;
-        })
-        .retryWhen(function (errors) { return errors.delay(1000); })
-        .map(function (balanceData) {
-          var lastTxTime = R.path(['balance', 'lastTx'], asset);
-          var currentTime = Date.now();
+        .pipe(
+          rxjs.operators.map(data => {
+            if (R.isNil(R.prop('stopped', data)) && R.prop('progress', data) < 1) throw data;
+            return data;
+          }),
+          rxjs.operators.retryWhen(function (errors) { return errors.delay(1000); }),
+          rxjs.operators.map(function (balanceData) {
+            var lastTxTime = R.path(['balance', 'lastTx'], asset);
+            var currentTime = Date.now();
 
-          return currentTime > lastTxTime + BALANCE_UPDATE_BUFFER_TIME_MS
-            ? balanceData
-            : { data: currentBalance };
-        });
+            return currentTime > lastTxTime + BALANCE_UPDATE_BUFFER_TIME_MS
+              ? balanceData
+              : { data: currentBalance };
+          })
+        );
 
       balanceStream.subscribe(function (balanceData) {
         var currentBalance = R.path(['balance', 'amount'], asset);
