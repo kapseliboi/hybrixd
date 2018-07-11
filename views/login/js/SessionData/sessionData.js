@@ -133,7 +133,7 @@ function sessionStep1OrErrorHandlingStream (sessionStep1Data) {
         )(sessionStep1Response);
 
         if (responseHasErrors) {
-          throw { error: 1, msg: 'Something went wrong while processing your request.</br></br>Please try again.</br></br></br>'};
+          throw { error: 1, msg: 'Something went wrong while processing your request.</br></br>Please try again.</br></br></br>'}; // TODO: Plugin error logging here.
         } else {
           return sessionStep1Response;
         }
@@ -161,7 +161,7 @@ function sessionStep0OrErrorHandlingStream (sessionStep0Data) {
       }),
       rxjs.operators.map(function (deterministicHashesProcessResponse) {
         if (R.not(R.propEq('error', 0, deterministicHashesProcessResponse))) {
-          throw { error: 1, msg: 'Error posting session step 0.'};
+          throw { error: 1, msg: 'Something went wrong while processing your request.</br></br>Please try again.</br></br></br>'}; // TODO: Plugin error logging here.
         } else {
           return deterministicHashesProcessResponse;
         }
@@ -181,9 +181,10 @@ function randomNonceOrErrorHandlingStream (naclInstance) {
     .pipe(
       rxjs.operators.map(function (nacl_) { return nacl_.crypto_box_random_nonce(); }),
       rxjs.operators.catchError(function (e) {
-        return rxjs.of({ error: 1, msg: 'Something unexpected happened. Please try again.' + e })
+        return rxjs.of({ error: 1, msg: 'Something unexpected happened. Please try again.' }) // TODO: Plugin error logging here.
           .pipe(
             rxjs.operators.tap(UserFeedback.notifyUserOfIncorrectCredentials),
+            rxjs.operators.tap(UserFeedback.resetFlipOverAnimation),
             rxjs.operators.tap(function (_) { UserFeedback.toggleLoginSpinner('remove'); }),
             rxjs.operators.tap(function (_) { UserFeedback.setLoginButtonText('Sign in'); }),
             rxjs.operators.tap(function (_) { UserFeedback.setCSSTorenderButtonsToEnabled(); }),
