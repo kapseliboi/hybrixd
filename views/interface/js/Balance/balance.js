@@ -65,16 +65,16 @@ function mkRenderBalancesStream (intervalStream, q, n, assetsIDs) {
               )(asset);
               var assetQuery = q + hyphenizedID;
               // TODO move to subscribe
-              R.compose(
-                R.curry(U.renderDataInDom)(assetQuery, n),
-                R.path(['balance', 'amount'])
-              )(asset);
 
               return {
                 element: assetQuery,
                 assetID,
-                amountStr: R.path(['balance', 'amount'], asset)
+                amountStr: R.path(['balance', 'amount'], asset),
+                amountSignificantDigits: n
               };
+            }),
+            rxjs.operators.tap(function (assetBalanceDetails) {
+              U.renderDataInDom(R.prop('element', assetBalanceDetails), R.prop('amountSignificantDigits', assetBalanceDetails), R.prop('amountStr', assetBalanceDetails));
             })
           );
       })

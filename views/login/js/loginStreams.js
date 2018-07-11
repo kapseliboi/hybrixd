@@ -11,10 +11,14 @@ const passwordInputStream = rxjs.fromEvent(document.querySelector('#inputPasscod
     rxjs.operators.map(U.getTargetValue)
   );
 
-var credentialsStream = rxjs.combineLatest(
-  userIdInputStr,
-  passwordInputStream
-);
+var credentialsStream = rxjs
+  .combineLatest(
+    userIdInputStr,
+    passwordInputStream
+  )
+  .pipe(
+    rxjs.operators.startWith(['', ''])
+  );
 
 function mkInputStream (query) {
   return rxjs.fromEvent(document.querySelector(query), 'keydown')
