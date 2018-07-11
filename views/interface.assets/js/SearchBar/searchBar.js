@@ -41,6 +41,7 @@ var searchBarStream = searchAssetsStream
 var clearSearchBarStream = rxjs
   .merge(clearBtnsStream)
   .pipe(
+    rxjs.operators.flatMap(function (a) { return a; }),
     rxjs.operators.tap(function (_) {
       var searchBar = document.querySelector('#search-assets');
       searchBar.innerHTML = '';
