@@ -33,7 +33,6 @@ function initializeAssetsInterfaceStreams (assets) {
   var sendAssetButtonStream = mkAssetButtonStream('sendAssetButton');
   var receiveAssetButtonStream = mkAssetButtonStream('receiveAssetButton');
   var generateAddressButtonStream = mkAssetButtonStream('generateAddressButton');
-  console.log('generateAddressButtonStream = ', generateAddressButtonStream);
   var saveAssetListStream = rxjs.fromEvent(document.querySelector('#save-assetlist'), 'click');
   var maxAmountButtonStream = rxjs.fromEvent(document.querySelector('.max-amount-button'), 'click');
   var stopBalanceStream = rxjs.fromEvent(document.querySelector('#topmenu-dashboard'), 'click');
@@ -63,7 +62,6 @@ function initializeAssetsInterfaceStreams (assets) {
     ReceiveAsset.renderAssetDetailsInModal(assetID);
   });
   generateAddressButtonStream.subscribe(function (assetID) {
-    console.log('assetID = ', assetID);
     GenerateAddress.render(assetID);
   });
 }
