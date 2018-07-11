@@ -42,16 +42,18 @@ var manageAssets = {
       var newAssetsToInitialize = R.filter(idDoesNotExist, newActiveAssetsForStorage);
 
       var assetsDetailsStream = R.isEmpty(newAssetsToInitialize)
-          ? Rx.Observable.from([[]])
-          : Rx.Observable.from(newAssetsToInitialize)
-          .flatMap(function (asset) {
-            return R.compose(
-              initializeAsset(asset),
-              R.prop('id')
-            )(asset);
-          })
-          .map(U.addIcon)
-          .bufferCount(R.length(newAssetsToInitialize));
+        ? rxjs.from([[]])
+        : rxjs.from(newAssetsToInitialize)
+          .pipe(
+            rxjs.operators.flatMap(function (asset) {
+              return R.compose(
+                initializeAsset(asset),
+                R.prop('id')
+              )(asset);
+            }),
+            rxjs.operators.map(U.addIcon),
+            rxjs.operators.bufferCount(R.length(newAssetsToInitialize))
+          );
 
       assetsDetailsStream.subscribe(assetsDetails => {
         var newGlobalAssets = R.reduce(function (newAssets, asset) {

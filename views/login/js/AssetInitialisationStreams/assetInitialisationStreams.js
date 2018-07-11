@@ -9,7 +9,7 @@ var defaultAssetData = [
   { id: 'eth', starred: false }
 ];
 
-function mkAssetInitializationStream (loginAnimationSubject, z) {
+function mkAssetInitializationStream (z) {
   GL.cur_step = nextStep();
   var assetsModesUrl = path + zchan(GL.usercrypto, GL.cur_step, 'l/asset/details');
 
@@ -59,7 +59,7 @@ function mkAssetInitializationStream (loginAnimationSubject, z) {
       }),
       rxjs.operators.filter(R.propEq('error', 0)),
       rxjs.operators.map(R.prop('data')), // VALIDATE?
-      rxjs.operators.map(function (deterministicHashes) { assets.modehashes = deterministicHashes; }) // TODO: Make storedUserStream dependent on this stream! USE TAP
+      rxjs.operators.tap(function (deterministicHashes) { assets.modehashes = deterministicHashes; }) // TODO: Make storedUserStream dependent on this stream! USE TAP
     );
 
   var storedUserDataStream = Storage.Get_(userStorageKey('ff00-0035'))
@@ -75,6 +75,7 @@ function mkAssetInitializationStream (loginAnimationSubject, z) {
       deterministicHashesResponseProcessStream
     )
     .pipe(
+      rxjs.operators.map(setAssetModesAndNames),
       rxjs.operators.map(initialize_)
     );
 
@@ -117,7 +118,6 @@ function mkAssetInitializationStream (loginAnimationSubject, z) {
         R.lte(A.ANIMATION_STEPS),
         R.always(A.ANIMATION_STEPS)
       )),
-      rxjs.operators.tap(a => console.log('a', a)),
       rxjs.operators.map(A.doProgressAnimation)
     );
 
@@ -143,16 +143,19 @@ function storedOrDefaultUserData (decodeUserData) {
   )(decodeUserData);
 }
 
+function setAssetModesAndNames (z) {
+  var assetsModesAndNames = R.nth(1, z);
+  GL.assetnames = mkAssetData(assetsModesAndNames, 'name');
+  GL.assetmodes = mkAssetData(assetsModesAndNames, 'mode');
+  return z;
+}
+
 // EFF ::
 function initialize_ (z) {
   var globalAssets = R.nth(0, z);
-  var assetsModesAndNames = R.nth(1, z);
   var initializedGlobalAssets = initializeGlobalAssets(globalAssets);
 
-  // TODO: Make pure!
-  GL.assetnames = mkAssetData(assetsModesAndNames, 'name');
-  GL.assetmodes = mkAssetData(assetsModesAndNames, 'mode');
-  Storage.Set(userStorageKey('ff00-0035'), userEncode(globalAssets));
+  Storage.Set(userStorageKey('ff00-0035'), userEncode(initializedGlobalAssets));
   U.updateGlobalAssets(initializedGlobalAssets);
 
   return initializedGlobalAssets;

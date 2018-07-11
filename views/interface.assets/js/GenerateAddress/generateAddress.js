@@ -2,6 +2,7 @@ var U = utils;
 
 generateAddress = {
   render: function (assetID) {
+    console.log('assetID = ', assetID);
     document.querySelector('#modal-generate-address-button').setAttribute('data', assetID);
   },
   generateAddress: function (assets, globalAssets, assetModes, LZString, assetID) {

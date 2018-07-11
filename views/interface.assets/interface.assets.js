@@ -33,6 +33,7 @@ function initializeAssetsInterfaceStreams (assets) {
   var sendAssetButtonStream = mkAssetButtonStream('sendAssetButton');
   var receiveAssetButtonStream = mkAssetButtonStream('receiveAssetButton');
   var generateAddressButtonStream = mkAssetButtonStream('generateAddressButton');
+  console.log('generateAddressButtonStream = ', generateAddressButtonStream);
   var saveAssetListStream = rxjs.fromEvent(document.querySelector('#save-assetlist'), 'click');
   var maxAmountButtonStream = rxjs.fromEvent(document.querySelector('.max-amount-button'), 'click');
   var stopBalanceStream = rxjs.fromEvent(document.querySelector('#topmenu-dashboard'), 'click');
@@ -62,15 +63,19 @@ function initializeAssetsInterfaceStreams (assets) {
     ReceiveAsset.renderAssetDetailsInModal(assetID);
   });
   generateAddressButtonStream.subscribe(function (assetID) {
+    console.log('assetID = ', assetID);
     GenerateAddress.render(assetID);
   });
 }
 
 function mkAssetButtonStream (query) {
-  return rxjs.fromEvent(document.querySelectorAll('.' + query), 'click')
-    .pipe(
-      rxjs.operators.map(R.path(['target', 'attributes', 'data', 'value']))
-    );
+  var queries = document.querySelectorAll('.' + query);
+  return R.equals(R.length(queries), 0)
+    ? rxjs.from([])
+    : rxjs.fromEvent(queries, 'click')
+      .pipe(
+        rxjs.operators.map(R.path(['target', 'attributes', 'data', 'value']))
+      );
 }
 
 function updateGlobalAssetsAndRenderDataInDOM (balanceData) {

@@ -13,10 +13,10 @@ hybridd = {
       .pipe(
         rxjs.operators.flatMap(function (properties) {
           return rxjs
-            .from(hybriddReturnProcess(properties))
-            .pipe(
-              rxjs.operators.tap(a => console.log('data', a))
-            );
+            .from(hybriddReturnProcess(properties));
+          // .pipe(
+          //   // rxjs.operators.tap(a => console.log('data', a))
+          // );
         })
       );
 

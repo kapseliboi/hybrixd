@@ -1,7 +1,7 @@
 var UserFeedback = userFeedback;
 var UserCredentialsValidation = userCredentialsValidation;
 
-function mkSessionDataStream (loginAnimationSubject, nacl, userCredentials) {
+function mkSessionDataStream (nacl, userCredentials) {
   var validatedUserCredentialsStream_ = rxjs.of(userCredentials);
 
   var generatedKeysStream =

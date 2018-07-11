@@ -66,9 +66,9 @@ function main () {
     .pipe(
       rxjs.operators.tap(function (_) { UserFeedback.doFlipOverAnimation(); }),
       rxjs.operators.delay(10), // HACK: Delay data somewhat so browser gives priority to DOM manipulation instead of initiating all further streams.
-      rxjs.operators.flatMap(R.curry(SessionData.mkSessionDataStream)(A.subject, nacl)), // TODO: Remove global dependency
+      rxjs.operators.flatMap(R.curry(SessionData.mkSessionDataStream)(nacl)), // TODO: Remove global dependency
       rxjs.operators.tap(updateUserCrypto),
-      rxjs.operators.flatMap(R.curry(AssetInitialisation.mkAssetInitializationStream)(A.subject)),
+      rxjs.operators.flatMap(AssetInitialisation.mkAssetInitializationStream),
       rxjs.operators.tap(U.updateGlobalAssets)
     )
     .subscribe(renderInterface);
