@@ -25,7 +25,6 @@ sendTransaction = function (properties, GLOBAL_ASSETS, modeHashes, onSucces, onE
 
   var unspentStream = H.mkHybriddCallStream(unspentUrl)
     .pipe(
-      rxjs.operators.tap(a => console.log('lala123', a)),
       rxjs.operators.map(checkProcessProgress),
       rxjs.operators.retryWhen(function (errors) {
         return errors.pipe(
@@ -61,7 +60,6 @@ sendTransaction = function (properties, GLOBAL_ASSETS, modeHashes, onSucces, onE
 };
 
 function getDeterministicData (z) {
-  console.log('z = ', z);
   var decodedData = R.nth(1, z);
   var deterministicData = R.compose(
     U.activate,
@@ -148,7 +146,6 @@ function doPushTransactionStream (z) {
         return processData;
       }),
       rxjs.operators.retryWhen(function (errors) {
-        console.log('errors = ', errors);
         return errors.pipe(
           rxjs.operators.delayWhen(function (_) {
             return rxjs.timer(1000);
