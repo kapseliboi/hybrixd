@@ -1,0 +1,14 @@
+{
+  "source":"wavalidator",
+  "name":"Wallet Address Validator",
+  "module":"wavalidator",
+  "router" : {
+    "_ref" : {
+      "_list" : "symbol",
+      "_ref" : {
+        "_list" : "address",
+        "_this" : "Validate $ADDRESS for asset $SYMBOL using the wallet-address-validator module."
+      }
+    }
+  }
+}
