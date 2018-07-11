@@ -69,6 +69,7 @@ function main () {
       rxjs.operators.flatMap(R.curry(SessionData.mkSessionDataStream)(nacl)), // TODO: Remove global dependency
       rxjs.operators.tap(updateUserCrypto),
       rxjs.operators.flatMap(AssetInitialisation.mkAssetInitializationStream),
+      rxjs.operators.map(R.sortBy(R.compose(R.toLower, R.prop('id')))),
       rxjs.operators.tap(U.updateGlobalAssets)
     )
     .subscribe(renderInterface);
