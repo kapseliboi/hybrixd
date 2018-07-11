@@ -57,8 +57,7 @@ function mkRenderBalancesStream (intervalStream, q, n, assetsIDs) {
                   return rxjs.timer(500);
                 })
               );
-            }), // RACE CONDITION!
-            rxjs.operators.delay(500), // HACK: Make sure assets are rendered in DOM before rendering balances in elements.
+            }),
             rxjs.operators.map(function (asset) {
               var hyphenizedID = R.compose(
                 R.replace('.', '-'),
