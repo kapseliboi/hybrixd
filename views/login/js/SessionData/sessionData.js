@@ -133,7 +133,7 @@ function sessionStep1OrErrorHandlingStream (sessionStep1Data) {
         )(sessionStep1Response);
 
         if (responseHasErrors) {
-          throw { error: 1, msg: 'Error posting session step 1.'};
+          throw { error: 1, msg: 'Something went wrong while processing your request.</br></br>Please try again.</br></br></br>'};
         } else {
           return sessionStep1Response;
         }
@@ -142,6 +142,8 @@ function sessionStep1OrErrorHandlingStream (sessionStep1Data) {
         return rxjs.of(e)
           .pipe(
             rxjs.operators.tap(UserFeedback.resetFlipOverAnimation),
+            rxjs.operators.tap(R.always(UserFeedback.toggleLoginSpinner('remove'))),
+            rxjs.operators.tap(R.always(UserFeedback.setLoginButtonText('Sign in'))),
             rxjs.operators.tap(function (_) { UserFeedback.setCSSTorenderButtonsToEnabled(); })
           );
       })

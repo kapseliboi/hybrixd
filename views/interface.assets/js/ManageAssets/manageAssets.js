@@ -58,6 +58,7 @@ var manageAssets = {
       assetsDetailsStream.subscribe(assetsDetails => {
         var newGlobalAssets = R.reduce(function (newAssets, asset) {
           return R.compose(
+            R.sortBy(R.compose(R.toLower, R.prop('id'))),
             R.flip(R.append)(newAssets),
             R.merge(asset),
             R.defaultTo(asset),
