@@ -1,7 +1,7 @@
 var UserFeedback = userFeedback;
 var UserCredentialsValidation = userCredentialsValidation;
 
-var defaultErrorMsg = 'There was an error while logging in to your wallet. Please try again. </br></br>If the problem persists, <a href="https://internetofcoins.org/contact" target="_blank">contact us</a> for help. </br></br>';
+var defaultErrorMsg = 'There was an error while logging in to your wallet. Please try again. </br></br>If the problem persists, <a href="https://internetofcoins.org/contact" target="_blank">contact us</a> for help.</br>';
 
 function mkSessionDataStream (nacl, userCredentials) {
   var validatedUserCredentialsStream_ = rxjs.of(userCredentials);
