@@ -4,6 +4,7 @@ var unsupportedBrowsers = [
   { msie: '6' },
   { android: '2'},
   { opera: '12'},
+  { firefox: '3'},
   { safari: '5'}
 ];
 
