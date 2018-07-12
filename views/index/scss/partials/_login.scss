@@ -261,6 +261,7 @@
 
 .flipper.active {
   @include rotateY(180deg);
+  @include transform-style(preserve-3d);
 }
 
 .login-flip-front, .login-flip-back {

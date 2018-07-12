@@ -1715,7 +1715,12 @@ pre .support.value {
   -o-transform: rotateY(180deg);
   -ms-transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg);
-  transform: rotateY(180deg); }
+  transform: rotateY(180deg);
+  -moz-transform-style: preserve-3d;
+  -o-transform-style: preserve-3d;
+  -ms-transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d; }
 
 .login-flip-front, .login-flip-back {
   -webkit-backface-visibility: hidden;
