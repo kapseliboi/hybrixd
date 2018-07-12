@@ -72,6 +72,7 @@
       "status":"Retrieve the status of the service. TODO",
       "unspent": {
         "_ref" : {
+          "_this" : "TODO",
           "_list" : "source_address",
           "_ref" : {
             "_list" : "target_address",
