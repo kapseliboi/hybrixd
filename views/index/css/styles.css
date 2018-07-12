@@ -1685,7 +1685,7 @@ pre .support.value {
   margin: 0 auto; }
 
 .flip-container {
-  perspective: 600px;
+  @incude perspective(600px);
   width: 100%;
   color: white;
   text-align: center;
@@ -1693,13 +1693,14 @@ pre .support.value {
 
 /* flip speed goes here */
 .flipper {
-  -webkit-transition: 1s;
   -moz-transition: 1s;
   -o-transition: 1s;
+  -webkit-transition: 1s;
   transition: 1s;
-  -webkit-transform-style: preserve-3d;
   -moz-transform-style: preserve-3d;
+  -o-transform-style: preserve-3d;
   -ms-transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
   position: relative;
   min-height: 280px;
@@ -1709,16 +1710,20 @@ pre .support.value {
       width: 380px; } }
 
 .flipper.active {
-  -webkit-transform: rotateY(180deg);
-  /* Ch <36, Saf 5.1+, iOS < 9.2, An =<4.4.4 */
+  -moz-transform: rotateY(180deg);
+  -o-transform: rotateY(180deg);
   -ms-transform: rotateY(180deg);
-  /* IE 9 */
-  transform: rotateY(180deg);
-  /* IE 10, Fx 16+, Op 12.1+ */ }
+  -webkit-transform: rotateY(180deg);
+  transform: rotateY(180deg); }
 
 .login-flip-front, .login-flip-back {
   -webkit-backface-visibility: hidden;
+  /* Safari */
+  -khtml-backface-visibility: hidden;
+  /* Konqueror HTML */
   -moz-backface-visibility: hidden;
+  /* Firefox */
+  -ms-backface-visibility: hidden;
   backface-visibility: hidden;
   position: absolute;
   top: 0;
@@ -1728,12 +1733,11 @@ pre .support.value {
 .login-flip-front {
   z-index: 2;
   /* for firefox 31 */
-  -webkit-transform: rotateY(0deg);
-  /* Ch <36, Saf 5.1+, iOS < 9.2, An =<4.4.4 */
+  -moz-transform: rotateY(0deg);
+  -o-transform: rotateY(0deg);
   -ms-transform: rotateY(0deg);
-  /* IE 9 */
-  transform: rotateY(0deg);
-  /* IE 10, Fx 16+, Op 12.1+ */ }
+  -webkit-transform: rotateY(0deg);
+  transform: rotateY(0deg); }
 
 /* back, initially hidden pane */
 .login-flip-back {
@@ -1744,9 +1748,10 @@ pre .support.value {
   border-radius: 4px;
   background-clip: padding-box;
   /* stops bg color from leaking outside the border: */
-  -webkit-transform: rotateY(180deg);
-  -ms-transform: rotateY(180deg);
   -moz-transform: rotateY(180deg);
+  -o-transform: rotateY(180deg);
+  -ms-transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
   transform: rotateY(180deg);
   padding: 30px; }
 
