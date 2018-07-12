@@ -45,6 +45,21 @@
 
 // -------------------------------------------------------------------
 
+// Backface-visibility
+
+// -------------------------------------------------------------------
+
+@mixin backface-visibility($value) {
+  -webkit-backface-visibility: $value; /* Safari */
+   -khtml-backface-visibility: $value; /* Konqueror HTML */
+     -moz-backface-visibility: $value; /* Firefox */
+      -ms-backface-visibility: $value;
+          backface-visibility: $value;
+}
+
+
+// -------------------------------------------------------------------
+
 // Box-shadow
 
 // -------------------------------------------------------------------
@@ -139,11 +154,25 @@
 
 // -------------------------------------------------------------------
 
+// Perspective
+
+// -------------------------------------------------------------------
+
+@mixin perspective($value) {
+  -webkit-perspective: $value; /* Safari */
+   -khtml-perspective: $value; /* Konqueror HTML */
+     -moz-perspective: $value; /* Firefox */
+      -ms-perspective: $value;
+          perspective: $value;
+}
+
+// -------------------------------------------------------------------
+
 // Pseudo
 
 // -------------------------------------------------------------------
 
-@mixin pseudo($display: block, $pos: absolute, $content: ''){
+@mixin pseudo($display: block, $pos: absolute, $content: '') {
     content: $content;
     display: $display;
     position: $pos;
@@ -224,6 +253,14 @@
           transform: $transforms;
 }
 
+@mixin transform-style($transform-styles) {
+     -moz-transform-style: $transform-styles;
+       -o-transform-style: $transform-styles;
+      -ms-transform-style: $transform-styles;
+  -webkit-transform-style: $transform-styles;
+          transform-style: $transform-styles;
+}
+
 @mixin animation($animation) {
      -moz-animation: $animation;
        -o-animation: $animation;
@@ -238,6 +275,10 @@
 
 @mixin rotate($rotate) {
    @include transform(rotate($rotate));
+}
+
+@mixin rotateY($rotateY) {
+   @include transform(rotateY($rotateY));
 }
 
 // translate
