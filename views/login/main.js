@@ -42,6 +42,7 @@ hy_content += '<script>' + fs.readFileSync('./js/UserCredentialValidation/UserCr
 hy_content += '<script>' + fs.readFileSync('./js/SessionData/sessionData.js') + '</script>';
 hy_content += '<script>' + fs.readFileSync('./js/AssetInitialisationStreams/assetInitialisationStreams.js') + '</script>';
 hy_content += '<script>' + fs.readFileSync('./js/BrowserSupport/browserSupport.js') + '</script>';
+hy_content += '<script>' + fs.readFileSync('./js/WalletMaintenance/walletMaintenance.js') + '</script>';
 hy_content += '<script>' + fs.readFileSync('./js/validations.js') + '</script>';
 
 // and finally the login action handler code

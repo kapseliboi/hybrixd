@@ -1,6 +1,7 @@
 // hy_login.js - contains javascript for login, encryption and session authentication
 var A = animations;
 var C = commonUtils;
+var H = hybridd;
 var S = loginInputStreams;
 var U = utils;
 var V = validations;
@@ -10,6 +11,7 @@ var BrowserSupport = browserSupport;
 var SessionData = sessionData;
 var UserCredentialsValidation = userCredentialsValidation;
 var UserFeedback = userFeedback;
+var WalletMaintenance = walletMaintenance;
 
 var path = 'api'; // TODO: Factor up!
 var args = {};
@@ -59,6 +61,7 @@ var keyDownOnUserIDStream = S.mkInputStream('#inputUserID');
 
 function main () {
   BrowserSupport.checkBrowserSupport(window.navigator.userAgent);
+  WalletMaintenance.mkTestHybriddAvailabilityStream().subscribe();
   maybeOpenNewWalletModal(location);
   document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
   keyDownOnUserIDStream.subscribe(function (_) { document.querySelector('#inputPasscode').focus(); });

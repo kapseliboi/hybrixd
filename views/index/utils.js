@@ -61,8 +61,8 @@ utils = {
     return fetch_(url)
       .then(r => r.json()
         .then(r => r)
-        .catch(e => console.log(errStr, e)))
-      .catch(e => console.log(errStr, e));
+        .catch(e => ({ error: 1, msg: e })))
+      .catch(e => ({ error: 1, msg: e }));
   },
   getCurrentTime: function () {
     var currentTime = new Date();
