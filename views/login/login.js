@@ -41,6 +41,8 @@ GL = {
   initCount: 0
 };
 
+var animationDelayByBrowser = bowser.name === 'Firefox' ? 1000 : 10;
+
 // Don't move this yet, as the cur_step is needed by assetModesUrl. Synchronous coding!
 nacl_factory.instantiate(function (naclinstance) { nacl = naclinstance; }); // TODO
 session_step = 1; // Session step number at the end of login. TODO
@@ -68,7 +70,7 @@ function main () {
   UserCredentialsValidation.credentialsOrErrorStream
     .pipe(
       rxjs.operators.tap(function (_) { UserFeedback.doFlipOverAnimation(); }),
-      rxjs.operators.delay(10), // HACK: Delay data somewhat so browser gives priority to DOM manipulation instead of initiating all further streams.
+      rxjs.operators.delay(animationDelayByBrowser), // HACK: Delay data somewhat so browser gives priority to DOM manipulation instead of initiating all further streams.
       rxjs.operators.flatMap(R.curry(SessionData.mkSessionDataStream)(nacl)), // TODO: Remove global dependency
       rxjs.operators.tap(updateUserCrypto),
       rxjs.operators.flatMap(AssetInitialisation.mkAssetInitializationStream),
