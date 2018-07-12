@@ -15,15 +15,15 @@ $(document).ready(function () {
   fetchview('login', {});
 });
 
-function fetchview(viewpath,args) {
+function fetchview (viewpath, args) {
   // avoid hitting the server with requests if fetchview is called too often
-  if(fetchview_path!=viewpath) {
+  if (fetchview_path !== viewpath) {
     // we populate startinit to contain the viewpath as subfunction(s)
     // call init.id_object(json) via startinit to reach sub frame
     // initialize an object by using a string reference as subobject target
     // run the safely initialized object through its sub-object id
     // subelement abstractor calls init.viewname
-    if(typeof args == 'undefined') { args = false; }
+    if (typeof args === 'undefined') { args = false; }
     initialize = function (data, accessor) {
       var keys = accessor.split('.');
       var result = data;
@@ -34,34 +34,37 @@ function fetchview(viewpath,args) {
         }
       }
       return result;
-    }
+    };
     // check if view available in cache
-    var cacheIdx = 'view:'+viewpath;
-    var data = cacheGet(cacheIdx,600000);
-    if(!data) {
+    var cacheIdx = 'view:' + viewpath;
+    var data = cacheGet(cacheIdx, 600000);
+    if (!data) {
       // fetch
       $.ajax({
-        url: path+'v/'+viewpath,
+        url: path + 'v/' + viewpath,
         dataType: 'json'
       })
-        .done(function(data) {
-          cacheAdd(cacheIdx,data);
-          activateview(viewpath,args,data);
-          fetchview_path=viewpath;
+        .done(function (data) {
+          cacheAdd(cacheIdx, data);
+          activateview(viewpath, args, data);
+          fetchview_path = viewpath;
+        })
+        .fail(function (e) {
+          console.log('Smt happened.', e);
         });
     } else {
-      if(fetchview_time<Date.now()-2000) {
-        fetchview_time=Date.now();
-        activateview(viewpath,args,data);
-        fetchview_path=viewpath;
+      if (fetchview_time < Date.now() - 2000) {
+        fetchview_time = Date.now();
+        activateview(viewpath, args, data);
+        fetchview_path = viewpath;
       }
     }
   }
 }
 
-function activateview(viewpath,args,data) {
+function activateview (viewpath, args, data) {
   // DEBUG console.log(data);
-  console.log('Activating view: '+viewpath);
+  console.log('Activating view: ' + viewpath);
   // verify the signature
   // decompress pack into hy_view
   var hy_target = data['target'];
@@ -70,7 +73,7 @@ function activateview(viewpath,args,data) {
   // put hy_view into hy_frame
   $(hy_target).html(hy_view);
   // run init.subframe if it exists, and contains a non-empty function
-  if(typeof initialize !== 'undefined' && JSON.stringify(initialize) !== '{}') {
+  if (typeof initialize !== 'undefined' && JSON.stringify(initialize) !== '{}') {
     var initialized = initialize(init, viewpath);
     if (typeof initialized !== 'object') {
       initialized(args);
@@ -78,15 +81,15 @@ function activateview(viewpath,args,data) {
   }
 }
 
-cacheAdd = function(index,data) {
+cacheAdd = function (index, data) {
   // DEBUG: console.log(' [D] cache added for index: '+index);
-  cached[index] = [Date.now(),data];
-}
+  cached[index] = [Date.now(), data];
+};
 
-cacheGet = function(index,millisecs) {
-  if(millisecs<100) { millisecs=100; }
-  if(typeof cached[index]!='undefined' && typeof cached[index][0]!='undefined') {
-    if(cached[index][0]>Date.now()-millisecs) {
+cacheGet = function (index, millisecs) {
+  if (millisecs < 100) { millisecs = 100; }
+  if (typeof cached[index] !== 'undefined' && typeof cached[index][0] !== 'undefined') {
+    if (cached[index][0] > Date.now() - millisecs) {
       // DEBUG: console.log(' [D] cache hit for index: '+index);
       return cached[index][1];
     } else {
@@ -96,4 +99,4 @@ cacheGet = function(index,millisecs) {
   } else {
     return null;
   }
-}
+};

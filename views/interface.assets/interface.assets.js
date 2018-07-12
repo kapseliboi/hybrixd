@@ -1,9 +1,10 @@
-var Valuations = valuations;
-var TxValidations = transactionValidations;
-var SendAsset = sendAsset;
-var ReceiveAsset = receiveAsset;
-var GenerateAddress = generateAddress;
 var Balance = balance;
+var GenerateAddress = generateAddress;
+var InterfaceStreams = interfaceStreams;
+var ReceiveAsset = receiveAsset;
+var SendAsset = sendAsset;
+var TxValidations = transactionValidations;
+var Valuations = valuations;
 var M = manageAssets;
 var U = utils;
 var A = asset;
@@ -40,7 +41,10 @@ function initializeAssetsInterfaceStreams (assets) {
     .interval(BALANCE_RETRIEVAL_INTERVAL_MS)
     .pipe(
       rxjs.operators.startWith(0),
-      rxjs.operators.takeUntil(stopBalanceStream)
+      rxjs.operators.takeUntil(rxjs.merge(
+        stopBalanceStream,
+        InterfaceStreams.logoutStream
+      ))
     );
   var renderBalancesStream = Balance.mkRenderBalancesStream(retrieveBalanceStream, '.assets-main > .data .balance-', AMOUNT_OF_SIGNIFICANT_DIGITS, assetsIDs);
   renderBalancesStream.subscribe();
@@ -72,7 +76,8 @@ function mkAssetButtonStream (query) {
     ? rxjs.from([])
     : rxjs.fromEvent(queries, 'click')
       .pipe(
-        rxjs.operators.map(R.path(['target', 'attributes', 'data', 'value']))
+        rxjs.operators.map(R.path(['target', 'attributes', 'data', 'value'])),
+        rxjs.operators.tap(_ => console.log('TAPTAPTAP', _))
       );
 }
 

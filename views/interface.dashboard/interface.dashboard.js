@@ -3,6 +3,7 @@ var H = hybridd;
 var UI = dashboardUI;
 var SVG = svg;
 var Balance = balance;
+var InterfaceStreams = interfaceStreams;
 
 var AMOUNT_OF_SIGNIFICANT_DIGITS = 5;
 var BALANCE_RENDER_INTERVAL_MS = 60000;
@@ -24,7 +25,10 @@ var retrieveBalanceStream = rxjs
   .interval(BALANCE_RENDER_INTERVAL_MS)
   .pipe(
     rxjs.operators.startWith(0),
-    rxjs.operators.takeUntil(stopBalanceStream)
+    rxjs.operators.takeUntil(rxjs.merge(
+      stopBalanceStream,
+      InterfaceStreams.logoutStream
+    ))
   );
 
 function renderStarredAssets (assets) {
