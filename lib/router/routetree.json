@@ -42,7 +42,18 @@
         "_this": "Retrieve the symbol in which the fee is calculated.",
         "_response": "TODO"
       },
-      "history":"Retrieve asset history TODO",
+      "history":{
+        "_ref" : {
+          "_list" : "address",
+          "_this": "Retrieve the history TODO"
+        }
+      },
+      "transaction":{
+        "_ref" : {
+          "_list" : "transaction_id",
+          "_this": "Retrieve the details for a transaction."
+        }
+      },
       "push":{
         "_ref" : {
           "_list" : "transaction",
@@ -61,6 +72,7 @@
       "status":"Retrieve the status of the service. TODO",
       "unspent": {
         "_ref" : {
+          "_this" : "TODO",
           "_list" : "source_address",
           "_ref" : {
             "_list" : "target_address",
@@ -136,8 +148,8 @@
   },
   "h":{"_alias":"help"},
   "help":{
-    "_this" : "Display help as html.",
-    "_valid" : "true"
+    "_this":"Display help as html.",
+    "_valid":true
   },
   "n":{"_alias":"network"},
   "net":{"_alias":"network"},
