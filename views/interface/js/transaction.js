@@ -1,6 +1,9 @@
 var U = utils;
 var Storage = storage;
 var LZString_ = LZString;
+var CommonUtils = {
+  activate
+};
 
 sendTransaction = function (properties, GLOBAL_ASSETS, modeHashes, onSucces, onError) {
   var H = hybridd; // TODO: Factor up. Can't now, smt's up with dependency order.
@@ -62,7 +65,7 @@ sendTransaction = function (properties, GLOBAL_ASSETS, modeHashes, onSucces, onE
 function getDeterministicData (z) {
   var decodedData = R.nth(1, z);
   var deterministicData = R.compose(
-    U.activate,
+    CommonUtils.activate,
     LZString_.decompressFromEncodedURIComponent
   )(decodedData);
 
