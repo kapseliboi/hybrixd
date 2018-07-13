@@ -1,9 +1,7 @@
 var U = utils;
 var Storage = storage;
 var LZString_ = LZString;
-var CommonUtils = {
-  activate
-};
+var CommonUtils = commonUtils;
 
 sendTransaction = function (properties, GLOBAL_ASSETS, modeHashes, onSucces, onError) {
   var H = hybridd; // TODO: Factor up. Can't now, smt's up with dependency order.

@@ -1,8 +1,5 @@
 var U = utils;
-var CommonUtils = {
-  seedGenerator,
-  activate
-};
+var CommonUtils = commonUtils;
 
 // creates a unique seed for deterministic asset code
 deterministic_ = {
