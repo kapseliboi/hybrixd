@@ -43,7 +43,7 @@ function initializeAssetsInterfaceStreams (assets) {
       rxjs.operators.startWith(0),
       rxjs.operators.takeUntil(rxjs.merge(
         stopBalanceStream,
-        InterfaceStreams.logoutStream
+        InterfaceStreams.logOutStream
       ))
     );
   var renderBalancesStream = Balance.mkRenderBalancesStream(retrieveBalanceStream, '.assets-main > .data .balance-', AMOUNT_OF_SIGNIFICANT_DIGITS, assetsIDs);
@@ -76,8 +76,7 @@ function mkAssetButtonStream (query) {
     ? rxjs.from([])
     : rxjs.fromEvent(queries, 'click')
       .pipe(
-        rxjs.operators.map(R.path(['target', 'attributes', 'data', 'value'])),
-        rxjs.operators.tap(_ => console.log('TAPTAPTAP', _))
+        rxjs.operators.map(R.path(['target', 'attributes', 'data', 'value']))
       );
 }
 

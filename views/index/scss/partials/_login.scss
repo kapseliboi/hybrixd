@@ -25,6 +25,18 @@
     @include user-select(auto);
   }
 
+  .loggedoutmsg {
+    display: none;
+    color: blue;
+    background: #6af;
+    border: 1px solid #18f;
+    margin-bottom: 10px;
+  }
+
+  .loggedoutmsg.active {
+    display: block;
+  }
+
   .pure-button {
     margin: 10px 0;
     display: block;

@@ -1501,6 +1501,14 @@ pre .support.value {
     -moz-user-select: auto;
     -ms-user-select: auto;
     user-select: auto; }
+  #login_container .loggedoutmsg {
+    display: none;
+    color: blue;
+    background: #6af;
+    border: 1px solid #18f;
+    margin-bottom: 10px; }
+  #login_container .loggedoutmsg.active {
+    display: block; }
   #login_container .pure-button {
     margin: 10px 0;
     display: block; }
@@ -3977,8 +3985,14 @@ hybriddcall = function (properties) {
       .then(encodedResult => {
         return zchanOrYchanEncryptionObj(reqmethod, usercrypto)(step)(encodedResult); // TODO: Factor out decoding!!!
       })
-      .catch(e => console.log('Error hybriddCall', e)))
-    .catch(e => console.log('Error hybriddCall', e));
+      .catch(e => {
+        console.log('Error hybriddCall', e);
+        throw { error: 1, msg: e };
+      }))
+    .catch(e => {
+      console.log('Error hybriddCall', e);
+      throw { error: 1, msg: e };
+    });
 };
 
 // proc request helper function

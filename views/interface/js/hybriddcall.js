@@ -33,8 +33,14 @@ hybriddcall = function (properties) {
       .then(encodedResult => {
         return zchanOrYchanEncryptionObj(reqmethod, usercrypto)(step)(encodedResult); // TODO: Factor out decoding!!!
       })
-      .catch(e => console.log('Error hybriddCall', e)))
-    .catch(e => console.log('Error hybriddCall', e));
+      .catch(e => {
+        console.log('Error hybriddCall', e);
+        throw { error: 1, msg: e };
+      }))
+    .catch(e => {
+      console.log('Error hybriddCall', e);
+      throw { error: 1, msg: e };
+    });
 };
 
 // proc request helper function

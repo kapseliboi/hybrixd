@@ -60,24 +60,31 @@ session_step = 1; // Session step number at the end of login. TODO
 // - Fix HACK for priority queue
 
 var keyDownOnUserIDStream = S.mkInputStream('#inputUserID');
+var localForageUserConfigStream = rxjs.from(localforage.getItem('userHasLoggedOut'))
+  .pipe(
+    rxjs.operators.map(UserFeedback.maybeRenderLogOutMessage),
+    rxjs.operators.delay(500),
+    rxjs.operators.tap(R.curry(UserFeedback.setLocalUserLogOutStatus)(false))
+  );
+var handleLoginStream = UserCredentialsValidation.credentialsOrErrorStream
+  .pipe(
+    rxjs.operators.tap(function (_) { UserFeedback.doFlipOverAnimation(); }),
+    rxjs.operators.delay(animationDelayByBrowser), // HACK: Delay data somewhat so browser gives priority to DOM manipulation instead of initiating all further streams.
+    rxjs.operators.flatMap(R.curry(SessionData.mkSessionDataStream)(nacl)), // TODO: Remove global dependency
+    rxjs.operators.tap(updateUserCrypto),
+    rxjs.operators.flatMap(AssetInitialisation.mkAssetInitializationStream),
+    rxjs.operators.map(R.sortBy(R.compose(R.toLower, R.prop('id')))),
+    rxjs.operators.tap(U.updateGlobalAssets)
+  );
 
 function main () {
   BrowserSupport.checkBrowserSupport(window.navigator.userAgent);
   WalletMaintenance.mkTestHybriddAvailabilityStream().subscribe();
   maybeOpenNewWalletModal(location);
+  localForageUserConfigStream.subscribe();
   document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
   keyDownOnUserIDStream.subscribe(function (_) { document.querySelector('#inputPasscode').focus(); });
-  UserCredentialsValidation.credentialsOrErrorStream
-    .pipe(
-      rxjs.operators.tap(function (_) { UserFeedback.doFlipOverAnimation(); }),
-      rxjs.operators.delay(animationDelayByBrowser), // HACK: Delay data somewhat so browser gives priority to DOM manipulation instead of initiating all further streams.
-      rxjs.operators.flatMap(R.curry(SessionData.mkSessionDataStream)(nacl)), // TODO: Remove global dependency
-      rxjs.operators.tap(updateUserCrypto),
-      rxjs.operators.flatMap(AssetInitialisation.mkAssetInitializationStream),
-      rxjs.operators.map(R.sortBy(R.compose(R.toLower, R.prop('id')))),
-      rxjs.operators.tap(U.updateGlobalAssets)
-    )
-    .subscribe(renderInterface);
+  handleLoginStream.subscribe(renderInterface);
 }
 
 function renderInterface (assets) {

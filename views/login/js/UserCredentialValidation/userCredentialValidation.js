@@ -16,12 +16,14 @@ var userSubmitStream = rxjs
     keyDownOnPasswordStream
   )
   .pipe(
+    rxjs.operators.tap(UserFeedback.maybeDisableLogOutMessage),
     rxjs.operators.tap(function (_) { UserFeedback.setCSSTorenderButtonsToDisabled(); })
   );
 
 var credentialsStream = S.credentialsStream
   .pipe(
     rxjs.operators.tap(UserFeedback.disableUserNotificationBox),
+    // rxjs.operators.tap(UserFeedback.maybeDisableLogOutMessage),
     rxjs.operators.tap(UserFeedback.setCSSTorenderButtonsToEnabled)
   );
 

@@ -64,14 +64,36 @@ function doFlipOverAnimation () {
   document.querySelector('#helpbutton').classList.add('inactive');
 }
 
+function maybeRenderLogOutMessage (localUserSettings) {
+  if (R.path(['userConfig', 'userHasLoggedOut'], localUserSettings)) {
+    document.querySelector('.loggedoutmsg').classList.add('active');
+  }
+  return localUserSettings;
+}
+
+function maybeDisableLogOutMessage (_) {
+  var elem = document.querySelector('.loggedoutmsg');
+  if (elem.classList.contains('active')) {
+    elem.classList.remove('active');
+  }
+}
+
+function setLocalUserLogOutStatus (b, _) {
+  localforage.setItem('userHasLoggedOut', { userConfig: { userHasLoggedOut: b } });
+  return b;
+}
+
 userFeedback = {
-  notifyUserOfIncorrectCredentials,
   disableUserNotificationBox,
-  toggleLoginSpinner,
-  setCSSTorenderButtonsToEnabled,
-  setLoginButtonText,
-  setCSSTorenderButtonsToDisabled,
+  doFlipOverAnimation,
+  maybeDisableLogOutMessage,
+  maybeRenderLogOutMessage,
+  notifyUserOfIncorrectCredentials,
   resetLoginFlipOverErrorStream,
   resetFlipOverAnimation,
-  doFlipOverAnimation
+  setCSSTorenderButtonsToEnabled,
+  setLocalUserLogOutStatus,
+  setLoginButtonText,
+  setCSSTorenderButtonsToDisabled,
+  toggleLoginSpinner
 };

@@ -27,7 +27,7 @@ var retrieveBalanceStream = rxjs
     rxjs.operators.startWith(0),
     rxjs.operators.takeUntil(rxjs.merge(
       stopBalanceStream,
-      InterfaceStreams.logoutStream
+      InterfaceStreams.logOutStream
     ))
   );
 
