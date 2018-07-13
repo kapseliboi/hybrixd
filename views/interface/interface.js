@@ -50,6 +50,7 @@ function alertOnBeforeUnload () {
 function removeUserSessionData (_) {
   $(document).off('click.bs.modal.data-api', '[data-toggle="modal"]');
   cached = {};
+  window.onbeforeunload = null;
 }
 
 function fetchAssetsViews (args) { return function () { fetchview('interface.assets', args); }; }
