@@ -61,6 +61,7 @@ function mkRenderBalancesStream (intervalStream, q, n, assetsIDs) {
             rxjs.operators.map(function (asset) {
               var hyphenizedID = R.compose(
                 R.replace('.', '-'),
+                R.defaultTo(''),
                 R.prop('id')
               )(asset);
               var assetQuery = q + hyphenizedID;

@@ -7,7 +7,7 @@ var TxValidations = transactionValidations;
 var Valuations = valuations;
 var M = manageAssets;
 var U = utils;
-var A = asset;
+var Asset = asset;
 
 var BALANCE_RETRIEVAL_INTERVAL_MS = 30000;
 var AMOUNT_OF_SIGNIFICANT_DIGITS = 11;
@@ -84,21 +84,8 @@ function updateGlobalAssetsAndRenderDataInDOM (balanceData) {
   var elem = R.prop('element', balanceData);
   var id = R.prop('assetID', balanceData);
   var n = R.prop('amountStr', balanceData);
-  A.toggleAssetButtons(elem, id, Number(n));
+  Asset.toggleAssetButtons(elem, id, Number(n));
   renderDollarPriceInAsset(id, Number(n));
-}
-
-function updateBalanceData (assets, assetID, amount) {
-  function updateBalances (updatedAssets, asset) {
-    var amountLens = R.lensPath(['balance', 'amount']);
-    var updatedBalanceAsset = R.set(amountLens, amount, asset);
-    var defaultOrUpdatedAsset = R.equals(R.prop('id', asset), assetID)
-      ? updatedBalanceAsset
-      : asset;
-
-    return R.append(defaultOrUpdatedAsset, updatedAssets);
-  }
-  return R.reduce(updateBalances, [], assets);
 }
 
 function renderDollarPriceInAsset (asset, amount) {
