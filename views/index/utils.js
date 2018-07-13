@@ -22,16 +22,6 @@ utils = {
       });
     }
   },
-  // activate (deterministic) code from a string
-  activate: function (code) {
-    if (typeof code === 'string') {
-      eval('var deterministic = (function(){})(); ' + code); // interpret deterministic library into an object
-      return deterministic;
-    } else {
-      console.log('Cannot activate deterministic code!');
-      return function () {};
-    }
-  },
   normalizeUserInput: function (str) {
     return mapReplaceEntries(KEY_MAPPING)(str);
   },
