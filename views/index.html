@@ -720,6 +720,8 @@ body {
   font-weight: 400;
   font-size: 12px;
   font-size: 0.75rem;
+  line-height: 20px;
+  line-height: 1.25rem;
   /* @include user-select(none); */ }
 
 h2 {
@@ -940,7 +942,7 @@ p {
   color: #B5C0C8;
   font-weight: 400; }
 
-.user-login-notification {
+.form-notif {
   -webkit-border-radius: 4px;
   border-radius: 4px;
   background-clip: padding-box;
@@ -949,24 +951,40 @@ p {
   -o-transition: all 0.3s ease-out;
   -webkit-transition: all 0.3s ease-out;
   transition: all 0.3s ease-out;
+  text-align: left;
   display: block;
   padding: 0 15px;
   opacity: 0;
   height: 0;
+  margin-top: 0;
+  position: relative;
+  z-index: -1000; }
+  .form-notif.active {
+    -moz-transition: all 0.4s ease-in-out;
+    -o-transition: all 0.4s ease-in-out;
+    -webkit-transition: all 0.4s ease-in-out;
+    transition: all 0.4s ease-in-out;
+    min-height: 50px;
+    height: auto;
+    opacity: 1;
+    padding: 15px; }
+  .form-notif p {
+    margin: 0; }
+
+.form-notif-error {
   color: #FF6D4A;
   background: rgba(255, 109, 74, 0.2);
-  margin-top: 0;
   font-weight: 600; }
 
-.user-login-notification.active {
-  -moz-transition: all 0.4s ease-in-out;
-  -o-transition: all 0.4s ease-in-out;
-  -webkit-transition: all 0.4s ease-in-out;
-  transition: all 0.4s ease-in-out;
-  min-height: 81px;
-  height: auto;
-  opacity: 1;
-  padding: 15px;
+.form-notif-general {
+  color: #4DA1FF;
+  background: rgba(77, 161, 255, 0.2);
+  font-weight: 600; }
+
+.form-notif-top.active {
+  margin-bottom: 15px; }
+
+.form-notif-bottom.active {
   margin-top: 15px; }
 
 .table {
@@ -1501,14 +1519,6 @@ pre .support.value {
     -moz-user-select: auto;
     -ms-user-select: auto;
     user-select: auto; }
-  #login_container .loggedoutmsg {
-    display: none;
-    color: blue;
-    background: #6af;
-    border: 1px solid #18f;
-    margin-bottom: 10px; }
-  #login_container .loggedoutmsg.active {
-    display: block; }
   #login_container .pure-button {
     margin: 10px 0;
     display: block; }
@@ -2962,7 +2972,284 @@ padding:"inner"+a,content:b,"":"outer"+a},function(c,d){n.fn[d]=function(d,e){va
  * https://github.com/ded/bowser
  * MIT License | (c) Dustin Diaz 2015
  */
-!function(e,t,n){typeof module!="undefined"&&module.exports?module.exports=n():typeof define=="function"&&define.amd?define(t,n):e[t]=n()}(this,"bowser",function(){function t(t){function n(e){var n=t.match(e);return n&&n.length>1&&n[1]||""}function r(e){var n=t.match(e);return n&&n.length>1&&n[2]||""}function N(e){switch(e){case"NT":return"NT";case"XP":return"XP";case"NT 5.0":return"2000";case"NT 5.1":return"XP";case"NT 5.2":return"2003";case"NT 6.0":return"Vista";case"NT 6.1":return"7";case"NT 6.2":return"8";case"NT 6.3":return"8.1";case"NT 10.0":return"10";default:return undefined}}var i=n(/(ipod|iphone|ipad)/i).toLowerCase(),s=/like android/i.test(t),o=!s&&/android/i.test(t),u=/nexus\s*[0-6]\s*/i.test(t),a=!u&&/nexus\s*[0-9]+/i.test(t),f=/CrOS/.test(t),l=/silk/i.test(t),c=/sailfish/i.test(t),h=/tizen/i.test(t),p=/(web|hpw)os/i.test(t),d=/windows phone/i.test(t),v=/SamsungBrowser/i.test(t),m=!d&&/windows/i.test(t),g=!i&&!l&&/macintosh/i.test(t),y=!o&&!c&&!h&&!p&&/linux/i.test(t),b=r(/edg([ea]|ios)\/(\d+(\.\d+)?)/i),w=n(/version\/(\d+(\.\d+)?)/i),E=/tablet/i.test(t)&&!/tablet pc/i.test(t),S=!E&&/[^-]mobi/i.test(t),x=/xbox/i.test(t),T;/opera/i.test(t)?T={name:"Opera",opera:e,version:w||n(/(?:opera|opr|opios)[\s\/](\d+(\.\d+)?)/i)}:/opr\/|opios/i.test(t)?T={name:"Opera",opera:e,version:n(/(?:opr|opios)[\s\/](\d+(\.\d+)?)/i)||w}:/SamsungBrowser/i.test(t)?T={name:"Samsung Internet for Android",samsungBrowser:e,version:w||n(/(?:SamsungBrowser)[\s\/](\d+(\.\d+)?)/i)}:/coast/i.test(t)?T={name:"Opera Coast",coast:e,version:w||n(/(?:coast)[\s\/](\d+(\.\d+)?)/i)}:/yabrowser/i.test(t)?T={name:"Yandex Browser",yandexbrowser:e,version:w||n(/(?:yabrowser)[\s\/](\d+(\.\d+)?)/i)}:/ucbrowser/i.test(t)?T={name:"UC Browser",ucbrowser:e,version:n(/(?:ucbrowser)[\s\/](\d+(?:\.\d+)+)/i)}:/mxios/i.test(t)?T={name:"Maxthon",maxthon:e,version:n(/(?:mxios)[\s\/](\d+(?:\.\d+)+)/i)}:/epiphany/i.test(t)?T={name:"Epiphany",epiphany:e,version:n(/(?:epiphany)[\s\/](\d+(?:\.\d+)+)/i)}:/puffin/i.test(t)?T={name:"Puffin",puffin:e,version:n(/(?:puffin)[\s\/](\d+(?:\.\d+)?)/i)}:/sleipnir/i.test(t)?T={name:"Sleipnir",sleipnir:e,version:n(/(?:sleipnir)[\s\/](\d+(?:\.\d+)+)/i)}:/k-meleon/i.test(t)?T={name:"K-Meleon",kMeleon:e,version:n(/(?:k-meleon)[\s\/](\d+(?:\.\d+)+)/i)}:d?(T={name:"Windows Phone",osname:"Windows Phone",windowsphone:e},b?(T.msedge=e,T.version=b):(T.msie=e,T.version=n(/iemobile\/(\d+(\.\d+)?)/i))):/msie|trident/i.test(t)?T={name:"Internet Explorer",msie:e,version:n(/(?:msie |rv:)(\d+(\.\d+)?)/i)}:f?T={name:"Chrome",osname:"Chrome OS",chromeos:e,chromeBook:e,chrome:e,version:n(/(?:chrome|crios|crmo)\/(\d+(\.\d+)?)/i)}:/edg([ea]|ios)/i.test(t)?T={name:"Microsoft Edge",msedge:e,version:b}:/vivaldi/i.test(t)?T={name:"Vivaldi",vivaldi:e,version:n(/vivaldi\/(\d+(\.\d+)?)/i)||w}:c?T={name:"Sailfish",osname:"Sailfish OS",sailfish:e,version:n(/sailfish\s?browser\/(\d+(\.\d+)?)/i)}:/seamonkey\//i.test(t)?T={name:"SeaMonkey",seamonkey:e,version:n(/seamonkey\/(\d+(\.\d+)?)/i)}:/firefox|iceweasel|fxios/i.test(t)?(T={name:"Firefox",firefox:e,version:n(/(?:firefox|iceweasel|fxios)[ \/](\d+(\.\d+)?)/i)},/\((mobile|tablet);[^\)]*rv:[\d\.]+\)/i.test(t)&&(T.firefoxos=e,T.osname="Firefox OS")):l?T={name:"Amazon Silk",silk:e,version:n(/silk\/(\d+(\.\d+)?)/i)}:/phantom/i.test(t)?T={name:"PhantomJS",phantom:e,version:n(/phantomjs\/(\d+(\.\d+)?)/i)}:/slimerjs/i.test(t)?T={name:"SlimerJS",slimer:e,version:n(/slimerjs\/(\d+(\.\d+)?)/i)}:/blackberry|\bbb\d+/i.test(t)||/rim\stablet/i.test(t)?T={name:"BlackBerry",osname:"BlackBerry OS",blackberry:e,version:w||n(/blackberry[\d]+\/(\d+(\.\d+)?)/i)}:p?(T={name:"WebOS",osname:"WebOS",webos:e,version:w||n(/w(?:eb)?osbrowser\/(\d+(\.\d+)?)/i)},/touchpad\//i.test(t)&&(T.touchpad=e)):/bada/i.test(t)?T={name:"Bada",osname:"Bada",bada:e,version:n(/dolfin\/(\d+(\.\d+)?)/i)}:h?T={name:"Tizen",osname:"Tizen",tizen:e,version:n(/(?:tizen\s?)?browser\/(\d+(\.\d+)?)/i)||w}:/qupzilla/i.test(t)?T={name:"QupZilla",qupzilla:e,version:n(/(?:qupzilla)[\s\/](\d+(?:\.\d+)+)/i)||w}:/chromium/i.test(t)?T={name:"Chromium",chromium:e,version:n(/(?:chromium)[\s\/](\d+(?:\.\d+)?)/i)||w}:/chrome|crios|crmo/i.test(t)?T={name:"Chrome",chrome:e,version:n(/(?:chrome|crios|crmo)\/(\d+(\.\d+)?)/i)}:o?T={name:"Android",version:w}:/safari|applewebkit/i.test(t)?(T={name:"Safari",safari:e},w&&(T.version=w)):i?(T={name:i=="iphone"?"iPhone":i=="ipad"?"iPad":"iPod"},w&&(T.version=w)):/googlebot/i.test(t)?T={name:"Googlebot",googlebot:e,version:n(/googlebot\/(\d+(\.\d+))/i)||w}:T={name:n(/^(.*)\/(.*) /),version:r(/^(.*)\/(.*) /)},!T.msedge&&/(apple)?webkit/i.test(t)?(/(apple)?webkit\/537\.36/i.test(t)?(T.name=T.name||"Blink",T.blink=e):(T.name=T.name||"Webkit",T.webkit=e),!T.version&&w&&(T.version=w)):!T.opera&&/gecko\//i.test(t)&&(T.name=T.name||"Gecko",T.gecko=e,T.version=T.version||n(/gecko\/(\d+(\.\d+)?)/i)),!T.windowsphone&&(o||T.silk)?(T.android=e,T.osname="Android"):!T.windowsphone&&i?(T[i]=e,T.ios=e,T.osname="iOS"):g?(T.mac=e,T.osname="macOS"):x?(T.xbox=e,T.osname="Xbox"):m?(T.windows=e,T.osname="Windows"):y&&(T.linux=e,T.osname="Linux");var C="";T.windows?C=N(n(/Windows ((NT|XP)( \d\d?.\d)?)/i)):T.windowsphone?C=n(/windows phone (?:os)?\s?(\d+(\.\d+)*)/i):T.mac?(C=n(/Mac OS X (\d+([_\.\s]\d+)*)/i),C=C.replace(/[_\s]/g,".")):i?(C=n(/os (\d+([_\s]\d+)*) like mac os x/i),C=C.replace(/[_\s]/g,".")):o?C=n(/android[ \/-](\d+(\.\d+)*)/i):T.webos?C=n(/(?:web|hpw)os\/(\d+(\.\d+)*)/i):T.blackberry?C=n(/rim\stablet\sos\s(\d+(\.\d+)*)/i):T.bada?C=n(/bada\/(\d+(\.\d+)*)/i):T.tizen&&(C=n(/tizen[\/\s](\d+(\.\d+)*)/i)),C&&(T.osversion=C);var k=!T.windows&&C.split(".")[0];if(E||a||i=="ipad"||o&&(k==3||k>=4&&!S)||T.silk)T.tablet=e;else if(S||i=="iphone"||i=="ipod"||o||u||T.blackberry||T.webos||T.bada)T.mobile=e;return T.msedge||T.msie&&T.version>=10||T.yandexbrowser&&T.version>=15||T.vivaldi&&T.version>=1||T.chrome&&T.version>=20||T.samsungBrowser&&T.version>=4||T.firefox&&T.version>=20||T.safari&&T.version>=6||T.opera&&T.version>=10||T.ios&&T.osversion&&T.osversion.split(".")[0]>=6||T.blackberry&&T.version>=10.1||T.chromium&&T.version>=20?T.a=e:T.msie&&T.version<10||T.chrome&&T.version<20||T.firefox&&T.version<20||T.safari&&T.version<6||T.opera&&T.version<10||T.ios&&T.osversion&&T.osversion.split(".")[0]<6||T.chromium&&T.version<20?T.c=e:T.x=e,T}function r(e){return e.split(".").length}function i(e,t){var n=[],r;if(Array.prototype.map)return Array.prototype.map.call(e,t);for(r=0;r<e.length;r++)n.push(t(e[r]));return n}function s(e){var t=Math.max(r(e[0]),r(e[1])),n=i(e,function(e){var n=t-r(e);return e+=(new Array(n+1)).join(".0"),i(e.split("."),function(e){return(new Array(20-e.length)).join("0")+e}).reverse()});while(--t>=0){if(n[0][t]>n[1][t])return 1;if(n[0][t]!==n[1][t])return-1;if(t===0)return 0}}function o(e,r,i){var o=n;typeof r=="string"&&(i=r,r=void 0),r===void 0&&(r=!1),i&&(o=t(i));var u=""+o.version;for(var a in e)if(e.hasOwnProperty(a)&&o[a]){if(typeof e[a]!="string")throw new Error("Browser version in the minVersion map should be a string: "+a+": "+String(e));return s([u,e[a]])<0}return r}function u(e,t,n){return!o(e,t,n)}var e=!0,n=t(typeof navigator!="undefined"?navigator.userAgent||"":"");return n.test=function(e){for(var t=0;t<e.length;++t){var r=e[t];if(typeof r=="string"&&r in n)return!0}return!1},n.isUnsupportedBrowser=o,n.compareVersions=s,n.check=u,n._detect=t,n.detect=t,n})</script><script>var fetch_ = fetch;
+!function(e,t,n){typeof module!="undefined"&&module.exports?module.exports=n():typeof define=="function"&&define.amd?define(t,n):e[t]=n()}(this,"bowser",function(){function t(t){function n(e){var n=t.match(e);return n&&n.length>1&&n[1]||""}function r(e){var n=t.match(e);return n&&n.length>1&&n[2]||""}function N(e){switch(e){case"NT":return"NT";case"XP":return"XP";case"NT 5.0":return"2000";case"NT 5.1":return"XP";case"NT 5.2":return"2003";case"NT 6.0":return"Vista";case"NT 6.1":return"7";case"NT 6.2":return"8";case"NT 6.3":return"8.1";case"NT 10.0":return"10";default:return undefined}}var i=n(/(ipod|iphone|ipad)/i).toLowerCase(),s=/like android/i.test(t),o=!s&&/android/i.test(t),u=/nexus\s*[0-6]\s*/i.test(t),a=!u&&/nexus\s*[0-9]+/i.test(t),f=/CrOS/.test(t),l=/silk/i.test(t),c=/sailfish/i.test(t),h=/tizen/i.test(t),p=/(web|hpw)os/i.test(t),d=/windows phone/i.test(t),v=/SamsungBrowser/i.test(t),m=!d&&/windows/i.test(t),g=!i&&!l&&/macintosh/i.test(t),y=!o&&!c&&!h&&!p&&/linux/i.test(t),b=r(/edg([ea]|ios)\/(\d+(\.\d+)?)/i),w=n(/version\/(\d+(\.\d+)?)/i),E=/tablet/i.test(t)&&!/tablet pc/i.test(t),S=!E&&/[^-]mobi/i.test(t),x=/xbox/i.test(t),T;/opera/i.test(t)?T={name:"Opera",opera:e,version:w||n(/(?:opera|opr|opios)[\s\/](\d+(\.\d+)?)/i)}:/opr\/|opios/i.test(t)?T={name:"Opera",opera:e,version:n(/(?:opr|opios)[\s\/](\d+(\.\d+)?)/i)||w}:/SamsungBrowser/i.test(t)?T={name:"Samsung Internet for Android",samsungBrowser:e,version:w||n(/(?:SamsungBrowser)[\s\/](\d+(\.\d+)?)/i)}:/coast/i.test(t)?T={name:"Opera Coast",coast:e,version:w||n(/(?:coast)[\s\/](\d+(\.\d+)?)/i)}:/yabrowser/i.test(t)?T={name:"Yandex Browser",yandexbrowser:e,version:w||n(/(?:yabrowser)[\s\/](\d+(\.\d+)?)/i)}:/ucbrowser/i.test(t)?T={name:"UC Browser",ucbrowser:e,version:n(/(?:ucbrowser)[\s\/](\d+(?:\.\d+)+)/i)}:/mxios/i.test(t)?T={name:"Maxthon",maxthon:e,version:n(/(?:mxios)[\s\/](\d+(?:\.\d+)+)/i)}:/epiphany/i.test(t)?T={name:"Epiphany",epiphany:e,version:n(/(?:epiphany)[\s\/](\d+(?:\.\d+)+)/i)}:/puffin/i.test(t)?T={name:"Puffin",puffin:e,version:n(/(?:puffin)[\s\/](\d+(?:\.\d+)?)/i)}:/sleipnir/i.test(t)?T={name:"Sleipnir",sleipnir:e,version:n(/(?:sleipnir)[\s\/](\d+(?:\.\d+)+)/i)}:/k-meleon/i.test(t)?T={name:"K-Meleon",kMeleon:e,version:n(/(?:k-meleon)[\s\/](\d+(?:\.\d+)+)/i)}:d?(T={name:"Windows Phone",osname:"Windows Phone",windowsphone:e},b?(T.msedge=e,T.version=b):(T.msie=e,T.version=n(/iemobile\/(\d+(\.\d+)?)/i))):/msie|trident/i.test(t)?T={name:"Internet Explorer",msie:e,version:n(/(?:msie |rv:)(\d+(\.\d+)?)/i)}:f?T={name:"Chrome",osname:"Chrome OS",chromeos:e,chromeBook:e,chrome:e,version:n(/(?:chrome|crios|crmo)\/(\d+(\.\d+)?)/i)}:/edg([ea]|ios)/i.test(t)?T={name:"Microsoft Edge",msedge:e,version:b}:/vivaldi/i.test(t)?T={name:"Vivaldi",vivaldi:e,version:n(/vivaldi\/(\d+(\.\d+)?)/i)||w}:c?T={name:"Sailfish",osname:"Sailfish OS",sailfish:e,version:n(/sailfish\s?browser\/(\d+(\.\d+)?)/i)}:/seamonkey\//i.test(t)?T={name:"SeaMonkey",seamonkey:e,version:n(/seamonkey\/(\d+(\.\d+)?)/i)}:/firefox|iceweasel|fxios/i.test(t)?(T={name:"Firefox",firefox:e,version:n(/(?:firefox|iceweasel|fxios)[ \/](\d+(\.\d+)?)/i)},/\((mobile|tablet);[^\)]*rv:[\d\.]+\)/i.test(t)&&(T.firefoxos=e,T.osname="Firefox OS")):l?T={name:"Amazon Silk",silk:e,version:n(/silk\/(\d+(\.\d+)?)/i)}:/phantom/i.test(t)?T={name:"PhantomJS",phantom:e,version:n(/phantomjs\/(\d+(\.\d+)?)/i)}:/slimerjs/i.test(t)?T={name:"SlimerJS",slimer:e,version:n(/slimerjs\/(\d+(\.\d+)?)/i)}:/blackberry|\bbb\d+/i.test(t)||/rim\stablet/i.test(t)?T={name:"BlackBerry",osname:"BlackBerry OS",blackberry:e,version:w||n(/blackberry[\d]+\/(\d+(\.\d+)?)/i)}:p?(T={name:"WebOS",osname:"WebOS",webos:e,version:w||n(/w(?:eb)?osbrowser\/(\d+(\.\d+)?)/i)},/touchpad\//i.test(t)&&(T.touchpad=e)):/bada/i.test(t)?T={name:"Bada",osname:"Bada",bada:e,version:n(/dolfin\/(\d+(\.\d+)?)/i)}:h?T={name:"Tizen",osname:"Tizen",tizen:e,version:n(/(?:tizen\s?)?browser\/(\d+(\.\d+)?)/i)||w}:/qupzilla/i.test(t)?T={name:"QupZilla",qupzilla:e,version:n(/(?:qupzilla)[\s\/](\d+(?:\.\d+)+)/i)||w}:/chromium/i.test(t)?T={name:"Chromium",chromium:e,version:n(/(?:chromium)[\s\/](\d+(?:\.\d+)?)/i)||w}:/chrome|crios|crmo/i.test(t)?T={name:"Chrome",chrome:e,version:n(/(?:chrome|crios|crmo)\/(\d+(\.\d+)?)/i)}:o?T={name:"Android",version:w}:/safari|applewebkit/i.test(t)?(T={name:"Safari",safari:e},w&&(T.version=w)):i?(T={name:i=="iphone"?"iPhone":i=="ipad"?"iPad":"iPod"},w&&(T.version=w)):/googlebot/i.test(t)?T={name:"Googlebot",googlebot:e,version:n(/googlebot\/(\d+(\.\d+))/i)||w}:T={name:n(/^(.*)\/(.*) /),version:r(/^(.*)\/(.*) /)},!T.msedge&&/(apple)?webkit/i.test(t)?(/(apple)?webkit\/537\.36/i.test(t)?(T.name=T.name||"Blink",T.blink=e):(T.name=T.name||"Webkit",T.webkit=e),!T.version&&w&&(T.version=w)):!T.opera&&/gecko\//i.test(t)&&(T.name=T.name||"Gecko",T.gecko=e,T.version=T.version||n(/gecko\/(\d+(\.\d+)?)/i)),!T.windowsphone&&(o||T.silk)?(T.android=e,T.osname="Android"):!T.windowsphone&&i?(T[i]=e,T.ios=e,T.osname="iOS"):g?(T.mac=e,T.osname="macOS"):x?(T.xbox=e,T.osname="Xbox"):m?(T.windows=e,T.osname="Windows"):y&&(T.linux=e,T.osname="Linux");var C="";T.windows?C=N(n(/Windows ((NT|XP)( \d\d?.\d)?)/i)):T.windowsphone?C=n(/windows phone (?:os)?\s?(\d+(\.\d+)*)/i):T.mac?(C=n(/Mac OS X (\d+([_\.\s]\d+)*)/i),C=C.replace(/[_\s]/g,".")):i?(C=n(/os (\d+([_\s]\d+)*) like mac os x/i),C=C.replace(/[_\s]/g,".")):o?C=n(/android[ \/-](\d+(\.\d+)*)/i):T.webos?C=n(/(?:web|hpw)os\/(\d+(\.\d+)*)/i):T.blackberry?C=n(/rim\stablet\sos\s(\d+(\.\d+)*)/i):T.bada?C=n(/bada\/(\d+(\.\d+)*)/i):T.tizen&&(C=n(/tizen[\/\s](\d+(\.\d+)*)/i)),C&&(T.osversion=C);var k=!T.windows&&C.split(".")[0];if(E||a||i=="ipad"||o&&(k==3||k>=4&&!S)||T.silk)T.tablet=e;else if(S||i=="iphone"||i=="ipod"||o||u||T.blackberry||T.webos||T.bada)T.mobile=e;return T.msedge||T.msie&&T.version>=10||T.yandexbrowser&&T.version>=15||T.vivaldi&&T.version>=1||T.chrome&&T.version>=20||T.samsungBrowser&&T.version>=4||T.firefox&&T.version>=20||T.safari&&T.version>=6||T.opera&&T.version>=10||T.ios&&T.osversion&&T.osversion.split(".")[0]>=6||T.blackberry&&T.version>=10.1||T.chromium&&T.version>=20?T.a=e:T.msie&&T.version<10||T.chrome&&T.version<20||T.firefox&&T.version<20||T.safari&&T.version<6||T.opera&&T.version<10||T.ios&&T.osversion&&T.osversion.split(".")[0]<6||T.chromium&&T.version<20?T.c=e:T.x=e,T}function r(e){return e.split(".").length}function i(e,t){var n=[],r;if(Array.prototype.map)return Array.prototype.map.call(e,t);for(r=0;r<e.length;r++)n.push(t(e[r]));return n}function s(e){var t=Math.max(r(e[0]),r(e[1])),n=i(e,function(e){var n=t-r(e);return e+=(new Array(n+1)).join(".0"),i(e.split("."),function(e){return(new Array(20-e.length)).join("0")+e}).reverse()});while(--t>=0){if(n[0][t]>n[1][t])return 1;if(n[0][t]!==n[1][t])return-1;if(t===0)return 0}}function o(e,r,i){var o=n;typeof r=="string"&&(i=r,r=void 0),r===void 0&&(r=!1),i&&(o=t(i));var u=""+o.version;for(var a in e)if(e.hasOwnProperty(a)&&o[a]){if(typeof e[a]!="string")throw new Error("Browser version in the minVersion map should be a string: "+a+": "+String(e));return s([u,e[a]])<0}return r}function u(e,t,n){return!o(e,t,n)}var e=!0,n=t(typeof navigator!="undefined"?navigator.userAgent||"":"");return n.test=function(e){for(var t=0;t<e.length;++t){var r=e[t];if(typeof r=="string"&&r in n)return!0}return!1},n.isUnsupportedBrowser=o,n.compareVersions=s,n.check=u,n._detect=t,n.detect=t,n})</script><script>// returns array of double public/secret keypairs
+// one for encrypting (boxPk/boxSk) and one for signing (signPk/signSk)
+function generateKeys (secret, salt, position) {
+  // normalise strings with stringtolower and stringtoupper
+  // alert(secret.toUpperCase()+'/'+salt.toLowerCase());
+
+  // Key Seed I
+  // create bitArrays from secret and salt
+  var secr_ba = sjcl.codec.utf8String.toBits(secret.toUpperCase());
+  var salt_ba = sjcl.codec.utf8String.toBits(salt.toLowerCase());
+  // use pbkdf2 to calculate key_seed (64 * 4 bytes = 256 bits = 32 bytes)
+  var key_seed1 = sjcl.misc.pbkdf2(secr_ba, salt_ba, 5000 + position, 4096, false);
+
+  // Key Seed II
+  // reverse secret upper case + upper case salt
+  var rsecret = secret.toUpperCase().split('').reverse().join('');
+  // create bitArrays from reverse secret
+  var rsecr_ba = sjcl.codec.utf8String.toBits(rsecret);
+  var usalt_ba = sjcl.codec.utf8String.toBits(salt.toUpperCase());
+  // use pbkdf2 to calculate key_seed (64 * 4 bytes = 256 bits = 32 bytes)
+  var key_seed2 = sjcl.misc.pbkdf2(rsecr_ba, usalt_ba, 5000 + position, 4096, false);
+
+  // use two seeds to generate master key seed
+  var key_seed3 = sjcl.misc.pbkdf2(key_seed1, key_seed2, 5000 + position, 4096, false);
+  var key_seed_str3 = sjcl.codec.hex.fromBits(key_seed3);
+  // DEBUG alert(key_seed_str3+'['+key_seed_str3.length+']');
+  var final_key_seed = nacl.from_hex(key_seed_str3);
+  // create user master key
+  var new_key = nacl.crypto_box_keypair_from_seed(final_key_seed);
+  // animation possible here
+  return new_key;
+}
+
+function clean (dirty) {
+  if (typeof dirty !== 'undefined') {
+    var dirty_str = dirty.toString();
+    var clean_str = dirty_str.replace(/[^A-Za-z0-9]/g, '');
+  } else { clean_str = ''; }
+  return clean_str;
+}
+
+function seedGenerator (user_keys, asset) {
+  // this salt need not be too long (if changed: adjust slice according to tests)
+  var salt = '1nT3rN3t0Fc01NsB1nD5tH3cRyPt05Ph3R3t093Th3Rf0Rp30Pl3L1k3M34nDy0U';
+  // slightly increases entropy by XOR obfuscating and mixing data with a key
+  function xorEntropyMix (key, str) {
+    var c = '';
+    var k = 0;
+    for (i = 0; i < str.length; i++) {
+      c += String.fromCharCode(str[i].charCodeAt(0).toString(10) ^ key[k].charCodeAt(0).toString(10)); // XORing with key
+      k++;
+      if (k >= key.length) { k = 0; }
+    }
+    return c;
+  }
+  // return deterministic seed  GL.usercrypto.
+  return UrlBase64.Encode(xorEntropyMix(nacl.to_hex(user_keys.boxPk), xorEntropyMix(asset.split('.')[0], xorEntropyMix(salt, nacl.to_hex(user_keys.boxSk))))).slice(0, -2);
+}
+
+function activate (code) {
+  if (typeof code === 'string') {
+    eval('var deterministic = (function(){})(); ' + code); // interpret deterministic library into an object
+    return deterministic;
+  } else {
+    console.log('Cannot activate deterministic code!');
+    return function () {};
+  }
+}
+
+function sessionStep1Reply (data, sessionData, cb) {
+  // PROCESS REPLY TO SESSION_STEP 1 REQUEST
+  // do something with the returning server_session_pubkey
+  // server-side structure of packet:
+  //    var sign_hex = {server_sign_pubkey:server_sign_pubkey,server_session_pubkey:server_session_pubkey,current_nonce:current_nonce};
+  //    var crypt_hex = nacl.to_hex( nacl.crypto_box(sign_hex,current_nonce,client_session_pubkey,server_session_seckey) );
+  //    xresponse = {error:0,server_sign_pubkey:server_sign_pubkey,server_session_pubkey:server_session_pubkey,current_nonce:current_nonce,crhex:crypt_hex};
+  if (DEBUG) { console.log('Hello JSON:' + JSON.stringify(data)); }
+
+  var server_sign_binkey = nacl.from_hex(clean(data.server_sign_pubkey));
+  var server_session_binkey = nacl.from_hex(clean(data.server_session_pubkey));
+  var current_nonce = nacl.from_hex(clean(data.current_nonce));
+
+  if (DEBUG) { console.log('nonce:' + data.current_nonce); }
+
+  var crypt_bin = nacl.from_hex(clean(data.crhex));
+  try {
+    var crypt_pack = nacl.crypto_box_open(crypt_bin, current_nonce, server_session_binkey, sessionData.session_keypair.boxSk);
+    if (DEBUG) { console.log('Cryptstr:' + JSON.stringify(crypt_pack)); }
+
+    var crypt_str = nacl.to_hex(crypt_pack);
+    if (DEBUG) { console.log('Crypt hexstr:' + JSON.stringify(crypt_str)); }
+
+    // perform sign check here!
+    var sign_bin = nacl.from_hex(clean(crypt_str));
+    var sign_pack = nacl.crypto_sign_open(sign_bin, server_sign_binkey);
+    var sign_str = nacl.decode_utf8(sign_pack);
+
+    var sign_vars = JSON.parse(sign_str);
+
+    if (DEBUG) { console.log('PAYLOAD:' + JSON.stringify(crypt_str)); console.log('SIGNLOAD:' + JSON.stringify(sign_str)); }
+    // check for server sign, session and nonce values within and without of crypt packet so as to associate the two public keys without a shadow of doubt
+    if (
+      sign_vars.server_sign_pubkey === data.server_sign_pubkey &&
+        sign_vars.server_session_pubkey === data.server_session_pubkey &&
+        sign_vars.current_nonce === data.current_nonce
+    ) {
+      // if we are here, signed internal datapacket crhex checks out with open values
+
+      var key_array = {
+        'nonce': sessionData.session_nonce,
+        'nonce1': sessionData.nonce1_hex,
+        'nonce2': sessionData.nonce2_hex,
+        'nonce_combi': sign_vars.current_nonce,
+        'session_secsign': sessionData.session_secsign,
+        'session_seckey': sessionData.session_seckey,
+        'session_pubsign': sessionData.session_hexsign,
+        'session_pubkey': sessionData.session_hexkey,
+        'server_pubsign': sign_vars.server_sign_pubkey,
+        'server_pubkey': sign_vars.server_session_pubkey
+      };
+
+      var sess_bin = nacl.encode_utf8(JSON.stringify(key_array));
+
+      if (DEBUG) { console.log('Raw session_data: ' + JSON.stringify(key_array)); }
+
+      var sess_response = nacl.crypto_box(sess_bin, current_nonce, sessionData.userKeys.boxPk, sessionData.userKeys.boxSk);
+      var sess_hex = nacl.to_hex(sess_response);
+
+      if (typeof cb === 'function') { cb(sess_hex); }
+      return {
+        sess_hex: sess_hex,
+        current_nonce: current_nonce
+      };
+    }
+  } catch (e) {
+    console.error(JSON.stringify(e));
+  }
+}
+
+function readSession (userKeys, nonce, sessionData, onError) {
+  if (sessionData === null) {
+    onError();
+  }
+  // decrypt session data (so that it does not lie around but is only 'known' upon decrypt)
+  var sess_bin = nacl.from_hex(sessionData);
+
+  // user's session nonce is used for session_data
+  var session_data = nacl.crypto_box_open(sess_bin, nonce, userKeys.boxPk, userKeys.boxSk);
+
+  var session_string = nacl.decode_utf8(session_data);
+  return JSON.parse(session_string);
+}
+
+function generateInitialSessionData (nonce) {
+  // post session_pubkey to server + receive server_pubkey back
+  // generate random session_seed
+  var session_seed = nacl.random_bytes(4096);
+  // generate new session keypair
+  var session_keypair = nacl.crypto_box_keypair_from_seed(session_seed);
+  // generate new session signpair
+  var session_sign_seed = nacl.crypto_hash_sha256(session_seed);
+  var session_signpair = nacl.crypto_sign_keypair_from_seed(session_sign_seed);
+  // convert nonce to hex representation for urlsafe transport
+  var session_nonce = nacl.to_hex(nonce);
+  // convert pubkeys to hex representation for urlsafe transport
+  var session_hexkey = nacl.to_hex(session_keypair.boxPk);
+  var session_hexsign = nacl.to_hex(session_signpair.signPk);
+  // convert seckeys to hex for storage in key_array
+  var session_seckey = nacl.to_hex(session_keypair.boxSk);
+  var session_secsign = nacl.to_hex(session_signpair.signSk);
+
+  if (DEBUG) { console.log('session_seed:' + session_seed + '(' + session_seed.length + ')'); }
+  if (DEBUG) { console.log('session_hexkey:' + session_hexkey + '(' + session_hexkey.length + ')'); }
+  if (DEBUG) { console.log('session_sign_seed:' + session_sign_seed + '(' + session_sign_seed.length + ')'); }
+  if (DEBUG) { console.log('session_hexsign:' + session_hexsign + '(' + session_hexsign.length + ')'); }
+
+  return {
+    session_hexkey: session_hexkey,
+    session_hexsign: session_hexsign,
+    session_keypair: session_keypair,
+    session_nonce: session_nonce,
+    session_seckey: session_seckey,
+    session_secsign: session_secsign,
+    session_signpair: session_signpair
+  };
+}
+
+function generateSecondarySessionData (nonce1, sessionHexKey, signSk) {
+  var nonce2 = nacl.crypto_box_random_nonce();
+  var nonce2_hex = nacl.to_hex(nonce2);
+  // change first character to 0-7 if it is 8,9,a-f to keep sum nonce within 32 bytes
+  var nonce2_hex = nonce2_hex.replace(/^[8-9a-f]/, function (match) { var range = ['8', '9', 'a', 'b', 'c', 'd', 'e', 'f']; return range.indexOf(match); });
+  var nonce1_hex = clean(nonce1);
+  var nonce1_hex = nonce1_hex.replace(/^[8-9a-f]/, function (match) { var range = ['8', '9', 'a', 'b', 'c', 'd', 'e', 'f']; return range.indexOf(match); });
+  var secrets_json = {
+    'nonce1': nonce1_hex,
+    'nonce2': nonce2_hex,
+    'client_session_pubkey': sessionHexKey
+  };
+
+  var session_secrets = JSON.stringify(secrets_json);
+
+  // using signing method to prevent in transport changes
+  var crypt_bin = nacl.encode_utf8(session_secrets);
+
+  var crypt_response = nacl.crypto_sign(crypt_bin, signSk);
+  var crypt_hex = nacl.to_hex(crypt_response);
+
+  if (DEBUG) { console.log('CR:' + crypt_hex); }
+
+  return {
+    nonce1_hex: nonce1_hex,
+    nonce2_hex: nonce2_hex,
+    crypt_hex: crypt_hex
+  };
+}
+
+// THIS KEEPS ON CHECKING UNTIL ALL CALLS AND SESSION STEPS ARE BEING PROCESSED AND SESSIONWATCH IS NOT EMPTY.
+// TODO: CPS????
+function continueSession (user_keys, nonce, userid, getSessionWatch, cb) {
+  var sessionWatch = getSessionWatch(); // THIS CHECKS IF DATA HAS BEEN ATTRIBUTED TO SOME ELEMENT IN DOM
+  if (sessionWatch === '') {
+    setTimeout(function () { continueSession(user_keys, nonce, userid, getSessionWatch, cb); }, 1000);
+  } else {
+    cb(); // IF SO, RUN CALLBACK, WHICH SHOULD FETCH THE DASHBOARD VIEW
+  }
+}
+
+function nextStep () {
+  // function to prevent mis-stepping by concurrent step calls
+  var current_session = session_step;
+  session_step++;
+  return current_session + 1;
+}
+
+function increaseSessionStep (step) {
+  return step + 1;
+}
+
+function validatePasswordLength (pass) {
+  return typeof pass !== 'undefined' && (pass.length === 16 || pass.length === 48);
+}
+
+function validateUserIDLength (userid) {
+  return typeof userid !== 'undefined' && userid.length === 16;
+}
+
+commonUtils = {
+  activate,
+  clean,
+  continueSession,
+  generateKeys,
+  generateInitialSessionData,
+  generateSecondarySessionData,
+  increaseSessionStep,
+  seedGenerator,
+  sessionStep1Reply,
+  validatePasswordLength,
+  validateUserIDLength
+};
+
+if (typeof module !== 'undefined') {
+  module.exports = {
+    activate,
+    clean,
+    continueSession,
+    generateKeys,
+    generateInitialSessionData,
+    generateSecondarySessionData,
+    nextStep,
+    readSession,
+    seedGenerator,
+    sessionStep1Reply,
+    validatePasswordLength,
+    validateUserIDLength
+  };
+}
+</script><script>var fetch_ = fetch;
 
 var BALANCE_UPDATE_BUFFER_TIME_MS = 300000;
 var KEY_MAPPING = {
@@ -2984,16 +3271,6 @@ utils = {
           fn();
         }
       });
-    }
-  },
-  // activate (deterministic) code from a string
-  activate: function (code) {
-    if (typeof code === 'string') {
-      eval('var deterministic = (function(){})(); ' + code); // interpret deterministic library into an object
-      return deterministic;
-    } else {
-      console.log('Cannot activate deterministic code!');
-      return function () {};
     }
   },
   normalizeUserInput: function (str) {
@@ -3497,11 +3774,12 @@ function lastKnownOrNewBalance (newData, currentBalance) {
   }
 }
 </script><script>var U = utils;
+var CommonUtils = commonUtils;
 
 // creates a unique seed for deterministic asset code
 deterministic_ = {
   mkDeterministicDetails: function (dcode, entry, submode, mode, keyGenBase) {
-    var deterministic = U.activate(LZString.decompressFromEncodedURIComponent(dcode));
+    var deterministic = CommonUtils.activate(LZString.decompressFromEncodedURIComponent(dcode));
 
     var defaultDetails = {
       mode,
@@ -3519,7 +3797,8 @@ deterministic_ = {
 };
 
 function generateDetails (entry, keyGenBase, mode, submode, deterministic) {
-  var seed = seedGenerator(keyGenBase);
+  var userKeys = GL.usercrypto.user_keys;
+  var seed = CommonUtils.seedGenerator(userKeys, keyGenBase);
   var keys = deterministic.keys({symbol: entry, seed, mode: submode});
 
   return {
@@ -3528,24 +3807,6 @@ function generateDetails (entry, keyGenBase, mode, submode, deterministic) {
     keys,
     address: deterministic.address(Object.assign(keys, {mode: submode}))
   };
-}
-
-function seedGenerator (asset) {
-  // this salt need not be too long (if changed: adjust slice according to tests)
-  var salt = '1nT3rN3t0Fc01NsB1nD5tH3cRyPt05Ph3R3t093Th3Rf0Rp30Pl3L1k3M34nDy0U';
-  // slightly increases entropy by XOR obfuscating and mixing data with a key
-  function xorEntropyMix (key, str) {
-    var c = '';
-    var k = 0;
-    for (i = 0; i < str.length; i++) {
-      c += String.fromCharCode(str[i].charCodeAt(0).toString(10) ^ key[k].charCodeAt(0).toString(10)); // XORing with key
-      k++;
-      if (k >= key.length) { k = 0; }
-    }
-    return c;
-  }
-  // return deterministic seed
-  return UrlBase64.Encode(xorEntropyMix(nacl.to_hex(GL.usercrypto.user_keys.boxPk), xorEntropyMix(asset.split('.')[0], xorEntropyMix(salt, nacl.to_hex(GL.usercrypto.user_keys.boxSk))))).slice(0, -2);
 }
 </script><script>// ychan encrypts an API query before sending it to the router
 ychan = function (usercrypto, step, txtdata) {
@@ -5044,240 +5305,4 @@ a,b,d,e){var f,g;1==arguments.length?(g=c.initialState,a=c.condition,b=c.iterate
 a,b){void 0===a&&(a=Q);void 0===b&&(b=Q);return za(function(){return c()?a:b})};e.interval=function(c,a){void 0===c&&(c=0);void 0===a&&(a=C);if(!aa(c)||0>c)c=0;a&&"function"===typeof a.schedule||(a=C);return new r(function(b){b.add(a.schedule(ac,c,{subscriber:b,counter:0,period:c}));return b})};e.merge=ab;e.never=function(){return Bb};e.of=ua;e.onErrorResumeNext=Aa;e.pairs=function(c,a){return a?new r(function(b){var d=Object.keys(c),e=new w;e.add(a.schedule(bc,0,{keys:d,index:0,subscriber:b,subscription:e,
 obj:c}));return e}):new r(function(a){for(var b=Object.keys(c),d=0;d<b.length&&!a.closed;d++){var e=b[d];c.hasOwnProperty(e)&&a.next([e,c[e]])}a.complete()})};e.race=bb;e.range=function(c,a,b){void 0===c&&(c=0);void 0===a&&(a=0);return new r(function(d){var e=0,f=c;if(b)return b.schedule(dc,0,{index:e,count:a,start:c,subscriber:d});do{if(e++>=a){d.complete();break}d.next(f++);if(d.closed)break}while(1)})};e.throwError=va;e.timer=cb;e.using=function(c,a){return new r(function(b){var d;try{d=c()}catch(x){b.error(x);
 return}var e;try{e=a(d)}catch(x){b.error(x);return}var h=(e?L(e):Q).subscribe(b);return function(){h.unsubscribe();d&&d.unsubscribe()}})};e.zip=db;e.EMPTY=Q;e.NEVER=Bb;e.config=H;Object.defineProperty(e,"__esModule",{value:!0})});
-</script><script>
-// returns array of double public/secret keypairs
-// one for encrypting (boxPk/boxSk) and one for signing (signPk/signSk)
-function generateKeys (secret, salt, position) {
-  // normalise strings with stringtolower and stringtoupper
-  // alert(secret.toUpperCase()+'/'+salt.toLowerCase());
-
-  // Key Seed I
-  // create bitArrays from secret and salt
-  var secr_ba = sjcl.codec.utf8String.toBits(secret.toUpperCase());
-  var salt_ba = sjcl.codec.utf8String.toBits(salt.toLowerCase());
-  // use pbkdf2 to calculate key_seed (64 * 4 bytes = 256 bits = 32 bytes)
-  var key_seed1 = sjcl.misc.pbkdf2(secr_ba, salt_ba, 5000 + position, 4096, false);
-
-  // Key Seed II
-  // reverse secret upper case + upper case salt
-  var rsecret = secret.toUpperCase().split('').reverse().join('');
-  // create bitArrays from reverse secret
-  var rsecr_ba = sjcl.codec.utf8String.toBits(rsecret);
-  var usalt_ba = sjcl.codec.utf8String.toBits(salt.toUpperCase());
-  // use pbkdf2 to calculate key_seed (64 * 4 bytes = 256 bits = 32 bytes)
-  var key_seed2 = sjcl.misc.pbkdf2(rsecr_ba, usalt_ba, 5000 + position, 4096, false);
-
-  // use two seeds to generate master key seed
-  var key_seed3 = sjcl.misc.pbkdf2(key_seed1, key_seed2, 5000 + position, 4096, false);
-  var key_seed_str3 = sjcl.codec.hex.fromBits(key_seed3);
-  // DEBUG alert(key_seed_str3+'['+key_seed_str3.length+']');
-  var final_key_seed = nacl.from_hex(key_seed_str3);
-  // create user master key
-  var new_key = nacl.crypto_box_keypair_from_seed(final_key_seed);
-  // animation possible here
-  return new_key;
-}
-
-function clean (dirty) {
-  if (typeof dirty !== 'undefined') {
-    var dirty_str = dirty.toString();
-    var clean_str = dirty_str.replace(/[^A-Za-z0-9]/g, '');
-  } else { clean_str = ''; }
-  return clean_str;
-}
-
-function sessionStep1Reply (data, sessionData, cb) {
-  // PROCESS REPLY TO SESSION_STEP 1 REQUEST
-  // do something with the returning server_session_pubkey
-  // server-side structure of packet:
-  //    var sign_hex = {server_sign_pubkey:server_sign_pubkey,server_session_pubkey:server_session_pubkey,current_nonce:current_nonce};
-  //    var crypt_hex = nacl.to_hex( nacl.crypto_box(sign_hex,current_nonce,client_session_pubkey,server_session_seckey) );
-  //    xresponse = {error:0,server_sign_pubkey:server_sign_pubkey,server_session_pubkey:server_session_pubkey,current_nonce:current_nonce,crhex:crypt_hex};
-  if ( DEBUG ) { console.log("Hello JSON:"+JSON.stringify(data)); }
-
-  var server_sign_binkey = nacl.from_hex(clean(data.server_sign_pubkey));
-  var server_session_binkey = nacl.from_hex(clean(data.server_session_pubkey));
-  var current_nonce = nacl.from_hex(clean(data.current_nonce));
-
-  if ( DEBUG ) { console.log("nonce:"+data.current_nonce); }
-
-  var crypt_bin = nacl.from_hex(clean(data.crhex));
-  var crypt_pack = nacl.crypto_box_open(crypt_bin, current_nonce, server_session_binkey, sessionData.session_keypair.boxSk);
-  if ( DEBUG ) { console.log("Cryptstr:"+JSON.stringify(crypt_pack)); }
-
-  var crypt_str = nacl.to_hex(crypt_pack);
-  if ( DEBUG ) { console.log("Crypt hexstr:"+JSON.stringify(crypt_str)); }
-
-  // perform sign check here!
-  var sign_bin = nacl.from_hex(clean(crypt_str));
-  var sign_pack = nacl.crypto_sign_open(sign_bin,server_sign_binkey);
-  var sign_str = nacl.decode_utf8(sign_pack);
-
-  var sign_vars = JSON.parse(sign_str);
-
-  if ( DEBUG ) { console.log('PAYLOAD:'+JSON.stringify(crypt_str)); console.log('SIGNLOAD:'+JSON.stringify(sign_str)); }
-
-  // check for server sign, session and nonce values within and without of crypt packet so as to associate the two public keys without a shadow of doubt
-  if (
-    sign_vars.server_sign_pubkey === data.server_sign_pubkey &&
-      sign_vars.server_session_pubkey === data.server_session_pubkey &&
-      sign_vars.current_nonce === data.current_nonce
-  ) {
-    // if we are here, signed internal datapacket crhex checks out with open values
-
-    var key_array = {
-      'nonce': sessionData.session_nonce,
-      'nonce1': sessionData.nonce1_hex,
-      'nonce2': sessionData.nonce2_hex,
-      'nonce_combi': sign_vars.current_nonce,
-      'session_secsign':sessionData.session_secsign,
-      'session_seckey':sessionData.session_seckey,
-      'session_pubsign':sessionData.session_hexsign,
-      'session_pubkey':sessionData.session_hexkey,
-      'server_pubsign':sign_vars.server_sign_pubkey,
-      'server_pubkey':sign_vars.server_session_pubkey
-    };
-
-    var sess_bin = nacl.encode_utf8(JSON.stringify(key_array));
-
-    if ( DEBUG ) { console.log('Raw session_data: '+JSON.stringify(key_array)); }
-
-    var sess_response = nacl.crypto_box(sess_bin, current_nonce, sessionData.userKeys.boxPk, sessionData.userKeys.boxSk);
-    var sess_hex = nacl.to_hex(sess_response);
-
-    cb(sess_hex)
-    return {
-      sess_hex,
-      current_nonce
-    };
-  }}
-
-function readSession(userKeys, nonce, sessionData, onError) {
-  if (sessionData === null) {
-    onError();
-  }
-  // decrypt session data (so that it does not lie around but is only 'known' upon decrypt)
-  var sess_bin = nacl.from_hex(sessionData);
-  // user's session nonce is used for session_data
-  var session_data = nacl.crypto_box_open(sess_bin, nonce, userKeys.boxPk, userKeys.boxSk);
-  var session_string = nacl.decode_utf8(session_data);
-  return JSON.parse(session_string);
-}
-
-function generateInitialSessionData (nonce) {
-  // post session_pubkey to server + receive server_pubkey back
-  // generate random session_seed
-  var session_seed = nacl.random_bytes(4096);
-  // generate new session keypair
-  var session_keypair = nacl.crypto_box_keypair_from_seed(session_seed);
-  // generate new session signpair
-  var session_sign_seed = nacl.crypto_hash_sha256(session_seed);
-  var session_signpair = nacl.crypto_sign_keypair_from_seed(session_sign_seed);
-  // convert nonce to hex representation for urlsafe transport
-  var session_nonce = nacl.to_hex(nonce);
-  // convert pubkeys to hex representation for urlsafe transport
-  var session_hexkey = nacl.to_hex(session_keypair.boxPk);
-  var session_hexsign = nacl.to_hex(session_signpair.signPk);
-  // convert seckeys to hex for storage in key_array
-  var session_seckey = nacl.to_hex(session_keypair.boxSk);
-  var session_secsign = nacl.to_hex(session_signpair.signSk);
-
-  if (DEBUG) { console.log('session_seed:' + session_seed + '(' + session_seed.length + ')'); }
-  if (DEBUG) { console.log('session_hexkey:' + session_hexkey + '(' + session_hexkey.length + ')'); }
-  if (DEBUG) { console.log('session_sign_seed:' + session_sign_seed + '(' + session_sign_seed.length + ')'); }
-  if (DEBUG) { console.log('session_hexsign:' + session_hexsign + '(' + session_hexsign.length + ')'); }
-
-  return {
-    session_hexkey,
-    session_hexsign,
-    session_keypair,
-    session_nonce,
-    session_seckey,
-    session_secsign,
-    session_signpair
-  }
-}
-
-function generateSecondarySessionData (nonce1, sessionHexKey, signSk) {
-  var nonce2 = nacl.crypto_box_random_nonce();
-  var nonce2_hex = nacl.to_hex(nonce2);
-  // change first character to 0-7 if it is 8,9,a-f to keep sum nonce within 32 bytes
-  var nonce2_hex = nonce2_hex.replace(/^[8-9a-f]/,function(match){var range=['8','9','a','b','c','d','e','f']; return range.indexOf(match);});
-  var nonce1_hex = clean(nonce1);
-  var nonce1_hex = nonce1_hex.replace(/^[8-9a-f]/,function(match){var range=['8','9','a','b','c','d','e','f']; return range.indexOf(match);});
-  var secrets_json = {
-    'nonce1': nonce1_hex,
-    'nonce2': nonce2_hex,
-    'client_session_pubkey': sessionHexKey
-  };
-  var session_secrets = JSON.stringify(secrets_json);
-
-  // using signing method to prevent in transport changes
-  var crypt_bin = nacl.encode_utf8(session_secrets);
-  var crypt_response = nacl.crypto_sign(crypt_bin, signSk);
-  var crypt_hex = nacl.to_hex(crypt_response);
-
-  if ( DEBUG ) { console.log('CR:'+crypt_hex); }
-
-  return {
-    nonce1_hex,
-    nonce2_hex,
-    crypt_hex
-  }
-}
-
-// THIS KEEPS ON CHECKING UNTIL ALL CALLS AND SESSION STEPS ARE BEING PROCESSED AND SESSIONWATCH IS NOT EMPTY.
-// TODO: CPS????
-function continueSession (user_keys, nonce, userid, getSessionWatch, cb) {
-  var sessionWatch = getSessionWatch(); // THIS CHECKS IF DATA HAS BEEN ATTRIBUTED TO SOME ELEMENT IN DOM
-  if (sessionWatch === '') {
-    setTimeout(function () { continueSession(user_keys, nonce, userid, getSessionWatch, cb); }, 1000);
-  } else {
-    cb(); // IF SO, RUN CALLBACK, WHICH SHOULD FETCH THE DASHBOARD VIEW
-  }
-}
-
-function nextStep() {
-  // function to prevent mis-stepping by concurrent step calls
-  var current_session = session_step;
-  session_step++;
-  return current_session + 1;
-}
-
-function increaseSessionStep (step) {
-  return step + 1;
-}
-
-function validatePasswordLength (pass) {
-  return typeof pass !== 'undefined' && (pass.length == 16 || pass.length == 48);
-}
-
-function validateUserIDLength (userid) {
-  return typeof userid !== 'undefined' && userid.length === 16
-}
-
-commonUtils = {
-  clean,
-  continueSession,
-  generateKeys,
-  generateInitialSessionData,
-  generateSecondarySessionData,
-  increaseSessionStep,
-  sessionStep1Reply,
-  validatePasswordLength,
-  validateUserIDLength
-}
-
-module.exports = {
-  clean,
-  continueSession,
-  generateKeys,
-  generateInitialSessionData,
-  generateSecondarySessionData,
-  nextStep,
-  readSession,
-  sessionStep1Reply,
-  validatePasswordLength,
-  validateUserIDLength
-}
 </script></body></html>
