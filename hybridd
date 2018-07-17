@@ -4,20 +4,20 @@ WHEREAMI=`pwd`
 export PATH=$WHEREAMI/node/bin:"$PATH"
 NODEINST=`which node`
 
-if [ -z "$@" ]; then
+if [[ -z "$@" ]]; then
   cd lib
-	echo
-	echo "Starting hybridd..."
-	echo " [i] using node executable $NODEINST"
-	node hybridd.js
-	echo
-	echo "Stopped hybridd."
-	echo
+        echo
+        echo "Starting hybridd..."
+        echo " [i] using node executable $NODEINST"
+        node hybridd.js
+        echo
+        echo "Stopped hybridd."
+        echo
 elif [ "$1" = "start" ]; then
   ./hybridd.start
 else
   cd lib
-	node hcmd.js $@
+        node hcmd.js $@
 fi
 
 PATH=$OLDPATH
