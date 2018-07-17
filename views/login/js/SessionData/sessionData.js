@@ -1,8 +1,6 @@
 var UserFeedback = userFeedback;
 var UserCredentialsValidation = userCredentialsValidation;
 
-var defaultErrorMsg = 'There was an error while logging in to your wallet. Please try again. </br></br>If the problem persists, <a href="https://internetofcoins.org/contact" target="_blank">contact us</a> for help.</br>';
-
 function mkSessionDataStream (nacl, userCredentials) {
   var validatedUserCredentialsStream_ = rxjs.of(userCredentials);
 
@@ -135,7 +133,7 @@ function sessionStep1OrErrorHandlingStream (sessionStep1Data) {
         )(sessionStep1Response);
 
         if (responseHasErrors) {
-          throw { error: 1, msg: defaultErrorMsg}; // TODO: Plugin error logging here.
+          throw { error: 1, msg: UserFeedback.defaultErrorMsg}; // TODO: Plugin error logging here.
         } else {
           return sessionStep1Response;
         }
@@ -163,7 +161,7 @@ function sessionStep0OrErrorHandlingStream (sessionStep0Data) {
       }),
       rxjs.operators.map(function (deterministicHashesProcessResponse) {
         if (R.not(R.propEq('error', 0, deterministicHashesProcessResponse))) {
-          throw { error: 1, msg: defaultErrorMsg }; // TODO: Plugin error logging here.
+          throw { error: 1, msg: UserFeedback.defaultErrorMsg }; // TODO: Plugin error logging here.
         } else {
           return deterministicHashesProcessResponse;
         }

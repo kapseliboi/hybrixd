@@ -1,3 +1,5 @@
+var defaultErrorMsg = 'There was an error while logging in to your wallet. Please try again. </br></br>If the problem persists, <a href="https://internetofcoins.org/contact" target="_blank">contact us</a> for help.</br>';
+
 function resetLoginFlipOverErrorStream (e) {
   return rxjs.of(e)
     .pipe(
@@ -10,12 +12,16 @@ function resetLoginFlipOverErrorStream (e) {
 
 // TODO factor up
 function resetFlipOverAnimation (e) {
+  console.log('e = ', e);
+  var errorMessage = R.has('msg', e)
+    ? R.prop('msg', e)
+    : defaultErrorMsg;
   document.querySelector('.flipper').classList.remove('active'); // FLIP LOGIN FORM BACK
   document.querySelector('#generateform').classList.remove('inactive');
   document.querySelector('#alertbutton').classList.remove('inactive');
   document.querySelector('#helpbutton').classList.remove('inactive');
   document.querySelector('.user-login-notification').classList.add('active');
-  document.querySelector('.user-login-notification').innerHTML = R.prop('msg', e);
+  document.querySelector('.user-login-notification').innerHTML = errorMessage;
 }
 
 // Eff (dom :: DOM) Error
@@ -95,5 +101,6 @@ userFeedback = {
   setLocalUserLogOutStatus,
   setLoginButtonText,
   setCSSTorenderButtonsToDisabled,
-  toggleLoginSpinner
+  toggleLoginSpinner,
+  defaultErrorMsg
 };
