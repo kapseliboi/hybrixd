@@ -12,7 +12,6 @@ function resetLoginFlipOverErrorStream (e) {
 
 // TODO factor up
 function resetFlipOverAnimation (e) {
-  console.log('e = ', e);
   var errorMessage = R.has('msg', e)
     ? R.prop('msg', e)
     : defaultErrorMsg;
