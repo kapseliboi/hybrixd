@@ -1,17 +1,49 @@
 <div class="container">
+
+
+
+
+
   <div id="log-out-confirmation" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
     <div class="modal-content">
       <div class="modal-header">
         <h2 id="ModalLabel">Are you sure you want to log out?</h2>
-        <div class="modal-body">
-        </div>
-        <div class="modal-footer">
-          <button class="pure-button pure-button-secondary manageBtnCancel" data-dismiss="modal" aria-hidden="true">Cancel</button>
-          <button class="pure-button pure-button-primary logOutBtn" data-dismiss="modal" aria-hidden="true">Log out</button>
-        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="pure-button pure-button-secondary manageBtnCancel" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        <button class="pure-button pure-button-primary logOutBtn" data-dismiss="modal" aria-hidden="true">Yes, log out</button>
       </div>
     </div>
   </div>
+
+  <div id="manage-assets" class="modal hide fade wide" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="ModalLabel">Manage the assets in your wallet</h2>
+      <form class="pure-form pure-form-stacked">
+  <span class="clearable">
+    <input id="search-assets" type="text" placeholder="Type to search..." class="inline" onkeydown = "" oninput = "" onpaste = "" oncut = "">
+    <i class="clearable__clear">&times;</i>
+  </span>
+      </form>
+    </div>
+    <div class="modal-body">
+      <div class="data manageAssets"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="pure-button pure-button-secondary manageBtnCancel" data-dismiss="modal" aria-hidden="true">Cancel</button>
+      <button id="save-assetlist" class="pure-button pure-button-primary manageBtnSave" data-dismiss="modal" aria-hidden="true">Save changes</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
   <div class="custom-menu-bg">
     <div id="toggleMenubar" class="custom-menu-wrapper">
       <div class="pure-menu custom-menu custom-menu-top">
@@ -20,16 +52,15 @@
 	  <a href="#" id="toggleMenu" class="custom-menu-toggle"><s class="bar"></s><s class="bar"></s></a>
       </div>
       <div class="pure-menu pure-menu-horizontal pure-menu-scrollable custom-menu custom-menu-bottom custom-menu-tucked" id="tuckedMenu">
-	<ul id="tuckedMenulist" class="pure-menu-list custom-menu-tucked">
-	  <li class="pure-menu-item"><a href="#" onclick="fetchview('interface.dashboard',pass_args);" class="pure-menu-link" id="topmenu-dashboard"><div class="m-icon" id="dashboard-icon"></div>Dashboard</a></li>
+        <ul id="tuckedMenulist" class="pure-menu-list custom-menu-tucked">
+          <li class="pure-menu-item"><a href="#" onclick="fetchview('interface.dashboard',pass_args);" class="pure-menu-link" id="topmenu-dashboard"><div class="m-icon" id="dashboard-icon"></div>Dashboard</a></li>
           <li class="pure-menu-item"><a href="#" class="pure-menu-link" id="topmenu-assets"><div class="m-icon" id="assets-icon"></div>Assets</a></li>
           <li class="pure-menu-item topmenu-logout-inline">
-            <a href="#" id="topmenu-logout-inline" class="pure-menu-link topmenu-logout topmenu-logout-inline">
+            <a href="#log-out-confirmation" id="topmenu-logout-inline" class="pure-menu-link topmenu-logout topmenu-logout-inline" tabindex="-1" role="button" data-dismiss="modal" data-toggle="modal">
               <div id="logout-icon"></div>
               Log out
             </a>
           </li>
-
         </ul>
       </div>
       <div id="topmenu-right">

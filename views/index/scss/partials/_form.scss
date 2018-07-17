@@ -43,24 +43,51 @@
 :-ms-input-placeholder { letter-spacing: 0px; color: $grey; font-weight: $regular; }
 :-moz-placeholder { letter-spacing: 0px; color: $grey; font-weight: $regular; }
 
-.user-login-notification {
+
+.form-notif {
   @include border-radius(4px);
   @include transition(all 0.3s ease-out);
+  text-align: left;
   display: block;
   padding: 0 15px;
   opacity: 0;
   height: 0;
+  margin-top: 0;
+  position: relative;
+  z-index: -1000;
+
+  &.active {
+    @include transition(all 0.4s ease-in-out);
+    min-height: 50px;
+    height: auto;
+    opacity: 1;
+    padding: 15px;
+  }
+  p {
+    margin: 0;
+  }
+}
+.form-notif-error {
   color: $error;
   background: rgba($error, 0.2);
-  margin-top: 0;
   font-weight: $semi-bold;
+}
 
+.form-notif-general {
+  color: $highlight;
+  background: rgba($highlight, 0.2);
+  font-weight: $semi-bold;
 }
-.user-login-notification.active {
-  @include transition(all 0.4s ease-in-out);
-  min-height: 81px;
-  height: auto;
-  opacity: 1;
-  padding: 15px;
-  margin-top: 15px;
+
+.form-notif-top {
+  &.active {
+    margin-bottom: 15px;
+  }
 }
+
+.form-notif-bottom {
+  &.active {
+    margin-top: 15px;
+  }
+}
+

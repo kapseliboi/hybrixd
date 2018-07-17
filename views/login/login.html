@@ -8,8 +8,8 @@
         <div class="flip-container">
           <div class="flipper">
             <form id="loginform" class="pure-form login-flip-front">
-              <div class="loggedoutmsg">
-                <p>You have succesfully been logged out of your wallet.</p>
+              <div class="loggedoutmsg form-notif form-notif-general form-notif-top">
+                <p>You have been successfully logged out of your wallet.</p>
               </div>
               <input name="userid" type="text" id="inputUserID" class="form-control" placeholder="Account ID" required autofocus/>
               <input name="passcode" type="password" id="inputPasscode" class="form-control" placeholder="Password" required/>
@@ -19,7 +19,7 @@
                   <div class="spinner-loader">...</div>
                 </div>
               </a>
-              <div class="user-login-notification"></div>
+              <div class="user-login-notification form-notif form-notif-error form-notif-bottom"></div>
             </form>
             <div class="login-flip-back">
               <div class="login-flip-back-content">
