@@ -1,6 +1,6 @@
 var U = utils;
 
-hybridd = {
+modules.exports = hybridd = {
   mkHybriddCallStream: function (url) {
     var hybriddCallStream = rxjs
       .from(hybriddcall({r: url, z: true}))

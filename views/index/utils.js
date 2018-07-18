@@ -8,7 +8,7 @@ var KEY_MAPPING = {
   '9': 'G'
 };
 
-utils = {
+modules.exports = utils = {
   documentReady: function (fn) {
     if (document.readyState !== 'loading') {
       fn();

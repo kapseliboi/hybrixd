@@ -57,6 +57,6 @@ function fetchAssetsViews (args) { return function () { fetchview('interface.ass
 
 main();
 
-interfaceStreams = {
+modules.exports = interfaceStreams = {
   logOutStream
 };

@@ -1,6 +1,4 @@
-var Icons = black;
-
-var dashboardUI = {
+export var dashboardUI = {
   noStarredAssetsHTML: '<p>No starred assets found. <br>You can star your favorite assets in the Asset tab to make them appear here. <br><br><a class="pure-button pure-button-primary" onclick="fetchview(\'interface.assets\', pass_args);"><span>Go to My Assets</span></a></p>',
   mkHtmlForStarredAssets: function (htmlStr, asset) {
     var assetID = R.prop('id', asset);

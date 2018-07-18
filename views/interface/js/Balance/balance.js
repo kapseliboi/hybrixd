@@ -172,7 +172,7 @@ function updateAssetBalance (a, balance) {
   )(balance);
 }
 
-balance = {
+modules.exports = balance = {
   mkBalanceStream,
   updateAssetsBalances,
   mkRenderBalancesStream

@@ -1,9 +1,15 @@
-var U = utils;
-var H = hybridd;
-var UI = dashboardUI;
-var SVG = svg;
-var Balance = balance;
-var InterfaceStreams = interfaceStreams;
+// var U = utils;
+import { utils } from '../index/utils.js';
+// var H = hybridd;
+import { hybridd } from '../interface/js/hybriddcall.js';
+// var SVG = svg;
+import { black } from '../files/svg/black.js';
+// var UI = dashboardUI;
+import { dashboardUI } from './js/AssesDashboard/assetDashboard.js';
+// var Balance = balance;
+import { balance } from '../interface/js/Balance/balance.js';
+// var InterfaceStreams = interfaceStreams;
+import { interfaceStreams } from '../interface/interface.js';
 
 var AMOUNT_OF_SIGNIFICANT_DIGITS = 5;
 var BALANCE_RENDER_INTERVAL_MS = 60000;
@@ -27,16 +33,16 @@ var retrieveBalanceStream = rxjs
     rxjs.operators.startWith(0),
     rxjs.operators.takeUntil(rxjs.merge(
       stopBalanceStream,
-      InterfaceStreams.logOutStream
+      interfaceStreams.logOutStream
     ))
   );
 
 function renderStarredAssets (assets) {
-  var starredAssetsHTML = R.reduce(UI.mkHtmlForStarredAssets, '', assets);
+  var starredAssetsHTML = R.reduce(dashboardUI.mkHtmlForStarredAssets, '', assets);
 
   var htmlToRender = R.not(R.isEmpty(assets))
     ? starredAssetsHTML
-    : UI.noStarredAssetsHTML;
+    : dashboardUI.noStarredAssetsHTML;
 
   document.querySelector('.dashboard-balances .spinner-loader').classList.add('disabled-fast');
   document.querySelector('.dashboard-balances > .data').innerHTML = htmlToRender;
@@ -44,7 +50,7 @@ function renderStarredAssets (assets) {
 
 function renderSvgIcon (icon) {
   var iconName = R.prop('svg', icon);
-  document.querySelector(icon.class).innerHTML = R.prop(iconName, SVG);
+  document.querySelector(icon.class).innerHTML = R.prop(iconName, black);
 }
 
 function render (assets) {
@@ -53,7 +59,7 @@ function render (assets) {
     var queryStr = '.dashboard-balances > .data > .balance > .balance-';
     renderStarredAssets(assets);
     socialMediaIcons.forEach(renderSvgIcon);
-    Balance.mkRenderBalancesStream(retrieveBalanceStream, queryStr, AMOUNT_OF_SIGNIFICANT_DIGITS, starredAssetsIDs)
+    balance.mkRenderBalancesStream(retrieveBalanceStream, queryStr, AMOUNT_OF_SIGNIFICANT_DIGITS, starredAssetsIDs)
       .subscribe();
   };
 }
@@ -62,8 +68,8 @@ function main (args) {
   var starredAssets = R.filter(R.propEq('starred', true), GL.assets);
 
   document.querySelector('#userID').innerHTML = R.path(['usercrypto', 'userid'], GL); // set user ID field in top bar
-  U.setViewTab('dashboard'); // top menu UI change --> Sets element to active class
-  U.documentReady(render(starredAssets));
+  utils.setViewTab('dashboard'); // top menu UI change --> Sets element to active class
+  utils.documentReady(render(starredAssets));
 }
 
-init.interface.dashboard = main;
+modules.exports = init.interface.dashboard = main;
