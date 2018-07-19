@@ -68,15 +68,13 @@ function exec (properties) {
 
         // set up init probe command to check if RPC and block explorer are responding and connected
         subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["getBlockchainStatus"]})');
-        subprocesses.push('pass( (data !== null && typeof data.blockchainState=="string"?1:0) )');
         subprocesses.push('logs(1,"module nxt: "+(data?"connected":"failed connection")+" to [' + target.symbol + '] host ' + target.host + '")');
       }
       break;
-    case 'X status':
+    case 'status':
     // set up init probe command to check if Altcoin RPC is responding and connected
-    // subprocesses.push('func("nxt","link",{target:'+jstr(target)+',command:["eth_protocolVersion"]})');
-    // subprocesses.push('func("nxt","post",{target:'+jstr(target)+',command:["status"],data:data})');
-
+      subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["getBlockchainStatus",[]]})'); // send balance query
+      subprocesses.push('func("nxt","post",{target:' + jstr(target) + ',command:["status"],data:data})');
       break;
     case 'factor':
     // directly return factor, post-processing not required!
@@ -94,7 +92,7 @@ function exec (properties) {
       break;
     case 'balance':
       if (sourceaddr) {
-        if (!isToken(target.symbol)) {
+        if (!isToken(target.symbol) && target.symbol !== 'burst') { // burst likes to be a token
           subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["getBalance",["account=' + sourceaddr + '"]]})'); // send balance query
           subprocesses.push('stop((data!==null && ((typeof data.errorCode!=="undefined" && data.errorCode==5)|| typeof data.unconfirmedBalanceNQT!=="undefined")?0:1),(data!==null && typeof data.unconfirmedBalanceNQT!=="undefined"? padFloat( fromInt(data.unconfirmedBalanceNQT,' + factor + '),' + factor + ') : ((data!==null && (typeof data.errorCode!=="undefined" && data.errorCode==5))?0:null) ))');
         } else {
@@ -182,9 +180,6 @@ function exec (properties) {
     case 'sample':
       var address;
       var transaction;
-      console.log('mode', mode);
-      console.log('base', base);
-      console.log('symbol', symbol);
       switch (mode.split('.')[1]) {
         case 'main' : address = 'NXT-8PMW-RW5T-NCRX-FBS4E'; transaction = '13821793329980543744'; break;
         case 'elastic' : address = 'XEL-7USZ-7MNB-BTAY-DKE4R'; transaction = '12238083156285810252'; break;
@@ -209,6 +204,7 @@ function post (properties) {
   // set data to what command we are performing
   global.hybridd.proc[processID].data = properties.command;
   // handle the command
+  console.log('properties.command', properties.command);
   if (postdata == null) {
     var success = false;
   } else {
@@ -220,16 +216,17 @@ function post (properties) {
       // nicely cherrypick and reformat status data
         var collage = {};
         collage.module = 'nxt';
-        collage.synced = null;
-        collage.blocks = null;
+        collage.synced = postdata.blockchainState === 'UP_TO_DATE';
+        collage.blocks = postdata.numberOfBlocks;
         collage.fee = null;
         collage.supply = null;
-        collage.difficulty = null;
-        collage.testmode = null;
-        collage.version = (typeof postdata.result === 'string' ? postdata.result : null);
+        collage.difficulty = postdata.cumulativeDifficulty;
+        collage.testmode = postdata.isTestnet;
+        collage.version = postdata.version;
         postdata = collage;
         break;
       case 'balance':
+
         var balance = 0;
         if (typeof postdata.unconfirmedAssetBalances !== 'undefined' && Array.isArray(postdata.unconfirmedAssetBalances)) {
         // subprocesses.push('stop((data===null || typeof data.assetBalances==="undefined"?1:0),(data===null || typeof data.assetBalances==="undefined"?data.assetBalances:[]))');
@@ -252,6 +249,8 @@ function post (properties) {
 // data returned by this connector is stored in a process superglobal -> global.hybridd.process[processID]
 function link (properties) {
   var target = properties.target;
+  var symbol = target.symbol;
+  var addRandom = symbol !== 'burst'; // Burst fails with an error if random parameter is provided
   var base = target.symbol.split('.')[0]; // in case of token fallback to base asset
   // decode our serialized properties
   var processID = properties.processID;
@@ -268,12 +267,12 @@ function link (properties) {
     var upath = '?requestType=' + method;
     var args = {
       headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-      data: params.join('&') + '&random=' + Math.random(),
+      data: params.join('&') + (addRandom ? '&random=' + Math.random() : ''),
       path: upath
     };
   } else {
     type = 'GET';
-    var upath = '?requestType=' + method + (typeof params === 'undefined' ? '' : '&' + params) + '&random=' + Math.random();
+    var upath = '?requestType=' + method + (typeof params === 'undefined' ? '' : '&' + params) + (addRandom ? '&random=' + Math.random() : '');
     var args = {
       headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
       path: upath

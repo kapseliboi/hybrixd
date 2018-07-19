@@ -188,7 +188,7 @@ function post (properties) {
         }
         break;
       case 'status':
-      // nicely cherrypick and reformat status data
+        // nicely cherrypick and reformat status data
         var collage = {};
         collage.module = 'ethereum';
         collage.synced = null;
