@@ -18,7 +18,7 @@
     "unspent" : [
       "test('$1',2,1)",
       "stop(1,'Error: missing address!')",
-      "pass([{amount:'$2',txid:'ba62059329d6ca73aed11c367c0459f43ab671b47c061a6e9a92995e8b764a7d',txn:1}])"
+      "pass([{amount:'$2',txid:'TXIDTXIDTXIDTXIDTXIDTXIDTXID',txn:1}])"
     ],
     "balance" : [
       "test('$1',2,1)",
@@ -31,6 +31,9 @@
     ],
     "factor" : [
       "pass('$factor')"
+    ],
+    "sample" : [
+      "stop(0,{address:'__dummyaddress__',transaction:'TXIDTXIDTXIDTXIDTXIDTXIDTXID'})"
     ],
     "transaction" : [
       "test('$1'==='TXIDTXIDTXIDTXIDTXIDTXIDTXID',1,2)",
