@@ -68,7 +68,7 @@ function exec (properties) {
       subprocesses.push('jump(-6)');
       break;
     case 'status':
-    // set up init probe command to check if Altcoin RPC is responding and connected
+      // set up init probe command to check if Altcoin RPC is responding and connected
       subprocesses.push('func("lisk","link",{target:' + jstr(target) + ',command:["/api/loader/status/sync"]})'); // get sync status
       subprocesses.push('poke("liskA",data)'); // store the resulting data for post-process collage
       subprocesses.push('func("lisk","link",{target:' + jstr(target) + ',command:["/api/blocks/getStatus"]})'); // get milestone / difficulty
@@ -164,7 +164,7 @@ function post (properties) {
     var success = false;
   } else {
     var success = true;
-    switch (properties.command[0]) {
+    switch (properties.command[1]) {
       case 'init':
       // set asset fee for Lisk transactions
         if (typeof postdata.fee !== 'undefined' && postdata.fee) {
@@ -172,7 +172,7 @@ function post (properties) {
         }
         break;
       case 'status':
-      // nicely cherrypick and reformat status data
+        // nicely cherrypick and reformat status data
         var collage = {};
         collage.module = 'lisk';
         collage.synced = null;
