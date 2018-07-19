@@ -18,7 +18,10 @@
       "logs(1,'module $symbol: '+(data?'connected':'failed connection')+' to host [$host]')"
     ],
     "status" : [
-      "stop(1,'Not yet implemented!')"
+      "curl('asset://$symbol','','',{'method':'call', 'params':[0,'get_dynamic_global_properties',[]], id: Math.floor(Math.random()*10000)})",
+      "test(data,1,2,data)",
+      "stop(0,{module:'$symbol',synced:null,blocks:data.result.head_block_number,fee:null,supply:null,difficulty:null,testmode:null,version:null})",
+      "stop(1,'No result')"
     ],
     "unspent" : [
       "curl('wss://bitshares.crypto.fans/ws','','',{'method': 'call', 'params': [1, 'login', ['', '']], 'id': 1})",

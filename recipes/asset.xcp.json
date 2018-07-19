@@ -20,7 +20,10 @@
       "logs(1,'module $symbol: '+(data?'connected':'failed connection')+' to host [$host]')"
     ],
     "status" : [
-       "stop(1,'Not yet implemented!')"
+      "curl('asset://$symbol','/_api','POST',{'jsonrpc':'2.0','id':0,'method':'is_ready','params':{}},{'content-type':'text/plain'})",
+      "test(data,1,2,data)",
+      "stop(0,{module:'$symbol',synced:data.result.caught_up,blocks:data.result.block_height,fee:null,supply:null,difficulty:null,testmode:data.result.testnet,version:null})",
+      "stop(1,'No result')"
     ],
     "unspent" : [
       "func('blockexplorer','exec',{command:['$fee-symbol','unspent','$1','$fee']})"

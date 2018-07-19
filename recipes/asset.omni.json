@@ -16,7 +16,12 @@
       "stop(1,'Not yet implemented!')"
     ],
     "status" : [
-      "stop(1,'Not yet implemented!')"
+      "time($cache)",
+      "curl('asset://$symbol','/v1/address/addr?addr=1FoWyxwPXuj4C6abqwhjDWdz6D4PZgYRjA','POST','addr=1FoWyxwPXuj4C6abqwhjDWdz6D4PZgYRjA',{'content-type':'application/x-www-form-urlencoded'})",
+      "test(data,1,2,data)",
+      "stop(0,{module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:null,version:null})",
+      "stop(1,'No result')"
+
     ],
     "unspent" : [
       "func('blockexplorer','exec',{command:['$fee-symbol','unspent','$1','$fee']})",

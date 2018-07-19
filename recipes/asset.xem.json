@@ -18,7 +18,7 @@
     ],
     "status" : [
       "curl('asset://$symbol','/heartbeat','GET')",
-      "logs(1,'module $symbol: '+(data && typeof data.message!=='undefined' && data.message==='ok'?'connected':'failed connection')+' to host [$host]')"
+      "stop(0,{module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:null,version:null})"
     ],
     "unspent" : [
       "test('$contract'==='undefined',1,2)",
