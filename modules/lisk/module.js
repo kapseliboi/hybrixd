@@ -152,7 +152,6 @@ function exec (properties) {
 
 // standard function for postprocessing the data of a sequential set of instructions
 function post (properties) {
-  console.log('>>>>> a');
   // decode our serialized properties
   var processID = properties.processID;
   var target = properties.target;
