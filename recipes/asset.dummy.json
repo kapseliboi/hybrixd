@@ -13,7 +13,7 @@
       "logs(1,'module $symbol: initialized')"
     ],
     "status" : [
-      "stop(0,{module:'$symbol',synced:1,blocks:0,fee:$fee,supply:0,difficulty:0,testmode:0,version:0})",
+      "stop(0,{module:'$symbol',synced:1,blocks:0,fee:$fee,supply:0,difficulty:0,testmode:0,version:0})"
     ],
     "unspent" : [
       "test('$1',2,1)",
