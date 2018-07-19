@@ -152,6 +152,7 @@ function exec (properties) {
 
 // standard function for postprocessing the data of a sequential set of instructions
 function post (properties) {
+  console.log('>>>>> a');
   // decode our serialized properties
   var processID = properties.processID;
   var target = properties.target;
@@ -164,7 +165,8 @@ function post (properties) {
     var success = false;
   } else {
     var success = true;
-    switch (properties.command[1]) {
+    console.log('>>>>> a', properties.command);
+    switch (properties.command[0]) {
       case 'init':
       // set asset fee for Lisk transactions
         if (typeof postdata.fee !== 'undefined' && postdata.fee) {
@@ -172,6 +174,7 @@ function post (properties) {
         }
         break;
       case 'status':
+        console.log('>>>>> b');
         // nicely cherrypick and reformat status data
         var collage = {};
         collage.module = 'lisk';
