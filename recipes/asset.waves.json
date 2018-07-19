@@ -20,8 +20,8 @@
     ],
     "status" : [
       "curl('asset://$symbol','/utils/seed/2','GET')",
-      "chck({module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:null,version:null},2)",
-      "stop(0,data)",
+      "test(data,1,2,data)",
+      "stop(0,{module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:null,version:null})",
       "stop(1,'No result')"
     ],
     "factor" : [

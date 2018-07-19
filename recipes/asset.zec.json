@@ -18,7 +18,9 @@
     ],
     "status" : [
       "curl('asset://$symbol','','POST',{jsonrpc:'1.0',id:Math.floor(Math.random()*10000),method:'getinfo',params:[]},{'content-type':'text/plain'})",
-      "logs(1,'module $symbol: '+(data?'connected':'failed connection')+' to host [$host]')"
+      "test(data,1,2,data)",
+      "stop(0,{module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:$mode==='zcash.livenet',version:null})",
+      "stop(1,'No result')"
     ],
     "unspent" : [
       "func('blockexplorer','exec',{command:['$symbol','unspent','$1','$2']})"

@@ -16,7 +16,10 @@
       "logs(1,'module $symbol: '+(data?'connected':'failed connection')+' to host [$host]')"
     ],
     "status" : [
-      "curl('asset://$symbol','','POST',{'jsonrpc':'2.0','id':0,'method':'version','params':[]},{'content-type':'text/plain'})"
+      "curl('asset://$symbol','','POST',{'jsonrpc':'2.0','id':0,'method':'version','params':[]},{'content-type':'text/plain'})",
+      "test(data,1,2,data)",
+      "stop(0,{module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:null,version:data.result})",
+      "stop(1,'No result')"
     ],
     "unspent" : [
       "func('blockexplorer','exec',{command:['$symbol','unspent','$1','$2','$3']})"
