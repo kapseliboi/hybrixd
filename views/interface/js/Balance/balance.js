@@ -172,8 +172,12 @@ function updateAssetBalance (a, balance) {
   )(balance);
 }
 
-modules.exports = balance = {
+balance = {
   mkBalanceStream,
   updateAssetsBalances,
   mkRenderBalancesStream
 };
+
+// if (typeof modules !== 'undefined') {
+//   modules.exports = balance;
+// }

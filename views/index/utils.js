@@ -8,7 +8,7 @@ var KEY_MAPPING = {
   '9': 'G'
 };
 
-modules.exports = utils = {
+utils = {
   documentReady: function (fn) {
     if (document.readyState !== 'loading') {
       fn();
@@ -314,3 +314,6 @@ function lastKnownOrNewBalance (newData, currentBalance) {
     ? currentBalance
     : newData;
 }
+// if (typeof modules !== 'undefined') {
+//   modules.exports = utils;
+// }

@@ -1,6 +1,6 @@
 var U = utils;
 
-modules.exports = hybridd = {
+hybridd = {
   mkHybriddCallStream: function (url) {
     var hybriddCallStream = rxjs
       .from(hybriddcall({r: url, z: true}))
@@ -72,4 +72,8 @@ function zchanOrYchanEncryptionObj (requestMethod, userCrypto) {
       return encryptionMethod(userCrypto, step, obj);
     };
   };
+}
+
+if (typeof modules !== 'undefined') {
+  modules.exports = hybridd;
 }

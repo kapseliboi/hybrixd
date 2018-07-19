@@ -1,15 +1,16 @@
+var Balance = balance;
+
 // var U = utils;
-import { utils } from '../index/utils.js';
+import utils_ from '../index/utils.js';
 // var H = hybridd;
-import { hybridd } from '../interface/js/hybriddcall.js';
 // var SVG = svg;
 import { black } from '../files/svg/black.js';
 // var UI = dashboardUI;
-import { dashboardUI } from './js/AssesDashboard/assetDashboard.js';
+import { dashboardUI } from './js/AssetDashboard/assetDashboard.js';
 // var Balance = balance;
 import { balance } from '../interface/js/Balance/balance.js';
 // var InterfaceStreams = interfaceStreams;
-import { interfaceStreams } from '../interface/interface.js';
+import interfaceStreams from '../interface/interface.js';
 
 var AMOUNT_OF_SIGNIFICANT_DIGITS = 5;
 var BALANCE_RENDER_INTERVAL_MS = 60000;
@@ -32,8 +33,8 @@ var retrieveBalanceStream = rxjs
   .pipe(
     rxjs.operators.startWith(0),
     rxjs.operators.takeUntil(rxjs.merge(
-      stopBalanceStream,
-      interfaceStreams.logOutStream
+      stopBalanceStream
+      // interfaceStreams.logOutStream
     ))
   );
 
@@ -44,7 +45,6 @@ function renderStarredAssets (assets) {
     ? starredAssetsHTML
     : dashboardUI.noStarredAssetsHTML;
 
-  document.querySelector('.dashboard-balances .spinner-loader').classList.add('disabled-fast');
   document.querySelector('.dashboard-balances > .data').innerHTML = htmlToRender;
 }
 
@@ -72,4 +72,8 @@ function main (args) {
   utils.documentReady(render(starredAssets));
 }
 
-modules.exports = init.interface.dashboard = main;
+init.interface.dashboard = main;
+
+if (typeof modules !== 'undefined') {
+  main;
+}

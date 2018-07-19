@@ -1,4 +1,5 @@
-var Balance = balance;
+Balance = balance;
+console.log('Balance = ', Balance);
 var UserFeedback = userFeedback;
 var Valuations = valuations;
 
@@ -57,6 +58,10 @@ function fetchAssetsViews (args) { return function () { fetchview('interface.ass
 
 main();
 
-modules.exports = interfaceStreams = {
+interfaceStreams = {
   logOutStream
 };
+
+if (typeof modules !== 'undefined') {
+  modules.exports = interfaceStreams;
+}
