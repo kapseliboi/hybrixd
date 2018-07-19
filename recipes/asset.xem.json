@@ -70,6 +70,9 @@
       "jump(2,'$fee')",
       "jump(1,'$fee-mosaic')",
       "pass(data)"
+    ],
+    "sample" : [
+      "stop(0,{address:'nckzd7-jgdlnd-ivvph6-u2pg2q-kd3px3-fx4cpz-mf2a',transaction:'f857080798efa465f2453caface0c9338d3ced0d09c58a0d9035075f034ea460'})"
     ]
   }
 }

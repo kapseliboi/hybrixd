@@ -147,6 +147,19 @@ function exec (properties) {
       subprocesses.push("stop(0,{symbol:'" + symbol + "', name:'" + name + "',mode:'" + mode + "',fee:'" + fee + "',contract:'" + contract + "',factor:'" + factor + "','keygen-base':'" + base + "','fee-symbol':'" + base + "'})");
 
       break;
+
+    case 'sample':
+      var address;
+      var transaction;
+
+      switch (base) {
+        case 'eth' : address = '0x896a0b2b259d62fd27aeab05c81bb1897ecf767b'; transaction = '0x3960bbb7a7697cd76917243cd760e465c7d5b6013f7b62b41f76de3f8901dad8'; break;
+        case 'etc' : address = '0xfc9ab9b2833c4df13cea63da666906b565522f12'; transaction = '0x59c8e36e6e4e9a8697419ad66f245dc21970b9e69efe3898ddd4435b821a43aa'; break;
+        case 'exp' : address = '0x6dbfe39370adc9e0f284ed4fd8025342e99d21d6'; transaction = '0x0806279052d792ef077bfa593af5f7e06fe5c4cf9810d82f83b53f38758fd9fe'; break;
+        case 'ubq' : address = '0xbb1e3c386a01826bbae330870b96870d2b571d12'; transaction = '0xa0cb3baf5105be78e4f52218f371592cd64cd154cdf75ac5eaeb114ff6da7a15'; break;
+      }
+      subprocesses.push('stop(0,{address:"' + address + '",transaction:"' + transaction + '"})');
+      break;
     default:
       subprocesses.push('stop(1,"Asset function not supported!")');
   }

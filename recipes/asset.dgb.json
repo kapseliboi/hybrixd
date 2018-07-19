@@ -64,6 +64,9 @@
     "contract" : [],
     "fee" : [
       "pass('$fee')"
-    ]
+    ],
+    "sample" : [
+      "stop(0,{address:'DP8VeG75FB3Q4NWbW9uDv9syLbxFsydj8K',transaction:'573242f214021eb54c5335b178f09508ea2f349b3ebbc2c42346f093e83f4aa6'})"
+      ]
+    }
   }
-}

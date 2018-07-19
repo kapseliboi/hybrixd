@@ -23,8 +23,7 @@
        "stop(1,'Not yet implemented!')"
     ],
     "unspent" : [
-      "func('blockexplorer','exec',{command:['$fee-symbol','unspent','$1','$fee']})",
-      "pass({'unspents':data.unspents,'change':String(Number(data.change)+0.00000546)})"
+      "func('blockexplorer','exec',{command:['$fee-symbol','unspent','$1','$fee']})"
     ],
     "balance" : [
       "time(32000)",
@@ -48,6 +47,9 @@
     "factor" : [
       "pass('$factor')"
     ],
+    "transaction" : [
+       "stop(1,'Not yet implemented!')"
+    ],
     "history" : [
        "stop(1,'Not yet implemented!')"
     ],
@@ -56,6 +58,9 @@
     ],
     "fee" : [
       "pass('$fee')"
+    ],
+    "sample" : [
+      "stop(0,{address:'1AeqgtHedfA2yVXH6GiKLS2JGkfWfgyTC6',transaction:'8162e98734c94b5b32682ce43041c2fdd5a6bf957c0684e42092284a4478bd0b'})"
     ]
   }
 }

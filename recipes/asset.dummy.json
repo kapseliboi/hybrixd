@@ -32,8 +32,13 @@
     "factor" : [
       "pass('$factor')"
     ],
+    "transaction" : [
+      "test('$1'==='TXIDTXIDTXIDTXIDTXIDTXIDTXID',1,2)",
+      "stop(0,{id:'TXIDTXIDTXIDTXIDTXIDTXIDTXID',symbol:'$symbol','fee-symbol':'$symbol'})",
+      "stop(1,'Illegal transaction id.')"
+    ],
     "history" : [
-      "stop(1,'Not yet implemented!')"
+      "stop(0,[])"
     ],
     "contract" : [
       "stop(1,'Not yet implemented!')"
