@@ -165,7 +165,6 @@ function post (properties) {
     var success = false;
   } else {
     var success = true;
-    console.log('>>>>> a', properties.command);
     switch (properties.command[0]) {
       case 'init':
       // set asset fee for Lisk transactions
@@ -174,7 +173,6 @@ function post (properties) {
         }
         break;
       case 'status':
-        console.log('>>>>> b');
         // nicely cherrypick and reformat status data
         var collage = {};
         collage.module = 'lisk';
