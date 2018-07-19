@@ -12,6 +12,9 @@
   "quartz": {
     "push": [
       "stop(1,'Transaction cannot be done. Coin under maintenance.')"
+    ],
+   "sample" : [
+      "stop(0,{address:'qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a',transaction:'631713712b306a21ba9e8feb1b44ebc1e08128026bc8e3a0e4de1b8af48719c6'})"
     ]
   }
 }

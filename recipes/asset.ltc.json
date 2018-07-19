@@ -8,5 +8,10 @@
   "fee":0.003,
   "host":"http://127.0.0.1:8438",
   "cache":30000,
-  "throttle":10
+  "throttle":10,
+  "quartz":{
+    "sample" : [
+      "stop(0,{address:'LUVQqi3GLUFqHvcszF9wtG8vxLajL9oiKp',transaction:'ac0e30b1fcddcd4853f16a1a3530acb49b7fb26e7a54df62c51a8da4261de88f'})"
+    ]
+  }
 }

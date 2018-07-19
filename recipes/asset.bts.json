@@ -76,6 +76,9 @@
     ],
     "transaction" : [
       "curl('asset://$symbol','','',{'method':'call', 'params':[0,'get_recent_transaction_by_id',['$1']], id: Math.floor(Math.random()*10000)})"
+    ],
+    "sample" : [
+      "stop(0,{address:'internet-of-coins',transaction:'67693820ff7f4e039d6ca18658461e967d8ecd11'})"
     ]
   }
 }

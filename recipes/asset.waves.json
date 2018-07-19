@@ -70,6 +70,9 @@
       "tran({id:'.id',fee:'.fee',attachment:'.attachment',timestamp:'.timestamp',symbol:'=.assetId|waves','fee-symbol':'=.feeAsset|waves',ammount:'=.amount|.totalAmount|unknown',source:'=.sender|unknown',target:'=.recipient|unknown'},data,2,1)",
       "stop(1,'error')",
       "stop(0,data)"
+    ],
+   "sample" : [
+      "stop(0,{address:'3PBUkL5rphESXxq1yJzW2erVzTTKAXXeCUo',transaction:'Du5uMXjTc4YA4C3bY7WcDLvq4UPgBwuVGGDWaQsfvpuU'})"
     ]
   }
 }
