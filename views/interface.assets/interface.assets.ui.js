@@ -1,5 +1,8 @@
-var U = utils;
-var A = asset;
+import utils_ from '../index/utils.js';
+import asset from './js/Asset/asset';
+
+import R from 'ramda';
+
 // User interface transformations
 UItransform = {
   txStart: function () {
@@ -22,10 +25,10 @@ UItransform = {
   },
   deductBalance: function (element, assetID, newBalance) {
     // TODO: Validate balance String here.
-    document.querySelector(element).innerHTML = '<span style="color:#6B6;">' + U.formatFloatInHtmlStr(String(newBalance), 11) + '</span>';
-    renderDollarPriceInAsset(assetID, newBalance);
+    document.querySelector(element).innerHTML = '<span style="color:#6B6;">' + utils_.formatFloatInHtmlStr(String(newBalance), 11) + '</span>';
+    renderDollarPriceInAsset(assetID, newBalance); // TODO: export!
     R.compose(
-      U.updateGlobalAssets,
+      utils_.updateGlobalAssets,
       R.reduce(R.curry(updateAssetBalanceData)(assetID, newBalance), [])
     )(GL.assets);
   }
@@ -46,10 +49,10 @@ function updateAssetBalanceData (id, amount, newAssets, a) {
   )(a);
 }
 
-function mkHtmlToRender (assets) {
+export function mkHtmlToRender (assets) {
   return R.compose(
     mkAssetsInterfaceHtmlStr,
-    R.reduce(A.mkAssetHTML, '')
+    R.reduce(asset.mkAssetHTML, '')
   )(assets);
 }
 

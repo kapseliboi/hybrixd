@@ -1,10 +1,10 @@
 const path = require('path');
 
 module.exports = {
-  entry: './interface.dashboard/interface.dashboard.js',
+  entry: './login/login.js',
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, './interface.dashboard/dist')
+    path: path.resolve(__dirname, './login/dist')
   },
   module: {
     rules: [

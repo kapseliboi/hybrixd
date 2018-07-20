@@ -1,8 +1,10 @@
-var U = utils;
+import utils_ from '../../../index/utils.js';
+import R from 'ramda';
+import { map } from 'rxjs/operators';
+import { fromEvent } from 'rxjs/observable/fromEvent';
 
-generateAddress = {
+export var generateAddress = {
   render: function (assetID) {
-    console.log('assetID = ', assetID);
     document.querySelector('#modal-generate-address-button').setAttribute('data', assetID);
   },
   generateAddress: function (assets, globalAssets, assetModes, LZString, assetID) {
@@ -13,12 +15,12 @@ generateAddress = {
 
     Storage.Get_(modeHash + '-LOCAL')
       .pipe(
-        rxjs.operators.map(R.curry(retrieveNewAddress)(asset))
+        map(R.curry(retrieveNewAddress)(asset))
       )
       .subscribe();
 
     function retrieveNewAddress (asset, dcode) {
-      var deterministic_ = U.activate(LZString.decompressFromEncodedURIComponent(dcode));
+      var deterministic_ = utils_.activate(LZString.decompressFromEncodedURIComponent(dcode));
       var newAddress = deterministic_.generate(asset, function (a) { console.log('Generated address.', a); });
 
       return newAddress;
@@ -26,9 +28,9 @@ generateAddress = {
   }
 };
 
-var generateAddressBtnStream = rxjs.fromEvent(document.querySelector('#modal-generate-address-button'), 'click')
+var generateAddressBtnStream = fromEvent(document.querySelector('#modal-generate-address-button'), 'click')
   .pipe(
-    rxjs.operators.map(R.path(['target', 'attributes', 'data', 'value']))
+    map(R.path(['target', 'attributes', 'data', 'value']))
   );
 
 generateAddressBtnStream.subscribe(R.curry(generateAddress.generateAddress)(assets)(GL.assets)(GL.assetmodes)(LZString));

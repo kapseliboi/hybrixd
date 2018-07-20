@@ -1,8 +1,14 @@
-var TxValidations = transactionValidations;
-var TxUtils = transactionUtils;
-var U = utils;
+import transactionValidations from '../Transaction/validations.js';
+import transactionUtils from '../Transaction/utils.js';
+import utils_ from '../../../index/utils.js';
 
-sendAsset = {
+import R from 'ramda';
+
+import { fromEvent } from 'rxjs/observable/fromEvent';
+import { combineLatest } from 'rxjs/observable/combineLatest';
+import { map, filter, withLatestFrom } from 'rxjs/operators';
+
+export var sendAsset = {
   // RENDERS THE RELEVANT INFORMATION IN THE TX MODAL
   renderAssetDetailsInModal: function (assetID) {
     var asset = R.find(R.propEq('id', assetID))(GL.assets);
@@ -32,33 +38,30 @@ function zeroOrEthTokenBufferAmount (asset) {
     : 0;
 }
 
-var txAmountStream = rxjs
-  .fromEvent(document.querySelector('#modal-send-amount'), 'input')
+var txAmountStream = fromEvent(document.querySelector('#modal-send-amount'), 'input')
   .pipe(
-    rxjs.operators.map(U.getTargetValue)
+    map(utils_.getTargetValue)
   );
 
-var txTargetAddressStream = rxjs
-  .fromEvent(document.querySelector('#modal-send-target'), 'input')
+var txTargetAddressStream = fromEvent(document.querySelector('#modal-send-target'), 'input')
   .pipe(
-    rxjs.operators.map(U.getTargetValue)
+    map(utils_.getTargetValue)
   );
 // .map(validateAddress) // ENTER ADDRESS VALIDATIONS
 
-var validatedTxDetailsStream = rxjs
-  .combineLatest(
-    txAmountStream,
-    txTargetAddressStream
-  );
+var validatedTxDetailsStream = combineLatest(
+  txAmountStream,
+  txTargetAddressStream
+);
 
-var sendTxButtonStream = rxjs.fromEvent(document.querySelector('#send-transfer'), 'click')
+var sendTxButtonStream = fromEvent(document.querySelector('#send-transfer'), 'click')
   .pipe(
-    rxjs.operators.filter(U.btnIsNotDisabled)
+    filter(utils_.btnIsNotDisabled)
   );
 
 var transactionDataStream = sendTxButtonStream
   .pipe(
-    rxjs.operators.withLatestFrom(validatedTxDetailsStream)
+    withLatestFrom(validatedTxDetailsStream)
   );
 
 function hideModal (z) {
@@ -89,8 +92,8 @@ function renderAssetDetails (asset, assetID, address, spendable, fee) {
   document.querySelector('#send-transfer').classList.add('disabled');
   document.querySelector('#modal-send-target').value = '';
   document.querySelector('#modal-send-amount').value = '';
-  U.triggerEvent(document.querySelector('#modal-send-target'), 'input');
-  U.triggerEvent(document.querySelector('#modal-send-amount'), 'input');
+  utils_.triggerEvent(document.querySelector('#modal-send-target'), 'input');
+  utils_.triggerEvent(document.querySelector('#modal-send-amount'), 'input');
   document.querySelector('#action-send .modal-send-addressfrom').innerHTML = address;
   document.querySelector('#action-send .modal-send-networkfee').innerHTML = formatFloat(fee) + ' ' + R.prop('fee-symbol', asset).toUpperCase();
 }
@@ -98,18 +101,18 @@ function renderAssetDetails (asset, assetID, address, spendable, fee) {
 validatedTxDetailsStream.subscribe(function (z) {
   var amount = R.nth(0, z);
   var targetAddress = R.nth(1, z);
-  TxValidations.toggleSendButtonClass(amount, targetAddress);
+  transactionValidations.toggleSendButtonClass(amount, targetAddress);
 });
 
 transactionDataStream.subscribe(function (z) {
   var userInput = R.nth(1, z);
   var globalAssets = GL.assets; // TODO: Factor up
-  var txData = TxUtils.mkTransactionData(userInput, globalAssets);
+  var txData = transactionUtils.mkTransactionData(userInput, globalAssets);
   var modeHashes = R.prop('modehashes', assets); // TODO: Factor up
 
   var amount = R.nth(0, userInput);
   var targetAddress = R.nth(1, userInput);
-  var isValid = TxValidations.toggleSendButtonClass(amount, targetAddress);
+  var isValid = transactionValidations.toggleSendButtonClass(amount, targetAddress);
 
   if (isValid) {
     loadSpinner();

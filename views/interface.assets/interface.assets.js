@@ -1,22 +1,32 @@
-var Balance = balance;
-var GenerateAddress = generateAddress;
-var InterfaceStreams = interfaceStreams;
-var ReceiveAsset = receiveAsset;
-var SendAsset = sendAsset;
-var TxValidations = transactionValidations;
-var Valuations = valuations;
-var M = manageAssets;
-var U = utils;
-var Asset = asset;
+import balance from './../interface/js/Balance/balance.js';
+import generateAddress from './js/GenerateAddress/generateAddress.js';
+import interfaceStreams from './../interface/interface.js';
+import receiveAssets from './js/ReceiveAsset/receiveAsset.js';
+import sendAsset from './js/SendAsset/sendAsset.js';
+import transactionValidations from './js/Transaction/validations.js';
+import valuations from './../interface/js/valuations.js';
+import manageAssets from './js/ManageAssets/manageAssets.js';
+import utils_ from './../index/utils.js';
+import asset from './js/Asset/asset.js';
+import { setStarredAssetClass } from './js/StarredAsset/starredAssets.js';
+import { mkHtmlToRender } from './interface.assets.ui.js';
+
+import { from } from 'rxjs/observable/from';
+import { fromEvent } from 'rxjs/observable/fromEvent';
+import { interval } from 'rxjs/observable/interval';
+import { merge } from 'rxjs/observable/merge';
+import { map, startWith, takeUntil, tap } from 'rxjs/operators';
+
+import R from 'ramda';
 
 var BALANCE_RETRIEVAL_INTERVAL_MS = 30000;
 var AMOUNT_OF_SIGNIFICANT_DIGITS = 11;
 
 init.interface.assets = function (args) {
   // Expose functions globally
-  changeManageButton = M.changeManageButton(M.renderManageButton); // TODO: Remove messy callback structure......
-  U.setViewTab('assets'); // top menu UI change
-  U.documentReady(main(args));
+  changeManageButton = manageAssets.changeManageButton(manageAssets.renderManageButton); // TODO: Remove messy callback structure......
+  utils_.setViewTab('assets'); // top menu UI change
+  utils_.documentReady(main(args));
 };
 
 function main (args) {
@@ -24,7 +34,7 @@ function main (args) {
     var globalAssets = GL.assets;
     document.querySelector('.assets-main > .data').innerHTML = mkHtmlToRender(globalAssets);
     globalAssets.forEach(function (asset) { setStarredAssetClass(R.prop('id', asset), R.prop('starred', asset)); });
-    U.scrollToAnchor(args);
+    utils_.scrollToAnchor(args);
     initializeAssetsInterfaceStreams(globalAssets);
   };
 }
@@ -34,49 +44,48 @@ function initializeAssetsInterfaceStreams (assets) {
   var sendAssetButtonStream = mkAssetButtonStream('sendAssetButton');
   var receiveAssetButtonStream = mkAssetButtonStream('receiveAssetButton');
   var generateAddressButtonStream = mkAssetButtonStream('generateAddressButton');
-  var saveAssetListStream = rxjs.fromEvent(document.querySelector('#save-assetlist'), 'click');
-  var maxAmountButtonStream = rxjs.fromEvent(document.querySelector('.max-amount-button'), 'click');
-  var stopBalanceStream = rxjs.fromEvent(document.querySelector('#topmenu-dashboard'), 'click');
-  var retrieveBalanceStream = rxjs
-    .interval(BALANCE_RETRIEVAL_INTERVAL_MS)
+  var saveAssetListStream = fromEvent(document.querySelector('#save-assetlist'), 'click');
+  var maxAmountButtonStream = fromEvent(document.querySelector('.max-amount-button'), 'click');
+  var stopBalanceStream = fromEvent(document.querySelector('#topmenu-dashboard'), 'click');
+  var retrieveBalanceStream = interval(BALANCE_RETRIEVAL_INTERVAL_MS)
     .pipe(
-      rxjs.operators.startWith(0),
-      rxjs.operators.takeUntil(rxjs.merge(
+      startWith(0),
+      takeUntil(merge(
         stopBalanceStream,
-        InterfaceStreams.logOutStream
+        interfaceStreams.logOutStream
       ))
     );
-  var renderBalancesStream = Balance.mkRenderBalancesStream(retrieveBalanceStream, '.assets-main > .data .balance-', AMOUNT_OF_SIGNIFICANT_DIGITS, assetsIDs);
+  var renderBalancesStream = balance.mkRenderBalancesStream(retrieveBalanceStream, '.assets-main > .data .balance-', AMOUNT_OF_SIGNIFICANT_DIGITS, assetsIDs);
   renderBalancesStream.subscribe();
   renderBalancesStream
     .pipe(
-      rxjs.operators.tap(updateGlobalAssetsAndRenderDataInDOM)
+      tap(updateGlobalAssetsAndRenderDataInDOM)
     )
     .subscribe();
   maxAmountButtonStream.subscribe(function (_) {
     var sendBalance = document.querySelector('#action-send .modal-send-balance').innerHTML;
     document.querySelector('#modal-send-amount').value = sendBalance;
   });
-  saveAssetListStream.subscribe(M.saveAssetList(main()));
+  saveAssetListStream.subscribe(manageAssets.saveAssetList(main()));
   sendAssetButtonStream.subscribe(function (assetID) {
-    SendAsset.renderAssetDetailsInModal(assetID);
-    TxValidations.toggleSendButtonClass();
+    sendAsset.renderAssetDetailsInModal(assetID);
+    transactionValidations.toggleSendButtonClass();
   });
   receiveAssetButtonStream.subscribe(function (assetID) {
-    ReceiveAsset.renderAssetDetailsInModal(assetID);
+    receiveAssets.renderAssetDetailsInModal(assetID);
   });
   generateAddressButtonStream.subscribe(function (assetID) {
-    GenerateAddress.render(assetID);
+    generateAddress.render(assetID);
   });
 }
 
 function mkAssetButtonStream (query) {
   var queries = document.querySelectorAll('.' + query);
   return R.equals(R.length(queries), 0)
-    ? rxjs.from([])
-    : rxjs.fromEvent(queries, 'click')
+    ? from([])
+    : fromEvent(queries, 'click')
       .pipe(
-        rxjs.operators.map(R.path(['target', 'attributes', 'data', 'value']))
+        map(R.path(['target', 'attributes', 'data', 'value']))
       );
 }
 
@@ -84,13 +93,13 @@ function updateGlobalAssetsAndRenderDataInDOM (balanceData) {
   var elem = R.prop('element', balanceData);
   var id = R.prop('assetID', balanceData);
   var n = R.prop('amountStr', balanceData);
-  Asset.toggleAssetButtons(elem, id, Number(n));
+  asset.toggleAssetButtons(elem, id, Number(n));
   renderDollarPriceInAsset(id, Number(n));
 }
 
 function renderDollarPriceInAsset (asset, amount) {
   var symbolName = asset.slice(asset.indexOf('.') + 1);
-  var assetDollarPrice = Valuations.renderDollarPrice(symbolName, amount);
+  var assetDollarPrice = valuations.renderDollarPrice(symbolName, amount);
   var query = document.getElementById(symbolName + '-dollar');
   if (query !== null) { query.innerHTML = assetDollarPrice; }
 }

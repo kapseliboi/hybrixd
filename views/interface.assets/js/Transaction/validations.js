@@ -1,4 +1,6 @@
-transactionValidations = {
+import R from 'ramda';
+
+export var transactionValidations = {
   toggleSendButtonClass: function (a, target) {
     var p = {
       asset: document.querySelector('#action-send .modal-send-currency').getAttribute('asset'),
@@ -14,6 +16,8 @@ transactionValidations = {
         R.not(R.isNil(p.target_address));
 
     var classListMethod = txDetailsAreValid ? 'remove' : 'add';
+
+    // TODO: make pure!
     document.querySelector('#action-send .pure-button-send').classList[classListMethod]('disabled');
 
     return txDetailsAreValid;

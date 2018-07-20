@@ -1,4 +1,4 @@
-clipboard = {
+export var clipboard = {
   clipboardSuccess: function () {
     rxjs.of(false)
       .pipe(

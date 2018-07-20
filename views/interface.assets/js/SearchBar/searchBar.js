@@ -1,6 +1,11 @@
-var U = utils;
-var M = manageAssets;
-var Icons = black;
+import utils_ from '../index/utils.js';
+import manageAssets as M from './js/ManageAssets/manageAssets.js';
+import black as Icons from '../../../files/black.js'
+
+import { fromEvent } from 'rxjs/observable/fromEvent';
+import { map, startWith, flatMap, tap } from 'rxjs/operators';
+
+import R from 'ramda'
 
 var tableHTMLStr = '<div class="table">' +
     '<div class="thead">' +
@@ -16,19 +21,18 @@ var clearBtns = [
   document.querySelector('.clearable__clear')
 ];
 
-var clearBtnsStream = R.map(function (elem) { return rxjs.fromEvent(elem, 'click'); }, clearBtns);
+var clearBtnsStream = R.map(function (elem) { return fromEvent(elem, 'click'); }, clearBtns);
 
-var searchAssetsStream = rxjs
-  .fromEvent(document.querySelector('#search-assets'), 'input')
+var searchAssetsStream = fromEvent(document.querySelector('#search-assets'), 'input')
   .pipe(
-    rxjs.operators.startWith({target: {value: ''}}),
-    rxjs.operators.map(U.getTargetValue)
+    startWith({target: {value: ''}}),
+    map(U.getTargetValue)
   );
 
 var searchBarStream = searchAssetsStream
   .pipe(
-    rxjs.operators.map(R.toLower),
-    rxjs.operators.map(query => {
+    map(R.toLower),
+    map(function (query) {
       return R.compose(
         R.keys,
         R.fromPairs,
@@ -41,8 +45,8 @@ var searchBarStream = searchAssetsStream
 var clearSearchBarStream = rxjs
   .merge(clearBtnsStream)
   .pipe(
-    rxjs.operators.flatMap(function (a) { return a; }),
-    rxjs.operators.tap(function (_) {
+    flatMap(function (a) { return a; }),
+    tap(function (_) {
       var searchBar = document.querySelector('#search-assets');
       searchBar.innerHTML = '';
       searchBar.value = '';

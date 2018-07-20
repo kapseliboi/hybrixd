@@ -16,18 +16,8 @@ hy_content = ''; // variable to hold package content
 // load in the page elements to add to DOM
 hy_content += fs.readFileSync('./' + viewname + '.html');
 hy_content += '<script>';
-hy_content += fs.readFileSync('./js/Clipboard/clipboard.js');
-hy_content += fs.readFileSync('./js/Transaction/validations.js');
-hy_content += fs.readFileSync('./js/Transaction/utils.js');
-hy_content += fs.readFileSync('./js/SendAsset/sendAsset.js');
-hy_content += fs.readFileSync('./js/ReceiveAsset/receiveAsset.js');
-hy_content += fs.readFileSync('./js/GenerateAddress/generateAddress.js');
-hy_content += fs.readFileSync('./js/Asset/asset.js');
-hy_content += fs.readFileSync('./js/ManageAssets/manageAssets.js');
-hy_content += fs.readFileSync('./js/StarredAsset/starredAssets.js');
-hy_content += fs.readFileSync('./js/SearchBar/searchBar.js');
-hy_content += fs.readFileSync('./' + viewname + '.js');
-hy_content += fs.readFileSync('./' + viewname + '.ui.js');
+hy_content += fs.readFileSync('./dist/bundle.js');
+// hy_content += fs.readFileSync('./' + viewname + '.ui.js');
 hy_content += '</script>';
 
 // encode hy_content using LZMA (file testing shows URL-safe coding uses 10% less kB)

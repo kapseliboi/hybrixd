@@ -1,6 +1,7 @@
-var U = utils;
+import utils_ from '../../../index/utils.js';
+import R from 'ramda';
 
-function setStarredAssetClass (assetID, isStarred) {
+export function setStarredAssetClass (assetID, isStarred) {
   var id = '#' + assetID.replace(/\./g, '_'); // Mk into function. Being used elsewhere too.
   var addOrRemoveClass = isStarred ? 'add' : 'remove';
   document.querySelector(id + ' > svg').classList[addOrRemoveClass]('starred');
@@ -33,6 +34,6 @@ toggleStar = function (assetID) {
 
   Storage.Set(userStorageKey('ff00-0035'), userEncode(starredForStorage))
     .subscribe();
-  U.updateGlobalAssets(updatedGlobalAssets);
+  utils_.updateGlobalAssets(updatedGlobalAssets);
   setStarredAssetClass(assetID, isStarred);
 };

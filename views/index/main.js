@@ -46,19 +46,20 @@ hy_page += '<script>' + fs.readFileSync('./jquery-1.12.4.min.js') + '</script>';
 
 hy_page += '<script>' + fs.readFileSync('./bowser.min.js') + '</script>';
 // COMMON UTILS BETWEEN WEB AND CLI WALLET
-hy_page += '<script>' + fs.readFileSync('./../../common/index.js') + '</script>';
+// hy_page += '<script>' + fs.readFileSync('./../../common/index.js') + '</script>';
 // UTILS
-hy_page += '<script>' + fs.readFileSync('./utils.js') + '</script>';
+// hy_page += '<script>' + fs.readFileSync('./utils.js') + '</script>';
 
-hy_page += '<script>' + fs.readFileSync('./../files/svg/black.js') + '</script>';
-hy_page += '<script>' + fs.readFileSync('./../interface/js/deterministic.js') + '</script>';
+// hy_page += '<script>' + fs.readFileSync('./../files/svg/black.js') + '</script>';
+// hy_page += '<script>' + fs.readFileSync('./../interface/js/deterministic.js') + '</script>';
 hy_page += '<script>' + fs.readFileSync('./../interface/js/ychan.js') + '</script>';
 hy_page += '<script>' + fs.readFileSync('./../interface/js/zchan.js') + '</script>';
 hy_page += '<script>' + fs.readFileSync('./../interface/js/proofOfWork.js') + '</script>';
 hy_page += '<script>' + fs.readFileSync('./../interface/js/storage_.js') + '</script>';
-hy_page += '<script>' + fs.readFileSync('./../interface/js/storage.js') + '</script>';
-hy_page += '<script>' + fs.readFileSync('./../interface/js/hybriddcall.js') + '</script>';
-hy_page += '<script>' + fs.readFileSync('./../interface/js/assetInitialization.js') + '</script>';
+hy_page += '<script>' + fs.readFileSync('./fns.js') + '</script>';
+// hy_page += '<script>' + fs.readFileSync('./../interface/js/storage.js') + '</script>';
+// hy_page += '<script>' + fs.readFileSync('./../interface/js/hybriddcall.js') + '</script>';
+// hy_page += '<script>' + fs.readFileSync('./../interface/js/assetInitialization.js') + '</script>';
 
 // lzma-decompressor
 hy_page += '<script>' + fs.readFileSync('../../lib/crypto/lz-string.js') + '</script>';
@@ -67,10 +68,10 @@ hy_page += '<script>' + fs.readFileSync('../../lib/crypto/lz-string.js') + '</sc
 hy_page += '<script>' + fs.readFileSync('./hy_connect.js') + '</script>';
 
 // RAmda
-hy_page += '<script>' + fs.readFileSync('./ramda.min.js') + '</script>';
+// hy_page += '<script>' + fs.readFileSync('./ramda.min.js') + '</script>';
 
 // RxJS
-hy_page += '<script>' + fs.readFileSync('./rx.min.js') + '</script>';
+// hy_page += '<script>' + fs.readFileSync('./rx.min.js') + '</script>';
 
 // close document
 hy_page += '</body></html>';

@@ -1,13 +1,13 @@
 // PRNG seeder and generator
 
 PRNG = {};
-﻿PRNG.seeder = {
+PRNG.seeder = {
   init: (function () {
     document.getElementById('generatekeyinput').value = '';
   })(),
 
-  restart: function() {
-    PRNG.seeder.seedCount=0; PRNG.seeder.isStillSeeding=true;
+  restart: function () {
+    PRNG.seeder.seedCount = 0; PRNG.seeder.isStillSeeding = true;
     document.querySelector('html').style.overflow = 'hidden';
     document.getElementById('newaccountmodal').style.display = 'block';
     document.getElementById('newaccountcontent').style.display = 'block';
@@ -36,10 +36,10 @@ PRNG = {};
       PRNG.seeder.seedCount++;
       PRNG.seeder.seedingOver();
     }
-      // seed mouse position X and Y when mouse movements are greater than 40ms apart.
+    // seed mouse position X and Y when mouse movements are greater than 40ms apart.
     else if ((PRNG.seeder.seedCount < PRNG.seeder.seedLimit) && evt && (timeStamp - PRNG.seeder.lastInputTime) > 40) {
       SecureRandom.seedTime();
-      if(evt.type == 'mousemove') {
+      if (evt.type == 'mousemove') {
         var clientX = evt.clientX;
         var clientY = evt.clientY;
       } else {
@@ -62,7 +62,7 @@ PRNG = {};
       PRNG.seeder.seedCount++;
       PRNG.seeder.seedingOver();
     }
-      // seed key press character
+    // seed key press character
     else if ((PRNG.seeder.seedCount < PRNG.seeder.seedLimit) && evt.which) {
       var timeStamp = new Date().getTime();
       // seed a bunch (minimum seedLimit) of times
@@ -82,8 +82,7 @@ PRNG = {};
       poolHex = Crypto.util.bytesToHex(SecureRandom.poolCopyOnInit);
       document.getElementById('seedpool').innerHTML = poolHex;
       document.getElementById('seedpooldisplay').innerHTML = poolHex;
-    }
-    else {
+    } else {
       poolHex = Crypto.util.bytesToHex(SecureRandom.pool);
       document.getElementById('seedpool').innerHTML = poolHex;
       document.getElementById('seedpooldisplay').innerHTML = poolHex;
@@ -121,87 +120,98 @@ PRNG = {};
   }
 };
 
-function generateAccount(entropy) {
+function generateAccount (entropy) {
   confirm('<h2>Choose your level of security</h2> <h3>Do you want a medium or high security wallet?</h3> A medium security wallet has a much shorter password, which is easier to remember. \
            However, we do advise not to store more than a month\'s wage worth of value in a medium security wallet.\
-           High security wallets have a very long password, making them more secure.',function(highlevel) {
-            if(highlevel) {
-              var offset=Math.floor(Math.random() * (511-120))
-              var passwd=hexToBase32(entropy.substr(offset+20,60));
-            } else {
-              var offset=Math.floor(Math.random() * (511-60))
-              var passwd=hexToBase32(entropy.substr(offset+20,20));
-            }
-            //console.log( DJB2.hash(entropy.substr(offset,12).toLowerCase()+passwd.toUpperCase()).substr(4,4) );
-            var userid=hexToBase32( entropy.substr(offset,12)+DJB2.hash(entropy.substr(offset,12).toUpperCase()).substr(0,4)+DJB2.hash(entropy.substr(offset,12).toLowerCase()+passwd.toUpperCase()).substr(4,4) );
-            finalizeAccount(userid,passwd,entropy);
+           High security wallets have a very long password, making them more secure.', function (highlevel) {
+      if (highlevel) {
+        var offset = Math.floor(Math.random() * (511 - 120));
+        var passwd = hexToBase32(entropy.substr(offset + 20, 60));
+      } else {
+        var offset = Math.floor(Math.random() * (511 - 60));
+        var passwd = hexToBase32(entropy.substr(offset + 20, 20));
+      }
+      // console.log( DJB2.hash(entropy.substr(offset,12).toLowerCase()+passwd.toUpperCase()).substr(4,4) );
+      var userid = hexToBase32(entropy.substr(offset, 12) + DJB2.hash(entropy.substr(offset, 12).toUpperCase()).substr(0, 4) + DJB2.hash(entropy.substr(offset, 12).toLowerCase() + passwd.toUpperCase()).substr(4, 4));
+      finalizeAccount(userid, passwd, entropy);
     },
     {
-      'cancel':{
-        'text':'Medium',
-        'default':true
+      'cancel': {
+        'text': 'Medium',
+        'default': true
       },
-      'done':{
-        'text':'High',
-        'default':false
+      'done': {
+        'text': 'High',
+        'default': false
       }
     });
 }
 
-function finalizeAccount(userid,passwd,entropy) {
+function finalizeAccount (userid, passwd, entropy) {
   alert('<h2>Your account has been created!</h2> Please <u>write down</u> these login details and put them in a safe place. If you lose them, you can <u>never ever</u> log into your wallet again! <br/><br/> \
-    <div class="login-credentials"><table><tbody><tr style="border-bottom: 1px solid #D9E3EB;"><td>Account ID: </td><td class="credential">'+userid+'</td></tr><tr><td>Password: </td><td class="credential">'+passwd+'</td></tr></tbody></table></div> \
+    <div class="login-credentials"><table><tbody><tr style="border-bottom: 1px solid #D9E3EB;"><td>Account ID: </td><td class="credential">' + userid + '</td></tr><tr><td>Password: </td><td class="credential">' + passwd + '</td></tr></tbody></table></div> \
     <br/>We cannot help you recover the keys, so they are <u>your responsibility</u>! <br/>Have a lot of fun using Internet of Coins! <br /><br /> <span class="warning"><span style="font-size: 1em;">⚠</span> WARNING: This wallet is still in beta.<br />Do not yet store large amounts of value on it!</span> <br>',
-    {title: '', button: 'Continue'},
-    function(){
-      confirm('<h2>Your account has been created!</h2> Did you write down your login details and put them in a safe place? If not, you will get new login credentials.',function(redo) {
-          if(redo) {
-            generateAccount(entropy);
-          }
-        },
-        {
-          'cancel':{
-            'text':'&nbsp;Yes, continue to login ',
-            'default':true
-          },
-          'done':{
-            'text':' No, I need new credentials ',
-            'default':false
-          }
-        });
+  {title: '', button: 'Continue'},
+  function () {
+    confirm('<h2>Your account has been created!</h2> Did you write down your login details and put them in a safe place? If not, you will get new login credentials.', function (redo) {
+      if (redo) {
+        generateAccount(entropy);
+      }
+    },
+    {
+      'cancel': {
+        'text': '&nbsp;Yes, continue to login ',
+        'default': true
+      },
+      'done': {
+        'text': ' No, I need new credentials ',
+        'default': false
+      }
     });
+  });
   // DEPRECATED:
   // document.getElementById('inputUserID').value=userid;
   // document.getElementById('inputPasscode').value=passwd;
 
   document.querySelector('#inputUserID').value = userid;
   document.querySelector('#inputPasscode').value = passwd;
-  // FIXME: quick hack to make login work -> streamify!
-  var U = utils;
-  U.triggerEvent(document.querySelector('#inputUserID'), 'input');
-  U.triggerEvent(document.querySelector('#inputPasscode'), 'input');
-}
 
-function removeClass(element,className) {
-  var currentClassName = element.getAttribute("class");
-  if (typeof currentClassName!== "undefined" && currentClassName) {
-
-    var class2RemoveIndex = currentClassName.indexOf(className);
-    if (class2RemoveIndex != -1) {
-        var class2Remove = currentClassName.substr(class2RemoveIndex, className.length);
-        var updatedClassName = currentClassName.replace(class2Remove,"").trim();
-        element.setAttribute("class",updatedClassName);
+  function triggerEvent (el, type) {
+    if ('createEvent' in document) {
+      // modern browsers, IE9+
+      var e = document.createEvent('HTMLEvents');
+      e.initEvent(type, false, true);
+      el.dispatchEvent(e);
+    } else {
+      // IE 8
+      var newEvent = document.createEventObject();
+      newEvent.eventType = type;
+      el.fireEvent('on' + newEvent.eventType, newEvent);
     }
   }
-  else {
-    element.removeAttribute("class");
+
+  triggerEvent(document.querySelector('#inputUserID'), 'input');
+  triggerEvent(document.querySelector('#inputPasscode'), 'input');
+}
+
+function removeClass (element, className) {
+  var currentClassName = element.getAttribute('class');
+  if (typeof currentClassName !== 'undefined' && currentClassName) {
+    var class2RemoveIndex = currentClassName.indexOf(className);
+    if (class2RemoveIndex != -1) {
+      var class2Remove = currentClassName.substr(class2RemoveIndex, className.length);
+      var updatedClassName = currentClassName.replace(class2Remove, '').trim();
+      element.setAttribute('class', updatedClassName);
+    }
+  } else {
+    element.removeAttribute('class');
   }
 }
 
 function executeSeedTime (event) {
   document.querySelector('#newaccountcontent').addEventListener(event, function (e) {
     SecureRandom.seedTime();
-    if (R.not(R.isNil(event.preventDefault))) event.preventDefault();
+    if (typeof event.preventDefault !== undefined || typeof event.preventDefault !== null) event.preventDefault();
   });
 }
 
@@ -212,5 +222,5 @@ function increaseSeed (event) {
 var downEvents = ['mousedown', 'touchstart'];
 var moveEvents = ['touchmove', 'mousemove'];
 
-R.forEach(increaseSeed, moveEvents);
-R.forEach(executeSeedTime, downEvents);
+moveEvents.forEach(increaseSeed);
+downEvents.forEach(executeSeedTime);

@@ -1,14 +1,19 @@
-var U = utils;
-var Storage = storage;
+import utils_ from './../../../index/utils.js';
+import R from 'ramda';
+import storage from './../../../interface/js/storage.js';
+import { black } from './../../../files/svg/black.js';
 
-var manageAssets = {
+import { from } from 'rxjs/observable/from';
+import { map, flatMap, bufferCount } from 'rxjs/operators';
+
+export var manageAssets = {
   renderManageButton: function (element, asset, active) {
     var activeToggled = R.not(active);
     var btnText = active ? 'Hide' : 'Show';
     var btnClass = active ? 'pure-button-error selectedAsset' : 'pure-button-success';
     var svgName = active ? 'hide' : 'show';
 
-    return '<a onclick="changeManageButton(\'' + element + '\',\'' + asset + '\',' + activeToggled + ');" class="pure-button ' + btnClass + '" role="button"><div class="actions-icon">' + svg[svgName] + '</div>' + btnText + '</a>';
+    return '<a onclick="changeManageButton(\'' + element + '\',\'' + asset + '\',' + activeToggled + ');" class="pure-button ' + btnClass + '" role="button"><div class="actions-icon">' + black[svgName] + '</div>' + btnText + '</a>';
   },
   changeManageButton: function (cb) {
     return function (element, assetID, active) {
@@ -42,17 +47,17 @@ var manageAssets = {
       var newAssetsToInitialize = R.filter(idDoesNotExist, newActiveAssetsForStorage);
 
       var assetsDetailsStream = R.isEmpty(newAssetsToInitialize)
-        ? rxjs.from([[]])
-        : rxjs.from(newAssetsToInitialize)
+        ? from([[]])
+        : from(newAssetsToInitialize)
           .pipe(
-            rxjs.operators.flatMap(function (asset) {
+            flatMap(function (asset) {
               return R.compose(
                 initializeAsset(asset),
                 R.prop('id')
               )(asset);
             }),
-            rxjs.operators.map(U.addIcon),
-            rxjs.operators.bufferCount(R.length(newAssetsToInitialize))
+            map(utils_.addIcon),
+            bufferCount(R.length(newAssetsToInitialize))
           );
 
       assetsDetailsStream.subscribe(assetsDetails => {
@@ -67,9 +72,9 @@ var manageAssets = {
         }, [], newActiveAssets);
 
         // GLOBAL STUFF
-        Storage.Set(userStorageKey('ff00-0035'), userEncode(newActiveAssetsForStorage))
+        storage.Set(userStorageKey('ff00-0035'), userEncode(newActiveAssetsForStorage))
           .subscribe(function (_) {});
-        U.updateGlobalAssets(newGlobalAssets);
+        utils_.updateGlobalAssets(newGlobalAssets);
         cb(); // RE-RENDER VIEW
       });
     };

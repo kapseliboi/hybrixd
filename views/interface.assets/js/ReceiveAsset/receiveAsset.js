@@ -1,13 +1,13 @@
-var Clipboard = clipboard;
+import clipboard from '../Clipboard/clipboard.js';
 
-receiveAsset = {
+export var receiveAsset = {
   renderAssetDetailsInModal: function (assetID) {
     var asset = R.find(R.propEq('id', assetID))(GL.assets);
     var assetAddress = R.prop('address', asset);
     document.querySelector('#action-receive .modal-receive-currency').innerHTML = assetID.toUpperCase(); // after getting address from hybridd, set data-clipboard-text to contain it
     document.querySelector('#action-receive .modal-receive-addressfrom').innerHTML = assetAddress;
     document.querySelector('#modal-receive-button').setAttribute('data-clipboard-text', document.querySelector('#action-receive .modal-receive-addressfrom').innerHTML); // set clipboard content for copy button to address
-    clipboardButton('#modal-receive-button', Clipboard.clipboardSuccess, Clipboard.clipboardError); // set function of the copy button
+    clipboardButton('#modal-receive-button', clipboard.clipboardSuccess, clipboard.clipboardError); // set function of the copy button
     document.querySelector('#action-receive .modal-receive-status').setAttribute('id', 'receivestatus-' + assetID);
 
     mkNewQRCode(assetAddress);
