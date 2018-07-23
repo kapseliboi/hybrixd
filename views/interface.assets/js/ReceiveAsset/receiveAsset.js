@@ -1,4 +1,4 @@
-import clipboard from '../Clipboard/clipboard.js';
+import { clipboard } from '../Clipboard/clipboard.js';
 
 export var receiveAsset = {
   renderAssetDetailsInModal: function (assetID) {

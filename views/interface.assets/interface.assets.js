@@ -1,13 +1,13 @@
-import balance from './../interface/js/Balance/balance.js';
-import generateAddress from './js/GenerateAddress/generateAddress.js';
-import interfaceStreams from './../interface/interface.js';
-import receiveAssets from './js/ReceiveAsset/receiveAsset.js';
-import sendAsset from './js/SendAsset/sendAsset.js';
-import transactionValidations from './js/Transaction/validations.js';
-import valuations from './../interface/js/valuations.js';
-import manageAssets from './js/ManageAssets/manageAssets.js';
-import utils_ from './../index/utils.js';
-import asset from './js/Asset/asset.js';
+import { balance } from './../interface/js/Balance/balance.js';
+import { generateAddress } from './js/GenerateAddress/generateAddress.js';
+import { interfaceStreams } from './../interface/interface.js';
+import { receiveAssets } from './js/ReceiveAsset/receiveAsset.js';
+import { sendAsset } from './js/SendAsset/sendAsset.js';
+import { transactionValidations } from './js/Transaction/validations.js';
+import { valuations } from './../interface/js/valuations.js';
+import { manageAssets } from './js/ManageAssets/manageAssets.js';
+import { utils_ } from './../index/utils.js';
+import { asset } from './js/Asset/asset.js';
 import { setStarredAssetClass } from './js/StarredAsset/starredAssets.js';
 import { mkHtmlToRender } from './interface.assets.ui.js';
 
@@ -17,14 +17,14 @@ import { interval } from 'rxjs/observable/interval';
 import { merge } from 'rxjs/observable/merge';
 import { map, startWith, takeUntil, tap } from 'rxjs/operators';
 
-import R from 'ramda';
+import * as R from 'ramda';
 
 var BALANCE_RETRIEVAL_INTERVAL_MS = 30000;
 var AMOUNT_OF_SIGNIFICANT_DIGITS = 11;
 
 init.interface.assets = function (args) {
   // Expose functions globally
-  changeManageButton = manageAssets.changeManageButton(manageAssets.renderManageButton); // TODO: Remove messy callback structure......
+  window.changeManageButton = manageAssets.changeManageButton(manageAssets.renderManageButton); // TODO: Remove messy callback structure......
   utils_.setViewTab('assets'); // top menu UI change
   utils_.documentReady(main(args));
 };
@@ -97,9 +97,9 @@ function updateGlobalAssetsAndRenderDataInDOM (balanceData) {
   renderDollarPriceInAsset(id, Number(n));
 }
 
-function renderDollarPriceInAsset (asset, amount) {
+window.renderDollarPriceInAsset = function (asset, amount) {
   var symbolName = asset.slice(asset.indexOf('.') + 1);
   var assetDollarPrice = valuations.renderDollarPrice(symbolName, amount);
   var query = document.getElementById(symbolName + '-dollar');
   if (query !== null) { query.innerHTML = assetDollarPrice; }
-}
+};

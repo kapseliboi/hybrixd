@@ -18,6 +18,15 @@ module.exports = {
           }
         }
       }
+      // {
+      //   test: /.js/,
+      //   use: [
+      //     {
+      //       loader: `expose-loader`
+      //       // options: {...options}
+      //     }
+      //   ]
+      // }
     ]
   }
 };

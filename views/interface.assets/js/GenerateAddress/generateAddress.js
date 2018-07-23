@@ -1,5 +1,5 @@
-import utils_ from '../../../index/utils.js';
-import R from 'ramda';
+import { utils_ } from '../../../index/utils.js';
+import * as R from 'ramda';
 import { map } from 'rxjs/operators';
 import { fromEvent } from 'rxjs/observable/fromEvent';
 

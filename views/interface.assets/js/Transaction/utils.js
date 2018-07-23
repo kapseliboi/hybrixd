@@ -1,4 +1,4 @@
-import R from 'ramda';
+import * as R from 'ramda';
 
 export var transactionUtils = {
   mkTransactionData: function (zippedTxDetails, globalAssets) {

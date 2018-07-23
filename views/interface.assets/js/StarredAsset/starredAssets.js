@@ -1,5 +1,6 @@
-import utils_ from '../../../index/utils.js';
-import R from 'ramda';
+import { utils_ } from '../../../index/utils.js';
+import { Storage } from './../../../interface/js/storage.js';
+import * as R from 'ramda';
 
 export function setStarredAssetClass (assetID, isStarred) {
   var id = '#' + assetID.replace(/\./g, '_'); // Mk into function. Being used elsewhere too.
@@ -22,7 +23,7 @@ function maybeUpdateStarredProp (assetID) {
   };
 }
 
-toggleStar = function (assetID) {
+window.toggleStar = function (assetID) {
   var globalAssets = GL.assets;
   var updatedGlobalAssets = R.reduce(maybeUpdateStarredProp(assetID), [], globalAssets);
   var starredForStorage = R.map(R.pickAll(['id', 'starred']), updatedGlobalAssets);

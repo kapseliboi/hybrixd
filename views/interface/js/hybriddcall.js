@@ -4,6 +4,8 @@ import { commonUtils } from './../../common/index.js';
 import { from } from 'rxjs/observable/from';
 import { map, filter, flatMap } from 'rxjs/operators';
 
+import * as R from 'ramda';
+
 export var hybridd = {
   mkHybriddCallStream: function (url) {
     var hybriddCallStream = from(hybriddcall({r: url, z: true}))

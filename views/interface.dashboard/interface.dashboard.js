@@ -1,16 +1,16 @@
-var Balance = balance;
-
-// var U = utils;
-import utils_ from '../index/utils.js';
-// var H = hybridd;
-// var SVG = svg;
+import { utils_} from '../index/utils.js';
 import { black } from '../files/svg/black.js';
-// var UI = dashboardUI;
 import { dashboardUI } from './js/AssetDashboard/assetDashboard.js';
-// var Balance = balance;
 import { balance } from '../interface/js/Balance/balance.js';
-// var InterfaceStreams = interfaceStreams;
-import interfaceStreams from '../interface/interface.js';
+import { interfaceStreams } from '../interface/interface.js';
+
+import * as R from 'ramda';
+
+import { concat } from 'rxjs/observable/concat';
+import { merge } from 'rxjs/observable/merge';
+import { interval } from 'rxjs/observable/interval';
+import { fromEvent } from 'rxjs/observable/fromEvent';
+import { map, filter, startWith, takeUntil, tap } from 'rxjs/operators';
 
 var AMOUNT_OF_SIGNIFICANT_DIGITS = 5;
 var BALANCE_RENDER_INTERVAL_MS = 60000;
@@ -25,16 +25,14 @@ var socialMediaIcons = [
   {class: '.chevron-right', svg: 'chevron-right'}
 ];
 
-var stopBalanceStream = rxjs
-  .fromEvent(document.querySelector('#topmenu-assets'), 'click');
+var stopBalanceStream = fromEvent(document.querySelector('#topmenu-assets'), 'click');
 
-var retrieveBalanceStream = rxjs
-  .interval(BALANCE_RENDER_INTERVAL_MS)
+var retrieveBalanceStream = interval(BALANCE_RENDER_INTERVAL_MS)
   .pipe(
-    rxjs.operators.startWith(0),
-    rxjs.operators.takeUntil(rxjs.merge(
-      stopBalanceStream
-      // interfaceStreams.logOutStream
+    startWith(0),
+    takeUntil(merge(
+      stopBalanceStream,
+      interfaceStreams.logOutStream
     ))
   );
 
@@ -68,12 +66,8 @@ function main (args) {
   var starredAssets = R.filter(R.propEq('starred', true), GL.assets);
 
   document.querySelector('#userID').innerHTML = R.path(['usercrypto', 'userid'], GL); // set user ID field in top bar
-  utils.setViewTab('dashboard'); // top menu UI change --> Sets element to active class
-  utils.documentReady(render(starredAssets));
+  utils_.setViewTab('dashboard'); // top menu UI change --> Sets element to active class
+  utils_.documentReady(render(starredAssets));
 }
 
 init.interface.dashboard = main;
-
-if (typeof modules !== 'undefined') {
-  main;
-}

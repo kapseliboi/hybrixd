@@ -1,8 +1,8 @@
-import transactionValidations from '../Transaction/validations.js';
-import transactionUtils from '../Transaction/utils.js';
-import utils_ from '../../../index/utils.js';
+import { transactionValidations } from '../Transaction/validations.js';
+import { transactionUtils } from '../Transaction/utils.js';
+import { utils_ } from '../../../index/utils.js';
 
-import R from 'ramda';
+import * as R from 'ramda';
 
 import { fromEvent } from 'rxjs/observable/fromEvent';
 import { combineLatest } from 'rxjs/observable/combineLatest';

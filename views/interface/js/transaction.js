@@ -1,9 +1,8 @@
-var U = utils;
-var Storage = storage;
-var LZString_ = LZString;
-var CommonUtils = commonUtils;
+import { utils_ } from './../../index/utils.js';
+import { Storage } from './storage.js';
+import { commonUtils } from './../../common/index.js';
 
-sendTransaction = function (properties, GLOBAL_ASSETS, modeHashes, onSucces, onError) {
+export sendTransaction = function (properties, GLOBAL_ASSETS, modeHashes, onSucces, onError) {
   var H = hybridd; // TODO: Factor up. Can't now, smt's up with dependency order.
   var UItransform_ = UItransform;
 
@@ -63,8 +62,8 @@ sendTransaction = function (properties, GLOBAL_ASSETS, modeHashes, onSucces, onE
 function getDeterministicData (z) {
   var decodedData = R.nth(1, z);
   var deterministicData = R.compose(
-    CommonUtils.activate,
-    LZString_.decompressFromEncodedURIComponent
+    commonUtils.activate,
+    LZString.decompressFromEncodedURIComponent
   )(decodedData);
 
   if (typeof deterministicData !== 'object' || deterministicData === {}) {
@@ -322,7 +321,7 @@ function mkModeHashStr (modeHashes, p) {
     R.flip(R.concat)('-LOCAL'),
     R.prop(R.__, modeHashes),
     R.nth(0),
-    U.splitAtDot,
+    utils_.splitAtDot,
     R.path(['asset', 'mode'])
   )(p);
 }

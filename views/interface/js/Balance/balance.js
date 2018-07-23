@@ -1,6 +1,6 @@
-import hybridd from '../hybriddcall.js';
-import utils_ from '../../../index/utils.js';
-import R from 'ramda';
+import { hybridd } from '../hybriddcall.js';
+import { utils_ } from '../../../index/utils.js';
+import * as R from 'ramda';
 
 import { from } from 'rxjs/observable/from';
 import { of } from 'rxjs/observable/of';

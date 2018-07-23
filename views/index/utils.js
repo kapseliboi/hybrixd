@@ -201,7 +201,7 @@ export var utils_ = {
       : mkBalance(amount);
   },
   renderDataInDom: function (element, maxLengthSignificantDigits, data) {
-    var formattedBalanceStr = U.formatFloatInHtmlStr(data, maxLengthSignificantDigits);
+    var formattedBalanceStr = this.formatFloatInHtmlStr(data, maxLengthSignificantDigits);
     renderElementInDom(element, formattedBalanceStr);
   }
 };

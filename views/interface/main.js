@@ -36,9 +36,9 @@ hy_content += fs.readFileSync('./js/topmenu.js'); // responsive top menu
 hy_content += fs.readFileSync('./js/ychan.js');
 hy_content += fs.readFileSync('./js/zchan.js');
 // hy_content += fs.readFileSync('./js/hybriddcall.js'); // autonomous calls to hybridd
-hy_content += fs.readFileSync('./js/deterministic.js');
-hy_content += fs.readFileSync('./js/proofOfWork.js');
-hy_content += fs.readFileSync('./js/assetInitialization.js');
+// hy_content += fs.readFileSync('./js/deterministic.js');
+// hy_content += fs.readFileSync('./js/proofOfWork.js');
+// hy_content += fs.readFileSync('./js/assetInitialization.js');
 // hy_content += fs.readFileSync('./js/valuations.js');
 // hy_content += fs.readFileSync('./js/Balance/balance.js');
 hy_content += fs.readFileSync('./dist/bundle.js'); // finally, take action
@@ -50,7 +50,7 @@ hy_content += addscript('./js/modal.js'); // pretty modal boxes
 hy_content += addscript('./js/clipboard.js'); // copy-to-clipboard functionality
 hy_content += addscript('./js/qrcode.js'); // create QR-code functionality
 // hy_content += addscript('./js/storage.js'); // browser-side storage (localforage)
-hy_content += addscript('./js/transaction.js'); // deterministic transaction generator
+// hy_content += addscript('./js/transaction.js'); // deterministic transaction generator
 
 // SVG
 hy_content += '<script>';

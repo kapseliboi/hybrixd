@@ -1,4 +1,4 @@
-import R from 'ramda';
+import * as R from 'ramda';
 
 export var transactionValidations = {
   toggleSendButtonClass: function (a, target) {

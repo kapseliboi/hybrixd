@@ -1,10 +1,10 @@
-import utils_ from '../index/utils.js';
-import asset from './js/Asset/asset';
+import { utils_ } from '../index/utils.js';
+import { asset } from './js/Asset/asset';
 
-import R from 'ramda';
+import * as R from 'ramda';
 
 // User interface transformations
-UItransform = {
+window.UItransform = {
   txStart: function () {
     loadSpinner();
     document.querySelector('#action-send .pure-button-send').classList.add('pure-button-disabled');
