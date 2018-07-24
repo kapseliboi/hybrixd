@@ -68,7 +68,7 @@ function exec (properties) {
       subprocesses.push('jump(-6)');
       break;
     case 'status':
-      // set up init probe command to check if Altcoin RPC is responding and connected
+    // set up init probe command to check if Altcoin RPC is responding and connected
       subprocesses.push('func("lisk","link",{target:' + jstr(target) + ',command:["/api/loader/status/sync"]})'); // get sync status
       subprocesses.push('poke("liskA",data)'); // store the resulting data for post-process collage
       subprocesses.push('func("lisk","link",{target:' + jstr(target) + ',command:["/api/blocks/getStatus"]})'); // get milestone / difficulty
@@ -134,12 +134,14 @@ function exec (properties) {
     case 'sample':
       var address;
       var transaction;
-
-      switch (mode.split('.')[1]) {
-        case 'ark' : address = 'AQYZJ6Mkv4DhnXhrXdxXwNKRKGvgrkhnRF'; transaction = 'f70e8f32e8a16c1dd1a0e97fa4075f96d8e8e16065d1a4406851252832d8e608'; break;
-        case 'lisk' : address = '4405441579391221349L'; transaction = '12391912764023208573'; break;
-        case 'rise' : address = '13188395790866768123R'; transaction = '11931543500510473853'; break;
-        case 'shift' : address = '16296503595969372386S'; transaction = '6908341461331361507'; break;
+      if (mode === 'ark') {
+        address = 'AQYZJ6Mkv4DhnXhrXdxXwNKRKGvgrkhnRF'; transaction = 'f70e8f32e8a16c1dd1a0e97fa4075f96d8e8e16065d1a4406851252832d8e608';
+      } else {
+        switch (mode.split('.')[1]) {
+          case 'lisk' : address = '4405441579391221349L'; transaction = '12391912764023208573'; break;
+          case 'rise' : address = '13188395790866768123R'; transaction = '11931543500510473853'; break;
+          case 'shift' : address = '16296503595969372386S'; transaction = '6908341461331361507'; break;
+        }
       }
       subprocesses.push('stop(0,{address:"' + address + '",transaction:"' + transaction + '"})');
       break;
@@ -172,7 +174,7 @@ function post (properties) {
         }
         break;
       case 'status':
-        // nicely cherrypick and reformat status data
+      // nicely cherrypick and reformat status data
         var collage = {};
         collage.module = 'lisk';
         collage.synced = null;
