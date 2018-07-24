@@ -25,7 +25,7 @@
     "unspent" : [
       "func('blockexplorer','exec',{command:['$symbol','unspent','$1','$2']})"
     ],
-     "balance" : [
+    "balance" : [
       "time($cache)",
       "func('blockexplorer','exec',{command:['$symbol','balance','$1']})"
     ],
@@ -40,8 +40,6 @@
     "factor" : [
       "pass('$factor')"
     ],
-    "history" : [],
-    "contract" : [],
     "fee" : [
       "pass('$fee')"
     ],

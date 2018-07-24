@@ -63,7 +63,6 @@
       "stop(1,'error')",
       "stop(0,data)"
     ],
-    "contract" : [],
     "fee" : [
       "pass('$fee')"
     ],
