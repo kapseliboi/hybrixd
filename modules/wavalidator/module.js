@@ -41,7 +41,7 @@ function exec (properties) {
         subprocesses.push("stop(0,'invalid')");
       }
     } catch (e) {
-      subprocesses.push("stop(1,'Symbol is not supported by wallet-address-validator')");
+      subprocesses.push("stop(1,'Symbol " + symbol + " is not supported by wallet-address-validator')");
     }
   }
 

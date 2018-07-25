@@ -159,6 +159,14 @@ function exec (properties) {
       subprocesses.push('stop(0,"' + contract + '")');
       break;
     case 'history':
+    // getBlockchainTransactions
+      break;
+    case 'transaction':
+      subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["getTransaction",["transaction=' + properties.command[1] + '"] ]})');
+      subprocesses.push("tran({id:'.transaction',fee:'.feeNQT',attachment:'=.attachment|none',timestamp:'.timestamp',symbol:'" + target.symbol + "','fee-symbol':'" + target['symbol'] + "',amount:'.amountNQT',source:'.sender',target:'.recipient'},data,2,1)");//, data:'.'
+      subprocesses.push('stop(1,data)');
+      subprocesses.push('stop(0,data)');
+
       break;
     case 'details':
       var symbol = target.symbol;
@@ -180,12 +188,13 @@ function exec (properties) {
     case 'sample':
       var address;
       var transaction;
+      var publicKey;
       switch (mode.split('.')[1]) {
-        case 'main' : address = 'NXT-8PMW-RW5T-NCRX-FBS4E'; transaction = '13821793329980543744'; break;
+        case 'main' : address = 'NXT-4RU9-TNCT-F3MU-8952K'; transaction = '13821793329980543744'; publicKey = '32f5fa059b39fae92e41fee6606c5afa4db80d426532fa94f50415c062794c4b'; break;
         case 'elastic' : address = 'XEL-7USZ-7MNB-BTAY-DKE4R'; transaction = '12238083156285810252'; break;
-        case 'burst' : address = 'VGA6-CRP9-WV3R-8E7K9'; transaction = '11439896918258012006'; break;
+        case 'burst' : address = 'HKML-NRG6-VBRA-2F8PS'; transaction = '11439896918258012006'; publicKey = '25cc2bb30ee7665737c9721090313c85176e485cd9a15495a0f3abc359d8d632'; break;
       }
-      subprocesses.push('stop(0,{address:"' + address + '",transaction:"' + transaction + '"})');
+      subprocesses.push('stop(0,{address:"' + address + '",transaction:"' + transaction + '",publicKey:"' + publicKey + '"})');
       break;
     default:
       subprocesses.push('stop(1,"Asset function not supported!")');

@@ -108,6 +108,11 @@ function exec (properties) {
     case 'unspent':
       subprocesses.push('stop(0,{"unspents":[],"change":"0"})');
       break;
+    case 'transaction':
+      // lsk api endpoints do not seem to exist
+      // subprocesses.push('func("lisk","link",{target:' + jstr(target) + ',command:["/api/transaction/getTransaction?transactionId=' + properties.command[1] + '"]})');
+      subprocesses.push('stop(1,"Transaction not yet supported for lisk module!")');
+      break;
     case 'history':
     // if(typeof properties.command[1] != 'undefined') { if(properties.command[1] == 'pending') { var transfertype = 'unavailable' } else { var transfertype = 'available'; } } else { var transfertype = 'available'; }
     // /api/transactions?blockId=blockId&senderId=senderId&recipientId=recipientId&limit=limit&offset=offset&orderBy=field
@@ -124,7 +129,7 @@ function exec (properties) {
     case 'details':
       var symbol = target.symbol;
       var name = target.name;
-      var fee = padFloat(fee, factor);
+      var fee = fee && factor ? padFloat(fee, factor) : null;
       var base = target.symbol.split('.')[0];
       // var mode; already defined
       // var factor; already defined
