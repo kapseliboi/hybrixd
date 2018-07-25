@@ -18,7 +18,6 @@ function init () {
 function exec (properties) {
   var command = properties.command;
   var processID = properties.processID;
-  console.log('command' + JSON.stringify(command));
   var subprocesses = [];
   // set request to what command we are performing
   global.hybridd.proc[processID].request = properties.command;
