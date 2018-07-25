@@ -78,10 +78,10 @@
           "_this" : "TODO",
           "_list" : "source_address",
           "_ref" : {
-            "_list" : "target_address",
+            "_list" : "amount",
             "_this" : "TODO",
             "_ref" : {
-              "_list" : "ammount",
+              "_list" : "target_address",
               "_this" : "TODO",
               "_ref" : {
                 "_list" : "public_key",

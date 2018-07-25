@@ -115,7 +115,7 @@ function exec (properties) {
             }
             break;
           default:
-            subprocesses.push('stop(1,"Source function not supported!")');
+            subprocesses.push('stop(1,"Source function ' + symbolCommand + ' not supported for ' + blockexplorer + '!")');
         }
         break;
       case 'insight':
@@ -150,7 +150,7 @@ function exec (properties) {
             subprocesses.push('stop(0,data)');
             break;
           default:
-            subprocesses.push('stop(1,"Source function not supported!")');
+            subprocesses.push('stop(1,"Source function ' + symbolCommand + ' not supported for ' + blockexplorer + '!")');
         }
         break;
       case 'cryptoid': // https://chainz.cryptoid.info/api.dws
@@ -172,6 +172,7 @@ function exec (properties) {
             if (typeof command[1] !== 'undefined') {
               subprocesses.push('func("blockexplorer","link",{target:' + jstr(target) + ',command:["?key=' + cryptoidApiKey + 'q=lasttxs&a=' + command[1] + '"]})');
               // TODO format data
+              subprocesses.push('stop(0,data)');
             } else {
               subprocesses.push('stop(1,"Please specify an address!")');
             }
@@ -185,7 +186,7 @@ function exec (properties) {
             }
             break;
           default:
-            subprocesses.push('stop(1,"Source function not supported!")');
+            subprocesses.push('stop(1,"Source function ' + symbolCommand + ' not supported for ' + blockexplorer + '!")');
         }
         break;
       case 'abe':
@@ -208,7 +209,7 @@ function exec (properties) {
             }
             break;
           default:
-            subprocesses.push('stop(1,"Source function not supported!")');
+            subprocesses.push('stop(1,"Source function ' + symbolCommand + ' not supported for ' + blockexplorer + '!")');
         }
         break;
       default:
