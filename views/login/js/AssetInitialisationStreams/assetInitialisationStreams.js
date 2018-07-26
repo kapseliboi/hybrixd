@@ -18,9 +18,13 @@ import { scan, bufferCount, map, filter, flatMap, catchError, tap, switchMap, wi
 var path = 'api';
 
 var defaultAssetData = [
-  { id: 'ark', starred: false }
-  // { id: 'btc', starred: false },
-  // { id: 'eth', starred: false }
+  { id: 'ark', starred: false },
+  { id: 'dummy', starred: false },
+  { id: 'nxt', starred: false },
+  { id: 'eth', starred: false }
+  // { id: 'lsk', starred: false },
+  // { id: 'burst', starred: false }
+
 ];
 
 function mkAssetInitializationStream (z) {

@@ -1,10 +1,14 @@
-import utils_ from './../../../index/utils.js';
-import R from 'ramda';
-import storage from './../../../interface/js/storage.js';
+import { utils_ } from './../../../index/utils.js';
+import * as R from 'ramda';
+import { Storage } from './../../../interface/js/storage.js';
 import { black } from './../../../files/svg/black.js';
+
+import { initAsset } from './../../../interface/js/assetInitialization.js';
 
 import { from } from 'rxjs/observable/from';
 import { map, flatMap, bufferCount } from 'rxjs/operators';
+
+var uiIcons = svg;
 
 export var manageAssets = {
   renderManageButton: function (element, asset, active) {
@@ -13,7 +17,7 @@ export var manageAssets = {
     var btnClass = active ? 'pure-button-error selectedAsset' : 'pure-button-success';
     var svgName = active ? 'hide' : 'show';
 
-    return '<a onclick="changeManageButton(\'' + element + '\',\'' + asset + '\',' + activeToggled + ');" class="pure-button ' + btnClass + '" role="button"><div class="actions-icon">' + black[svgName] + '</div>' + btnText + '</a>';
+    return '<a onclick="changeManageButton(\'' + element + '\',\'' + asset + '\',' + activeToggled + ');" class="pure-button ' + btnClass + '" role="button"><div class="actions-icon">' + R.prop(svgName, uiIcons) + '</div>' + btnText + '</a>';
   },
   changeManageButton: function (cb) {
     return function (element, assetID, active) {
@@ -72,7 +76,7 @@ export var manageAssets = {
         }, [], newActiveAssets);
 
         // GLOBAL STUFF
-        storage.Set(userStorageKey('ff00-0035'), userEncode(newActiveAssetsForStorage))
+        Storage.Set(userStorageKey('ff00-0035'), userEncode(newActiveAssetsForStorage))
           .subscribe(function (_) {});
         utils_.updateGlobalAssets(newGlobalAssets);
         cb(); // RE-RENDER VIEW

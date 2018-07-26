@@ -1,9 +1,16 @@
 import { utils_ } from './../../index/utils.js';
 import { Storage } from './storage.js';
 import { commonUtils } from './../../common/index.js';
+import { hybridd } from './hybriddcall.js';
 
-export sendTransaction = function (properties, GLOBAL_ASSETS, modeHashes, onSucces, onError) {
-  var H = hybridd; // TODO: Factor up. Can't now, smt's up with dependency order.
+import * as R from 'ramda';
+
+import { of } from 'rxjs/observable/of';
+import { timer } from 'rxjs/observable/timer';
+import { combineLatest } from 'rxjs/observable/combineLatest';
+import { map, flatMap, retryWhen, delayWhen } from 'rxjs/operators';
+
+export function sendTransaction (properties, GLOBAL_ASSETS, modeHashes, onSucces, onError) {
   var UItransform_ = UItransform;
 
   var asset = R.prop('asset', properties);
@@ -17,47 +24,45 @@ export sendTransaction = function (properties, GLOBAL_ASSETS, modeHashes, onSucc
   var modeStr = mkModeHashStr(modeHashes, properties);
 
   var modeFromStorageStream = Storage.Get_(modeStr);
-  var transactionDataStream = rxjs.of(transactionData);
-  var feeBaseStream = rxjs.of(asset)
+  var transactionDataStream = of(transactionData);
+  var feeBaseStream = of(asset)
     .pipe(
-      rxjs.operators.map(checkBaseFeeBalance(GLOBAL_ASSETS))
+      map(checkBaseFeeBalance(GLOBAL_ASSETS))
     );
 
-  var unspentStream = H.mkHybriddCallStream(unspentUrl)
+  var unspentStream = hybridd.mkHybriddCallStream(unspentUrl)
     .pipe(
-      rxjs.operators.map(checkProcessProgress),
-      rxjs.operators.retryWhen(function (errors) {
+      map(checkProcessProgress),
+      retryWhen(function (errors) {
         return errors.pipe(
-          rxjs.operators.delayWhen(function (_) {
-            return rxjs.timer(1000);
+          delayWhen(function (_) {
+            return timer(1000);
           })
         );
       })
     );
 
-  var doTransactionStream = rxjs
-    .combineLatest(
-      unspentStream,
-      modeFromStorageStream,
-      transactionDataStream,
-      feeBaseStream
-    )
+  var doTransactionStream = combineLatest(
+    unspentStream,
+    modeFromStorageStream,
+    transactionDataStream,
+    feeBaseStream
+  )
     .pipe(
-      rxjs.operators.map(getDeterministicData),
-      rxjs.operators.map(getDeterministicTransactionData),
-      rxjs.operators.flatMap(doPushTransactionStream),
-      rxjs.operators.map(handleTransactionPushResult)
+      map(getDeterministicData),
+      map(getDeterministicTransactionData),
+      flatMap(doPushTransactionStream),
+      map(handleTransactionPushResult)
     );
 
-  var finalizeTransactionStream = rxjs
-    .combineLatest(
-      transactionDataStream,
-      doTransactionStream
-    );
+  var finalizeTransactionStream = combineLatest(
+    transactionDataStream,
+    doTransactionStream
+  );
 
   UItransform_.txStart();
   finalizeTransactionStream.subscribe(onSucces, onError);
-};
+}
 
 function getDeterministicData (z) {
   var decodedData = R.nth(1, z);
@@ -137,18 +142,18 @@ function doPushTransactionStream (z) {
   var transaction = R.nth(0, z);
   var assetID = R.nth(1, z);
   var url = 'a/' + assetID + '/push/' + transaction;
-  return H.mkHybriddCallStream(url)
+  return hybridd.mkHybriddCallStream(url)
     .pipe(
-      rxjs.operators.map(function (processData) {
+      map(function (processData) {
         var isProcessInProgress = R.isNil(R.prop('data', processData)) &&
                                   R.equals(R.prop('error', processData), 0);
         if (isProcessInProgress) throw processData;
         return processData;
       }),
-      rxjs.operators.retryWhen(function (errors) {
+      retryWhen(function (errors) {
         return errors.pipe(
-          rxjs.operators.delayWhen(function (_) {
-            return rxjs.timer(1000);
+          delayWhen(function (_) {
+            return timer(1000);
           })
         );
       })
@@ -173,18 +178,18 @@ function handlePushInDeterministic (assetID, transactionData) {
   return function (txData) {
     var H = hybridd; // TODO: Factor up. Can't now, smt's up with dependency order.
     var url = 'a/' + assetID + '/push/' + txData;
-    var pushStream = H.mkHybriddCallStream(url)
+    var pushStream = hybridd.mkHybriddCallStream(url)
       .pipe(
-        rxjs.operators.map(function (processData) {
+        map(function (processData) {
           var isProcessInProgress = R.isNil(R.prop('data', processData)) &&
                                     R.equals(R.prop('error', processData), 0);
           if (isProcessInProgress) throw processData;
           return processData;
         }),
-        rxjs.operators.retryWhen(function (errors) {
+        retryWhen(function (errors) {
           return errors.pipe(
-            rxjs.operators.delayWhen(function (_) {
-              return rxjs.timer(1000);
+            delayWhen(function (_) {
+              return timer(1000);
             })
           );
         })
@@ -289,7 +294,7 @@ function mkTotalAmountStr (t, factor) {
       R.find(
         R.propEq('id', R.prop('fee-symbol', asset)
         ))
-    )(GL.assets);
+    )(GL.assets); // TODO: Factor up!
 
   var amountBigNumber = toInt(R.prop('amount', t), feeFactor);
   var feeBigNumber = toInt(R.prop('fee', t), feeFactor);

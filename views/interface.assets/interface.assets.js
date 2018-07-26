@@ -1,7 +1,7 @@
 import { balance } from './../interface/js/Balance/balance.js';
 import { generateAddress } from './js/GenerateAddress/generateAddress.js';
 import { interfaceStreams } from './../interface/interface.js';
-import { receiveAssets } from './js/ReceiveAsset/receiveAsset.js';
+import { receiveAsset } from './js/ReceiveAsset/receiveAsset.js';
 import { sendAsset } from './js/SendAsset/sendAsset.js';
 import { transactionValidations } from './js/Transaction/validations.js';
 import { valuations } from './../interface/js/valuations.js';
@@ -10,6 +10,7 @@ import { utils_ } from './../index/utils.js';
 import { asset } from './js/Asset/asset.js';
 import { setStarredAssetClass } from './js/StarredAsset/starredAssets.js';
 import { mkHtmlToRender } from './interface.assets.ui.js';
+import { searchBar } from './js/SearchBar/searchBar.js';
 
 import { from } from 'rxjs/observable/from';
 import { fromEvent } from 'rxjs/observable/fromEvent';
@@ -24,7 +25,9 @@ var AMOUNT_OF_SIGNIFICANT_DIGITS = 11;
 
 init.interface.assets = function (args) {
   // Expose functions globally
-  window.changeManageButton = manageAssets.changeManageButton(manageAssets.renderManageButton); // TODO: Remove messy callback structure......
+  manageAssets.changeManageButton(manageAssets.renderManageButton);
+  window.changeManageButton = manageAssets.changeManageButton(manageAssets.renderManageButton); // TODO: Remove messy callback structure...... // TODO: STREAMIFY!
+  window.manageAssets = manageAssets.manageAssets; // TODO: STREAMIFY!
   utils_.setViewTab('assets'); // top menu UI change
   utils_.documentReady(main(args));
 };
@@ -72,11 +75,14 @@ function initializeAssetsInterfaceStreams (assets) {
     transactionValidations.toggleSendButtonClass();
   });
   receiveAssetButtonStream.subscribe(function (assetID) {
-    receiveAssets.renderAssetDetailsInModal(assetID);
+    receiveAsset.renderAssetDetailsInModal(assetID);
   });
   generateAddressButtonStream.subscribe(function (assetID) {
     generateAddress.render(assetID);
   });
+  searchBar.clearSearchBarStream.subscribe();
+  searchBar.searchBarStream.subscribe(searchBar.renderManageAssets);
+  searchBar.searchAssetsStream.subscribe(searchBar.clearInputBtn);
 }
 
 function mkAssetButtonStream (query) {
@@ -103,3 +109,5 @@ window.renderDollarPriceInAsset = function (asset, amount) {
   var query = document.getElementById(symbolName + '-dollar');
   if (query !== null) { query.innerHTML = assetDollarPrice; }
 };
+
+init.interface.assets({});

@@ -93,6 +93,7 @@ export var utils_ = {
   splitAtDot: function (s) {
     return s.split('.');
   },
+  mkIcon,
   mkUpdatedAssets: function (details) {
     return function (assets, asset) {
       var assetOrUpdatedDetails = R.equals(R.prop('id', asset), R.prop('id', details))

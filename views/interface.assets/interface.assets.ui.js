@@ -72,5 +72,5 @@ function mkAssetsInterfaceHtmlStr (assetsHTMLStr) {
     '</div>';
 }
 
-function loadSpinner () { document.querySelector('#action-send .spinner').classList.add('active'); }
-function stopSpinner () { document.querySelector('#action-send .spinner').classList.remove('active'); }
+export function loadSpinner () { document.querySelector('#action-send .spinner').classList.add('active'); }
+export function stopSpinner () { document.querySelector('#action-send .spinner').classList.remove('active'); }

@@ -1,4 +1,5 @@
 import { clipboard } from '../Clipboard/clipboard.js';
+import * as R from 'ramda';
 
 export var receiveAsset = {
   renderAssetDetailsInModal: function (assetID) {

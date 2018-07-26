@@ -1,16 +1,16 @@
 const path = require('path');
 
 module.exports = {
-  entry: './login/login.js',
+  entry: './interface.assets/interface.assets.js',
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, './login/dist')
+    path: path.resolve(__dirname, './interface.assets/dist')
   },
   module: {
     rules: [
       {
         test: /\.js$/,
-        exclude: /(node_modules|bower_components)/,
+        // exclude: /(node_modules|bower_components)/,
         use: {
           loader: 'babel-loader',
           options: {
@@ -28,5 +28,6 @@ module.exports = {
       //   ]
       // }
     ]
-  }
+  },
+  mode: 'production'
 };
