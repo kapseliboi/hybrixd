@@ -10,7 +10,6 @@ export var proofOfWork_ = {
     var req = GL.powqueue.shift();
     if (typeof req !== 'undefined') {
       // attempt to send proof-of-work to node
-      console.log('Looping through proof of work.');
       proofOfWork.solve(req.split('/')[1], submitProofOfWork(req), failedProofOfWork(req));
     }
   }
