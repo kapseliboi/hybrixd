@@ -1,10 +1,15 @@
 const path = require('path');
 
 module.exports = {
-  entry: './interface/interface.js',
+  entry: {
+    'login': './login/login.js',
+    'interface': './interface/interface.js',
+    'interface.dashboard': './interface.dashboard/interface.dashboard.js',
+    'interface.assets': './interface.assets/interface.assets.js'
+  },
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, './interface/dist')
+    path: path.resolve(__dirname),
+    filename: '[name]/dist/bundle.js'
   },
   module: {
     rules: [
