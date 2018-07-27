@@ -18,7 +18,7 @@ import * as R from 'ramda';
 
 import { from } from 'rxjs/observable/from';
 import { of } from 'rxjs/observable/of';
-import { merge } from 'rxjs/observable/merge';
+// import { merge } from 'rxjs/observable/merge';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 import { timer } from 'rxjs/observable/timer';
 import { filter, map, delayWhen, flatMap, retryWhen } from 'rxjs/operators';
@@ -26,6 +26,7 @@ import { filter, map, delayWhen, flatMap, retryWhen } from 'rxjs/operators';
 storage_;
 
 var Sync = function (storekey) {
+  console.log('storekey = ', storekey);
   var storageMetaStream = from(hybridd.hybriddcall({r: 'e/storage/meta/' + storekey, z: false}))
     .pipe(
       filter(R.propEq('error', 0)),
@@ -84,6 +85,7 @@ var Sync = function (storekey) {
     );
 
   function remoteIsNewer (storeKey) {
+    console.log('remote is newer');
     var storageGetStream = from(hybridd.hybriddcall({r: 'e/storage/get/' + storeKey, z: 0}));
 
     var storageGetResponseStream = storageGetStream
@@ -124,6 +126,7 @@ var Sync = function (storekey) {
   }
 
   function remoteIsOlder (storeKey, metaData) {
+    console.log('Remote is older');
     return from(localforage.getItem(storeKey)
       .then(r => r)
       .catch(e => console.log('e', e)))
@@ -161,6 +164,7 @@ var Sync = function (storekey) {
   }
 
   function noChangesBetweenRemoteAndLocal (storeKey, metaData) {
+    console.log('No changes');
     return from(localforage.getItem(storeKey))
       .pipe(
         map(function (value) {
@@ -191,16 +195,19 @@ var Sync = function (storekey) {
 
 export var Storage = {
   Set: function (storekey, storevalue) {
-    return merge(
-      from(localforage.setItem(storekey, storevalue)),
-      from(localforage.setItem(storekey + '.meta', {
-        time: Date.now(),
-        hash: DJB2.hash(storevalue)
-      }))
-    );
+    // return merge(
+    //   from(localforage.setItem(storekey, storevalue)),
+    //   from(localforage.setItem(storekey + '.meta', {
+    //     time: Date.now(),
+    //     hash: DJB2.hash(storevalue)
+    //   }))
+    // );
+
     if (storekey.substr(-6) !== '-LOCAL') {
+      console.log('not local');
       return Sync(storekey);
     } else {
+      console.log('local');
       return of(storevalue);
     }
   },

@@ -48,7 +48,7 @@ hy_page += '<script>' + fs.readFileSync('./bowser.min.js') + '</script>';
 
 hy_page += '<script>' + fs.readFileSync('./../interface/js/ychan.js') + '</script>';
 hy_page += '<script>' + fs.readFileSync('./../interface/js/zchan.js') + '</script>';
-hy_page += '<script>' + fs.readFileSync('./../interface/js/proofOfWork.js') + '</script>';
+// hy_page += '<script>' + fs.readFileSync('./../interface/js/proofOfWork.js') + '</script>';
 hy_page += '<script>' + fs.readFileSync('./../interface/js/storage_.js') + '</script>';
 hy_page += '<script>' + fs.readFileSync('./fns.js') + '</script>';
 

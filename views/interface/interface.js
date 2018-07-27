@@ -1,6 +1,7 @@
 import { balance } from './js/Balance/balance.js';
 import { userFeedback } from './../login/js/UserFeedback/userFeedback.js';
 import { valuations } from './js//valuations.js';
+import { proofOfWork_ } from './js/proofOfWork.js';
 
 import * as R from 'ramda';
 
@@ -34,7 +35,13 @@ var retrieveBalanceStream = interval(60000)
     takeUntil(logOutStream)
   );
 
+var powIntervalStream = interval(12000)
+  .pipe(
+    startWith(0)
+  );
+
 function main () {
+  powIntervalStream.subscribe(function () { proofOfWork_.loopThroughProofOfWork(); });
   document.querySelector('#topmenu-assets').onclick = fetchAssetsViews(pass_args); // MAKE INTO STREAM
   document.querySelector('#topmenu-assets').classList.add('active');
   logOutBtnStream.subscribe();

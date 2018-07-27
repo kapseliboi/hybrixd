@@ -141,6 +141,7 @@ function mkAssetInitializationStream (z) {
 }
 
 function storedOrDefaultUserData (decodeUserData) {
+  console.log('decodeUserData = ', decodeUserData);
   return R.compose(
     R.unless(
       R.allPass([
@@ -153,7 +154,7 @@ function storedOrDefaultUserData (decodeUserData) {
       R.always(defaultAssetData)
     ),
     R.defaultTo(defaultAssetData)
-  )(null);
+  )(decodeUserData);
 }
 
 function setAssetModesAndNames (z) {

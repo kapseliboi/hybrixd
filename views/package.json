@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --mode production && ./compileviews.sh"
+    "build": "webpack --mode production --optimize-minimize && ./compileviews.sh"
   },
   "author": "Internet of Coins",
   "license": "MIT",

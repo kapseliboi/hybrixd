@@ -1,8 +1,16 @@
-proofOfWork_ = {
+import { hybridd } from './hybriddcall';
+
+import * as R from 'ramda';
+
+import { from } from 'rxjs/observable/from';
+import { map, filter, flatMap } from 'rxjs/operators';
+
+export var proofOfWork_ = {
   loopThroughProofOfWork: function () {
     var req = GL.powqueue.shift();
     if (typeof req !== 'undefined') {
       // attempt to send proof-of-work to node
+      console.log('Looping through proof of work.');
       proofOfWork.solve(req.split('/')[1], submitProofOfWork(req), failedProofOfWork(req));
     }
   }
@@ -14,20 +22,22 @@ function submitProofOfWork (req) {
     var url = 's/storage/pow/' + proofOfWorkStr;
     logger('Submitting storage proof: ' + proofOfWorkStr);
 
-    var hybriddCallStream = Rx.Observable
-        .fromPromise(hybriddcall({r: url, z: false}))
-        .filter(R.propEq('error', 0))
-        .map(R.merge({r: url, z: true}));
+    var hybriddCallStream = from(hybridd.hybriddCall({r: url, z: false}))
+      .pipe(
+        filter(R.propEq('error', 0)),
+        map(R.merge({r: url, z: true}))
+      );
 
     var hybriddCallResponseStream = hybriddCallStream
-        .flatMap(function (properties) {
-          return Rx.Observable
-            .fromPromise(hybriddReturnProcess(properties));
-        })
-        .map(data => {
+      .pipe(
+        flatMap(function (properties) {
+          return from(hybridd.hybriddReturnProcess(properties));
+        }),
+        map(data => {
           if (R.isNil(R.prop('stopped', data)) && R.prop('progress', data) < 1) throw data;
           return data;
-        });
+        })
+      );
 
     hybriddCallResponseStream.subscribe(function (_) {});
   };
