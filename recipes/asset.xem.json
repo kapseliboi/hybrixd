@@ -59,7 +59,9 @@
     "factor" : [
       "pass('$factor')"
     ],
-    "history" : [],
+    "history" : [
+      "curl('asset://$symbol','/account/transfers/all?address='+'$1'.replace(/-/g, ''),'GET',data,{'content-type':'application/json'})"
+    ],
     "contract" : [
       "test('$contract'==='undefined',1,2)",
       "stop(1,'Unspent returns data only for NEM mosiac tokens.')",

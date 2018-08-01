@@ -69,7 +69,6 @@ function exec (properties) {
     var symbol = command[0];
     var symbolCommand = command[1];
     var address = command[2];
-
     var target = {};
 
     var candidates = []; // List of block explorer sources that can handle $SYMBOL
@@ -155,22 +154,22 @@ function exec (properties) {
         break;
       case 'cryptoid': // https://chainz.cryptoid.info/api.dws
         var cryptoidApiKey = 'd8d21ccfe2fa&q=lasttxs';
-        switch (properties.command[0]) {
+        switch (symbolCommand) {
           case 'balance':
-            subprocesses.push('func("blockexplorer","link",{target:' + jstr(target) + ',command:["?key=' + cryptoidApiKey + '&q=getbalance&a=' + command[1] + '"]})');
+            subprocesses.push('func("blockexplorer","link",{target:' + jstr(target) + ',command:["?key=' + cryptoidApiKey + '&q=getbalance&a=' + address + '"]})');
             subprocesses.push('stop( (isNaN(data?1:0), fromInt(data,' + factor + ') )');
             break;
           case 'unspent':
             // example: https://blockexplorer.com/api/addr/[:addr]/utxo
-            if (typeof command[1] !== 'undefined') {
+            if (typeof address !== 'undefined') {
               subprocesses.push('func("blockexplorer","link",{target:' + jstr(target) + ',command:["?key=' + cryptoidApiKey + '&q=unspent&active=' + address + '"]})');
             } else {
               subprocesses.push('stop(1,"Please specify an address!")');
             }
             break;
           case 'history':
-            if (typeof command[1] !== 'undefined') {
-              subprocesses.push('func("blockexplorer","link",{target:' + jstr(target) + ',command:["?key=' + cryptoidApiKey + 'q=lasttxs&a=' + command[1] + '"]})');
+            if (typeof address !== 'undefined') {
+              subprocesses.push('func("blockexplorer","link",{target:' + jstr(target) + ',command:["?key=' + cryptoidApiKey + 'q=lasttxs&a=' + address + '"]})');
               // TODO format data
               subprocesses.push('stop(0,data)');
             } else {
@@ -178,8 +177,8 @@ function exec (properties) {
             }
             break;
           case 'transaction':
-            if (typeof command[1] !== 'undefined') {
-              subprocesses.push('func("blockexplorer","link",{target:' + jstr(target) + ',command:["?key=' + cryptoidApiKey + '&q=txinfo&t=' + command[1] + '"]})');
+            if (typeof address !== 'undefined') {
+              subprocesses.push('func("blockexplorer","link",{target:' + jstr(target) + ',command:["?key=' + cryptoidApiKey + '&q=txinfo&t=' + address + '"]})');
               // TODO format data
             } else {
               subprocesses.push('stop(1,"Please specify a transaction id!")');
@@ -288,8 +287,8 @@ function post (properties) {
   global.hybridd.proc[processID].progress = 0.5;
   switch (properties.command[1]) {
     case 'unspent':
-      if (typeof properties.command[4] !== 'undefined') {
-        var amount = toInt(properties.command[4], factor);
+      if (typeof properties.command[3] !== 'undefined') {
+        var amount = toInt(properties.command[3], factor);
         if (amount.greaterThan(0)) {
           result = functions.sortArrayByObjKey(result, 'amount', false);
           global.hybridd.proc[processID].progress = 0.75;

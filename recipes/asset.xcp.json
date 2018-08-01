@@ -51,10 +51,14 @@
       "pass('$factor')"
     ],
     "transaction" : [
-       "stop(1,'Not yet implemented!')"
+      "func('blockexplorer','exec',{command:['$fee-symbol','transaction','$1']})",
+      "stop(0,data)",
+      "stop(1,'This used btc network, not xcp.')"
     ],
     "history" : [
-       "stop(1,'Not yet implemented!')"
+      "stop(1,'No yet implemented.')",
+      "stop(1,'No yet implemented.')",
+      "stop(1,'counterparty API get_tx_info does not work!.')"
     ],
     "contract" : [
        "pass('$contract')"

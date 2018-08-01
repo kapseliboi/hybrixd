@@ -132,7 +132,15 @@ function exec (properties) {
               subprocesses.push('test((typeof data.publicKey!=="undefined" && data.publicKey),2,1,data)');
               subprocesses.push('stop(1,"Error: missing NXT public key!")');
             }
-            if (!isToken(target.symbol)) {
+            if (target.symbol === 'burst') { // without doNotSign parameter
+              var fee = (typeof global.hybridd.asset[base].fee !== 'undefined' ? global.hybridd.asset[base].fee : null);
+              var feefactor = (typeof global.hybridd.asset[base].factor !== 'undefined' ? global.hybridd.asset[base].factor : null);
+              // if(base==='nxt' && toInt(amount,factor).toString()!==toInt(amount,factor).toInteger().toString() ) {
+              //  subprocesses.push('stop(1,"Error: NXT token transactions support only integer amounts!")');
+              // }
+              amount = fromInt(toInt(amount, factor).minus(toInt(fee, factor)).toInteger(), factor).toString(); // with NXT the unspent function is a transaction preparation, so must subtract the fee
+              subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["transferAsset",["recipient=' + targetaddr + '","asset=' + target.contract + '",' + publicKey + ',"quantityQNT=' + toInt(amount, factor) + '","feeNQT=' + toInt(fee, feefactor) + '","deadline=300","broadcast=false"] ]})');
+            } else if (!isToken(target.symbol)) {
               amount = fromInt(toInt(amount, factor).minus(toInt(fee, factor)), factor).toString(); // with NXT the unspent function is a transaction preparation, so must subtract the fee
               subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["sendMoney",["recipient=' + targetaddr + '",' + publicKey + ',"amountNQT=' + toInt(amount, factor) + '","feeNQT=' + toInt(fee, factor) + '","deadline=300","doNotSign=1","broadcast=false"] ]})');
             } else {
@@ -142,9 +150,11 @@ function exec (properties) {
               //  subprocesses.push('stop(1,"Error: NXT token transactions support only integer amounts!")');
               // }
               amount = fromInt(toInt(amount, factor).minus(toInt(fee, factor)).toInteger(), factor).toString(); // with NXT the unspent function is a transaction preparation, so must subtract the fee
+
               subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["transferAsset",["recipient=' + targetaddr + '","asset=' + target.contract + '",' + publicKey + ',"quantityQNT=' + toInt(amount, factor) + '","feeNQT=' + toInt(fee, feefactor) + '","deadline=300","doNotSign=1","broadcast=false"] ]})');
             }
-            subprocesses.push('stop((typeof data.errorCode==="undefined"?0:data.errorCode),(typeof data.errorCode==="undefined"?data:null))');
+
+            subprocesses.push('stop((typeof data.errorCode==="undefined"?0:data.errorCode),(typeof data.errorCode==="undefined"?data:data.errorDescription))');
           } else {
             subprocesses.push('stop(1,"Error: missing target address!")');
           }

@@ -137,6 +137,9 @@ function exec (properties) {
       subprocesses.push('stop(0,data)');
       break;
     case 'history':
+      subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_getLogs",[{"fromBlock":"earliest","address":["' + sourceaddr + '"]}]]})');
+
+      // TODO formatting
       break;
     case 'details':
       var symbol = target.symbol;
