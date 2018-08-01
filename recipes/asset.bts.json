@@ -51,7 +51,6 @@
       "stop(1,'No result!')",
       "pass(data)"
     ],
-
     "validate" : [
       "curl('wss://bitshares.crypto.fans/ws','','',{'method': 'call', 'params': [1, 'login', ['', '']], 'id': 1})",
       "test(data.result,2,1)",
