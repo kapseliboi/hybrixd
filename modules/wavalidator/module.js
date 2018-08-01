@@ -25,7 +25,7 @@ function exec (properties) {
   var address = command[1];
 
   if (symbol === 'UBQ' || symbol === 'EXP') { symbol = 'ETH'; }
-  if (symbol === 'XCP') { symbol = 'BTC'; }
+  if (symbol === 'XCP' || symbol === 'OMNI') { symbol = 'BTC'; }
 
   if (symbol === 'DUMMY') {
     if (address === '_dummyaddress_') {
