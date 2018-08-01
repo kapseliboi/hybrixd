@@ -33,6 +33,12 @@ function exec (properties) {
     } else {
       subprocesses.push("stop(0,'invalid')");
     }
+  } else if (symbol === 'BCH') {
+    if (/^(q|p)[a-z0-9]{41}$/.test(address)) {
+      subprocesses.push("stop(0,'valid')");
+    } else {
+      subprocesses.push("stop(0,'invalid')");
+    }
   } else if (symbol === 'NXT') {
     if (address.length === 24 && address.startsWith('NXT-')) {
       // TODO fully implement https://bitcoin.stackexchange.com/questions/30341/programmatically-validating-nxt-addresses
