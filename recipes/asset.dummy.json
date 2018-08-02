@@ -23,7 +23,7 @@
     "balance" : [
       "test('$1'==='_dummyaddress_',2,1)",
       "stop(1,'Error: invalid address!')",
-      "pass('10000')"
+      "pass('10000.00000000')"
     ],
     "push" : [
       "wait(3000)",

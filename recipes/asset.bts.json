@@ -39,8 +39,7 @@
     "balance" : [
       "curl('asset://$symbol','','',{'method':'call', 'params':[0,'get_named_account_balances',['$1',['$contract']]], id: Math.floor(Math.random()*10000)})",
       "tran('.result[0].amount',data,2,1)",
-      "jump(2,'0')",
-      "form(data,$factor,'reduce')",
+      "stop(1,'Balance could not be retrieved.')",
       "pass(data)"
     ],
     "push" : [

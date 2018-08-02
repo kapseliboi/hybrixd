@@ -59,7 +59,7 @@
       "pass('$fee')"
     ],
     "sample" : [
-      "stop(0,{address:'1FoWyxwPXuj4C6abqwhjDWdz6D4PZgYRjA',transaction:'1989dc575f94dcb45485b78b1b762e13a3a6d2eb59422b6217c93218a54ff80b'})"
+      "stop(0,{address:'18XvhJmfciiE9khPisavJ2UdC5ybG94tYk',transaction:'1989dc575f94dcb45485b78b1b762e13a3a6d2eb59422b6217c93218a54ff80b'})"
     ]
   }
 }
