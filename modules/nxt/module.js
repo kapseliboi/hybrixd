@@ -92,7 +92,10 @@ function exec (properties) {
       break;
     case 'balance':
       if (sourceaddr) {
-        if (!isToken(target.symbol) && target.symbol !== 'burst') { // burst likes to be a token
+        if (!isToken(target.symbol)) {
+          if (target.symbol === 'burst' && !sourceaddr.startsWith('BURST-')) {
+            sourceaddr = 'BURST-' + sourceaddr;
+          }
           subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["getBalance",["account=' + sourceaddr + '"]]})'); // send balance query
           subprocesses.push('stop((data!==null && ((typeof data.errorCode!=="undefined" && data.errorCode==5)|| typeof data.unconfirmedBalanceNQT!=="undefined")?0:1),(data!==null && typeof data.unconfirmedBalanceNQT!=="undefined"? padFloat( fromInt(data.unconfirmedBalanceNQT,' + factor + '),' + factor + ') : ((data!==null && (typeof data.errorCode!=="undefined" && data.errorCode==5))?0:null) ))');
         } else {

@@ -37,7 +37,7 @@
       "tran('.balance',data,2,1)",
       "stop(1,'No result!')",
       "time($cache,data)",
-      "pass(data/Math.pow(10,$factor))"
+      "pass(Number(data)/Math.pow(10,$factor))"
     ],
     "fee" : [
       "form('$fee',$waves::factor)",
