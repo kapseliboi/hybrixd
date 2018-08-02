@@ -33,29 +33,51 @@ function exec (properties) {
     } else {
       subprocesses.push("stop(0,'invalid')");
     }
+  } else if (symbol === 'BTS') {
+    subprocesses.push("curl('wss://bitshares.crypto.fans/ws','','',{'method': 'call', 'params': [1, 'login', ['', '']], 'id': 1})");
+    subprocesses.push('test(data.result,2,1)');
+    subprocesses.push("stop(1,'Connection failed')");
+    subprocesses.push("curl('wss://bitshares.crypto.fans/ws','','',{'method':'call', 'params':[0,'get_account_by_name',['" + address + "']], id: 2})");
+    subprocesses.push("tran('.result.id',data,2,1)");
+    subprocesses.push("stop(0,'invalid')");
+    subprocesses.push("stop(0,'valid')");
+  } else if (symbol === 'XEM') {
+    if (/^([a-zA-Z0-9]{6}-){6}[a-zA-Z0-9]{4}$/.test(address)) {
+      subprocesses.push("stop(0,'valid')");
+    } else {
+      subprocesses.push("stop(0,'invalid')");
+    }
+  } else if (symbol === 'WAVES') {
+    // Reference https://docs.wavesplatform.com/en/technical-details/data-structures.html
+    // TODO can be improved (checksum)
+    if (/^3[A-Za-z0-9]{34}$/.test(address)) {
+      subprocesses.push("stop(0,'valid')");
+    } else {
+      subprocesses.push("stop(0,'invalid')");
+    } //
   } else if (symbol === 'BCH') {
     if (/^(q|p)[a-z0-9]{41}$/.test(address)) {
       subprocesses.push("stop(0,'valid')");
     } else {
       subprocesses.push("stop(0,'invalid')");
-    }
+    } //
   } else if (symbol === 'NXT') {
-    if (address.length === 24 && address.startsWith('NXT-')) {
-      // TODO fully implement https://bitcoin.stackexchange.com/questions/30341/programmatically-validating-nxt-addresses
+    if (/^NXT(-[A-HJ-N-P-Z2-9]{4}){4}[A-HJ-N-P-Z2-9]$/.test(address)) {
+      // Reference implement https://bitcoin.stackexchange.com/questions/30341/programmatically-validating-nxt-addresses
       subprocesses.push("stop(0,'valid')");
     } else {
       subprocesses.push("stop(0,'invalid')");
     }
   } else if (symbol === 'XEL') {
-    if (address.length === 24 && address.startsWith('XEL-')) {
-      // TODO fully implement https://bitcoin.stackexchange.com/questions/30341/programmatically-validating-nxt-addresses
+    if (/^XEL(-[A-HJ-N-P-Z2-9]{4}){4}[A-HJ-N-P-Z2-9]$/.test(address)) {
+      // Reference https://bitcoin.stackexchange.com/questions/30341/programmatically-validating-nxt-addresses
       subprocesses.push("stop(0,'valid')");
     } else {
       subprocesses.push("stop(0,'invalid')");
     }
   } else if (symbol === 'BURST') {
-    if (address.length === 20 || (address.length === 26 && address.startsWith('BURST-'))) {
-      // TODO fully implement https://bitcoin.stackexchange.com/questions/30341/programmatically-validating-nxt-addresses
+    if (/^(BURST-)?([A-HJ-N-P-Z2-9]{4}-){3}[A-Z0-9]{5}$/.test(address)) {
+      // Reference https://bitcoin.stackexchange.com/questions/30341/programmatically-validating-nxt-addresses
       subprocesses.push("stop(0,'valid')");
     } else {
       subprocesses.push("stop(0,'invalid')");
@@ -69,18 +91,21 @@ function exec (properties) {
     }
   } else if (symbol === 'LSK') {
     if ((address.length === 21 || address.length === 20) && address.endsWith('L') && /^\d+$/.test(address.substr(0, address.length - 1))) {
+      // TODO should be improved
       subprocesses.push("stop(0,'valid')");
     } else {
       subprocesses.push("stop(0,'invalid')");
     }
   } else if (symbol === 'SHIFT') {
     if ((address.length === 21 || address.length === 20) && address.endsWith('S') && /^\d+$/.test(address.substr(0, address.length - 1))) {
+      // TODO should be improved
       subprocesses.push("stop(0,'valid')");
     } else {
       subprocesses.push("stop(0,'invalid')");
     }
   } else if (symbol === 'RISE') {
     if ((address.length === 21 || address.length === 20) && address.endsWith('R') && /^\d+$/.test(address.substr(0, address.length - 1))) {
+      // TODO should be improved
       subprocesses.push("stop(0,'valid')");
     } else {
       subprocesses.push("stop(0,'invalid')");
