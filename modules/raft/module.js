@@ -6,6 +6,8 @@
 var IoC = require('../../common/ioc.client/ioc.nodejs.client');
 var ioc = new IoC.Interface({http: require('http')});
 
+window = {}; // TODO hier nog een goede oplossing voor vinden
+
 // exports
 exports.init = init;
 exports.exec = exec;
