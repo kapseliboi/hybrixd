@@ -1,6 +1,6 @@
 import * as R from 'ramda';
-import { black } from './../files/svg/black.js';
 
+var Icons = black;
 var fetch_ = fetch;
 
 var BALANCE_UPDATE_BUFFER_TIME_MS = 300000;
@@ -250,8 +250,6 @@ function lastKnownOrNewBalance (newData, currentBalance) {
 }
 
 function mkIcon (symbol) {
-  var Icons = black; // TODO: Factor up;
-
   return R.has(symbol, R.prop('svgs', Icons))
     ? R.path(['svgs', symbol], Icons)
     : mkSvgIcon(symbol);

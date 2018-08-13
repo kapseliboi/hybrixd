@@ -34,20 +34,9 @@ hy_content += '<script>' + fs.readFileSync('./../interface/js/globalobjects.js')
 
 // Add global variables
 hy_content += '<script>' + fs.readFileSync('./js/globals.js') + '</script>';
-// hy_content += '<script>' + fs.readFileSync('./js/animations.js') + '</script>';
-// hy_content += '<script>' + fs.readFileSync('./js/loginStreams.js') + '</script>';
-// hy_content += '<script>' + fs.readFileSync('./js/Validations/validations.js') + '</script>';
-// hy_content += '<script>' + fs.readFileSync('./js/UserFeedback/userFeedback.js') + '</script>';
-// hy_content += '<script>' + fs.readFileSync('./js/UserCredentialValidation/UserCredentialValidation.js') + '</script>';
-// hy_content += '<script>' + fs.readFileSync('./js/SessionData/sessionData.js') + '</script>';
-// hy_content += '<script>' + fs.readFileSync('./js/AssetInitialisationStreams/assetInitialisationStreams.js') + '</script>';
-// hy_content += '<script>' + fs.readFileSync('./js/BrowserSupport/browserSupport.js') + '</script>';
-// hy_content += '<script>' + fs.readFileSync('./js/WalletMaintenance/walletMaintenance.js') + '</script>';
-// hy_content += '<script>' + fs.readFileSync('./js/validations.js') + '</script>';
 
 // and finally the login action handler code
 hy_content += '<script>' + fs.readFileSync('./dist/bundle.js') + '</script>';
-// hy_content += '<script>' + fs.readFileSync('./login.ui.js') + '</script>';
 
 // hex2base32 for account generator code
 hy_content += '<script>' + fs.readFileSync('../../lib/crypto/hex2base32.js') + '</script>';

@@ -10,14 +10,10 @@ lzma = require('../../lib//crypto/lz-string.js');
 
 hy_content = ''; // variable to hold package content
 
-// load in the style sheets (only what is really needed)
-// hy_content += '<style>'+fs.readFileSync('./css/pure.css')+'</style>';
-
 // load in the page elements to add to DOM
 hy_content += fs.readFileSync('./' + viewname + '.html');
 hy_content += '<script>';
 hy_content += fs.readFileSync('./dist/bundle.js');
-// hy_content += fs.readFileSync('./' + viewname + '.ui.js');
 hy_content += '</script>';
 
 // encode hy_content using LZMA (file testing shows URL-safe coding uses 10% less kB)

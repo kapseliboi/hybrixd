@@ -36,7 +36,8 @@
     "jsdom": "^11.11.0"
   },
   "devDependencies": {
-    "mocha": "^3.4.1"
+    "mocha": "^3.4.1",
+    "webpack-cli": "^3.1.0"
   },
   "scripts": {
     "test": "tools/hybridd-test"

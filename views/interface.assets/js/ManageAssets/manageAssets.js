@@ -1,7 +1,6 @@
 import { utils_ } from './../../../index/utils.js';
 import * as R from 'ramda';
 import { Storage } from './../../../interface/js/storage.js';
-import { black } from './../../../files/svg/black.js';
 
 import { initAsset } from './../../../interface/js/assetInitialization.js';
 
@@ -48,9 +47,7 @@ export var manageAssets = {
     return function () {
       var newActiveAssets = mkNewActiveAssets(GL.assetnames);
       var newActiveAssetsForStorage = R.map(R.pick(['id', 'starred']), newActiveAssets);
-      console.log('newActiveAssetsForStorage = ', newActiveAssetsForStorage);
       var newAssetsToInitialize = R.filter(idDoesNotExist, newActiveAssetsForStorage);
-      console.log('newAssetsToInitialize = ', newAssetsToInitialize);
 
       var assetsDetailsStream = R.isEmpty(newAssetsToInitialize)
         ? from([[]])

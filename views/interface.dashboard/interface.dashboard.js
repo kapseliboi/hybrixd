@@ -1,5 +1,4 @@
 import { utils_} from '../index/utils.js';
-import { black } from '../files/svg/black.js';
 import { dashboardUI } from './js/AssetDashboard/assetDashboard.js';
 import { balance } from '../interface/js/Balance/balance.js';
 import { interfaceStreams } from '../interface/interface.js';
@@ -25,6 +24,8 @@ var socialMediaIcons = [
   {class: '.chevron-right', svg: 'chevron-right'}
 ];
 
+var Icons = black;
+
 var stopBalanceStream = fromEvent(document.querySelector('#topmenu-assets'), 'click');
 
 var retrieveBalanceStream = interval(BALANCE_RENDER_INTERVAL_MS)
@@ -48,7 +49,7 @@ function renderStarredAssets (assets) {
 
 function renderSvgIcon (icon) {
   var iconName = R.prop('svg', icon);
-  document.querySelector(icon.class).innerHTML = R.prop(iconName, black);
+  document.querySelector(icon.class).innerHTML = R.prop(iconName, Icons);
 }
 
 function render (assets) {

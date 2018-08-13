@@ -46,9 +46,9 @@ hy_page += '<script>' + fs.readFileSync('./jquery-1.12.4.min.js') + '</script>';
 
 hy_page += '<script>' + fs.readFileSync('./bowser.min.js') + '</script>';
 
+hy_page += '<script>' + fs.readFileSync('./../files/svg/black.js') + '</script>'; // Add icons here to avoid pulling in icons with each webpack module.
 hy_page += '<script>' + fs.readFileSync('./../interface/js/ychan.js') + '</script>';
 hy_page += '<script>' + fs.readFileSync('./../interface/js/zchan.js') + '</script>';
-// hy_page += '<script>' + fs.readFileSync('./../interface/js/proofOfWork.js') + '</script>';
 hy_page += '<script>' + fs.readFileSync('./../interface/js/storage_.js') + '</script>';
 hy_page += '<script>' + fs.readFileSync('./fns.js') + '</script>';
 
@@ -57,12 +57,6 @@ hy_page += '<script>' + fs.readFileSync('../../lib/crypto/lz-string.js') + '</sc
 
 // and finally the hybrid connector
 hy_page += '<script>' + fs.readFileSync('./hy_connect.js') + '</script>';
-
-// RAmda
-// hy_page += '<script>' + fs.readFileSync('./ramda.min.js') + '</script>';
-
-// RxJS
-// hy_page += '<script>' + fs.readFileSync('./rx.min.js') + '</script>';
 
 // close document
 hy_page += '</body></html>';

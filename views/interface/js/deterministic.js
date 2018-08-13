@@ -5,6 +5,7 @@ import * as R from 'ramda';
 // creates a unique seed for deterministic asset code
 export var deterministic_ = {
   mkDeterministicDetails: function (dcode, entry, submode, mode, keyGenBase) {
+    console.log('entry = ', entry);
     // console.log('entry = ', entry);
     // // TODO use regex
     var replaceAll = function (target, search, replacement) {
@@ -14,11 +15,8 @@ export var deterministic_ = {
     var code = LZString.decompressFromEncodedURIComponent(dcode);
     var code_ = replaceAll(code, '(typeof exports==="object"&&typeof module!=="undefined")', '(!(typeof exports==="object"&&typeof module!=="undefined"))');
 
-    // deterministic[data.assetDetails['keygen-base']] = CommonUtils.activate(code);
-
-    // var decompressedCode = LZString.decompressFromEncodedURIComponent(dcode);
-    // var code = R.replace(/'(typeof exports==="object"&&typeof module!=="undefined")'/g, '(!(typeof exports==="object"&&typeof module!=="undefined"))', decompressedCode); // to comopensate for collision between webpack adn browserify
     var deterministic = commonUtils.activate(code_);
+    console.log('deterministic = ', deterministic);
 
     var defaultDetails = {
       mode,

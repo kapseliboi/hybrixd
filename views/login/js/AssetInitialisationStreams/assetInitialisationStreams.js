@@ -21,10 +21,12 @@ var defaultAssetData = [
   { id: 'ark', starred: false },
   { id: 'dummy', starred: false },
   { id: 'nxt', starred: false },
-  { id: 'eth', starred: false }
+  // { id: 'eth', starred: false },
+  // { id: 'dgb', starred: false },
   // { id: 'lsk', starred: false },
-  // { id: 'burst', starred: false }
-
+  { id: 'waves', starred: false },
+  { id: 'burst', starred: false },
+  { id: 'btc', starred: false }
 ];
 
 function mkAssetInitializationStream (z) {
@@ -154,7 +156,8 @@ function storedOrDefaultUserData (decodeUserData) {
       R.always(defaultAssetData)
     ),
     R.defaultTo(defaultAssetData)
-  )(decodeUserData);
+  // )(decodeUserData);
+  )(null);
 }
 
 function setAssetModesAndNames (z) {
