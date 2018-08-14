@@ -6,11 +6,10 @@ WHEREAMI=`pwd`
 
 DARWIN_FLAG=`uname -a | grep "Darwin"`
 
-if [ ! -f "$WHEREAMI/common/index.js" ]; then
+if [ ! -f "$WHEREAMI/ioc-tools" ]; then
   git clone git@gitlab.com:iochq/ioc-tools.git
-  mkdir common
-  cp ioc-tools/index.js common/index.js
-  rm -rf ioc-tools
+  rm -f  "$WHEREAMI/common"
+  ln -s "./ioc-tools" "$WHEREAMI/common"
 fi
 
 if [ ! -d "$WHEREAMI/nodejs-runtime" ]; then
@@ -29,7 +28,7 @@ fi
 
 if [ "$DARWIN_FLAG" != "" ]; then
  # fix node for eat Apple
- rm ./node
+ rm -f ./node
  ln -s "./nodejs-runtime/darwin-x64" "$WHEREAMI/node"
 fi
 
@@ -52,15 +51,15 @@ cd ..
 
 cd lib
 if [ -z "$@" ]; then
-	echo
-	echo "Starting hybridd..."
-	echo " [i] using node executable $NODEINST"
-	node hybridd.js
-	echo
-	echo "Stopped hybridd."
-	echo
+        echo
+        echo "Starting hybridd..."
+        echo " [i] using node executable $NODEINST"
+        node hybridd.js
+        echo
+        echo "Stopped hybridd."
+        echo
 else
-	node hcmd.js $@
+        node hcmd.js $@
 fi
 
 PATH=$OLDPATH
