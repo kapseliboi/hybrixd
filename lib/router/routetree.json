@@ -48,6 +48,9 @@
           "_this": "Retrieve the history TODO"
         }
       },
+      "sample" : {
+        "_this": "Retrieve a sample address and transaction id for test purposes."
+      },
       "transaction":{
         "_ref" : {
           "_list" : "transaction_id",
@@ -75,10 +78,10 @@
           "_this" : "TODO",
           "_list" : "source_address",
           "_ref" : {
-            "_list" : "target_address",
+            "_list" : "amount",
             "_this" : "TODO",
             "_ref" : {
-              "_list" : "ammount",
+              "_list" : "target_address",
               "_this" : "TODO",
               "_ref" : {
                 "_list" : "public_key",

@@ -1,0 +1,8 @@
+{
+  "source":"diag",
+  "name":"diag",
+  "module":"diag",
+  "router" : {
+    "asset": "asset"
+  }
+}

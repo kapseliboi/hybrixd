@@ -20,11 +20,13 @@
       "logs(1,'module $symbol: '+(data?'connected':'failed connection')+' to host [$host]')"
     ],
     "status" : [
-       "stop(1,'Not yet implemented!')"
+      "curl('asset://$symbol','/_api','POST',{'jsonrpc':'2.0','id':0,'method':'is_ready','params':{}},{'content-type':'text/plain'})",
+      "test(data,1,2,data)",
+      "stop(0,{module:'$symbol',synced:data.result.caught_up,blocks:data.result.block_height,fee:null,supply:null,difficulty:null,testmode:data.result.testnet,version:null})",
+      "stop(1,'No result')"
     ],
     "unspent" : [
-      "func('blockexplorer','exec',{command:['$fee-symbol','unspent','$1','$fee']})",
-      "pass({'unspents':data.unspents,'change':String(Number(data.change)+0.00000546)})"
+      "func('blockexplorer','exec',{command:['$fee-symbol','unspent','$1','$fee']})"
     ],
     "balance" : [
       "time(32000)",
@@ -48,14 +50,24 @@
     "factor" : [
       "pass('$factor')"
     ],
+    "transaction" : [
+      "func('blockexplorer','exec',{command:['$fee-symbol','transaction','$1']})",
+      "stop(0,data)",
+      "stop(1,'This used btc network, not xcp.')"
+    ],
     "history" : [
-       "stop(1,'Not yet implemented!')"
+      "stop(1,'No yet implemented.')",
+      "stop(1,'No yet implemented.')",
+      "stop(1,'counterparty API get_tx_info does not work!.')"
     ],
     "contract" : [
        "pass('$contract')"
     ],
     "fee" : [
       "pass('$fee')"
+    ],
+    "sample" : [
+      "stop(0,{address:'1AeqgtHedfA2yVXH6GiKLS2JGkfWfgyTC6',transaction:'8162e98734c94b5b32682ce43041c2fdd5a6bf957c0684e42092284a4478bd0b'})"
     ]
   }
 }

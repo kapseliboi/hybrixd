@@ -13,17 +13,17 @@
       "logs(1,'module $symbol: initialized')"
     ],
     "status" : [
-      "stop(0,'This coin is a dummy for testing.')"
+      "stop(0,{module:'$symbol',synced:1,blocks:0,fee:$fee,supply:0,difficulty:0,testmode:0,version:0})"
     ],
     "unspent" : [
-      "test('$1',2,1)",
-      "stop(1,'Error: missing address!')",
-      "pass([{amount:'$2',txid:'ba62059329d6ca73aed11c367c0459f43ab671b47c061a6e9a92995e8b764a7d',txn:1}])"
+      "test('$1'==='_dummyaddress_',2,1)",
+      "stop(1,'Error: invalid address!')",
+      "pass([{amount:'$3',txid:'TXIDTXIDTXIDTXIDTXIDTXIDTXID',txn:1}])"
     ],
     "balance" : [
-      "test('$1',2,1)",
-      "stop(1,'Error: missing address!')",
-      "pass('10000')"
+      "test('$1'==='_dummyaddress_',2,1)",
+      "stop(1,'Error: invalid address!')",
+      "pass('10000.00000000')"
     ],
     "push" : [
       "wait(3000)",
@@ -32,8 +32,18 @@
     "factor" : [
       "pass('$factor')"
     ],
+    "sample" : [
+      "stop(0,{address:'_dummyaddress_',transaction:'TXIDTXIDTXIDTXIDTXIDTXIDTXID'})"
+    ],
+    "transaction" : [
+      "test('$1'==='TXIDTXIDTXIDTXIDTXIDTXIDTXID',1,2)",
+      "stop(0,{id:'TXIDTXIDTXIDTXIDTXIDTXIDTXID',symbol:'$symbol','fee-symbol':'$symbol'})",
+      "stop(1,'Illegal transaction id.')"
+    ],
     "history" : [
-      "stop(1,'Not yet implemented!')"
+      "test('$1'==='_dummyaddress_',2,1)",
+      "stop(1,'Error: invalid address!')",
+      "stop(0,[])"
     ],
     "contract" : [
       "stop(1,'Not yet implemented!')"

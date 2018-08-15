@@ -18,12 +18,14 @@
     ],
     "status" : [
       "curl('asset://$symbol','','POST',{jsonrpc:'1.0',id:Math.floor(Math.random()*10000),method:'getinfo',params:[]},{'content-type':'text/plain'})",
-      "logs(1,'module $symbol: '+(data?'connected':'failed connection')+' to host [$host]')"
+      "test(data,1,2,data)",
+      "stop(0,{module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:$mode==='zcash.livenet',version:null})",
+      "stop(1,'No result')"
     ],
     "unspent" : [
       "func('blockexplorer','exec',{command:['$symbol','unspent','$1','$2']})"
     ],
-     "balance" : [
+    "balance" : [
       "time($cache)",
       "func('blockexplorer','exec',{command:['$symbol','balance','$1']})"
     ],
@@ -38,10 +40,11 @@
     "factor" : [
       "pass('$factor')"
     ],
-    "history" : [],
-    "contract" : [],
     "fee" : [
       "pass('$fee')"
+    ],
+    "sample" : [
+      "stop(0,{address:'t1ar5X1AJ1JBeRZJY379bFQ3TtLuRK3YpbS',transaction:'cdea6a548efa88b30fbd110472a1ea4c0e5dee4cc768141dcb09a8c0f9ba4211'})"
     ]
   }
 }

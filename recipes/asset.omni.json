@@ -16,7 +16,12 @@
       "stop(1,'Not yet implemented!')"
     ],
     "status" : [
-      "stop(1,'Not yet implemented!')"
+      "time($cache)",
+      "curl('asset://$symbol','/v1/address/addr?addr=1FoWyxwPXuj4C6abqwhjDWdz6D4PZgYRjA','POST','addr=1FoWyxwPXuj4C6abqwhjDWdz6D4PZgYRjA',{'content-type':'application/x-www-form-urlencoded'})",
+      "test(data,1,2,data)",
+      "stop(0,{module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:null,version:null})",
+      "stop(1,'No result')"
+
     ],
     "unspent" : [
       "func('blockexplorer','exec',{command:['$fee-symbol','unspent','$1','$fee']})",
@@ -41,11 +46,20 @@
     "history" : [
        "stop(1,'Not yet implemented!')"
     ],
+    "transaction" : [
+      "curl('asset://$symbol','/v1/transaction/tx/$1','GET','addr=$1',{'content-type':'application/x-www-form-urlencoded'})",
+      "tran({id:'.txid',fee:'.fee',attachment:'',timestamp:'.blocktime',symbol:'$symbol','fee-symbol':'$fee-symbol',ammount:'.amount',source:'=.sendingaddress|unknown',target:'=.referenceaddress|unknown'},data,2,1)",
+      "stop(1,'error')",
+      "stop(0,data)"
+    ],
     "contract" : [
-       "stop(0,'$contract')"
+      "stop(0,'$contract')"
     ],
     "fee" : [
       "pass('$fee')"
+    ],
+    "sample" : [
+      "stop(0,{address:'18XvhJmfciiE9khPisavJ2UdC5ybG94tYk',transaction:'1989dc575f94dcb45485b78b1b762e13a3a6d2eb59422b6217c93218a54ff80b'})"
     ]
   }
 }

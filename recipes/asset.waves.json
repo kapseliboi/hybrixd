@@ -20,8 +20,8 @@
     ],
     "status" : [
       "curl('asset://$symbol','/utils/seed/2','GET')",
-      "chck({module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:null,version:null},2)",
-      "stop(0,data)",
+      "test(data,1,2,data)",
+      "stop(0,{module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:null,version:null})",
       "stop(1,'No result')"
     ],
     "factor" : [
@@ -37,7 +37,7 @@
       "tran('.balance',data,2,1)",
       "stop(1,'No result!')",
       "time($cache,data)",
-      "pass(data/Math.pow(10,$factor))"
+      "pass(Number(data)/Math.pow(10,$factor))"
     ],
     "fee" : [
       "form('$fee',$waves::factor)",
@@ -55,7 +55,9 @@
     "contract" : [
       "pass('$contract')"
     ],
-    "unspent" : [],
+    "unspent" : [
+      "stop(0,{})"
+    ],
     "history" : [
       "curl('$block-explorer-host','/transactions/address/$1/limit/50','GET')",
       "each(data[0],'asset://$symbol','subhistory')"
@@ -70,6 +72,9 @@
       "tran({id:'.id',fee:'.fee',attachment:'.attachment',timestamp:'.timestamp',symbol:'=.assetId|waves','fee-symbol':'=.feeAsset|waves',ammount:'=.amount|.totalAmount|unknown',source:'=.sender|unknown',target:'=.recipient|unknown'},data,2,1)",
       "stop(1,'error')",
       "stop(0,data)"
+    ],
+   "sample" : [
+      "stop(0,{address:'3PBUkL5rphESXxq1yJzW2erVzTTKAXXeCUo',transaction:'Du5uMXjTc4YA4C3bY7WcDLvq4UPgBwuVGGDWaQsfvpuU'})"
     ]
   }
 }

@@ -18,7 +18,10 @@
       "logs(1,'module $symbol: '+(data?'connected':'failed connection')+' to host [$host]')"
     ],
     "status" : [
-      "stop(1,'Not yet implemented!')"
+      "curl('asset://$symbol','','',{'method':'call', 'params':[0,'get_dynamic_global_properties',[]], id: Math.floor(Math.random()*10000)})",
+      "test(data,1,2,data)",
+      "stop(0,{module:'$symbol',synced:null,blocks:data.result.head_block_number,fee:null,supply:null,difficulty:null,testmode:null,version:null})",
+      "stop(1,'No result')"
     ],
     "unspent" : [
       "curl('wss://bitshares.crypto.fans/ws','','',{'method': 'call', 'params': [1, 'login', ['', '']], 'id': 1})",
@@ -36,8 +39,7 @@
     "balance" : [
       "curl('asset://$symbol','','',{'method':'call', 'params':[0,'get_named_account_balances',['$1',['$contract']]], id: Math.floor(Math.random()*10000)})",
       "tran('.result[0].amount',data,2,1)",
-      "jump(2,'0')",
-      "form(data,$factor,'reduce')",
+      "stop(1,'Balance could not be retrieved.')",
       "pass(data)"
     ],
     "push" : [
@@ -48,7 +50,6 @@
       "stop(1,'No result!')",
       "pass(data)"
     ],
-
     "validate" : [
       "curl('wss://bitshares.crypto.fans/ws','','',{'method': 'call', 'params': [1, 'login', ['', '']], 'id': 1})",
       "test(data.result,2,1)",
@@ -76,6 +77,9 @@
     ],
     "transaction" : [
       "curl('asset://$symbol','','',{'method':'call', 'params':[0,'get_recent_transaction_by_id',['$1']], id: Math.floor(Math.random()*10000)})"
+    ],
+    "sample" : [
+      "stop(0,{address:'internet-of-coins',transaction:'67693820ff7f4e039d6ca18658461e967d8ecd11'})"
     ]
   }
 }

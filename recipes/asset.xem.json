@@ -18,7 +18,7 @@
     ],
     "status" : [
       "curl('asset://$symbol','/heartbeat','GET')",
-      "logs(1,'module $symbol: '+(data && typeof data.message!=='undefined' && data.message==='ok'?'connected':'failed connection')+' to host [$host]')"
+      "stop(0,{module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:null,version:null})"
     ],
     "unspent" : [
       "test('$contract'==='undefined',1,2)",
@@ -59,7 +59,9 @@
     "factor" : [
       "pass('$factor')"
     ],
-    "history" : [],
+    "history" : [
+      "curl('asset://$symbol','/account/transfers/all?address='+'$1'.replace(/-/g, ''),'GET',data,{'content-type':'application/json'})"
+    ],
     "contract" : [
       "test('$contract'==='undefined',1,2)",
       "stop(1,'Unspent returns data only for NEM mosiac tokens.')",
@@ -70,6 +72,9 @@
       "jump(2,'$fee')",
       "jump(1,'$fee-mosaic')",
       "pass(data)"
+    ],
+    "sample" : [
+      "stop(0,{address:'nckzd7-jgdlnd-ivvph6-u2pg2q-kd3px3-fx4cpz-mf2a',transaction:'f857080798efa465f2453caface0c9338d3ced0d09c58a0d9035075f034ea460'})"
     ]
   }
 }
