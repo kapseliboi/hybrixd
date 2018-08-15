@@ -5,11 +5,10 @@ import { interfaceStreams } from '../interface/interface.js';
 
 import * as R from 'ramda';
 
-import { concat } from 'rxjs/observable/concat';
 import { merge } from 'rxjs/observable/merge';
 import { interval } from 'rxjs/observable/interval';
 import { fromEvent } from 'rxjs/observable/fromEvent';
-import { map, filter, startWith, takeUntil, tap } from 'rxjs/operators';
+import { startWith, takeUntil } from 'rxjs/operators';
 
 var AMOUNT_OF_SIGNIFICANT_DIGITS = 5;
 var BALANCE_RENDER_INTERVAL_MS = 60000;
@@ -24,7 +23,7 @@ var socialMediaIcons = [
   {class: '.chevron-right', svg: 'chevron-right'}
 ];
 
-var Icons = black;
+var systemIcons = svg;
 
 var stopBalanceStream = fromEvent(document.querySelector('#topmenu-assets'), 'click');
 
@@ -49,7 +48,7 @@ function renderStarredAssets (assets) {
 
 function renderSvgIcon (icon) {
   var iconName = R.prop('svg', icon);
-  document.querySelector(icon.class).innerHTML = R.prop(iconName, Icons);
+  document.querySelector(icon.class).innerHTML = R.prop(iconName, systemIcons);
 }
 
 function render (assets) {

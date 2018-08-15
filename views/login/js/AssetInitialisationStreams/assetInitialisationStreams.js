@@ -18,15 +18,8 @@ import { scan, bufferCount, map, filter, flatMap, catchError, tap, switchMap, wi
 var path = 'api';
 
 var defaultAssetData = [
-  { id: 'ark', starred: false },
-  { id: 'dummy', starred: false },
-  { id: 'nxt', starred: false },
-  // { id: 'eth', starred: false },
-  // { id: 'dgb', starred: false },
-  // { id: 'lsk', starred: false },
-  { id: 'waves', starred: false },
-  { id: 'burst', starred: false },
-  { id: 'btc', starred: false }
+  { id: 'btc', starred: false },
+  { id: 'eth', starred: false }
 ];
 
 function mkAssetInitializationStream (z) {
@@ -143,7 +136,6 @@ function mkAssetInitializationStream (z) {
 }
 
 function storedOrDefaultUserData (decodeUserData) {
-  console.log('decodeUserData = ', decodeUserData);
   return R.compose(
     R.unless(
       R.allPass([
@@ -156,8 +148,7 @@ function storedOrDefaultUserData (decodeUserData) {
       R.always(defaultAssetData)
     ),
     R.defaultTo(defaultAssetData)
-  // )(decodeUserData);
-  )(null);
+  )(decodeUserData);
 }
 
 function setAssetModesAndNames (z) {

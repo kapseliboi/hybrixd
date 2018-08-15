@@ -12,7 +12,7 @@
 //   return storage;
 // })();
 
-import { hybridd } from './hybriddcall.js';
+import { hybridd, hybriddcall, hybriddReturnProcess } from './hybriddcall.js';
 
 import * as R from 'ramda';
 
@@ -26,7 +26,7 @@ import { filter, map, delayWhen, flatMap, retryWhen } from 'rxjs/operators';
 storage_;
 
 var Sync = function (storekey) {
-  var storageMetaStream = from(hybridd.hybriddcall({r: 'e/storage/meta/' + storekey, z: false}))
+  var storageMetaStream = from(hybriddcall({r: 'e/storage/meta/' + storekey, z: false}))
     .pipe(
       filter(R.propEq('error', 0)),
       map(R.merge({r: 'e/storage/meta/' + storekey, z: true}))
@@ -44,7 +44,7 @@ var Sync = function (storekey) {
   var storageMetaResponseProcessStream = storageMetaStream
     .pipe(
       flatMap(function (properties) {
-        return from(hybridd.hybriddReturnProcess(properties));
+        return from(hybriddReturnProcess(properties));
       }),
       map(function (data) {
         if (R.isNil(R.prop('stopped', data)) && R.prop('progress', data) < 1) throw data;

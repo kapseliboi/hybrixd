@@ -27,7 +27,7 @@ export var hybridd = {
   hybriddReturnProcess
 };
 
-function hybriddcall (properties) {
+export function hybriddcall (properties) {
   var urltarget = properties.r;
   var usercrypto = GL.usercrypto;
   var step = commonUtils.nextStep();
@@ -50,7 +50,7 @@ function hybriddcall (properties) {
 }
 
 // proc request helper function
-function hybriddReturnProcess (properties) {
+export function hybriddReturnProcess (properties) {
   var processStep = commonUtils.nextStep();
   var reqmethod = typeof properties.z === 'undefined' && properties.z;
   var urlrequest = path + zchanOrYchanEncryptionStr(reqmethod, GL.usercrypto)(processStep)('p/' + properties.data);

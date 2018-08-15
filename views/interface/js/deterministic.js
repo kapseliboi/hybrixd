@@ -5,7 +5,6 @@ import * as R from 'ramda';
 // creates a unique seed for deterministic asset code
 export var deterministic_ = {
   mkDeterministicDetails: function (dcode, entry, submode, mode, keyGenBase) {
-    console.log('entry = ', entry);
     // console.log('entry = ', entry);
     // // TODO use regex
     var replaceAll = function (target, search, replacement) {
@@ -16,7 +15,6 @@ export var deterministic_ = {
     var code_ = replaceAll(code, '(typeof exports==="object"&&typeof module!=="undefined")', '(!(typeof exports==="object"&&typeof module!=="undefined"))');
 
     var deterministic = commonUtils.activate(code_);
-    console.log('deterministic = ', deterministic);
 
     var defaultDetails = {
       mode,

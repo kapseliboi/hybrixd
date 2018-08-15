@@ -1,7 +1,7 @@
 import { balance } from './../interface/js/Balance/balance.js';
 import { generateAddress } from './js/GenerateAddress/generateAddress.js';
 import { interfaceStreams } from './../interface/interface.js';
-import { receiveAsset } from './js/ReceiveAsset/receiveAsset.js';
+import { receiveAsset, resetReceiveStatusStream } from './js/ReceiveAsset/receiveAsset.js';
 import { sendAsset } from './js/SendAsset/sendAsset.js';
 import { transactionValidations } from './js/Transaction/validations.js';
 import { valuations } from './../interface/js/valuations.js';
@@ -77,6 +77,7 @@ function initializeAssetsInterfaceStreams (assets) {
   receiveAssetButtonStream.subscribe(function (assetID) {
     receiveAsset.renderAssetDetailsInModal(assetID);
   });
+  resetReceiveStatusStream.subscribe();
   generateAddressButtonStream.subscribe(function (assetID) {
     generateAddress.render(assetID);
   });

@@ -1,4 +1,4 @@
-import { hybridd } from './hybriddcall';
+import { hybridd, hybriddcall, hybriddReturnProcess } from './hybriddcall';
 
 import * as R from 'ramda';
 
@@ -21,7 +21,7 @@ function submitProofOfWork (req) {
     var url = 's/storage/pow/' + proofOfWorkStr;
     logger('Submitting storage proof: ' + proofOfWorkStr);
 
-    var hybriddCallStream = from(hybridd.hybriddCall({r: url, z: false}))
+    var hybriddCallStream = from(hybriddcall({r: url, z: false}))
       .pipe(
         filter(R.propEq('error', 0)),
         map(R.merge({r: url, z: true}))
@@ -30,7 +30,7 @@ function submitProofOfWork (req) {
     var hybriddCallResponseStream = hybriddCallStream
       .pipe(
         flatMap(function (properties) {
-          return from(hybridd.hybriddReturnProcess(properties));
+          return from(hybriddReturnProcess(properties));
         }),
         map(data => {
           if (R.isNil(R.prop('stopped', data)) && R.prop('progress', data) < 1) throw data;
