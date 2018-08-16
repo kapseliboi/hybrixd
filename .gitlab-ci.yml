@@ -12,5 +12,5 @@ purescript:
     - npm i
     - bower i
 test_:
-  script
+  script:
     - npm test
