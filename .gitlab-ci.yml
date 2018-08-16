@@ -8,6 +8,7 @@ compile:
 
 test:
   script:
+    - docker rm `docker ps -aq`
     - cd views/tests
     - npm install -g purescript
     - npm install -g pulp bower
