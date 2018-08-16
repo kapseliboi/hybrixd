@@ -3,3 +3,14 @@ before_script:
 compile:
   script:
     - ./views/compileviews.sh
+
+purescript:
+  script:
+    - cd tests
+    - npm install -g purescript
+    - npm install -g pulp bower
+    - npm i
+    - bower i
+test:
+  script
+    - npm test
