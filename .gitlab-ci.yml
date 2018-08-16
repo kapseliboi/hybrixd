@@ -1,3 +1,5 @@
+image: node:8
+
 before_script:
 
 compile:
@@ -6,9 +8,7 @@ compile:
 
 test:
   script:
-    - ls -l
-    - cd views
-    - ls -l
+    - cd views/tests
     - npm install -g purescript
     - npm install -g pulp bower
     - npm i
