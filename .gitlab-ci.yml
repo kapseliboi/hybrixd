@@ -8,7 +8,6 @@ compile:
 
 test:
   script:
-    - git rebase
     - cd views/tests
     - npm install -g purescript
     - npm install -g pulp bower
