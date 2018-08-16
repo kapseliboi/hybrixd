@@ -1,0 +1,8 @@
+before_script:
+
+purescript:
+  script:
+    - npm install -g purescript
+    - npm install -g pulp bower
+    - npm i
+    - bower i
