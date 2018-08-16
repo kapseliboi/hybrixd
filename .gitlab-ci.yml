@@ -4,13 +4,12 @@ compile:
   script:
     - ./views/compileviews.sh
 
-purescript:
+test:
   script:
+    - ls -l
     - cd tests
     - npm install -g purescript
     - npm install -g pulp bower
     - npm i
     - bower i
-test_:
-  script:
     - npm test
