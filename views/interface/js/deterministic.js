@@ -1,10 +1,20 @@
-var U = utils;
-var CommonUtils = commonUtils;
+import { commonUtils } from './../../common/index.js';
+
+import * as R from 'ramda';
 
 // creates a unique seed for deterministic asset code
-deterministic_ = {
+export var deterministic_ = {
   mkDeterministicDetails: function (dcode, entry, submode, mode, keyGenBase) {
-    var deterministic = CommonUtils.activate(LZString.decompressFromEncodedURIComponent(dcode));
+    // console.log('entry = ', entry);
+    // // TODO use regex
+    var replaceAll = function (target, search, replacement) {
+      var p = target.split(search);
+      return p.join(replacement);
+    };
+    var code = LZString.decompressFromEncodedURIComponent(dcode);
+    var code_ = replaceAll(code, '(typeof exports==="object"&&typeof module!=="undefined")', '(!(typeof exports==="object"&&typeof module!=="undefined"))');
+
+    var deterministic = commonUtils.activate(code_);
 
     var defaultDetails = {
       mode,
@@ -23,7 +33,7 @@ deterministic_ = {
 
 function generateDetails (entry, keyGenBase, mode, submode, deterministic) {
   var userKeys = GL.usercrypto.user_keys;
-  var seed = CommonUtils.seedGenerator(userKeys, keyGenBase);
+  var seed = commonUtils.seedGenerator(userKeys, keyGenBase);
   var keys = deterministic.keys({symbol: entry, seed, mode: submode});
 
   return {

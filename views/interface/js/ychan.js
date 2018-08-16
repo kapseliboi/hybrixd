@@ -54,6 +54,20 @@ ychan_decode = function (usercrypto, step, encdata) {
   return txtdata;
 };
 
+function readSession (userKeys, nonce, sessionData, onError) {
+  if (sessionData === null) {
+    onError();
+  }
+  // decrypt session data (so that it does not lie around but is only 'known' upon decrypt)
+  var sess_bin = nacl.from_hex(sessionData);
+
+  // user's session nonce is used for session_data
+  var session_data = nacl.crypto_box_open(sess_bin, nonce, userKeys.boxPk, userKeys.boxSk);
+
+  var session_string = nacl.decode_utf8(session_data);
+  return JSON.parse(session_string);
+}
+
 function getGeneralSessionData (usercrypto, step, sessionData) {
   var sessionObject = readSession(
     usercrypto.user_keys,

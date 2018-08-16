@@ -1,4 +1,6 @@
-transactionUtils = {
+import * as R from 'ramda';
+
+export var transactionUtils = {
   mkTransactionData: function (zippedTxDetails, globalAssets) {
     var symbol = document.querySelector('#action-send .modal-send-currency').getAttribute('asset');
     var asset = R.find(R.propEq('id', symbol), globalAssets);

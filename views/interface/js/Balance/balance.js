@@ -1,5 +1,13 @@
-var H = hybridd;
-var BALANCE_UPDATE_BUFFER_TIME_MS = 300000; // 3 minutes.
+import { hybridd } from '../hybriddcall.js';
+import { utils_ } from '../../../index/utils.js';
+import * as R from 'ramda';
+
+import { from } from 'rxjs/observable/from';
+import { of } from 'rxjs/observable/of';
+import { timer } from 'rxjs/observable/timer';
+import { map, retryWhen, delayWhen, flatMap, tap } from 'rxjs/operators';
+
+var BALANCE_UPDATE_BUFFER_TIME_MS = 180000; // 3 minutes.
 
 function mkBalanceStream (asset) {
   var assetID = R.prop('id', asset);
@@ -7,21 +15,21 @@ function mkBalanceStream (asset) {
   var currentBalance = R.path(['balance', 'amount'], asset);
   var url = 'a/' + assetID + '/balance/' + assetAddress;
 
-  var balanceStream = H.mkHybriddCallStream(url)
+  var balanceStream = hybridd.mkHybriddCallStream(url)
     .pipe(
-      rxjs.operators.map(function (data) {
+      map(function (data) {
         if (R.isNil(R.prop('stopped', data)) && R.prop('progress', data) < 1) throw data;
         return data;
       }),
-      rxjs.operators.retryWhen(function (errors) {
+      retryWhen(function (errors) {
         return errors.pipe(
-          rxjs.operators.delayWhen(function (_) {
-            return rxjs.timer(1000);
+          delayWhen(function (_) {
+            return timer(1000);
           })
         );
       }),
-      rxjs.operators.map(R.curry(currentOrUpdatedBalance)(currentBalance, asset)),
-      rxjs.operators.map(R.curry(normalizeBalance)(asset)) // When balance has a previously correct amount, but now returns incorrect, we keep the previously known value.
+      map(R.curry(currentOrUpdatedBalance)(currentBalance, asset)),
+      map(R.curry(normalizeBalance)(asset)) // When balance has a previously correct amount, but now returns incorrect, we keep the previously known value.
     );
 
   return balanceStream;
@@ -44,21 +52,21 @@ function assetOrError (asset) {
 }
 
 function mkRenderBalancesStream (intervalStream, q, n, assetsIDs) {
-  var assetsIDsStream = rxjs.from(assetsIDs)
+  var assetsIDsStream = from(assetsIDs)
     .pipe(
-      rxjs.operators.flatMap(function (assetID) {
-        return rxjs.of(assetID)
+      flatMap(function (assetID) {
+        return of(assetID)
           .pipe(
-            rxjs.operators.map(U.findAsset),
-            rxjs.operators.map(assetOrError),
-            rxjs.operators.retryWhen(function (errors) {
+            map(utils_.findAsset),
+            map(assetOrError),
+            retryWhen(function (errors) {
               return errors.pipe(
-                rxjs.operators.delayWhen(function (_) {
-                  return rxjs.timer(500);
+                delayWhen(function (_) {
+                  return timer(500);
                 })
               );
             }),
-            rxjs.operators.map(function (asset) {
+            map(function (asset) {
               var hyphenizedID = R.compose(
                 R.replace('.', '-'),
                 R.defaultTo(''),
@@ -74,8 +82,8 @@ function mkRenderBalancesStream (intervalStream, q, n, assetsIDs) {
                 amountSignificantDigits: n
               };
             }),
-            rxjs.operators.tap(function (assetBalanceDetails) {
-              U.renderDataInDom(R.prop('element', assetBalanceDetails), R.prop('amountSignificantDigits', assetBalanceDetails), R.prop('amountStr', assetBalanceDetails));
+            tap(function (assetBalanceDetails) {
+              utils_.renderDataInDom(R.prop('element', assetBalanceDetails), R.prop('amountSignificantDigits', assetBalanceDetails), R.prop('amountStr', assetBalanceDetails));
             })
           );
       })
@@ -83,7 +91,7 @@ function mkRenderBalancesStream (intervalStream, q, n, assetsIDs) {
 
   var initAssetsIDsStream = intervalStream
     .pipe(
-      rxjs.operators.flatMap(function (_) {
+      flatMap(function (_) {
         return assetsIDsStream;
       })
     );
@@ -141,13 +149,13 @@ function currentOrUpdatedBalance (currentBalance, asset, balanceData) {
 
 function updateAssetsBalances (assets) {
   R.forEach(function (asset) {
-    Balance.mkBalanceStream(asset)
+    mkBalanceStream(asset)
       .pipe(
-        rxjs.operators.map(R.curry(updateAssetBalance)(asset))
+        map(R.curry(updateAssetBalance)(asset))
       )
       .subscribe(R.compose(
-        U.updateGlobalAssets,
-        R.curry(updateAssets)(U.getGlobalAssets)
+        utils_.updateGlobalAssets,
+        R.curry(updateAssets)(utils_.getGlobalAssets)
       ));
   }, assets);
 }
@@ -172,7 +180,7 @@ function updateAssetBalance (a, balance) {
   )(balance);
 }
 
-balance = {
+export var balance = {
   mkBalanceStream,
   updateAssetsBalances,
   mkRenderBalancesStream

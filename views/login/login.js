@@ -1,51 +1,25 @@
-// hy_login.js - contains javascript for login, encryption and session authentication
-var A = animations;
-var C = commonUtils;
-var H = hybridd;
-var S = loginInputStreams;
-var U = utils;
-var V = validations;
+import { assetInitialisation } from './js/AssetInitialisationStreams/assetInitialisationStreams.js';
+import { browserSupport } from './js/BrowserSupport/browserSupport.js';
+import { sessionData } from './js/SessionData/sessionData.js';
+import { userCredentialsValidation } from './js/UserCredentialValidation/userCredentialValidation.js';
+import { userFeedback } from './js/UserFeedback/userFeedback.js';
+import { walletMaintenance } from './js/WalletMaintenance/walletMaintenance.js';
 
-var AssetInitialisation = assetInitialisation;
-var BrowserSupport = browserSupport;
-var SessionData = sessionData;
-var UserCredentialsValidation = userCredentialsValidation;
-var UserFeedback = userFeedback;
-var WalletMaintenance = walletMaintenance;
+import { utils_ } from './../index/utils.js';
+
+import { loginInputStreams } from './js/loginStreams.js';
+
+import * as R from 'ramda';
+
+import { from } from 'rxjs/observable/from';
+import { delay, map, tap, flatMap } from 'rxjs/operators';
+
+import customAlert from './login.ui.js';
 
 var path = 'api'; // TODO: Factor up!
 var args = {};
 
-assets = {
-  count: 0, // amount of assets
-  init: [], // initialization status
-  mode: {}, // mode of assets
-  modehashes: {}, // mode hashes
-  seed: {}, // cryptoseeds of assets
-  keys: {}, // keys of assets
-  addr: {}, // public addresses of assets
-  cntr: {}, // stored contract pointer, location or address
-  fact: {}, // factor of assets
-  fees: {}, // fees of assets
-  fsym: {}, // fees of assets
-  base: {} // fees of assets
-};
-
-GL = {
-  assets: [],
-  assetnames: {},
-  assetmodes: {},
-  coinMarketCapTickers: [],
-  powqueue: [],
-  usercrypto: {},
-  initCount: 0
-};
-
 var animationDelayByBrowser = bowser.name === 'Firefox' ? 1000 : 10;
-
-// Don't move this yet, as the cur_step is needed by assetModesUrl. Synchronous coding!
-nacl_factory.instantiate(function (naclinstance) { nacl = naclinstance; }); // TODO
-session_step = 1; // Session step number at the end of login. TODO
 
 /// /////////////////////////////
 // GLOBAL STUFFZ ///////////////
@@ -59,27 +33,27 @@ session_step = 1; // Session step number at the end of login. TODO
 
 // - Fix HACK for priority queue
 
-var keyDownOnUserIDStream = S.mkInputStream('#inputUserID');
-var localForageUserConfigStream = rxjs.from(localforage.getItem('userHasLoggedOut'))
+var keyDownOnUserIDStream = loginInputStreams.mkInputStream('#inputUserID');
+var localForageUserConfigStream = from(localforage.getItem('userHasLoggedOut'))
   .pipe(
-    rxjs.operators.map(UserFeedback.maybeRenderLogOutMessage),
-    rxjs.operators.delay(500),
-    rxjs.operators.tap(R.curry(UserFeedback.setLocalUserLogOutStatus)(false))
+    map(userFeedback.maybeRenderLogOutMessage),
+    delay(500),
+    tap(R.curry(userFeedback.setLocalUserLogOutStatus)(false))
   );
-var handleLoginStream = UserCredentialsValidation.credentialsOrErrorStream
+var handleLoginStream = userCredentialsValidation.credentialsOrErrorStream
   .pipe(
-    rxjs.operators.tap(function (_) { UserFeedback.doFlipOverAnimation(); }),
-    rxjs.operators.delay(animationDelayByBrowser), // HACK: Delay data somewhat so browser gives priority to DOM manipulation instead of initiating all further streams.
-    rxjs.operators.flatMap(R.curry(SessionData.mkSessionDataStream)(nacl)), // TODO: Remove global dependency
-    rxjs.operators.tap(updateUserCrypto),
-    rxjs.operators.flatMap(AssetInitialisation.mkAssetInitializationStream),
-    rxjs.operators.map(R.sortBy(R.compose(R.toLower, R.prop('id')))),
-    rxjs.operators.tap(U.updateGlobalAssets)
+    tap(function (_) { userFeedback.doFlipOverAnimation(); }),
+    delay(animationDelayByBrowser), // HACK: Delay data somewhat so browser gives priority to DOM manipulation instead of initiating all further streams.
+    flatMap(R.curry(sessionData.mkSessionDataStream)(nacl)), // TODO: Remove global dependency
+    tap(updateUserCrypto),
+    flatMap(assetInitialisation.mkAssetInitializationStream),
+    map(R.sortBy(R.compose(R.toLower, R.prop('id')))),
+    tap(utils_.updateGlobalAssets)
   );
 
 function main () {
-  BrowserSupport.checkBrowserSupport(window.navigator.userAgent);
-  WalletMaintenance.mkTestHybriddAvailabilityStream().subscribe();
+  browserSupport.checkBrowserSupport(window.navigator.userAgent);
+  walletMaintenance.mkTestHybriddAvailabilityStream().subscribe();
   maybeOpenNewWalletModal(location);
   localForageUserConfigStream.subscribe();
   document.keydown = handleCtrlSKeyEvent; // for legacy wallets enable signin button on CTRL-S
@@ -125,4 +99,4 @@ function updateUserCrypto (userSessionData) {
   };
 }
 
-U.documentReady(main);
+utils_.documentReady(main);

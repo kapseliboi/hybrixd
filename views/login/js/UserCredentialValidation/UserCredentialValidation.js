@@ -1,58 +1,64 @@
-var S = loginInputStreams;
-var U = utils;
-var V = validations;
-var UserFeedback = userFeedback;
+import { loginInputStreams } from './../loginStreams.js';
+import { utils_ } from './../../../index/utils.js';
+import { validations } from './../Validations/validations.js';
+import { userFeedback } from './..//UserFeedback/userFeedback.js';
 
-var keyDownOnPasswordStream = S.mkInputStream('#inputPasscode');
+import * as R from 'ramda';
 
-var loginBtnStream = rxjs.fromEvent(document.querySelector('#loginbutton'), 'click')
+import { fromEvent } from 'rxjs/observable/fromEvent';
+import { of } from 'rxjs/observable/of';
+import { merge } from 'rxjs/observable/merge';
+import { map, filter, switchMap, tap, catchError, withLatestFrom } from 'rxjs/operators';
+
+var keyDownOnPasswordStream = loginInputStreams.mkInputStream('#inputPasscode');
+
+var loginBtnStream = fromEvent(document.querySelector('#loginbutton'), 'click')
   .pipe(
-    rxjs.operators.filter(U.btnIsNotDisabled)
+    filter(utils_.btnIsNotDisabled)
   );
 
-var userSubmitStream = rxjs
-  .merge(
-    loginBtnStream,
-    keyDownOnPasswordStream
-  )
+var userSubmitStream = merge(
+  loginBtnStream,
+  keyDownOnPasswordStream
+)
   .pipe(
-    rxjs.operators.tap(UserFeedback.maybeDisableLogOutMessage),
-    rxjs.operators.tap(function (_) { UserFeedback.setCSSTorenderButtonsToDisabled(); })
+    tap(userFeedback.maybeDisableLogOutMessage),
+    tap(function (_) { userFeedback.setCSSTorenderButtonsToDisabled(); })
   );
 
-var credentialsStream = S.credentialsStream
+var credentialsStream = loginInputStreams.credentialsStream
   .pipe(
-    rxjs.operators.tap(UserFeedback.disableUserNotificationBox),
-    // rxjs.operators.tap(UserFeedback.maybeDisableLogOutMessage),
-    rxjs.operators.tap(UserFeedback.setCSSTorenderButtonsToEnabled)
+    tap(userFeedback.disableUserNotificationBox),
+    // rxjs.operators.tap(userFeedback.maybeDisableLogOutMessage),
+    tap(userFeedback.setCSSTorenderButtonsToEnabled)
   );
 
 var validatedUserCredentialsStream = userSubmitStream
   .pipe(
-    rxjs.operators.withLatestFrom(credentialsStream)
+    withLatestFrom(credentialsStream)
   );
 
 var credentialsOrErrorStream = validatedUserCredentialsStream
   .pipe(
-    rxjs.operators.map(mkCredentialsObj),
-    rxjs.operators.map(R.map(U.normalizeUserInput)),
-    rxjs.operators.switchMap(validCredentialsOrHandleError),
-    rxjs.operators.filter(R.compose(
+    map(mkCredentialsObj),
+    map(R.map(utils_.normalizeUserInput)),
+    switchMap(validCredentialsOrHandleError),
+    filter(R.compose(
       R.not,
       R.has('error')
     ))
   );
 
 function validCredentialsOrHandleError (credentials) {
-  return rxjs.of(credentials)
+  return of(credentials)
     .pipe(
-      rxjs.operators.map(credentialsOrThrowError),
-      rxjs.operators.catchError(resetFormWithDisabledLoginBtn)
+      map(credentialsOrThrowError),
+      catchError(resetFormWithDisabledLoginBtn)
     );
 }
 
 function credentialsOrThrowError (c) {
-  if (V.hasValidCredentials(c)) {
+  if (validations.hasValidCredentials(c)) {
     return c;
   } else {
     throw { error: 1, msg: 'It seems the credentials you entered are incorrect. Please check your username and password and try again.' };
@@ -60,17 +66,17 @@ function credentialsOrThrowError (c) {
 }
 
 function resetFormWithDisabledLoginBtn (e) {
-  return rxjs.of(e)
+  return of(e)
     .pipe(
-      rxjs.operators.tap(UserFeedback.notifyUserOfIncorrectCredentials),
-      rxjs.operators.tap(function (_) { UserFeedback.toggleLoginSpinner('remove'); }),
-      rxjs.operators.tap(function (_) { UserFeedback.setLoginButtonText('Sign in'); })
+      tap(userFeedback.notifyUserOfIncorrectCredentials),
+      tap(function (_) { userFeedback.toggleLoginSpinner('remove'); }),
+      tap(function (_) { userFeedback.setLoginButtonText('Sign in'); })
     );
 }
 
 function mkCredentialsObj (z) { return { userID: R.path(['1', '0'], z), password: R.path(['1', '1'], z) }; }
 
-userCredentialsValidation = {
+export var userCredentialsValidation = {
   credentialsOrErrorStream,
   userSubmitStream
 };

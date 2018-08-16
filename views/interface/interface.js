@@ -1,41 +1,52 @@
-var Balance = balance;
-var UserFeedback = userFeedback;
-var Valuations = valuations;
+import { balance } from './js/Balance/balance.js';
+import { userFeedback } from './../login/js/UserFeedback/userFeedback.js';
+import { valuations } from './js//valuations.js';
+import { proofOfWork_ } from './js/proofOfWork.js';
 
-var logOutBtnStream = rxjs.fromEvent(document.querySelector('.logOutBtn'), 'click')
+import * as R from 'ramda';
+
+import { concat } from 'rxjs/observable/concat';
+import { fromEvent } from 'rxjs/observable/fromEvent';
+import { interval } from 'rxjs/observable/interval';
+import { map, filter, startWith, takeUntil, tap } from 'rxjs/operators';
+
+var logOutBtnStream = fromEvent(document.querySelector('.logOutBtn'), 'click')
   .pipe(
-    rxjs.operators.filter(R.propEq('type', 'click')),
-    rxjs.operators.map(R.curry(UserFeedback.setLocalUserLogOutStatus)(true)),
-    rxjs.operators.tap(removeUserSessionData),
-    rxjs.operators.tap(function () { fetchview('login', {}); })
+    filter(R.propEq('type', 'click')),
+    map(R.curry(userFeedback.setLocalUserLogOutStatus)(true)),
+    tap(removeUserSessionData),
+    tap(function () { fetchview('login', {}); })
   );
 
-var logOutStream = rxjs
-  .concat(
-    rxjs.fromEvent(document.querySelector('#topmenu-logout'), 'click'),
-    logOutBtnStream
+var logOutStream = concat(
+  fromEvent(document.querySelector('#topmenu-logout'), 'click'),
+  logOutBtnStream
+);
+
+var dollarPriceStream = interval(60000)
+  .pipe(
+    startWith(0),
+    takeUntil(logOutStream)
   );
 
-var dollarPriceStream = rxjs
-  .interval(60000)
+var retrieveBalanceStream = interval(60000)
   .pipe(
-    rxjs.operators.startWith(0),
-    rxjs.operators.takeUntil(logOutStream)
+    startWith(0),
+    takeUntil(logOutStream)
   );
 
-var retrieveBalanceStream = rxjs
-  .interval(60000)
+var powIntervalStream = interval(12000)
   .pipe(
-    rxjs.operators.startWith(0),
-    rxjs.operators.takeUntil(logOutStream)
+    startWith(0)
   );
 
 function main () {
+  powIntervalStream.subscribe(function () { proofOfWork_.loopThroughProofOfWork(); });
   document.querySelector('#topmenu-assets').onclick = fetchAssetsViews(pass_args); // MAKE INTO STREAM
   document.querySelector('#topmenu-assets').classList.add('active');
   logOutBtnStream.subscribe();
-  dollarPriceStream.subscribe(function (_) { Valuations.getDollarPrices(); });
-  retrieveBalanceStream.subscribe(function (_) { Balance.updateAssetsBalances(GL.assets); });
+  dollarPriceStream.subscribe(function (_) { valuations.getDollarPrices(); });
+  retrieveBalanceStream.subscribe(function (_) { balance.updateAssetsBalances(GL.assets); });
   alertOnBeforeUnload();
   fetchview('interface.dashboard', {});
 }
@@ -57,6 +68,6 @@ function fetchAssetsViews (args) { return function () { fetchview('interface.ass
 
 main();
 
-interfaceStreams = {
+export var interfaceStreams = {
   logOutStream
 };

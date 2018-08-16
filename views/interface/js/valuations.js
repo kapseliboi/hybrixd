@@ -1,9 +1,14 @@
+import { utils_ } from '../../index/utils.js';
+import * as R from 'ramda';
+
+import { from } from 'rxjs/observable/from';
+
 var fetch_ = fetch;
 
-valuations = {
+export var valuations = {
   getDollarPrices: function () {
     var url = 'https://api.coinmarketcap.com/v2/ticker/?limit=0';
-    var valuationsStream = rxjs.from(U.fetchDataFromUrl(url, 'Could not fetch valuations.'));
+    var valuationsStream = from(utils_.fetchDataFromUrl(url, 'Could not fetch valuations.'));
 
     valuationsStream.subscribe(function (coinMarketCapData) {
       GL.coinMarketCapTickers = R.prop('data', coinMarketCapData);

@@ -1,7 +1,10 @@
-var U = utils;
-var A = asset;
+import { utils_ } from '../index/utils.js';
+import { asset } from './js/Asset/asset';
+
+import * as R from 'ramda';
+
 // User interface transformations
-UItransform = {
+window.UItransform = {
   txStart: function () {
     loadSpinner();
     document.querySelector('#action-send .pure-button-send').classList.add('pure-button-disabled');
@@ -22,10 +25,10 @@ UItransform = {
   },
   deductBalance: function (element, assetID, newBalance) {
     // TODO: Validate balance String here.
-    document.querySelector(element).innerHTML = '<span style="color:#6B6;">' + U.formatFloatInHtmlStr(String(newBalance), 11) + '</span>';
-    renderDollarPriceInAsset(assetID, newBalance);
+    document.querySelector(element).innerHTML = '<span style="color:#6B6;">' + utils_.formatFloatInHtmlStr(String(newBalance), 11) + '</span>';
+    renderDollarPriceInAsset(assetID, newBalance); // TODO: export!
     R.compose(
-      U.updateGlobalAssets,
+      utils_.updateGlobalAssets,
       R.reduce(R.curry(updateAssetBalanceData)(assetID, newBalance), [])
     )(GL.assets);
   }
@@ -46,10 +49,10 @@ function updateAssetBalanceData (id, amount, newAssets, a) {
   )(a);
 }
 
-function mkHtmlToRender (assets) {
+export function mkHtmlToRender (assets) {
   return R.compose(
     mkAssetsInterfaceHtmlStr,
-    R.reduce(A.mkAssetHTML, '')
+    R.reduce(asset.mkAssetHTML, '')
   )(assets);
 }
 
@@ -69,5 +72,5 @@ function mkAssetsInterfaceHtmlStr (assetsHTMLStr) {
     '</div>';
 }
 
-function loadSpinner () { document.querySelector('#action-send .spinner').classList.add('active'); }
-function stopSpinner () { document.querySelector('#action-send .spinner').classList.remove('active'); }
+export function loadSpinner () { document.querySelector('#action-send .spinner').classList.add('active'); }
+export function stopSpinner () { document.querySelector('#action-send .spinner').classList.remove('active'); }
