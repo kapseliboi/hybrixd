@@ -61,7 +61,7 @@ for FILE in $(find -L . -name '*.js' -or -name '*.css'  -or -name '*.json' -or -
             mkdir -p $OUTPATH/$FOLDER
             case $EXT in
                 js)
-                    $UGLIFY $FILE > $OUTPATH/$FILE
+                    $UGLIFY $FILE --compress --mangle > $OUTPATH/$FILE
                     ;;
                 css)
                     $CSSMIN $FILE > $OUTPATH/$FILE

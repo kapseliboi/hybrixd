@@ -226,7 +226,6 @@ function post (properties) {
   // set data to what command we are performing
   global.hybridd.proc[processID].data = properties.command;
   // handle the command
-  console.log('properties.command', properties.command);
   if (postdata == null) {
     var success = false;
   } else {

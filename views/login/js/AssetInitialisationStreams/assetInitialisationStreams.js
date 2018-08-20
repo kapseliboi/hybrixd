@@ -1,6 +1,19 @@
-var A = animations;
-var U = utils;
-var UserFeedback = userFeedback;
+import { animations } from './../animations.js';
+import { utils_ } from './../../../index/utils.js';
+import { userFeedback } from './../UserFeedback/userFeedback.js';
+import { Storage } from './../../../interface/js/Storage.js';
+import { commonUtils } from './../../../common/index.js';
+import { hybridd } from './../../../interface/js/hybriddcall.js';
+import { initAsset } from './../../../interface/js/assetInitialization.js';
+
+import * as R from 'ramda';
+
+import { from } from 'rxjs/observable/from';
+import { of } from 'rxjs/observable/of';
+import { merge } from 'rxjs/observable/merge';
+import { combineLatest } from 'rxjs/observable/combineLatest';
+import { empty } from 'rxjs/observable/empty';
+import { scan, bufferCount, map, filter, flatMap, catchError, tap, switchMap, withLatestFrom } from 'rxjs/operators';
 
 var path = 'api';
 
@@ -10,115 +23,110 @@ var defaultAssetData = [
 ];
 
 function mkAssetInitializationStream (z) {
-  GL.cur_step = nextStep();
+  GL.cur_step = commonUtils.nextStep();
   var assetsModesUrl = path + zchan(GL.usercrypto, GL.cur_step, 'l/asset/details');
 
-  var assetsModesAndNamesStream = rxjs
-    .from(U.fetchDataFromUrl(assetsModesUrl, 'Error retrieving asset details.'))
+  var assetsModesAndNamesStream = from(utils_.fetchDataFromUrl(assetsModesUrl, 'Error retrieving asset details.'))
     .pipe(
-      rxjs.operators.map(decryptData)
+      map(decryptData)
     );
 
-  var deterministicHashesStream = rxjs
-    .from(hybriddcall({r: '/s/deterministic/hashes', z: true}))
+  var deterministicHashesStream = from(hybridd.hybriddcall({r: '/s/deterministic/hashes', z: true}))
     .pipe(
-      rxjs.operators.switchMap(value => {
-        return rxjs.of(value)
+      switchMap(value => {
+        return of(value)
           .pipe(
-            rxjs.operators.map(function (deterministicHashesResponse) {
+            map(function (deterministicHashesResponse) {
               if (R.not(R.propEq('error', 0))) {
                 throw { error: 1, msg: 'Could not start process.'};
               } else {
                 return deterministicHashesResponse;
               }
             }),
-            rxjs.operators.catchError(UserFeedback.resetLoginFlipOverErrorStream)
+            catchError(userFeedback.resetLoginFlipOverErrorStream)
           );
       }),
-      rxjs.operators.filter(R.propEq('error', 0))
+      filter(R.propEq('error', 0))
     );
 
   var deterministicHashesResponseProcessStream = deterministicHashesStream
     .pipe(
-      rxjs.operators.switchMap(function (value) {
-        return rxjs.of(value)
+      switchMap(function (value) {
+        return of(value)
           .pipe(
-            rxjs.operators.flatMap(function (properties) {
-              return rxjs
-                .from(hybriddReturnProcess(properties));
+            flatMap(function (properties) {
+              return from(hybridd.hybriddReturnProcess(properties));
             }),
-            rxjs.operators.map(function (deterministicHashesProcessResponse) {
+            map(function (deterministicHashesProcessResponse) {
               if (R.not(R.propEq('error', 0, deterministicHashesProcessResponse))) {
                 throw { error: 1, msg: 'Error retrieving deterministic hashes..'};
               } else {
                 return deterministicHashesProcessResponse;
               }
             }),
-            rxjs.operators.catchError(UserFeedback.resetLoginFlipOverErrorStream)
+            catchError(userFeedback.resetLoginFlipOverErrorStream)
           );
       }),
-      rxjs.operators.filter(R.propEq('error', 0)),
-      rxjs.operators.map(R.prop('data')), // VALIDATE?
-      rxjs.operators.tap(function (deterministicHashes) { assets.modehashes = deterministicHashes; }) // TODO: Make storedUserStream dependent on this stream! USE TAP
+      filter(R.propEq('error', 0)),
+      map(R.prop('data')), // VALIDATE?
+      tap(function (deterministicHashes) { assets.modehashes = deterministicHashes; }) // TODO: Make storedUserStream dependent on this stream! USE TAP
     );
 
   var storedUserDataStream = Storage.Get_(userStorageKey('ff00-0035'))
     .pipe(
-      rxjs.operators.map(userDecode),
-      rxjs.operators.map(storedOrDefaultUserData) // TODO: make pure!
+      map(userDecode),
+      map(storedOrDefaultUserData) // TODO: make pure!
     );
 
-  var initializationStream = rxjs
-    .combineLatest(
-      storedUserDataStream,
-      assetsModesAndNamesStream,
-      deterministicHashesResponseProcessStream
-    )
+  var initializationStream = combineLatest(
+    storedUserDataStream,
+    assetsModesAndNamesStream,
+    deterministicHashesResponseProcessStream
+  )
     .pipe(
-      rxjs.operators.map(setAssetModesAndNames),
-      rxjs.operators.map(initialize_)
+      map(setAssetModesAndNames),
+      map(initialize_)
     );
 
   var assetsDetailsStream = initializationStream
     .pipe(
-      rxjs.operators.flatMap(function (initializedData) {
-        return rxjs.of(initializedData)
+      flatMap(function (initializedData) {
+        return of(initializedData)
           .pipe(
-            rxjs.operators.flatMap(function (a) { return a; }), // Flatten Array structure...
-            rxjs.operators.filter(existsInAssetNames), // TODO: Now IGNORES assets that have been disabled in the backend. Need to disable / notify user when this occurs.
-            rxjs.operators.flatMap(function (asset) {
+            flatMap(function (a) { return a; }), // Flatten Array structure...
+            filter(existsInAssetNames), // TODO: Now IGNORES assets that have been disabled in the backend. Need to disable / notify user when this occurs.
+            flatMap(function (asset) {
               return R.compose(
                 initializeAsset(asset),
                 R.prop('id')
               )(asset);
             }),
-            rxjs.operators.map(U.addIcon),
-            rxjs.operators.bufferCount(R.length(initializedData))
+            map(utils_.addIcon),
+            bufferCount(R.length(initializedData))
           );
       })
     );
 
-  var finalizedWalletStream = rxjs.empty()
+  var finalizedWalletStream = empty()
     .pipe(
-      rxjs.operators.withLatestFrom(assetsDetailsStream)
+      withLatestFrom(assetsDetailsStream)
     );
 
-  var assetsDetailsAnimationStream = rxjs
-    .merge(
-      A.initialAnimationStateStream(1),
-      assetsModesAndNamesStream,
-      deterministicHashesResponseProcessStream,
-      storedUserDataStream,
-      initializationStream,
-      finalizedWalletStream
-    )
+  var assetsDetailsAnimationStream = merge(
+    animations.initialAnimationStateStream(1),
+    assetsModesAndNamesStream,
+    deterministicHashesResponseProcessStream,
+    storedUserDataStream,
+    initializationStream,
+    finalizedWalletStream
+  )
     .pipe(
-      rxjs.operators.scan(R.inc),
-      rxjs.operators.map(R.when(
-        R.lte(A.ANIMATION_STEPS),
-        R.always(A.ANIMATION_STEPS)
+      scan(R.inc),
+      map(R.when(
+        R.lte(animations.ANIMATION_STEPS),
+        R.always(animations.ANIMATION_STEPS)
       )),
-      rxjs.operators.map(A.doProgressAnimation)
+      map(animations.doProgressAnimation)
     );
 
   // TODO: Refactor. Can''t modularize now, because CSS is not being rendered at the same time streams are being initialized.
@@ -156,7 +164,7 @@ function initialize_ (z) {
   var initializedGlobalAssets = initializeGlobalAssets(globalAssets);
 
   Storage.Set(userStorageKey('ff00-0035'), userEncode(initializedGlobalAssets));
-  U.updateGlobalAssets(initializedGlobalAssets);
+  utils_.updateGlobalAssets(initializedGlobalAssets);
 
   return initializedGlobalAssets;
 }
@@ -200,6 +208,6 @@ function matchSymbolWithData (key, data) {
 
 function decryptData (d) { return R.curry(zchan_obj)(GL.usercrypto)(GL.cur_step)(d); }
 
-assetInitialisation = {
+export var assetInitialisation = {
   mkAssetInitializationStream
 };
