@@ -1,5 +1,6 @@
-// Non-shared password validations
-const C = commonUtils;
+import { commonUtils } from './../../../common/index.js';
+
+import * as R from 'ramda';
 
 function validateUseridForLegacyWallets (userID) {
   var hxid = base32ToHex(userID).toUpperCase();
@@ -17,16 +18,16 @@ function validatePassForLegacyWallets (userID, pass) {
 }
 
 function validateCredentials (userID, pass) {
-  var isUserIDValid = C.validateUserIDLength(userID) && validateUseridForLegacyWallets(userID) && userID !== pass;
-  var isPasswordValid = C.validatePasswordLength(pass) && validatePassForLegacyWallets(userID, pass);
+  var isUserIDValid = commonUtils.validateUserIDLength(userID) && validateUseridForLegacyWallets(userID) && userID !== pass;
+  var isPasswordValid = commonUtils.validatePasswordLength(pass) && validatePassForLegacyWallets(userID, pass);
 
   return isUserIDValid && isPasswordValid;
 }
 
-function nonceHasCorrectLength (nonce1) { return C.clean(nonce1).length === 48; }
+function nonceHasCorrectLength (nonce1) { return commonUtils.clean(nonce1).length === 48; }
 function hasValidCredentials (credentials) { return validateCredentials(R.prop('userID', credentials), R.prop('password', credentials)); }
 
-validations = {
+export var validations = {
   validateCredentials,
   nonceHasCorrectLength,
   hasValidCredentials

@@ -1,6 +1,8 @@
-var U = utils;
+import { utils_ } from '../../../index/utils.js';
+import { Storage } from './../../../interface/js/storage.js';
+import * as R from 'ramda';
 
-function setStarredAssetClass (assetID, isStarred) {
+export function setStarredAssetClass (assetID, isStarred) {
   var id = '#' + assetID.replace(/\./g, '_'); // Mk into function. Being used elsewhere too.
   var addOrRemoveClass = isStarred ? 'add' : 'remove';
   document.querySelector(id + ' > svg').classList[addOrRemoveClass]('starred');
@@ -21,7 +23,7 @@ function maybeUpdateStarredProp (assetID) {
   };
 }
 
-toggleStar = function (assetID) {
+window.toggleStar = function (assetID) {
   var globalAssets = GL.assets;
   var updatedGlobalAssets = R.reduce(maybeUpdateStarredProp(assetID), [], globalAssets);
   var starredForStorage = R.map(R.pickAll(['id', 'starred']), updatedGlobalAssets);
@@ -31,8 +33,7 @@ toggleStar = function (assetID) {
     R.find(R.propEq('id', assetID))
   )(updatedGlobalAssets);
 
-  Storage.Set(userStorageKey('ff00-0035'), userEncode(starredForStorage))
-    .subscribe();
-  U.updateGlobalAssets(updatedGlobalAssets);
+  Storage.Set(userStorageKey('ff00-0035'), userEncode(starredForStorage)).subscribe();
+  utils_.updateGlobalAssets(updatedGlobalAssets);
   setStarredAssetClass(assetID, isStarred);
 };

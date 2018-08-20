@@ -1,7 +1,15 @@
-var Storage = storage;
-var Deterministic = deterministic_;
+import { Storage } from './storage.js';
+import { deterministic_ } from './deterministic.js';
+import { hybridd } from './hybriddcall.js';
 
-initAsset = function (entry, fullMode, init) {
+import * as R from 'ramda';
+
+import { from } from 'rxjs/observable/from';
+import { of } from 'rxjs/observable/of';
+import { timer } from 'rxjs/observable/timer';
+import { map, filter, flatMap, retryWhen, delayWhen } from 'rxjs/operators';
+
+export function initAsset (entry, fullMode, init) {
   var mode = fullMode.split('.')[0];
   var submode = fullMode.split('.')[1];
   var modeHash = R.path(['modehashes', mode], assets);
@@ -10,42 +18,40 @@ initAsset = function (entry, fullMode, init) {
   return R.not(R.isNil(modeHash))
     ? Storage.Get_(modeHash + '-LOCAL')
       .pipe(
-        rxjs.operators.flatMap(getDeterministicData(entry, mode, submode, fullMode, init))
+        flatMap(getDeterministicData(entry, mode, submode, fullMode, init))
       )
-    : rxjs.of(init); // TODO: Give asset 'disabled' prop?
-};
+    : of(init); // TODO: Give asset 'disabled' prop?
+}
 
 function mkAssetDetailsStream (init, dcode, submode, entry, fullmode) {
   var url = 'a/' + entry + '/details/';
 
-  var assetDetailsStream = rxjs
-    .from(hybriddcall({r: url, z: false}))
+  var assetDetailsStream = from(hybridd.hybriddcall({r: url, z: false}))
     .pipe(
-      rxjs.operators.filter(R.propEq('error', 0)),
-      rxjs.operators.map(R.merge({r: '/s/deterministic/hashes', z: true}))
+      filter(R.propEq('error', 0)),
+      map(R.merge({r: '/s/deterministic/hashes', z: true}))
     );
 
   var assetDetailsResponseStream = assetDetailsStream
     .pipe(
-      rxjs.operators.flatMap(function (properties) {
-        return rxjs
-          .from(hybriddReturnProcess(properties));
+      flatMap(function (properties) {
+        return from(hybridd.hybriddReturnProcess(properties));
       }),
-      rxjs.operators.map(function (processData) {
+      map(function (processData) {
         if (R.isNil(R.prop('data', processData)) && R.equals(R.prop('error', processData), 0)) throw processData;
         return processData;
       }),
-      rxjs.operators.retryWhen(function (errors) {
+      retryWhen(function (errors) {
         return errors.pipe(
-          rxjs.operators.delayWhen(_ => rxjs.timer(500))
+          delayWhen(_ => timer(500))
         );
       })
     );
 
   return assetDetailsResponseStream
     .pipe(
-      rxjs.operators.map(R.prop('data')),
-      rxjs.operators.map(updateAsset(init, dcode, entry, submode, fullmode))
+      map(R.prop('data')),
+      map(updateAsset(init, dcode, entry, submode, fullmode))
     );
 }
 
@@ -61,7 +67,7 @@ function setStorageAndMkAssetDetails (init, mode, submode, entry, fullmode, dcod
       Storage.Set(assets.modehashes[mode] + '-LOCAL', dcode);
       return mkAssetDetailsStream(init, dcode, submode, entry, fullmode);
     } else {
-      return rxjs.of(init); // TODO: Catch error properly!
+      return of(init); // TODO: Catch error properly!
     }
   };
 }
@@ -69,20 +75,19 @@ function setStorageAndMkAssetDetails (init, mode, submode, entry, fullmode, dcod
 // TODO: Make pure!
 function reinitializeDeterministicMode (init, mode, submode, entry, fullmode) {
   var url = 's/deterministic/code/' + mode;
-  var modeStream = rxjs.from(hybriddcall({r: url, z: 0}));
+  var modeStream = from(hybridd.hybriddcall({r: url, z: 0}));
   var modeResponseStream = modeStream
     .pipe(
-      rxjs.operators.flatMap(function (properties) {
-        return rxjs
-          .from(hybriddReturnProcess(properties));
+      flatMap(function (properties) {
+        return from(hybridd.hybriddReturnProcess(properties));
       }),
-      rxjs.operators.map(function (processData) {
+      map(function (processData) {
         if (R.isNil(R.prop('stopped', processData)) && R.prop('progress', processData) < 1) throw processData;
         return processData;
       }),
-      rxjs.operators.retryWhen(function (errors) {
+      retryWhen(function (errors) {
         return errors.pipe(
-          rxjs.operators.delayWhen(_ => rxjs.timer(1000))
+          delayWhen(_ => timer(1000))
         );
       })
     );
@@ -92,7 +97,7 @@ function reinitializeDeterministicMode (init, mode, submode, entry, fullmode) {
 
 function mkAssetDetails (initialDetails, dcode, entry, submode, mode, assetDetails) {
   var keyGenBase = R.prop('keygen-base', assetDetails);
-  var deterministicDetails = Deterministic.mkDeterministicDetails(dcode, entry, submode, mode, keyGenBase);
+  var deterministicDetails = deterministic_.mkDeterministicDetails(dcode, entry, submode, mode, keyGenBase);
   return R.mergeAll([
     initialDetails,
     assetDetails,
@@ -120,7 +125,7 @@ function getDeterministicData (entry, mode, submode, fullmode, init) {
       ? mkAssetDetailsStream(init, dcode, submode, entry, fullmode)
       : reinitializeDeterministicMode(init, mode, submode, entry, fullmode)
         .pipe(
-          rxjs.operators.flatMap(setStorageAndMkAssetDetails(init, mode, submode, entry, fullmode))
+          flatMap(setStorageAndMkAssetDetails(init, mode, submode, entry, fullmode))
         );
   };
 }

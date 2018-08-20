@@ -1,3 +1,5 @@
+import * as R from 'ramda';
+
 var Bowser = bowser;
 
 var unsupportedBrowsers = [
@@ -23,6 +25,6 @@ function checkBrowserSupport (userAgent) {
   }
 }
 
-browserSupport = {
+export var browserSupport = {
   checkBrowserSupport
 };

@@ -1,9 +1,14 @@
-var U = utils;
-var H = hybridd;
-var UI = dashboardUI;
-var SVG = svg;
-var Balance = balance;
-var InterfaceStreams = interfaceStreams;
+import { utils_} from '../index/utils.js';
+import { dashboardUI } from './js/AssetDashboard/assetDashboard.js';
+import { balance } from '../interface/js/Balance/balance.js';
+import { interfaceStreams } from '../interface/interface.js';
+
+import * as R from 'ramda';
+
+import { merge } from 'rxjs/observable/merge';
+import { interval } from 'rxjs/observable/interval';
+import { fromEvent } from 'rxjs/observable/fromEvent';
+import { startWith, takeUntil } from 'rxjs/operators';
 
 var AMOUNT_OF_SIGNIFICANT_DIGITS = 5;
 var BALANCE_RENDER_INTERVAL_MS = 60000;
@@ -18,33 +23,32 @@ var socialMediaIcons = [
   {class: '.chevron-right', svg: 'chevron-right'}
 ];
 
-var stopBalanceStream = rxjs
-  .fromEvent(document.querySelector('#topmenu-assets'), 'click');
+var systemIcons = svg;
 
-var retrieveBalanceStream = rxjs
-  .interval(BALANCE_RENDER_INTERVAL_MS)
+var stopBalanceStream = fromEvent(document.querySelector('#topmenu-assets'), 'click');
+
+var retrieveBalanceStream = interval(BALANCE_RENDER_INTERVAL_MS)
   .pipe(
-    rxjs.operators.startWith(0),
-    rxjs.operators.takeUntil(rxjs.merge(
+    startWith(0),
+    takeUntil(merge(
       stopBalanceStream,
-      InterfaceStreams.logOutStream
+      interfaceStreams.logOutStream
     ))
   );
 
 function renderStarredAssets (assets) {
-  var starredAssetsHTML = R.reduce(UI.mkHtmlForStarredAssets, '', assets);
+  var starredAssetsHTML = R.reduce(dashboardUI.mkHtmlForStarredAssets, '', assets);
 
   var htmlToRender = R.not(R.isEmpty(assets))
     ? starredAssetsHTML
-    : UI.noStarredAssetsHTML;
+    : dashboardUI.noStarredAssetsHTML;
 
-  document.querySelector('.dashboard-balances .spinner-loader').classList.add('disabled-fast');
   document.querySelector('.dashboard-balances > .data').innerHTML = htmlToRender;
 }
 
 function renderSvgIcon (icon) {
   var iconName = R.prop('svg', icon);
-  document.querySelector(icon.class).innerHTML = R.prop(iconName, SVG);
+  document.querySelector(icon.class).innerHTML = R.prop(iconName, systemIcons);
 }
 
 function render (assets) {
@@ -53,7 +57,7 @@ function render (assets) {
     var queryStr = '.dashboard-balances > .data > .balance > .balance-';
     renderStarredAssets(assets);
     socialMediaIcons.forEach(renderSvgIcon);
-    Balance.mkRenderBalancesStream(retrieveBalanceStream, queryStr, AMOUNT_OF_SIGNIFICANT_DIGITS, starredAssetsIDs)
+    balance.mkRenderBalancesStream(retrieveBalanceStream, queryStr, AMOUNT_OF_SIGNIFICANT_DIGITS, starredAssetsIDs)
       .subscribe();
   };
 }
@@ -62,8 +66,8 @@ function main (args) {
   var starredAssets = R.filter(R.propEq('starred', true), GL.assets);
 
   document.querySelector('#userID').innerHTML = R.path(['usercrypto', 'userid'], GL); // set user ID field in top bar
-  U.setViewTab('dashboard'); // top menu UI change --> Sets element to active class
-  U.documentReady(render(starredAssets));
+  utils_.setViewTab('dashboard'); // top menu UI change --> Sets element to active class
+  utils_.documentReady(render(starredAssets));
 }
 
 init.interface.dashboard = main;
