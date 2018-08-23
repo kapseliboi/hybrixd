@@ -1,0 +1,7 @@
+{
+  "quartz" : {
+    "main" : [
+      "logs(0,'Bootscript: Hello World.')"
+    ]
+  }
+}
