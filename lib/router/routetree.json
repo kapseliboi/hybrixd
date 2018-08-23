@@ -117,6 +117,13 @@
       "_help" : "Commands to control and check the cache.",
       "clear" : "Clear the cache."
     },
+    "exec" :{
+      "_ref" : {
+        "_valid" : true,
+        "_list" : "file",
+        "_this" : "Execute a quartz script."
+      }
+    },
     "reload" : {
       "_help":"Commands to reload hybridd or specific components",
       "_this":"Reload hybridd.",

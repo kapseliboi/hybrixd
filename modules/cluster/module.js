@@ -13,6 +13,7 @@ exports.init = init;
 exports.exec = exec;
 
 var peers = [];
+var captain = null;
 // initialization function
 function init () {
 }
@@ -31,7 +32,7 @@ function exec (properties) {
   switch (command[0]) {
     case 'peers' :
 
-      ioc.sequential([
+      /*      ioc.sequential([
         'init',
         {username: 'POMEW4B5XACN3ZCX', password: 'TVZS7LODA5CSGP6U'}, 'login',
         {host: 'http://localhost:1111/'}, 'addHost',
@@ -41,10 +42,10 @@ function exec (properties) {
         , () => { console.log('Succes'); }
         , (error) => { console.error(error); }
       );
-
+*/
       subprocesses.push('stop(0,' + JSON.stringify(peers) + ')');
       break;
-    case 'cluster' :
+    case 'command' :
       var xpath = command.slice(1);
 
       for (var peer in peers) {
@@ -55,22 +56,46 @@ function exec (properties) {
       break;
     case 'clusterstatus' :
       for (var peer in peers) {
-        subprocesses.push("curl('http://" + peers[peer] + "','/e/raft/peers','GET',null,{},{autoproc:true})");
+        subprocesses.push("curl('http://" + peers[peer] + "','/e/cluster/peers','GET',null,{},{autoproc:true})");
       }
       subprocesses.push('coll(' + peers.length + ')');
 
       break;
+    case 'propose' :
+      var key = command[1];
+      var value = command[2];
+      if (typeof captain === 'undefined') { // Yah, I'm the captain
+        subprocesses.push('rout("/engine/storage/' + key + '/' + value + '")');
+      } else { // I'm not the captain, so send this proposal to the captain
+        subprocesses.push("curl('http://" + peers[peer] + "','/e/cluster/propose/" + key + '/' + value + "','GET',null,{},{autoproc:true})");
+      }
+      break;
+    case 'captain' :
+      if (command.length > 1) { // set captain
+        captain = command[1]; // todo validate hostname
+        if (peers.indexOf(captain) === -1) {
+          peers.push(captain); // TODO refactor
+          peers.sort();
+          subprocesses.push('stop(0,"' + captain + ' succesfully added as peer and set as captain.")');
+        } else {
+          subprocesses.push('stop(0,"' + captain + ' succesfully set as captain.")');
+        }
+      } else { // retrieve captain
+        subprocesses.push('stop(0,"' + captain + '")');
+      }
+      break;
     case 'add' :
       var peer = command[1];
       if (peers.indexOf(peer) === -1) {
-        peers.push(peer);
-        subprocesses.push('stop(0,"Peer added.")');
+        peers.push(peer); // todo validate hostname
+        peers.sort();
+        subprocesses.push('stop(0,"Peer ' + peer + ' succesfully added.")');
       } else {
-        subprocesses.push('stop(0,"Peer already added.")');
+        subprocesses.push('stop(0,"Peer ' + peer + ' already added.")');
       }
       break;
     case 'remove' :
-      var peer = command[1];
+      var peer = command[1]; // todo validate hostname
       var index = peers.indexOf(peer);
       if (index === -1) {
         subprocesses.push('stop(0,"Peer not in cluster.")');

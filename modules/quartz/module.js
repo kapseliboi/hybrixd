@@ -132,7 +132,7 @@ function exec (properties) {
   global.hybridd.proc[processID].request = properties.command; // set request to what command we are performing
 
   var command = properties.command[0];
-  if (command == 'init') {
+  if (command === 'init') {
     if (recipe.hasOwnProperty('host')) { // set up connection
       if ((typeof recipe.host === 'string' && (recipe.host.substr(0, 5) === 'ws://' || recipe.host.substr(0, 6) === 'wss://'))) { // Websocket connections ws://, wss://
         try {
