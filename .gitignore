@@ -9,3 +9,4 @@ nodejs-runtime
 .DS_Store
 storage/*
 common
+lib/var/log/hybridd.log

@@ -54,7 +54,7 @@ function exec (properties) {
       subprocesses.push('coll(' + peers.length + ')');
 
       break;
-    case 'clusterstatus' :
+    case 'status' :
       for (var peer in peers) {
         subprocesses.push("curl('http://" + peers[peer] + "','/e/cluster/peers','GET',null,{},{autoproc:true})");
       }
@@ -65,7 +65,8 @@ function exec (properties) {
       var key = command[1];
       var value = command[2];
       if (typeof captain === 'undefined') { // Yah, I'm the captain
-        subprocesses.push('rout("/engine/storage/' + key + '/' + value + '")');
+        subprocesses.push('rout("/engine/storage/' + key + '/' + value + '")'); // Store locally
+        subprocesses.push('rout("/engine/cluster/command/engine/storage/' + key + '/' + value + '")'); // Store at all peers
       } else { // I'm not the captain, so send this proposal to the captain
         subprocesses.push("curl('http://" + peers[peer] + "','/e/cluster/propose/" + key + '/' + value + "','GET',null,{},{autoproc:true})");
       }

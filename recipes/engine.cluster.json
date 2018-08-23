@@ -4,7 +4,7 @@
   "module":"cluster",
   "router" : {
     "peers": "list peers",
-    "clusterstatus": "list peers",
+    "status": "list peers",
 
     "captain":{
       "_this" : "Get captain.",
