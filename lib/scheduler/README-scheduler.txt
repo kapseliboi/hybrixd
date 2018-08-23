@@ -297,6 +297,18 @@ Examples:
   asset://dummy/test with data = {key=0, value="a"} and further
 
 
+ rout(path) TODO data, onError, onSuccess
+
+Route a path trough hybridd and pass the result to the next step.
+
+path    Provide the routing path
+
+Examples:
+  rout('/asset/dummy/balance/__dummyaddress__')   // retrieve the
+  balance for the dummy asset
+
+
+
  poke(var [,data] )
 
 Put data in a variable for later use. Use peek to retrieve. The data is stored in the root parent process under 'vars'. (You can see this poked data stored in global.hybridd.proc[rootID].vars, but a better way to use this data is by using the command peek("varname").
