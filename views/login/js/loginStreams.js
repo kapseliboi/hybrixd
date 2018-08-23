@@ -1,29 +1,35 @@
+import { utils_ } from './../../index/utils.js';
+
+import { combineLatest } from 'rxjs/observable/combineLatest';
+import { fromEvent } from 'rxjs/observable/fromEvent';
+import { map, filter, startWith } from 'rxjs/operators';
+
+import * as R from 'ramda';
+
 var fetch_ = fetch;
-var U = utils;
 
-var userIdInputStr = rxjs.fromEvent(document.querySelector('#inputUserID'), 'input')
+var userIdInputStr = fromEvent(document.querySelector('#inputUserID'), 'input')
   .pipe(
-    rxjs.operators.map(U.getTargetValue)
+    map(utils_.getTargetValue)
   );
 
-const passwordInputStream = rxjs.fromEvent(document.querySelector('#inputPasscode'), 'input')
+const passwordInputStream = fromEvent(document.querySelector('#inputPasscode'), 'input')
   .pipe(
-    rxjs.operators.map(U.getTargetValue)
+    map(utils_.getTargetValue)
   );
 
-var credentialsStream = rxjs
-  .combineLatest(
-    userIdInputStr,
-    passwordInputStream
-  )
+var credentialsStream = combineLatest(
+  userIdInputStr,
+  passwordInputStream
+)
   .pipe(
-    rxjs.operators.startWith(['', ''])
+    startWith(['', ''])
   );
 
 function mkInputStream (query) {
-  return rxjs.fromEvent(document.querySelector(query), 'keydown')
+  return fromEvent(document.querySelector(query), 'keydown')
     .pipe(
-      rxjs.operators.filter(function (e) { return e.key === 'Enter'; })
+      filter(function (e) { return e.key === 'Enter'; })
     );
 }
 
@@ -42,7 +48,7 @@ function mkSessionStepFetchPromise (sessionData, stepNameStr) {
     .catch(function (e) { throw e; });
 }
 
-loginInputStreams = {
+export var loginInputStreams = {
   credentialsStream,
   mkInputStream,
   mkSessionStepFetchPromise

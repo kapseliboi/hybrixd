@@ -1,12 +1,17 @@
+import { of } from 'rxjs/observable/of';
+import { tap } from 'rxjs/operators';
+
+import * as R from 'ramda';
+
 var defaultErrorMsg = 'There was an error while logging in to your wallet. Please try again. </br></br>If the problem persists, <a href="https://internetofcoins.org/contact" target="_blank">contact us</a> for help.</br>';
 
 function resetLoginFlipOverErrorStream (e) {
-  return rxjs.of(e)
+  return of(e)
     .pipe(
-      rxjs.operators.tap(resetFlipOverAnimation),
-      rxjs.operators.tap(function (_) { setCSSTorenderButtonsToEnabled(); }),
-      rxjs.operators.tap(function (_) { toggleLoginSpinner('remove'); }),
-      rxjs.operators.tap(function (_) { setLoginButtonText('Sign in'); })
+      tap(resetFlipOverAnimation),
+      tap(function (_) { setCSSTorenderButtonsToEnabled(); }),
+      tap(function (_) { toggleLoginSpinner('remove'); }),
+      tap(function (_) { setLoginButtonText('Sign in'); })
     );
 }
 
@@ -88,7 +93,7 @@ function setLocalUserLogOutStatus (b, _) {
   return b;
 }
 
-userFeedback = {
+export var userFeedback = {
   disableUserNotificationBox,
   doFlipOverAnimation,
   maybeDisableLogOutMessage,

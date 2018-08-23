@@ -2,7 +2,8 @@
   <div class="databox-header">
     <h2>My assets</h2>
     <div class="manage-button">
-      <a id="manageAssetsBtn" onclick='M.manageAssets();' href="#manage-assets" class="pure-button pure-button-misc" role="button" data-dismiss="modal" data-toggle="modal">Manage assets</a>
+      <!-- TODO: STREAMIFY! -->
+      <a id="manageAssetsBtn" onclick='window.manageAssets();' href="#manage-assets" class="pure-button pure-button-misc" role="button" data-dismiss="modal" data-toggle="modal">Manage assets</a>
     </div>
   </div>
   <div class="data" style="text-align: center;">
@@ -88,7 +89,7 @@
       <div class="modal-receive-status" id="receivestatus" style="display: block; font-size: 3em;"></div><div class="modal-receive-status-text"></div>
     </div>
     <div class="modal-footer">
-      <button onclick="receiveAsset.resetReceiveStatus();" class="pure-button pure-button-secondary" data-dismiss="modal" aria-hidden="true">Close</button>
+      <button class="pure-button pure-button-secondary receiveAssetCloseBtn" data-dismiss="modal" aria-hidden="true">Close</button>
       <button id="modal-receive-button" data-clipboard-text="?" class="pure-button pure-button-xsmall pure-button-primary" aria-hidden="true">Copy address to clipboard</button>
     </div>
   </div>

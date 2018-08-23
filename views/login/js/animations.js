@@ -1,4 +1,7 @@
-var subject = new rxjs.Subject();
+import { interval } from 'rxjs/observable/interval';
+import { take, startWith } from 'rxjs/operators';
+
+import * as R from 'ramda';
 
 var progressMessages = {
   0: {
@@ -41,10 +44,10 @@ var progressMessages = {
 var ANIMATION_STEPS = 10;
 
 function initialAnimationStateStream (n) {
-  return rxjs.interval(200)
+  return interval(200)
     .pipe(
-      rxjs.operators.startWith(n),
-      rxjs.operators.take(2)
+      startWith(n),
+      take(2)
     );
 }
 
@@ -62,11 +65,10 @@ function defaultOrMaxSteps (n) {
   return n <= ANIMATION_STEPS ? n : ANIMATION_STEPS;
 }
 
-animations = {
+export var animations = {
   ANIMATION_STEPS,
   defaultOrMaxSteps,
   initialAnimationStateStream,
   doProgressAnimation,
-  progressMessages,
-  subject
+  progressMessages
 };

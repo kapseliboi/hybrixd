@@ -1,5 +1,6 @@
 node
-views/index.html
+./views/index.html
+./views/node_modules
 views/*json
 nodejs-runtime
 **/.tern-port

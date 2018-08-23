@@ -1,30 +1,36 @@
-var U = utils;
+import { utils_ } from './utils.js';
+import { commonUtils } from './../../common/index.js';
 
-hybridd = {
+import { from } from 'rxjs/observable/from';
+import { map, filter, flatMap } from 'rxjs/operators';
+
+import * as R from 'ramda';
+
+export var hybridd = {
   mkHybriddCallStream: function (url) {
-    var hybriddCallStream = rxjs
-      .from(hybriddcall({r: url, z: true}))
+    var hybriddCallStream = from(hybriddcall({r: url, z: true}))
       .pipe(
-        rxjs.operators.filter(R.propEq('error', 0)), // TODO Handle errors.
-        rxjs.operators.map(R.merge({r: url, z: true}))
+        filter(R.propEq('error', 0)), // TODO Handle errors.
+        map(R.merge({r: url, z: true}))
       );
 
     var hybriddCallResponseStream = hybriddCallStream
       .pipe(
-        rxjs.operators.flatMap(function (properties) {
-          return rxjs
-            .from(hybriddReturnProcess(properties));
+        flatMap(function (properties) {
+          return from(hybriddReturnProcess(properties));
         })
       );
 
     return hybriddCallResponseStream;
-  }
+  },
+  hybriddcall,
+  hybriddReturnProcess
 };
 
-hybriddcall = function (properties) {
+export function hybriddcall (properties) {
   var urltarget = properties.r;
   var usercrypto = GL.usercrypto;
-  var step = nextStep();
+  var step = commonUtils.nextStep();
   var reqmethod = typeof properties.z === 'undefined' && properties.z;
   var urlrequest = path + zchanOrYchanEncryptionStr(reqmethod, usercrypto)(step)(urltarget);
 
@@ -41,11 +47,11 @@ hybriddcall = function (properties) {
       console.log('Error hybriddCall', e);
       throw { error: 1, msg: e };
     });
-};
+}
 
 // proc request helper function
-hybriddReturnProcess = function (properties) {
-  var processStep = nextStep();
+export function hybriddReturnProcess (properties) {
+  var processStep = commonUtils.nextStep();
   var reqmethod = typeof properties.z === 'undefined' && properties.z;
   var urlrequest = path + zchanOrYchanEncryptionStr(reqmethod, GL.usercrypto)(processStep)('p/' + properties.data);
 
@@ -54,7 +60,7 @@ hybriddReturnProcess = function (properties) {
       .then(r => zchanOrYchanEncryptionObj(reqmethod, GL.usercrypto)(processStep)(r)) // TODO: Factor out decoding!!!
       .catch(e => console.log('Error hybriddCall', e)))
     .catch(e => console.log('Error hybriddCall', e));
-};
+}
 
 function zchanOrYchanEncryptionStr (requestMethod, userCrypto) {
   return function (step) {

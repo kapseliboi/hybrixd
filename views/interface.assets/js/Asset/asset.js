@@ -1,7 +1,9 @@
 // TODO: Replace all HTML onclicks for streamified events.
-var Svg = svg;
+import * as R from 'ramda';
 
-asset = {
+var uiIcons = svg;
+
+export var asset = {
   mkAssetHTML: function (str, asset) {
     var assetID = R.prop('id', asset);
     var symbolName = R.prop('symbol', asset);
@@ -10,14 +12,14 @@ asset = {
     var maybeStarActive = ' id="' + assetID.replace(/\./g, '_') + '" onclick=toggleStar("' + assetID + '") ';
     var icon = R.prop('icon', asset);
 
-    var assetInfoHTMLStr = '<div id="asset-' + element + '" class="td col1 asset asset-' + element + '"><div class="icon">' + icon + '</div>' + assetID + '<div class="star"><a' + maybeStarActive + 'role="button">' + R.prop('star', Svg) + '</a></div></div>';
+    var assetInfoHTMLStr = '<div id="asset-' + element + '" class="td col1 asset asset-' + element + '"><div class="icon">' + icon + '</div>' + assetID + '<div class="star"><a' + maybeStarActive + 'role="button">' + R.prop('star', uiIcons) + '</a></div></div>';
     var assetBalanceHtmlStr = '<div class="td col2"><div class="balance balance-' + element + '">' + progressbar() + '</div></div>';
     var assetDollarValuationHtmlStr = '<div class="td col3"><div id="' + symbolName + '-dollar" class="dollars" style="color: #AAA;">n/a</div></div>';
-    var assetSendBtnHtmlStr = '<div data="' + assetID + '" href="#action-send" class="pure-button pure-button-large pure-button-primary sendAssetButton" role="button" data-toggle="modal" disabled="disabled"><div class="icon">' + R.prop('send', Svg) + '</div>Send</div>';
-    var assetReceiveBtnHtmlStr = '<div data="' + assetID + '" href="#action-receive" class="pure-button pure-button-large pure-button-secondary receiveAssetButton" role="button" data-toggle="modal" disabled="disabled"><div class="icon">' + R.prop('receive', Svg) + '</div>Receive</div>';
-    var assetGenerateBtnHtmlStr = '<div data="' + assetID + '" href="#action-generate" class="pure-button pure-button-large pure-button-secondary generateAddressButton" role="button" data-toggle="modal" disabled="disabled"><div class="icon">' + R.prop('receive', Svg) + '</div>Receive</div>';
+    var assetSendBtnHtmlStr = '<div data="' + assetID + '" href="#action-send" class="pure-button pure-button-large pure-button-primary sendAssetButton" role="button" data-toggle="modal" disabled="disabled"><div class="icon">' + R.prop('send', uiIcons) + '</div>Send</div>';
+    var assetReceiveBtnHtmlStr = '<div data="' + assetID + '" href="#action-receive" class="pure-button pure-button-large pure-button-secondary receiveAssetButton" role="button" data-toggle="modal" disabled="disabled"><div class="icon">' + R.prop('receive', uiIcons) + '</div>Receive</div>';
+    var assetGenerateBtnHtmlStr = '<div data="' + assetID + '" href="#action-generate" class="pure-button pure-button-large pure-button-secondary generateAddressButton" role="button" data-toggle="modal" disabled="disabled"><div class="icon">' + R.prop('receive', uiIcons) + '</div>Receive</div>';
 
-    var receiveOrGenerateBtn = assetID.substr(0,3) === 'bts' ? assetGenerateBtnHtmlStr : assetReceiveBtnHtmlStr;
+    var receiveOrGenerateBtn = assetID.substr(0, 3) === 'bts' ? assetGenerateBtnHtmlStr : assetReceiveBtnHtmlStr;
 
     var htmlToRender = '<div class="tr">' +
         assetInfoHTMLStr +
