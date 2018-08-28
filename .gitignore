@@ -10,3 +10,4 @@ nodejs-runtime
 storage/*
 common
 lib/var/log/hybridd.log
+boot.json
