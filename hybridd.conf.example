@@ -1,20 +1,27 @@
+hostname = ['localhost','127.0.0.1']
+
 # Binding and port for REST API
 restport = 1111
 restbind = 127.0.0.1
 
-#restinterface is enabled by default
-#restinterface = disabled|enabled
-
 # Binding and port for User Interface
 userbind = 127.0.0.1
-
-#userport defaults to 8080
 userport = 8080
 
-#userinterface is enabled by default
-#userinterface = disabled|enabled
+# minimum and maximum node storage time in days
+minstoragetime = 60
+maxstoragetime = 365
 
-# Other settings
+# size of the cache index for API requests
 cacheidx = 3000
+
+# ignore TLS errors on RPC requests
 ignoreTLSerror = true
-defaultMaxListeners = 25
+
+defaultMaxListeners = 300;
+
+# Scheduler parameters
+schedulerMaxParallelProcesses = 10000000
+schedulerTick = 50
+schedulerMaxUsage = 80
+schedulerProcPurgeTime = 120

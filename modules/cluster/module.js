@@ -32,24 +32,27 @@ function exec (properties) {
   switch (command[0]) {
     case 'peers' :
 
-      /*      ioc.sequential([
-        'init',
-        {username: 'POMEW4B5XACN3ZCX', password: 'TVZS7LODA5CSGP6U'}, 'login',
-        {host: 'http://localhost:1111/'}, 'addHost',
-        {symbol: 'dummy'}, 'addAsset',
-        {symbol: 'dummy', amount: 100}, 'transaction'
-      ]
-        , () => { console.log('Succes'); }
-        , (error) => { console.error(error); }
-      );
-*/
-      subprocesses.push('stop(0,' + JSON.stringify(peers) + ')');
+    /*      ioc.sequential([
+            'init',
+            {username: 'POMEW4B5XACN3ZCX', password: 'TVZS7LODA5CSGP6U'}, 'login',
+            {host: 'http://localhost:1111/'}, 'addHost',
+            {symbol: 'dummy'}, 'addAsset',
+            {symbol: 'dummy', amount: 100}, 'transaction'
+            ]
+            , () => { console.log('Succes'); }
+            , (error) => { console.error(error); }
+            );
+    */
+
+      var me = global.hybridd.hostname[0] + ':' + global.hybridd.restport;
+      var r = [me].concat(peers).join(',');
+
+      subprocesses.push('stop(0,"' + r + '")');
       break;
     case 'command' :
       var xpath = command.slice(1);
       for (var peer in peers) {
-        console.log('>>>' + peers[peer]);
-        subprocesses.push("curl('http://" + peers[peer] + "','/" + xpath.join('/') + "','GET',null,{},{})");// autoproc:true
+        subprocesses.push("curl('http://" + peers[peer] + "','/" + xpath.join('/') + "','GET',null,{},{autoproc:true,proceedOnTimeOut:true})");//
       }
       subprocesses.push('coll(' + peers.length + ')');
       subprocesses.push('stop(0,data)');
@@ -57,10 +60,12 @@ function exec (properties) {
       break;
     case 'status' :
       for (var peer in peers) {
-        subprocesses.push("curl('http://" + peers[peer] + "','/e/cluster/peers','GET',null,{},{autoproc:true})");
+        subprocesses.push("curl('http://" + peers[peer] + "','/engine/cluster/peers','GET',null,{},{autoproc:true,proceedOnTimeOut:true})");
       }
       subprocesses.push('coll(' + peers.length + ')');
-      subprocesses.push('stop(0,data)');
+      var me = global.hybridd.hostname[0] + ':' + global.hybridd.restport;
+      var captain2 = captain || me;
+      subprocesses.push('stop(0,"Self: ' + me + '\\nCaptain: ' + captain2 + '\\nPeers: ' + peers.join(',') + '\\nPeers-connections:\\n"+data.join("\\n"))');
       break;
     case 'propose' :
       var key = command[1];
