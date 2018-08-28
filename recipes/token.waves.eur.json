@@ -1,6 +1,6 @@
 {
     "symbol":"waves.eur",
-    "name":"Euro (Waves)",
+    "name":"Euro Token Stablecoin (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

@@ -1,6 +1,6 @@
 {
     "symbol":"eth.drp",
-    "name":"DCORP",
+    "name":"DCORP token (ETH)",
     "module":"ethereum",
     "mode":"ethereum.token",
     "contract":"0x621d78f2EF2fd937BFca696CabaF9A779F59B3Ed",

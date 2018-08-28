@@ -1,0 +1,9 @@
+{
+    "symbol":"eth.hav",
+    "name":"Havven Collateral Token (ETH)",
+    "module":"ethereum",
+    "mode":"ethereum.token",
+    "contract":"0xC011A72400E58ecD99Ee497CF89E3775d4bd732F",
+    "originator":"0xB12a54406840a7DDfa9246EfB3bF4724bF55f5f8",
+    "factor":18
+}
