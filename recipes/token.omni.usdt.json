@@ -1,6 +1,6 @@
 {
   "symbol":"omni.usdt",
-  "name":"US dollar Tether (Omni)",
+  "name":"US dollar Tether Stablecoin (Omni)",
   "module":"quartz",
   "mode":"bitcoinjslib.omni",
   "import":"omni",

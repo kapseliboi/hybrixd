@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 OLDPATH=$PATH
 WHEREAMI=`pwd`
 export PATH=$WHEREAMI/node/bin:"$PATH"
