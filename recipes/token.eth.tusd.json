@@ -1,0 +1,9 @@
+{
+    "symbol":"eth.tusd",
+    "name":"TrustToken TrueUSD Stablecoin (ETH)",
+    "module":"ethereum",
+    "mode":"ethereum.token",
+    "contract":"0x8dd5fbCe2F6a956C3022bA3663759011Dd51e73E",
+    "originator":"0x501C331eBB66A72A910291b006DC901c244783ac",
+    "factor":18
+}
