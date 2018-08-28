@@ -47,11 +47,12 @@ function exec (properties) {
       break;
     case 'command' :
       var xpath = command.slice(1);
-
       for (var peer in peers) {
-        subprocesses.push("curl('http://" + peers[peer] + "','/" + xpath.join('/') + "','GET',null,{},{autoproc:true})");
+        console.log('>>>' + peers[peer]);
+        subprocesses.push("curl('http://" + peers[peer] + "','/" + xpath.join('/') + "','GET',null,{},{})");// autoproc:true
       }
       subprocesses.push('coll(' + peers.length + ')');
+      subprocesses.push('stop(0,data)');
 
       break;
     case 'status' :
@@ -59,17 +60,18 @@ function exec (properties) {
         subprocesses.push("curl('http://" + peers[peer] + "','/e/cluster/peers','GET',null,{},{autoproc:true})");
       }
       subprocesses.push('coll(' + peers.length + ')');
-
+      subprocesses.push('stop(0,data)');
       break;
     case 'propose' :
       var key = command[1];
       var value = command[2];
-      if (typeof captain === 'undefined') { // Yah, I'm the captain
-        subprocesses.push('rout("/engine/storage/' + key + '/' + value + '")'); // Store locally
-        subprocesses.push('rout("/engine/cluster/command/engine/storage/' + key + '/' + value + '")'); // Store at all peers
+      if (captain === null) { // Yah, I'm the captain
+        subprocesses.push('rout("/engine/storage/set/' + key + '/' + value + '")'); // Store locally
+        subprocesses.push('rout("/engine/cluster/command/engine/storage/set/' + key + '/' + value + '")'); // Store at all peers
       } else { // I'm not the captain, so send this proposal to the captain
         subprocesses.push("curl('http://" + peers[peer] + "','/e/cluster/propose/" + key + '/' + value + "','GET',null,{},{autoproc:true})");
       }
+      subprocesses.push('stop(0,"Done")');
       break;
     case 'captain' :
       if (command.length > 1) { // set captain
