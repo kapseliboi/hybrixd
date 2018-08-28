@@ -1,0 +1,9 @@
+{
+    "symbol":"eth.dgx",
+    "name":"DigixDAO Gold Token (1 unit = 1 gram) Stablecoin (ETH)",
+    "module":"ethereum",
+    "mode":"ethereum.token",
+    "contract":"0x4f3AfEC4E5a3F2A6a1A411DEF7D7dFe50eE057bF",
+    "originator":"0xEf37CbDc059c7a5F4b48c312594887a5e20CB095",
+    "factor":9
+}
