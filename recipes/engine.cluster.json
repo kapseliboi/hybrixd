@@ -29,6 +29,16 @@
     "command" : {
       "_help" : "Execute a command on all peers",
       "_valid" : "true"
+    },
+    "propose" : {
+       "_ref" : {
+        "_list" : "key",
+         "_ref" : {
+           "_list" : "value",
+           "_this" : "Propose a key value pair to the cluster"
+         }
+      }
     }
+
   }
 }

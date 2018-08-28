@@ -4,13 +4,13 @@ WHEREAMI=`pwd`
 export PATH=$WHEREAMI/node/bin:"$PATH"
 NODEINST=`which node`
 
-if [[ -z "$@" ]]; then
+if [ -z "$@" ]; then
   cd lib
         echo
         echo "Starting hybridd..."
         echo " [i] using node executable $NODEINST"
-        mkdir -p ./var/log
-        node hybridd.js 2>&1 | tee ./var/log/hybridd.log
+        mkdir -p $WHEREAMI/var/log
+        node hybridd.js 2>&1 | tee $WHEREAMI/var/log/hybridd.log
         echo
         echo "Stopped hybridd."
         echo
