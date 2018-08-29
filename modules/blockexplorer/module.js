@@ -130,6 +130,7 @@ function exec (properties) {
             if (typeof command[1] !== 'undefined') {
               subprocesses.push('func("blockexplorer","link",{target:' + jstr(target) + ',command:["/addr/' + address + '/utxo"]})');
               subprocesses.push('func("blockexplorer","post",{target:' + jstr(target) + ',command:' + jstr(command) + ',data:data})');
+              subprocesses.push('stop(0,data)');
             } else {
               subprocesses.push('stop(1,"Please specify an address!")');
             }

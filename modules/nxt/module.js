@@ -97,7 +97,9 @@ function exec (properties) {
             sourceaddr = 'BURST-' + sourceaddr;
           }
           subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["getBalance",["account=' + sourceaddr + '"]]})'); // send balance query
-          subprocesses.push('stop((data!==null && ((typeof data.errorCode!=="undefined" && data.errorCode==5)|| typeof data.unconfirmedBalanceNQT!=="undefined")?0:1),(data!==null && typeof data.unconfirmedBalanceNQT!=="undefined"? padFloat( fromInt(data.unconfirmedBalanceNQT,' + factor + '),' + factor + ') : ((data!==null && (typeof data.errorCode!=="undefined" && data.errorCode==5))?0:null) ))');
+
+          var zero = '0.' + '0'.repeat(factor);
+          subprocesses.push('stop((data!==null && ((typeof data.errorCode!=="undefined" && data.errorCode==5)|| typeof data.unconfirmedBalanceNQT!=="undefined")?0:1),(data!==null && typeof data.unconfirmedBalanceNQT!=="undefined"? padFloat( fromInt(data.unconfirmedBalanceNQT,' + factor + '),' + factor + ') : ((data!==null && (typeof data.errorCode!=="undefined" && data.errorCode==5))?"' + zero + '":null) ))');
         } else {
           subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["getAccount",["account=' + sourceaddr + '","includeAssets=true","includeCurrencies=true"]]})'); // send balance query
           subprocesses.push('func("nxt","post",{target:' + jstr(target) + ',command:["balance"],data:data})');
@@ -257,6 +259,7 @@ function post (properties) {
             }
           }
         }
+
         postdata = padFloat(fromInt(balance, factor), factor);
         break;
       default:
