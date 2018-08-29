@@ -1,4 +1,32 @@
-var router = require('../router');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: quartz.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: quartz.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>var router = require('../router');
 var modules = require('../modules');
 var scheduler = require('../scheduler');
 var functions = require('../functions'); // only required for   procinfo[0] = functions.implode('.', pieces);
@@ -10,7 +38,7 @@ var procpart = function procpart (processID) {
   var procinfo = [];
   procinfo[0] = '';
   // store parent in first element
-  for (var i = 0; i < procsplit.length - 1; i += 1) {
+  for (var i = 0; i &lt; procsplit.length - 1; i += 1) {
     pieces[i] = procsplit[i];
   }
   procinfo[0] = functions.implode('.', pieces);
@@ -60,7 +88,7 @@ function tranOperator (p, expression, data, lhs) {
       return {valid: false, data: data};
     }
   } else if (expression.startsWith('|')) { // use | for fall back values
-    if (lhs.valid && lhs.data) { return lhs; }
+    if (lhs.valid &amp;&amp; lhs.data) { return lhs; }
     var rhs = tranExpression(p, expression.substr(1), data);
     return rhs.valid ? rhs : lhs;
   } else {
@@ -121,11 +149,11 @@ function chckString (p, property, data) {
   var propertyPath = property.substr(1).replace(']', '').replace('[', '.').split('.'); // ".foo.bar[3][5].x" -> ["foo","bar","3","5","x"]
 
   var iterator = data;
-  for (var i = 0, len = propertyPath.length; i < len; ++i) {
-    if (iterator !== null && typeof iterator === 'object') {
+  for (var i = 0, len = propertyPath.length; i &lt; len; ++i) {
+    if (iterator !== null &amp;&amp; typeof iterator === 'object') {
       if (iterator.constructor === Array) { // Array object
         var index = Number(propertyPath[i]);
-        if (index >= 0 && index < iterator.length) {
+        if (index >= 0 &amp;&amp; index &lt; iterator.length) {
           iterator = iterator[index];
         } else {
           return {valid: false, data: data};
@@ -154,7 +182,7 @@ function chckVar (p, property, data) {
       return {valid: true, data: null};
     } else if (property.constructor === Array) { // If Array
       var newData = [];
-      for (var index, len = property.length; index < len; ++index) {
+      for (var index, len = property.length; index &lt; len; ++index) {
         var chckIndex = chckVar(p, property[index], data);
         if (!chckIndex.valid) { return {valid: false, data: data}; }
         newData[key] = chckIndex.data;
@@ -223,10 +251,10 @@ data:   Store data in the subprocess data field.
     var ydata = typeof xdata === 'undefined' ? global.hybridd.proc[p.processID].data : xdata;
     if (DEBUG) { console.log(' [D] (' + p.parentID + ') waiting at ' + (global.hybridd.proc[p.parentID].step + 1) + ' of ' + (global.hybridd.proc[p.parentID].steps + 1)); }
 
-    if (global.hybridd.proc[p.parentID].timeout > 0 && millisecs < global.hybridd.proc[p.parentID].timeout && global.hybridd.proc[p.parentID].timeout !== -1) {
+    if (global.hybridd.proc[p.parentID].timeout > 0 &amp;&amp; millisecs &lt; global.hybridd.proc[p.parentID].timeout &amp;&amp; global.hybridd.proc[p.parentID].timeout !== -1) {
       global.hybridd.proc[p.parentID].timeout = global.hybridd.proc[p.parentID].timeout + millisecs;
     }
-    if (global.hybridd.proc[p.processID].timeout > 0 && millisecs < global.hybridd.proc[p.processID].timeout && global.hybridd.proc[p.processID].timeout !== -1) {
+    if (global.hybridd.proc[p.processID].timeout > 0 &amp;&amp; millisecs &lt; global.hybridd.proc[p.processID].timeout &amp;&amp; global.hybridd.proc[p.processID].timeout !== -1) {
       global.hybridd.proc[p.processID].timeout = global.hybridd.proc[p.processID].timeout + millisecs;
     }
     if (millisecs) { // if no millisecs are given, this proces will wait indefenitly
@@ -274,7 +302,7 @@ data:   Store data in the subprocess data field.
     if (typeof steps === 'undefined' || steps === 0) { steps = global.hybridd.proc[p.parentID].step; } // default: collate all previous steps
     if (steps > global.hybridd.proc[p.parentID].step) { steps = global.hybridd.proc[p.parentID].step; } // avoid reads beyond the first processID
     var data = [];
-    for (var i = global.hybridd.proc[p.parentID].step - steps; i < global.hybridd.proc[p.parentID].step; i += 1) {
+    for (var i = global.hybridd.proc[p.parentID].step - steps; i &lt; global.hybridd.proc[p.parentID].step; i += 1) {
       data.push(global.hybridd.proc[p.parentID + '.' + i].data);
     }
     this.next(p, 0, data);
@@ -377,9 +405,9 @@ data:   Store data in the subprocess data field.
     if (DEBUG) { console.log(' [D] (' + p.parentID + ') timeout for process forced to ' + (millisecs ? millisecs + 'ms' : 'indefinite')); }
     // increase timeout of all siblings
     var loopid;
-    for (var i = global.hybridd.proc[p.parentID].step; i <= global.hybridd.proc[p.parentID].steps; i += 1) {
+    for (var i = global.hybridd.proc[p.parentID].step; i &lt;= global.hybridd.proc[p.parentID].steps; i += 1) {
       loopid = p.parentID + '.' + i;
-      if (global.hybridd.proc[loopid].timeout < millisecs || millisecs <= 0) {
+      if (global.hybridd.proc[loopid].timeout &lt; millisecs || millisecs &lt;= 0) {
         global.hybridd.proc[loopid].timeout = millisecs;
       }
     }
@@ -391,7 +419,7 @@ data:   Store data in the subprocess data field.
       if (procinfo[1] > -1) { parentID = procinfo[0]; processID = parentID; } else { parentID = false; }
       if (parentID) {
       // DEBUG: console.log(' [#] setting timeout of parentID '+parentID);
-        if (global.hybridd.proc[parentID].timeout < millisecs || millisecs <= 0) {
+        if (global.hybridd.proc[parentID].timeout &lt; millisecs || millisecs &lt;= 0) {
           global.hybridd.proc[parentID].timeout = millisecs;
         }
       }
@@ -422,7 +450,7 @@ data:   Store data in the subprocess data field.
     global.hybridd.proc[p.parentID].progress = 1; // TODO if error recalc using process.progress
     global.hybridd.proc[p.parentID].stopped = Date.now();
     global.hybridd.proc[p.parentID].data = ydata;
-    if (DEBUG) { console.log(' [D] (' + p.parentID + ') stopped at step ' + (global.hybridd.proc[p.parentID].step <= global.hybridd.proc[p.parentID].steps ? global.hybridd.proc[p.parentID].step + 1 : 1) + ' of ' + (global.hybridd.proc[p.parentID].steps + 1)); }
+    if (DEBUG) { console.log(' [D] (' + p.parentID + ') stopped at step ' + (global.hybridd.proc[p.parentID].step &lt;= global.hybridd.proc[p.parentID].steps ? global.hybridd.proc[p.parentID].step + 1 : 1) + ' of ' + (global.hybridd.proc[p.parentID].steps + 1)); }
   };
   /**
  * Jump forward or backward several instructions
@@ -437,9 +465,9 @@ data:   Store data in the subprocess data field.
     var ydata = typeof xdata === 'undefined' ? global.hybridd.proc[p.processID].data : xdata;
     global.hybridd.proc[p.processID].started = Date.now();
     if (stepto === 0 || typeof stepto === 'undefined') { stepto = 1; }
-    if (stepto < 0) {
+    if (stepto &lt; 0) {
       var previd;
-      for (var i = global.hybridd.proc[p.parentID].step + stepto; i < global.hybridd.proc[p.parentID].step; i += 1) {
+      for (var i = global.hybridd.proc[p.parentID].step + stepto; i &lt; global.hybridd.proc[p.parentID].step; i += 1) {
         previd = p.parentID + '.' + i;
         global.hybridd.proc[previd].err = 0;
         global.hybridd.proc[previd].busy = false;
@@ -465,7 +493,7 @@ data:   Store data in the subprocess data field.
  * @param {Object} [data] -  Store data in this subprocess data field.
  * @example
  * test(a>3,1,-3)    // test if a>3, if true jump to the next instruction, if false jump back three instructions
- * test(b<=1,-4,1)   // test if b<=1, if true jump back four instructions, if false jump to the next instruction
+ * test(b&lt;=1,-4,1)   // test if b&lt;=1, if true jump back four instructions, if false jump to the next instruction
  * test(a>3,-5)      // test if a>3, if true jump back five instructions, else default jump to the next instruction
  */
   //
@@ -529,7 +557,7 @@ data:   Store data in the subprocess data field.
     if (Object.prototype.toString.call(searchArray) !== '[object Array]') {
       searchArray = [].push(searchArray);
     }
-    for (var i = 0; i < searchArray.length; i++) {
+    for (var i = 0; i &lt; searchArray.length; i++) {
       if (JSON.stringify(searchArray[i]).indexOf(query) > -1) {
         matches.push(searchArray[i]);
       }
@@ -580,7 +608,7 @@ data:   Store data in the subprocess data field.
   /**
  * Explode string
  * @param {String} seperator - TODO
- * @param {Array<String>} data - TODO
+ * @param {Array&lt;String>} data - TODO
  */
   this.impl = function (p, seperator, xdata) {
     var ydata = typeof xdata === 'undefined' ? global.hybridd.proc[p.processID].data : xdata;
@@ -658,7 +686,7 @@ errors. (Defaults to true)
     var args = {};
     args['data'] = ydata;
     args['path'] = querystring;
-    if (properties.hasOwnProperty('rejectUnauthorized') && !properties['rejectUnauthorized']) {
+    if (properties.hasOwnProperty('rejectUnauthorized') &amp;&amp; !properties['rejectUnauthorized']) {
       console.log(' [!] module quartz: unauthorized TLS/SSL certificates ignored for ' + properties.symbol);
       args['rejectUnauthorized'] = false;
     }
@@ -773,7 +801,7 @@ for the data to be returned. (Combining fork and read)
   };
   /**
  * Wait for one or more processes to finish and return the results.
- * @param {String|Array<String>|Object<String>} processIDs - A string containing the processID or an array of strings containing multiple processIDs
+ * @param {String|Array&lt;String>|Object&lt;String>} processIDs - A string containing the processID or an array of strings containing multiple processIDs
  * @param {Number} interval - The amount of millisecs between each check if processes
 are finished
  * @example
@@ -788,13 +816,13 @@ are finished
       permission = global.hybridd.proc[p.processID].sessionID === 1 || global.hybridd.proc[p.processID].sessionID === global.hybridd.proc[processIDs].sessionID;
     } else if (processIDs instanceof Array) { // array
       permission = processIDs.reduce(function (permission, processID) {
-        return permission && global.hybridd.proc.hasOwnProperty(processID) && (global.hybridd.proc[this.mainProcessID].sessionID === 1 || global.hybridd.proc[this.mainProcessID].sessionID === global.hybridd.proc[processID].sessionID);
+        return permission &amp;&amp; global.hybridd.proc.hasOwnProperty(processID) &amp;&amp; (global.hybridd.proc[this.mainProcessID].sessionID === 1 || global.hybridd.proc[this.mainProcessID].sessionID === global.hybridd.proc[processID].sessionID);
       }.bind({mainProcessID: p.processID}), true);
     } else { // dictionary
       permission = true;
       for (var key in processIDs) {
         var processID = processIDs[key];
-        if (!global.hybridd.proc.hasOwnProperty(processID) || (global.hybridd.proc[p.processID].sessionID !== 1 && global.hybridd.proc[p.processID].sessionID !== global.hybridd.proc[processID].sessionID)) {
+        if (!global.hybridd.proc.hasOwnProperty(processID) || (global.hybridd.proc[p.processID].sessionID !== 1 &amp;&amp; global.hybridd.proc[p.processID].sessionID !== global.hybridd.proc[processID].sessionID)) {
           permission = false;
           break;
         }
@@ -808,13 +836,13 @@ are finished
         finished = global.hybridd.proc[processIDs].progress >= 1 || global.hybridd.proc[processIDs].stopped > 1;
       } else if (processIDs instanceof Array) { // array
         finished = processIDs.reduce(function (finished, processID) {
-          return finished && (global.hybridd.proc[processID].progress >= 1 || global.hybridd.proc[processID].stopped > 1);
+          return finished &amp;&amp; (global.hybridd.proc[processID].progress >= 1 || global.hybridd.proc[processID].stopped > 1);
         }, true);
       } else { // dictionary
         for (var key in processIDs) {
           var processID = processIDs[key];
           finished = true;
-          if (global.hybridd.proc[processID].progress < 1 && global.hybridd.proc[processID].stopped <= 1) {
+          if (global.hybridd.proc[processID].progress &lt; 1 &amp;&amp; global.hybridd.proc[processID].stopped &lt;= 1) {
             finished = false;
             break;
           }
@@ -868,7 +896,7 @@ element.
     var processIDs;
     if (container instanceof Array) { // Array
       processIDs = [];
-      for (var key = 0; key < container.length; ++key) {
+      for (var key = 0; key &lt; container.length; ++key) {
         processIDs.push(this.fork(p, target, xpath, {data: ydata, container: container, key: key, value: container[key]}, key));
       }
     } else { // Dictionary
@@ -924,3 +952,26 @@ element.
 };
 
 exports.Quartz = Quartz; // initialize a new process
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#call">call</a></li><li><a href="global.html#coll">coll</a></li><li><a href="global.html#curl">curl</a></li><li><a href="global.html#dump">dump</a></li><li><a href="global.html#each">each</a></li><li><a href="global.html#expl">expl</a></li><li><a href="global.html#find">find</a></li><li><a href="global.html#fork">fork</a></li><li><a href="global.html#form">form</a></li><li><a href="global.html#impl">impl</a></li><li><a href="global.html#jpar">jpar</a></li><li><a href="global.html#jstr">jstr</a></li><li><a href="global.html#jump">jump</a></li><li><a href="global.html#logs">logs</a></li><li><a href="global.html#pass">pass</a></li><li><a href="global.html#peek">peek</a></li><li><a href="global.html#poke">poke</a></li><li><a href="global.html#prog">prog</a></li><li><a href="global.html#prwt">prwt</a></li><li><a href="global.html#Quartz">Quartz</a></li><li><a href="global.html#read">read</a></li><li><a href="global.html#rout">rout</a></li><li><a href="global.html#stop">stop</a></li><li><a href="global.html#test">test</a></li><li><a href="global.html#time">time</a></li><li><a href="global.html#tran">tran</a></li><li><a href="global.html#wait">wait</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Aug 29 2018 16:28:30 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
