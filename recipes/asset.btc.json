@@ -22,7 +22,7 @@
       "stop(1,'No result')"
     ],
     "unspent" : [
-      "func('blockexplorer','exec',{command:['$symbol','unspent','$1','$2','$3']})"
+      "rout('/source/blockexplorer/$symbol/unspent/$1/$2/$3')"
     ],
     "balance" : [
       "curl('asset://$symbol','','POST',{'jsonrpc':'2.0','id':0,'method':'getaddressbalance','params':['$1']},{'content-type':'text/plain'})",
@@ -45,7 +45,7 @@
       "pass('$factor')"
     ],
     "transaction" :[
-      "func('blockexplorer','exec',{command:['$symbol','transaction','$1']})"
+      "rout('/source/blockexplorer/$symbol/transaction/$1')"
     ],
     "_transaction" : [
       "curl('asset://$symbol','','POST',{'id': 1, 'method': 'blockchain.transaction.get', 'params': ['$1',true] },{'content-type':'text/plain'})",
@@ -57,7 +57,7 @@
       "stop(0,{address:'1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX',transaction:'2c0832c153cf33327dae0e95a3bc39f4b02ae887725a32c07b1be47a2faffc55'})"
     ],
     "history" : [
-      "func('blockexplorer','exec',{command:['$symbol','history','$1']})"
+      "rout('/source/blockexplorer/$symbol/history/$1')"
     ],
     "contract" : [
       "stop(1,'Not yet implemented!')"

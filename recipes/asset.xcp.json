@@ -26,7 +26,7 @@
       "stop(1,'No result')"
     ],
     "unspent" : [
-      "func('blockexplorer','exec',{command:['$fee-symbol','unspent','$1','$fee']})"
+      "rout('/source/blockexplorer/$fee-symbol/unspent/$1/$fee')"
     ],
     "balance" : [
       "time(32000)",
@@ -51,7 +51,7 @@
       "pass('$factor')"
     ],
     "transaction" : [
-      "func('blockexplorer','exec',{command:['$fee-symbol','transaction','$1']})",
+      "rout('/source/blockexplorer/$fee-symbol/transaction/$1')",
       "stop(0,data)",
       "stop(1,'This used btc network, not xcp.')"
     ],

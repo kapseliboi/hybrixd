@@ -23,7 +23,7 @@
       "stop(1,'No result')"
     ],
     "unspent" : [
-      "func('blockexplorer','exec',{command:['$symbol','unspent','$1','$2']})"
+      "rout('/source/blockexplorer/$symbol/unspent/$1/$2/$3')"
     ],
     "balance" : [
       "time($cache)",
