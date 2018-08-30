@@ -31,6 +31,9 @@ var modules = require('../modules');
 var scheduler = require('../scheduler');
 var functions = require('../functions'); // only required for   procinfo[0] = functions.implode('.', pieces);
 
+var IoC = require('../../common/ioc.client/ioc.nodejs.client');
+var ioc = new IoC.Interface({http: require('http')});
+
 // process ID decomposition
 var procpart = function procpart (processID) {
   var procsplit = processID.split('.');
@@ -435,7 +438,6 @@ data:   Store data in the subprocess data field.
  *  stop(0,"Everything is ok.")     // stop processing, set no error, and put "Everything is ok." in main process data field
  *  stop(404,"HELP! Not found.")    // stop processing, set error to 404, and put "HELP! Not found." in main process data field
  */
-  //
   this.stop = function (p, err, xdata) {
     var ydata = typeof xdata === 'undefined' ? global.hybridd.proc[p.processID].data : xdata;
     global.hybridd.proc[p.processID].busy = false;
@@ -451,6 +453,19 @@ data:   Store data in the subprocess data field.
     global.hybridd.proc[p.parentID].stopped = Date.now();
     global.hybridd.proc[p.parentID].data = ydata;
     if (DEBUG) { console.log(' [D] (' + p.parentID + ') stopped at step ' + (global.hybridd.proc[p.parentID].step &lt;= global.hybridd.proc[p.parentID].steps ? global.hybridd.proc[p.parentID].step + 1 : 1) + ' of ' + (global.hybridd.proc[p.parentID].steps + 1)); }
+  };
+  /**
+ * Fail processing and return message
+ * @param {Number} [err] - Set the error flag of the subprocess.   (0 = no error, 1 (Default) or higher = error)
+ * @param {Object} [data] - Message/data passed  to parent process.
+ * @example
+ * fail()                        // stop processing and set error to 1
+ * fail("Something wrong")       // stop processing, set error to 0, and put "Something wrong." in main process data field
+ * fail(404,"HELP! Not found.")  // stop processing, set error to 404, and put "HELP! Not found." in main process data field
+ */
+  //
+  this.fail = function (p, xdata) {
+    this.stop(1, xdata);
   };
   /**
  * Jump forward or backward several instructions
@@ -935,7 +950,6 @@ element.
  * poke("thisnum",55) // poke 55 into variable "thisnum"
  * peek("thisnum")     // returns 55
  */
-  // peek at a variable
   this.peek = function (p, variable) {
     if (DEBUG) { console.log(' [D] (' + p.parentID + ') peek [' + JSON.stringify(variable) + '] in step ' + (global.hybridd.proc[p.parentID].step + 1) + ' of ' + (global.hybridd.proc[p.parentID].steps + 1)); }
     // get root parent
@@ -948,6 +962,78 @@ element.
       }
     }
     return pdata;
+  };
+  /**
+ * Initiates a client stack program. This stack can be filled using step and executed using exec.
+ * @example
+ * init()     // Initiates a IoC client lib stack program.
+ */
+  this.init = function (p) {
+    this.next(p, 0, ['init']);
+  };
+
+  var append = (program, label, steps) => {
+    if (label === '') { // [...] => [..., step1, step2, ...]
+      return program.concat(steps);
+    } else if (program.length &lt; 2 || program[program.length - 1] !== 'parallel') {
+      program = program.concat([{}, 'parallel']); // [...] => [..., {},'parellel']
+    }
+    // [..., {x: {..}, [label]: * }, 'parallel']
+    var subLabels = label.split('.');
+    var subLabel = subLabels[0];
+    var subProgram = program[program.length - 2];
+    if (!subProgram.hasOwnProperty(subLabel)) { // [..., {},'parellel'] => [..., {[subLabel]:{data:[],step:'sequential'}},'parellel']
+      subProgram[subLabel] = {data: [], step: 'sequential'};
+    } else if (subProgram[subLabel].step !== 'sequential') {
+      // [..., {[subLabel]:{data:$DATA,step:'$STEP'}},'parellel'] => [..., {[subLabel]:{data:[$DATA,$STEP],step:'sequential'}},'parellel']
+      var data = subProgram[subLabel].data;
+      var step = subProgram[subLabel].step;
+      subProgram[subLabel].data = [data, step];
+      subProgram[subLabel].step = 'sequential';
+    }
+    subProgram[subLabel].data = append(subProgram[subLabel].data, subLabels.slice(1, subLabels.length).join('.'), steps);
+    return program;
+    // [..., {[subLabel]:{data:[...],step:'sequential'}},'parellel'] => [..., {[subLabel]:{data:[..., step1, step2, ...],step:'sequential'}},'parellel']
+  };
+
+  /**
+ * Add a step to a client stack program. Executed using exec.
+ * @param {String} key - Variable name to get data from.
+ * @example
+ * TODO
+ */
+  this.step = function (p, v1, v2, v3) {
+    var args = Array.prototype.slice.call(arguments);
+    var labelOrStep = args[1];
+    var steps;
+    var label;
+    if (typeof labelOrStep !== 'string' || this.hasOwnProperty(labelOrStep)) {
+      label = '';
+      steps = args.slice(1);
+    } else {
+      label = labelOrStep;
+      steps = args.slice(2);
+    }
+    var program = global.hybridd.proc[p.processID].data;
+    this.next(p, 0, append(program, label, steps));
+  };
+  /**
+ * Execute a client stack program.
+ * @example
+ * TODO
+ */
+  this.exec = function (p, xdata, onSuccess, onError) {
+    var ydata = typeof (xdata === 'undefined' &amp;&amp; xdata !== 'number') ? global.hybridd.proc[p.processID].data : xdata;
+    var dataCallback = (data) => { this.jump(p, onSuccess || 1, data); };
+    var errorCallback = (error) => {
+      if (typeof onError === 'undefined') {
+        this.next(p, 1, error);
+      } else {
+        this.jump(p, onError, error);
+      }
+    };
+    var progressCallback = () => {};
+    ioc.sequential(ydata, dataCallback, errorCallback, progressCallback);
   };
 };
 
@@ -962,13 +1048,13 @@ exports.Quartz = Quartz; // initialize a new process
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#call">call</a></li><li><a href="global.html#coll">coll</a></li><li><a href="global.html#curl">curl</a></li><li><a href="global.html#dump">dump</a></li><li><a href="global.html#each">each</a></li><li><a href="global.html#expl">expl</a></li><li><a href="global.html#find">find</a></li><li><a href="global.html#fork">fork</a></li><li><a href="global.html#form">form</a></li><li><a href="global.html#impl">impl</a></li><li><a href="global.html#jpar">jpar</a></li><li><a href="global.html#jstr">jstr</a></li><li><a href="global.html#jump">jump</a></li><li><a href="global.html#logs">logs</a></li><li><a href="global.html#pass">pass</a></li><li><a href="global.html#peek">peek</a></li><li><a href="global.html#poke">poke</a></li><li><a href="global.html#prog">prog</a></li><li><a href="global.html#prwt">prwt</a></li><li><a href="global.html#Quartz">Quartz</a></li><li><a href="global.html#read">read</a></li><li><a href="global.html#rout">rout</a></li><li><a href="global.html#stop">stop</a></li><li><a href="global.html#test">test</a></li><li><a href="global.html#time">time</a></li><li><a href="global.html#tran">tran</a></li><li><a href="global.html#wait">wait</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#call">call</a></li><li><a href="global.html#coll">coll</a></li><li><a href="global.html#curl">curl</a></li><li><a href="global.html#dump">dump</a></li><li><a href="global.html#each">each</a></li><li><a href="global.html#exec">exec</a></li><li><a href="global.html#expl">expl</a></li><li><a href="global.html#fail">fail</a></li><li><a href="global.html#find">find</a></li><li><a href="global.html#fork">fork</a></li><li><a href="global.html#form">form</a></li><li><a href="global.html#impl">impl</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#jpar">jpar</a></li><li><a href="global.html#jstr">jstr</a></li><li><a href="global.html#jump">jump</a></li><li><a href="global.html#logs">logs</a></li><li><a href="global.html#pass">pass</a></li><li><a href="global.html#peek">peek</a></li><li><a href="global.html#poke">poke</a></li><li><a href="global.html#prog">prog</a></li><li><a href="global.html#prwt">prwt</a></li><li><a href="global.html#Quartz">Quartz</a></li><li><a href="global.html#read">read</a></li><li><a href="global.html#rout">rout</a></li><li><a href="global.html#step">step</a></li><li><a href="global.html#stop">stop</a></li><li><a href="global.html#test">test</a></li><li><a href="global.html#time">time</a></li><li><a href="global.html#tran">tran</a></li><li><a href="global.html#wait">wait</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Aug 29 2018 16:28:30 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Aug 30 2018 12:51:41 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

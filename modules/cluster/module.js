@@ -1,12 +1,6 @@
 // (C) 2015 Internet of Coins / Metasync / Joachim de Koning
 // hybridd module - storage/module.js
-// Module to provide storage
-
-// required libraries in this context
-var IoC = require('../../common/ioc.client/ioc.nodejs.client');
-var ioc = new IoC.Interface({http: require('http')});
-
-window = {}; // TODO hier nog een goede oplossing voor vinden
+// Module to provide clustering
 
 // exports
 exports.init = init;
@@ -27,24 +21,12 @@ function exec (properties) {
   var subprocesses = [];
   // set request to what command we are performing
   global.hybridd.proc[processID].request = properties.command;
+  var me = global.hybridd.hostname[0] + ':' + global.hybridd.restport;
 
   // handle standard cases here, and construct the sequential process list
   switch (command[0]) {
     case 'peers' :
 
-    /*      ioc.sequential([
-            'init',
-            {username: 'POMEW4B5XACN3ZCX', password: 'TVZS7LODA5CSGP6U'}, 'login',
-            {host: 'http://localhost:1111/'}, 'addHost',
-            {symbol: 'dummy'}, 'addAsset',
-            {symbol: 'dummy', amount: 100}, 'transaction'
-            ]
-            , () => { console.log('Succes'); }
-            , (error) => { console.error(error); }
-            );
-    */
-
-      var me = global.hybridd.hostname[0] + ':' + global.hybridd.restport;
       var r = [me].concat(peers).join(',');
 
       subprocesses.push('stop(0,"' + r + '")');
@@ -52,7 +34,7 @@ function exec (properties) {
     case 'command' :
       var xpath = command.slice(1);
       for (var peer in peers) {
-        subprocesses.push("curl('http://" + peers[peer] + "','/" + xpath.join('/') + "','GET',null,{},{autoproc:true,proceedOnTimeOut:true})");//
+        subprocesses.push("curl('http://" + peers[peer] + "','/" + xpath.join('/') + "','GET',null,{},{parsing:'none',autoproc:true,proceedOnTimeOut:true})");//
       }
       subprocesses.push('coll(' + peers.length + ')');
       subprocesses.push('stop(0,data)');
@@ -60,10 +42,9 @@ function exec (properties) {
       break;
     case 'status' :
       for (var peer in peers) {
-        subprocesses.push("curl('http://" + peers[peer] + "','/engine/cluster/peers','GET',null,{},{autoproc:true,proceedOnTimeOut:true})");
+        subprocesses.push("curl('http://" + peers[peer] + "','/engine/cluster/peers','GET',null,{},{parsing:'none',autoproc:true,proceedOnTimeOut:true})");
       }
       subprocesses.push('coll(' + peers.length + ')');
-      var me = global.hybridd.hostname[0] + ':' + global.hybridd.restport;
       var captain2 = captain || me;
       subprocesses.push('stop(0,"Self: ' + me + '\\nCaptain: ' + captain2 + '\\nPeers: ' + peers.join(',') + '\\nPeers-connections:\\n"+data.join("\\n"))');
       break;
@@ -89,7 +70,7 @@ function exec (properties) {
           subprocesses.push('stop(0,"' + captain + ' succesfully set as captain.")');
         }
       } else { // retrieve captain
-        subprocesses.push('stop(0,"' + captain + '")');
+        subprocesses.push('stop(0,"' + (captain || me) + '")');//
       }
       break;
     case 'add' :
