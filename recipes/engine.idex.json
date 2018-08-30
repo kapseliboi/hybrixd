@@ -18,6 +18,11 @@
         "_list" : "The address for which to check the nonce.",
         "_this" : "Return the nonce to use in the next idex API-call for this address."
       }
+    }, "getOrderBook": {
+      "_ref" : {
+        "_list" : "The market for which you want the order book (e.g. ETH_KIN).",
+        "_this" : "Return the order book for this market on idex.."
+      }
     }
   },
   "quartz" : {
@@ -27,6 +32,7 @@
       "curl('$host', 'returnNextNonce?address='+'$1', 'POST', '')",
       "tran('.nonce',data,1,1)",
       "pass(data)"
-    ]
+    ],
+    "getOrderBook" : ["curl('$host', 'returnOrderBook?market='+'$1', 'POST', '')"]
   }
 }
