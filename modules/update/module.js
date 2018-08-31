@@ -2,6 +2,8 @@
 // hybridd module - storage/module.js
 // Module to provide storage
 
+var scheduler = require('../../lib/scheduler');
+
 var fs = require('fs');
 var execSync = require('child_process').execSync;
 
@@ -67,5 +69,5 @@ function update (data) {
   execSync('rm -f archive.tar.gz');
   execSync('rm -rf ../update/*');
 
-  scheduler.stop(data.processID, {err: 0, data: 'Update succesfull'});
+  scheduler.stop(data.processID, 0, 'Update succesfull');
 }

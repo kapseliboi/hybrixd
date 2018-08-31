@@ -2,6 +2,8 @@
 // hybridd module - storage/module.js
 // Module to provide clustering
 
+var scheduler = require('../../lib/scheduler');
+
 // exports
 exports.init = init;
 exports.exec = exec;

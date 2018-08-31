@@ -6,6 +6,7 @@
 var proofOfWork = require('../../lib/crypto/proof');
 var storage = require('./storage'); // key-value storage
 var execSync = require('child_process').execSync;
+var scheduler = require('../../lib/scheduler');
 
 // exports
 exports.init = init;
