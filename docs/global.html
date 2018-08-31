@@ -104,7 +104,7 @@
     
 
     
-    <h4 class="name" id="call"><span class="type-signature"></span>call<span class="signature">(target, path, data)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="call"><span class="type-signature"></span>call<span class="signature">(command, data)</span><span class="type-signature"></span></h4>
     
 
     
@@ -112,7 +112,7 @@
 
 
 <div class="description">
-    Creates a new process by calling the xpath command on target and wait
+    Creates a new process by calling the xpath command and wait
 for the data to be returned. (Combining fork and read)
 </div>
 
@@ -149,33 +149,7 @@ for the data to be returned. (Combining fork and read)
 
         <tr>
             
-                <td class="name"><code>target</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">A string containing on of the following options
-- "asset://base[.mode]"
-- "source://base[.mode]"
-- "engine://base[.mode]"</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>path</code></td>
+                <td class="name"><code>command</code></td>
             
 
             <td class="type">
@@ -255,7 +229,7 @@ for the data to be returned. (Combining fork and read)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line766">line 766</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line741">line 741</a>
     </li></ul></dd>
     
 
@@ -284,8 +258,7 @@ for the data to be returned. (Combining fork and read)
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>call("asset://dummy","balance/_dummyaddress_")          // Retrieve the
-  dummy balance and pass it to next step.</code></pre>
+    <pre class="prettyprint"><code>call("balance/_dummyaddress_")          // Retrieve the balance and pass it to next step.</code></pre>
 
 
 
@@ -396,7 +369,7 @@ for the data to be returned. (Combining fork and read)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line274">line 274</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line275">line 275</a>
     </li></ul></dd>
     
 
@@ -722,7 +695,7 @@ errors. (Defaults to true)</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line627">line 627</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line619">line 619</a>
     </li></ul></dd>
     
 
@@ -857,7 +830,7 @@ errors. (Defaults to true)</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line211">line 211</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line212">line 212</a>
     </li></ul></dd>
     
 
@@ -896,7 +869,7 @@ errors. (Defaults to true)</td>
     
 
     
-    <h4 class="name" id="each"><span class="type-signature"></span>each<span class="signature">(target, path, data)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="each"><span class="type-signature"></span>each<span class="signature">(command, data)</span><span class="type-signature"></span></h4>
     
 
     
@@ -941,33 +914,7 @@ element.
 
         <tr>
             
-                <td class="name"><code>target</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">A string containing on of the following options
-- "asset://base[.mode]"
-- "source://base[.mode]"
-- "engine://base[.mode]"</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>path</code></td>
+                <td class="name"><code>command</code></td>
             
 
             <td class="type">
@@ -1047,7 +994,7 @@ element.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line880">line 880</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line850">line 850</a>
     </li></ul></dd>
     
 
@@ -1076,10 +1023,10 @@ element.
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>each(["a","b","c"], "asset://dummy","test")     //  calls
-  asset://dummy/test with data = {key=0, value="a"} and further
-each({"a":0,"b":1,"c":2}, "asset://dummy","test")     //  calls
-  asset://dummy/test with data = {key="a", value=0} and further</code></pre>
+    <pre class="prettyprint"><code>each(["a","b","c"],"test")     //  calls
+  test with data = {key=0, value="a"} and further
+each({"a":0,"b":1,"c":2},"test")     //  calls
+  test/x/y with data = {key="a", value=0} and further</code></pre>
 
 
 
@@ -1141,7 +1088,7 @@ each({"a":0,"b":1,"c":2}, "asset://dummy","test")     //  calls
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line997">line 997</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line967">line 967</a>
     </li></ul></dd>
     
 
@@ -1304,7 +1251,7 @@ each({"a":0,"b":1,"c":2}, "asset://dummy","test")     //  calls
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line589">line 589</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line581">line 581</a>
     </li></ul></dd>
     
 
@@ -1484,7 +1431,7 @@ each({"a":0,"b":1,"c":2}, "asset://dummy","test")     //  calls
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line439">line 439</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line431">line 431</a>
     </li></ul></dd>
     
 
@@ -1762,7 +1709,7 @@ fail(404,"HELP! Not found.")  // stop processing, set error to 404, and put "HEL
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line538">line 538</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line530">line 530</a>
     </li></ul></dd>
     
 
@@ -1796,7 +1743,7 @@ fail(404,"HELP! Not found.")  // stop processing, set error to 404, and put "HEL
     
 
     
-    <h4 class="name" id="fork"><span class="type-signature"></span>fork<span class="signature">(target, path, data, childId)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="fork"><span class="type-signature"></span>fork<span class="signature">(command, data, childId<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -1804,7 +1751,7 @@ fail(404,"HELP! Not found.")  // stop processing, set error to 404, and put "HEL
 
 
 <div class="description">
-    Creates a new process by calling the xpath command on target asynchronously.
+    Creates a new process by calling the command asynchronously.
 </div>
 
 
@@ -1828,6 +1775,8 @@ fail(404,"HELP! Not found.")  // stop processing, set error to 404, and put "HEL
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -1840,7 +1789,7 @@ fail(404,"HELP! Not found.")  // stop processing, set error to 404, and put "HEL
 
         <tr>
             
-                <td class="name"><code>target</code></td>
+                <td class="name"><code>command</code></td>
             
 
             <td class="type">
@@ -1853,31 +1802,13 @@ fail(404,"HELP! Not found.")  // stop processing, set error to 404, and put "HEL
             </td>
 
             
-
-            
-
-            <td class="description last">A string containing on of the following options
-- "asset://base[.mode]"
-- "source://base[.mode]"
-- "engine://base[.mode]"</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>path</code></td>
-            
-
-            <td class="type">
-            
+                <td class="attributes">
                 
-<span class="param-type">String</span>
 
+                
 
-            
-            </td>
-
+                
+                </td>
             
 
             
@@ -1902,6 +1833,14 @@ fail(404,"HELP! Not found.")  // stop processing, set error to 404, and put "HEL
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
@@ -1924,6 +1863,16 @@ fail(404,"HELP! Not found.")  // stop processing, set error to 404, and put "HEL
             
             </td>
 
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -1971,7 +1920,7 @@ of the current process.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line728">line 728</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line716">line 716</a>
     </li></ul></dd>
     
 
@@ -2000,7 +1949,7 @@ of the current process.</td>
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>fork("asset://dummy","balance/_dummyaddress_")   // Starts a process to
+    <pre class="prettyprint"><code>fork("balance/_dummyaddress_")   // Starts a process to
   retrieve the dummy balance and continue without waiting for a reply.</code></pre>
 
 
@@ -2186,7 +2135,7 @@ of the current process.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line570">line 570</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line562">line 562</a>
     </li></ul></dd>
     
 
@@ -2351,7 +2300,7 @@ Explode string
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line600">line 600</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line592">line 592</a>
     </li></ul></dd>
     
 
@@ -2437,7 +2386,7 @@ Explode string
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line943">line 943</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line913">line 913</a>
     </li></ul></dd>
     
 
@@ -2620,7 +2569,7 @@ Explode string
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line321">line 321</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line322">line 322</a>
     </li></ul></dd>
     
 
@@ -2761,7 +2710,7 @@ jpar("{key:'Some data.'",'failed')      // returns "failed"</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line343">line 343</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line344">line 344</a>
     </li></ul></dd>
     
 
@@ -2945,7 +2894,7 @@ jstr(12)                 // returns '12'</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line451">line 451</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line443">line 443</a>
     </li></ul></dd>
     
 
@@ -3161,7 +3110,7 @@ jump(1,"Yo!")   // step to the next instruction, and fill data field of this sub
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line295">line 295</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line296">line 296</a>
     </li></ul></dd>
     
 
@@ -3303,7 +3252,7 @@ logs(2,"Be careful")    // logs "[!] Be careful" to console</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line307">line 307</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line308">line 308</a>
     </li></ul></dd>
     
 
@@ -3444,7 +3393,7 @@ pass("Wow: "+data)   // push data "Wow:" with previous subprocess data concatena
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line925">line 925</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line895">line 895</a>
     </li></ul></dd>
     
 
@@ -3659,7 +3608,7 @@ peek("thisnum")     // returns 55</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line908">line 908</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line878">line 878</a>
     </li></ul></dd>
     
 
@@ -3874,7 +3823,7 @@ peek("thisnum")     // returns 55</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line357">line 357</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line358">line 358</a>
     </li></ul></dd>
     
 
@@ -4058,7 +4007,7 @@ prog(-1)     // restore automatic progress reporting</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line249">line 249</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line250">line 250</a>
     </li></ul></dd>
     
 
@@ -4150,7 +4099,7 @@ prwt("209123")        // wait for process with ID 209123 to finish, then continu
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line181">line 181</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line182">line 182</a>
     </li></ul></dd>
     
 
@@ -4315,7 +4264,7 @@ are finished</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line799">line 799</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line773">line 773</a>
     </li></ul></dd>
     
 
@@ -4457,7 +4406,7 @@ read({"a":null,"b":34})        //Wait for processes 123456 and 654321 to finish 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line778">line 778</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line752">line 752</a>
     </li></ul></dd>
     
 
@@ -4598,7 +4547,7 @@ read({"a":null,"b":34})        //Wait for processes 123456 and 654321 to finish 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line977">line 977</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line947">line 947</a>
     </li></ul></dd>
     
 
@@ -4781,7 +4730,7 @@ read({"a":null,"b":34})        //Wait for processes 123456 and 654321 to finish 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line413">line 413</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line414">line 414</a>
     </li></ul></dd>
     
 
@@ -5028,7 +4977,7 @@ read({"a":null,"b":34})        //Wait for processes 123456 and 654321 to finish 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line487">line 487</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line479">line 479</a>
     </li></ul></dd>
     
 
@@ -5213,7 +5162,7 @@ test(a>3,-5)      // test if a>3, if true jump back five instructions, else defa
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line378">line 378</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line379">line 379</a>
     </li></ul></dd>
     
 
@@ -5495,7 +5444,7 @@ also for explicit primitive values
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line518">line 518</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line510">line 510</a>
     </li></ul></dd>
     
 
@@ -5684,7 +5633,7 @@ tran("=.hello|default",{foo:"bar"},1,2)                              // Passes "
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line225">line 225</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line226">line 226</a>
     </li></ul></dd>
     
 
@@ -5740,7 +5689,7 @@ wait(1000,"WOOT!")   // wait for one second and fill subprocess data field with 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Aug 30 2018 12:51:41 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Aug 31 2018 12:38:06 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

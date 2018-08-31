@@ -9,7 +9,10 @@
 
 // required libraries in this context
 var Client = require('../../lib/rest').Client;
+var APIqueue = require('../../lib/APIqueue');
 var http = require('http');
+var scheduler = require('../../lib/scheduler');
+var functions = require('../../lib/functions');
 
 // exports
 exports.init = init;
@@ -323,7 +326,7 @@ function post (properties) {
       break;
   }
   // stop and send data to parent
-  scheduler.stop(processID, {err: (success ? 0 : 1), data: result});
+  scheduler.stop(processID, success ? 0 : 1, result);
 }
 
 function link (properties) {

@@ -6,6 +6,9 @@
 var fs = require('fs');
 var Client = require('../../lib/rest').Client;
 var functions = require('../../lib/functions');
+var APIqueue = require('../../lib/APIqueue');
+var scheduler = require('../../lib/scheduler');
+var hex2dec = require('../../common/crypto/hex2dec'); // convert long HEX to decimal
 
 // exports
 exports.init = init;
@@ -214,7 +217,7 @@ function post (properties) {
     }
   }
   // stop and send data to parent
-  scheduler.stop(processID, {err: (success ? 0 : 1), data: postdata});
+  scheduler.stop(processID, success ? 0 : 1, postdata);
 }
 
 // data returned by this connector is stored in a process superglobal -> global.hybridd.process[processID]

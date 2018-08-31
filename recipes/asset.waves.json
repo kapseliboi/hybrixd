@@ -60,7 +60,7 @@
     ],
     "history" : [
       "curl('$block-explorer-host','/transactions/address/$1/limit/50','GET')",
-      "each(data[0],'asset://$symbol','subhistory')"
+      "each(data[0],'subhistory')"
     ],
     "subhistory" : [
       "tran({id:'.value.id',fee:'.value.fee',attachment:'.value.attachment',timestamp:'.value.timestamp',symbol:'=.value.assetId|waves','fee-symbol':'=.value.feeAsset|waves',ammount:'=.value.amount|.value.totalAmount|unknown',source:'=.value.sender|unknown',target:'=.value.recipient|unknown'},data,2,1)",

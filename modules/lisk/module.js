@@ -5,6 +5,8 @@
 // required libraries in this context
 var fs = require('fs');
 var Client = require('../../lib/rest').Client;
+var APIqueue = require('../../lib/APIqueue');
+var scheduler = require('../../lib/scheduler');
 
 // exports
 exports.init = init;
@@ -13,8 +15,6 @@ exports.exec = exec;
 exports.stop = stop;
 exports.link = link;
 exports.post = post;
-
-exports.delay = delay; // for testing only!
 
 // initialization function
 function init () {
@@ -56,16 +56,6 @@ function exec (properties) {
       subprocesses.push('func("lisk","post",{target:' + jstr(target) + ',command:["init"],data:data,data})');
       subprocesses.push('pass( (data != null && typeof data.success!="undefined" && data.success ? 1 : 0) )');
       subprocesses.push('logs(1,"module lisk: "+(data?"connected":"failed connection")+" to [' + target.symbol + '] host ' + target.host + '",data)');
-      break;
-    case 'test':
-      subprocesses.push('time(0)');
-      subprocesses.push('wait(2000)');
-      subprocesses.push('wait(2000)');
-      subprocesses.push('func("lisk","delay",{target:' + jstr(target) + '})');
-      subprocesses.push('wait(2000)');
-      subprocesses.push('wait(2000)');
-      subprocesses.push('wait(8000)');
-      subprocesses.push('jump(-6)');
       break;
     case 'status':
     // set up init probe command to check if Altcoin RPC is responding and connected
@@ -214,7 +204,7 @@ function post (properties) {
     }
   }
   // stop and send data to parent
-  scheduler.stop(processID, {err: (success ? 0 : 1), data: postdata});
+  scheduler.stop(processID, success ? 0 : 1, postdata);
 }
 
 // data returned by this connector is stored in a process superglobal -> global.hybridd.process[processID]
@@ -278,22 +268,4 @@ function link (properties) {
     'throttle': (typeof target.throttle !== 'undefined' ? target.throttle : global.hybridd.asset[base].throttle), // in case of token fallback to base asset throttle
     'pid': processID,
     'target': target.symbol });
-}
-
-// TESTING
-
-// standard function for postprocessing the data of a sequential set of instructions
-function delay (properties) {
-  // decode our serialized properties
-  var processID = properties.processID;
-  var target = properties.target;
-  var subprocesses = [];
-
-  subprocesses.push('time(0)');
-  subprocesses.push('wait(5000)');
-  subprocesses.push('wait(5000)');
-  subprocesses.push('wait(5000)');
-
-  // fire the Qrtz-language program into the subprocess queue
-  scheduler.fire(processID, subprocesses);
 }
