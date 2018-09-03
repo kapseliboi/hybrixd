@@ -9,9 +9,10 @@ HERE="`pwd`";
 cd "`cd $( dirname $BASH_SOURCE[0] ) && pwd`"
 for D in *; do
     if [ "$D" != "files" ]; then
-        if [ -d "${D}" ]; then
+        if [ -d "${D}" ] && [ "${D}" != "node_modules" ] && [ "${D}" != "tests" ]; then
             echo "[.] Checking ${D}..."
             cd ${D}
+
 
             if uname | grep -q "Darwin"; then
                 NEWEST_FILE="$(find . -type f -print0 | xargs -0 stat -f '%m %N' | sort -rn | head -1 | cut -f2- -d' ')";
