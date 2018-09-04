@@ -1,0 +1,38 @@
+{
+  "engine":"idex",
+  "name":"Engine for pushing idex commands (orders, cancels, etc.)",
+  "module":"quartz",
+  "host":"https://api.idex.market/",
+  "timeout":100000000000,
+  "router" : {
+    "push": {
+      "_ref" : {
+        "_list" : "Type of message (order, cancel or withdraw).",
+        "_ref" : {
+          "_list" : "JSON arguments to push.",
+          "_this" : "Send order to dex to buy ETH token"
+        }
+      }
+    },"getNextNonce": {
+      "_ref" : {
+        "_list" : "The address for which to check the nonce.",
+        "_this" : "Return the nonce to use in the next idex API-call for this address."
+      }
+    }, "getOrderBook": {
+      "_ref" : {
+        "_list" : "The market for which you want the order book (e.g. ETH_KIN).",
+        "_this" : "Return the order book for this market on idex.."
+      }
+    }
+  },
+  "quartz" : {
+    "push" : ["curl('$host', '$1', 'POST', '$2')"],
+    "getNextNonce" : 
+    [
+      "curl('$host', 'returnNextNonce?address='+'$1', 'POST', '')",
+      "tran('.nonce',data,1,1)",
+      "pass(data)"
+    ],
+    "getOrderBook" : ["curl('$host', 'returnOrderBook?market='+'$1', 'POST', '')"]
+  }
+}
