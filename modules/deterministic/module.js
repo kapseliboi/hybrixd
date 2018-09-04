@@ -3,6 +3,7 @@
 // Module to provide deterministic cryptography tools
 var scheduler = require('../../lib/scheduler');
 var DJB2 = require('../../common/crypto/hashDJB2'); // fast DJB2 hashing
+var fs = require('fs');
 
 var jstr = function (data) { return JSON.stringify(data); };
 
@@ -43,14 +44,6 @@ function init () {
   global.hybridd.source['deterministic'].hashes = hashes;
 }
 
-// stop function
-function stop () {
-}
-
-// loop tick called by internal scheduler
-function tick (properties) {
-}
-
 // standard functions of an asset store results in a process superglobal -> global.hybridd.process[processID]
 // child processes are waited on, and the parent process is then updated by the postprocess() function
 // standard functions of an asset store results in a process superglobal -> global.hybridd.process[processID]
@@ -61,9 +54,6 @@ function exec (properties) {
   var processID = properties.processID;
   // var source = properties.source;
   var target = properties.target;
-  var mode = target.mode;
-  var type = target.type;
-  var factor = (typeof target.factor !== 'undefined' ? target.factor : 8);
   var command = properties.command;
   if (typeof command[1] !== 'undefined') {
     var symbol = command[1].toLowerCase();
