@@ -9,11 +9,7 @@ var jstr = function (data) { return JSON.stringify(data); };
 
 // exports
 exports.init = init;
-exports.tick = tick;
 exports.exec = exec;
-exports.stop = stop;
-// exports.link = link;
-// exports.post = post;
 
 // initialization function
 function init () {

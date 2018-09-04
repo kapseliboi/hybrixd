@@ -88,21 +88,17 @@ var storage = (function () {
       } else { if (typeof postfunction === 'function') { postfunction(null); } }
     },
 
-    /*  SetMeta: function (storekey, meta) {
+    SetMeta: function (storekey, meta) {
       try {
         var fold = storekey.substr(0, 2) + '/';
         makeDir(storepath + fold);
-        if (typeof meta === 'undefined') {
-        // ERROR STORE VALUE NOT DEFINED
-          meta = {time: Date.now(), hash: DJB2.hash(storevalue), pow: 0, res: 0, n: 0};
-        }
         fs.writeFileSync(storepath + fold + storekey + '.meta', JSON.stringify(meta));
         return true;
       } catch (e) {
         console.log(' [!] Storage setMeta error.');
         return false;
       }
-    }, */
+    },
 
     AutoClean: function () {
       console.log(' [.] module storage: storage auto-clean scan');

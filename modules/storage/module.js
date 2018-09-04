@@ -18,9 +18,8 @@ exports.getMeta = getMeta;
 
 // initialization function
 function init () {
-  var modulename = 'storage';
   // check for storage directory? if not there make one
-  execSync('mkdir -p ../storage');
+  execSync('mkdir -p ../storage'); // TODO replace with Nodejs platform independant version
 }
 
 // exec
@@ -28,10 +27,6 @@ function exec (properties) {
   // decode our serialized properties
   var processID = properties.processID;
   // var source = properties.source;
-  var target = properties.target;
-  var mode = target.mode;
-  var type = target.type;
-  var factor = (typeof target.factor !== 'undefined' ? target.factor : 8);
   var command = properties.command;
   var subprocesses = [];
   // set request to what command we are performing
@@ -40,6 +35,7 @@ function exec (properties) {
   switch (command[0]) {
     case 'cron' :
       storage.AutoClean();
+      subprocesses.push('stop(0,"Autoclean")');
       break;
     case 'get':
       if (typeof command[1] !== 'undefined') {
@@ -131,7 +127,7 @@ function getStorage (properties) {
   var key = properties.key;
   storage.Get(key, function (data) {
     if (data === null) {
-      scheduler.stop(processID, {err: 1, data: null});
+      scheduler.stop(processID, {err: 1, data: null}); // TODO provide error message
     } else {
       scheduler.stop(processID, {err: 0, data: data});
     }
@@ -143,7 +139,7 @@ function getMeta (properties) {
   var key = properties.key;
   storage.GetMeta(key, function (meta) {
     if (meta === null) {
-      scheduler.stop(processID, {err: 1, data: null});
+      scheduler.stop(processID, {err: 1, data: null}); // TODO provide error message
     } else {
       if (typeof meta.pow !== 'undefined') { delete meta.pow; }
       scheduler.stop(processID, {err: 0, data: meta});
