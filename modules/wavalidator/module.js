@@ -1,6 +1,7 @@
 // (C) 2015 Internet of Coins / Metasync / Joachim de Koning
 
 // required libraries in this context
+var scheduler = require('../../lib/scheduler');
 
 // exports
 exports.init = init;

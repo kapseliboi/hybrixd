@@ -6,6 +6,11 @@
 var fs = require('fs');
 var Client = require('../../lib/rest').Client;
 var functions = require('../../lib/functions');
+var APIqueue = require('../../lib/APIqueue');
+var scheduler = require('../../lib/scheduler');
+var modules = require('../../lib/modules');
+
+var jstr = function (data) { return JSON.stringify(data); };
 
 // exports
 exports.init = init;
@@ -47,7 +52,7 @@ function exec (properties) {
   // handle standard cases here, and construct the sequential process list
   switch (properties.command[0]) {
     case 'init':
-      if (!isToken(target.symbol)) {
+      if (!functions.isToken(target.symbol)) {
       // set up REST API connection
         if (typeof target.user !== 'undefined' && typeof target.pass !== 'undefined') {
           var options_auth = {user: target.user, password: target.pass};
@@ -75,17 +80,17 @@ function exec (properties) {
     case 'fee':
     // directly return fee, post-processing not required!
       var fee;
-      if (!isToken(target.symbol)) {
+      if (!functions.isToken(target.symbol)) {
         fee = (typeof target.fee !== 'undefined' ? target.fee : null);
       } else {
         fee = (typeof global.hybridd.asset[base].fee !== 'undefined' ? global.hybridd.asset[base].fee * 2.465 : null);
         factor = (typeof global.hybridd.asset[base].factor !== 'undefined' ? global.hybridd.asset[base].factor : null);
       }
-      subprocesses.push('stop((' + jstr(fee) + '!==null && ' + jstr(factor) + '!==null?0:1),' + (fee != null && factor != null ? '"' + padFloat(fee, factor) + '"' : null) + ')');
+      subprocesses.push('stop((' + jstr(fee) + '!==null && ' + jstr(factor) + '!==null?0:1),' + (fee != null && factor != null ? '"' + functions.padFloat(fee, factor) + '"' : null) + ')');
       break;
     case 'balance':
       if (sourceaddr) {
-        if (!isToken(target.symbol)) {
+        if (!functions.isToken(target.symbol)) {
           subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_getBalance",["' + sourceaddr + '","latest"]]})'); // send balance query
         } else {
           var symbol = target.symbol.split('.')[0];
@@ -93,7 +98,7 @@ function exec (properties) {
           var encoded = global.hybridd.asset[symbol].dcode.encode({'func': 'balanceOf(address):(uint256)', 'vars': ['address'], 'address': sourceaddr}); // returns the encoded binary (as a Buffer) data to be sent
           subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_call",[{"to":"' + target.contract + '","data":"' + encoded + '"},"pending"]]})'); // send token balance ABI query
         }
-        subprocesses.push('stop((data!==null && typeof data.result!=="undefined"?0:1),(data!==null && typeof data.result!=="undefined"? padFloat(fromInt(hex2dec.toDec(data.result),' + factor + '),' + factor + ') :null))');
+        subprocesses.push('stop((data!==null && typeof data.result!=="undefined"?0:1),(data!==null && typeof data.result!=="undefined"? functions.padFloat(functions.fromInt(functions.hex2dec.toDec(data.result),' + factor + '),' + factor + ') :null))');
       } else {
         subprocesses.push('stop(1,"Error: missing address!")');
       }
@@ -117,7 +122,7 @@ function exec (properties) {
         var targetaddr = (typeof properties.command[3] !== 'undefined' ? properties.command[3] : false);
         if (isEthAddress(targetaddr)) {
           subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_getTransactionCount",["' + sourceaddr + '","pending"]]})');
-          subprocesses.push('stop(0,{"nonce":hex2dec.toDec(data.result)})');
+          subprocesses.push('stop(0,{"nonce":functions.hex2dec.toDec(data.result)})');
         } else {
           subprocesses.push('stop(1,"Error: bad or missing target address!")');
         }
@@ -145,12 +150,12 @@ function exec (properties) {
       var symbol = target.symbol;
       var name = target.name;
       var fee;
-      if (!isToken(target.symbol)) {
+      if (!functions.isToken(target.symbol)) {
         fee = (typeof target.fee !== 'undefined' ? target.fee : null);
       } else {
         fee = (typeof global.hybridd.asset[base].fee !== 'undefined' ? global.hybridd.asset[base].fee * 2.465 : null);
       }
-      fee = fee && factor ? padFloat(fee, factor) : null;
+      fee = fee && factor ? functions.padFloat(fee, factor) : null;
       var contract = (typeof target.contract !== 'undefined' ? target.contract : null);
 
       subprocesses.push("stop(0,{symbol:'" + symbol + "', name:'" + name + "',mode:'" + mode + "',fee:'" + fee + "',contract:'" + contract + "',factor:'" + factor + "','keygen-base':'" + base + "','fee-symbol':'" + base + "'})");
@@ -193,7 +198,7 @@ function post (properties) {
     switch (properties.command[0]) {
       case 'init':
         if (typeof postdata.result !== 'undefined' && postdata.result) {
-          global.hybridd.asset[target.symbol].fee = fromInt(hex2dec.toDec(postdata.result).times(21000), factor);
+          global.hybridd.asset[target.symbol].fee = functions.fromInt(functions.hex2dec.toDec(postdata.result).times(21000), factor);
         }
         break;
       case 'status':
@@ -214,7 +219,7 @@ function post (properties) {
     }
   }
   // stop and send data to parent
-  scheduler.stop(processID, {err: (success ? 0 : 1), data: postdata});
+  scheduler.stop(processID, success ? 0 : 1, postdata);
 }
 
 // data returned by this connector is stored in a process superglobal -> global.hybridd.process[processID]

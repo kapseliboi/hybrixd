@@ -1,6 +1,6 @@
 {
     "symbol":"eth.mkr",
-    "name":"Maker",
+    "name":"MakerDAO collateral governing DAI (ETH)",
     "module":"ethereum",
     "mode":"ethereum.token",
     "contract":"0xC66eA802717bFb9833400264Dd12c2bCeAa34a6d",

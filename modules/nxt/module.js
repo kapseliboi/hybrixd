@@ -6,6 +6,11 @@
 var fs = require('fs');
 var Client = require('../../lib/rest').Client;
 var functions = require('../../lib/functions');
+var APIqueue = require('../../lib/APIqueue');
+var scheduler = require('../../lib/scheduler');
+var modules = require('../../lib/modules');
+
+var jstr = function (data) { return JSON.stringify(data); };
 
 // exports
 exports.init = init;
@@ -47,7 +52,7 @@ function exec (properties) {
   // handle standard cases here, and construct the sequential process list
   switch (properties.command[0]) {
     case 'init':
-      if (!isToken(target.symbol)) {
+      if (!functions.isToken(target.symbol)) {
       // set up REST API connection
         if (typeof target.user !== 'undefined' && typeof target.pass !== 'undefined') {
           var options_auth = {user: target.user, password: target.pass};
@@ -82,22 +87,24 @@ function exec (properties) {
       break;
     case 'fee':
     // directly return fee, post-processing not required!
-      if (!isToken(target.symbol)) {
+      if (!functions.isToken(target.symbol)) {
         var fee = (typeof target.fee !== 'undefined' ? target.fee : null);
       } else {
         var fee = (typeof global.hybridd.asset[base].fee !== 'undefined' ? global.hybridd.asset[base].fee : null);
         factor = (typeof global.hybridd.asset[base].factor !== 'undefined' ? global.hybridd.asset[base].factor : null);
       }
-      subprocesses.push('stop((' + jstr(fee) + '!=null && ' + jstr(factor) + '!=null?0:1),' + (fee != null && factor != null ? '"' + padFloat(fee, factor) + '"' : null) + ')');
+      subprocesses.push('stop((' + jstr(fee) + '!=null && ' + jstr(factor) + '!=null?0:1),' + (fee != null && factor != null ? '"' + functions.padFloat(fee, factor) + '"' : null) + ')');
       break;
     case 'balance':
       if (sourceaddr) {
-        if (!isToken(target.symbol)) {
+        if (!functions.isToken(target.symbol)) {
           if (target.symbol === 'burst' && !sourceaddr.startsWith('BURST-')) {
             sourceaddr = 'BURST-' + sourceaddr;
           }
           subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["getBalance",["account=' + sourceaddr + '"]]})'); // send balance query
-          subprocesses.push('stop((data!==null && ((typeof data.errorCode!=="undefined" && data.errorCode==5)|| typeof data.unconfirmedBalanceNQT!=="undefined")?0:1),(data!==null && typeof data.unconfirmedBalanceNQT!=="undefined"? padFloat( fromInt(data.unconfirmedBalanceNQT,' + factor + '),' + factor + ') : ((data!==null && (typeof data.errorCode!=="undefined" && data.errorCode==5))?0:null) ))');
+
+          var zero = '0.' + '0'.repeat(factor);
+          subprocesses.push('stop((data!==null && ((typeof data.errorCode!=="undefined" && data.errorCode==5)|| typeof data.unconfirmedBalanceNQT!=="undefined")?0:1),(data!==null && typeof data.unconfirmedBalanceNQT!=="undefined"? functions.padFloat( functions.fromInt(data.unconfirmedBalanceNQT,' + factor + '),' + factor + ') : ((data!==null && (typeof data.errorCode!=="undefined" && data.errorCode==5))?"' + zero + '":null) ))');
         } else {
           subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["getAccount",["account=' + sourceaddr + '","includeAssets=true","includeCurrencies=true"]]})'); // send balance query
           subprocesses.push('func("nxt","post",{target:' + jstr(target) + ',command:["balance"],data:data})');
@@ -138,23 +145,23 @@ function exec (properties) {
             if (target.symbol === 'burst') { // without doNotSign parameter
               var fee = (typeof global.hybridd.asset[base].fee !== 'undefined' ? global.hybridd.asset[base].fee : null);
               var feefactor = (typeof global.hybridd.asset[base].factor !== 'undefined' ? global.hybridd.asset[base].factor : null);
-              // if(base==='nxt' && toInt(amount,factor).toString()!==toInt(amount,factor).toInteger().toString() ) {
+              // if(base==='nxt' && functions.toInt(amount,factor).toString()!==functions.toInt(amount,factor).toInteger().toString() ) {
               //  subprocesses.push('stop(1,"Error: NXT token transactions support only integer amounts!")');
               // }
-              amount = fromInt(toInt(amount, factor).minus(toInt(fee, factor)).toInteger(), factor).toString(); // with NXT the unspent function is a transaction preparation, so must subtract the fee
-              subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["transferAsset",["recipient=' + targetaddr + '","asset=' + target.contract + '",' + publicKey + ',"quantityQNT=' + toInt(amount, factor) + '","feeNQT=' + toInt(fee, feefactor) + '","deadline=300","broadcast=false"] ]})');
-            } else if (!isToken(target.symbol)) {
-              amount = fromInt(toInt(amount, factor).minus(toInt(fee, factor)), factor).toString(); // with NXT the unspent function is a transaction preparation, so must subtract the fee
-              subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["sendMoney",["recipient=' + targetaddr + '",' + publicKey + ',"amountNQT=' + toInt(amount, factor) + '","feeNQT=' + toInt(fee, factor) + '","deadline=300","doNotSign=1","broadcast=false"] ]})');
+              amount = functions.fromInt(functions.toInt(amount, factor).minus(functions.toInt(fee, factor)).toInteger(), factor).toString(); // with NXT the unspent function is a transaction preparation, so must subtract the fee
+              subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["transferAsset",["recipient=' + targetaddr + '","asset=' + target.contract + '",' + publicKey + ',"quantityQNT=' + functions.toInt(amount, factor) + '","feeNQT=' + functions.toInt(fee, feefactor) + '","deadline=300","broadcast=false"] ]})');
+            } else if (!functions.isToken(target.symbol)) {
+              amount = functions.fromInt(functions.toInt(amount, factor).minus(functions.toInt(fee, factor)), factor).toString(); // with NXT the unspent function is a transaction preparation, so must subtract the fee
+              subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["sendMoney",["recipient=' + targetaddr + '",' + publicKey + ',"amountNQT=' + functions.toInt(amount, factor) + '","feeNQT=' + functions.toInt(fee, factor) + '","deadline=300","doNotSign=1","broadcast=false"] ]})');
             } else {
               var fee = (typeof global.hybridd.asset[base].fee !== 'undefined' ? global.hybridd.asset[base].fee : null);
               var feefactor = (typeof global.hybridd.asset[base].factor !== 'undefined' ? global.hybridd.asset[base].factor : null);
-              // if(base==='nxt' && toInt(amount,factor).toString()!==toInt(amount,factor).toInteger().toString() ) {
+              // if(base==='nxt' && functions.toInt(amount,factor).toString()!==functions.toInt(amount,factor).toInteger().toString() ) {
               //  subprocesses.push('stop(1,"Error: NXT token transactions support only integer amounts!")');
               // }
-              amount = fromInt(toInt(amount, factor).minus(toInt(fee, factor)).toInteger(), factor).toString(); // with NXT the unspent function is a transaction preparation, so must subtract the fee
+              amount = functions.fromInt(functions.toInt(amount, factor).minus(functions.toInt(fee, factor)).toInteger(), factor).toString(); // with NXT the unspent function is a transaction preparation, so must subtract the fee
 
-              subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["transferAsset",["recipient=' + targetaddr + '","asset=' + target.contract + '",' + publicKey + ',"quantityQNT=' + toInt(amount, factor) + '","feeNQT=' + toInt(fee, feefactor) + '","deadline=300","doNotSign=1","broadcast=false"] ]})');
+              subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["transferAsset",["recipient=' + targetaddr + '","asset=' + target.contract + '",' + publicKey + ',"quantityQNT=' + functions.toInt(amount, factor) + '","feeNQT=' + functions.toInt(fee, feefactor) + '","deadline=300","doNotSign=1","broadcast=false"] ]})');
             }
 
             subprocesses.push('stop((typeof data.errorCode==="undefined"?0:data.errorCode),(typeof data.errorCode==="undefined"?data:data.errorDescription))');
@@ -185,13 +192,13 @@ function exec (properties) {
       var symbol = target.symbol;
       var name = target.name;
       var fee;
-      if (!isToken(target.symbol)) {
+      if (!functions.isToken(target.symbol)) {
         var fee = (typeof target.fee !== 'undefined' ? target.fee : null);
       } else {
         var fee = (typeof global.hybridd.asset[base].fee !== 'undefined' ? global.hybridd.asset[base].fee : null);
         factor = (typeof global.hybridd.asset[base].factor !== 'undefined' ? global.hybridd.asset[base].factor : null);
       }
-      fee = padFloat(fee, factor);
+      fee = functions.padFloat(fee, factor);
       // var base; already defined
       // var mode; already defined
       // var factor; already defined
@@ -257,14 +264,15 @@ function post (properties) {
             }
           }
         }
-        postdata = padFloat(fromInt(balance, factor), factor);
+
+        postdata = functions.padFloat(functions.fromInt(balance, factor), factor);
         break;
       default:
         success = false;
     }
   }
   // stop and send data to parent
-  scheduler.stop(processID, {err: (success ? 0 : 1), data: postdata});
+  scheduler.stop(processID, success ? 0 : 1, postdata);
 }
 
 // data returned by this connector is stored in a process superglobal -> global.hybridd.process[processID]

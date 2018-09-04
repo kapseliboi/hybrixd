@@ -7,6 +7,8 @@ var fs = require('fs');
 var Client = require('../../lib/rest').Client;
 var functions = require('../../lib/functions');
 var WebSocket = require('ws');
+var scheduler = require('../../lib/scheduler');
+var modules = require('../../lib/modules');
 
 // exports
 exports.init = init;
@@ -17,55 +19,14 @@ function init () {
   modules.initexec('quartz', ['init']);
 }
 
-function write (value) {
-  if (typeof value === 'string' || typeof value === 'number') {
-    return value;
-  } else if (typeof value === 'object' && value instanceof Array) {
-    return value.join(',');
-  } else {
-    return 'undefined';
-  }
-}
-
-// Preprocess quartz command
-function preprocess (command, recipe, xpath) {
-  var re;
-  var parsedCommand = command;
-  re = /[$]([_a-zA-Z][\w\-]*)::([_\w\-]*)/g; // Search for "$recipeId::propertyId"
-  parsedCommand = parsedCommand.replace(re, function (full, recipeId, propertyId) {
-    var otherRecipe;
-    if (global.hybridd.asset.hasOwnProperty(recipeId)) {
-      otherRecipe = global.hybridd.asset[recipeId];
-    } else if (global.hybridd.source.hasOwnProperty(recipeId)) {
-      otherRecipe = global.hybridd.source[recipeId];
-    } else if (global.hybridd.engine.hasOwnProperty(recipeId)) {
-      otherRecipe = global.hybridd.engine[recipeId];
-    } else {
-      console.log(` [!] Error: Recipe "${recipeId}" for "${full}" not found. Neither asset, engine or source.`);
-      return full;
-    }
-
-    return write(otherRecipe[propertyId]);
-  }); // Replace all "$recipeId::propertyId" with recipe["recipeId"]["propertyId"]
-
-  re = /[$]([_a-zA-Z][\w\-_]*)/g; // Search for "$propertyId" and "$_propertyId-with_dashes--andNumbers1231"
-  parsedCommand = parsedCommand.replace(re, function (full, propertyId) { return write(recipe[propertyId]); }); // Replace all "$propertyId" with recipe["propertyId"]
-
-  re = /[$][\d]+/g; // Search for $0, $1, ...
-  parsedCommand = parsedCommand.replace(re, function (x) { return xpath[x.substr(1)]; }); // Replace all "$1" with xpath[1]
-  return parsedCommand;
-}
-
-// preprocess quartz code
 function addSubprocesses (subprocesses, commands, recipe, xpath) {
   for (var i = 0, len = commands.length; i < len; ++i) {
-    subprocesses.push(preprocess(commands[i], recipe, xpath));
+    subprocesses.push(commands[i]);
   }
-
   // Postprocess: Append formating of result for specific commands
   var command = xpath[0];
   if (command === 'balance' || command === 'fee') { // Append formatting of returned numbers
-    subprocesses.push(preprocess('form(data,$factor)', recipe, xpath));
+    subprocesses.push('form(data,$factor)');
     subprocesses.push('stop(0,data)');
   }
 }
@@ -132,7 +93,7 @@ function exec (properties) {
   global.hybridd.proc[processID].request = properties.command; // set request to what command we are performing
 
   var command = properties.command[0];
-  if (command == 'init') {
+  if (command === 'init') {
     if (recipe.hasOwnProperty('host')) { // set up connection
       if ((typeof recipe.host === 'string' && (recipe.host.substr(0, 5) === 'ws://' || recipe.host.substr(0, 6) === 'wss://'))) { // Websocket connections ws://, wss://
         try {

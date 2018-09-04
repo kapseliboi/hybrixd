@@ -1,6 +1,6 @@
 {
     "symbol":"waves.usd",
-    "name":"US dollar (Waves)",
+    "name":"USD Token Stablecoin (Waves)",
     "module":"quartz",
     "mode":"waves.token",
     "import":"waves",

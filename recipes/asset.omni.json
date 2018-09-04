@@ -24,7 +24,7 @@
 
     ],
     "unspent" : [
-      "func('blockexplorer','exec',{command:['$fee-symbol','unspent','$1','$fee']})",
+      "rout('/source/blockexplorer/$fee-symbol/unspent/$1/$fee')",
       "pass({'unspents':data.unspents,'change':String(Number(data.change)+0.00000546)})"
     ],
     "balance" : [
@@ -38,7 +38,7 @@
       "form(parseInt(data.value)+parseInt(data.in)-parseInt(data.out),$factor,'reduce')"
     ],
     "push" : [
-      "call('asset://btc','push/$1')"
+      "rout('/asset/btc/push/$1')"
     ],
     "factor" : [
       "pass('$factor')"

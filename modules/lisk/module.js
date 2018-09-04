@@ -5,6 +5,12 @@
 // required libraries in this context
 var fs = require('fs');
 var Client = require('../../lib/rest').Client;
+var APIqueue = require('../../lib/APIqueue');
+var scheduler = require('../../lib/scheduler');
+var modules = require('../../lib/modules');
+var functions = require('../../lib/functions');
+
+var jstr = function (data) { return JSON.stringify(data); };
 
 // exports
 exports.init = init;
@@ -13,8 +19,6 @@ exports.exec = exec;
 exports.stop = stop;
 exports.link = link;
 exports.post = post;
-
-exports.delay = delay; // for testing only!
 
 // initialization function
 function init () {
@@ -57,16 +61,6 @@ function exec (properties) {
       subprocesses.push('pass( (data != null && typeof data.success!="undefined" && data.success ? 1 : 0) )');
       subprocesses.push('logs(1,"module lisk: "+(data?"connected":"failed connection")+" to [' + target.symbol + '] host ' + target.host + '",data)');
       break;
-    case 'test':
-      subprocesses.push('time(0)');
-      subprocesses.push('wait(2000)');
-      subprocesses.push('wait(2000)');
-      subprocesses.push('func("lisk","delay",{target:' + jstr(target) + '})');
-      subprocesses.push('wait(2000)');
-      subprocesses.push('wait(2000)');
-      subprocesses.push('wait(8000)');
-      subprocesses.push('jump(-6)');
-      break;
     case 'status':
     // set up init probe command to check if Altcoin RPC is responding and connected
       subprocesses.push('func("lisk","link",{target:' + jstr(target) + ',command:["/api/loader/status/sync"]})'); // get sync status
@@ -82,14 +76,14 @@ function exec (properties) {
       break;
     case 'fee':
     // directly relay factor, post-processing not required!
-      subprocesses.push('stop(0,"' + padFloat(fee, factor) + '")');
+      subprocesses.push('stop(0,"' + functions.padFloat(fee, factor) + '")');
       break;
     case 'balance':
     // define the source address/wallet
       var sourceaddr = (typeof properties.command[1] !== 'undefined' ? properties.command[1] : '');
       if (sourceaddr) {
         subprocesses.push('func("lisk","link",{target:' + jstr(target) + ',command:["/api/accounts/getBalance?address=' + sourceaddr + '"]})'); // send balance query
-        subprocesses.push('stop((typeof data.balance!=="undefined"?0:1),(typeof data.balance==="undefined"?null:padFloat(fromInt(data.balance,' + factor + '),' + factor + ')))');
+        subprocesses.push('stop((typeof data.balance!=="undefined"?0:1),(typeof data.balance==="undefined"?null:functions.padFloat(functions.fromInt(data.balance,' + factor + '),' + factor + ')))');
       } else {
         subprocesses.push('stop(1,"Error: missing address!")');
       }
@@ -129,7 +123,7 @@ function exec (properties) {
     case 'details':
       var symbol = target.symbol;
       var name = target.name;
-      var fee = fee && factor ? padFloat(fee, factor) : null;
+      var fee = fee && factor ? functions.padFloat(fee, factor) : null;
       var base = target.symbol.split('.')[0];
       // var mode; already defined
       // var factor; already defined
@@ -175,7 +169,7 @@ function post (properties) {
       case 'init':
       // set asset fee for Lisk transactions
         if (typeof postdata.fee !== 'undefined' && postdata.fee) {
-          global.hybridd.asset[target.symbol].fee = fromInt(postdata.fee, factor);
+          global.hybridd.asset[target.symbol].fee = functions.fromInt(postdata.fee, factor);
         }
         break;
       case 'status':
@@ -214,7 +208,7 @@ function post (properties) {
     }
   }
   // stop and send data to parent
-  scheduler.stop(processID, {err: (success ? 0 : 1), data: postdata});
+  scheduler.stop(processID, success ? 0 : 1, postdata);
 }
 
 // data returned by this connector is stored in a process superglobal -> global.hybridd.process[processID]
@@ -278,22 +272,4 @@ function link (properties) {
     'throttle': (typeof target.throttle !== 'undefined' ? target.throttle : global.hybridd.asset[base].throttle), // in case of token fallback to base asset throttle
     'pid': processID,
     'target': target.symbol });
-}
-
-// TESTING
-
-// standard function for postprocessing the data of a sequential set of instructions
-function delay (properties) {
-  // decode our serialized properties
-  var processID = properties.processID;
-  var target = properties.target;
-  var subprocesses = [];
-
-  subprocesses.push('time(0)');
-  subprocesses.push('wait(5000)');
-  subprocesses.push('wait(5000)');
-  subprocesses.push('wait(5000)');
-
-  // fire the Qrtz-language program into the subprocess queue
-  scheduler.fire(processID, subprocesses);
 }

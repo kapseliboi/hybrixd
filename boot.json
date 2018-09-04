@@ -1,0 +1,5 @@
+{"quartz":{"main":[
+"rout('/engine/cluster/add/localhost:1112')",
+"rout('/engine/cluster/add/localhost:1113')",
+"stop(0,'Done')"
+]}}

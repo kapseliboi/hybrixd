@@ -9,3 +9,5 @@ nodejs-runtime
 .DS_Store
 storage/*
 common
+var/log/hybridd.log
+boot.json
