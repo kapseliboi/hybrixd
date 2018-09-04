@@ -3,8 +3,8 @@
 // Module to provide storage
 
 // required libraries in this context
-var DJB2 = require('../../lib/crypto/hashDJB2');
-var proofOfWork = require('../../lib/crypto/proof');
+var DJB2 = require('../../common/crypto/hashDJB2');
+var proofOfWork = require('../../common/crypto/proof');
 var storage = require('./storage'); // key-value storage
 var execSync = require('child_process').execSync;
 var scheduler = require('../../lib/scheduler');
