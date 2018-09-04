@@ -4,6 +4,8 @@
 var scheduler = require('../../lib/scheduler');
 var DJB2 = require('../../common/crypto/hashDJB2'); // fast DJB2 hashing
 
+var jstr = function (data) { return JSON.stringify(data); };
+
 // exports
 exports.init = init;
 exports.tick = tick;

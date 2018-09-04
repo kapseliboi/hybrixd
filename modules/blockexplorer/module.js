@@ -10,9 +10,11 @@
 // required libraries in this context
 var Client = require('../../lib/rest').Client;
 var APIqueue = require('../../lib/APIqueue');
-var http = require('http');
 var scheduler = require('../../lib/scheduler');
+var modules = require('../../lib/modules');
 var functions = require('../../lib/functions');
+
+var jstr = function (data) { return JSON.stringify(data); };
 
 // exports
 exports.init = init;
@@ -102,7 +104,7 @@ function exec (properties) {
               subprocesses.push('func("blockexplorer","link",{target:' + jstr(target) + ',command:["/address/balance/' + address + '?confirmations=0"]})');
               subprocesses.push('test((typeof data.data!=="undefined" && typeof data.data.balance!=="undefined" && !isNaN(data.data.balance)),2,1,data)');
               subprocesses.push('stop(1,null)');
-              subprocesses.push('stop(0, padFloat(data.data.balance,' + factor + ') )');
+              subprocesses.push('stop(0, functions.padFloat(data.data.balance,' + factor + ') )');
             } else {
               subprocesses.push('stop(1,"Please specify an address!")');
             }
@@ -126,7 +128,7 @@ function exec (properties) {
             subprocesses.push('func("blockexplorer","link",{target:' + jstr(target) + ',command:["/addr/' + address + '/balance"]})');
             subprocesses.push('func("blockexplorer","link",{target:' + jstr(target) + ',command:["/addr/' + address + '/unconfirmedBalance"]})');
             subprocesses.push('coll(2)');
-            subprocesses.push('stop( (isNaN(data[0])||isNaN(data[1])?1:0), fromInt((data[0]+data[1]),' + factor + ') )');
+            subprocesses.push('stop( (isNaN(data[0])||isNaN(data[1])?1:0), functions.fromInt((data[0]+data[1]),' + factor + ') )');
             break;
           case 'unspent':
             // example: https://blockexplorer.com/api/addr/[:addr]/utxo
@@ -161,7 +163,7 @@ function exec (properties) {
         switch (symbolCommand) {
           case 'balance':
             subprocesses.push('func("blockexplorer","link",{target:' + jstr(target) + ',command:["?key=' + cryptoidApiKey + '&q=getbalance&a=' + address + '"]})');
-            subprocesses.push('stop( (isNaN(data?1:0), fromInt(data,' + factor + ') )');
+            subprocesses.push('stop( (isNaN(data?1:0), functions.fromInt(data,' + factor + ') )');
             break;
           case 'unspent':
             // example: https://blockexplorer.com/api/addr/[:addr]/utxo
@@ -247,7 +249,7 @@ function post (properties) {
             result = [];
             for (var i in postdata) {
               // TODO script is missing
-              result.push({amount: padFloat(postdata[i].amount, factor), txid: postdata[i].tx, txn: postdata[i].n});
+              result.push({amount: functions.padFloat(postdata[i].amount, factor), txid: postdata[i].tx, txn: postdata[i].n});
             }
           } else { success = false;	}
           break;
@@ -261,7 +263,7 @@ function post (properties) {
           if (typeof postdata !== 'undefined' && postdata !== null) {
             result = [];
             for (var i in postdata) {
-              result.push({script: postdata[i].scriptPubKey, amount: padFloat(postdata[i].amount, factor), txid: postdata[i].txid, txn: postdata[i].vout});
+              result.push({script: postdata[i].scriptPubKey, amount: functions.padFloat(postdata[i].amount, factor), txid: postdata[i].txid, txn: postdata[i].vout});
             }
           } else { success = false; }
           break;
@@ -276,7 +278,7 @@ function post (properties) {
             postdata = postdata.unspent_outputs;
             result = [];
             for (var i in postdata) {
-              result.push({script: postdata[i].script, amount: fromInt(postdata[i].value, factor), txid: postdata[i].tx_hash, txn: postdata[i].tx_output_n});
+              result.push({script: postdata[i].script, amount: functions.fromInt(postdata[i].value, factor), txid: postdata[i].tx_hash, txn: postdata[i].tx_output_n});
             }
           } else { success = false;	}
           break;
@@ -292,16 +294,16 @@ function post (properties) {
   switch (properties.command[1]) {
     case 'unspent':
       if (typeof properties.command[3] !== 'undefined') {
-        var amount = toInt(properties.command[3], factor);
+        var amount = functions.toInt(properties.command[3], factor);
         if (amount.greaterThan(0)) {
           result = functions.sortArrayByObjKey(result, 'amount', false);
           global.hybridd.proc[processID].progress = 0.75;
-          unspentscnt = toInt(0, factor);
+          unspentscnt = functions.toInt(0, factor);
           var usedinputs = [];
           var unspents = [];
           // pull together the smaller amounts
           for (var i in result) {
-            entry = toInt(result[i].amount, factor);
+            entry = functions.toInt(result[i].amount, factor);
             if (unspentscnt.lessThan(amount) && amount.greaterThanOrEqualTo(entry)) {
               unspents.push(result[i]);
               usedinputs.push(i);
@@ -311,7 +313,7 @@ function post (properties) {
           // add up the bigger amounts
           if (unspentscnt.minus(amount) < 0) {
             for (var i in result) {
-              entry = toInt(result[i].amount, factor);
+              entry = functions.toInt(result[i].amount, factor);
               if (unspentscnt.lessThan(amount) && amount.lessThanOrEqualTo(entry)) {
                 unspents.push(result[i]);
                 usedinputs.push(i);
@@ -320,7 +322,7 @@ function post (properties) {
             }
           }
           var unspentsout = unspentscnt.minus(amount);
-          result = {unspents: unspents, change: fromInt((unspentsout > 0 ? unspentsout : 0), factor)};
+          result = {unspents: unspents, change: functions.fromInt((unspentsout > 0 ? unspentsout : 0), factor)};
         }
       }
       break;

@@ -8,6 +8,7 @@ var Client = require('../../lib/rest').Client;
 var functions = require('../../lib/functions');
 var WebSocket = require('ws');
 var scheduler = require('../../lib/scheduler');
+var modules = require('../../lib/modules');
 
 // exports
 exports.init = init;

@@ -7,6 +7,10 @@ var fs = require('fs');
 var Client = require('../../lib/rest').Client;
 var APIqueue = require('../../lib/APIqueue');
 var scheduler = require('../../lib/scheduler');
+var modules = require('../../lib/modules');
+var functions = require('../../lib/functions');
+
+var jstr = function (data) { return JSON.stringify(data); };
 
 // exports
 exports.init = init;
@@ -72,14 +76,14 @@ function exec (properties) {
       break;
     case 'fee':
     // directly relay factor, post-processing not required!
-      subprocesses.push('stop(0,"' + padFloat(fee, factor) + '")');
+      subprocesses.push('stop(0,"' + functions.padFloat(fee, factor) + '")');
       break;
     case 'balance':
     // define the source address/wallet
       var sourceaddr = (typeof properties.command[1] !== 'undefined' ? properties.command[1] : '');
       if (sourceaddr) {
         subprocesses.push('func("lisk","link",{target:' + jstr(target) + ',command:["/api/accounts/getBalance?address=' + sourceaddr + '"]})'); // send balance query
-        subprocesses.push('stop((typeof data.balance!=="undefined"?0:1),(typeof data.balance==="undefined"?null:padFloat(fromInt(data.balance,' + factor + '),' + factor + ')))');
+        subprocesses.push('stop((typeof data.balance!=="undefined"?0:1),(typeof data.balance==="undefined"?null:functions.padFloat(functions.fromInt(data.balance,' + factor + '),' + factor + ')))');
       } else {
         subprocesses.push('stop(1,"Error: missing address!")');
       }
@@ -119,7 +123,7 @@ function exec (properties) {
     case 'details':
       var symbol = target.symbol;
       var name = target.name;
-      var fee = fee && factor ? padFloat(fee, factor) : null;
+      var fee = fee && factor ? functions.padFloat(fee, factor) : null;
       var base = target.symbol.split('.')[0];
       // var mode; already defined
       // var factor; already defined
@@ -165,7 +169,7 @@ function post (properties) {
       case 'init':
       // set asset fee for Lisk transactions
         if (typeof postdata.fee !== 'undefined' && postdata.fee) {
-          global.hybridd.asset[target.symbol].fee = fromInt(postdata.fee, factor);
+          global.hybridd.asset[target.symbol].fee = functions.fromInt(postdata.fee, factor);
         }
         break;
       case 'status':
