@@ -7,7 +7,7 @@ WHEREAMI=`pwd`
 DARWIN_FLAG=`uname -a | grep "Darwin"`
 
 if [ ! -f "$WHEREAMI/ioc-tools" ]; then
-  git clone git@gitlab.com:iochq/ioc-tools.git
+  git clone https://www.gitlab.com/iochq/ioc-tools.git
   rm -f  "$WHEREAMI/common"
   ln -s "./ioc-tools" "$WHEREAMI/common"
 fi
