@@ -14,7 +14,11 @@
     "ws": "^6.0.0"
   },
   "devDependencies": {},
-  "scripts": {},
+  "scripts": {
+    "start" : "./hybridd",
+    "build" : "sh scripts/npm/build.sh",
+    "build:start" : "sh scripts/npm/build.sh; ./hybridd"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://gitlab.com/iochq/hybridd.git"
