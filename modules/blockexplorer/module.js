@@ -55,8 +55,6 @@ function exec (properties) {
   var processID = properties.processID;
 
   var subprocesses = [];
-  // set request to what command we are performing
-  global.hybridd.proc[processID].request = properties.command;
 
   if (command[0] === 'init') {
     // set up REST API connection

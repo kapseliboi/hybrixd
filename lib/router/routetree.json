@@ -227,6 +227,23 @@
       "_this" : "Returns the json file stored in `$HYBRIDD_HOME/views/$VIEW.json` . This file contains view information in packed form."
     }
   },
+  "w":{"_alias":"wchan"},
+  "wchan":{
+    "_help" : "TODO",
+    "_ref":{
+      "_help" : "TODO",
+      "_list":"offset",
+      "_ref":{
+        "_help" : "TODO",
+        "_list":"length",
+        "_ref":{
+          "_help" : "TODO",
+          "_list":"path",
+          "_valid": true
+        }
+      }
+    }
+  },
   "x":{"_alias":"xauth"},
   "xauth":{
     "_help" : "Create a secure channel.",
