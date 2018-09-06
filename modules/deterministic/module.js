@@ -57,8 +57,7 @@ function exec (properties) {
   }
   var subprocesses = [];
   // set request to what command we are performing
-  global.hybridd.proc[processID].request = properties.command;
-  // handle standard cases here, and construct the sequential process list
+
   switch (command[0]) {
     case 'assets':
       subprocesses.push('stop(0,' + jstr(global.hybridd.source['deterministic'].assets) + ')');
@@ -89,13 +88,10 @@ function exec (properties) {
       break;
     case 'code':
       if (typeof command[1] !== 'undefined' && command[1]) {
-        var filename = '../modules/deterministic/' + command[1] + '/deterministic.js.lzma';
-        if (fs.existsSync(filename)) {
-        // read deterministic.js and push data into process scheduler
-          var lzmapack = fs.readFileSync(filename);
-          // return compressed deterministic code object
-          subprocesses.push('time(8000)');
-          subprocesses.push('stop(0,"' + lzmapack + '")');
+        var fileName = 'modules/deterministic/' + command[1] + '/deterministic.js.lzma';
+        if (fs.existsSync('../' + fileName)) {
+          subprocesses.push('type("text/plain")');
+          subprocesses.push('stop(0,"' + fileName + '")');
         } else {
           subprocesses.push('stop(404,"Error: Mode does not exist!")');
         }

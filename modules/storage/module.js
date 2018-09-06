@@ -3,23 +3,14 @@
 // Module to provide storage
 
 // required libraries in this context
-var DJB2 = require('../../common/crypto/hashDJB2');
-var proofOfWork = require('../../common/crypto/proof');
 var storage = require('./storage'); // key-value storage
 var execSync = require('child_process').execSync;
 var scheduler = require('../../lib/scheduler');
 
-// exports
-exports.init = init;
-exports.exec = exec;
-exports.proof = proof;
-exports.getStorage = getStorage;
-exports.getMeta = getMeta;
-
 // initialization function
 function init () {
   // check for storage directory? if not there make one
-  execSync('mkdir -p ../storage'); // TODO replace with Nodejs platform independant version
+  execSync('mkdir -p ../storage'); // TODO replace with Nodejs platform independant version TODO use conf
 }
 
 // exec
@@ -34,115 +25,66 @@ function exec (properties) {
   // handle standard cases here, and construct the sequential process list
   switch (command[0]) {
     case 'cron' :
-      storage.AutoClean();
+      storage.autoClean();
       subprocesses.push('stop(0,"Autoclean")');
       break;
     case 'get':
-      if (typeof command[1] !== 'undefined') {
-        subprocesses.push('func("storage","getStorage",{key:"' + command[1] + '"})');
-      } else {
-        subprocesses.push('stop(1,"Please provide a storage key!")');
-      }
+      subprocesses.push('type("text/plain")');
+      subprocesses.push('func("storage","get",{key:"' + command[1] + '"})');
       break;
-    // stores data and returns proof of work to be solved
-    case 'set':
-      if (typeof command[1] !== 'undefined') {
-        if (typeof command[2] !== 'undefined') {
-          if (typeof command[2] === 'string') {
-            if (command[2].length <= 4096) { // storage limit per information block
-            // create proof of work
-              var bytes = command[2].length;
-              var difficulty = (bytes * 64 > 5000 ? bytes * 64 : 5000); // the more bytes to store, the bigger the POW challenge
-              var pow = proofOfWork.create(difficulty);
-              // save storage
-              storage.Set(command[1], command[2], {time: Date.now(), hash: DJB2.hash(command[2]), size: bytes, pow: pow.proof, res: pow.hash, n: 0});
-              subprocesses.push('stop(0,"' + pow.hash + '")');
-            } else {
-              subprocesses.push('stop(1,"Storage object limit is 4096 bytes!")');
-            }
-          } else {
-            subprocesses.push('stop(1,"Storage must be a string!")');
-          }
-        } else {
-          subprocesses.push('stop(1,"Please provide a storage value!")');
-        }
-      } else {
-        subprocesses.push('stop(1,"Please provide a storage key!")');
-      }
+    case 'set': // stores data and returns proof of work to be solved
+      subprocesses.push('func("storage","set",{key:"' + command[1] + '", value:"' + command[2] + '"})');
       break;
     case 'pow':
-      if (typeof command[1] !== 'undefined') {
-        if (typeof command[2] !== 'undefined') {
-          subprocesses.push('func("storage","proof",{key:"' + command[1] + '",pow:"' + command[2] + '"})');
-        } else {
-          subprocesses.push('stop(1,"Please provide a proof-of-work value!")');
-        }
-      } else {
-        subprocesses.push('stop(1,"Please provide a storage key!")');
-      }
+      subprocesses.push('func("storage","pow",{key:"' + command[1] + '", pow:"' + command[2] + '""})');
       break;
     case 'del':
       subprocesses.push('stop(1,"Deleting data from node storage is not supported!")');
       break;
     case 'meta':
-      if (typeof command[1] !== 'undefined') {
-        subprocesses.push('func("storage","getMeta",{key:"' + command[1] + '"})');
-      } else {
-        subprocesses.push('stop(1,"Please provide a storage key!")');
-      }
+      subprocesses.push('func("storage","meta",{key:"' + command[1] + '"})');
       break;
-    default:
-      subprocesses.push('stop(1,"Source function not supported!")');
   }
   // fire the Qrtz-language program into the subprocess queue
   scheduler.fire(processID, subprocesses);
 }
 
-function proof (properties) {
+var get = function (properties) {
   var processID = properties.processID;
-  var key = properties.key;
-  var pow = properties.pow;
-  storage.GetMeta(key, function (meta) {
-    if (meta !== null) {
-      if (meta.pow === pow) {
-        if (meta.res !== 1) {
-          meta.n += 1;
-          meta.res = 1;
-          storage.SetMeta(key, meta);
-          scheduler.stop(processID, {err: 0, data: 'OK'});
-        } else {
-          scheduler.stop(processID, {err: 0, data: 'Ignored.'});
-        }
-      } else {
-        scheduler.stop(processID, {err: 1, data: 'Invalid proof!'});
-      }
-    } else {
-      scheduler.stop(processID, {err: 1, data: 'Invalid key!'});
-    }
-  });
-}
+  storage.get(properties.key,
+    value => { scheduler.stop(processID, 0, value, true); },
+    error => { scheduler.stop(processID, 1, error, true); }
+  );
+};
 
-function getStorage (properties) {
+var set = function (properties) {
   var processID = properties.processID;
-  var key = properties.key;
-  storage.Get(key, function (data) {
-    if (data === null) {
-      scheduler.stop(processID, {err: 1, data: null}); // TODO provide error message
-    } else {
-      scheduler.stop(processID, {err: 0, data: data});
-    }
-  });
-}
+  storage.set({key: properties.key, value: properties.value},
+    hash => { scheduler.stop(processID, 0, hash, true); },
+    error => { scheduler.stop(processID, 1, error, true); }
+  );
+};
 
-function getMeta (properties) {
+var pow = function (properties) {
   var processID = properties.processID;
-  var key = properties.key;
-  storage.GetMeta(key, function (meta) {
-    if (meta === null) {
-      scheduler.stop(processID, {err: 1, data: null}); // TODO provide error message
-    } else {
-      if (typeof meta.pow !== 'undefined') { delete meta.pow; }
-      scheduler.stop(processID, {err: 0, data: meta});
-    }
-  });
-}
+  storage.provideProof({key: properties.key, pow: properties.pow},
+    response => { scheduler.stop(processID, 0, response, true); },
+    error => { scheduler.stop(processID, 1, error, true); }
+  );
+};
+
+var meta = function (properties) {
+  var processID = properties.processID;
+  storage.getMeta(properties.key,
+    meta => { scheduler.stop(processID, 0, meta, true); },
+    error => { scheduler.stop(processID, 1, error, true); }
+  );
+};
+
+// exports
+exports.init = init;
+exports.exec = exec;
+exports.get = get;
+exports.set = set;
+exports.pow = pow;
+exports.meta = meta;

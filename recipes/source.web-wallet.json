@@ -1,0 +1,9 @@
+{
+  "source":"web-wallet",
+  "name":"Web Wallet",
+  "module":"web-wallet",
+  "router" : {
+    "_valid": true,
+    "_this" : "TODO"
+  }
+}
