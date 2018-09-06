@@ -4,13 +4,11 @@
 
 ### installing hybridd
 
-To get started with hybridd, perform the following steps on a GNU/Linux system (at the moment Debian 8 'jessie' is our reference system, but Debian 9 'stretch' should work also). To maintain security, we recommend to install the 'unattended-upgrades' package for automatic security updates. We are sorry that we cannot provide support for running on proprietary systems, but our build is compatible with the Darwin operating system (pilfered from FreeBSD) underneath Big Mac OS X. 
+To get started with hybridd, perform the following steps on a GNU/Linux system (at the moment Debian 8 'jessie' is our reference system, but Debian 9 'stretch' should work also). To maintain security, we recommend to install the 'unattended-upgrades' package for automatic security updates. We are sorry that we cannot provide support for running on proprietary systems, but our build is compatible with the Darwin operating system (pilfered from FreeBSD) underneath Mac OS X. 
 
 ```
 git clone https://github.com/internetofcoins/hybridd
 ```
-
-Note: if you are a core developer, replace 'internetofcoins' with 'holosphere' to clone our private development repository.
 
 ### dependencies
 
@@ -48,22 +46,6 @@ To fetch any missing nodejs runtime dependencies and (re)generate the views, sta
 cd hybridd
 ./coldstart_hybridd
 ```
-
-## coding contributions
-
-If you want to have the feeling of working in master, please create your own working branch as follows:
-```
-git checkout master
-git checkout -b username-development
-git merge my-old-branch
-```
-Voila! Now you're working in a copy of master, without destroying master.
-My own development branch will be called: agent725-development
-If you ever need to start with a clean slate, you can destroy your own development branch after merging it to master, or branching it to a backup.
-
-Then you simply branch out from master again to start over.
-
-Result: master stays untouched. Only well-tested branches get merged there.
 
 ## coding standards
 
@@ -119,36 +101,9 @@ Upon pushing the code will be linted (checked for minimal standards of beauty an
 
 Only code that has been beautified will end up in final merges (only exception for now is modular self-contained third party libraries)
 
-*optimal workflow*
-
-We are working towards eliminating common hiccups or repetitive tasks in our programmers workflow
-
 *documented functionality*
 
 Place comments in your code liberally and document innovations in a README-myelement.md or write a paragraph on the wiki on github hybridd README.md or the repo your code is in
-
-## Show branch in command prompt
-
-- *Mac*: Add the following script to your .bash_profile file.
-- *Linux*: Add the following script to your .bashrc file.
-
-```bash
-# Git branch in prompt.
-
-parse_git_branch() {
-
-    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
-
-}
-
-export PS1="\u@\h \W\[\033[32m\]\$(parse_git_branch)\[\033[00m\] $ "
-```
-
-This will make your prompt look like this:
-
-`user@hostname dirBasename (branchName) $`
-
-For more information on PS1 commands, check out [this link](https://www.linuxnix.com/linuxunix-shell-ps1-prompt-explained-in-detail/).
 
 ## cryptography
 
