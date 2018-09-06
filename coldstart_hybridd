@@ -45,10 +45,6 @@ fi
 export PATH=$WHEREAMI/node/bin:"$PATH"
 NODEINST=`which node`
 
-cd views
-./compileviews.sh
-cd ..
-
 cd lib
 if [ -z "$@" ]; then
         echo
