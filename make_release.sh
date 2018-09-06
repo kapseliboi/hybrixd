@@ -33,14 +33,10 @@ cp -r node_modules $OUTPATH/
 
 
 #TODO node runtime
-#TODO compile views??
 #TODO default dummy conf??
 
 # Only handle files in the following folders
-FOLDERS="lib views modules recipes recipes.EXTRA scripts common"
-
-# Do not minify the following files
-#NOT REQUIRED EXCEPT_MINIFY="./views/index/main.js ./views/index/jquery-1.12.4.min.js ./views/interface.assets/main.js ./views/interface.dashboard/main.js ./views/login/main.js ./views/login/js/globals.js"
+FOLDERS="lib modules recipes recipes.EXTRA scripts common"
 
 function join_by { local IFS="$1"; shift; echo "$*"; }
 
@@ -74,11 +70,6 @@ for FILE in $(find -L . -name '*.js' -or -name '*.css'  -or -name '*.json' -or -
 
    fi
 done
-
-# TODO compile views??
-# cd $OUTPATH/views
-# ./compileviews.sh
-# cd -
 
 echo "[.] Release created in $OUTPATH"
 echo "[.] Make sure you have a proper hybridd.conf and node binaries."
