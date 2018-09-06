@@ -5,14 +5,31 @@ export PATH=$WHEREAMI/node/bin:"$PATH"
 NODEINST=`which node`
 
 if [ "$1" = "" ]; then
+
+  echo " [i] Starting hybridd..."
+  NODE_VERSION=$($NODEINST --version)
+
+
+  if [ "$NODE_VERSION" != "v8.11.2" ]; then
+      echo " [!] Warning: hybridd expects Node v8.11.2. found $NODE_VERSION"
+      echo "             $NODEINST"
+      read -n 1 -p " [?] Do you wish to continue y/n?" CONFIRM
+      if [ "$CONFIRM" = "n" ]; then
+          PATH=$OLDPATH
+          echo "\n [i] Stopped hybridd."
+          exit 0
+      fi
+  else
+      echo " [i] using node executable $NODEINST $NODE_VERSION "
+  fi
+
+
   cd lib
         echo
-        echo "Starting hybridd..."
-        echo " [i] using node executable $NODEINST"
         mkdir -p $WHEREAMI/var/log
         node hybridd.js 2>&1 | tee $WHEREAMI/var/log/hybridd.log
         echo
-        echo "Stopped hybridd."
+        echo " [i] Stopped hybridd."
         echo
 elif [ "$1" = "start" ]; then
   ./hybridd.start
