@@ -3,8 +3,6 @@ OLDPATH=$PATH
 WHEREAMI=`pwd`
 export PATH=$WHEREAMI/node/bin:"$PATH"
 NODEINST=`which node`
-BROWSERIFY=node_modules/browserify/bin/cmd.js
-MINIFY=node_modules/minifier/index.js
 UGLIFY=node_modules/uglify-es/bin/uglifyjs
 CSSMIN=node_modules/cssmin/bin/cssmin
 
