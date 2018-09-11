@@ -90,7 +90,7 @@ function exec (properties) {
       if (typeof command[1] !== 'undefined' && command[1]) {
         var fileName = 'modules/deterministic/' + command[1] + '/deterministic.js.lzma';
         if (fs.existsSync('../' + fileName)) {
-          subprocesses.push('type("text/plain")');
+          subprocesses.push('type("file:data")');
           subprocesses.push('stop(0,"' + fileName + '")');
         } else {
           subprocesses.push('stop(404,"Error: Mode does not exist!")');

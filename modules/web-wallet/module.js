@@ -27,7 +27,7 @@ function exec (properties) {
     }
   }
 
-  return {error: 0, data: fileName, type: 'html', command: command, path: ['source', source].concat(command)};
+  return {error: 0, data: fileName, type: 'file:text/html', command: command, path: ['source', source].concat(command)};
 }
 
 // exports

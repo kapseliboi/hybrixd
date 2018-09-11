@@ -29,7 +29,7 @@ function exec (properties) {
       subprocesses.push('stop(0,"Autoclean")');
       break;
     case 'get':
-      subprocesses.push('type("text/plain")');
+      subprocesses.push('type("file:data")');
       subprocesses.push('func("storage","get",{key:"' + command[1] + '"})');
       break;
     case 'set': // stores data and returns proof of work to be solved
