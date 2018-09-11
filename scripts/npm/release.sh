@@ -6,35 +6,38 @@ NODEINST=`which node`
 UGLIFY=node_modules/uglify-es/bin/uglifyjs
 CSSMIN=node_modules/cssmin/bin/cssmin
 
-OUTPATH=../hybridd-public
+
+IOC="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )/../../../"
+
+OUTPATH="$IOC/hybridd-release"
 
 echo "[.] Creating hybridd release..."
 
 # Create path if required, clean otherwise
-mkdir -p $OUTPATH
+mkdir -p "$OUTPATH"
 echo "[.] Cleaning target path"
-rm -rfv $OUTPATH/* >/dev/null
+rm -rfv "$OUTPATH/*" >/dev/null
 
 # Copy the main entrypoint
-cp hybridd $OUTPATH/
+cp hybridd "$OUTPATH/"
 # Copy license
-cp LICENSE.md $OUTPATH/
+cp LICENSE.md "$OUTPATH/"
 # Copy readme
-cp README.md $OUTPATH/
+cp README.md "$OUTPATH/"
 
 # Copy configuration
 # TODO create a default here
-cp hybridd.conf $OUTPATH/
+cp hybridd.conf "$OUTPATH/"
 
 # Copy node_modules
-cp -r node_modules $OUTPATH/
+cp -r node_modules "$OUTPATH/"
 
 
 #TODO node runtime
 #TODO default dummy conf??
 
 # Only handle files in the following folders
-FOLDERS="lib modules recipes recipes.EXTRA scripts common"
+FOLDERS="lib modules recipes recipes.EXTRA common"
 
 function join_by { local IFS="$1"; shift; echo "$*"; }
 
@@ -48,20 +51,20 @@ for FILE in $(find -L . -name '*.js' -or -name '*.css'  -or -name '*.json' -or -
         FOLDER="${FILEPATH[1]}"
         if [[ $FOLDERS =~ (^|[[:space:]])$FOLDER($|[[:space:]]) ]]; then
 
-            EXT=${FILE##*.}
+            EXT="${FILE##*.}"
             unset 'FILEPATH[${#FILEPATH[@]}-1]'
             FOLDER=$(join_by / "${FILEPATH[@]}")
 
-            mkdir -p $OUTPATH/$FOLDER
-            case $EXT in
+            mkdir -p "$OUTPATH/$FOLDER"
+            case "$EXT" in
                 js)
-                    $UGLIFY $FILE --compress --mangle > $OUTPATH/$FILE
+                    $UGLIFY "$FILE" --compress --mangle > "$OUTPATH/$FILE"
                     ;;
                 css)
-                    $CSSMIN $FILE > $OUTPATH/$FILE
+                    $CSSMIN "$FILE" > "$OUTPATH/$FILE"
                     ;;
                 *)
-                    cp $FILE $OUTPATH/$FOLDER
+                    cp "$FILE" "$OUTPATH/$FOLDER"
                     ;;
             esac
         fi
