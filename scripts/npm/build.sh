@@ -11,6 +11,7 @@ NODE="$HYBRIDD/node"
 DETERMINISTIC="$HYBRIDD/deterministic"
 NODEJS="$HYBRIDD/nodejs-v8-lts"
 COMMON="$HYBRIDD/common"
+INTERFACE="$HYBRIDD/interface"
 WEB_WALLET="$HYBRIDD/web-wallet"
 
 if [ $(uname) == "Darwin" ]; then
@@ -52,6 +53,22 @@ if [ ! -e "$NODE/common" ];then
     ln -sf "$COMMON" "$NODE/common"
 
 fi
+
+
+# INTERFACE
+if [ ! -e "$NODE/interface" ];then
+
+    echo " [!] node/interface not found."
+
+    if [ ! -e "$INTERFACE" ];then
+        cd "$HYBRIDD"
+        echo " [i] Clone interface files"
+        git clone https://www.gitlab.com/iochq/hybridd/interface.git
+    fi
+    echo " [i] Link interface files"
+    ln -sf "$INTERFACE" "$NODE/interface"
+fi
+
 
 # DETERMINISTIC CLIENT MODULES
 if [ -e "$DETERMINISTIC" ];then
