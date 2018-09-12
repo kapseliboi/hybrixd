@@ -1,24 +1,17 @@
 #!/bin/sh
 
-# check if we also want to update the other repo's
-UPDATE=$1
-
-
 NODEARCH=`uname -m`
 OLDPATH=$PATH
 WHEREAMI=`pwd`
 
-DARWIN_FLAG=`uname -a | grep "Darwin"`
+# $HYBRIDD/$NODE/scripts/npm  => $HYBRIDD
+HYBRIDD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )/../../../"
 
-# $IOC/$HYBRIDD/scripts/npm  => $IOC
-IOC="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )/../../../"
-
-
-HYBRIDD="$IOC/hybridd"
-MODULE_DETERMINISTIC="$IOC/module-deterministic"
-NODEJS="$IOC/nodejs-v8-lts"
-COMMON="$IOC/ioc-tools"
-WEB_WALLET="$IOC/web-wallet"
+NODE="$HYBRIDD/node"
+DETERMINISTIC="$HYBRIDD/deterministic"
+NODEJS="$HYBRIDD/nodejs-v8-lts"
+COMMON="$HYBRIDD/common"
+WEB_WALLET="$HYBRIDD/web-wallet"
 
 if [ $(uname) == "Darwin" ]; then
   SYSTEM="darwin-x64"
@@ -32,73 +25,68 @@ else
 fi
 
 # NODE
-if [ ! -e "$HYBRIDD/node" ];then
+if [ ! -e "$NODE/node" ];then
 
-    echo " [!] hybridd/node not found."
+    echo " [!] node/node not found."
 
     if [ ! -e "$NODEJS" ];then
-        cd "$IOC"
+        cd "$HYBRIDD"
         echo " [i] Clone node js runtimes files"
         git clone https://github.com/internetofcoins/nodejs-v8-lts.git
     fi
     echo " [i] Link NODEJS files"
-    ln -sf "$NODEJS/$SYSTEM" "$HYBRIDD/node"
+    ln -sf "$NODEJS/$SYSTEM" "$NODE/node"
 fi
-
-
-# TODO LOCAL NPM
-#if [ ! -x "$HYBRIDD/npm" ]; then
-  #  echo " [i] Link local npm"
-   # chmod +x $HYBRIDD/npm
-#fi
-
 
 # COMMON
-if [ ! -e "$HYBRIDD/common" ];then
+if [ ! -e "$NODE/common" ];then
 
-    echo " [!] hybridd/common not found."
+    echo " [!] node/common not found."
 
     if [ ! -e "$COMMON" ];then
-        cd "$IOC"
+        cd "$HYBRIDD"
         echo " [i] Clone common files"
-        git clone https://www.gitlab.com/iochq/ioc-tools.git
+        git clone https://www.gitlab.com/iochq/hybridd/common.git
     fi
     echo " [i] Link common files"
-    ln -sf "$COMMON" "$HYBRIDD/common"
+    ln -sf "$COMMON" "$NODE/common"
 
 fi
 
-# MODULES DETERMINISTIC
-if [ -e "$MODULE_DETERMINISTIC" ];then
-    cd "$MODULE_DETERMINISTIC/modules/deterministic/"
-    echo " [i] Build and copy client modules"
-    sh ./compileall.sh "$HYBRIDD"
+# DETERMINISTIC CLIENT MODULES
+if [ -e "$DETERMINISTIC" ];then
+    cd "$DETERMINISTIC/modules/"
+    echo " [i] Build and copy determinstic client modules"
+    sh "$DETERMINISTIC/scripts/npm/build.sh"
 fi
 
 # WEB WALLET
 if [ -e "$WEB_WALLET" ];then
-    cd "$MODULE_DETERMINISTIC/modules/deterministic/"
     echo " [i] Copy web wallet files"
-    cp -r "$WEB_WALLET/dist" "$HYBRIDD/modules/web-wallet"
+    cp -r "$WEB_WALLET/dist/." "$NODE/modules/web-wallet/"
 fi
 
 # QUARTZ
-echo "[.] Generate Quartz documentation."
-mkdir -p "$HYBRIDD/docs"
-jsdoc "$HYBRIDD/lib/scheduler/quartz.js"  -d "$HYBRIDD/docs"
+if [ "$NODE/docs/quartz.js.html" -ot "$NODE/lib/scheduler/quartz.js" ]; then
+  echo "[.] Generate Quartz documentation."
+  mkdir -p "$NODE/docs"
+  jsdoc "$NODE/lib/scheduler/quartz.js"  -d "$NODE/docs"
+else
+  echo "[.] Quartz documentation already up to date."
+fi
 
 # GIT PRE-PUSH HOOK
-if [ ! -x "$HYBRIDD/.git/hooks/pre-push" ]; then
-  echo "[i] Install git pre-push hook..." | filter
-  cp ./hooks/pre-push ./.git/hooks/pre-push
-  chmod +x ./.git/hooks/pre-push
+if [ ! -x "$NODE/.git/hooks/pre-push" ]; then
+  echo "[i] Install git pre-push hook..."
+  cp "$NODE/hooks/pre-push" "$NODE/.git/hooks/pre-push"
+  chmod +x "$NODE/.git/hooks/pre-push"
 fi
 
 # GIT COMMIT-MSG HOOK
-if [ ! -x "$HYBRIDD/.git/hooks/commit-msg" ]; then
-  echo "[i] Install git commit-msg hook..." | filter
-  cp ./hooks/commit-msg ./.git/hooks/commit-msg
-  chmod +x ./.git/hooks/commit-msg
+if [ ! -x "$NODE/.git/hooks/commit-msg" ]; then
+  echo "[i] Install git commit-msg hook..."
+  cp "$NODE/hooks/commit-msg" "$NODE/.git/hooks/commit-msg"
+  chmod +x "$NODE/.git/hooks/commit-msg"
 fi
 
 
