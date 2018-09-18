@@ -3,7 +3,6 @@
 var fs = require('fs');
 var DJB2 = require('../../common/crypto/hashDJB2');
 var proofOfWork = require('../../common/crypto/proof');
-
 var storagePath = require('path').normalize(process.cwd() + '/../storage/'); // TODO define in conf file
 
 function makeDir (dirname) {
@@ -14,7 +13,7 @@ function makeDir (dirname) {
 
 var get = function (key, dataCallback, errorCallback) {
   var fold = key.substr(0, 2) + '/';
-  var filePath = storagePath + fold + data.key;
+  var filePath = storagePath + fold + key;
 
   if (fs.existsSync(filePath)) {
     // update meta data with last time read
@@ -38,7 +37,7 @@ var setMeta = function (data, dataCallback, errorCallback) {
 };
 
 var set = function (data, dataCallback, errorCallback) {
-  if (data.valiue.length > 4096) { // TODO value to conf
+  if (data.value.length > 4096) { // TODO value to conf
     errorCallback('Storage limit is 4096 bytes.');
   } else {
     var fold = data.key.substr(0, 2) + '/';
