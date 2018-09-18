@@ -1,11 +1,10 @@
 #!/bin/sh
 
-NODEARCH=`uname -m`
-OLDPATH=$PATH
 WHEREAMI=`pwd`
 
 # $HYBRIDD/$NODE/scripts/npm  => $HYBRIDD
-HYBRIDD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )/../../../"
+SCRIPTDIR="`dirname \"$0\"`"
+HYBRIDD="`cd \"$SCRIPTDIR/../../..\" && pwd`"
 
 NODE="$HYBRIDD/node"
 DETERMINISTIC="$HYBRIDD/deterministic"
