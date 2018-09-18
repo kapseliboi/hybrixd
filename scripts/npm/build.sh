@@ -13,15 +13,15 @@ COMMON="$HYBRIDD/common"
 INTERFACE="$HYBRIDD/interface"
 WEB_WALLET="$HYBRIDD/web-wallet"
 
-if [ $(uname) == "Darwin" ]; then
-  SYSTEM="darwin-x64"
-elif [ $(uname -m) == "i386" ] || [ $(uname -m) == "i686" ]; then
-  SYSTEM = x86
-elif [ $(uname -m) == "x86_64" ]; then
-  SYSTEM = x86_64
+if [ "`uname`" = "Darwin" ]; then
+    SYSTEM="darwin-x64"
+elif [ "`uname -m`" = "i386" ] || [ "`uname -m`" = "i686" ]; then
+    SYSTEM="x86"
+elif [ "`uname -m`" = "x86_64" ]; then
+    SYSTEM="x86_64"
 else
-  echo "[!] Unknown Architecture (or incomplete implementation)"
-  exit 1;
+    echo "[!] Unknown Architecture (or incomplete implementation)"
+    exit 1;
 fi
 
 # NODE
