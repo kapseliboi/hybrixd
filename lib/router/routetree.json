@@ -229,6 +229,10 @@
   },
   "w":{"_alias":"wchan"},
   "wchan":{
+    "hash" : {
+      "_this" : "Retrieve the hash for a flat file result.",
+      "_valid": true
+    },
     "_help" : "TODO",
     "_ref":{
       "_help" : "TODO",

@@ -16,7 +16,8 @@
   "devDependencies": {},
   "scripts": {
     "start" : "./hybridd",
-    "build" : "sh scripts/npm/build.sh",
+    "cluster:start" : "sh scripts/npm/cluster.sh",
+    "cluster:build:start" : "sh scripts/npm/build.sh; sh scripts/npm/cluster.sh",
     "build:start" : "sh scripts/npm/build.sh; ./hybridd",
     "release" : "sh scripts/npm/build.sh; sh scripts/npm/release.sh",
     "release:start" : "sh scripts/npm/build.sh; sh scripts/npm/release.sh; sh ../hybridd-release/hybridd"
