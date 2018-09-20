@@ -1,5 +1,5 @@
 #!/bin/sh
-OLDPATH=$PATH
+OLDPATH="$PATH"
 WHEREAMI=`pwd`
 export PATH=$WHEREAMI/node/bin:"$PATH"
 NODEINST=`which node`
@@ -74,3 +74,4 @@ done
 
 echo "[.] Release created in $OUTPATH"
 echo "[.] Make sure you have a proper hybridd.conf and node binaries."
+export PATH="$OLDPATH"
