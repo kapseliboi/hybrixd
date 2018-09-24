@@ -994,7 +994,7 @@ element.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line863">line 863</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line897">line 897</a>
     </li></ul></dd>
     
 
@@ -1088,7 +1088,7 @@ each({"a":0,"b":1,"c":2},"test")     //  calls
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line980">line 980</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line1014">line 1014</a>
     </li></ul></dd>
     
 
@@ -2386,7 +2386,7 @@ Explode string
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line926">line 926</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line960">line 960</a>
     </li></ul></dd>
     
 
@@ -2415,7 +2415,7 @@ Explode string
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>init()     // Initiates a IoC client lib stack program.</code></pre>
+    <pre class="prettyprint"><code>init()     // Initiates a Hybridd.Interface stack program.</code></pre>
 
 
 
@@ -2935,6 +2935,169 @@ jump(1,"Yo!")   // step to the next instruction, and fill data field of this sub
     
 
     
+    <h4 class="name" id="load"><span class="type-signature"></span>load<span class="signature">(key, value)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Retrieve a value based on a key
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Provide the routing path</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Value</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line795">line 795</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>load("myFavoriteColor")  // retrieve the value for myFavoriteColor</code></pre>
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="logs"><span class="type-signature"></span>logs<span class="signature">(level, log, data<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
@@ -3142,6 +3305,169 @@ jump(1,"Yo!")   // step to the next instruction, and fill data field of this sub
     <pre class="prettyprint"><code>logs(0,"Nice dude!")    // logs "[.] Nice dude!" to console
 logs(1,"I like you")    // logs "[i] I like you" to console
 logs(2,"Be careful")    // logs "[!] Be careful" to console</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="meta"><span class="type-signature"></span>meta<span class="signature">(key, value)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Retrieve the meta data based on a key
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Provide the routing path</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Value</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line806">line 806</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>meta("myFavoriteColor")  // retrieve the meta data for myFavoriteColor</code></pre>
 
 
 
@@ -3393,7 +3719,7 @@ pass("Wow: "+data)   // push data "Wow:" with previous subprocess data concatena
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line908">line 908</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line942">line 942</a>
     </li></ul></dd>
     
 
@@ -3608,7 +3934,7 @@ peek("thisnum")     // returns 55</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line891">line 891</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line925">line 925</a>
     </li></ul></dd>
     
 
@@ -4264,7 +4590,7 @@ are finished</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line786">line 786</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line820">line 820</a>
     </li></ul></dd>
     
 
@@ -4446,6 +4772,169 @@ read({"a":null,"b":34})        //Wait for processes 123456 and 654321 to finish 
     
 
     
+    <h4 class="name" id="save"><span class="type-signature"></span>save<span class="signature">(key, value)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Store a key value pair
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Provide the routing path</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Value</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line784">line 784</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>save("myFavoriteColor","blue")  // save "blue" as myFavoriteColor</code></pre>
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="step"><span class="type-signature"></span>step<span class="signature">(key)</span><span class="type-signature"></span></h4>
     
 
@@ -4547,7 +5036,7 @@ read({"a":null,"b":34})        //Wait for processes 123456 and 654321 to finish 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line960">line 960</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line994">line 994</a>
     </li></ul></dd>
     
 
@@ -5825,13 +6314,13 @@ wait(1000,"WOOT!")   // wait for one second and fill subprocess data field with 
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#call">call</a></li><li><a href="global.html#coll">coll</a></li><li><a href="global.html#curl">curl</a></li><li><a href="global.html#dump">dump</a></li><li><a href="global.html#each">each</a></li><li><a href="global.html#exec">exec</a></li><li><a href="global.html#expl">expl</a></li><li><a href="global.html#fail">fail</a></li><li><a href="global.html#find">find</a></li><li><a href="global.html#fork">fork</a></li><li><a href="global.html#form">form</a></li><li><a href="global.html#impl">impl</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#jpar">jpar</a></li><li><a href="global.html#jstr">jstr</a></li><li><a href="global.html#jump">jump</a></li><li><a href="global.html#logs">logs</a></li><li><a href="global.html#pass">pass</a></li><li><a href="global.html#peek">peek</a></li><li><a href="global.html#poke">poke</a></li><li><a href="global.html#prog">prog</a></li><li><a href="global.html#prwt">prwt</a></li><li><a href="global.html#Quartz">Quartz</a></li><li><a href="global.html#read">read</a></li><li><a href="global.html#rout">rout</a></li><li><a href="global.html#step">step</a></li><li><a href="global.html#stop">stop</a></li><li><a href="global.html#test">test</a></li><li><a href="global.html#time">time</a></li><li><a href="global.html#tran">tran</a></li><li><a href="global.html#type">type</a></li><li><a href="global.html#wait">wait</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#call">call</a></li><li><a href="global.html#coll">coll</a></li><li><a href="global.html#curl">curl</a></li><li><a href="global.html#dump">dump</a></li><li><a href="global.html#each">each</a></li><li><a href="global.html#exec">exec</a></li><li><a href="global.html#expl">expl</a></li><li><a href="global.html#fail">fail</a></li><li><a href="global.html#find">find</a></li><li><a href="global.html#fork">fork</a></li><li><a href="global.html#form">form</a></li><li><a href="global.html#impl">impl</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#jpar">jpar</a></li><li><a href="global.html#jstr">jstr</a></li><li><a href="global.html#jump">jump</a></li><li><a href="global.html#load">load</a></li><li><a href="global.html#logs">logs</a></li><li><a href="global.html#meta">meta</a></li><li><a href="global.html#pass">pass</a></li><li><a href="global.html#peek">peek</a></li><li><a href="global.html#poke">poke</a></li><li><a href="global.html#prog">prog</a></li><li><a href="global.html#prwt">prwt</a></li><li><a href="global.html#Quartz">Quartz</a></li><li><a href="global.html#read">read</a></li><li><a href="global.html#rout">rout</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#step">step</a></li><li><a href="global.html#stop">stop</a></li><li><a href="global.html#test">test</a></li><li><a href="global.html#time">time</a></li><li><a href="global.html#tran">tran</a></li><li><a href="global.html#type">type</a></li><li><a href="global.html#wait">wait</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Sep 12 2018 09:32:36 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Sep 19 2018 13:31:28 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

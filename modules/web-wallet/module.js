@@ -14,20 +14,28 @@ function exec (properties) {
 
   var fileName;
   if (command.length === 0) {
-    fileName = 'modules/' + source + '/index.html';
+    fileName = 'modules/' + source + '/files/index.html';
   } else {
-    switch (command[0]) {
-      case 'favicon.ico' :
-      case 'index.html' :
-        fileName = 'modules/' + source + '/' + command.join('/');
-        break;
-      default:
-        fileName = 'modules/' + source + '/files/' + command.join('/');
-        break;
-    }
+    fileName = 'modules/' + source + '/files/' + command.join('/');
   }
 
-  return {error: 0, data: fileName, type: 'file:text/html', command: command, path: ['source', source].concat(command)};
+  var mimeTypes = {
+    css: 'text/css',
+    ico: 'image/x-icon',
+    js: 'text/javascript',
+    json: 'application/json',
+    svg: 'image/svg+xml',
+    html: 'text/html',
+    ttf: 'application/x-font-ttf',
+    woff2: 'application/x-font-woff',
+    eot: 'application/vnd.ms-fontobject'
+  };
+
+  var fileNameSplitByDot = fileName.split('.');
+  var extension = fileNameSplitByDot[fileNameSplitByDot.length - 1];
+  var mimeType = mimeTypes.hasOwnProperty(extension) ? mimeTypes[extension] : 'text/html';
+
+  return {error: 0, data: fileName, type: 'file:' + mimeType, command: command, path: ['source', source].concat(command)};
 }
 
 // exports

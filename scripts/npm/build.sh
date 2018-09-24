@@ -1,7 +1,6 @@
 #!/bin/sh
 OLDPATH=$PATH
-WHEREAMI=`pwd`
-NODEINST=`which node`
+# $HYBRIDD/$NODE/scripts/npm  => $HYBRIDD
 
 SCRIPTDIR="`dirname \"$0\"`"
 HYBRIDD="`cd \"$SCRIPTDIR/../../..\" && pwd`"
@@ -11,6 +10,7 @@ NODE="$HYBRIDD/node"
 DETERMINISTIC="$HYBRIDD/deterministic"
 NODEJS="$HYBRIDD/nodejs-v8-lts"
 COMMON="$HYBRIDD/common"
+INTERFACE="$HYBRIDD/interface"
 WEB_WALLET="$HYBRIDD/web-wallet"
 
 if [ "`uname`" = "Darwin" ]; then
@@ -56,13 +56,26 @@ if [ ! -e "$INTERFACE/common" ];then
 
 fi
 
-# Generate API documentation
-if [ "$INTERFACE/docs/interface.js.html" -ot "$INTERFACE/lib/interface.js" ]; then
-  echo "[.] Generate hybridd.Interface documentation."
-  mkdir -p "$INTERFACE/docs"
-  jsdoc "$INTERFACE/lib/interface.js" -t "$INTERFACE/jsdoc-template" -d "$INTERFACE/docs"
-else
-  echo "[.] hybridd.Interface documentation already up to date."
+# INTERFACE
+if [ ! -e "$NODE/interface" ];then
+
+    echo " [!] node/interface not found."
+
+    if [ ! -e "$INTERFACE" ];then
+        cd "$HYBRIDD"
+        echo " [i] Clone interface files"
+        git clone https://www.gitlab.com/iochq/hybridd/interface.git
+    fi
+    echo " [i] Link interface files"
+    ln -sf "$INTERFACE" "$NODE/interface"
+fi
+
+
+# DETERMINISTIC CLIENT MODULES
+if [ -e "$DETERMINISTIC" ];then
+    cd "$DETERMINISTIC/modules/"
+    echo " [i] Build and copy determinstic client modules"
+    sh "$DETERMINISTIC/scripts/npm/build.sh"
 fi
 
 # Generate libary that can be imported into Node projects

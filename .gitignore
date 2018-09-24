@@ -1,13 +1,11 @@
 node
-./views/index.html
-./views/node_modules
-views/*json
-nodejs-runtime
+common
+interface
 **/.tern-port
 **/*.*~
 **/#.*.*
 .DS_Store
 storage/*
-common
-var/log/hybridd.log
+var/log/*
 boot.json
+
