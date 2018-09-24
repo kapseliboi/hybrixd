@@ -4,6 +4,12 @@
   "module":"storage",
   "cron" : 300,
   "router" : {
+    "seek":{
+      "_ref" : {
+        "_list" : "storage_id",
+        "_this" : "Check if data with this id exists."
+      }
+    },
     "get":{
       "_ref" : {
         "_list" : "storage_id",
