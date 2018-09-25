@@ -27,7 +27,7 @@
         "_this" : "Perform scheduled tasks."
       },
       "details":{
-        "_this": "Retrieve the details TODO",
+        "_this": "Retrieve detailed information of an asset",
         "_response": "TODO"
       },
       "factor":{
@@ -50,6 +50,13 @@
       },
       "sample" : {
         "_this": "Retrieve a sample address and transaction id for test purposes."
+      },
+      "test":{
+        "_ref" : {
+          "_this": "Test command is available for development purposes.",
+          "_list" : "testparam_id",
+          "_response": "TODO"
+        }
       },
       "transaction":{
         "_ref" : {
