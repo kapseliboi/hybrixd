@@ -1,0 +1,69 @@
+{
+  "symbol":"btc",
+  "name":"Bitcoin",
+  "module":"quartz",
+  "mode":"bitcoinjslib.bitcoin",
+  "factor":8,
+  "fee":0.000025,
+  "user":"user",
+  "pass":"1nt3rn3t0fc01ns",
+  "host":"http://127.0.0.1:8338",
+  "cache":60000,
+  "throttle":10,
+  "quartz":{
+    "init" : [
+      "curl('asset://$symbol','','POST',{'jsonrpc':'2.0','id':0,'method':'version','params':[]},{'content-type':'text/plain'})",
+      "logs(1,'module $symbol: '+(data?'connected':'failed connection')+' to host [$host]')"
+    ],
+    "status" : [
+      "curl('asset://$symbol','','POST',{'jsonrpc':'2.0','id':0,'method':'version','params':[]},{'content-type':'text/plain'})",
+      "test(data,1,2,data)",
+      "stop(0,{module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:null,version:data.result})",
+      "stop(1,'No result')"
+    ],
+    "unspent" : [
+      "rout('/source/blockexplorer/$symbol/unspent/$1/$2/$3')"
+    ],
+    "balance" : [
+      "curl('asset://$symbol','','POST',{'jsonrpc':'2.0','id':0,'method':'getaddressbalance','params':['$1']},{'content-type':'text/plain'})",
+      "tran({confirmed:'.result.confirmed',unconfirmed:'.result.unconfirmed'},data,2,1)",
+      "stop(1,'No result!')",
+      "time($cache,data)",
+      "pass(String(Number(data.confirmed)+Number(data.unconfirmed)))"
+    ],
+    "push" : [
+      "curl('asset://$symbol','','POST',{'jsonrpc':'2.0','id':0,'method':'broadcast','params':['$1']},{'content-type':'text/plain'})",
+      "test(data,2,1,data)",
+      "stop(1,'Broadcast failed!')",
+      "tran('.result',data,2,1)",
+      "stop(1,'No result!')",
+      "test(data[0]===true,2,1,data)",
+      "stop(1,data[1])",
+      "pass(data[1])"
+    ],
+    "factor" : [
+      "pass('$factor')"
+    ],
+    "transaction" :[
+      "rout('/source/blockexplorer/$symbol/transaction/$1')"
+    ],
+    "_transaction" : [
+      "curl('asset://$symbol','','POST',{'id': 1, 'method': 'blockchain.transaction.get', 'params': ['$1',true] },{'content-type':'text/plain'})",
+      "tran('.result',data,2,1)",
+      "stop(1,'No result')",
+      "pass(data)"
+    ],
+    "sample" : [
+      "stop(0,{address:'1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX',transaction:'2c0832c153cf33327dae0e95a3bc39f4b02ae887725a32c07b1be47a2faffc55'})"
+    ],
+    "history" : [
+      "rout('/source/blockexplorer/$symbol/history/$1')"
+    ],
+    "contract" : [
+      "stop(1,'Not yet implemented!')"
+    ],
+    "fee" : [
+      "pass('$fee')"
+    ]
+  }
+}
