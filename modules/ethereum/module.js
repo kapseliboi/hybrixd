@@ -68,6 +68,11 @@ function exec (properties) {
         subprocesses.push('logs(1,"module ethereum: "+(data?"connected":"failed connection")+" to [' + target.symbol + '] host ' + target.host + '")');
       }
       break;
+    case 'cron':
+      subprocesses.push('logs(1," [i] module ethereum: updating fee")');
+      subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_gasPrice"]})');
+      subprocesses.push('func("ethereum","post",{target:' + jstr(target) + ',command:["init"],data:data,data})');
+      break;
     case 'status':
     // set up init probe command to check if Altcoin RPC is responding and connected
       subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_protocolVersion"]})');
