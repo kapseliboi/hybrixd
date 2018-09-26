@@ -9,6 +9,7 @@ var functions = require('../../lib/functions');
 var APIqueue = require('../../lib/APIqueue');
 var scheduler = require('../../lib/scheduler');
 var modules = require('../../lib/modules');
+var LZString = require('../../common/crypto/lz-string');
 
 var jstr = function (data) { return JSON.stringify(data); };
 
