@@ -10,11 +10,11 @@
   "rejectUnauthorized":false,
   "cache":15000,
   "throttle":3,
-  "contract":"undefined",
+  "contract":"",
   "block-explorer-host": "https://nodes.wavesplatform.com",
   "quartz":{
     "init" : [
-      "test('$contract'==='undefined',1,3)",
+      "test('$contract'==='',1,3)",
       "curl('asset://$symbol','/utils/seed/2','GET')",
       "logs(1,'module $symbol: '+(data?'connected':'failed connection')+' to host [$host]')"
     ],
@@ -30,7 +30,7 @@
     "balance" : [
       "test('$1',2,1,data)",
       "stop(1,'No source address')",
-      "test('$contract'==='undefined',1,3)",
+      "test('$contract'==='',1,3)",
       "curl('$block-explorer-host','/addresses/balance/details/$1','GET')",
       "tran('.regular',data,4,3)",
       "curl('$block-explorer-host','/assets/balance/$1/$contract','GET')",

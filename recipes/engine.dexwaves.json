@@ -1,0 +1,25 @@
+{
+  "engine":"dex_waves",
+  "name":"Engine for pushing waves commands to dex (orders, cancels, etc.)",
+  "module":"quartz",
+  "matcherhost": "http://matcher.wavesnodes.com",
+  "timeout":10000,
+  "router" : {
+    "push": {
+      "_ref" : {
+        "_list" : "JSON arguments to push.",
+        "_this" : "Send order to trade on the waves blockchain"
+      }
+    },"getMatcherPublicKey": {
+      "_this" : "Return the public key of the matcher node."
+    }
+  },
+  "quartz" : {
+    "push" : [
+      "jpar('$1',{})",
+      "curl('$matcherhost', '/matcher/orderbook', 'POST', data,{'Content-Type':'application/json'},{'parsing':'none'})",
+      "pass(data)"
+      ],
+    "getMatcherPublicKey" : [ "curl('$matcherhost', '/matcher/','','',{},{parsing:'none'})" ]
+  }
+}
