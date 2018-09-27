@@ -11,6 +11,16 @@ function makeDir (dirname) {
   }
 }
 
+var seek = function (key, dataCallback, errorCallback) {
+  var fold = key.substr(0, 2) + '/';
+  var filePath = storagePath + fold + key;
+  if (fs.existsSync(filePath)) {
+    dataCallback(true);
+  } else {
+    dataCallback(false);
+  }
+};
+
 var get = function (key, dataCallback, errorCallback) {
   var fold = key.substr(0, 2) + '/';
   var filePath = storagePath + fold + key;
@@ -139,6 +149,7 @@ var autoClean = function () {
   });
 };
 
+exports.seek = seek;
 exports.get = get;
 exports.set = set;
 exports.del = del;

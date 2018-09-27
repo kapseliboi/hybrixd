@@ -35,6 +35,9 @@ function exec (properties) {
     case 'set': // stores data and returns proof of work to be solved
       subprocesses.push('func("storage","set",{key:"' + command[1] + '", value:"' + command[2] + '"})');
       break;
+    case 'seek': // stores data and returns proof of work to be solved
+      subprocesses.push('func("storage","seek",{key:"' + command[1] + '"})');
+      break;
     case 'pow':
       subprocesses.push('func("storage","pow",{key:"' + command[1] + '", pow:"' + command[2] + '""})');
       break;
@@ -52,6 +55,14 @@ function exec (properties) {
 var get = function (properties) {
   var processID = properties.processID;
   storage.get(properties.key,
+    value => { scheduler.stop(processID, 0, value, true); },
+    error => { scheduler.stop(processID, 1, error, true); }
+  );
+};
+
+var seek = function (properties) {
+  var processID = properties.processID;
+  storage.seek(properties.key,
     value => { scheduler.stop(processID, 0, value, true); },
     error => { scheduler.stop(processID, 1, error, true); }
   );
@@ -86,5 +97,6 @@ exports.init = init;
 exports.exec = exec;
 exports.get = get;
 exports.set = set;
+exports.seek = seek;
 exports.pow = pow;
 exports.meta = meta;

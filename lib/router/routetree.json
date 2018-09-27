@@ -27,7 +27,7 @@
         "_this" : "Perform scheduled tasks."
       },
       "details":{
-        "_this": "Retrieve the details TODO",
+        "_this": "Retrieve detailed information of an asset",
         "_response": "TODO"
       },
       "factor":{
@@ -50,6 +50,13 @@
       },
       "sample" : {
         "_this": "Retrieve a sample address and transaction id for test purposes."
+      },
+      "test":{
+        "_ref" : {
+          "_this": "Test command is available for development purposes.",
+          "_list" : "testparam_id",
+          "_response": "TODO"
+        }
       },
       "transaction":{
         "_ref" : {
@@ -219,16 +226,12 @@
     "_help":"Sources are read-only information providers.",
     "_this":"List available sources."
   },
-  "v":{"_alias":"view"},
-  "view":{
-    "_this" : "List available views.",
-    "_ref" : {
-      "_list" : "view",
-      "_this" : "Returns the json file stored in `$HYBRIDD_HOME/views/$VIEW.json` . This file contains view information in packed form."
-    }
-  },
   "w":{"_alias":"wchan"},
   "wchan":{
+    "hash" : {
+      "_this" : "Retrieve the hash for a flat file result.",
+      "_valid": true
+    },
     "_help" : "TODO",
     "_ref":{
       "_help" : "TODO",

@@ -9,6 +9,7 @@ var functions = require('../../lib/functions');
 var APIqueue = require('../../lib/APIqueue');
 var scheduler = require('../../lib/scheduler');
 var modules = require('../../lib/modules');
+var LZString = require('../../common/crypto/lz-string');
 
 var jstr = function (data) { return JSON.stringify(data); };
 
@@ -67,6 +68,11 @@ function exec (properties) {
         subprocesses.push('pass( (data != null && typeof data.result=="string" && data.result[1]=="x" ? 1 : 0) )');
         subprocesses.push('logs(1,"module ethereum: "+(data?"connected":"failed connection")+" to [' + target.symbol + '] host ' + target.host + '")');
       }
+      break;
+    case 'cron':
+      subprocesses.push('logs(1," [i] module ethereum: updating fee")');
+      subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_gasPrice"]})');
+      subprocesses.push('func("ethereum","post",{target:' + jstr(target) + ',command:["init"],data:data,data})');
       break;
     case 'status':
     // set up init probe command to check if Altcoin RPC is responding and connected
