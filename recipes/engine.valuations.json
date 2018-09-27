@@ -1,0 +1,27 @@
+{
+  "engine":"valuations",
+  "name":"Quarries the valuation of 1 currency in another.",
+  "module":"quartz",
+  "quartz":{ 
+    "getValuation": [
+      "call('engine://quotes', 'getQuotes')",
+      "func('valuations','exec', {quotes: data, source:'$1', target: '$2', amount: '$3'})"
+    ]  
+  },
+  "router" : {
+    "getValuation":
+    {
+      "_ref" : {
+        "_list" : "Source coin",
+        "_ref" : {
+          "_list" : "Target coin",
+          "_this" : "Retrieve the median exchange-rate for one coin in another coin.",
+           "_ref" : {
+            "_list" : "Amount",
+            "_this" : "Retrieve the median exchange-rate for a given amount of one coin in another coin."
+          }
+        }
+      }
+    }
+  }
+}
