@@ -69,7 +69,7 @@ function exec (properties) {
       }
       break;
     case 'cron':
-      subprocesses.push('logs(1," [i] module ethereum: updating fee")');
+      subprocesses.push('logs(1,"module ethereum: updating fee")');
       subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_gasPrice"]})');
       subprocesses.push('func("ethereum","post",{target:' + jstr(target) + ',command:["init"],data:data,data})');
       break;
