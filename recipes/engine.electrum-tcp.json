@@ -2,7 +2,7 @@
   "engine":"electrum-tcp",
   "name":"Electrum TCP connector",
   "module":"quartz",
-  "cache":60000,
+  "cache":1000,
   "throttle":10,
   "quartz":{
     "status" : [
@@ -17,7 +17,7 @@
     "balance" : [
       "curl('asset://$symbol','','',{'jsonrpc':'2.0','id':0,'method':'blockchain.address.get_balance','params':['$1']})",
       "tran({confirmed:'.result.confirmed',unconfirmed:'.result.unconfirmed'},data,2,1)",
-      "stop(1,'No result!')",
+      "fail('No result!')",
       "time($cache,data)",
       "form(Number(data.confirmed)+Number(data.unconfirmed),$factor,'reduce')",
       "pass(data)"
@@ -52,7 +52,8 @@
     ],
     "fee" : [
       "curl('asset://$symbol','','',{'jsonrpc':'2.0','id': 1, 'method': 'blockchain.estimatefee', 'params': ['6'] })",
-      "tran('.result',data,1,3)",
+      "tran('.result',data,1,4)",
+      "test(data>0,1,3,data)",
       "pass(data)",
       "jump(2)",
       "pass('$fee')"
