@@ -63,14 +63,6 @@ function exec (properties) {
           global.hybridd.asset[target.symbol].fee = 1;
         }
 
-        // initialize deterministic code for smart contract calls?? --> NEEDED FOR NXT???
-        // var dcode = String(fs.readFileSync('../modules/deterministic/nxt/deterministic.js.lzma'));
-        // global.hybridd.asset[target.symbol].dcode = functions.activate( LZString.decompressFromEncodedURIComponent(dcode) );
-
-        // subprocesses.push('func("nxt","post",{target:'+jstr(target)+',command:["init"],data:data,data})');
-
-        // ?requestType=getBlockchainStatus&random=0.07594151768324142
-
         // set up init probe command to check if RPC and block explorer are responding and connected
         subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["getBlockchainStatus"]})');
         subprocesses.push('logs(1,"module nxt: "+(data?"connected":"failed connection")+" to [' + target.symbol + '] host ' + target.host + '")');
