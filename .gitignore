@@ -6,6 +6,7 @@ interface
 **/#.*.*
 .DS_Store
 storage/*
-var/log/*
 boot.json
-
+var/*
+var/log/*
+var/recipes/*

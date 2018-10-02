@@ -13,11 +13,6 @@
     "init" : [
       "curl('asset://$symbol','','',{'jsonrpc':'2.0','id':0,'method':'server.version','params':[]},{'content-type':'text/plain'})",
       "logs(1,'module $symbol: '+(data?'connected':'failed connection')+' to host [$host]')"
-    ],
-    "test" : [
-      "pass($1)",
-      "math('$1+2000+'+peek('factor'))",
-      "pass(data)"
-    ]    
+    ]
   }
 }

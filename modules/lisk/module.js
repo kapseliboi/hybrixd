@@ -66,9 +66,9 @@ function exec (properties) {
       subprocesses.push('func("lisk","link",{target:' + jstr(target) + ',command:["/api/loader/status/sync"]})'); // get sync status
       subprocesses.push('poke("liskA",data)'); // store the resulting data for post-process collage
       subprocesses.push('func("lisk","link",{target:' + jstr(target) + ',command:["/api/blocks/getStatus"]})'); // get milestone / difficulty
-      subprocesses.push('poke("liskB",data)'); // store the resulting data for post-process collage
+      subprocesses.push('poke("::liskB",data)'); // store the resulting data for post-process collage
       subprocesses.push('func("lisk","link",{target:' + jstr(target) + ',command:["/api/peers/version"]})'); // get version
-      subprocesses.push('func("lisk","post",{target:' + jstr(target) + ',command:["status"],data:{liskA:peek("liskA"),liskB:peek("liskB"),liskC:data}})'); // post process the data
+      subprocesses.push('func("lisk","post",{target:' + jstr(target) + ',command:["status"],data:{liskA:"$::liskA",liskB:"$::liskB",liskC:data}})'); // post process the data
       break;
     case 'factor':
     // directly relay factor, post-processing not required!
@@ -117,7 +117,6 @@ function exec (properties) {
       // var enddate = (typeof properties.command[1] != 'undefined'?properties.command[1]:Date.now());
       var params = 'recipientId=' + sourceaddr + limit + offset + '&orderBy=timestamp:desc';
       command = ['/api/transactions?' + params];
-      subprocesses.push('poke("sourceaddr","' + sourceaddr + '")');	// store the resulting data for post-process collage
       subprocesses.push('func("lisk","link",' + jstr({target, command}) + ')');
       break;
     case 'details':
