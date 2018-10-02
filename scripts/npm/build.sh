@@ -1,4 +1,6 @@
 #!/bin/sh
+WHEREAMI=`pwd`
+
 OLDPATH=$PATH
 # $HYBRIDD/$NODE/scripts/npm  => $HYBRIDD
 
@@ -78,21 +80,50 @@ if [ -e "$DETERMINISTIC" ];then
     sh "$DETERMINISTIC/scripts/npm/build.sh"
 fi
 
+# WEB WALLET
+if [ -e "$WEB_WALLET" ];then
+    echo " [i] Copy web wallet files"
+    mkdir -p "NODE/modules/web-wallet/files"
+    rsync -aK "$WEB_WALLET/dist/" "$NODE/modules/web-wallet/files/"
+fi
+
+# QUARTZ
+echo "[.] Generate Quartz documentation."
+mkdir -p "$NODE/docs"
+jsdoc "$NODE/lib/scheduler/quartz.js"  -d "$NODE/docs"
+
+# GIT PRE-PUSH HOOK
+if [ ! -x "$NODE/.git/hooks/pre-push" ]; then
+  echo "[i] Install git pre-push hook..." | filter
+  cp ./hooks/pre-push ./.git/hooks/pre-push
+  chmod +x ./.git/hooks/pre-push
+fi
+
+# GIT COMMIT-MSG HOOK
+if [ ! -x "$NODE/.git/hooks/commit-msg" ]; then
+  echo "[i] Install git commit-msg hook..." | filter
+  cp ./hooks/commit-msg ./.git/hooks/commit-msg
+  chmod +x ./.git/hooks/commit-msg
+fi
+
+cd "$WHEREAMI"
+
+
 # Generate libary that can be imported into Node projects
-$INTERFACE/node_modules/webpack/bin/webpack.js --config "$INTERFACE/conf/webpack.config.hybridd.interface.nodejs.js"
+#$INTERFACE/node_modules/webpack/bin/webpack.js --config "$INTERFACE/conf/webpack.config.hybridd.interface.nodejs.js"
 
 # Generate libary that can be imported into html pages
-$INTERFACE/node_modules/uglify-es/bin/uglifyjs "$INTERFACE/common/crypto/nacl.js" > "$INTERFACE/dist/hybridd.interface.nacl.js.tmp"
+#$INTERFACE/node_modules/uglify-es/bin/uglifyjs "$INTERFACE/common/crypto/nacl.js" > "$INTERFACE/dist/hybridd.interface.nacl.js.tmp"
 
-$INTERFACE/node_modules/webpack/bin/webpack.js -p --config "$INTERFACE/conf/webpack.config.hybridd.interface.web.js"
-$INTERFACE/node_modules/uglify-es/bin/uglifyjs "$INTERFACE/dist/hybridd.interface.web.js.tmp" > "$INTERFACE/dist/hybridd.interface.web.js.min.tmp"
+#$INTERFACE/node_modules/webpack/bin/webpack.js -p --config "$INTERFACE/conf/webpack.config.hybridd.interface.web.js"
+#$INTERFACE/node_modules/uglify-es/bin/uglifyjs "$INTERFACE/dist/hybridd.interface.web.js.tmp" > "$INTERFACE/dist/hybridd.interface.web.js.min.tmp"
 
 # fuse the packed files together
-cat "$INTERFACE/dist/hybridd.interface.nacl.js.tmp" "$INTERFACE/dist/hybridd.interface.web.js.min.tmp"  > "$INTERFACE/dist/hybridd.interface.web.js"
+#cat "$INTERFACE/dist/hybridd.interface.nacl.js.tmp" "$INTERFACE/dist/hybridd.interface.web.js.min.tmp"  > "$INTERFACE/dist/hybridd.interface.web.js"
 
 # clean up
-rm "$INTERFACE/dist/hybridd.interface.nacl.js.tmp"
-rm "$INTERFACE/dist/hybridd.interface.web.js.tmp"
-rm "$INTERFACE/dist/hybridd.interface.web.js.min.tmp"
+#rm "$INTERFACE/dist/hybridd.interface.nacl.js.tmp"
+#rm "$INTERFACE/dist/hybridd.interface.web.js.tmp"
+#rm "$INTERFACE/dist/hybridd.interface.web.js.min.tmp"
 
-PATH=$OLDPATH
+export PATH="$OLDPATH"
