@@ -126,7 +126,7 @@ function exec (properties) {
             subprocesses.push('func("blockexplorer","link",{target:' + jstr(target) + ',command:["/addr/' + address + '/balance"]})');
             subprocesses.push('func("blockexplorer","link",{target:' + jstr(target) + ',command:["/addr/' + address + '/unconfirmedBalance"]})');
             subprocesses.push('coll(2)');
-            subprocesses.push('stop( (isNaN(data[0])||isNaN(data[1])?1:0), functions.fromInt((data[0]+data[1]),' + factor + ') )');
+            subprocesses.push('stop( (isNaN(data[0])||isNaN(data[1])?1:0), functions.padFloat(functions.fromInt((data[0]+data[1]),' + factor + '),' + factor + ' ) )');
             break;
           case 'unspent':
             // example: https://blockexplorer.com/api/addr/[:addr]/utxo
