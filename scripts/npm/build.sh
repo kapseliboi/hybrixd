@@ -30,7 +30,7 @@ export PATH="$NODEJS/$SYSTEM/bin:$PATH"
 
 
 # NODE
-if [ ! -e "$INTERFACE/node" ];then
+if [ ! -e "$NODE/node" ];then
 
     echo " [!] interface/node not found."
 
@@ -40,11 +40,11 @@ if [ ! -e "$INTERFACE/node" ];then
         git clone https://github.com/internetofcoins/nodejs-v8-lts.git
     fi
     echo " [i] Link NODEJS files"
-    ln -sf "$NODEJS/$SYSTEM" "$INTERFACE/node"
+    ln -sf "$NODEJS/$SYSTEM" "$NODE/node"
 fi
 
 # COMMON
-if [ ! -e "$INTERFACE/common" ];then
+if [ ! -e "$NODE/common" ];then
 
     echo " [!] interface/common not found."
 
@@ -54,7 +54,7 @@ if [ ! -e "$INTERFACE/common" ];then
         git clone https://www.gitlab.com/iochq/hybridd/common.git
     fi
     echo " [i] Link common files"
-    ln -sf "$COMMON" "$INTERFACE/common"
+    ln -sf "$COMMON" "$NODE/common"
 
 fi
 
@@ -107,23 +107,5 @@ if [ ! -x "$NODE/.git/hooks/commit-msg" ]; then
 fi
 
 cd "$WHEREAMI"
-
-
-# Generate libary that can be imported into Node projects
-#$INTERFACE/node_modules/webpack/bin/webpack.js --config "$INTERFACE/conf/webpack.config.hybridd.interface.nodejs.js"
-
-# Generate libary that can be imported into html pages
-#$INTERFACE/node_modules/uglify-es/bin/uglifyjs "$INTERFACE/common/crypto/nacl.js" > "$INTERFACE/dist/hybridd.interface.nacl.js.tmp"
-
-#$INTERFACE/node_modules/webpack/bin/webpack.js -p --config "$INTERFACE/conf/webpack.config.hybridd.interface.web.js"
-#$INTERFACE/node_modules/uglify-es/bin/uglifyjs "$INTERFACE/dist/hybridd.interface.web.js.tmp" > "$INTERFACE/dist/hybridd.interface.web.js.min.tmp"
-
-# fuse the packed files together
-#cat "$INTERFACE/dist/hybridd.interface.nacl.js.tmp" "$INTERFACE/dist/hybridd.interface.web.js.min.tmp"  > "$INTERFACE/dist/hybridd.interface.web.js"
-
-# clean up
-#rm "$INTERFACE/dist/hybridd.interface.nacl.js.tmp"
-#rm "$INTERFACE/dist/hybridd.interface.web.js.tmp"
-#rm "$INTERFACE/dist/hybridd.interface.web.js.min.tmp"
 
 export PATH="$OLDPATH"
