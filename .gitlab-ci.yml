@@ -1,10 +1,11 @@
 image: node:8
 
-interface:
+hybridd:
   stage: build
   script:
     # install unzip
     - apt-get update
+    - apt-get install jsdoc
     - apt-get install unzip
     
     # trigger pipeline common
