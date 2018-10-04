@@ -67,7 +67,7 @@
       "stop(1,'Not yet implemented!')"
     ],
     "contract" : [
-      "stop(1,'Not yet implemented!')"
+      "pass('undefined')"
     ],
     "fee" : [
       "pass('$fee')"

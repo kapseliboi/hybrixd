@@ -60,7 +60,7 @@
       "rout('/source/blockexplorer/$symbol/history/$1')"
     ],
     "contract" : [
-      "stop(1,'Not yet implemented!')"
+      "pass('undefined')"
     ],
     "fee" : [
       "curl('asset://$symbol','','',{'jsonrpc':'2.0','id': 1, 'method': 'blockchain.estimatefee', 'params': ['6'] })",

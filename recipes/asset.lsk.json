@@ -40,7 +40,7 @@
       "curl('asset://$symbol','/api/transactions?recipientId=$1','GET','',{Accept:'application/json','Content-Type':'application/json'})"
     ],
     "contract" : [
-      "stop(1,'Not implemented!')"
+      "pass('undefined')"
     ],
     "fee" : [
       "pass('$fee')"

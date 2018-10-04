@@ -66,7 +66,7 @@
     ],
     "contract" : [
       "test('$contract'==='undefined',1,2)",
-      "stop(1,'Unspent returns data only for NEM mosiac tokens.')",
+      "stop(0,'Unspent returns data only for NEM mosiac tokens.')",
       "pass('$originator:$contract')"
     ],
     "fee" : [
