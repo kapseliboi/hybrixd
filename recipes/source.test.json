@@ -6,6 +6,15 @@
     "test": "test"
   },
   "quartz" : {
-    "test" : ["logs(1,'test')"]
+    "test" : [
+      "jump(@b)",
+      "logs(0,'a')",
+      "#comment",
+      "@b",
+      "logs(0,'b@1212')",
+      "@c",
+      "logs(0,'c@appel')",
+      "stop"
+    ]
   }
 }
