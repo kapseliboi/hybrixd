@@ -94,16 +94,16 @@ jsdoc "$NODE/lib/scheduler/quartz.js"  -d "$NODE/docs"
 
 # GIT PRE-PUSH HOOK
 if [ ! -x "$NODE/.git/hooks/pre-push" ]; then
-  echo "[i] Install git pre-push hook..." | filter
-  cp ./hooks/pre-push ./.git/hooks/pre-push
+  echo "[i] Install git pre-push hook..."
+  cp "$NODE/hooks/pre-push" "$NODE/.git/hooks/pre-push"
   chmod +x ./.git/hooks/pre-push
 fi
 
 # GIT COMMIT-MSG HOOK
 if [ ! -x "$NODE/.git/hooks/commit-msg" ]; then
-  echo "[i] Install git commit-msg hook..." | filter
-  cp ./hooks/commit-msg ./.git/hooks/commit-msg
-  chmod +x ./.git/hooks/commit-msg
+  echo "[i] Install git commit-msg hook..."
+  cp "$NODE/hooks/commit-msg" "$NODE/.git/hooks/commit-msg"
+  chmod +x "$NODE/.git/hooks/commit-msg"
 fi
 
 cd "$WHEREAMI"

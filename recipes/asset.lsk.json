@@ -17,12 +17,13 @@
     ],
     "balance" : [
       "curl('asset://$symbol','/api/accounts?address=$1&limit=1&offset=0&sort=balance:asc','GET','',{Accept:'application/json','Content-Type':'application/json'})",
-      "tran('.data[0].unconfirmedBalance',2,1)",
+      "tran('.0.unconfirmedBalance',2,1)",
       "stop(0,'0.00000000')",
-      "time($cache,data)",
-      "form(data,$factor,'reduce')",
-      "pass(data)"
+      "time($cache)",
+      "form",
+      "pass"
     ],
+
     "push" : [
       "curl('asset://$symbol','/api/transactions','POST', '$1', {Accept:'application/json','Content-Type':'application/json', Accept: 'application/json'})"
     ],
