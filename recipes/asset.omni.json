@@ -18,10 +18,9 @@
     "status" : [
       "time($cache)",
       "curl('asset://$symbol','/v1/address/addr?addr=1FoWyxwPXuj4C6abqwhjDWdz6D4PZgYRjA','POST','addr=1FoWyxwPXuj4C6abqwhjDWdz6D4PZgYRjA',{'content-type':'application/x-www-form-urlencoded'})",
-      "test(data,1,2,data)",
+      "test(data,1,2)",
       "stop(0,{module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:null,version:null})",
       "stop(1,'No result')"
-
     ],
     "unspent" : [
       "rout('/source/blockexplorer/$fee-symbol/unspent/$1/$fee')",
@@ -30,12 +29,13 @@
     "balance" : [
       "time($cache)",
       "curl('asset://$symbol','/v1/address/addr?addr=$1','POST','addr=$1',{'content-type':'application/x-www-form-urlencoded'})",
-      "tran('.balance',data,2,1)",
+      "tran('.balance',2,1)",
       "stop(1,'No result!')",
-      "find({'id':'$contract'},data,1,2)",
-      "tran({value:'.value',in:'.pendingpos',out:'.pendingneg'},data,2,1)",
+      "find({'id':'$contract'},1,2)",
+      "tran({value:'.0.value',in:'.pendingpos',out:'.0.pendingneg'},2,1)",
       "next(0,{value:'0',in:'0',out:'0'})",
-      "form(parseInt(data.value)+parseInt(data.in)-parseInt(data.out),$factor,'reduce')"
+      "math('data.value+data.in+data.out')",
+      "atom()"
     ],
     "push" : [
       "rout('/asset/btc/push/$1')"
@@ -48,9 +48,9 @@
     ],
     "transaction" : [
       "curl('asset://$symbol','/v1/transaction/tx/$1','GET','addr=$1',{'content-type':'application/x-www-form-urlencoded'})",
-      "tran({id:'.txid',fee:'.fee',attachment:'',timestamp:'.blocktime',symbol:'$symbol','fee-symbol':'$fee-symbol',ammount:'.amount',source:'=.sendingaddress|unknown',target:'=.referenceaddress|unknown'},data,2,1)",
+      "tran({id:'.txid',fee:'.fee',attachment:'',timestamp:'.blocktime',symbol:'$symbol','fee-symbol':'$fee-symbol',ammount:'.amount',source:'=.sendingaddress|unknown',target:'=.referenceaddress|unknown'},2,1)",
       "stop(1,'error')",
-      "stop(0,data)"
+      "stop()"
     ],
     "contract" : [
       "stop(0,'$contract')"

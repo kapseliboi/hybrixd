@@ -21,7 +21,7 @@
     ],
     "status" : [
       "curl('asset://$symbol','/_api','POST',{'jsonrpc':'2.0','id':0,'method':'is_ready','params':{}},{'content-type':'text/plain'})",
-      "test(data,1,2,data)",
+      "test(data,1,2)",
       "stop(0,{module:'$symbol',synced:data.result.caught_up,blocks:data.result.block_height,fee:null,supply:null,difficulty:null,testmode:data.result.testnet,version:null})",
       "stop(1,'No result')"
     ],
@@ -31,28 +31,30 @@
     "balance" : [
       "time(32000)",
       "curl('asset://$symbol','/_api','POST',{'jsonrpc':'2.0','id':0,'method':'get_normalized_balances','params':{'addresses':['$1']}},{'content-type':'text/plain'})",
-      "test(typeof data.result!=='undefined',2,1,data)",
+      "tran('.result',2,1)",
       "stop(1,'No result!')",
-      "find({'asset':'$contract'},data.result,2,1)",
-      "jump(2,'0')",
-      "form(data.quantity,$factor,'reduce')",
-      "time($cache,data)",
-      "pass(data)"
+      "find({'asset':'$contract'},3,1)",
+      "data('0.00000000')",
+      "jump(3)",
+      "tran('.0.quantity')",
+      "atom()",
+      "time($cache)",
+      "pass()"
     ],
     "push" : [
       "curl('asset://$symbol','/_api','POST',{'jsonrpc':'2.0','id':0,'method':'broadcast_tx','params':{'signed_tx_hex':'$1'}},{'content-type':'text/plain'})",
-      "test(data,2,1,data)",
+      "test(data,2,1)",
       "stop(1,'Broadcast failed!')",
-      "tran('.result',data,2,1)",
+      "tran('.result',2,1)",
       "stop(1,'No result!')",
-      "pass(data)"
+      "pass()"
     ],
     "factor" : [
       "pass('$factor')"
     ],
     "transaction" : [
       "rout('/source/blockexplorer/$fee-symbol/transaction/$1')",
-      "stop(0,data)",
+      "stop()",
       "stop(1,'This used btc network, not xcp.')"
     ],
     "history" : [
