@@ -39,7 +39,7 @@ function exec (properties) {
     subprocesses.push('test(data.result,2,1)');
     subprocesses.push("stop(1,'Connection failed')");
     subprocesses.push("curl('wss://bitshares.crypto.fans/ws','','',{'method':'call', 'params':[0,'get_account_by_name',['" + address + "']], id: 2})");
-    subprocesses.push("tran('.result.id',data,2,1)");
+    subprocesses.push("tran('.result.id',2,1)");
     subprocesses.push("stop(0,'invalid')");
     subprocesses.push("stop(0,'valid')");
   } else if (symbol === 'XEM') {

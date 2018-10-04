@@ -17,7 +17,7 @@
     ],
     "status" : [
       "curl('asset://$symbol','','POST',{jsonrpc:'1.0',id:Math.floor(Math.random()*10000),method:'getinfo',params:[]},{'content-type':'text/plain'})",
-      "test(data,1,2,data)",
+      "test(data,1,2)",
       "stop(0,{module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:null,version:null})",
       "stop(1,'No result')"
     ],
@@ -25,19 +25,19 @@
       "rout('/source/blockexplorer/$symbol/unspent/$1/$2/$3')"
     ],
     "balance" : [
-      "test('$1',2,1,'$1')",
+      "test('$1',2,1)",
       "stop(1,'No source address')",
       "curl('$block-explorer-host','?key=$pass&q=getbalance&a=$1', 'GET', '',{Accept:'application/json','Content-Type':'application/json'})",
-      "test(data,2,1,data)",
+      "test(data,2,1)",
       "stop(1,'No result!')",
-      "time($cache,data)",
+      "time($cache)",
       "pass(data/Math.pow(10,$factor))"
     ],
     "push" : [
       "curl('asset://$symbol','','POST',{jsonrpc:'1.0',id: Math.floor(Math.random()*10000),method:'sendrawtransaction',params:['$1']},{'content-type':'text/plain'})",
-      "test(data,2,1,data)",
+      "test(data,2,1)",
       "stop(1,'Broadcast failed!')",
-      "tran('.result',data,2,1)",
+      "tran('.result',2,1)",
       "stop(1,'No result!')",
       "pass(data)"
     ],
@@ -45,10 +45,10 @@
       "pass('$factor')"
     ],
     "transaction" : [
-      "test('$1',2,1,'$1')",
+      "test('$1',2,1)",
       "stop(1,'No transaction id.')",
       "curl('$block-explorer-host','?key=$pass&q=txinfo&t=$1', 'GET', '',{Accept:'application/json','Content-Type':'application/json'})",
-      "tran({id:'.hash',ammount:'.total_input',timestamp:'.timestamp',symbol:'dgb',source:'unknown',target:'unknown', fee:'.fees'},data,2,1)",
+      "tran({id:'.hash',ammount:'.total_input',timestamp:'.timestamp',symbol:'dgb',source:'unknown',target:'unknown', fee:'.fees'},2,1)",
       "stop(1,'error')",
       "stop(0,data)"
     ],
@@ -59,7 +59,7 @@
       "each(data,'subhistory')"
     ],
     "subhistory" : [
-      "tran({id:'.value.hash',ammount:'.value.total',timestamp:'.value.time',symbol:'dgb',source:'unknown',target:'unknown'},data,2,1)",
+      "tran({id:'.value.hash',ammount:'.value.total',timestamp:'.value.time',symbol:'dgb',source:'unknown',target:'unknown'},2,1)",
       "stop(1,'error')",
       "stop(0,data)"
     ],

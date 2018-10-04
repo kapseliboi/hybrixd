@@ -175,7 +175,7 @@ function exec (properties) {
       break;
     case 'transaction':
       subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["getTransaction",["transaction=' + properties.command[1] + '"] ]})');
-      subprocesses.push("tran({id:'.transaction',fee:'.feeNQT',attachment:'=.attachment|none',timestamp:'.timestamp',symbol:'" + target.symbol + "','fee-symbol':'" + target['symbol'] + "',amount:'.amountNQT',source:'.sender',target:'.recipient'},data,2,1)");//, data:'.'
+      subprocesses.push("tran({id:'.transaction',fee:'.feeNQT',attachment:'=.attachment|none',timestamp:'.timestamp',symbol:'" + target.symbol + "','fee-symbol':'" + target['symbol'] + "',amount:'.amountNQT',source:'.sender',target:'.recipient'},2,1)");//, data:'.'
       subprocesses.push('stop(1,data)');
       subprocesses.push('stop(0,data)');
 

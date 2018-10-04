@@ -10,21 +10,21 @@
     "rate" :
     [
       "curl('source://$source','/rate/$1_$2','GET')",
-      "tran('.rate',data,1,2)",
+      "tran('.rate',1,2)",
       "stop(0,data)",
       "stop(1,'Error: '+data.error)"
     ],
     "limit" :
     [
       "curl('source://$source','/limit/$1_$2','GET')",
-      "tran('.limit',data,1,2)",
+      "tran('.limit',1,2)",
       "stop(0,data)",
       "stop(1,'Error: '+data.error)"
     ],
     "marketinfo" :
     [
       "curl('source://$source','/marketinfo/$1_$2','GET')",
-      "tran({rate:''.rate',limit:''.limit',min:''.min',minerFee:''.minerFee',},data,1,2)",
+      "tran({rate:''.rate',limit:''.limit',min:''.min',minerFee:''.minerFee',},1,2)",
       "stop(0,data)",
       "stop(1,'Error: '+data.error)"
     ],
@@ -41,7 +41,7 @@
     "timeremaining" :
     [
       "curl('source://$source','/timeremaining/$1','GET')",
-      "tran('.seconds_remaining',data,1,2)",
+      "tran('.seconds_remaining',1,2)",
       "stop(0,data)",
       "stop(1,'Error: '+data.error)"
     ],
@@ -78,7 +78,7 @@
     "mail" :
     [
       "curl('source://$source','/mail','POST',{email:'$1',txid:'$2'})",
-      "tran('.status',data,1,2)",
+      "tran('.status',1,2)",
       "stop(0,'Success. Email receipt sent.')",
       "stop(1,'Error: '+data.error)"
     ],
@@ -90,7 +90,7 @@
     "cancelpending" :
     [
       "curl('source://$source','/cancelpending','POST',{address:'$1'})",
-      "tran('.success',data,1,2)",
+      "tran('.success',1,2)",
       "stop(0,'Success. Pending Transaction cancelled')",
       "stop(1,'Error: '+data.error)"
     ]

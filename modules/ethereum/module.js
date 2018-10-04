@@ -145,7 +145,7 @@ function exec (properties) {
       break;
     case 'transaction' :
       subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_getTransactionByHash",["' + sourceaddr + '"]]})');
-      subprocesses.push("tran({id:'.result.hash',fee:'.result.gas',attachment:'.result.input',timestamp:'unknown',symbol:'" + target.symbol + "','fee-symbol':'eth',ammount:'.result.value',source:'.result.from',target:'.result.to',data:'.result'},data,2,1)");//, data:'.'
+      subprocesses.push("tran({id:'.result.hash',fee:'.result.gas',attachment:'.result.input',timestamp:'unknown',symbol:'" + target.symbol + "','fee-symbol':'eth',ammount:'.result.value',source:'.result.from',target:'.result.to',data:'.result'},2,1)");//, data:'.'
       subprocesses.push('stop(1,data)');
       subprocesses.push('stop(0,data)');
       break;

@@ -140,7 +140,7 @@ function exec (properties) {
             break;
           case 'transaction':
             subprocesses.push('func("blockexplorer","link",{target:' + jstr(target) + ',command:["/tx/' + command[2] + '"]})');
-            subprocesses.push("tran({id:'.txid', fee:'.fees',attachment:'',timestamp:'.time',symbol:'" + symbol + "','fee-symbol':'" + symbol + "','ammount':'.valueOut','source':'unknown',target:'unknown'},data,2,1)");
+            subprocesses.push("tran({id:'.txid', fee:'.fees',attachment:'',timestamp:'.time',symbol:'" + symbol + "','fee-symbol':'" + symbol + "','ammount':'.valueOut','source':'unknown',target:'unknown'},2,1)");
 
             //, fee:'.fees',attachment:'',timestamp:'.time',symbol:'" + symbol + "','fee-symbol':'" + symbol + "','ammount':'.valueOut','source':'unknown',target:'unknown'
             subprocesses.push('stop(1,"error")');
@@ -148,7 +148,7 @@ function exec (properties) {
             break;
           case 'history':
             subprocesses.push('func("blockexplorer","link",{target:' + jstr(target) + ',command:["/txs/?address=' + command[2] + '"]})');
-            // TODO format all data            subprocesses.push("tran({id:'.txid',fee:'.fees',attachment:'',timestamp:'.time',symbol:'" + symbol + "','fee-symbol':'" + symbol + "',ammount:'.valueOut ',source:'unknown',target:unknown'},data,2,1)");
+            // TODO format all data            subprocesses.push("tran({id:'.txid',fee:'.fees',attachment:'',timestamp:'.time',symbol:'" + symbol + "','fee-symbol':'" + symbol + "',ammount:'.valueOut ',source:'unknown',target:unknown'},2,1)");
             // TODO format data
             subprocesses.push('stop(0,data)');
             break;

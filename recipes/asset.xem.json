@@ -25,34 +25,36 @@
       "stop(0,'Unspent returns mosaic data only in NEM tokens.')",
       "poke('proc::namespace','$contract'.split(':')[0])",
       "curl('asset://$symbol','/account/mosaic/definition/page?address=$originator'+'&parent=$proc::namespace'),'GET')",
-      "tran('.data',data,1,2)",
+      "tran('.data',1,2)",
       "find({'namespaceId':'$proc::namespace'},data,2,1)",
       "stop(1,'Contract address invalid or no mosaics found!')",
+      "tran('.0')",
       "pass(data)"
     ],
      "balance" : [
       "time(32000)",
       "test('$contract'==='undefined',1,6)",
       "curl('asset://$symbol','/account/get?address='+'$1'.replace(/-/g,''),'GET')",
-      "tran('.account.balance',data,2,1)",
+      "tran('.account.balance',2,1)",
       "stop(1,null)",
-      "form(data,$factor,'reduce')",
-      "stop(0,data)",
+      "atom()",
+      "stop()",
       "poke('proc::namespace','$contract'.split(':')[0])",
       "curl('asset://$symbol','/account/mosaic/owned?address='+'$1'.replace(/-/g,''),'GET')",
-      "tran('.data',data,2,1)",
+      "tran('.data',2,1)",
       "stop(1,null)",
       "find({'namespaceId':'$proc::namespace'},data,1,2)",
-      "tran('.quantity',data,2,1)",
+      "tran('.0.quantity',2,1)",
       "pass(0)",
       "time($cache,data)",
-      "form(data,$factor,'reduce')"
+      "atom()"
     ],
     "push" : [
-      "jpar('$1')",
+      "data('$1')",
+      "jpar()",
       "curl('asset://$symbol','/transaction/announce','POST',data,{'content-type':'application/json'})",
-      "test(typeof data.message!=='undefined' && data.message.substr(0,7)==='FAILURE',2,1,data)",
-      "tran('.transactionHash.data',data,2,1)",
+      "test(typeof data.message!=='undefined' && data.message.substr(0,7)==='FAILURE',2,1)",
+      "tran('.transactionHash.data',2,1)",
       "stop(1,data.error+' : '+data.message)",
       "pass(data)"
     ],
@@ -68,10 +70,11 @@
       "pass('$originator:$contract')"
     ],
     "fee" : [
-      "test('$contract'==='undefined',1,2)",
-      "jump(2,'$fee')",
-      "jump(1,'$fee-mosaic')",
-      "pass(data)"
+      "test('$contract'==='undefined',1,3)",
+      "data('$fee')",
+      "jump(2)",
+      "data('$fee-mosaic')",
+      "pass()"
     ],
     "sample" : [
       "stop(0,{address:'nckzd7-jgdlnd-ivvph6-u2pg2q-kd3px3-fx4cpz-mf2a',transaction:'f857080798efa465f2453caface0c9338d3ced0d09c58a0d9035075f034ea460'})"
