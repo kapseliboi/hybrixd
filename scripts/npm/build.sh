@@ -1,4 +1,6 @@
 #!/bin/sh
+WHEREAMI=`pwd`
+
 OLDPATH=$PATH
 # $HYBRIDD/$NODE/scripts/npm  => $HYBRIDD
 
@@ -28,7 +30,7 @@ export PATH="$NODEJS/$SYSTEM/bin:$PATH"
 
 
 # NODE
-if [ ! -e "$INTERFACE/node" ];then
+if [ ! -e "$NODE/node" ];then
 
     echo " [!] interface/node not found."
 
@@ -38,11 +40,11 @@ if [ ! -e "$INTERFACE/node" ];then
         git clone https://github.com/internetofcoins/nodejs-v8-lts.git
     fi
     echo " [i] Link NODEJS files"
-    ln -sf "$NODEJS/$SYSTEM" "$INTERFACE/node"
+    ln -sf "$NODEJS/$SYSTEM" "$NODE/node"
 fi
 
 # COMMON
-if [ ! -e "$INTERFACE/common" ];then
+if [ ! -e "$NODE/common" ];then
 
     echo " [!] interface/common not found."
 
@@ -52,7 +54,7 @@ if [ ! -e "$INTERFACE/common" ];then
         git clone https://www.gitlab.com/iochq/hybridd/common.git
     fi
     echo " [i] Link common files"
-    ln -sf "$COMMON" "$INTERFACE/common"
+    ln -sf "$COMMON" "$NODE/common"
 
 fi
 
@@ -78,21 +80,32 @@ if [ -e "$DETERMINISTIC" ];then
     sh "$DETERMINISTIC/scripts/npm/build.sh"
 fi
 
-# Generate libary that can be imported into Node projects
-$INTERFACE/node_modules/webpack/bin/webpack.js --config "$INTERFACE/conf/webpack.config.hybridd.interface.nodejs.js"
+# WEB WALLET
+if [ -e "$WEB_WALLET" ];then
+    echo " [i] Copy web wallet files"
+    mkdir -p "NODE/modules/web-wallet/files"
+    rsync -aK "$WEB_WALLET/dist/" "$NODE/modules/web-wallet/files/"
+fi
 
-# Generate libary that can be imported into html pages
-$INTERFACE/node_modules/uglify-es/bin/uglifyjs "$INTERFACE/common/crypto/nacl.js" > "$INTERFACE/dist/hybridd.interface.nacl.js.tmp"
+# QUARTZ
+echo "[.] Generate Quartz documentation."
+mkdir -p "$NODE/docs"
+jsdoc "$NODE/lib/scheduler/quartz.js"  -d "$NODE/docs"
 
-$INTERFACE/node_modules/webpack/bin/webpack.js -p --config "$INTERFACE/conf/webpack.config.hybridd.interface.web.js"
-$INTERFACE/node_modules/uglify-es/bin/uglifyjs "$INTERFACE/dist/hybridd.interface.web.js.tmp" > "$INTERFACE/dist/hybridd.interface.web.js.min.tmp"
+# GIT PRE-PUSH HOOK
+if [ ! -x "$NODE/.git/hooks/pre-push" ]; then
+  echo "[i] Install git pre-push hook..."
+  cp "$NODE/hooks/pre-push" "$NODE/.git/hooks/pre-push"
+  chmod +x ./.git/hooks/pre-push
+fi
 
-# fuse the packed files together
-cat "$INTERFACE/dist/hybridd.interface.nacl.js.tmp" "$INTERFACE/dist/hybridd.interface.web.js.min.tmp"  > "$INTERFACE/dist/hybridd.interface.web.js"
+# GIT COMMIT-MSG HOOK
+if [ ! -x "$NODE/.git/hooks/commit-msg" ]; then
+  echo "[i] Install git commit-msg hook..."
+  cp "$NODE/hooks/commit-msg" "$NODE/.git/hooks/commit-msg"
+  chmod +x "$NODE/.git/hooks/commit-msg"
+fi
 
-# clean up
-rm "$INTERFACE/dist/hybridd.interface.nacl.js.tmp"
-rm "$INTERFACE/dist/hybridd.interface.web.js.tmp"
-rm "$INTERFACE/dist/hybridd.interface.web.js.min.tmp"
+cd "$WHEREAMI"
 
-PATH=$OLDPATH
+export PATH="$OLDPATH"

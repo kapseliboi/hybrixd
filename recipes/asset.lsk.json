@@ -1,10 +1,49 @@
 {
   "symbol":"lsk",
   "name":"Lisk",
-  "module":"lisk",
+  "module":"quartz",
   "mode":"lisk.lisk",
   "factor":8,
-  "host":["https://login.lisk.io","https://liskworld.info","https://lisknode.grumlin.com"],
+  "fee":"0.10000000",
+  "host":["https://hub21.lisk.io","https://hub22.lisk.io","https://hub23.lisk.io","https://hub24.lisk.io","https://hub25.lisk.io","https://hub26.lisk.io","https://hub27.lisk.io","https://hub28.lisk.io","https://hub31.lisk.io","https://hub32.lisk.io","https://hub33.lisk.io","https://hub34.lisk.io","https://hub35.lisk.io","https://hub36.lisk.io","https://hub37.lisk.io","https://hub38.lisk.io"],
   "cache":15000,
-  "throttle":5
+  "throttle":5,
+  "quartz":{
+    "status" : [
+      "stop(1,'No result!')"
+    ],
+    "unspent" : [
+      "pass({'unspents':[],'change':'0.00000000'})"
+    ],
+    "balance" : [
+      "curl('asset://$symbol','/api/accounts?address=$1&limit=1&offset=0&sort=balance:asc','GET','',{Accept:'application/json','Content-Type':'application/json'})",
+      "tran('.0.unconfirmedBalance',2,1)",
+      "stop(0,'0.00000000')",
+      "time($cache)",
+      "form",
+      "pass"
+    ],
+
+    "push" : [
+      "curl('asset://$symbol','/api/transactions','POST', '$1', {Accept:'application/json','Content-Type':'application/json', Accept: 'application/json'})"
+    ],
+    "factor" : [
+      "pass('$factor')"
+    ],
+    "transaction" : [
+      "curl('asset://$symbol','/api/transactions?id=$1&limit=1&offset=0','GET','',{Accept:'application/json','Content-Type':'application/json'})"
+    ],
+    "sample" : [
+      "stop(0,{address:'5920921428156130553L',transaction:'12391912764023208573'})"
+    ],
+    "history" : [
+      "curl('asset://$symbol','/api/transactions?recipientId=$1','GET','',{Accept:'application/json','Content-Type':'application/json'})"
+    ],
+    "contract" : [
+      "pass('undefined')"
+    ],
+    "fee" : [
+      "pass('$fee')"
+    ]
+  }
 }

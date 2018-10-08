@@ -126,7 +126,7 @@ function exec (properties) {
             subprocesses.push('func("blockexplorer","link",{target:' + jstr(target) + ',command:["/addr/' + address + '/balance"]})');
             subprocesses.push('func("blockexplorer","link",{target:' + jstr(target) + ',command:["/addr/' + address + '/unconfirmedBalance"]})');
             subprocesses.push('coll(2)');
-            subprocesses.push('stop( (isNaN(data[0])||isNaN(data[1])?1:0), functions.fromInt((data[0]+data[1]),' + factor + ') )');
+            subprocesses.push('stop( (isNaN(data[0])||isNaN(data[1])?1:0), functions.padFloat(functions.fromInt((data[0]+data[1]),' + factor + '),' + factor + ' ) )');
             break;
           case 'unspent':
             // example: https://blockexplorer.com/api/addr/[:addr]/utxo
@@ -140,7 +140,7 @@ function exec (properties) {
             break;
           case 'transaction':
             subprocesses.push('func("blockexplorer","link",{target:' + jstr(target) + ',command:["/tx/' + command[2] + '"]})');
-            subprocesses.push("tran({id:'.txid', fee:'.fees',attachment:'',timestamp:'.time',symbol:'" + symbol + "','fee-symbol':'" + symbol + "','ammount':'.valueOut','source':'unknown',target:'unknown'},data,2,1)");
+            subprocesses.push("tran({id:'.txid', fee:'.fees',attachment:'',timestamp:'.time',symbol:'" + symbol + "','fee-symbol':'" + symbol + "','ammount':'.valueOut','source':'unknown',target:'unknown'},2,1)");
 
             //, fee:'.fees',attachment:'',timestamp:'.time',symbol:'" + symbol + "','fee-symbol':'" + symbol + "','ammount':'.valueOut','source':'unknown',target:'unknown'
             subprocesses.push('stop(1,"error")');
@@ -148,7 +148,7 @@ function exec (properties) {
             break;
           case 'history':
             subprocesses.push('func("blockexplorer","link",{target:' + jstr(target) + ',command:["/txs/?address=' + command[2] + '"]})');
-            // TODO format all data            subprocesses.push("tran({id:'.txid',fee:'.fees',attachment:'',timestamp:'.time',symbol:'" + symbol + "','fee-symbol':'" + symbol + "',ammount:'.valueOut ',source:'unknown',target:unknown'},data,2,1)");
+            // TODO format all data            subprocesses.push("tran({id:'.txid',fee:'.fees',attachment:'',timestamp:'.time',symbol:'" + symbol + "','fee-symbol':'" + symbol + "',ammount:'.valueOut ',source:'unknown',target:unknown'},2,1)");
             // TODO format data
             subprocesses.push('stop(0,data)');
             break;

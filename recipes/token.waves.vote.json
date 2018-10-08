@@ -1,0 +1,11 @@
+{
+    "symbol":"waves.vote",
+    "name":"Vote token Argu - https://start.vote (Waves)",
+    "module":"quartz",
+    "mode":"waves.token",
+    "import":"waves",
+    "contract":"6qfDsN4H5m4UjqbwK6BNGxPcQM9iKQ3kuSDgP5NexKPU",
+    "originator":"3P8MmU7kkcnWffVtWLTQy4DUUCZt62cs1s3",
+    "factor":0
+}
+

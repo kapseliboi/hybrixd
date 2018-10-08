@@ -34,6 +34,7 @@ function stop () {
 function tick (properties) {
 }
 
+var ehtDeterministic;
 // standard functions of an asset store results in a process superglobal -> global.hybridd.process[processID]
 // child processes are waited on, and the parent process is then updated by the postprocess() function
 // http://docs.ethereum.org/en/latest/protocol.html
@@ -61,7 +62,8 @@ function exec (properties) {
         } else { global.hybridd.asset[target.symbol].link = new Client(); }
         // initialize deterministic code for smart contract calls
         var dcode = String(fs.readFileSync('../modules/deterministic/ethereum/deterministic.js.lzma'));
-        global.hybridd.asset[target.symbol].dcode = functions.activate(LZString.decompressFromEncodedURIComponent(dcode));
+        ehtDeterministic = functions.activate(LZString.decompressFromEncodedURIComponent(dcode));
+
         // set up init probe command to check if RPC and block explorer are responding and connected
         subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_gasPrice"]})');
         subprocesses.push('func("ethereum","post",{target:' + jstr(target) + ',command:["init"],data:data,data})');
@@ -70,7 +72,7 @@ function exec (properties) {
       }
       break;
     case 'cron':
-      subprocesses.push('logs(1," [i] module ethereum: updating fee")');
+      subprocesses.push('logs(1,"module ethereum: updating fee")');
       subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_gasPrice"]})');
       subprocesses.push('func("ethereum","post",{target:' + jstr(target) + ',command:["init"],data:data,data})');
       break;
@@ -101,7 +103,7 @@ function exec (properties) {
         } else {
           var symbol = target.symbol.split('.')[0];
           // DEPRECATED: var encoded = '0x'+abi.simpleEncode('balanceOf(address):(uint256)',sourceaddr).toString('hex'); // returns the encoded binary (as a Buffer) data to be sent
-          var encoded = global.hybridd.asset[symbol].dcode.encode({'func': 'balanceOf(address):(uint256)', 'vars': ['address'], 'address': sourceaddr}); // returns the encoded binary (as a Buffer) data to be sent
+          var encoded = ehtDeterministic.encode({'func': 'balanceOf(address):(uint256)', 'vars': ['address'], 'address': sourceaddr}); // returns the encoded binary (as a Buffer) data to be sent
           subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_call",[{"to":"' + target.contract + '","data":"' + encoded + '"},"pending"]]})'); // send token balance ABI query
         }
         subprocesses.push('stop((data!==null && typeof data.result!=="undefined"?0:1),(data!==null && typeof data.result!=="undefined"? functions.padFloat(functions.fromInt(functions.hex2dec.toDec(data.result),' + factor + '),' + factor + ') :null))');
@@ -143,7 +145,7 @@ function exec (properties) {
       break;
     case 'transaction' :
       subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_getTransactionByHash",["' + sourceaddr + '"]]})');
-      subprocesses.push("tran({id:'.result.hash',fee:'.result.gas',attachment:'.result.input',timestamp:'unknown',symbol:'" + target.symbol + "','fee-symbol':'eth',ammount:'.result.value',source:'.result.from',target:'.result.to',data:'.result'},data,2,1)");//, data:'.'
+      subprocesses.push("tran({id:'.result.hash',fee:'.result.gas',attachment:'.result.input',timestamp:'unknown',symbol:'" + target.symbol + "','fee-symbol':'eth',ammount:'.result.value',source:'.result.from',target:'.result.to',data:'.result'},2,1)");//, data:'.'
       subprocesses.push('stop(1,data)');
       subprocesses.push('stop(0,data)');
       break;

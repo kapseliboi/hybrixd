@@ -26,11 +26,13 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>var router = require('../router');
+            <pre class="prettyprint source linenums"><code>var fs = require('fs');
+var router = require('../router');
 var modules = require('../modules');
 var scheduler = require('../scheduler');
 var functions = require('../functions'); // only required for   procinfo[0] = functions.implode('.', pieces);
 var APIqueue = require('../APIqueue');
+var Decimal = require('../../common/crypto/decimal-light.js');
 
 var Hybridd = require('../../interface/dist/hybridd.interface.nodejs');
 var hybridd = new Hybridd.Interface({http: require('http')});
@@ -466,12 +468,16 @@ data:   Store data in the subprocess data field.
  * @param {Object} [data] - Message/data passed  to parent process.
  * @example
  * fail()                        // stop processing and set error to 1
- * fail("Something wrong")       // stop processing, set error to 0, and put "Something wrong." in main process data field
+ * fail("Something wrong")       // stop processing, set error to 1, and put "Something wrong." in main process data field
  * fail(404,"HELP! Not found.")  // stop processing, set error to 404, and put "HELP! Not found." in main process data field
  */
   //
-  this.fail = function (p, xdata) {
-    this.stop(1, xdata);
+  this.fail = function (p, err, xdata) {
+    if (typeof xdata === 'undefined') {
+      this.stop(p, 1, err);
+    } else {
+      this.stop(p, err, xdata);
+    }
   };
   /**
  * Jump forward or backward several instructions
@@ -912,8 +918,7 @@ are finished
     }
   };
   /**
- * Loop through elements of a container execute a given function for each
-element.
+ * Loop through elements of a container execute a given function for each element.
  * @param {String} command -  A string containg the command path. "command/a/b". This calls command using $1 = "a", $2 = "b"
  * @param {Object} data -  Optional data to be passed to the new process
  * @example
@@ -947,38 +952,303 @@ element.
  * @param {String} value - The data to store in the variable. This is also stored in this subprocess data field.
  * @param {Object} [data] -  Store data in this subprocess data field.
  * @example
- *  poke("thisnum",55) // poke 55 into variable "thisnum"
- *  poke("coolness","Wooty.")   // poke "Wooty." into variable "coolness"
- */
-  this.poke = function (p, variable, pokedata, xdata) {
-    var ydata = typeof xdata === 'undefined' ? global.hybridd.proc[p.processID].data : xdata;
+ *  poke("fee",value)         // sets value in recipe local variable fee. Shorthand for local::fee (runtime, persisted in the .vars.json file)
+ *  poke("proc::fee",value)         // sets value in processor variable fee (runtime, non persistant)
+ *  poke("local::fee",value)         // sets value in recipe local variable fee (runtime, persisted in the .vars.json file)
+ *  poke("::fee",value)         // same as poke("local::fee",value)
 
+ *  poke("btc::fee",value)         // results in an error.
+ *  poke("btc::local::fee",value)         // results in an error
+
+ *  poke(2,value)     // results in an error.
+ */
+  this.poke = function (p, key, pdata, xdata) {
     if (DEBUG) { console.log(' [D] (' + p.parentID + ') poke [' + JSON.stringify(variable) + '] in step ' + (global.hybridd.proc[p.parentID].step + 1) + ' of ' + (global.hybridd.proc[p.parentID].steps + 1)); }
-    // get root parent
-    var rootID = p.processID.substring(0, p.processID.indexOf('.'));
-    // store poke data in root process
-    global.hybridd.proc[rootID].vars[variable] = pokedata;
-    this.next(p, 0, ydata);
+
+    var qdata = typeof pdata === 'undefined' ? global.hybridd.proc[p.processID].data : pdata;
+    var ydata = typeof xdata === 'undefined' ? qdata : xdata;
+
+    var keySplit = key.split('::');
+    var process = global.hybridd.proc[p.processID];
+
+    var scope;
+    var subKey;
+    if (keySplit.length === 2) {
+      scope = keySplit[0];
+      subKey = keySplit[1];
+      var rootID = p.processID.substring(0, p.processID.indexOf('.'));
+      var rootProcess = global.hybridd.proc[rootID];
+      if (scope === 'proc') { // proc::key
+        rootProcess.vars[subKey] = qdata;
+      } else if (scope === 'local' || scope === '') { // local::key
+        if (rootProcess.recipe.vars !== 'object') {
+          rootProcess.recipe.vars = {};
+        }
+        rootProcess.recipe.vars[subKey] = qdata;
+        fs.writeFileSync('../var/recipes/' + rootProcess.recipe.filename, JSON.stringify(rootProcess.recipe.vars));
+      } else { // otherRecipe::key
+        return this.stop(p, 1, 'poke: Not allowed to write to other recipe property.');
+      }
+      return this.next(p, 0, ydata);
+    } else if (keySplit.length === 3) {
+      return this.stop(p, 1, 'poke: Not allowed to write to local variable of other recipe.');
+    } else if (typeof key === 'number') { // 0,1,2,3,   or fee
+      return this.stop(p, 1, 'poke: Not allowed to write to command array.');
+    } else {
+      return this.stop(p, 1, 'poke: Not allowed to write to recipe property.');
+    }
   };
   /**
  * Gets data from a variable that was defined by poke. Used inside of other instructions.
  * @param {String} key - Variable name to get data from.
  * @example
- * poke("thisnum",55) // poke 55 into variable "thisnum"
- * peek("thisnum")     // returns 55
+ *  peek("fee")         // returns value in recipe variable fee (non mutable, based on the recipe .json file)
+ *  peek("proc::fee")         // returns value in processor variable fee (runtime, non persistant)
+ *  peek("local::fee")         // returns value in recipe local variable fee (runtime, persisted in the .vars.json file)
+ *  peek("::fee")         // same as peek("local::fee")
+
+ *  peek("btc::fee")         // returns value in btc recipe variable fee (non mutable, based on the recipe btc.json file)
+ *  peek("btc::local::fee")         // returns value in btc recipe variable fee (based on the recipe .btc.vars.json file)
+
+ *  peek(2)     // returns value of the second command path (non mutable)
+
  */
-  this.peek = function (p, variable) {
-    if (DEBUG) { console.log(' [D] (' + p.parentID + ') peek [' + JSON.stringify(variable) + '] in step ' + (global.hybridd.proc[p.parentID].step + 1) + ' of ' + (global.hybridd.proc[p.parentID].steps + 1)); }
-    // get root parent
-    var rootID = p.processID.substring(0, p.processID.indexOf('.'));
-    // set data to what is peeked
-    var pdata = null;
-    if (typeof global.hybridd.proc[rootID].vars !== 'undefined') {
-      if (typeof global.hybridd.proc[rootID].vars[variable] !== 'undefined') {
-        pdata = global.hybridd.proc[rootID].vars[variable];
+  this.peek = function (p, key) {
+    if (DEBUG) { console.log(' [D] (' + p.parentID + ') peek [' + JSON.stringify(key) + '] in step ' + (global.hybridd.proc[p.parentID].step + 1) + ' of ' + (global.hybridd.proc[p.parentID].steps + 1)); }
+    var pdata;
+    var keySplit = key.split('::');
+    var process = global.hybridd.proc[p.processID];
+    if (keySplit.length === 2) {
+      var scope = keySplit[0];
+      var subKey = keySplit[1];
+      var rootID = p.processID.substring(0, p.processID.indexOf('.'));
+      var rootProcess = global.hybridd.proc[rootID];
+      if (scope === 'proc') { // proc::key
+        if (rootProcess.hasOwnProperty('vars')) {
+          pdata = rootProcess.vars[subKey];
+        }
+      } else if (scope === 'local' || scope === '') { // local::key
+        if (rootProcess.recipe.hasOwnProperty('vars')) {
+          pdata = rootProcess.recipe.vars[subKey];
+        }
+      } else { // otherRecipe::key
+        if (global.hybridd.asset.hasOwnProperty(scope) &amp;&amp; global.hybridd.asset[scope].hasOwnProperty(subKey)) {
+          pdata = global.hybridd.asset[scope][subKey];
+        } else if (global.hybridd.source.hasOwnProperty(scope) &amp;&amp; global.hybridd.source[scope].hasOwnProperty(subKey)) {
+          pdata = global.hybridd.source[scope][subKey];
+        } else if (global.hybridd.engine.hasOwnProperty(scope) &amp;&amp; global.hybridd.engine[scope].hasOwnProperty(subKey)) {
+          pdata = global.hybridd.engine[scope][subKey];
+        }
+      }
+    } else if (keySplit.length === 3) {
+      var scope = keySplit[0];
+      var subScope = keySplit[1];
+      var subKey = keySplit[2];
+      if (subScope === 'local') {
+        if (global.hybridd.asset.hasOwnProperty(scope) &amp;&amp; global.hybridd.asset[scope].hasOwnProperty('vars') &amp;&amp; global.hybridd.asset[scope].vars.hasOwnProperty(subKey)) {
+          pdata = global.hybridd.asset[scope].vars[subKey];
+        } else if (global.hybridd.source.hasOwnProperty(scope) &amp;&amp; global.hybridd.source[scope].hasOwnProperty('vars') &amp;&amp; global.hybridd.source[scope].vars.hasOwnProperty(subKey)) {
+          pdata = global.hybridd.source[scope].vars[subKey];
+        } else if (global.hybridd.engine.hasOwnProperty(scope) &amp;&amp; global.hybridd.engine[scope].hasOwnProperty('vars') &amp;&amp; global.hybridd.engine[scope].vars.hasOwnProperty(subKey)) {
+          pdata = global.hybridd.engine[scope].vars[subKey];
+        }
+      } else {
+        this.stop(p, 1, 'peek: unrecognized subscope ' + subScope + ' for ' + key + '.');
+        return;
+      }
+    } else if (typeof key === 'number') { // 0,1,2,3,   or fee
+      pdata = process.command ? process.command[key] : undefined;
+    } else {
+      pdata = process.recipe[key];
+    }
+    this.next(p, 0, pdata);
+  };
+  /**
+ * Calculates numbers and variables. Mathematical calculations can be done with very large numbers.
+ * @param {String} equation - String to calculate outcome of.
+ * @example
+ *  math("10*34+8-(3^4)")  // returns 267
+ *  math("data^2*5")       // returns the value of data to the power of two times five
+ */
+  this.math = function (p, equation) {
+    var data = global.hybridd.proc[p.processID].data;
+    if (DEBUG) { console.log(' [D] (' + p.parentID + ') math [' + equation + '] in step ' + (global.hybridd.proc[p.parentID].step + 1) + ' of ' + (global.hybridd.proc[p.parentID].steps + 1)); }
+
+    equation = '(new Decimal(' + String(equation)
+      .replace(/\(/g, 'new Decimal(')
+      .replace(/\^/g, ').toPower(')
+      .replace(/\*/g, ').times(')
+      .replace(/\//g, ').dividedBy(')
+      .replace(/\+/g, ').plus(')
+      .replace(/\-/g, ').minus(') + ').toString());';
+
+    // add quotes to all numbers
+    equation = equation.replace(/[+-]?([0-9]*[.])?[0-9]+/g, function (str) {
+      return "'" + str + "'";
+    });
+
+    // add quotes to all hexadecimals
+    /* TODO
+    equation = equation.replace(/0[xX][0-9a-fA-F]+/g, function(str) {
+      return "'"+str+"'";
+    });  more info: https://stackoverflow.com/questions/9221362/regular-expression-for-a-hexadecimal-number */
+
+    // make sure equation does not reference itself
+    equation = equation.replace('equation', '0');
+
+    this.next(p, 0, (eval(equation)));
+  };
+  /**
+ * Create a sha256 hash from an input string.
+ * @param {String} string - String to calculate outcome of.
+ * @example
+ *  hash("this_is_my_data")  // returns the hash: 5322fecfc92a5e3248a297a3df3eddfb9bd9049504272e4f572b87fa36d4b3bd
+ */
+  this.hash = function (p, input) {
+    if (DEBUG) { console.log(' [D] (' + p.parentID + ') hash [' + input + '] in step ' + (global.hybridd.proc[p.parentID].step + 1) + ' of ' + (global.hybridd.proc[p.parentID].steps + 1)); }
+    var hash = nacl.to_hex(nacl.crypto_hash_sha256(input));
+    this.next(p, 0, hash);
+  };
+  /**
+ * Sort data by using a certain method
+ * @param {String} input - Array, object or string to sort.
+ * @param {String} method - Array of methods to employ.
+ * @example
+ *  sort('BADEFC')                                  // sorts the object ascending by value: 'ABCDEF'
+ *  sort([10,8,5,9],'desc')                         // sorts the object descending by value: [10,9,8,5]
+ *  sort({'a':'z','b':'x','c':'y'},['val','asc'])   // sorts the object ascending by value: [{'b':'x'},{'c':'y'},{'c':'z'}]
+ *  sort({'a':2,'b':1,'c':3},['key','desc'])        // sorts the object descending by key:  [{'c':3},{'b':1},{'a':2}]
+ *  sort({'a':1,'b':10,'c':3},['val','num','asc'])  // sorts the object ascending by numeric value:  [{'a':1},{'c':3},{'b':10}]
+ *  sort([{'a':4,'b':'B'},{'a':2,'b':'A'}],['obj:b'])   // sorts the array by object key 'b': [{'a':2,'b':'A'},{'a':4,'b':'B'}]
+ */
+  this.sort = function (p, object, method) {
+    // TODO: return progress data during sorting (for long lists!)
+    if (DEBUG) { console.log(' [D] (' + p.parentID + ') sort [' + object + '] in step ' + (global.hybridd.proc[p.parentID].step + 1) + ' of ' + (global.hybridd.proc[p.parentID].steps + 1)); }
+    // set default sorting method if unspecified
+    if (typeof method === 'string') { method = [method]; }
+    function intSort (a, b) { return a - b; }
+    function sortAssocObject (list, reverse, sortInteger, sortByKey) {
+      var sortable = [];
+      var ind = sortByKey ? 0 : 1;
+      for (var key in list) {
+        sortable.push([key, list[key]]);
+      }
+      if (sortInteger) {
+        sortable.sort(function (a, b) {
+          return a[ind] - b[ind];
+        });
+      } else {
+        sortable.sort(function (a, b) {
+          return (String(a[ind]) === String(b[ind]) ? 0 : (String(a[ind]) > String(b[ind]) ? 1 : -1));
+        });
+      }
+      if (reverse) { sortable.reverse(); }
+      var orderedList = [];
+      var listObj;
+      for (var i = 0; i &lt; sortable.length; i++) {
+        listObj = {};
+        listObj[String(sortable[i][0])] = sortable[i][1];
+        orderedList.push(listObj);
+      }
+      return orderedList;
+    }
+    function sortArrayByObjKey (arr, key, reverse, sortInteger) {
+      // make key value index for unspents
+      var unordered = {};
+      for (var i in arr) {
+        unordered[arr[i][key]] = i;
+      }
+      // sort unspent list
+      var ordered = [];
+      var cnt = 0;
+      var list;
+      if (sortInteger) {
+        list = Object.keys(unordered).sort(intSort);
+      } else {
+        list = Object.keys(unordered).sort();
+      }
+      list.forEach((key) => {
+        ordered[cnt] = arr[unordered[key]];
+        cnt++;
+      });
+      if (reverse) { ordered = ordered.reverse(); }
+      return ordered;
+    }
+    var sortDesc = 0;
+    var sortByKey = 0;
+    var sortByObj = 0;
+    var sortInteger = 0;
+    var isArray = 0;
+    var isString = 0;
+    var methodCase;
+    var objName;
+    if (Object.prototype.toString.call(object) === '[object Array]') {
+      isArray = 1;
+    } else if (typeof object === 'string') {
+      isArray = 1;
+      isString = 1;
+      object = object.split('');
+    }
+    for (var i = 0; i &lt; method.length; i++) {
+      if (method[i].substr(0, 3) === 'obj') {
+        sortByObj = 1;
+        methodCase = 'obj';
+        objName = method[i].split(':')[1];
+      } else {
+        methodCase = method[i];
+      }
+      switch (methodCase) {
+        case 'val':
+          sortByKey = 0;
+          sortByObj = 0;
+          break;
+        case 'key':
+          sortByKey = 1;
+          sortByObj = 0;
+          break;
+        case 'num':
+          sortInteger = 1;
+          break;
+        case 'idx':
+          sortInteger = 0;
+          break;
+        case 'obj':
+          sortByKey = 0;
+          sortByObj = 1;
+          break;
+        case 'asc':
+          sortDesc = 0;
+          break;
+        case 'desc':
+          sortDesc = 1;
+          break;
       }
     }
-    return pdata;
+    if (sortDesc) {
+      if (isArray) {
+        if (sortByObj) {
+          object = sortArrayByObjKey(object, objName, 1, sortInteger);
+        } else {
+          object = sortInteger ? object.sort(intSort).reverse() : object.sort().reverse();
+        }
+      } else {
+        object = sortAssocObject(object, 1, sortInteger, sortByKey);
+      }
+    } else {
+      if (isArray) {
+        if (sortByObj) {
+          object = sortArrayByObjKey(object, objName, 0, sortInteger);
+        } else {
+          object = sortInteger ? object.sort(intSort) : object.sort();
+        }
+      } else {
+        object = sortAssocObject(object, 0, sortInteger, sortByKey);
+      }
+    }
+    if (isString) {
+      object = object.join('');
+    }
+    this.next(p, 0, object);
   };
   /**
  * Initiates a client stack program. This stack can be filled using step and executed using exec.
@@ -1065,13 +1335,13 @@ exports.Quartz = Quartz; // initialize a new process
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#call">call</a></li><li><a href="global.html#coll">coll</a></li><li><a href="global.html#curl">curl</a></li><li><a href="global.html#dump">dump</a></li><li><a href="global.html#each">each</a></li><li><a href="global.html#exec">exec</a></li><li><a href="global.html#expl">expl</a></li><li><a href="global.html#fail">fail</a></li><li><a href="global.html#find">find</a></li><li><a href="global.html#fork">fork</a></li><li><a href="global.html#form">form</a></li><li><a href="global.html#impl">impl</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#jpar">jpar</a></li><li><a href="global.html#jstr">jstr</a></li><li><a href="global.html#jump">jump</a></li><li><a href="global.html#load">load</a></li><li><a href="global.html#logs">logs</a></li><li><a href="global.html#meta">meta</a></li><li><a href="global.html#pass">pass</a></li><li><a href="global.html#peek">peek</a></li><li><a href="global.html#poke">poke</a></li><li><a href="global.html#prog">prog</a></li><li><a href="global.html#prwt">prwt</a></li><li><a href="global.html#Quartz">Quartz</a></li><li><a href="global.html#read">read</a></li><li><a href="global.html#rout">rout</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#step">step</a></li><li><a href="global.html#stop">stop</a></li><li><a href="global.html#test">test</a></li><li><a href="global.html#time">time</a></li><li><a href="global.html#tran">tran</a></li><li><a href="global.html#type">type</a></li><li><a href="global.html#wait">wait</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#call">call</a></li><li><a href="global.html#coll">coll</a></li><li><a href="global.html#curl">curl</a></li><li><a href="global.html#dump">dump</a></li><li><a href="global.html#each">each</a></li><li><a href="global.html#exec">exec</a></li><li><a href="global.html#expl">expl</a></li><li><a href="global.html#fail">fail</a></li><li><a href="global.html#find">find</a></li><li><a href="global.html#fork">fork</a></li><li><a href="global.html#form">form</a></li><li><a href="global.html#hash">hash</a></li><li><a href="global.html#impl">impl</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#jpar">jpar</a></li><li><a href="global.html#jstr">jstr</a></li><li><a href="global.html#jump">jump</a></li><li><a href="global.html#load">load</a></li><li><a href="global.html#logs">logs</a></li><li><a href="global.html#math">math</a></li><li><a href="global.html#meta">meta</a></li><li><a href="global.html#pass">pass</a></li><li><a href="global.html#peek">peek</a></li><li><a href="global.html#poke">poke</a></li><li><a href="global.html#prog">prog</a></li><li><a href="global.html#prwt">prwt</a></li><li><a href="global.html#Quartz">Quartz</a></li><li><a href="global.html#read">read</a></li><li><a href="global.html#rout">rout</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#sort">sort</a></li><li><a href="global.html#step">step</a></li><li><a href="global.html#stop">stop</a></li><li><a href="global.html#test">test</a></li><li><a href="global.html#time">time</a></li><li><a href="global.html#tran">tran</a></li><li><a href="global.html#type">type</a></li><li><a href="global.html#wait">wait</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Sep 19 2018 13:31:28 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Oct 03 2018 16:31:38 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

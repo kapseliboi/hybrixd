@@ -46,7 +46,7 @@
       "stop(0,[])"
     ],
     "contract" : [
-      "stop(1,'Not yet implemented!')"
+      "pass('dummy_contract')"
     ],
     "fee" : [
       "pass('$fee')"

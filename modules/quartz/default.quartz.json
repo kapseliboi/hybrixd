@@ -16,19 +16,19 @@
       "stop(1,'Not yet implemented!')"
     ],
     "factor" : [
-      "pass('$factor')"
+      "pass '$factor'"
     ],
     "history" : [
-      "stop(1,'Not yet implemented!')"
+      "stop 1 'Not yet implemented!'"
     ],
     "transaction" : [
-      "stop(1,'Not yet implemented!')"
+      "stop 1 'Not yet implemented!'"
     ],
     "contract" : [
-      "pass('$contract')"
+      "pass '$contract'"
     ],
     "fee" : [
-      "pass('$fee')"
+      "pass '$fee'"
     ],
     "validate" : [
       "stop(1,'Not yet implemented!')"

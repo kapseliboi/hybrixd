@@ -18,7 +18,7 @@
     ],
     "status" : [
       "curl('asset://$symbol','','POST',{jsonrpc:'1.0',id:Math.floor(Math.random()*10000),method:'getinfo',params:[]},{'content-type':'text/plain'})",
-      "test(data,1,2,data)",
+      "test(data,1,2)",
       "stop(0,{module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:$mode==='zcash.livenet',version:null})",
       "stop(1,'No result')"
     ],
@@ -31,11 +31,11 @@
     ],
     "push" : [
       "curl('asset://$symbol','','POST',{jsonrpc:'1.0',id: Math.floor(Math.random()*10000),method:'sendrawtransaction',params:['$1']},{'content-type':'text/plain'})",
-      "test(data,2,1,data)",
+      "test(data,2,1)",
       "stop(1,'Broadcast failed!')",
-      "tran('.result',data,2,1)",
+      "tran('.result',2,1)",
       "stop(1,'No result!')",
-      "pass(data)"
+      "pass()"
     ],
     "factor" : [
       "pass('$factor')"

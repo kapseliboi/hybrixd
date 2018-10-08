@@ -7,7 +7,7 @@ var fs = require('fs');
 var Client = require('../../lib/rest').Client;
 var functions = require('../../lib/functions');
 var WebSocket = require('ws');
-var Teletype  = require('teletype');
+var Teletype = require('teletype');
 var scheduler = require('../../lib/scheduler');
 var modules = require('../../lib/modules');
 
@@ -27,8 +27,8 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
   // Postprocess: Append formating of result for specific commands
   var command = xpath[0];
   if (command === 'balance' || command === 'fee') { // Append formatting of returned numbers
-    subprocesses.push('form(data,$factor)');
-    subprocesses.push('stop(0,data)');
+    subprocesses.push('form()');
+    subprocesses.push('stop()');
   }
 }
 
@@ -112,34 +112,28 @@ function exec (properties) {
         } catch (result) {
           console.log(` [!] Error initiating WebSocket -> ${result}`);
         }
-      } else if ((typeof recipe.host === 'string' && recipe.host.substr(0, 6) === 'tcp://')||(Object.prototype.toString.call( recipe.host ) === '[object Array]' && recipe.host[0].substr(0, 6) === 'tcp://')) { // TCP direct connections tcp://
-        var tmp
-        if(typeof recipe.host === 'string') {
+      } else if ((typeof recipe.host === 'string' && recipe.host.substr(0, 6) === 'tcp://') || (Object.prototype.toString.call(recipe.host) === '[object Array]' && recipe.host[0].substr(0, 6) === 'tcp://')) { // TCP direct connections tcp://
+        var tmp;
+        if (typeof recipe.host === 'string') {
           recipe.host = [recipe.host];
         }
         for (var i = 0; i < recipe.host.length; i++) {
           var host = recipe.host[i].substr(6).split(':');
           var hostaddr = host[0];
-          var hostport = (host[1]?Number(host[1]):23);
+          var hostport = (host[1] ? Number(host[1]) : 23);
           try {
-            var tcp = Teletype(hostaddr,hostport);
+            var tcp = Teletype(hostaddr, hostport);
             console.log(' [i] API queue: TCP link ' + hostaddr + ':' + hostport + ' opened');
-            if(typeof list[id].link==='undefined') { list[id].link = {}; }
+            if (typeof list[id].link === 'undefined') { list[id].link = {}; }
             list[id].link[recipe.host[i]] = tcp;
-          } catch(result) {
-            console.log(' [!] API queue: Error initiating TCP connection -> '+result);
+          } catch (result) {
+            console.log(' [!] API queue: Error initiating TCP connection -> ' + result);
           }
         }
       } else { // Http connection http:// https://
         list[id].link = new Client(connectionOptions(recipe));
         // Overkill in logging: console.log(' [i] HTTP ' + recipe.host + ' initialized.');
       }
-    }
-
-    // initialize deterministic code for smart contract calls if mode is defined
-    if (recipe.hasOwnProperty('module-deterministic')) {
-      var dcode = String(fs.readFileSync('../modules/deterministic/' + recipe['module-deterministic'] + '/deterministic.js.lzma'));
-      list[id].dcode = functions.activate(LZString.decompressFromEncodedURIComponent(dcode));
     }
   }
 

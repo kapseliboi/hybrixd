@@ -2,7 +2,7 @@
   "symbol":"bch",
   "name":"Bitcoin Cash - MAINTENANCE",
   "module":"quartz",
-  "import":"btc",
+  "import":"electrum-tcp",
   "mode":"bitcoinjslib.bitcoincash",
   "factor":8,
   "fee":0.0003,

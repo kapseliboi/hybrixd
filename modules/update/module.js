@@ -37,7 +37,7 @@ function exec (properties) {
   subprocesses.push('curl("https://gitlab.com","/api/v4/projects/' + projectId + '/repository/commits' + (lastUpdated ? '?since=' + lastUpdated : '') + '","GET")');
   subprocesses.push('test(data === [],1,2,data)'); // if no commits were done since last version
   subprocesses.push('stop(0,"Hybridd is up to date.")');
-  subprocesses.push('tran(".0.committed_date",data,2,1)');
+  subprocesses.push('tran(".0.committed_date",2,1)');
   subprocesses.push('stop(1,"Could not retrieve update information.")');
   subprocesses.push('test(data === "' + lastUpdated + '",1,2,data)');
   subprocesses.push('stop(0,"Hybridd is up to date.")');

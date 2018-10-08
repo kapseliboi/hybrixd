@@ -35,7 +35,7 @@
         "_response": {"error":0,"info":"Process data.","id":"1519829794292742","progress":1,"started":1519829794292,"stopped":1519829794316,"data":"18"}
       },
       "fee":{
-        "_this": "Retrieve the transaction fee (For etheruem this is more complicated (“gas”) so worst case guestimate which is updated frequently)",
+        "_this": "Retrieve the transaction fee",
         "_response": {"error":0,"info":"Process data.","id":"1519830189432904","progress":1,"started":1519830189432,"stopped":1519830189437,"data":"0.000420000000000000"}
       },
       "fee-symbol":{

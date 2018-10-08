@@ -30,8 +30,8 @@
     "getNextNonce" : 
     [
       "curl('$host', 'returnNextNonce?address='+'$1', 'POST', '')",
-      "tran('.nonce',data,1,1)",
-      "pass(data)"
+      "tran('.nonce',1,1)",
+      "pass()"
     ],
     "getOrderBook" : ["curl('$host', 'returnOrderBook?market='+'$1', 'POST', '')"]
   }
