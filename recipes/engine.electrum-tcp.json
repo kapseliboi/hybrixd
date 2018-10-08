@@ -63,6 +63,9 @@
       "pass('undefined')"
     ],
     "fee" : [
+      "pass('$fee')"
+    ],
+    "fee_backup" : [
       "curl('asset://$symbol','','',{'jsonrpc':'2.0','id': 1, 'method': 'blockchain.estimatefee', 'params': ['6'] })",
       "tran('.result',1,4)",
       "test(data>0,1,3)",
