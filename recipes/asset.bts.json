@@ -33,8 +33,8 @@
       "curl('asset://$symbol','','',{'method':'call', 'params':[0,'get_account_by_name',['$3']], id: 2})",
       "tran('.result.id',2,1)",
       "stop(1,'Target Id could not be found.')",
-      "coll(5)",
-      "stop(0,{source:data[0],target:data[3]})"
+      "grab([0,3])",
+      "stop(0,{source:data[0],target:data[1]})"
     ],
     "balance" : [
       "curl('asset://$symbol','','',{'method':'call', 'params':[0,'get_named_account_balances',['$1',['$contract']]], id: Math.floor(Math.random()*10000)})",

@@ -4,6 +4,8 @@
   "module":"quartz",
   "cache":1000,
   "throttle":10,
+  "utxo_unspent_prefix":"76a914",
+  "utxo_unspent_suffix":"88ac",
   "quartz":{
     "status" : [
       "curl('asset://$symbol','','',{'jsonrpc':'2.0','id':0,'method':'server.version','params':[]},{'content-type':'text/plain'})",
@@ -12,10 +14,27 @@
       "stop(1,'No result!')"
     ],
     "unspent" : [
-      "curl('asset://$symbol','','',{'jsonrpc':'2.0','id':0,'method':'blockchain.address.listunspent','params':['$1']})",
-      "pass(data)"
+      "poke('target_address','$1')",
+      "time(30000)",
+      "data({'jsonrpc':'2.0','result':[{'tx_hash':'9c6222e4612e3a4ceebc47d161c34990000ff2ba2bcc7856fbef1414e2735e0d','tx_pos':0,'height':529900,'value':1258625705},{'tx_hash':'16b6e6228ce64e05507dcaca8d79a587193647a7320b4771c30e9ee8c876f532','tx_pos':0,'height':530243,'value':1258423179},{'tx_hash':'acb09d53b4806962b335ee731efd1b6f60095b01c06f553e7331ba0492bbaf17','tx_pos':0,'height':530503,'value':1258091635},{'tx_hash':'b7ec8c64b6d4e16d9b448e56fe916c60093a0ebe96afaefe10a452b0fdc483d3','tx_pos':0,'height':530718,'value':1258381061},{'tx_hash':'6f57016d9cad89bc55b599a8e3f8e75d829f4f5ab110f89932da2e4b2e1e399c','tx_pos':0,'height':530867,'value':1258617783},{'tx_hash':'8102cee18c1d4a5bc0a8369eb480b8336f724049df56859b549a1957221ac47d','tx_pos':0,'height':531132,'value':1258548020},{'tx_hash':'ff28eb35040aa1e890609de302e68584eb426f7b602ef093059ad856ec0ffd06','tx_pos':0,'height':532816,'value':1258121966},{'tx_hash':'82b3e0f3c49eb7a1a9f7e30e50335346f41969e78710e7c420080d4047e1d4c9','tx_pos':0,'height':533204,'value':1258306480},{'tx_hash':'1ae1c018c382c16b13683a15642858cd849ba5785ea8deff183e8aa83e43736d','tx_pos':0,'height':534243,'value':1258406096},{'tx_hash':'e96ab78792ce07a5a931e7fa8879c362a985853eb4bb1fc7259c03855e4bcc35','tx_pos':0,'height':534595,'value':1258055873},{'tx_hash':'2eebccb45c23cde9f31cf649839275348e56932eb21e3244e1ed688c77e38ad3','tx_pos':0,'height':536607,'value':1258611731},{'tx_hash':'4664961c033c127927d8f7def2fd6ff3c407bd465cec283b43f31efa6df5df80','tx_pos':0,'height':538443,'value':1258582515},{'tx_hash':'49fdf6002ed626e7af801c5ca9519871709463818187004b3f5f5f9e6a246d70','tx_pos':0,'height':539319,'value':1258510989},{'tx_hash':'bf72eb0b6900ab61a834d54cbed255b9c4672903a1c4187fc4f8e8311bbd5b4f','tx_pos':0,'height':539603,'value':1258306861},{'tx_hash':'4de825689289e9e0a2a635afb8c833137651e08cb42e8a36313ad61ed4f56967','tx_pos':0,'height':539750,'value':1258267919},{'tx_hash':'a6f9bd7fc4977d34441929f548ec76bc88179202ced93850e62a4d5dba5b8420','tx_pos':0,'height':539756,'value':1258251236},{'tx_hash':'0f79c8787396f90445bdc7a8174015a9a2049825388a7ae8a8237c196cc73d6c','tx_pos':0,'height':541148,'value':1258152251},{'tx_hash':'c501e1efbe98cafabd9c4f913fa4901bc7cf94b07422baea623c178e4741a682','tx_pos':0,'height':541325,'value':1258300212},{'tx_hash':'f5d7a4a263ae757ad15680ac6f23b54f31fa1dfb4b384aa7fcb8e7b9c5c8fca1','tx_pos':0,'height':541688,'value':1258010696},{'tx_hash':'d3f5786b727acd3cb095217a7c41fed9b7150306ae2dafe5706ea0f961805ba3','tx_pos':0,'height':542071,'value':1258497639},{'tx_hash':'949d5fda5a91535427f67d791ab07205d8cf698cb93e1c63576df0e851c09590','tx_pos':0,'height':542292,'value':1258243432},{'tx_hash':'bc1efca8ee557d0d56284d6d4085df559ab1ba8cc7e0c31ce454653d5621e87e','tx_pos':0,'height':542440,'value':1258117421},{'tx_hash':'a29d3dd0454977e9c11c35922d0e83ef7b4b6fd3c9acea47ed73b56f367e1d83','tx_pos':0,'height':542510,'value':1258098038},{'tx_hash':'271332cf1741a13bc964b1b7a3dd286d223c2086b95184f48ce5d7c889b9107e','tx_pos':0,'height':542777,'value':1258333341},{'tx_hash':'ce08ab9546aea64beda0b483c5265b7f0faec4a352c6270bca832d8c6a8994bd','tx_pos':0,'height':542967,'value':1257803577},{'tx_hash':'2e5dd688c48c42d17e57ce99cee7b86005d6347d50b746a3e911d27842f8541f','tx_pos':0,'height':543114,'value':1258864372},{'tx_hash':'bf0c0429b00688f7fbdf7b262d5831aba534605b47b299bfaa3d31a7711c7a9a','tx_pos':0,'height':543121,'value':1261619983},{'tx_hash':'afd76d1a6999a61c03890fc71bc074e019712878fc1b958036668115072c1888','tx_pos':0,'height':543138,'value':1258712935},{'tx_hash':'5e8b0a70cec0c06399373ba7ecd81909ec84fbb04deeafd6917250582b9d34e1','tx_pos':0,'height':543346,'value':1259940627},{'tx_hash':'c284638143ca5cbfbeabc5f1072fc5a4e93142045eef0bc5ea3cc85423dcc7bb','tx_pos':0,'height':543356,'value':1261814485},{'tx_hash':'ee71c4ba2b0bb8df08d73e6721d5648a01b7b6ba40a3c66711e5e67633274e1d','tx_pos':0,'height':543394,'value':1258148691},{'tx_hash':'2f21a40320af0d3b1fca406ec5ea3b38f1b14d16b5c0cd3b2bd7a816cf292300','tx_pos':0,'height':543412,'value':1278912178},{'tx_hash':'ed3c263f27e1807ae0942a08bd8b15db5ca2142017a3b6f02d36f48e0cd40192','tx_pos':0,'height':543418,'value':1282488542},{'tx_hash':'a40297e8c8fcbb88f66799e6b5da0497f8895b17b324e1c98b29b1454c9a31fd','tx_pos':0,'height':543419,'value':1258280531},{'tx_hash':'af22ac0efcaf8186885bae01cd9296676cb506098eb4febec7765296d9e7c73d','tx_pos':0,'height':543443,'value':1258248654},{'tx_hash':'d716211b2b32bac32b01111a101d657c8b5e244d26e032859114ee3171bcdd66','tx_pos':0,'height':543541,'value':1259659242},{'tx_hash':'0c1f6da19d1bfbce0dbd32dcbcc751f845d647b9732114c79945254bea606cf3','tx_pos':0,'height':543573,'value':1261248207},{'tx_hash':'d4580625d561ff88165dc84c2da2403abd7e29c58b7d25068e32105fd60077c2','tx_pos':0,'height':543681,'value':1261045057},{'tx_hash':'eca2c4fc34509c18818b57624bf17f0b50a8f626f7e07abb4ace3b88f6de52fb','tx_pos':0,'height':543716,'value':1259949499},{'tx_hash':'a13eacb7fd6e9cb59d011a77235747cb92213780fbbe39b63c1859b67ddd78dc','tx_pos':0,'height':543790,'value':1261656738},{'tx_hash':'8df34a7dce7857f8ee6f65a54d124c88fa89b1ea6b16058c166143bca2130672','tx_pos':0,'height':543798,'value':1261791187},{'tx_hash':'6acb6f0255bfe65cb71201e1107e01f852b51a0f1787ed68bf5f6b9f3cc51882','tx_pos':0,'height':543858,'value':1281376481},{'tx_hash':'fdbfbe6356abadfa6478aae5ff5e19ac12be57d3f56fc38bf4b69840bf357fde','tx_pos':0,'height':543939,'value':1282772858},{'tx_hash':'15e87fe75ca9d49f69efbff31bd9b4ed935c4e74c07bfec26ec936afb7d58908','tx_pos':0,'height':543992,'value':1339851933},{'tx_hash':'abb4a817d63bcb873b16945bbedf9585df42cf441f30783043ab8b10cf0e41e6','tx_pos':0,'height':544002,'value':1261895942},{'tx_hash':'da7f9f96165c43cf0c3879e95c05b3eca67f6e8f5c9aa4cfe6cc58b4b756707c','tx_pos':0,'height':544066,'value':1270454284},{'tx_hash':'faf384326440dcc30bd2e68955ed8c31656082a37241f272298493b376aef3f4','tx_pos':0,'height':544090,'value':1287352699},{'tx_hash':'597d643c5743139c41baf311ed514a6fb8fcd70bbe06c95f97926f13da044b99','tx_pos':0,'height':544099,'value':1264773344},{'tx_hash':'50642d60b4467a1685d0fbfe978f089c954a8adb1b97e97e6a47b1ade1880908','tx_pos':0,'height':544118,'value':1272709435},{'tx_hash':'be625b1198e739f1963bc115ff0f6cf2f21e7c9f280242450df4b0f53ab0af62','tx_pos':0,'height':544133,'value':1258634375},{'tx_hash':'12002e244e43d2cca64f44ea7c56f45c72aecee80fbda928db55c1e3afb7652b','tx_pos':0,'height':544202,'value':1258379575},{'tx_hash':'4350555c249d7f5d580c5e11e1451cfd04ebc8671121524de47f24b0b062e86a','tx_pos':0,'height':544220,'value':1271431814},{'tx_hash':'db52fec6c4e7270557bca52dffdf2ed4e94fe39d62b0cee854783bfde721dac4','tx_pos':0,'height':544223,'value':1270969278},{'tx_hash':'385572d9680198f0f77609c6e6f8acd1aae290167370edce07f9a21cd93f7848','tx_pos':0,'height':544229,'value':1265074787},{'tx_hash':'91337bbae61f4255d6ca989f92e3567ad1740cbb35684dbac8c518caa62df804','tx_pos':0,'height':544234,'value':1262509120},{'tx_hash':'b440a598eeb907d1cd3fc3a568b0162141575931d6720b6948e51f6257318a21','tx_pos':1,'height':544238,'value':1350000},{'tx_hash':'fefff6b4936f0d810128bf4b8ca9141896ce45a95994efa273a6837f9e51d582','tx_pos':0,'height':544248,'value':1250476200},{'tx_hash':'a8f462ea21fae1cab5e3e7d900e42f0d75484985b1dc82cc3cc1cb7599f0a5c3','tx_pos':0,'height':544257,'value':1268464684},{'tx_hash':'f7748da71b9176f7c3881d89f4395f8ea46c52680a4254aa22922c57abe0c2de','tx_pos':0,'height':544259,'value':1297271393},{'tx_hash':'144a773ec129e93cfb71ad7ffef018f5b1f164f0ea4952b171ca7e6ebbd3e345','tx_pos':0,'height':544266,'value':1266416263},{'tx_hash':'e65ce40ff69f572740119070cf126192676ab4e9289f44a9491cbbee1532d40a','tx_pos':0,'height':544269,'value':1264433032},{'tx_hash':'abd7ca5f06d9c364cf3083a1139c175f2c9e20ac4d499da02c9bccbdac87d21c','tx_pos':0,'height':544282,'value':1269396862},{'tx_hash':'4c8161b7e37dc2feb73f6cd243cf758042760e2b3a907cf8a1b333e80e31492c','tx_pos':0,'height':544289,'value':1264965401},{'tx_hash':'70ca18dbe9c100a171206ecfe40ba5da4d22cb7c6ecebedcc13a3e8e6519251e','tx_pos':0,'height':544296,'value':1276526485},{'tx_hash':'f8d33239549619e2c0707c96b2a431755ce033b819dd7f1fa163d2f95918831c','tx_pos':0,'height':544303,'value':1250115029},{'tx_hash':'5cc29e25f891aab9af777980aa4ed2b0ced32bbbc8917656bd96c7b35124800d','tx_pos':0,'height':544306,'value':1258095424},{'tx_hash':'f570511062d40b511db6dc3617ab1b7877c0629eb85ec26e3de685866f6e2431','tx_pos':0,'height':544308,'value':1266346813},{'tx_hash':'710303aed57652756ba4ecec17420f3b0f151e06f05978a985ce6f9d4d388c15','tx_pos':0,'height':544329,'value':1276373867},{'tx_hash':'4230e64e9d7c9c5348fbdedfcb0453a1905faf1832d1d10deb463d76933f05d2','tx_pos':0,'height':544332,'value':1267255098},{'tx_hash':'f5b6b37a3969c82712a79aa8655d227cdf179a797bc749ddc460cba63a8a0864','tx_pos':0,'height':544351,'value':1263109700}],'id':0})",
+      "tran('.result')",
+	  "data([{'tx_hash':'9c6222e4612e3a4ceebc47d161c34990000ff2ba2bcc7856fbef1414e2735e0d','tx_pos':0,'height':529900,'value':1258625705}])",
+      "each(data,'unspent_script')",
+      "stop()"
+    ],
+    "unspent_script" : [
+      "data(data.value)",
+      "peek('target_address')",
+      "code('bs58','hex')",
+      "trim(2,-10)",
+      "data('$utxo_unspent_prefix'+data+'$utxo_unspent_suffix')",
+      "grab([0,4])",
+      "tran({amount:'.value',txid:'.tx_hash',txn:'.tx_pos'},{'tx_hash':'9c6222e4612e3a4ceebc47d161c34990000ff2ba2bcc7856fbef1414e2735e0d','tx_pos':0,'height':529900,'value':1258625705})",
+      "stop()"
     ],
     "unspent_BAK" : [
+      "tran({amount:'.value',txid:'.tx_hash',txn:'.tx_pos'},data[0])",
+      "curl('asset://$symbol','','',{'jsonrpc':'2.0','id':0,'method':'blockchain.address.listunspent','params':['$1']})",
       "rout('/source/blockexplorer/$symbol/unspent/$1/$2/$3')"
     ],
     "balance" : [
@@ -46,13 +65,6 @@
       "stop(1,'No result')",
       "pass(data)"
     ],
-     "details" : [
-      "each({fee:1,factor:1,contract:1},'subdetails')",
-      "stop(0,{fee:data.fee,factor:data.factor,contract:data.contract,symbol:'$symbol',name:'$name',mode:'$mode','unified-symbols':'$unified-symbols','fee-symbol':'$fee-symbol'!=='undefined'?'$fee-symbol':'$symbol'.split('.')[0],'keygen-base':'$keygen-base'!=='undefined'?'$keygen-base':'$symbol'.split('.')[0], generated:'$generated'==='undefined'?'never':'$generated'})"
-    ],
-    "subdetails" : [
-      "call(data.key)"
-    ],
     "sample" : [
       "stop(0,{address:'1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX',transaction:'2c0832c153cf33327dae0e95a3bc39f4b02ae887725a32c07b1be47a2faffc55'})"
     ],
@@ -60,7 +72,7 @@
       "rout('/source/blockexplorer/$symbol/history/$1')"
     ],
     "contract" : [
-      "pass('undefined')"
+      "stop(1,'Not yet implemented!')"
     ],
     "fee" : [
       "curl('asset://$symbol','','',{'jsonrpc':'2.0','id': 1, 'method': 'blockchain.estimatefee', 'params': ['6'] })",
