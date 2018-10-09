@@ -104,6 +104,194 @@
     
 
     
+    <h4 class="name" id="atom"><span class="type-signature"></span>atom<span class="signature">(reduce<span class="signature-attributes">opt</span>, factor<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Convert a number from atomic units, or convert to atomic units
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>reduce</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">When true reduces the input data</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>factor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Factor to use</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line669">line 669</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>atom()     // input: 10, output: "10.00000000" (using $factor = 8)
+atom(1)    // input: 10, output: "1000000000" (using $factor = 8)
+atom(0,4)  // input: 8, output: "0.0008"
+atom(1,4)  // input: 8, output: "80000"</code></pre>
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="call"><span class="type-signature"></span>call<span class="signature">(command, data)</span><span class="type-signature"></span></h4>
     
 
@@ -112,8 +300,7 @@
 
 
 <div class="description">
-    Creates a new process by calling the xpath command and wait
-for the data to be returned. (Combining fork and read)
+    Creates a new process by calling the xpath command and wait for the data to be returned. (Combining fork and read)
 </div>
 
 
@@ -229,7 +416,7 @@ for the data to be returned. (Combining fork and read)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line761">line 761</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line856">line 856</a>
     </li></ul></dd>
     
 
@@ -268,7 +455,7 @@ for the data to be returned. (Combining fork and read)
     
 
     
-    <h4 class="name" id="coll"><span class="type-signature"></span>coll<span class="signature">(steps)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="code"><span class="type-signature"></span>code<span class="signature">(target, source, string)</span><span class="type-signature"></span></h4>
     
 
     
@@ -276,7 +463,7 @@ for the data to be returned. (Combining fork and read)
 
 
 <div class="description">
-    Collate data from previous subprocess steps into an array.
+    Change encoding of a string from one format to the other.
 </div>
 
 
@@ -312,13 +499,13 @@ for the data to be returned. (Combining fork and read)
 
         <tr>
             
-                <td class="name"><code>steps</code></td>
+                <td class="name"><code>target</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Number</span>
+<span class="param-type">String</span>
 
 
             
@@ -328,7 +515,53 @@ for the data to be returned. (Combining fork and read)
 
             
 
-            <td class="description last">Number of previous steps to collate. Zero value means all previous steps.</td>
+            <td class="description last">Target encoding</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>source</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Source encoding</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>string</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">String to change encoding</td>
         </tr>
 
     
@@ -369,7 +602,7 @@ for the data to be returned. (Combining fork and read)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line277">line 277</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line1199">line 1199</a>
     </li></ul></dd>
     
 
@@ -398,8 +631,149 @@ for the data to be returned. (Combining fork and read)
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>coll(0)   // collate data of all previous steps
-coll(5)   // collate data of the last five steps</code></pre>
+    <pre class="prettyprint"><code>code(base58,utf8)  // input: "this_is_my_data", returns: TODO
+ code(hex,base58)   // input: "this_is_my_data", returns: TODO</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="coll"><span class="type-signature"></span>coll<span class="signature">(input)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Collect data into array.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>input</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Data to add to array</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line279">line 279</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>coll(0)          // add 0 to data array
+coll('woots!')   // add 'woots!' to data array</code></pre>
 
 
 
@@ -653,8 +1027,7 @@ coll(5)   // collate data of the last five steps</code></pre>
 - password:
 - proxy:
 - host:
-- rejectUnauthorized Whether to reject TLS unauthorized
-errors. (Defaults to true)</td>
+- rejectUnauthorized Whether to reject TLS unauthorized errors. (Defaults to true)</td>
         </tr>
 
     
@@ -695,7 +1068,7 @@ errors. (Defaults to true)</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line639">line 639</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line740">line 740</a>
     </li></ul></dd>
     
 
@@ -720,6 +1093,146 @@ errors. (Defaults to true)</td>
 
 
 
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="data"><span class="type-signature"></span>data<span class="signature">(object)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Set data stream to a value
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>object</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Object to fill the data stream with.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line500">line 500</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>data("test")            // Fill the data stream with 'test'.</code></pre>
 
 
 
@@ -830,7 +1343,7 @@ errors. (Defaults to true)</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line214">line 214</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line215">line 215</a>
     </li></ul></dd>
     
 
@@ -859,7 +1372,8 @@ errors. (Defaults to true)</td>
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>dump({a:1}); // outputs "[D] {a:1}" to console</code></pre>
+    <pre class="prettyprint"><code>dump();      // outputs contents of data stream to console
+dump({a:1}); // outputs "[D] {a:1}" to console</code></pre>
 
 
 
@@ -993,7 +1507,7 @@ errors. (Defaults to true)</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line902">line 902</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line993">line 993</a>
     </li></ul></dd>
     
 
@@ -1022,10 +1536,8 @@ errors. (Defaults to true)</td>
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>each(["a","b","c"],"test")     //  calls
-  test with data = {key=0, value="a"} and further
-each({"a":0,"b":1,"c":2},"test")     //  calls
-  test/x/y with data = {key="a", value=0} and further</code></pre>
+    <pre class="prettyprint"><code>each(["a","b","c"],"test")           //  calls test with data = {key=0, value="a"} and further
+each({"a":0,"b":1,"c":2},"test")     //  calls test/x/y with data = {key="a", value=0} and further</code></pre>
 
 
 
@@ -1087,7 +1599,7 @@ each({"a":0,"b":1,"c":2},"test")     //  calls
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line1284">line 1284</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line1470">line 1470</a>
     </li></ul></dd>
     
 
@@ -1126,7 +1638,7 @@ each({"a":0,"b":1,"c":2},"test")     //  calls
     
 
     
-    <h4 class="name" id="expl"><span class="type-signature"></span>expl<span class="signature">(seperator, data)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="expl"><span class="type-signature"></span>expl<span class="signature">(separator<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -1158,6 +1670,8 @@ each({"a":0,"b":1,"c":2},"test")     //  calls
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -1170,7 +1684,7 @@ each({"a":0,"b":1,"c":2},"test")     //  calls
 
         <tr>
             
-                <td class="name"><code>seperator</code></td>
+                <td class="name"><code>separator</code></td>
             
 
             <td class="type">
@@ -1183,33 +1697,20 @@ each({"a":0,"b":1,"c":2},"test")     //  calls
             </td>
 
             
-
-            
-
-            <td class="description last">TODO</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
+                <td class="attributes">
                 
-<span class="param-type">String</span>
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
+            
 
             
-            </td>
 
-            
-
-            
-
-            <td class="description last">TODO</td>
+            <td class="description last">Explode a string into an array, split by separator</td>
         </tr>
 
     
@@ -1250,7 +1751,7 @@ each({"a":0,"b":1,"c":2},"test")     //  calls
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line601">line 601</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line692">line 692</a>
     </li></ul></dd>
     
 
@@ -1275,6 +1776,152 @@ each({"a":0,"b":1,"c":2},"test")     //  calls
 
 
 
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>expl()     // input: "This is nice.", output: ["This","is","nice."]
+expl(',')  // input: "Some,list,of,stuff", output: ["Some","list","of","stuff]</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="fail"><span class="type-signature"></span>fail<span class="signature">(onError)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    TODO
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>onError</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Object to fill the data stream with.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line511">line 511</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>data("test")            // Fill the data stream with 'test'.</code></pre>
 
 
 
@@ -1430,7 +2077,7 @@ each({"a":0,"b":1,"c":2},"test")     //  calls
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line447">line 447</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line525">line 525</a>
     </li></ul></dd>
     
 
@@ -1471,7 +2118,7 @@ fail(404,"HELP! Not found.")  // stop processing, set error to 404, and put "HEL
     
 
     
-    <h4 class="name" id="find"><span class="type-signature"></span>find<span class="signature">(needle, haystack, onFound, onNotFound, data<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="find"><span class="type-signature"></span>find<span class="signature">(needle, onFound<span class="signature-attributes">opt</span>, onNotFound<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -1541,38 +2188,7 @@ fail(404,"HELP! Not found.")  // stop processing, set error to 404, and put "HEL
 
             
 
-            <td class="description last">TODO</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>haystack</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">TODO</td>
+            <td class="description last">The object to find</td>
         </tr>
 
     
@@ -1594,6 +2210,8 @@ fail(404,"HELP! Not found.")  // stop processing, set error to 404, and put "HEL
             
                 <td class="attributes">
                 
+                    &lt;optional><br>
+                
 
                 
 
@@ -1603,7 +2221,7 @@ fail(404,"HELP! Not found.")  // stop processing, set error to 404, and put "HEL
 
             
 
-            <td class="description last">TODO</td>
+            <td class="description last">Where to jump when the data is found</td>
         </tr>
 
     
@@ -1625,37 +2243,6 @@ fail(404,"HELP! Not found.")  // stop processing, set error to 404, and put "HEL
             
                 <td class="attributes">
                 
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">TODO</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
                     &lt;optional><br>
                 
 
@@ -1667,7 +2254,7 @@ fail(404,"HELP! Not found.")  // stop processing, set error to 404, and put "HEL
 
             
 
-            <td class="description last">TODO</td>
+            <td class="description last">Where to jump when the data is not found</td>
         </tr>
 
     
@@ -1708,7 +2295,7 @@ fail(404,"HELP! Not found.")  // stop processing, set error to 404, and put "HEL
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line550">line 550</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line621">line 621</a>
     </li></ul></dd>
     
 
@@ -1733,6 +2320,11 @@ fail(404,"HELP! Not found.")  // stop processing, set error to 404, and put "HEL
 
 
 
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>find({'id':'abcd'})      // input: [{'id':'abcd'},{'id':'efgh'}], output: {'id':'abcd'}</code></pre>
 
 
 
@@ -1876,9 +2468,7 @@ fail(404,"HELP! Not found.")  // stop processing, set error to 404, and put "HEL
 
             
 
-            <td class="description last">if undefined then the new process will be
-independant. If 0 or larger is will be instantiated as a child process
-of the current process.</td>
+            <td class="description last">if undefined then the new process will be independant. If 0 or larger is will be instantiated as a child process of the current process.</td>
         </tr>
 
     
@@ -1919,7 +2509,7 @@ of the current process.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line736">line 736</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line834">line 834</a>
     </li></ul></dd>
     
 
@@ -1948,8 +2538,7 @@ of the current process.</td>
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>fork("balance/_dummyaddress_")   // Starts a process to
-  retrieve the dummy balance and continue without waiting for a reply.</code></pre>
+    <pre class="prettyprint"><code>fork("balance/_dummyaddress_")   // Starts a process to retrieve the dummy balance and continue without waiting for a reply.</code></pre>
 
 
 
@@ -1959,7 +2548,7 @@ of the current process.</td>
     
 
     
-    <h4 class="name" id="form"><span class="type-signature"></span>form<span class="signature">(data, factor, convert<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="form"><span class="type-signature"></span>form<span class="signature">(factor<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -2005,37 +2594,6 @@ of the current process.</td>
 
         <tr>
             
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Contains a number</td>
-        </tr>
-
-    
-
-        <tr>
-            
                 <td class="name"><code>factor</code></td>
             
 
@@ -2043,37 +2601,6 @@ of the current process.</td>
             
                 
 <span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Contains a number</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>convert</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
 
 
             
@@ -2093,7 +2620,7 @@ of the current process.</td>
 
             
 
-            <td class="description last">Option to convert to or from atomic units. ( 0 or 'none', 1 or 'reduce', 2 or 'atomic')</td>
+            <td class="description last">Contains a number</td>
         </tr>
 
     
@@ -2134,7 +2661,7 @@ of the current process.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line582">line 582</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line649">line 649</a>
     </li></ul></dd>
     
 
@@ -2163,8 +2690,9 @@ of the current process.</td>
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>form(10,  8)    // Returns "10.00000000"
-form(0.8, 4)    // Returns "0.8000"</code></pre>
+    <pre class="prettyprint"><code>form()     // input: 10, output: "10.00000000" (using $factor = 8)
+form(8)    // input: 10, output: "10.00000000"
+form(4)    // input: 8, output: "0.8000"</code></pre>
 
 
 
@@ -2174,7 +2702,149 @@ form(0.8, 4)    // Returns "0.8000"</code></pre>
     
 
     
-    <h4 class="name" id="hash"><span class="type-signature"></span>hash<span class="signature">(string)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="grab"><span class="type-signature"></span>grab<span class="signature">(steps)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Grab data into array from previous subprocess steps.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>steps</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Number of previous steps to collate. Zero value means all previous steps.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line301">line 301</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>grab(0)     // grab data of step 0
+grab(-5)    // grab data of the last five steps, collated in an array
+grab([1,3]) // grab data from step 1 and 3, collated in an array</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="hash"><span class="type-signature"></span>hash<span class="signature">(method)</span><span class="type-signature"></span></h4>
     
 
     
@@ -2218,7 +2888,7 @@ form(0.8, 4)    // Returns "0.8000"</code></pre>
 
         <tr>
             
-                <td class="name"><code>string</code></td>
+                <td class="name"><code>method</code></td>
             
 
             <td class="type">
@@ -2234,7 +2904,7 @@ form(0.8, 4)    // Returns "0.8000"</code></pre>
 
             
 
-            <td class="description last">String to calculate outcome of.</td>
+            <td class="description last">Method to use for hashing, defaults to SHA256</td>
         </tr>
 
     
@@ -2275,7 +2945,7 @@ form(0.8, 4)    // Returns "0.8000"</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line1079">line 1079</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line1184">line 1184</a>
     </li></ul></dd>
     
 
@@ -2314,7 +2984,7 @@ form(0.8, 4)    // Returns "0.8000"</code></pre>
     
 
     
-    <h4 class="name" id="impl"><span class="type-signature"></span>impl<span class="signature">(seperator, data)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="impl"><span class="type-signature"></span>impl<span class="signature">(separator<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -2323,7 +2993,7 @@ form(0.8, 4)    // Returns "0.8000"</code></pre>
 
 <div class="description">
     /**
-Explode string
+Implode array
 </div>
 
 
@@ -2347,6 +3017,8 @@ Explode string
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -2359,7 +3031,7 @@ Explode string
 
         <tr>
             
-                <td class="name"><code>seperator</code></td>
+                <td class="name"><code>separator</code></td>
             
 
             <td class="type">
@@ -2372,33 +3044,20 @@ Explode string
             </td>
 
             
-
-            
-
-            <td class="description last">TODO</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
+                <td class="attributes">
                 
-<span class="param-type">Array.&lt;String></span>
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
+            
 
             
-            </td>
 
-            
-
-            
-
-            <td class="description last">TODO</td>
+            <td class="description last">Implode an array to a string, split by separator</td>
         </tr>
 
     
@@ -2439,7 +3098,7 @@ Explode string
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line612">line 612</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line705">line 705</a>
     </li></ul></dd>
     
 
@@ -2464,6 +3123,12 @@ Explode string
 
 
 
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>impl()     // input: ["This","is","nice."], output: "Thisisnice."
+impl(' ')  // input: ["Some","list","of","stuff"], output: "Some list of stuff"</code></pre>
 
 
 
@@ -2525,7 +3190,7 @@ Explode string
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line1230">line 1230</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line1416">line 1416</a>
     </li></ul></dd>
     
 
@@ -2708,7 +3373,7 @@ Explode string
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line324">line 324</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line371">line 371</a>
     </li></ul></dd>
     
 
@@ -2737,8 +3402,9 @@ Explode string
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>jpar("{key:'Some data.'}")              // returns {key:"Some data."}
-jpar("{key:'Some data.'",'failed')      // returns "failed"</code></pre>
+    <pre class="prettyprint"><code>jpar()         // input: "{key:'Some data.'}", output: {key:"Some data."}
+jpar(2)        // on successful parse jump 2, else 1, stream stays unchanged
+jpar(2,1)      // on successful parse jump 2, else 1, stream stays unchanged</code></pre>
 
 
 
@@ -2849,7 +3515,7 @@ jpar("{key:'Some data.'",'failed')      // returns "failed"</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line346">line 346</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line387">line 387</a>
     </li></ul></dd>
     
 
@@ -2878,8 +3544,7 @@ jpar("{key:'Some data.'",'failed')      // returns "failed"</code></pre>
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>jstr({key:'Some data.'}) // returns '{key:"Some data."}'
-jstr(12)                 // returns '12'</code></pre>
+    <pre class="prettyprint"><code>jstr()         // input: {key:"Some data."}, output: '{key:"Some data."}'</code></pre>
 
 
 
@@ -2889,7 +3554,7 @@ jstr(12)                 // returns '12'</code></pre>
     
 
     
-    <h4 class="name" id="jump"><span class="type-signature"></span>jump<span class="signature">(step, data<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="jump"><span class="type-signature"></span>jump<span class="signature">(step)</span><span class="type-signature"></span></h4>
     
 
     
@@ -2921,8 +3586,6 @@ jstr(12)                 // returns '12'</code></pre>
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
         
 
@@ -2948,51 +3611,10 @@ jstr(12)                 // returns '12'</code></pre>
             </td>
 
             
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
 
             
 
             <td class="description last">Amount of instructions lines to jump.   (1 = jump forward 1 instruction, -2 = jump backward two instructions)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Store data in this subprocess data field.</td>
         </tr>
 
     
@@ -3033,7 +3655,7 @@ jstr(12)                 // returns '12'</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line463">line 463</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line537">line 537</a>
     </li></ul></dd>
     
 
@@ -3063,8 +3685,7 @@ jstr(12)                 // returns '12'</code></pre>
     <h5>Example</h5>
     
     <pre class="prettyprint"><code>jump(2)         // jump over the next instruction
-jump(-3)        // jump backwards three instructions
-jump(1,"Yo!")   // step to the next instruction, and fill data field of this subprocess with "Yo!"</code></pre>
+jump(-3)        // jump backwards three instructions</code></pre>
 
 
 
@@ -3074,7 +3695,7 @@ jump(1,"Yo!")   // step to the next instruction, and fill data field of this sub
     
 
     
-    <h4 class="name" id="load"><span class="type-signature"></span>load<span class="signature">(key, value)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="load"><span class="type-signature"></span>load<span class="signature">(key)</span><span class="type-signature"></span></h4>
     
 
     
@@ -3134,30 +3755,7 @@ jump(1,"Yo!")   // step to the next instruction, and fill data field of this sub
 
             
 
-            <td class="description last">Provide the routing path</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Value</td>
+            <td class="description last">Key from which to retrieve data</td>
         </tr>
 
     
@@ -3198,7 +3796,7 @@ jump(1,"Yo!")   // step to the next instruction, and fill data field of this sub
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line801">line 801</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line896">line 896</a>
     </li></ul></dd>
     
 
@@ -3412,7 +4010,7 @@ jump(1,"Yo!")   // step to the next instruction, and fill data field of this sub
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line298">line 298</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line341">line 341</a>
     </li></ul></dd>
     
 
@@ -3554,7 +4152,7 @@ logs(2,"Be careful")    // logs "[!] Be careful" to console</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line1045">line 1045</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line1149">line 1149</a>
     </li></ul></dd>
     
 
@@ -3594,7 +4192,7 @@ logs(2,"Be careful")    // logs "[!] Be careful" to console</code></pre>
     
 
     
-    <h4 class="name" id="meta"><span class="type-signature"></span>meta<span class="signature">(key, value)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="meta"><span class="type-signature"></span>meta<span class="signature">(key)</span><span class="type-signature"></span></h4>
     
 
     
@@ -3654,30 +4252,7 @@ logs(2,"Be careful")    // logs "[!] Be careful" to console</code></pre>
 
             
 
-            <td class="description last">Provide the routing path</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Value</td>
+            <td class="description last">Key for which to get metadata</td>
         </tr>
 
     
@@ -3718,7 +4293,7 @@ logs(2,"Be careful")    // logs "[!] Be careful" to console</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line812">line 812</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line906">line 906</a>
     </li></ul></dd>
     
 
@@ -3858,7 +4433,7 @@ logs(2,"Be careful")    // logs "[!] Be careful" to console</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line310">line 310</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line355">line 355</a>
     </li></ul></dd>
     
 
@@ -3887,7 +4462,8 @@ logs(2,"Be careful")    // logs "[!] Be careful" to console</code></pre>
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>pass("Nice dude!")   // push data "Nice dude!" to master process
+    <pre class="prettyprint"><code>pass()               // push data stream contents to master process
+pass("Nice dude!")   // push data "Nice dude!" to master process
 pass("Wow: "+data)   // push data "Wow:" with previous subprocess data concatenated</code></pre>
 
 
@@ -3999,7 +4575,7 @@ pass("Wow: "+data)   // push data "Wow:" with previous subprocess data concatena
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line988">line 988</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line1085">line 1085</a>
     </li></ul></dd>
     
 
@@ -4029,6 +4605,7 @@ pass("Wow: "+data)   // push data "Wow:" with previous subprocess data concatena
     <h5>Example</h5>
     
     <pre class="prettyprint"><code>peek("fee")         // returns value in recipe variable fee (non mutable, based on the recipe .json file)
+ peek("userDefined")         // given that the recipe does not have property userDefined returns value in processor variable userDefined (runtime, non persistant)
  peek("proc::fee")         // returns value in processor variable fee (runtime, non persistant)
  peek("local::fee")         // returns value in recipe local variable fee (runtime, persisted in the .vars.json file)
  peek("::fee")         // same as peek("local::fee")
@@ -4219,7 +4796,7 @@ pass("Wow: "+data)   // push data "Wow:" with previous subprocess data concatena
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line937">line 937</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line1029">line 1029</a>
     </li></ul></dd>
     
 
@@ -4249,6 +4826,7 @@ pass("Wow: "+data)   // push data "Wow:" with previous subprocess data concatena
     <h5>Example</h5>
     
     <pre class="prettyprint"><code>poke("fee",value)         // sets value in recipe local variable fee. Shorthand for local::fee (runtime, persisted in the .vars.json file)
+ poke("userDefined")         // given that the recipe does not have property userDefined sets the value in processor variable userDefined (runtime, non persistant)
  poke("proc::fee",value)         // sets value in processor variable fee (runtime, non persistant)
  poke("local::fee",value)         // sets value in recipe local variable fee (runtime, persisted in the .vars.json file)
  poke("::fee",value)         // same as poke("local::fee",value)
@@ -4439,7 +5017,7 @@ pass("Wow: "+data)   // push data "Wow:" with previous subprocess data concatena
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line360">line 360</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line401">line 401</a>
     </li></ul></dd>
     
 
@@ -4469,7 +5047,7 @@ pass("Wow: "+data)   // push data "Wow:" with previous subprocess data concatena
     <h5>Example</h5>
     
     <pre class="prettyprint"><code>prog(20,40)  // progress is set to 0.5 (which means 50%)
-prog(-1)     // restore automatic progress reporting</code></pre>
+prog()       // restore automatic progress reporting</code></pre>
 
 
 
@@ -4623,7 +5201,7 @@ prog(-1)     // restore automatic progress reporting</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line252">line 252</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line253">line 253</a>
     </li></ul></dd>
     
 
@@ -4838,8 +5416,7 @@ prwt("209123")        // wait for process with ID 209123 to finish, then continu
 
             
 
-            <td class="description last">The amount of millisecs between each check if processes
-are finished</td>
+            <td class="description last">The amount of millisecs between each check if processes are finished</td>
         </tr>
 
     
@@ -4880,7 +5457,7 @@ are finished</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line826">line 826</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line919">line 919</a>
     </li></ul></dd>
     
 
@@ -5022,7 +5599,7 @@ read({"a":null,"b":34})        //Wait for processes 123456 and 654321 to finish 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line772">line 772</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line867">line 867</a>
     </li></ul></dd>
     
 
@@ -5062,7 +5639,7 @@ read({"a":null,"b":34})        //Wait for processes 123456 and 654321 to finish 
     
 
     
-    <h4 class="name" id="save"><span class="type-signature"></span>save<span class="signature">(key, value)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="save"><span class="type-signature"></span>save<span class="signature">(key, value<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -5094,6 +5671,8 @@ read({"a":null,"b":34})        //Wait for processes 123456 and 654321 to finish 
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -5119,10 +5698,18 @@ read({"a":null,"b":34})        //Wait for processes 123456 and 654321 to finish 
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last">Provide the routing path</td>
+            <td class="description last">Key under which to store data</td>
         </tr>
 
     
@@ -5142,10 +5729,20 @@ read({"a":null,"b":34})        //Wait for processes 123456 and 654321 to finish 
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last">Value</td>
+            <td class="description last">Value to store</td>
         </tr>
 
     
@@ -5186,7 +5783,7 @@ read({"a":null,"b":34})        //Wait for processes 123456 and 654321 to finish 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line790">line 790</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line885">line 885</a>
     </li></ul></dd>
     
 
@@ -5349,7 +5946,7 @@ read({"a":null,"b":34})        //Wait for processes 123456 and 654321 to finish 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line1096">line 1096</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line1281">line 1281</a>
     </li></ul></dd>
     
 
@@ -5378,12 +5975,12 @@ read({"a":null,"b":34})        //Wait for processes 123456 and 654321 to finish 
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>sort('BADEFC')                                  // sorts the object ascending by value: 'ABCDEF'
- sort([10,8,5,9],'desc')                         // sorts the object descending by value: [10,9,8,5]
- sort({'a':'z','b':'x','c':'y'},['val','asc'])   // sorts the object ascending by value: [{'b':'x'},{'c':'y'},{'c':'z'}]
- sort({'a':2,'b':1,'c':3},['key','desc'])        // sorts the object descending by key:  [{'c':3},{'b':1},{'a':2}]
- sort({'a':1,'b':10,'c':3},['val','num','asc'])  // sorts the object ascending by numeric value:  [{'a':1},{'c':3},{'b':10}]
- sort([{'a':4,'b':'B'},{'a':2,'b':'A'}],['obj:b'])   // sorts the array by object key 'b': [{'a':2,'b':'A'},{'a':4,'b':'B'}]</code></pre>
+    <pre class="prettyprint"><code>sort()                                          // input: 'BADEFC', sorts the object ascending by value: 'ABCDEF'
+ sort('desc')                                    // input: [10,8,5,9], sorts the object descending by value: [10,9,8,5]
+ sort(['val','asc'])                             // input: {'a':'z','b':'x','c':'y'}, sorts the object ascending by value: [{'b':'x'},{'c':'y'},{'c':'z'}]
+ sort(['key','desc'])                            // input: {'a':2,'b':1,'c':3}, sorts the object descending by key:  [{'c':3},{'b':1},{'a':2}]
+ sort(['val','num','asc'])                       // input: {'a':1,'b':10,'c':3}, sorts the object ascending by numeric value:  [{'a':1},{'c':3},{'b':10}]
+ sort(['.b'])                                    // input: [{'a':4,'b':'B'},{'a':2,'b':'A'}], sorts the array by object key 'b': [{'a':2,'b':'A'},{'a':4,'b':'B'}]</code></pre>
 
 
 
@@ -5494,7 +6091,7 @@ read({"a":null,"b":34})        //Wait for processes 123456 and 654321 to finish 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line1264">line 1264</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line1450">line 1450</a>
     </li></ul></dd>
     
 
@@ -5677,7 +6274,7 @@ read({"a":null,"b":34})        //Wait for processes 123456 and 654321 to finish 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line417">line 417</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line459">line 459</a>
     </li></ul></dd>
     
 
@@ -5706,10 +6303,10 @@ read({"a":null,"b":34})        //Wait for processes 123456 and 654321 to finish 
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>stop(1)                         // stop processing and set error to 1
- stop(0,"Everything is ok.")     // stop processing, set no error, and put "Everything is ok." in main process data field
- stop(404,"HELP! Not found.")    // stop processing, set error to 404, and put "HELP! Not found." in main process data field
- stop(0,"HELP! Not found.")    // stop processing, set error to 404, and put "HELP! Not found." in main process data field</code></pre>
+    <pre class="prettyprint"><code>stop()                          // stop processing and set no error
+ stop("OK")                      // stop processing, set no error, and put "OK" in main process data field
+ stop(0,"All is good.")          // stop processing, set no error, and put "All is good." in main process data field
+ stop(404,"HELP! Not found.")    // stop processing, set error to 404, and put "HELP! Not found." in main process data field</code></pre>
 
 
 
@@ -5925,7 +6522,7 @@ read({"a":null,"b":34})        //Wait for processes 123456 and 654321 to finish 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line499">line 499</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line570">line 570</a>
     </li></ul></dd>
     
 
@@ -6110,7 +6707,7 @@ test(a>3,-5)      // test if a>3, if true jump back five instructions, else defa
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line381">line 381</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line422">line 422</a>
     </li></ul></dd>
     
 
@@ -6139,8 +6736,9 @@ test(a>3,-5)      // test if a>3, if true jump back five instructions, else defa
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>time(0)                 // unlimited timeout
-time(8000,"Timeout!")   // set a timeout of 8 seconds for the process and return "Timeout!"</code></pre>
+    <pre class="prettyprint"><code>time()                  // set unlimited timeout
+time(0)                 // immediately timeout the process
+time(1000)              // set timeout to one second</code></pre>
 
 
 
@@ -6392,7 +6990,7 @@ also for explicit primitive values
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line530">line 530</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line601">line 601</a>
     </li></ul></dd>
     
 
@@ -6421,13 +7019,202 @@ also for explicit primitive values
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>tran(".foo",{foo:"bar"},1,2)                                         // Passes "bar" to next
-tran (".foo.bar[2]",{foo:{bar:[0,1,5]}},1,2)                         // Passes 5 to next
-tran (".foo.bar[2]",{foo:"bar"},1,2)                                 // Jumps 2 instructions and passes {foo:"bar"}
-tran ([".foo",".hello"],{foo:"bar",hello:"world"},1,2)               // Passes ["bar","world"] to next
-tran ({a:".foo",b:".hello",c:"test"},{foo:"bar",hello:"world"},1,2)  // Passes {a:"bar", b:"world", c:"test"} to next
-tran("=.hello|default",{hello:"world"},1,2)                          // Passes "world" to next
-tran("=.hello|default",{foo:"bar"},1,2)                              // Passes "default" to next</code></pre>
+    <pre class="prettyprint"><code>tran(".foo",1,2)                                         // Input: {foo:"bar"} : Passes "bar" to next
+tran(".foo.bar[2]",1,2)                                  // Input: {foo:{bar:[0,1,5]}} :  Passes 5 to next
+tran(".foo.bar[2]",1,2)                                  // Input: {foo:"bar"}   Jumps 2 instructions and passes {foo:"bar"}
+tran([".foo",".hello"],1,2)                              // Input: {foo:"bar",hello:"world"} Passes ["bar","world"] to next
+tran({a:".foo",b:".hello",c:"test"},1,2)                 // Input: {foo:"bar",hello:"world"} Passes {a:"bar", b:"world", c:"test"} to next
+tran("=.hello|default",1,2)                              // Input: {hello:"world"}  Passes "world" to next
+tran("=.hello|default",1,2)                              // Input: {foo:"bar"}  Passes "default" to next</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="trim"><span class="type-signature"></span>trim<span class="signature">(string, offset, ending)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Trim an input string
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>string</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">String to trim</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>offset</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Integer</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Amount of characters to trim from start</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ending</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Integer</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Amount of characters to include or trim from end</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line1252">line 1252</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>trim(5)     // input: 'this_is_my_data', output: 'is_my_data'
+ trim(-5)    // input: 'this_is_my_data', output: '_data'
+ trim(4,7)   // input: 'this_is_my_data', output: '_is_my_'
+ trim(5,-5)  // input: 'this_is_my_data', output: 'is_my'</code></pre>
 
 
 
@@ -6538,7 +7325,7 @@ tran("=.hello|default",{foo:"bar"},1,2)                              // Passes "
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line431">line 431</a>
+        <a href="quartz.js.html">quartz.js</a>, <a href="quartz.js.html#line488">line 488</a>
     </li></ul></dd>
     
 
@@ -6565,10 +7352,16 @@ tran("=.hello|default",{foo:"bar"},1,2)                              // Passes "
 
 
 
-    <h5>Example</h5>
+    <h5>Examples</h5>
     
-    <pre class="prettyprint"><code>type("file")    // set the data type to 'file'
- stop(0,"hello.txt")    // stop processing, set no error and pass the content of the hello.txt file.</code></pre>
+    <pre class="prettyprint"><code>type("data")           // set the data type to 'data'
+ stop(0,"hello")        // stop processing, set no error and pass string 'hello'</code></pre>
+
+    <pre class="prettyprint"><code>type("file:data")      // set the data type to 'file:data'
+ stop(0,"hello.txt")    // stop processing, set no error and pass the content of the hello.txt file as data in the result json</code></pre>
+
+    <pre class="prettyprint"><code>type("file:text/html") // set the data type to 'text/html'
+ stop(0,"hello.html")   // stop processing, set no error and pass the content of the hello.html file as flat file, resulting in webserver behaviour</code></pre>
 
 
 
@@ -6751,8 +7544,7 @@ tran("=.hello|default",{foo:"bar"},1,2)                              // Passes "
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>wait(2000)           // wait for two seconds
-wait(1000,"WOOT!")   // wait for one second and fill subprocess data field with value "WOOT!"</code></pre>
+    <pre class="prettyprint"><code>wait(2000)           // wait for two seconds</code></pre>
 
 
 
@@ -6772,13 +7564,13 @@ wait(1000,"WOOT!")   // wait for one second and fill subprocess data field with 
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#call">call</a></li><li><a href="global.html#coll">coll</a></li><li><a href="global.html#curl">curl</a></li><li><a href="global.html#dump">dump</a></li><li><a href="global.html#each">each</a></li><li><a href="global.html#exec">exec</a></li><li><a href="global.html#expl">expl</a></li><li><a href="global.html#fail">fail</a></li><li><a href="global.html#find">find</a></li><li><a href="global.html#fork">fork</a></li><li><a href="global.html#form">form</a></li><li><a href="global.html#hash">hash</a></li><li><a href="global.html#impl">impl</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#jpar">jpar</a></li><li><a href="global.html#jstr">jstr</a></li><li><a href="global.html#jump">jump</a></li><li><a href="global.html#load">load</a></li><li><a href="global.html#logs">logs</a></li><li><a href="global.html#math">math</a></li><li><a href="global.html#meta">meta</a></li><li><a href="global.html#pass">pass</a></li><li><a href="global.html#peek">peek</a></li><li><a href="global.html#poke">poke</a></li><li><a href="global.html#prog">prog</a></li><li><a href="global.html#prwt">prwt</a></li><li><a href="global.html#Quartz">Quartz</a></li><li><a href="global.html#read">read</a></li><li><a href="global.html#rout">rout</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#sort">sort</a></li><li><a href="global.html#step">step</a></li><li><a href="global.html#stop">stop</a></li><li><a href="global.html#test">test</a></li><li><a href="global.html#time">time</a></li><li><a href="global.html#tran">tran</a></li><li><a href="global.html#type">type</a></li><li><a href="global.html#wait">wait</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#atom">atom</a></li><li><a href="global.html#call">call</a></li><li><a href="global.html#code">code</a></li><li><a href="global.html#coll">coll</a></li><li><a href="global.html#curl">curl</a></li><li><a href="global.html#data">data</a></li><li><a href="global.html#dump">dump</a></li><li><a href="global.html#each">each</a></li><li><a href="global.html#exec">exec</a></li><li><a href="global.html#expl">expl</a></li><li><a href="global.html#fail">fail</a></li><li><a href="global.html#find">find</a></li><li><a href="global.html#fork">fork</a></li><li><a href="global.html#form">form</a></li><li><a href="global.html#grab">grab</a></li><li><a href="global.html#hash">hash</a></li><li><a href="global.html#impl">impl</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#jpar">jpar</a></li><li><a href="global.html#jstr">jstr</a></li><li><a href="global.html#jump">jump</a></li><li><a href="global.html#load">load</a></li><li><a href="global.html#logs">logs</a></li><li><a href="global.html#math">math</a></li><li><a href="global.html#meta">meta</a></li><li><a href="global.html#pass">pass</a></li><li><a href="global.html#peek">peek</a></li><li><a href="global.html#poke">poke</a></li><li><a href="global.html#prog">prog</a></li><li><a href="global.html#prwt">prwt</a></li><li><a href="global.html#Quartz">Quartz</a></li><li><a href="global.html#read">read</a></li><li><a href="global.html#rout">rout</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#sort">sort</a></li><li><a href="global.html#step">step</a></li><li><a href="global.html#stop">stop</a></li><li><a href="global.html#test">test</a></li><li><a href="global.html#time">time</a></li><li><a href="global.html#tran">tran</a></li><li><a href="global.html#trim">trim</a></li><li><a href="global.html#type">type</a></li><li><a href="global.html#wait">wait</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Oct 03 2018 16:31:38 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Oct 09 2018 13:29:34 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
