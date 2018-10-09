@@ -7,19 +7,8 @@
   },
   "quartz" : {
     "test" : [
-      "poke('target_address','$1')",
-      "time(30000)",
-      "data({'jsonrpc':'2.0','result':[{'tx_hash':'9c6222e4612e3a4ceebc47d161c34990000ff2ba2bcc7856fb'}]})",
-      "tran('.result')",
-      "data([{'tx_hash':'9c6222e4612e3a4ceebc47d161c34990000ff2ba2bcc7856fbef1414e2735e0d','tx_pos':'xx'}])",
-      "each(data,'unspent_script')",
-      "stop()"
-    ],
-    "unspent_script" : [
-      "poke('object',data.value)",
-      "logs 0 '$object'",
-      "peek('object')",
-      "logs"
+      "data {a:1}",
+      "stop 0 $.a"
     ]
   }
 }
