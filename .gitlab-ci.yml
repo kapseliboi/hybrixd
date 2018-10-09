@@ -33,10 +33,11 @@ hybridd:
     - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/iochq%2Fhybridd%2Fclient%2Fmodules%2Fdeterministic/jobs/artifacts/master/download?job=deterministic\" -o artifacts-deterministic.zip"
     
     # unzip the downloaded artifact to the directory (|| true --> on error, no problem) (consider the artifact is packed as /modules/name/filename.lzma)
-    - unzip -o artifacts-deterministic.zip -d modules/deterministic
-    - mv -f modules/deterministic/modules/* modules/deterministic/
+    - unzip -o artifacts-deterministic.zip -d artifacts-deterministic/
+    - cp -rf artifacts-deterministic/modules/* modules/deterministic/
     
-    # remove the zip-file (|| true --> on error, no problem)
+    # remove the unzipped-files and the zip-file (|| true --> on error, no problem)
+    - rm -rf  artifacts-deterministic || true
     - rm -rf  artifacts-deterministic.zip || true
     
     # remove symbolic link to node
