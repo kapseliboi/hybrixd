@@ -22,14 +22,14 @@
       "stop()"
     ],
     "unspent_script" : [
-      "data(data.value)",
+      "poke('unspents',data.value)",
       "peek('target_address')",
       "code('bs58','hex')",
       "trim(2,-10)",
       "poke('script','$utxo_unspent_prefix'+data+'$utxo_unspent_suffix')",
-	  "peek sumthing",
+      "peek('unspents')",
       "tran({script:'$script',amount:'.value',txid:'.tx_hash',txn:'.tx_pos'})",
-      "stop()"
+      "done()"
     ],
     "unspent_BAK" : [
       "tran({amount:'.value',txid:'.tx_hash',txn:'.tx_pos'},data[0])",
