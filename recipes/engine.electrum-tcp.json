@@ -4,10 +4,12 @@
   "module":"quartz",
   "cache":1000,
   "throttle":10,
+  "timeout":60000,
   "utxo_unspent_prefix":"76a914",
   "utxo_unspent_suffix":"88ac",
   "quartz":{
     "status" : [
+      "time($timeout)",    
       "curl('asset://$symbol','','',{'jsonrpc':'2.0','id':0,'method':'server.version','params':[]},{'content-type':'text/plain'})",
       "test(data,1,2)",
       "stop(0,{module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:null,version:data.result})",
@@ -18,7 +20,7 @@
       "code('bs58','hex')",
       "trim(2,-10)",
       "poke('script','$utxo_unspent_prefix'+data+'$utxo_unspent_suffix')",
-      "time(60000)",
+      "time($timeout)",
       "curl('asset://$symbol','','',{'jsonrpc':'2.0','id':0,'method':'blockchain.address.listunspent','params':['$1']})",
       "tran('.result',2,1)",
       "fail('Bad input unspents from Electrum!')",
@@ -44,15 +46,17 @@
       "done()"
     ],
     "balance" : [
+      "time($timeout)",
       "curl('asset://$symbol','','',{'jsonrpc':'2.0','id':0,'method':'blockchain.address.get_balance','params':['$1']})",
       "tran({confirmed:'.result.confirmed',unconfirmed:'.result.unconfirmed'},2,1)",
       "fail('No result!')",
       "time($cache,data)",
-      "math('data.confirmed+data.unconfirmed')",
+      "math(data.confirmed+'+'+data.unconfirmed)",
       "atom()",
       "pass()"
     ],
     "push" : [
+      "time($timeout)",
       "curl('asset://$symbol','','',{'jsonrpc':'2.0','id':0,'method':'blockchain.transaction.broadcast','params':['$1']})",
       "test(data,2,1)",
       "stop(1,'Broadcast failed!')",
@@ -66,6 +70,7 @@
       "pass('$factor')"
     ],
     "transaction" : [
+      "time($timeout)",
       "curl('asset://$symbol','','',{'jsonrpc':'2.0','id': 1, 'method': 'blockchain.transaction.get', 'params': ['$1',true] })",
       "tran('.result',2,1)",
       "stop(1,'No result')",
@@ -81,6 +86,7 @@
       "stop(1,'Not yet implemented!')"
     ],
     "fee" : [
+      "time($timeout)",
       "curl('asset://$symbol','','',{'jsonrpc':'2.0','id': 1, 'method': 'blockchain.estimatefee', 'params': ['6'] })",
       "tran('.result',1,4)",
       "test(data>0,1,3)",
