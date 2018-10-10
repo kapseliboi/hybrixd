@@ -1,7 +1,28 @@
 image: node:8
 
 variables:
+  # AUTO_DEVOPS_DOMAIN is the application deployment domain and should be set as a variable at the group or project level.
+  # AUTO_DEVOPS_DOMAIN: domain.example.com
   BRANCH_WEB_WALLET: $BRANCH_WEB_WALLET
+
+  POSTGRES_USER: user
+  POSTGRES_PASSWORD: testing-password
+  POSTGRES_ENABLED: "true"
+  POSTGRES_DB: $CI_ENVIRONMENT_SLUG
+
+  KUBERNETES_VERSION: 1.8.6
+  HELM_VERSION: 2.6.1
+
+  DOCKER_DRIVER: overlay2
+
+stages:
+  - build
+  #- test
+  - review
+  #- dast
+  - staging
+  #- production
+  - cleanup
 
 hybridd:
   stage: build
