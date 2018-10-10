@@ -44,20 +44,20 @@ hybridd:
     - rm -rf  artifacts-deterministic.zip || true
     
     # download [web-wallet] artifact
-    - echo $BRANCH_WEB_WALLET
-    #- echo "Download the artifact for the web-wallet from branch: BRANCH_WEB_WALLET = $BRANCH_WEB_WALLET"
-    #- "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/iochq%2Fhybridd%2Fclient%2Fimplementations%2Fweb-wallet/jobs/artifacts/$BRANCH_WEB_WALLET/download?job=web-wallet\" -o artifacts-web-wallet.zip"
+    - "echo \"Download the artifact for the web-wallet from branch: BRANCH_WEB_WALLET = $BRANCH_WEB_WALLET\""
+    - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/iochq%2Fhybridd%2Fclient%2Fimplementations%2Fweb-wallet/jobs/artifacts/$BRANCH_WEB_WALLET/download?job=web-wallet\" -o artifacts-web-wallet.zip"
     
     # unzip the downloaded artifact to the directory 
-    #- unzip -o artifacts-web-wallet.zip -d artifacts-web-wallet/
-    #- cp -rf artifacts-web-wallet/* client/implementations/web-wallet/
+    - unzip -o artifacts-web-wallet.zip -d artifacts-web-wallet/
+    - cp -rf artifacts-web-wallet/* client/implementations/web-wallet/
     
     # remove the unzipped-files and the zip-file (|| true --> on error, no problem)
-    #- rm -rf  artifacts-web-wallet || true
-    #- rm -rf  artifacts-web-wallet.zip || true
+    - rm -rf  artifacts-web-wallet || true
+    - rm -rf  artifacts-web-wallet.zip || true
     
     # remove symbolic link to node
     - rm -rf  node || true
+    
     # don't download git clone https://github.com/internetofcoins/nodejs-v8-lts.git, refer to docker pre installed nodejs as defined in the first line of this file
     - "ln -s \"$(which nodejs)\" node"
     
