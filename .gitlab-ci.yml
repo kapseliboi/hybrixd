@@ -32,6 +32,9 @@ hybridd:
     - rm -rf  interface || true
     - unzip -o artifacts-interface.zip -d interface
     
+    # remove the zip-file (|| true --> on error, no problem)
+    - rm -rf  artifacts-interface.zip || true
+    
     # download [deterministic] artifact
     - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/iochq%2Fhybridd%2Fclient%2Fmodules%2Fdeterministic/jobs/artifacts/master/download?job=deterministic\" -o artifacts-deterministic.zip"
     
