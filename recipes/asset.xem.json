@@ -26,7 +26,7 @@
       "poke('proc::namespace','$contract'.split(':')[0])",
       "curl('asset://$symbol','/account/mosaic/definition/page?address=$originator'+'&parent=$proc::namespace'),'GET')",
       "tran('.data',1,2)",
-      "find({'namespaceId':'$proc::namespace'},data,2,1)",
+      "find({'namespaceId':'$proc::namespace'},2,1)",
       "stop(1,'Contract address invalid or no mosaics found!')",
       "tran('.0')",
       "pass(data)"
@@ -43,7 +43,7 @@
       "curl('asset://$symbol','/account/mosaic/owned?address='+'$1'.replace(/-/g,''),'GET')",
       "tran('.data',2,1)",
       "stop(1,null)",
-      "find({'namespaceId':'$proc::namespace'},data,1,2)",
+      "find({'namespaceId':'$proc::namespace'},1,2)",
       "tran('[0].quantity',2,1)",
       "pass(0)",
       "time($cache,data)",
