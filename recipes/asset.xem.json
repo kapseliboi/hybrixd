@@ -44,7 +44,7 @@
       "tran('.data',2,1)",
       "stop(1,null)",
       "find({'namespaceId':'$proc::namespace'},data,1,2)",
-      "tran('.0.quantity',2,1)",
+      "tran('[0].quantity',2,1)",
       "pass(0)",
       "time($cache,data)",
       "atom()"

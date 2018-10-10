@@ -36,7 +36,7 @@
       "find({'asset':'$contract'},3,1)",
       "data('0.00000000')",
       "jump(3)",
-      "tran('.0.quantity')",
+      "tran('[0].quantity')",
       "atom()",
       "time($cache)",
       "pass()"
