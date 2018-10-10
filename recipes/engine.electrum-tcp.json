@@ -26,7 +26,7 @@
       "sort('.amount')",
       "scan('cnt<($2+val.amount)','+val.amount')",
       "poke('selected')",
-      "flat('.amount')",
+      "tran('[].amount')",
       "math('+')",
       "math('-$2')",
       "done({unspents:$selected,change:data})"
