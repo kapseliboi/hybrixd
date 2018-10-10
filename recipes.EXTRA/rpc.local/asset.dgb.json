@@ -1,0 +1,73 @@
+{
+  "symbol":"dgb",
+  "name":"digibyte",
+  "module":"quartz",
+  "mode":"digibyte",
+  "factor":8,
+  "fee":0.0001,
+  "host":["http://127.0.0.1:14022/"],
+  "cache":20000,
+  "throttle":0.1,
+  "pass": "d8d21ccfe2fa",
+  "block-explorer-host": "https://chainz.cryptoid.info/dgb/api.dws",
+  "quartz":{
+    "init" : [
+      "curl('asset://$symbol','','POST',{jsonrpc:'1.0',id:Math.floor(Math.random()*10000),method:'getinfo',params:[]},{'content-type':'text/plain'})",
+      "logs(1,'module $symbol: '+(data?'connected':'failed connection')+' to host [$host]')"
+    ],
+    "status" : [
+      "curl('asset://$symbol','','POST',{jsonrpc:'1.0',id:Math.floor(Math.random()*10000),method:'getinfo',params:[]},{'content-type':'text/plain'})",
+      "test(data,1,2)",
+      "stop(0,{module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:null,version:null})",
+      "stop(1,'No result')"
+    ],
+    "unspent" : [
+      "rout('/source/blockexplorer/$symbol/unspent/$1/$2/$3')"
+    ],
+    "balance" : [
+      "test('$1',2,1)",
+      "stop(1,'No source address')",
+      "curl('$block-explorer-host','?key=$pass&q=getbalance&a=$1', 'GET', '',{Accept:'application/json','Content-Type':'application/json'})",
+      "test(data,2,1)",
+      "stop(1,'No result!')",
+      "time($cache)",
+      "pass(data/Math.pow(10,$factor))"
+    ],
+    "push" : [
+      "curl('asset://$symbol','','POST',{jsonrpc:'1.0',id: Math.floor(Math.random()*10000),method:'sendrawtransaction',params:['$1']},{'content-type':'text/plain'})",
+      "test(data,2,1)",
+      "stop(1,'Broadcast failed!')",
+      "tran('.result',2,1)",
+      "stop(1,'No result!')",
+      "pass(data)"
+    ],
+    "factor" : [
+      "pass('$factor')"
+    ],
+    "transaction" : [
+      "test('$1',2,1)",
+      "stop(1,'No transaction id.')",
+      "curl('$block-explorer-host','?key=$pass&q=txinfo&t=$1', 'GET', '',{Accept:'application/json','Content-Type':'application/json'})",
+      "tran({id:'.hash',ammount:'.total_input',timestamp:'.timestamp',symbol:'dgb',source:'unknown',target:'unknown', fee:'.fees'},2,1)",
+      "stop(1,'error')",
+      "stop(0,data)"
+    ],
+    "history" : [
+      "test('$1',2,1,'$1')",
+      "stop(1,'No target address.')",
+      "curl('$block-explorer-host','?key=$pass&q=lasttxs&a=$1', 'GET', '',{Accept:'application/json','Content-Type':'application/json'})",
+      "each(data,'subhistory')"
+    ],
+    "subhistory" : [
+      "tran({id:'.value.hash',ammount:'.value.total',timestamp:'.value.time',symbol:'dgb',source:'unknown',target:'unknown'},2,1)",
+      "stop(1,'error')",
+      "stop(0,data)"
+    ],
+    "fee" : [
+      "pass('$fee')"
+    ],
+    "sample" : [
+      "stop(0,{address:'DP8VeG75FB3Q4NWbW9uDv9syLbxFsydj8K',transaction:'573242f214021eb54c5335b178f09508ea2f349b3ebbc2c42346f093e83f4aa6'})"
+      ]
+    }
+  }
