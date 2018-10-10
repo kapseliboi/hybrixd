@@ -19,7 +19,7 @@
       "trim(2,-10)",
       "poke('script','$utxo_unspent_prefix'+data+'$utxo_unspent_suffix')",
       "time(60000)",
-      "curl('asset://$symbol','','',{'jsonrpc':'2.0','id':0,'method':'blockchain.address.listunspent','params':['$1']})"
+      "curl('asset://$symbol','','',{'jsonrpc':'2.0','id':0,'method':'blockchain.address.listunspent','params':['$1']})",
       "tran('.result',2,1)",
       "fail('Bad input unspents from Electrum!')",
       "each(data,'unspent_tran')",
