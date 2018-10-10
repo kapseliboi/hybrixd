@@ -37,6 +37,7 @@ hybridd:
     
     # unzip the downloaded artifact to the directory (|| true --> on error, no problem) (consider the artifact is packed as /modules/name/filename.lzma)
     - unzip -o artifacts-deterministic.zip -d artifacts-deterministic/
+    - mkdir -p modules/deterministic
     - cp -rf artifacts-deterministic/modules/* modules/deterministic/
     
     # remove the unzipped-files and the zip-file (|| true --> on error, no problem)
@@ -49,7 +50,8 @@ hybridd:
     
     # unzip the downloaded artifact to the directory 
     - unzip -o artifacts-web-wallet.zip -d artifacts-web-wallet/
-    - cp -rf artifacts-web-wallet/* client/implementations/web-wallet/
+    - mkdir -p modules/web-wallet
+    - cp -rf artifacts-web-wallet/* modules/web-wallet/
     
     # remove the unzipped-files and the zip-file (|| true --> on error, no problem)
     - rm -rf  artifacts-web-wallet || true
