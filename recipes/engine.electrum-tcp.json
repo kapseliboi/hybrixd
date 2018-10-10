@@ -9,7 +9,7 @@
   "utxo_unspent_suffix":"88ac",
   "quartz":{
     "status" : [
-      "time($timeout)",    
+      "time($timeout)",
       "curl('asset://$symbol','','',{'jsonrpc':'2.0','id':0,'method':'server.version','params':[]},{'content-type':'text/plain'})",
       "test(data,1,2)",
       "stop(0,{module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:null,version:data.result})",
@@ -83,7 +83,7 @@
       "rout('/source/blockexplorer/$symbol/history/$1')"
     ],
     "contract" : [
-      "stop(1,'Not yet implemented!')"
+      "done('$contract')"
     ],
     "fee" : [
       "time($timeout)",

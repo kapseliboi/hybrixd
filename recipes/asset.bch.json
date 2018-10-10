@@ -5,8 +5,8 @@
   "import":"electrum-tcp",
   "mode":"bitcoinjslib.bitcoincash",
   "factor":8,
-  "fee":0.0003,
-  "host":"http://127.0.0.1:8348",
+  "fee":0.00001,
+  "host":["tcp://electrum3.cipig.net:10051","tcp://electrum2.cipig.net:10051","tcp://electrum1.cipig.net:10051"],
   "cache":60000,
   "throttle":10,
   "quartz": {
