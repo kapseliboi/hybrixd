@@ -103,6 +103,7 @@ hybridd:
     - ./
     
 review:
+  image: alpine:latest
   stage: review
   script:
     - check_kube_domain
@@ -174,6 +175,7 @@ staging:
     - create_secret
     - install_certificate
     - deploy
+    - ./hybridd
   environment:
     name: staging
     #url: http://$CI_PROJECT_PATH_SLUG-staging.$AUTO_DEVOPS_DOMAIN
