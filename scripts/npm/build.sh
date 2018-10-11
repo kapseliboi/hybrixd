@@ -1,6 +1,5 @@
 #!/bin/sh
 WHEREAMI=`pwd`
-
 OLDPATH=$PATH
 # $HYBRIDD/$NODE/scripts/npm  => $HYBRIDD
 
@@ -26,7 +25,6 @@ else
     exit 1;
 fi
 
-export PATH="$NODEJS/$SYSTEM/bin:$PATH"
 
 
 # NODE_BINARIES
@@ -42,6 +40,9 @@ if [ ! -e "$NODE/node_binaries" ];then
     echo " [i] Link node_binaries"
     ln -sf "$NODEJS/$SYSTEM" "$NODE/node_binaries"
 fi
+
+export PATH="$NODE/node_binaries/bin:$PATH"
+
 
 # COMMON
 if [ ! -e "$NODE/common" ];then
@@ -79,5 +80,4 @@ if [ ! -x "$NODE/.git/hooks/commit-msg" ]; then
 fi
 
 cd "$WHEREAMI"
-
 export PATH="$OLDPATH"
