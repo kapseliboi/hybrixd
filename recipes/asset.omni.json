@@ -23,8 +23,15 @@
       "stop(1,'No result')"
     ],
     "unspent" : [
-      "rout('/source/blockexplorer/$fee-symbol/unspent/$1/$fee')",
-      "pass({'unspents':data.unspents,'change':String(Number(data.change)+0.00000546)})"
+      "rout('/asset/$keygen-base/unspent/$1/$fee')",
+      "poke('unspents')",
+      "math(data.change+'-$fee')",
+      "test(data<0,1,2)",
+      "data('0')",
+      "form()",
+      "poke('omnifee')",
+      "peek('unspents')",
+      "done({'unspents':data.unspents,'change':'$omnifee'})"
     ],
     "balance" : [
       "time($cache)",
@@ -34,7 +41,7 @@
       "find({'id':'$contract'},1,2)",
       "tran({value:'[0].value',in:'.pendingpos',out:'[0].pendingneg'},2,1)",
       "next(0,{value:'0',in:'0',out:'0'})",
-      "math('data.value+data.in+data.out')",
+      "math(data.value+'+'+data.in+'+'+data.out)",
       "atom()"
     ],
     "push" : [
