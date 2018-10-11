@@ -1,6 +1,6 @@
-node
+dist/*
+node_binaries
 common
-interface
 **/.tern-port
 **/*.*~
 **/#.*.*

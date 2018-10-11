@@ -34,7 +34,7 @@ var functions = require('../functions'); // only required for   procinfo[0] = fu
 var APIqueue = require('../APIqueue');
 var Decimal = require('../../common/crypto/decimal-light.js');
 
-var Hybridd = require('../../interface/dist/hybridd.interface.nodejs');
+var Hybridd = require('../../interface/hybridd.interface.nodejs');
 var hybridd = new Hybridd.Interface({http: require('http')});
 
 // process ID decomposition
@@ -221,7 +221,7 @@ function chckVar (p, property, data) {
   }
 }
 
-function mathCalc (equation, operator) {
+function mathCalc (equation, operator, data) {
   function stricteval (equation) { return eval(equation); }
 
   equation = '(new Decimal(' + String(equation)
@@ -245,7 +245,7 @@ function mathCalc (equation, operator) {
 
   // make sure equation does not reference itself
   equation = equation.replace('equation', '0');
-  return stricteval(equation);
+  return stricteval(equation, data);
 }
 
 /**
@@ -357,44 +357,6 @@ data:   Store data in the subprocess data field.
     }
     ydata.push(input);
     this.next(p, 0, ydata);
-  };
-
-  /**
- * Delete data from array.
- * TODO
- */
-
-  /**
- * Grab data into array from previous subprocess steps.
- * @param {Number} steps - Number of previous steps to collate. Zero value means all previous steps.
- * @example
- * grab(-1)      // grab data of the previous step
- * grab(-5)      // grab data five steps back
- * grab([-1,-3]) // grab data from one step and three steps back, collated in an array
- */
-  this.grab = function (p, steps) {
-    if (DEBUG) { console.log(' [D] (' + p.parentID + ') grabbing subprocess data for ' + steps + ' steps'); }
-    if (typeof steps === 'undefined') { steps = 0 - global.hybridd.proc[p.parentID].step; } // default: collate all previous steps
-    var data = [];
-    var curstep;
-    if (Object.prototype.toString.call(steps) !== '[object Array]') {
-      curstep = global.hybridd.proc[p.parentID].step + steps;
-      if (typeof global.hybridd.proc[p.parentID + '.' + curstep] !== 'undefined') {
-        data = global.hybridd.proc[p.parentID + '.' + curstep].data;
-      }
-    } else {
-      for (var i = 0; i &lt; steps.length; i += 1) {
-        if (!isNaN(steps[i]) &amp;&amp; steps[i] &lt; global.hybridd.proc[p.parentID].steps) {
-          curstep = global.hybridd.proc[p.parentID].step + steps[i];
-          if (typeof global.hybridd.proc[p.parentID + '.' + curstep] !== 'undefined') {
-            data.push(global.hybridd.proc[p.parentID + '.' + curstep].data);
-          } else {
-            data.push(null);
-          }
-        }
-      }
-    }
-    this.next(p, 0, data);
   };
 
   /**
@@ -745,7 +707,7 @@ data:   Store data in the subprocess data field.
     var checkVar = chckVar(p, property, testObject);
     if (checkVar.valid) {
       global.hybridd.proc[p.processID].data = checkVar.data;
-      this.jump(p, is_valid);
+      this.jump(p, is_valid || 1);
     } else {
       this.jump(p, is_invalid || 1);
     }
@@ -982,7 +944,7 @@ data:   Store data in the subprocess data field.
   };
   /**
  * Creates a new process by calling the xpath command and wait for the data to be returned. (Combining fork and read)
- * @param {String} command -  A string containg the command path. "command/a/b". This calls command using $1 = "a", $2 = "b"
+ * @param {String} command -  A string containg the command path. "command/a/b". processStepID calls command using $1 = "a", $2 = "b"
  * @param {Object} data -  Optional data to be passed to the new process
  * @example
  * call("balance/_dummyaddress_")          // Retrieve the balance and pass it to next step.
@@ -1075,23 +1037,23 @@ data:   Store data in the subprocess data field.
       var finished = 0;
       var progress = 0;
       if (typeof processIDs === 'string') { // single
-        finished = global.hybridd.proc[processIDs].progress >= 1 || global.hybridd.proc[processIDs].stopped > 0;
+        finished = (global.hybridd.proc[processIDs].progress >= 1 || global.hybridd.proc[processIDs].stopped) ? 1 : 0;
         global.hybridd.proc[p.processID].progress = global.hybridd.proc[processIDs].progress;
       } else if (processIDs instanceof Array) { // array
         for (var i = 0; i &lt; processIDs.length; i++) {
           progress += global.hybridd.proc[processIDs[i]].progress;
-          finished = finished + (global.hybridd.proc[processIDs[i]].progress >= 1 || global.hybridd.proc[processIDs[i]].stopped > 0);
+          finished += (global.hybridd.proc[processIDs[i]].progress >= 1 || global.hybridd.proc[processIDs[i]].stopped) ? 1 : 0;
         }
-        finished = finished &lt; processIDs.length ? 0 : 1;
+        finished = finished === processIDs.length;
         global.hybridd.proc[p.processID].progress = progress / processIDs.length;
       } else { // dictionary
         for (var key in processIDs) {
           var processID = processIDs[key];
           progress += global.hybridd.proc[processID].progress;
-          finished = finished + (global.hybridd.proc[processID].progress >= 1 &amp;&amp; global.hybridd.proc[processID].stopped > 0);
+          finished += finished + (global.hybridd.proc[processID].progress >= 1 || global.hybridd.proc[processID].stopped) ? 1 : 0;
         }
-        finished = finished &lt; processIDs.length ? 0 : 1;
-        global.hybridd.proc[p.processID].progress = progress / processIDs.length;
+        finished = finished === Object.keys(processIDs).length;
+        global.hybridd.proc[p.processID].progress = progress / Object.keys(processIDs).length;
       }
 
       if (finished) {
@@ -1104,7 +1066,7 @@ data:   Store data in the subprocess data field.
             result.data.push(global.hybridd.proc[processIDs[i]].data);
             result.err = Math.max(result.err, global.hybridd.proc[processIDs[i]].err);
           }
-          global.hybridd.proc[p.processID].progress = progress / processIDs.length;
+          global.hybridd.proc[p.processID].progress = 1;
         } else { // dictionary
           result = {data: {}, err: 0};
           for (var key in processIDs) {
@@ -1112,7 +1074,7 @@ data:   Store data in the subprocess data field.
             result.data[key] = global.hybridd.proc[processID].data;
             result.err = Math.max(global.hybridd.proc[processID].err, result.err);
           }
-          global.hybridd.proc[p.processID].progress = progress / processIDs.length;
+          global.hybridd.proc[p.processID].progress = 1;
         }
         this.next(p, result.err, result.data);
       } else {
@@ -1308,24 +1270,7 @@ data:   Store data in the subprocess data field.
     }
     return this.next(p, 0, pdata);
   };
-  /**
- * Reduce an object to an array with its parts.
- * @param {String} key - key to reduce object by
- * @example
- *  flat('.b')                 // input [{a:1,b:2,c:3},{a:2,b:2,c:3}], returns [2,2]
- *  alternative: tran('[].b')  // input [{a:1,b:2,c:3},{a:2,b:2,c:3}], returns [2,2]
- */
-  this.flat = function (p, keystr) {
-    var reduArray = global.hybridd.proc[p.processID].data;
-    if (Object.prototype.toString.call(reduArray) !== '[object Array]') {
-      reduArray = [scanArray];
-    }
-    var array = [];
-    for (var key = 0; key &lt; reduArray.length; key++) {
-      array.push(eval('reduArray[key]' + String(keystr)));
-    }
-    this.next(p, 0, array);
-  };
+
   /**
  * Calculates numbers and variables. Mathematical calculations can be done with very large numbers.
  * @param {String} equation - String to calculate outcome of.
@@ -1353,7 +1298,7 @@ data:   Store data in the subprocess data field.
 
     if (DEBUG) { console.log(' [D] (' + p.parentID + ') math [' + equation + '] in step ' + (global.hybridd.proc[p.parentID].step + 1) + ' of ' + (global.hybridd.proc[p.parentID].steps + 1)); }
 
-    this.next(p, 0, mathCalc(equation, operator));
+    this.next(p, 0, mathCalc(equation, operator, data));
   };
 
   /**
@@ -1718,13 +1663,13 @@ exports.Quartz = Quartz; // initialize a new process
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#atom">atom</a></li><li><a href="global.html#call">call</a></li><li><a href="global.html#code">code</a></li><li><a href="global.html#curl">curl</a></li><li><a href="global.html#data">data</a></li><li><a href="global.html#done">done</a></li><li><a href="global.html#dump">dump</a></li><li><a href="global.html#each">each</a></li><li><a href="global.html#exec">exec</a></li><li><a href="global.html#expl">expl</a></li><li><a href="global.html#fail">fail</a></li><li><a href="global.html#find">find</a></li><li><a href="global.html#flat">flat</a></li><li><a href="global.html#fork">fork</a></li><li><a href="global.html#form">form</a></li><li><a href="global.html#grab">grab</a></li><li><a href="global.html#hash">hash</a></li><li><a href="global.html#hook">hook</a></li><li><a href="global.html#impl">impl</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#jpar">jpar</a></li><li><a href="global.html#jstr">jstr</a></li><li><a href="global.html#jump">jump</a></li><li><a href="global.html#load">load</a></li><li><a href="global.html#logs">logs</a></li><li><a href="global.html#math">math</a></li><li><a href="global.html#meta">meta</a></li><li><a href="global.html#pass">pass</a></li><li><a href="global.html#peek">peek</a></li><li><a href="global.html#poke">poke</a></li><li><a href="global.html#prog">prog</a></li><li><a href="global.html#prwt">prwt</a></li><li><a href="global.html#push">push</a></li><li><a href="global.html#Quartz">Quartz</a></li><li><a href="global.html#read">read</a></li><li><a href="global.html#rout">rout</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#scan">scan</a></li><li><a href="global.html#sort">sort</a></li><li><a href="global.html#step">step</a></li><li><a href="global.html#stop">stop</a></li><li><a href="global.html#test">test</a></li><li><a href="global.html#time">time</a></li><li><a href="global.html#tran">tran</a></li><li><a href="global.html#trim">trim</a></li><li><a href="global.html#type">type</a></li><li><a href="global.html#wait">wait</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#atom">atom</a></li><li><a href="global.html#call">call</a></li><li><a href="global.html#code">code</a></li><li><a href="global.html#curl">curl</a></li><li><a href="global.html#data">data</a></li><li><a href="global.html#done">done</a></li><li><a href="global.html#dump">dump</a></li><li><a href="global.html#each">each</a></li><li><a href="global.html#exec">exec</a></li><li><a href="global.html#expl">expl</a></li><li><a href="global.html#fail">fail</a></li><li><a href="global.html#find">find</a></li><li><a href="global.html#fork">fork</a></li><li><a href="global.html#form">form</a></li><li><a href="global.html#hash">hash</a></li><li><a href="global.html#hook">hook</a></li><li><a href="global.html#impl">impl</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#jpar">jpar</a></li><li><a href="global.html#jstr">jstr</a></li><li><a href="global.html#jump">jump</a></li><li><a href="global.html#load">load</a></li><li><a href="global.html#logs">logs</a></li><li><a href="global.html#math">math</a></li><li><a href="global.html#meta">meta</a></li><li><a href="global.html#pass">pass</a></li><li><a href="global.html#peek">peek</a></li><li><a href="global.html#poke">poke</a></li><li><a href="global.html#prog">prog</a></li><li><a href="global.html#prwt">prwt</a></li><li><a href="global.html#push">push</a></li><li><a href="global.html#Quartz">Quartz</a></li><li><a href="global.html#read">read</a></li><li><a href="global.html#rout">rout</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#scan">scan</a></li><li><a href="global.html#sort">sort</a></li><li><a href="global.html#step">step</a></li><li><a href="global.html#stop">stop</a></li><li><a href="global.html#test">test</a></li><li><a href="global.html#time">time</a></li><li><a href="global.html#tran">tran</a></li><li><a href="global.html#trim">trim</a></li><li><a href="global.html#type">type</a></li><li><a href="global.html#wait">wait</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Oct 10 2018 16:15:00 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Oct 11 2018 14:41:40 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
