@@ -24,7 +24,9 @@
     "cluster:start": "sh scripts/npm/cluster.sh",
     "cluster:build:start": "sh scripts/npm/build.sh; sh scripts/npm/cluster.sh",
     "release": "sh scripts/npm/build.sh; sh scripts/npm/release.sh",
-    "release:start": "sh scripts/npm/build.sh; sh scripts/npm/release.sh; sh ../hybridd-release/hybridd"
+    "release:start": "sh scripts/npm/build.sh; sh scripts/npm/release.sh; sh ../hybridd-release/hybridd",
+    "clean:release" : "rm -rf dist; sh scripts/npm/build.sh; sh scripts/npm/release.sh; sh ../hybridd-release/hybridd",
+    "clean" : "rm -rf dist/*"
   },
   "repository": {
     "type": "git",
