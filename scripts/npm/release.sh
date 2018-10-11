@@ -7,30 +7,37 @@ UGLIFY=node_modules/uglify-es/bin/uglifyjs
 CSSMIN=node_modules/cssmin/bin/cssmin
 
 
-IOC="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )/../../../"
+# $HYBRIDD/node/scripts/npm  => $HYBRIDD
+SCRIPTDIR="`dirname \"$0\"`"
+HYBRIDD="`cd \"$SCRIPTDIR/../../..\" && pwd`"
 
-OUTPATH="$IOC/hybridd-release"
+NODE="$HYBRIDD/node"
+DIST="$NODE/dist"
 
 echo "[.] Creating hybridd release..."
 
 # Create path if required, clean otherwise
-mkdir -p "$OUTPATH"
+mkdir -p "$DIST"
 echo "[.] Cleaning target path"
-rm -rfv "$OUTPATH/*" >/dev/null
+rm -rfv "$DIST/*" >/dev/null
+
+echo "[.] Processing Files"
+cd "$NODE"
 
 # Copy the main entrypoint
-cp hybridd "$OUTPATH/"
+cp "$NODE/hybridd" "$DIST/"
 # Copy license
-cp LICENSE.md "$OUTPATH/"
+cp "$NODE/LICENSE.md" "$DIST/"
 # Copy readme
-cp README.md "$OUTPATH/"
+cp "$NODE/README.md" "$DIST/"
 
 # Copy configuration
 # TODO create a default here
-cp hybridd.conf "$OUTPATH/"
+cp "$NODE/hybridd.conf" "$DIST/"
 
 # Copy node_modules
-cp -r node_modules "$OUTPATH/"
+cp -r "$NODE/node_modules" "$DIST/"
+
 
 
 #TODO node runtime
@@ -40,7 +47,6 @@ cp -r node_modules "$OUTPATH/"
 FOLDERS="lib modules recipes recipes.EXTRA common"
 
 function join_by { local IFS="$1"; shift; echo "$*"; }
-
 # Only copy files certain with certain exenstions
 for FILE in $(find -L . -name '*.js' -or -name '*.css'  -or -name '*.json' -or -name '*.html' -or -name '*.ico' -or -name '*.svg' -or -name '*.lzma' -or -name '*.ttf' -or -name '*.woff' -or -name '*.woff2' -or -name '*.eot'); do
 
@@ -55,16 +61,16 @@ for FILE in $(find -L . -name '*.js' -or -name '*.css'  -or -name '*.json' -or -
             unset 'FILEPATH[${#FILEPATH[@]}-1]'
             FOLDER=$(join_by / "${FILEPATH[@]}")
 
-            mkdir -p "$OUTPATH/$FOLDER"
+            mkdir -p "$DIST/$FOLDER"
             case "$EXT" in
                 js)
-                    $UGLIFY "$FILE" --compress --mangle > "$OUTPATH/$FILE"
+                    $UGLIFY "$FILE" --compress --mangle > "$DIST/$FILE"
                     ;;
                 css)
-                    $CSSMIN "$FILE" > "$OUTPATH/$FILE"
+                    $CSSMIN "$FILE" > "$DIST/$FILE"
                     ;;
                 *)
-                    cp "$FILE" "$OUTPATH/$FOLDER"
+                    cp "$FILE" "$DIST/$FOLDER"
                     ;;
             esac
         fi
@@ -72,6 +78,7 @@ for FILE in $(find -L . -name '*.js' -or -name '*.css'  -or -name '*.json' -or -
    fi
 done
 
-echo "[.] Release created in $OUTPATH"
+echo "[.] Release created in node/dist"
 echo "[.] Make sure you have a proper hybridd.conf and node binaries."
 export PATH="$OLDPATH"
+cd "$WHEREAMI"
