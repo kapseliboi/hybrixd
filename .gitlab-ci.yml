@@ -74,8 +74,8 @@ hybridd:
     
     # unzip the downloaded artifact to the directory 
     - unzip -o artifacts-web-wallet.zip -d artifacts-web-wallet/
-    #- rm -rf modules/web-wallet
-    #- mkdir -p modules/web-wallet
+    - rm -rf modules/web-wallet
+    - mkdir -p modules/web-wallet
     - cp -rf artifacts-web-wallet/* modules/web-wallet/
     
     # remove the unzipped-files and the zip-file (|| true --> on error, no problem)
