@@ -48,8 +48,9 @@
     "balance" : [
       "time($timeout)",
       "curl('asset://$symbol','','',{'jsonrpc':'2.0','id':0,'method':'blockchain.address.get_balance','params':['$1']})",
-      "tran({confirmed:'.result.confirmed',unconfirmed:'.result.unconfirmed'},2,1)",
-      "fail('No result!')",
+      "tran({confirmed:'.result.confirmed',unconfirmed:'.result.unconfirmed'},3,1)",
+      "data(0)",
+      "jump(3)",
       "time($cache,data)",
       "math(data.confirmed+'+'+data.unconfirmed)",
       "atom()",
