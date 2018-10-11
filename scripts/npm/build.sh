@@ -30,17 +30,17 @@ export PATH="$NODEJS/$SYSTEM/bin:$PATH"
 
 
 # NODE_BINARIES
-if [ ! -e "$NODE/node" ];then
+if [ ! -e "$NODE/node_binaries" ];then
 
-    echo " [!] node/node not found."
+    echo " [!] node/node_binaries not found."
 
     if [ ! -e "$NODEJS" ];then
         cd "$HYBRIDD"
         echo " [i] Clone node js runtimes files"
         git clone https://github.com/internetofcoins/nodejs-v8-lts.git
     fi
-    echo " [i] Link NODEJS files"
-    ln -sf "$NODEJS/$SYSTEM" "$NODE/node"
+    echo " [i] Link node_binaries"
+    ln -sf "$NODEJS/$SYSTEM" "$NODE/node_binaries"
 fi
 
 # COMMON
