@@ -54,7 +54,7 @@ cp -r "$NODE/node_modules" "$DIST/"
 # Only handle files in the following folders
 FOLDERS="lib modules recipes recipes.EXTRA common"
 
-function join_by { local IFS="$1"; shift; echo "$*"; }
+function join_by { local IFS="$1"; shift 1; echo "$*"; }
 # Only copy files certain with certain exenstions
 for FILE in $(find -L . -name '*.js' -or -name '*.css'  -or -name '*.json' -or -name '*.html' -or -name '*.ico' -or -name '*.svg' -or -name '*.lzma' -or -name '*.ttf' -or -name '*.woff' -or -name '*.woff2' -or -name '*.eot'); do
 
