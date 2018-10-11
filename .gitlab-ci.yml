@@ -41,7 +41,7 @@ hybridd:
     
     # remove link to common and unzip the downloaded artifact to the directory (|| true --> on error, no problem)
     - rm -rf  common || true
-    - unzip -o artifacts-common.zip -d common
+    - unzip -o artifacts-common.zip -d common/
     
     # remove the zip-file (|| true --> on error, no problem)
     - rm -rf  artifacts-common.zip || true
@@ -51,7 +51,7 @@ hybridd:
     
     # remove link to interface and unzip the downloaded artifact to the directory (|| true --> on error, no problem)
     - rm -rf  interface || true
-    - unzip -o artifacts-interface.zip -d interface
+    - unzip -o artifacts-interface.zip -d interface/
     
     # remove the zip-file (|| true --> on error, no problem)
     - rm -rf  artifacts-interface.zip || true
@@ -62,7 +62,7 @@ hybridd:
     # unzip the downloaded artifact to the directory (|| true --> on error, no problem) (consider the artifact is packed as /modules/name/filename.lzma)
     - unzip -o artifacts-deterministic.zip -d artifacts-deterministic/
     - mkdir -p modules/deterministic
-    - cp -rf artifacts-deterministic/modules/* modules/deterministic/
+    - cp -rf artifacts-deterministic/* modules/deterministic/
     
     # remove the unzipped-files and the zip-file (|| true --> on error, no problem)
     - rm -rf  artifacts-deterministic || true
@@ -76,7 +76,7 @@ hybridd:
     - unzip -o artifacts-web-wallet.zip -d artifacts-web-wallet/
     #- rm -rf modules/web-wallet
     #- mkdir -p modules/web-wallet
-    - cp -rf artifacts-web-wallet/* modules/web-wallet/files
+    - cp -rf artifacts-web-wallet/* modules/web-wallet/
     
     # remove the unzipped-files and the zip-file (|| true --> on error, no problem)
     - rm -rf  artifacts-web-wallet || true
@@ -89,7 +89,7 @@ hybridd:
     - "ln -s \"$(which nodejs)\" node"
     
     # run the build-script of the hybridd-node
-    - ./scripts/npm/build.sh
+    - ./scripts/npm/compile.sh
     
     # clean up and prepare the artifacts (instead of having a dist) 
     # remove everything except () is extglob syntax, which should be enabled first
