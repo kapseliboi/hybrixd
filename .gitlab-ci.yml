@@ -98,6 +98,9 @@ hybridd:
     # - mv ./dist/* ./
     # - rm -rf ./dist || true
     
+    # remove .git files from artifact
+    - rm -rf ./.git* || true
+    
   artifacts:
     paths:
     - ./
