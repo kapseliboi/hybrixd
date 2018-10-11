@@ -29,10 +29,10 @@ fi
 export PATH="$NODEJS/$SYSTEM/bin:$PATH"
 
 
-# NODE
+# NODE_BINARIES
 if [ ! -e "$NODE/node" ];then
 
-    echo " [!] interface/node not found."
+    echo " [!] node/node not found."
 
     if [ ! -e "$NODEJS" ];then
         cd "$HYBRIDD"
@@ -58,34 +58,6 @@ if [ ! -e "$NODE/common" ];then
 
 fi
 
-# INTERFACE
-if [ ! -e "$NODE/interface" ];then
-
-    echo " [!] node/interface not found."
-
-    if [ ! -e "$INTERFACE" ];then
-        cd "$HYBRIDD"
-        echo " [i] Clone interface files"
-        git clone https://www.gitlab.com/iochq/hybridd/interface.git
-    fi
-    echo " [i] Link interface files"
-    ln -sf "$INTERFACE" "$NODE/interface"
-fi
-
-
-# DETERMINISTIC CLIENT MODULES
-if [ -e "$DETERMINISTIC" ];then
-    cd "$DETERMINISTIC/modules/"
-    echo " [i] Build and copy determinstic client modules"
-    sh "$DETERMINISTIC/scripts/npm/build.sh"
-fi
-
-# WEB WALLET
-if [ -e "$WEB_WALLET" ];then
-    echo " [i] Copy web wallet files"
-    mkdir -p "NODE/modules/web-wallet/files"
-    rsync -aK "$WEB_WALLET/dist/" "$NODE/modules/web-wallet/files/"
-fi
 
 # QUARTZ
 echo "[.] Generate Quartz documentation."
