@@ -76,7 +76,7 @@ hybridd:
     - unzip -o artifacts-web-wallet.zip -d artifacts-web-wallet/
     #- rm -rf modules/web-wallet
     #- mkdir -p modules/web-wallet
-    - cp -rf artifacts-web-wallet/dist modules/web-wallet/files
+    - cp -rf artifacts-web-wallet/dist/* modules/web-wallet/files
     
     # remove the unzipped-files and the zip-file (|| true --> on error, no problem)
     - rm -rf  artifacts-web-wallet || true
