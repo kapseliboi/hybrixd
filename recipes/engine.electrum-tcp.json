@@ -28,9 +28,13 @@
       "sort('.amount')",
       "scan('cnt<($2+val.amount)','+val.amount')",
       "poke('selected')",
-      "tran('[].amount')",
+      "tran('[].amount',2,1)",
+      "data([])",
       "math('+')",
       "math('-$2')",
+      "test(data<0,1,2)",
+      "data('0')",
+      "form()",
       "done({unspents:$selected,change:data})"
     ],
     "unspent_tran" : [
