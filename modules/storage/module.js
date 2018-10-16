@@ -55,40 +55,40 @@ function exec (properties) {
 var get = function (properties) {
   var processID = properties.processID;
   storage.get(properties.key,
-    value => { scheduler.stop(processID, 0, value, true); },
-    error => { scheduler.stop(processID, 1, error, true); }
+    value => { scheduler.stop(processID, 0, value); },
+    error => { scheduler.stop(processID, 1, error); }
   );
 };
 
 var seek = function (properties) {
   var processID = properties.processID;
   storage.seek(properties.key,
-    value => { scheduler.stop(processID, 0, value, true); },
-    error => { scheduler.stop(processID, 1, error, true); }
+    value => { scheduler.stop(processID, 0, value); },
+    error => { scheduler.stop(processID, 1, error); }
   );
 };
 
 var set = function (properties) {
   var processID = properties.processID;
   storage.set({key: properties.key, value: properties.value},
-    hash => { scheduler.stop(processID, 0, hash, true); },
-    error => { scheduler.stop(processID, 1, error, true); }
+    hash => { scheduler.stop(processID, 0, hash); },
+    error => { scheduler.stop(processID, 1, error); }
   );
 };
 
 var pow = function (properties) {
   var processID = properties.processID;
   storage.provideProof({key: properties.key, pow: properties.pow},
-    response => { scheduler.stop(processID, 0, response, true); },
-    error => { scheduler.stop(processID, 1, error, true); }
+    response => { scheduler.stop(processID, 0, response); },
+    error => { scheduler.stop(processID, 1, error); }
   );
 };
 
 var meta = function (properties) {
   var processID = properties.processID;
   storage.getMeta(properties.key,
-    meta => { scheduler.stop(processID, 0, meta, true); },
-    error => { scheduler.stop(processID, 1, error, true); }
+    meta => { scheduler.stop(processID, 0, meta); },
+    error => { scheduler.stop(processID, 1, error); }
   );
 };
 
