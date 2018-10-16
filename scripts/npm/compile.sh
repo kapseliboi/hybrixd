@@ -6,7 +6,6 @@ NODEINST=`which node`
 UGLIFY=node_modules/uglify-es/bin/uglifyjs
 CSSMIN=node_modules/cssmin/bin/cssmin
 
-
 # $HYBRIDD/node/scripts/npm  => $HYBRIDD
 SCRIPTDIR="`dirname \"$0\"`"
 HYBRIDD="`cd \"$SCRIPTDIR/../../..\" && pwd`"
@@ -14,13 +13,10 @@ HYBRIDD="`cd \"$SCRIPTDIR/../../..\" && pwd`"
 NODE="$HYBRIDD/node"
 DIST="$NODE/dist"
 
-
-
 # QUARTZ
 echo "[.] Generate Quartz documentation."
 mkdir -p "$NODE/docs"
 jsdoc "$NODE/lib/scheduler/quartz.js"  -d "$NODE/docs"
-
 
 echo "[.] Creating hybridd release..."
 
@@ -46,13 +42,14 @@ cp "$NODE/hybridd.conf" "$DIST/"
 # Copy node_modules
 cp -r "$NODE/node_modules" "$DIST/"
 
-
-
 #TODO node runtime
 #TODO default dummy conf??
 
 # Only handle files in the following folders
 FOLDERS="lib modules recipes recipes.EXTRA common"
+
+#Test if there are enough remaining arguments: if [ "$#" -gt 0 ]; then shift; fi
+#Add a conditional argument: shift $(( $# > 0 ? 1 : 0 ))
 
 function join_by { local IFS="$1"; shift 1; echo "$*"; }
 # Only copy files certain with certain exenstions
