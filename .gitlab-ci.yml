@@ -190,6 +190,10 @@ staging:
     - create_secret
     - install_certificate
     - deploy
+    - ./ls -l 
+    - ./ls -l common
+    - ./ls -l dist
+    - ./ls -l interface
     - ./hybridd
   environment:
     name: staging
