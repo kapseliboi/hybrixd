@@ -1,0 +1,84 @@
+{
+  "engine":"voting",
+  "name":"Voting engine",
+  "module":"quartz",
+  "cache":1000,
+  "throttle":10,
+  "quartz":{
+    "test" : [
+      "data '$1'",
+      "hash 'sha256'",
+      "poke 'key'",
+      "load '$key'",
+      "done"
+    ],
+    "testBAK" : [
+      "data '$1'",
+      "hash 'sha256'",
+      "poke 'key'",
+      "data {key:'storemeyo!'}",
+      "save '$key'",
+      "done '$key'"
+    ],
+    "list" : [
+      "data '$1'",
+      "hash 'sha256'",
+      "poke 'idx'",
+      "hook [] 0",
+      "load '$idx'",
+      "done"
+    ],
+    "listAdd" : [
+      "data '$1'",
+      "hash 'sha256'",
+      "poke 'idx'",
+      "hook 3",
+      "load '$idx'",
+      "jump 2",
+      "data []",
+      "push '$2'",
+      "save '$idx'",
+      "done 'Added $2 to list $1'"
+    ],
+    "listReset" : [
+      "hash '$1'",
+      "poke 'idx'",
+      "data []",
+      "save '$idx'",
+      "done 'List reset'"
+    ]
+  },
+  "router" : {
+    "test" : {
+      "_list": "Test routine",
+      "_ref" : {
+        "_list" : "storage_id",
+        "_this" : "Test routine. Needs an additional /id to function!"
+      }
+    },
+    "list" : {
+      "_help": "List participants of voting session",
+      "_ref" : {
+        "_list" : "storage_id",
+        "_this" : "An array is returned listing all participants of the voting session ID."
+      }
+    },
+    "listAdd" : {
+      "_help": "Add participant to voting session",
+      "_ref" : {
+        "_list" : "voting_session_id",
+		"_ref" : {
+	      "_list" : "e-mail",
+	      "_this" : "Adds a participant to a list under the specified voting session ID."
+		}
+      }
+    },
+    "listReset" : {
+      "_list": "Reset the list of the voting session",
+      "_ref" : {
+        "_list" : "voting_session_id",
+        "_this" : "Empties the voting session list, deleting its data contents."
+      }
+    }
+  }
+}
