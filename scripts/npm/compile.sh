@@ -48,13 +48,11 @@ cp -r "$NODE/node_modules" "$DIST/"
 #TODO node runtime
 #TODO default dummy conf??
 
-# Only handle files in the following folders
-FOLDERS=" lib modules recipes recipes.EXTRA common interface "
 
 # Only copy files certain with certain exenstions
 for FILE in $(find -L . -name '*.js' -or -name '*.css'  -or -name '*.json' -or -name '*.html' -or -name '*.ico' -or -name '*.svg' -or -name '*.lzma' -or -name '*.ttf' -or -name '*.woff' -or -name '*.woff2' -or -name '*.eot'); do
     # Skip files in ./common/node and ./common/node_modules
-    if [[ "$FILE" != "./common/node"* ]]; then
+    if [ "$FILE" != "./common/node"* ]; then
 
         # FILE=BASEFOLDER/SUBFOLDER/.../FILE
         OLD_IFS="$IFS"
@@ -63,7 +61,8 @@ for FILE in $(find -L . -name '*.js' -or -name '*.css'  -or -name '*.json' -or -
         set -- $FILE # $1 is split on : and parts are stored in $1, $2...
         BASEFOLDER="$2"
         IFS="$OLD_IFS"
-        if [[ $FOLDERS =~ (^|[[:space:]])$BASEFOLDER($|[[:space:]]) ]]; then
+        # Only handle files in the following folders
+        if [ "$BASEFOLDER" == "lib" ] || [ "$BASEFOLDER" == "modules" ] || [ "$BASEFOLDER" == "recipes" ] || [ "$BASEFOLDER" == "recipes.EXTRA" ] || [ "$BASEFOLDER" == "common" ] || [ "$BASEFOLDER" == "interface" ]; then
 
             EXT="${FILE##*.}"
             FOLDER=$(dirname "${FILE}")
