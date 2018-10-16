@@ -111,8 +111,9 @@ hybridd:
     - ls -l
     
     #replace port 8080 with 5000, @TODO workaround, edit it in the pod
-    - sed -i -e 's/8080/5000/g' hybridd.conf
-    - sed -i -e 's/127.0.0.1/10.52.1.58/g' hybridd.conf
+    #- sed -i -e 's/8080/5000/g' hybridd.conf
+    # this address is everytime different, we should edit the conf on the pod, before starting hybridd
+    #- sed -i -e 's/127.0.0.1/10.52.1.58/g' hybridd.conf 
     
     - setup_docker
     - build
