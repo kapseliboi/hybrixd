@@ -32,10 +32,10 @@ hybridd:
   - docker:stable-dind
   script:
     # install unzip
-    - apt-get update
-    - apt-get  -y install npm
+    - apk update
+    - apk add npm
     - npm install -g jsdoc
-    - apt-get install unzip
+    - apk add unzip
     
     # trigger pipeline common
     # - "curl --request POST --form \"token=$CI_JOB_TOKEN\" --form ref=master https://gitlab.com/api/v4/projects/iochq%2Fhybridd%2Fcommon/trigger/pipeline"
