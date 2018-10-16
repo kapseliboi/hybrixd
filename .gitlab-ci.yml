@@ -1,4 +1,4 @@
-image: node:8
+image: node:8.11.2
 
 variables:
   # AUTO_DEVOPS_DOMAIN is the application deployment domain and should be set as a variable at the group or project level.
@@ -27,11 +27,22 @@ stages:
 hybridd:
   stage: build
   script:
+  image: docker:stable-git
+  services:
+  - docker:stable-dind
+  script:
     # install unzip
-    - apt-get update
-    - apt-get  -y install npm
+    - apk update
+    - apk add npm
     - npm install -g jsdoc
-    - apt-get install unzip
+    - apk add unzip
+    - apk add curl
+    - apk add nodejs=8.11.4-r0
+    
+    - WORKING_DIR=$PWD
+    - echo $PWD
+    - cd /builds/iochq/hybridd/node
+    - echo $PWD
     
     # trigger pipeline common
     # - "curl --request POST --form \"token=$CI_JOB_TOKEN\" --form ref=master https://gitlab.com/api/v4/projects/iochq%2Fhybridd%2Fcommon/trigger/pipeline"
@@ -82,12 +93,6 @@ hybridd:
     - rm -rf  artifacts-web-wallet || true
     - rm -rf  artifacts-web-wallet.zip || true
     
-    # remove symbolic link to node
-    - rm -rf  node || true
-    
-    # don't download git clone https://github.com/internetofcoins/nodejs-v8-lts.git, refer to docker pre installed nodejs as defined in the first line of this file
-    - "ln -s \"$(which nodejs)\" node"
-    
     # run the build-script of the hybridd-node
     - ./scripts/npm/compile.sh
     
@@ -101,10 +106,17 @@ hybridd:
     # remove .git files from artifact
     - rm -rf ./.git* || true
     
+    - cd $WORKING_DIR
+    
+    - ls -l
+    
+    - setup_docker
+    - build
+    
   artifacts:
     paths:
     - ./
-    
+
 review:
   image: alpine:latest
   stage: review
@@ -178,6 +190,10 @@ staging:
     - create_secret
     - install_certificate
     - deploy
+    - ./ls -l 
+    - ./ls -l common
+    - ./ls -l dist
+    - ./ls -l interface
     - ./hybridd
   environment:
     name: staging
@@ -189,7 +205,6 @@ staging:
     kubernetes: active
     variables:
       - $STAGING_ENABLED
-
 
 # ---------------------------------------------------------------------------
 
@@ -492,7 +507,7 @@ staging:
       echo ""
 
       echo "Configuring $CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG docker image..."
-      docker create --expose 5000 --env PORT=5000 --name="$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" /bin/herokuish procfile start web
+      docker create --expose 8080 --env PORT=8080 --name="$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" /bin/herokuish procfile start web
       docker commit "$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
       docker rm "$CI_CONTAINER_NAME" >/dev/null
       echo ""

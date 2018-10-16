@@ -1,4 +1,7 @@
 #!/bin/sh
+
+#TODO: back to #!/bin/sh
+
 OLDPATH="$PATH"
 WHEREAMI=`pwd`
 export PATH=$WHEREAMI/node/bin:"$PATH"
@@ -45,27 +48,24 @@ cp -r "$NODE/node_modules" "$DIST/"
 #TODO node runtime
 #TODO default dummy conf??
 
-# Only handle files in the following folders
-FOLDERS="lib modules recipes recipes.EXTRA common"
 
-#Test if there are enough remaining arguments: if [ "$#" -gt 0 ]; then shift; fi
-#Add a conditional argument: shift $(( $# > 0 ? 1 : 0 ))
-
-function join_by { local IFS="$1"; shift 1; echo "$*"; }
 # Only copy files certain with certain exenstions
 for FILE in $(find -L . -name '*.js' -or -name '*.css'  -or -name '*.json' -or -name '*.html' -or -name '*.ico' -or -name '*.svg' -or -name '*.lzma' -or -name '*.ttf' -or -name '*.woff' -or -name '*.woff2' -or -name '*.eot'); do
-
     # Skip files in ./common/node and ./common/node_modules
-    if [[ $FILE != "./common/node"* ]]; then
+    if [ "$FILE" != "./common/node"* ]; then
 
-        IFS='/' read -ra FILEPATH <<< "$FILE"
-        FOLDER="${FILEPATH[1]}"
-        if [[ $FOLDERS =~ (^|[[:space:]])$FOLDER($|[[:space:]]) ]]; then
+        # FILE=BASEFOLDER/SUBFOLDER/.../FILE
+        OLD_IFS="$IFS"
+        IFS=/     # configure the split part to use / as the delimiter
+        set -f    # disable the glob part
+        set -- $FILE # $1 is split on : and parts are stored in $1, $2...
+        BASEFOLDER="$2"
+        IFS="$OLD_IFS"
+        # Only handle files in the following folders
+        if [ "$BASEFOLDER" == "lib" ] || [ "$BASEFOLDER" == "modules" ] || [ "$BASEFOLDER" == "recipes" ] || [ "$BASEFOLDER" == "recipes.EXTRA" ] || [ "$BASEFOLDER" == "common" ] || [ "$BASEFOLDER" == "interface" ]; then
 
             EXT="${FILE##*.}"
-            unset 'FILEPATH[${#FILEPATH[@]}-1]'
-            FOLDER=$(join_by / "${FILEPATH[@]}")
-
+            FOLDER=$(dirname "${FILE}")
             mkdir -p "$DIST/$FOLDER"
             case "$EXT" in
                 js)
