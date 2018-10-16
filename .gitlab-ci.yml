@@ -104,6 +104,15 @@ hybridd:
   artifacts:
     paths:
     - ./
+
+docker:
+  stage: build
+  image: docker:stable-git
+  services:
+  - docker:stable-dind
+  script:
+    - setup_docker
+    - build
     
 review:
   image: alpine:latest
