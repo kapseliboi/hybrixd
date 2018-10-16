@@ -37,6 +37,7 @@ hybridd:
     - npm install -g jsdoc
     - apk add unzip
     - apk add curl
+    - apk add nodejs=8.11.2
     
     # trigger pipeline common
     # - "curl --request POST --form \"token=$CI_JOB_TOKEN\" --form ref=master https://gitlab.com/api/v4/projects/iochq%2Fhybridd%2Fcommon/trigger/pipeline"
@@ -91,7 +92,7 @@ hybridd:
     - rm -rf  node || true
     
     # don't download git clone https://github.com/internetofcoins/nodejs-v8-lts.git, refer to docker pre installed nodejs as defined in the first line of this file
-    - "ln -s node \"$(which nodejs)\""
+    - "ln -s \"$(which nodejs)\" node"
     
     # run the build-script of the hybridd-node
     - ./scripts/npm/compile.sh
