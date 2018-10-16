@@ -1,4 +1,7 @@
-#!/bin/sh
+#!/bin/bash
+
+#TODO: back to #!/bin/sh
+
 OLDPATH="$PATH"
 WHEREAMI=`pwd`
 export PATH=$WHEREAMI/node/bin:"$PATH"
@@ -48,16 +51,16 @@ cp -r "$NODE/node_modules" "$DIST/"
 # Only handle files in the following folders
 FOLDERS="lib modules recipes recipes.EXTRA common"
 
-#Test if there are enough remaining arguments: if [ "$#" -gt 0 ]; then shift; fi
-#Add a conditional argument: shift $(( $# > 0 ? 1 : 0 ))
+#TODO: For DASH: Test if there are enough remaining arguments: if [ "$#" -gt 0 ]; then shift; fi
 
-function join_by { local IFS="$1"; shift 1; echo "$*"; }
+function join_by { local IFS="$1"; shift; echo "$*"; }
 # Only copy files certain with certain exenstions
 for FILE in $(find -L . -name '*.js' -or -name '*.css'  -or -name '*.json' -or -name '*.html' -or -name '*.ico' -or -name '*.svg' -or -name '*.lzma' -or -name '*.ttf' -or -name '*.woff' -or -name '*.woff2' -or -name '*.eot'); do
 
     # Skip files in ./common/node and ./common/node_modules
     if [[ $FILE != "./common/node"* ]]; then
 
+#TODO: Rewrite <<< (this is not DASH)
         IFS='/' read -ra FILEPATH <<< "$FILE"
         FOLDER="${FILEPATH[1]}"
         if [[ $FOLDERS =~ (^|[[:space:]])$FOLDER($|[[:space:]]) ]]; then
