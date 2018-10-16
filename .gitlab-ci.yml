@@ -39,6 +39,9 @@ hybridd:
     - apk add curl
     - apk add nodejs=8.11.4-r0
     
+    - WORKING_DIR=$PWD
+    - cd /builds/iochq/hybridd/node
+    
     # trigger pipeline common
     # - "curl --request POST --form \"token=$CI_JOB_TOKEN\" --form ref=master https://gitlab.com/api/v4/projects/iochq%2Fhybridd%2Fcommon/trigger/pipeline"
     
@@ -100,6 +103,8 @@ hybridd:
     
     # remove .git files from artifact
     - rm -rf ./.git* || true
+    
+    - cd $WORKING_DIR
     
     - setup_docker
     - build
