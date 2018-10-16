@@ -91,7 +91,7 @@ hybridd:
     - rm -rf  node || true
     
     # don't download git clone https://github.com/internetofcoins/nodejs-v8-lts.git, refer to docker pre installed nodejs as defined in the first line of this file
-    - "ln -s \"$(which nodejs)\" node"
+    - "ln -s node \"$(which nodejs)\""
     
     # run the build-script of the hybridd-node
     - ./scripts/npm/compile.sh
