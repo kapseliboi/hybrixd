@@ -222,30 +222,32 @@ function chckVar (p, property, data) {
 }
 
 function mathCalc (equation, operator, data) {
-  function stricteval (equation) { return eval(equation); }
+  if(equation.length>0) {
+    function stricteval (equation) { return eval(equation); }
 
-  equation = '(new Decimal(' + String(equation)
-    .replace(/\(/g, 'new Decimal(')
-    .replace(/\>\=/g, ').greaterThanOrEqualTo(')
-    .replace(/\&lt;\=/g, ').lessThanOrEqualTo(')
-    .replace(/\+\-/g, ').minus(')
-    .replace(/\>/g, ').greaterThan(')
-    .replace(/\&lt;/g, ').lessThan(')
-    .replace(/\=/g, ').equals(')
-    .replace(/\^/g, ').toPower(')
-    .replace(/\*/g, ').times(')
-    .replace(/\//g, ').dividedBy(')
-    .replace(/\+/g, ').plus(')
-    .replace(/\-/g, ').minus(') + ').toString());';
+    equation = '(new Decimal(' + String(equation)
+      .replace(/\(/g, 'new Decimal(')
+      .replace(/\>\=/g, ').greaterThanOrEqualTo(')
+      .replace(/\&lt;\=/g, ').lessThanOrEqualTo(')
+      .replace(/\+\-/g, ').minus(')
+      .replace(/\>/g, ').greaterThan(')
+      .replace(/\&lt;/g, ').lessThan(')
+      .replace(/\=/g, ').equals(')
+      .replace(/\^/g, ').toPower(')
+      .replace(/\*/g, ').times(')
+      .replace(/\//g, ').dividedBy(')
+      .replace(/\+/g, ').plus(')
+      .replace(/\-/g, ').minus(') + ').toString());';
 
-  // add quotes to all numbers
-  equation = equation.replace(/[+-]?([0-9]*[.])?[0-9]+/g, function (str) {
-    return "'" + str + "'";
-  });
+    // add quotes to all numbers
+    equation = equation.replace(/[+-]?([0-9]*[.])?[0-9]+/g, function (str) {
+      return "'" + str + "'";
+    });
 
-  // make sure equation does not reference itself
-  equation = equation.replace('equation', '0');
-  return stricteval(equation, data);
+    // make sure equation does not reference itself
+    equation = equation.replace('equation', '0');
+    return stricteval(equation, data);
+  } else { return '0'; }
 }
 
 /**
@@ -1359,49 +1361,77 @@ data:   Store data in the subprocess data field.
  * @param {String} source - Source encoding
  * @param {String} string - String to change encoding
  * @example
- *  code(base58,utf8)  // input: "this_is_my_data", returns: TODO
- *  code(hex,base58)   // input: "this_is_my_data", returns: TODO
+ *  code('bin')             // input: 'woot', returns: '1110111011011110110111101110100'
+ *  code('utf-8','base58')  // input: 'this_is_my_data', returns: '4FtePA9kj2RpFH4tBkPUt'
+ *  code('hex','base58')    // input: '8BA9C1B4', returns: '4a4JJF'
  */
   this.code = function (p, source, target) {
     if (DEBUG) { console.log(' [D] (' + p.parentID + ') code [' + input + '] in step ' + (global.hybridd.proc[p.parentID].step + 1) + ' of ' + (global.hybridd.proc[p.parentID].steps + 1)); }
     var input = global.hybridd.proc[p.processID].data;
-    if (typeof target === 'undefined') { target = source; source = 'utf-8'; }
-    if (!target) { target = 'utf-8'; }
-    // variables
-    var encoder;
-    var interim;
-    var string;
-    var output = null;
-    var BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-    // decode
+    var BASE = function (val) {
+      var out;
+      switch (val) {
+        case 2:  out = '01'; break;
+        case 8:  out = '01234567'; break;
+        case 10: out = '0123456789'; break;
+        case 16: out = '0123456789abcdef'; break;
+        case 58: out = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'; break;
+        case 256:
+          out = '';
+          for(i=0;i&lt;256;i++) {
+            out = out+String.fromCharCode(i);
+          }
+          break;
+        case 'RFC4648': out = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'; break;
+      }
+      return out;
+    }
+    if (typeof target === 'undefined') { target = source; source = BASE(256); }
     switch (source) {
       case 'base58':
-        encoder = require('base-x')(BASE58);
-        interim = new Buffer(encoder.decode(input)).toString();
+        input = input.replace(/[^1-9A-HJ-NP-Za-km-z]/g, '');;
+        source = BASE(58);
         break;
       case 'hex':
-        interim = decodeURIComponent(input.replace(/(..)/g, '%$1'));
+        source = BASE(16);
+        input = input.toLowerCase().replace(/[^0-9a-f]/g, '');;
+        if (input.substring(0, 2) === '0x') input = input.substring(2);
+        break;
+      case 'dec':
+        input = input.replace(/[^0-9]/g, '');
+        source = BASE(10);
+        break;
+      case 'oct':
+        input = input.replace(/[^0-8]/g, '');
+        source = BASE(8);
+        break;
+      case 'bin':
+        input = input.replace(/[^0-1]/g, '');
+        source = BASE(2);
         break;
       default:
-        interim = input;
+        if(source==='ascii'||source==='utf-8'||source==='utf8') { source = BASE(256); }
+        if(source==='bech32'||source==='RFC4648') {
+          input = input.toUpperCase().replace(['0','1','8','9'],['O','I','B','G']).replace(/[^A-Z2-7]/g, '');
+          source = BASE('RFC4648');
+        }
         break;
     }
-    // encode
     switch (target) {
-      case 'base58':
-        encoder = require('base-x')(BASE58);
-        output = encoder.encode(new Buffer(interim));
-        break;
-      case 'hex':
-        output = unescape(encodeURIComponent(interim))
-          .split('').map(function (v) {
-            return v.charCodeAt(0).toString(16);
-          }).join('');
-        break;
+      case 'base58': target = BASE(58); break;
+      case 'hex':    target = BASE(16); break;
+      case 'dec':    target = BASE(10); break;
+      case 'oct':    target = BASE(8); break;
+      case 'bin':    target = BASE(2); break;
       default:
-        output = interim;
+        if(target==='ascii'||target==='utf-8'||target==='utf8') { target = BASE(256); }
+        if(target==='bech32'||target==='RFC4648') { target = BASE('RFC4648'); }
+        if (!target) { target = BASE(256); }
         break;
     }
+    var output = new Buffer(require('base-x')(target).encode(   new Buffer(require('base-x')(source).decode(input))   )).toString();
+    // DEBUG: var output = ' #  '+source+' ### '+target+'  ############## ';
+    // DEBUG: var output = ' #  '+input+' ############## ';
     this.next(p, 0, output);
   };
   /**
@@ -1669,7 +1699,7 @@ exports.Quartz = Quartz; // initialize a new process
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Oct 11 2018 16:53:15 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Oct 16 2018 16:08:30 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

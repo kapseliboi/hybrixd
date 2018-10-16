@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 #TODO: back to #!/bin/sh
 
@@ -49,26 +49,24 @@ cp -r "$NODE/node_modules" "$DIST/"
 #TODO default dummy conf??
 
 # Only handle files in the following folders
-FOLDERS="lib modules recipes recipes.EXTRA common"
+FOLDERS=" lib modules recipes recipes.EXTRA common interface "
 
-#TODO: For DASH: Test if there are enough remaining arguments: if [ "$#" -gt 0 ]; then shift; fi
-
-function join_by { local IFS="$1"; shift; echo "$*"; }
 # Only copy files certain with certain exenstions
 for FILE in $(find -L . -name '*.js' -or -name '*.css'  -or -name '*.json' -or -name '*.html' -or -name '*.ico' -or -name '*.svg' -or -name '*.lzma' -or -name '*.ttf' -or -name '*.woff' -or -name '*.woff2' -or -name '*.eot'); do
-
     # Skip files in ./common/node and ./common/node_modules
-    if [[ $FILE != "./common/node"* ]]; then
+    if [[ "$FILE" != "./common/node"* ]]; then
 
-#TODO: Rewrite <<< (this is not DASH)
-        IFS='/' read -ra FILEPATH <<< "$FILE"
-        FOLDER="${FILEPATH[1]}"
-        if [[ $FOLDERS =~ (^|[[:space:]])$FOLDER($|[[:space:]]) ]]; then
+        # FILE=BASEFOLDER/SUBFOLDER/.../FILE
+        OLD_IFS="$IFS"
+        IFS=/     # configure the split part to use / as the delimiter
+        set -f    # disable the glob part
+        set -- $FILE # $1 is split on : and parts are stored in $1, $2...
+        BASEFOLDER="$2"
+        IFS="$OLD_IFS"
+        if [[ $FOLDERS =~ (^|[[:space:]])$BASEFOLDER($|[[:space:]]) ]]; then
 
             EXT="${FILE##*.}"
-            unset 'FILEPATH[${#FILEPATH[@]}-1]'
-            FOLDER=$(join_by / "${FILEPATH[@]}")
-
+            FOLDER=$(dirname "${FILE}")
             mkdir -p "$DIST/$FOLDER"
             case "$EXT" in
                 js)
