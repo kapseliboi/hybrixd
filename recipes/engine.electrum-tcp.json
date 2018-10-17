@@ -7,6 +7,7 @@
   "timeout":30000,
   "utxo_unspent_prefix":"76a914",
   "utxo_unspent_suffix":"88ac",
+  "cron":600,
   "quartz":{
     "unspent" : [
       "poke('inputval','99999999999999999999')",
@@ -88,13 +89,25 @@
       "done('$contract')"
     ],
     "fee" : [
+      "hook('$fee',0)",
+	  "peek('local::fee')",
+      "done()"
+    ],
+    "init" : [
+      "test('$symbol'==='undefined',2)",
+      "call('getFee')"
+    ],
+    "cron" : [
+      "test('$symbol'==='undefined',2)",
+      "call('getFee')"
+    ],
+    "getFee" : [
       "time($timeout)",
       "curl('asset://$symbol','','',{'jsonrpc':'2.0','id': 1, 'method': 'blockchain.estimatefee', 'params': ['6'] })",
       "tran('.result',1,4)",
       "test(data>0,1,3)",
-      "pass()",
-      "jump(2)",
-      "pass('$fee')"
+      "poke('local::fee')",
+      "done()"
     ]
   }
 }
