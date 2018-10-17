@@ -144,6 +144,9 @@ function exec (properties) {
               subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["transferAsset",["recipient=' + targetaddr + '","asset=' + target.contract + '",' + publicKey + ',"quantityQNT=' + functions.toInt(amount, factor) + '","feeNQT=' + functions.toInt(fee, feefactor) + '","deadline=300","broadcast=false"] ]})');
             } else if (!functions.isToken(target.symbol)) {
               amount = functions.fromInt(functions.toInt(amount, factor).minus(functions.toInt(fee, factor)), factor).toString(); // with NXT the unspent function is a transaction preparation, so must subtract the fee
+              if(base==='xel') {
+                amount = functions.toInt(amount, factor);
+              }
               subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["sendMoney",["recipient=' + targetaddr + '",' + publicKey + ',"amountNQT=' + functions.toInt(amount, factor) + '","feeNQT=' + functions.toInt(fee, factor) + '","deadline=300","doNotSign=1","broadcast=false"] ]})');
             } else {
               var fee = (typeof global.hybridd.asset[base].fee !== 'undefined' ? global.hybridd.asset[base].fee : null);
@@ -152,10 +155,12 @@ function exec (properties) {
               //  subprocesses.push('stop(1,"Error: NXT token transactions support only integer amounts!")');
               // }
               amount = functions.fromInt(functions.toInt(amount, factor).minus(functions.toInt(fee, factor)).toInteger(), factor).toString(); // with NXT the unspent function is a transaction preparation, so must subtract the fee
+              if(base==='xel') {
+                amount = functions.toInt(amount, factor);
+              }
 
               subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["transferAsset",["recipient=' + targetaddr + '","asset=' + target.contract + '",' + publicKey + ',"quantityQNT=' + functions.toInt(amount, factor) + '","feeNQT=' + functions.toInt(fee, feefactor) + '","deadline=300","doNotSign=1","broadcast=false"] ]})');
             }
-
             subprocesses.push('stop((typeof data.errorCode==="undefined"?0:data.errorCode),(typeof data.errorCode==="undefined"?data:data.errorDescription))');
           } else {
             subprocesses.push('stop(1,"Error: missing target address!")');
@@ -203,7 +208,7 @@ function exec (properties) {
       var publicKey;
       switch (mode.split('.')[1]) {
         case 'main' : address = 'NXT-4RU9-TNCT-F3MU-8952K'; transaction = '13821793329980543744'; publicKey = '32f5fa059b39fae92e41fee6606c5afa4db80d426532fa94f50415c062794c4b'; break;
-        case 'elastic' : address = 'XEL-7USZ-7MNB-BTAY-DKE4R'; transaction = '12238083156285810252'; break;
+        case 'elastic' : address = 'XEL-WVUH-342G-KUK2-BJCAU'; transaction = '12238083156285810252'; publicKey = 'ac98288464ff917788a49d2ca4ccf078b66e4090e2b81c8daef8b492bcc1ef0e'; break;
         case 'burst' : address = 'HKML-NRG6-VBRA-2F8PS'; transaction = '11439896918258012006'; publicKey = '25cc2bb30ee7665737c9721090313c85176e485cd9a15495a0f3abc359d8d632'; break;
       }
       subprocesses.push('stop(0,{address:"' + address + '",transaction:"' + transaction + '",publicKey:"' + publicKey + '"})');
