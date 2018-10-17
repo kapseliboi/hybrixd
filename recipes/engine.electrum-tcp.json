@@ -4,17 +4,10 @@
   "module":"quartz",
   "cache":1000,
   "throttle":10,
-  "timeout":120000,
+  "timeout":30000,
   "utxo_unspent_prefix":"76a914",
   "utxo_unspent_suffix":"88ac",
   "quartz":{
-    "status" : [
-      "time($timeout)",
-      "curl('asset://$symbol','','',{'jsonrpc':'2.0','id':0,'method':'server.version','params':[]},{'content-type':'text/plain'})",
-      "test(data,1,2)",
-      "stop(0,{module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:null,version:data.result})",
-      "stop(1,'No result!')"
-    ],
     "unspent" : [
       "poke('inputval','99999999999999999999')",
       "test($2,1,2)",
@@ -23,8 +16,9 @@
       "code('base58','hex')",
       "trim(1,-8)",
       "poke('script','$utxo_unspent_prefix'+data+'$utxo_unspent_suffix')",
-      "time($timeout)",
-      "curl('asset://$symbol','','',{'jsonrpc':'2.0','id':0,'method':'blockchain.address.listunspent','params':['$1']},{timeout:$timeout,interval:$timeout})",
+      "poke('longtimeout',120000)",
+      "time($longtimeout)",
+      "curl('asset://$symbol','','',{'jsonrpc':'2.0','id':0,'method':'blockchain.address.listunspent','params':['$1']},{timeout:$longtimeout,interval:$longtimeout})",
       "tran('.result',2,1)",
       "fail('Bad input unspents from Electrum!')",
       "each(data,'unspent_tran')",
@@ -79,7 +73,7 @@
     ],
     "transaction" : [
       "time($timeout)",
-      "curl('asset://$symbol','','',{'jsonrpc':'2.0','id': 1, 'method': 'blockchain.transaction.get', 'params': ['$1',true] })",
+      "curl('asset://$symbol','','',{'jsonrpc':'2.0','id': 1, 'method': 'blockchain.transaction.get', 'params': ['$1'] })",
       "tran('.result',2,1)",
       "stop(1,'No result')",
       "pass(data)"

@@ -7,9 +7,9 @@
   "factor":8,
   "fee":0.001,
   "host":["tcp://electrum3.cipig.net:10059","tcp://electrum2.cipig.net:10059","tcp://electrum1.cipig.net:10059"],
+  "explorer":"https://chainz.cryptoid.info/dgb",
   "cache":20000,
   "throttle":0.1,
-  "block-explorer-host": "https://chainz.cryptoid.info/dgb/api.dws",
   "quartz":{
     "sample" : [
       "stop(0,{address:'DP8VeG75FB3Q4NWbW9uDv9syLbxFsydj8K',transaction:'573242f214021eb54c5335b178f09508ea2f349b3ebbc2c42346f093e83f4aa6'})"
