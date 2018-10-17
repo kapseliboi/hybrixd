@@ -12,7 +12,6 @@ var WAValidator;
 
 // initialization function
 function init () {
-//  modules.initexec('validator',["init"]);
   WAValidator = require('wallet-address-validator');
 }
 function exec (properties) {
@@ -34,6 +33,12 @@ function exec (properties) {
     } else {
       subprocesses.push("stop(0,'invalid')");
     }
+  } else if (symbol === 'BCH') {
+    if (/^[a-zA-Z0-9]{34}$/.test(address)) {
+      subprocesses.push("stop(0,'valid')");
+    } else {
+      subprocesses.push("stop(0,'invalid')");
+    }
   } else if (symbol === 'BTS') {
     subprocesses.push("curl('asset://bts','','',{'method':'call', 'params':[0,'get_account_by_name',['" + address + "']], id: Math.floor(Math.random()*10000)})");
     subprocesses.push("tran('.result.id',2,1)");
@@ -49,12 +54,6 @@ function exec (properties) {
     // Reference https://docs.wavesplatform.com/en/technical-details/data-structures.html
     // TODO can be improved (checksum)
     if (/^3[A-Za-z0-9]{34}$/.test(address)) {
-      subprocesses.push("stop(0,'valid')");
-    } else {
-      subprocesses.push("stop(0,'invalid')");
-    } //
-  } else if (symbol === 'BCH') {
-    if (/^(q|p)[a-z0-9]{41}$/.test(address)) {
       subprocesses.push("stop(0,'valid')");
     } else {
       subprocesses.push("stop(0,'invalid')");
@@ -110,7 +109,7 @@ function exec (properties) {
     }
   } else {
     try {
-      var valid = WAValidator.validate(address, symbol);// '1KFzzGtDdnq5hrwxXGjwVnKzRbvf8WVxck', 'BTC'
+      var valid = WAValidator.validate(address, symbol);  // '1KFzzGtDdnq5hrwxXGjwVnKzRbvf8WVxck', 'BTC'
 
       if (valid) {
         subprocesses.push("stop(0,'valid')");

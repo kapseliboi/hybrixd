@@ -3,6 +3,7 @@
   "name":"Wallet Address Validator",
   "module":"wavalidator",
   "router" : {
+    "_help" : "Validates an address format",
     "_ref" : {
       "_list" : "symbol",
       "_ref" : {
