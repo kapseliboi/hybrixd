@@ -9,7 +9,6 @@
   "host":["http://femto.innermedia.net:7890","http://199.217.118.114:7890","http://62.109.20.138:7890","http://plum.supernode.me:7890","http://103.27.76.170:7890","http://supernode.host:7890","http://supernode.nem-cloud.info:7890","http://nano.innermedia.net:7890","http://ninja2016.dynu.com:7890","http://shibuya.supernode.me:7890","http://supernode.nem-blockchain.solutions:7890","http://pattaya1node.ddns.net:7890","http://nsm.supernode.me:7890","http://esposium.de:7890","http://nem.homeip.net:7890","http://go.nem.ninja:7890"],
   "cache":180000,
   "throttle":5,
-
   "quartz":{
     "init" : [
       "test('$contract'==='undefined',1,3)",
@@ -38,7 +37,7 @@
       "tran('.account.balance',2,1)",
       "stop(1,null)",
       "atom()",
-      "stop()",
+      "done()",
       "poke('proc::namespace','$contract'.split(':')[0])",
       "curl('asset://$symbol','/account/mosaic/owned?address='+'$1'.replace(/-/g,''),'GET')",
       "tran('.data',2,1)",
