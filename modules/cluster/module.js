@@ -36,7 +36,7 @@ function exec (properties) {
     case 'command' :
       var xpath = command.slice(1);
       for (var peer in peers) {
-        subprocesses.push("curl('http://" + peers[peer] + "','/" + xpath.join('/') + "','GET',null,{},{parsing:'none',autoproc:true,proceedOnTimeOut:true})");//
+        subprocesses.push("curl('http://" + peers[peer] + "','/" + xpath.join('/') + "','GET',null,{},{parsing:'none',autoproc:true})");//
       }
       subprocesses.push('coll(' + peers.length + ')');
       subprocesses.push('stop(0,data)');
@@ -44,7 +44,7 @@ function exec (properties) {
       break;
     case 'status' :
       for (var peer in peers) {
-        subprocesses.push("curl('http://" + peers[peer] + "','/engine/cluster/peers','GET',null,{},{parsing:'none',autoproc:true,proceedOnTimeOut:true})");
+        subprocesses.push("curl('http://" + peers[peer] + "','/engine/cluster/peers','GET',null,{},{parsing:'none',autoproc:true})");
       }
       subprocesses.push('coll(' + peers.length + ')');
       var captain2 = captain || me;
