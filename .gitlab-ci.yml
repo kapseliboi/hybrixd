@@ -131,13 +131,17 @@ test:
   image: gliderlabs/herokuish:latest
   script:
     - setup_test_db
+    
+    # download chromedriver
+    - "curl --location \"https://chromedriver.storage.googleapis.com/2.43/chromedriver_linux64.zip\" -o chromedriver_linux64.zip"
+    
+    # unzip chromedriver
+    - unzip -o chromedriver_linux64.zip -d /usr/bin/google-chrome/
     - cp -R . /tmp/app
     - /bin/herokuish buildpack test
   only:
     variables:
       - $TEST_ENABLED
-
-
 
 review:
   image: alpine:latest
