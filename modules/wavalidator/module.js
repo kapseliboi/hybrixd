@@ -35,10 +35,7 @@ function exec (properties) {
       subprocesses.push("stop(0,'invalid')");
     }
   } else if (symbol === 'BTS') {
-    subprocesses.push("curl('wss://bitshares.crypto.fans/ws','','',{'method': 'call', 'params': [1, 'login', ['', '']], 'id': 1})");
-    subprocesses.push('test(data.result,2,1)');
-    subprocesses.push("stop(1,'Connection failed')");
-    subprocesses.push("curl('wss://bitshares.crypto.fans/ws','','',{'method':'call', 'params':[0,'get_account_by_name',['" + address + "']], id: 2})");
+    subprocesses.push("curl('asset://bts','','',{'method':'call', 'params':[0,'get_account_by_name',['" + address + "']], id: Math.floor(Math.random()*10000)})");
     subprocesses.push("tran('.result.id',2,1)");
     subprocesses.push("stop(0,'invalid')");
     subprocesses.push("stop(0,'valid')");
