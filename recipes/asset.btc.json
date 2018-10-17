@@ -11,7 +11,7 @@
   "import":"electrum-tcp",
   "quartz":{
     "sample" : [
-      "stop(0,{address:'1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX',transaction:'2c0832c153cf33327dae0e95a3bc39f4b02ae887725a32c07b1be47a2faffc55'})"
+      "stop(0,{address:'1J3St3rp3hVsuLGhegbLWicyPL3NRD3YJ7',transaction:'2c0832c153cf33327dae0e95a3bc39f4b02ae887725a32c07b1be47a2faffc55'})"
     ]
   }
 }
