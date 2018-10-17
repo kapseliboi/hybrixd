@@ -28,7 +28,7 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
   var command = xpath[0];
   if (command === 'balance' || command === 'fee') { // Append formatting of returned numbers
     subprocesses.push('form()');
-    subprocesses.push('stop()');
+    subprocesses.push('done()');
   }
 }
 
