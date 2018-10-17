@@ -32,33 +32,6 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
   }
 }
 
-function connectionOptions (recipe) {
-  var options = {};
-  if (recipe.hasOwnProperty('pass')) {
-    options.password = recipe.pass;
-  }
-  if (recipe.hasOwnProperty('user')) {
-    options.user = recipe.user;
-  }
-  if (recipe.hasOwnProperty('proxy')) {
-    options.proxy = recipe.proxy;
-  }
-  if (recipe.hasOwnProperty('connection')) {
-    options.connection = recipe.connection;
-  }
-  if (recipe.hasOwnProperty('mimetypes')) {
-    options.mimetypes = recipe.mimetypes;
-  }
-  if (recipe.hasOwnProperty('requestConfig')) {
-    options.requestConfig = recipe.requestConfig;
-  }
-  if (recipe.hasOwnProperty('proxy')) {
-    options.responseConfig = recipe.responseConfig;
-  }
-  options.rejectUnauthorized = false;
-  return options;
-}
-
 // standard functions of an asset store results in a process superglobal -> global.hybridd.process[processID]
 // child processes are waited on, and the parent process is then updated by the postprocess() function
 function exec (properties) {
@@ -67,26 +40,13 @@ function exec (properties) {
   var recipe = properties.target; // The recipe object
 
   var id; // This variable will contain the recipe.id for sources or the recipe.symbol for assets
-  var engine; // This variable will contain the recipe.id for sources or the recipe.symbol for assets
-  var source; // This variable will contain the recipe.id for sources or the recipe.symbol for assets
-  var list; // This variable will contain the global.hybridd.source for sources or global.hybridd.asset for assets
-  var base; // This variable will contain the base part of the symbol (the part before the '.' ) for assets
-  var token; // This variable will contain the token part of the symbol (the part after the '.' ) for assets
 
   if (recipe.hasOwnProperty('symbol')) { // If recipe defines an asset
     id = recipe.symbol;
-    list = global.hybridd.asset;
-    var symbolSplit = id.split('.');
-    base = symbolSplit[0];
-    if (symbolSplit.length > 0) {
-      token = symbolSplit[1];
-    }
   } else if (recipe.hasOwnProperty('source')) { // If recipe defines a source
     id = recipe.source;
-    list = global.hybridd.source;
   } else if (recipe.hasOwnProperty('engine')) { // If recipe defines an engine
     id = recipe.engine;
-    list = global.hybridd.engine;
   } else {
     console.log(' [i] Error: recipe file contains neither asset symbol nor engine or source id.');
   }
@@ -94,48 +54,6 @@ function exec (properties) {
   global.hybridd.proc[processID].request = properties.command; // set request to what command we are performing
 
   var command = properties.command[0];
-  if (command === 'init') {
-    if (recipe.hasOwnProperty('host')) { // set up connection
-      if (typeof recipe.host === 'string' && (recipe.host.substr(0, 5) === 'ws://' || recipe.host.substr(0, 6) === 'wss://')) { // Websocket connections ws://, wss://
-        try {
-          var ws = new WebSocket(recipe.host, {});
-
-          ws.on('open', function open () {
-            console.log(' [i] API queue: Websocket ' + recipe.host + ' opened');
-          }).on('close', function close () {
-            console.log(' [i] API queue: Websocket ' + recipe.host + ' closed');
-          }).on('error', function error (code, description) {
-            console.log(' [i] API queue: Websocket ' + recipe.host + ' : Error ' + code + ' ' + description);
-          });
-
-          list[id].link = ws;
-        } catch (result) {
-          console.log(` [!] Error initiating WebSocket -> ${result}`);
-        }
-      } else if ((typeof recipe.host === 'string' && recipe.host.substr(0, 6) === 'tcp://') || (Object.prototype.toString.call(recipe.host) === '[object Array]' && recipe.host[0].substr(0, 6) === 'tcp://')) { // TCP direct connections tcp://
-        var tmp;
-        if (typeof recipe.host === 'string') {
-          recipe.host = [recipe.host];
-        }
-        for (var i = 0; i < recipe.host.length; i++) {
-          var host = recipe.host[i].substr(6).split(':');
-          var hostaddr = host[0];
-          var hostport = (host[1] ? Number(host[1]) : 23);
-          try {
-            var tcp = Teletype(hostaddr, hostport);
-            console.log(' [i] API queue: TCP link ' + hostaddr + ':' + hostport + ' opened');
-            if (typeof list[id].link === 'undefined') { list[id].link = {}; }
-            list[id].link[recipe.host[i]] = tcp;
-          } catch (result) {
-            console.log(' [!] API queue: Error initiating TCP connection -> ' + result);
-          }
-        }
-      } else { // Http connection http:// https://
-        list[id].link = new Client(connectionOptions(recipe));
-        // Overkill in logging: console.log(' [i] HTTP ' + recipe.host + ' initialized.');
-      }
-    }
-  }
 
   var subprocesses = [];
   if (recipe.hasOwnProperty('quartz') && recipe.quartz.hasOwnProperty(command)) {
