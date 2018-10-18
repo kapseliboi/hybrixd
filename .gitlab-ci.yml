@@ -208,6 +208,7 @@ staging:
   image: alpine:latest
   stage: staging
   script:
+    - sed -i -e "s:./hybridd:sed -i -e 's/userbind = 127.0.0.1/userbind = '$POD_IP'/g' hybridd.conf && sed -i -e 's/userport = 8080/userport = 5000/g' hybridd.conf && ./hybridd:g" package.json
     - check_kube_domain
     - install_dependencies
     - download_chart
@@ -216,11 +217,6 @@ staging:
     - create_secret
     - install_certificate
     - deploy
-    - ./ls -l 
-    - ./ls -l common
-    - ./ls -l dist
-    - ./ls -l interface
-    - ./hybridd
   environment:
     name: staging
     #url: http://$CI_PROJECT_PATH_SLUG-staging.$AUTO_DEVOPS_DOMAIN
