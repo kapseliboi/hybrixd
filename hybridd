@@ -6,7 +6,7 @@ NODEINST=`which node`
 
 if [ "$1" = "" ]; then
 
-  echo " [i] Starting hybridd..."
+  echo " [i] starting hybridd..."
   NODE_VERSION=$($NODEINST --version)
 
 
@@ -25,12 +25,10 @@ if [ "$1" = "" ]; then
 
 
   cd lib
-        echo
-        mkdir -p $WHEREAMI/var/log
-        node hybridd.js 2>&1 | tee $WHEREAMI/var/log/hybridd.log
-        echo
-        echo " [i] Stopped hybridd."
-        echo
+  mkdir -p $WHEREAMI/var/log
+  node hybridd.js 2>&1 | tee $WHEREAMI/var/log/hybridd.log
+  echo " [i] stopped hybridd"
+  echo
 elif [ "$1" = "start" ]; then
   ./hybridd.start
 else
