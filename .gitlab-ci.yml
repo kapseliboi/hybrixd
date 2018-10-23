@@ -34,6 +34,10 @@ hybridd:
     # install unzip
     - apk update
     - apk add npm
+    
+    # trying to get past error: could not get uid/gid [ 'nobody', 0 ]
+    - npm config set unsafe-perm true
+    
     - npm install -g jsdoc
     - apk add unzip
     - apk add curl
