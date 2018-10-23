@@ -36,6 +36,7 @@
       "load '$idx'",
       "jump 2",
       "data []",
+      "done",
       "push '$2'",
       "save '$idx'",
       "done 'Added $2 to list $1'"
