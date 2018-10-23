@@ -212,7 +212,7 @@ staging:
   image: node:8.12.0-stretch
   stage: staging
   script:
-    - sed -i -e "s:./hybridd:sed -i -e 's/userbind = 127.0.0.1/userbind = '$POD_IP'/g' hybridd.conf && sed -i -e 's/userport = 8080/userport = 5000/g' hybridd.conf && ./hybridd:g" package.json
+    # doesn't work: - sed -i -e "s:./hybridd:sed -i -e 's/userbind = 127.0.0.1/userbind = '$POD_IP'/g' hybridd.conf && sed -i -e 's/userport = 8080/userport = 5000/g' hybridd.conf && ./hybridd:g" package.json
     - check_kube_domain
     - install_dependencies
     - download_chart
@@ -534,8 +534,8 @@ staging:
 
       echo "Configuring $CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG docker image..."
       docker create --expose 5000 --env PORT=5000 --name="$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" /bin/herokuish procfile start web
-      #ls -l > test.txt
-      #docker cp test.txt "$CI_CONTAINER_NAME":/app/test.txt
+      ls -l > test.txt
+      docker cp test.txt "$CI_CONTAINER_NAME":/app/test.txt
       docker commit "$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
       docker rm "$CI_CONTAINER_NAME" >/dev/null
       echo ""
