@@ -5,47 +5,11 @@
   "mode":"dash",
   "factor":8,
   "fee":0.1,
-  "fee-symbol":"dash",
-  "keygen-base":"dash",
-  "contract":"NOT DEFINED",
-  "host":"https://chain.so",
+  "host":["tcp://electrum3.cipig.net:10061","tcp://electrum2.cipig.net:10061","tcp://electrum1.cipig.net:10061"],
   "cache":180000,
-  "throttle":4,
+  "throttle":10,
+  "import":"electrum-tcp",
   "quartz":{
-    "init" : [
-      "stop(1,'Not yet implemented!')"
-    ],
-    "unspent" : [
-      "curl('asset://$symbol','/api/v2/get_tx_unspent/DASH/$1','GET','')",
-      "tran '.data.txs' 2 1",
-      "fail 'No Result'",
-      "done"
-    ],
-    "balance" : [
-      "curl('asset://$symbol','/api/v2/get_address_balance/DASH/$1','GET','')",
-      "tran '.data.confirmed_balance' 2 1",
-      "fail 'No Result'",
-      "done"
-    ],
-    "push" : [
-      "curl('asset://$symbol','/api/v2/send_tx/DASH','POST','','$1')",
-      "done"
-    ],
-    "factor" : [
-      "pass('$factor')"
-    ],
-    "history" : [
-      "fail 'Not yet implemented'"
-    ],
-    "transaction" : [
-      "fail 'Not yet implemented'"
-    ],
-    "contract" : [
-      "done '$contract'"
-    ],
-    "fee" : [
-      "pass('$fee')"
-    ],
     "sample" : [
       "stop(0,{address:'Xm9TJiJ7nWjme8K7iEPUGsC5JjYGzPk2QU',transaction:'9af1af8ab18b70a4487ee9ec74e4ce0be83e3dd32f2558a416f348d37a1f5d62'})"
     ]
