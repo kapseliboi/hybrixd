@@ -1,0 +1,13 @@
+{
+  "engine":"quotes",
+  "name":"Collect exchange rates for currencies.",
+  "module":"quartz",
+  "quartz":{
+    "getQuotes": [
+      "func('gatherQuotes','exec', {})"
+    ]  
+  },
+    "router" : {
+      "getQuotes":"Retrieve aggregate quotes from all sources."
+  }
+}
