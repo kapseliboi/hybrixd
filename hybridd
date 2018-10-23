@@ -9,9 +9,8 @@ if [ "$1" = "" ]; then
   echo " [i] starting hybridd..."
   NODE_VERSION=$($NODEINST --version)
 
-
-  if [ "$NODE_VERSION" != "v8.11.2" ]; then
-      echo " [!] Warning: hybridd expects Node v8.11.2. found $NODE_VERSION"
+  if [ "$NODE_VERSION" != "v8.12.0" ]; then
+      echo " [!] Warning: hybridd expects Node v8.12.0. found $NODE_VERSION"
       echo "             $NODEINST"
       read -p " [?] Do you wish to continue y/n?" CONFIRM
       if [ "$CONFIRM" != "y" ]; then
