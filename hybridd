@@ -13,8 +13,8 @@ if [ "$1" = "" ]; then
   if [ "$NODE_VERSION" != "v8.11.2" ]; then
       echo " [!] Warning: hybridd expects Node v8.11.2. found $NODE_VERSION"
       echo "             $NODEINST"
-      read -n 1 -p " [?] Do you wish to continue y/n?" CONFIRM
-      if [ "$CONFIRM" = "n" ]; then
+      read -p " [?] Do you wish to continue y/n?" CONFIRM
+      if [ "$CONFIRM" != "y" ]; then
           PATH=$OLDPATH
           echo "\n [i] Stopped hybridd."
           exit 0
