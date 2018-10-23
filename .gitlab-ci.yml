@@ -1,4 +1,4 @@
-image: node:8.11.2
+image: node:8.12.0-stretch
 
 variables:
   # AUTO_DEVOPS_DOMAIN is the application deployment domain and should be set as a variable at the group or project level.
@@ -34,6 +34,10 @@ hybridd:
     # install unzip
     - apk update
     - apk add npm
+    
+    # trying to get past error: could not get uid/gid [ 'nobody', 0 ]
+    - npm config set unsafe-perm true
+    
     - npm install -g jsdoc
     - apk add unzip
     - apk add curl
@@ -41,8 +45,8 @@ hybridd:
     
     - WORKING_DIR=$PWD
     - echo $PWD
-    - cd /builds/iochq/hybridd/node
-    - echo $PWD
+    #- cd /builds/iochq/hybridd/node
+    #- echo $PWD
     
     # trigger pipeline common
     # - "curl --request POST --form \"token=$CI_JOB_TOKEN\" --form ref=master https://gitlab.com/api/v4/projects/iochq%2Fhybridd%2Fcommon/trigger/pipeline"
@@ -205,7 +209,7 @@ stop_review:
 # STAGING_ENABLED.
 
 staging:
-  image: alpine:latest
+  image: node:8.12.0-stretch
   stage: staging
   script:
     - sed -i -e "s:./hybridd:sed -i -e 's/userbind = 127.0.0.1/userbind = '$POD_IP'/g' hybridd.conf && sed -i -e 's/userport = 8080/userport = 5000/g' hybridd.conf && ./hybridd:g" package.json
@@ -530,8 +534,8 @@ staging:
 
       echo "Configuring $CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG docker image..."
       docker create --expose 5000 --env PORT=5000 --name="$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" /bin/herokuish procfile start web
-      ls -l > test.txt
-      docker cp test.txt "$CI_CONTAINER_NAME":/app/test.txt
+      #ls -l > test.txt
+      #docker cp test.txt "$CI_CONTAINER_NAME":/app/test.txt
       docker commit "$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
       docker rm "$CI_CONTAINER_NAME" >/dev/null
       echo ""
