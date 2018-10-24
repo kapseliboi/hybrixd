@@ -39,6 +39,7 @@ hybridd:
     - npm config set unsafe-perm true
     
     - npm install -g jsdoc
+    - npm install xmldoc
     - apk add unzip
     - apk add curl
     - apk add nodejs=8.11.4-r0
