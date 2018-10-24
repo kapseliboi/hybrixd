@@ -1,11 +1,8 @@
 #!/bin/sh
-
-#TODO: back to #!/bin/sh
-
 OLDPATH="$PATH"
-WHEREAMI=`pwd`
-export PATH=$WHEREAMI/node/bin:"$PATH"
-NODEINST=`which node`
+WHEREAMI="`pwd`"
+export PATH="$WHEREAMI/node_binaries/bin:$PATH"
+NODEINST="`which node`"
 UGLIFY=node_modules/uglify-es/bin/uglifyjs
 CSSMIN=node_modules/cssmin/bin/cssmin
 
@@ -19,7 +16,7 @@ DIST="$NODE/dist"
 # QUARTZ
 echo "[.] Generate Quartz documentation."
 mkdir -p "$NODE/docs"
-jsdoc "$NODE/lib/scheduler/quartz.js"  -d "$NODE/docs"
+jsdoc -d="$NODE/docs" "$NODE/lib/scheduler/quartz.js"
 
 echo "[.] Creating hybridd release..."
 
@@ -28,7 +25,7 @@ mkdir -p "$DIST"
 echo "[.] Cleaning target path"
 rm -rfv "$DIST/*" >/dev/null
 
-echo "[.] Processing Files"
+echo "[.] Processing files"
 cd "$NODE"
 
 # Copy the main entrypoint
@@ -62,7 +59,7 @@ for FILE in $(find -L . -name '*.js' -or -name '*.css'  -or -name '*.json' -or -
         BASEFOLDER="$2"
         IFS="$OLD_IFS"
         # Only handle files in the following folders
-        if [ "$BASEFOLDER" == "lib" ] || [ "$BASEFOLDER" == "modules" ] || [ "$BASEFOLDER" == "recipes" ] || [ "$BASEFOLDER" == "recipes.EXTRA" ] || [ "$BASEFOLDER" == "common" ] || [ "$BASEFOLDER" == "interface" ]; then
+        if [ "$BASEFOLDER" = "lib" ] || [ "$BASEFOLDER" = "modules" ] || [ "$BASEFOLDER" = "recipes" ] || [ "$BASEFOLDER" = "recipes.EXTRA" ] || [ "$BASEFOLDER" = "common" ] || [ "$BASEFOLDER" = "interface" ]; then
 
             EXT="${FILE##*.}"
             FOLDER=$(dirname "${FILE}")
