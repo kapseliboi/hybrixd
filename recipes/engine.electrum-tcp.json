@@ -95,11 +95,11 @@
       "done()"
     ],
     "init" : [
-      "test('$symbol'==='undefined',2)",
+      "test('$symbol',2)",
       "call('getFee')"
     ],
     "cron" : [
-      "test('$symbol'==='undefined',2)",
+      "test('$symbol',2)",
       "call('getFee')"
     ],
     "getFee" : [

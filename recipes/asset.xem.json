@@ -64,7 +64,6 @@
     "history" : [
       "curl('asset://$symbol','/account/transfers/all?address='+'$1'.replace(/-/g, ''),'GET',data,{'content-type':'application/json'})",
       "tran('.data',1)",
-      "done()",
       "each(data,'history_tran')",
       "sort('.timestamp')",
       "done()"
