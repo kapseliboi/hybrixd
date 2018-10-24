@@ -222,7 +222,7 @@ function chckVar (p, property, data) {
 }
 
 function mathCalc (equation, operator, data) {
-  if(equation.length>0) {
+  if (equation.length > 0) {
     function stricteval (equation) { return eval(equation); }
 
     equation = '(new Decimal(' + String(equation)
@@ -269,16 +269,20 @@ err:    Set the error flag of the subprocess.  (0 = no error, 1 or higher = erro
 data:   Store data in the subprocess data field.
     */
   this.next = function (p, err, xdata) {
-    global.hybridd.proc[p.processID].err = (typeof err === 'undefined' ? 1 : err);
-    global.hybridd.proc[p.processID].busy = false;
-    global.hybridd.proc[p.processID].progress = 1;
-    global.hybridd.proc[p.processID].stopped = Date.now();
-    global.hybridd.proc[p.processID].data = xdata;
+    if (err !== 0) {
+      scheduler.stop(p.processID, err, xdata);
+    } else {
+      global.hybridd.proc[p.processID].err = (typeof err === 'undefined' ? 1 : err);
+      global.hybridd.proc[p.processID].busy = false;
+      global.hybridd.proc[p.processID].progress = 1;
+      global.hybridd.proc[p.processID].stopped = Date.now();
+      global.hybridd.proc[p.processID].data = xdata;
+    }
   };
 
   /**
- * Output debug information to the console
- * @param {Object} data - Data to display (using JSON.stringify). Also passed.
+ * Output debug information to the console.
+ * @param {Object} [data] - Data to display (using JSON.stringify). Also passed.
  * @example
  * dump();      // outputs contents of data stream to console
  * dump({a:1}); // outputs "[D] {a:1}" to console
@@ -290,7 +294,7 @@ data:   Store data in the subprocess data field.
   };
 
   /**
- * Wait a specified amount of time
+ * Wait a specified amount of time.
  * @param {Number} millisecs - Amount of milliseconds to wait.
  * @param {Object} [data] - Store data in this subprocess data field.
  * @example
@@ -314,7 +318,7 @@ data:   Store data in the subprocess data field.
   };
 
   /**
- * Wait for a process to finish, and store its processID
+ * Wait for a process to finish, and store its processID.
  * @param {String} processID - Process ID to wait for.
  * @param {Number} [interval] - Amount of time in milliseconds between checks. Defaults to 500.
  * @example
@@ -341,28 +345,7 @@ data:   Store data in the subprocess data field.
   };
 
   /**
- * Collect data into array.
- * @param {Number} input - Data to add to array
- * @example
- * push(0)          // add 0 to data array
- * push('woots!')   // add 'woots!' to data array
- */
-  this.push = function (p, input) {
-    if (DEBUG) { console.log(' [D] (' + p.parentID + ') collecting data into array'); }
-    var ydata = global.hybridd.proc[p.processID].data;
-    if (Object.prototype.toString.call(ydata) !== '[object Array]') {
-      if (typeof ydata === 'undefined' || ydata === null) {
-        ydata = [];
-      } else {
-        ydata = [ ydata ];
-      }
-    }
-    ydata.push(input);
-    this.next(p, 0, ydata);
-  };
-
-  /**
- * Logs data to console
+ * Logs data to console.
  * @param {Number} level - Log level between 0-2.
  * @param {String} log - The message you want to log.
  * @param {Object} [data] -  Store data in this subprocess data field. (Passed to parent process on stop.)
@@ -378,7 +361,7 @@ data:   Store data in the subprocess data field.
   };
 
   /**
- * Pass data to parent process
+ * Pass data to parent process.
  * @param {Object} data -  Store data in this subprocess data field. Passed to parent process.
  * @example
  * pass()               // push data stream contents to master process
@@ -422,7 +405,7 @@ data:   Store data in the subprocess data field.
   };
 
   /**
- *Set progress of parent process
+ * Set progress of parent process.
  * @param {Number} step - Current step in the progress. (Value -1 restores automatic progress reporting.)
  * @param {Number} steps - Total amount of steps.
  * @param {Object} [data] - Store data in this subprocess data field. (Passed to parent process on stop.)
@@ -444,7 +427,7 @@ data:   Store data in the subprocess data field.
   };
 
   /**
- * Set timeout of current process
+ * Set timeout of current process.
  * @param {Number} millisecs -  Amount of milliseconds to wait.
  * @param {Object} [data] - Set data when process times out
  * @param {Object} [err ] - Set error flag when process times out
@@ -460,7 +443,7 @@ data:   Store data in the subprocess data field.
     // increase timeout of all siblings
     var loopid;
     var process = global.hybridd.proc[p.parentID];
-    for (var i = process.step; i &lt;= process.steps; i += 1) {
+    for (var i = 0; i &lt;= process.steps; i += 1) {
       loopid = p.parentID + '.' + i;
       if (global.hybridd.proc[loopid].timeout &lt; millisecs || millisecs &lt;= 0) {
         global.hybridd.proc[loopid].timeout = millisecs;
@@ -513,7 +496,7 @@ data:   Store data in the subprocess data field.
   };
 
   /**
- * Set the type field of a process
+ * Set the type field of a process.
  * @param {String} data - the data type. default: 'data': data as is;  'file':  for static file content retrieval.
  * @example
  *  type("data")           // set the data type to 'data'
@@ -532,7 +515,7 @@ data:   Store data in the subprocess data field.
   };
 
   /**
- * Set data stream to a value
+ * Set data stream to a value.
  * @param {Object} object - Object to fill the data stream with.
  * @example
  * data("test")            // Fill the data stream with 'test'.
@@ -543,7 +526,7 @@ data:   Store data in the subprocess data field.
   };
 
   /**
- * Indicates a fallback target when an error is encountered
+ * Indicates a fallback target when an error is encountered.
  * @param {String|Integer} onError - Determines fallback behaviour. String will st
  * @example
  * hook "Something went wrong." 0
@@ -582,7 +565,7 @@ data:   Store data in the subprocess data field.
     }
   };
   /**
- * Fail processing and return message
+ * Fail processing and return message.
  * @param {Number} [err] - Set the error flag of the subprocess.   (0 = no error, 1 (Default) or higher = error)
  * @param {Object} [data] - Message/data passed  to parent process.
  * @example
@@ -601,10 +584,10 @@ data:   Store data in the subprocess data field.
   };
 
   /**
- * Stop processing and return message
+ * Stop processing and return message.
  * @param {Object} [data] - Message/data passed  to parent process.
  * @example
- * done()                  // stop processing without error.
+ * done()                // stop processing without error.
  * done("Success")       // stop processing without error and put "Success." in main process data field
  */
   this.done = function (p, xdata) {
@@ -613,7 +596,7 @@ data:   Store data in the subprocess data field.
   };
 
   /**
- * Jump forward or backward several instructions
+ * Jump forward or backward several instructions.
  * @param {Number} step - Amount of instructions lines to jump.   (1 = jump forward 1 instruction, -2 = jump backward two instructions)
  * @example
  * jump(2)         // jump over the next instruction
@@ -662,19 +645,21 @@ data:   Store data in the subprocess data field.
     if (DEBUG) { console.log(' [D] (' + p.parentID + ') jumping to step ' + (global.hybridd.proc[p.parentID].step + 1) + ' of ' + (global.hybridd.proc[p.parentID].steps + 1)); }
   };
   /**
- * Test a condition and choose to jump
+ * Test a condition and choose to jump.
  * @param {Boolean} condition -  Javascript condition to test. (Example: a>5)
  * @param {Number} onTrue - Amount of instructions lines to jump when condition matches true.   (1 = jump forward 1 instruction, -2 = jump backward two instructions)
  * @param {Number} onFalse - Amount of instructions lines to jump when condition matches false.  (1 = jump forward 1 instruction, -2 = jump backward two instructions)
  * @param {Object} [data] -  Store data in this subprocess data field.
  * @example
- * test(a>3,1,-3)    // test if a>3, if true jump to the next instruction, if false jump back three instructions
- * test(b&lt;=1,-4,1)   // test if b&lt;=1, if true jump back four instructions, if false jump to the next instruction
- * test(a>3,-5)      // test if a>3, if true jump back five instructions, else default jump to the next instruction
+ * test('a>3',1,-3)    // test if a>3, if true jump to the next instruction, if false jump back three instructions
+ * test('b&lt;=1',-4,1)   // test if b&lt;=1, if true jump back four instructions, if false jump to the next instruction
+ * test('a>3',-5)      // test if a>3, if true jump back five instructions, else default jump to the next instruction
  */
   this.test = function (p, condition, is_true, is_false) {
     if (DEBUG) { console.log(' [D] (' + p.parentID + ') testing [' + condition + '] in step ' + (global.hybridd.proc[p.parentID].step + 1) + ' of ' + (global.hybridd.proc[p.parentID].steps + 1)); }
-    if (condition) {
+    // TODO: function stricteval (equation) { return eval(equation); }
+    //       if (stricteval("'"+condition.replace(/[^\w-]+/g,"'$&amp;'")+"'")) {
+    if(condition) {
       this.jump(p, is_true || 1);
     } else if (typeof is_false === 'undefined') {
       this.next(p, 0, global.hybridd.proc[p.processID].data);
@@ -715,7 +700,7 @@ data:   Store data in the subprocess data field.
     }
   };
   /**
- * Find a string in an array of objects, and return the object it was found in
+ * Find a string in an array of objects, and return the object it was found in.
  * @param {Object} needle - The object to find
  * @param {Number} [onFound] - Where to jump when the data is found
  * @param {Number} [onNotFound] - Where to jump when the data is not found
@@ -743,7 +728,7 @@ data:   Store data in the subprocess data field.
     }
   };
   /**
- * Format a (floating point) number and return a neatly padded string
+ * Format a (floating point) number and return a neatly padded string.
  * @param {Number} [factor] - Contains a number
  * @example
  * form()     // input: 10, output: "10.00000000" (using $factor = 8)
@@ -761,7 +746,7 @@ data:   Store data in the subprocess data field.
     this.next(p, 0, result);
   };
   /**
- * Convert a number from atomic units, or convert to atomic units
+ * Convert a number from atomic units, or convert to atomic units.
  * @param {Number} [reduce] - When true reduces the input data
  * @param {Number} [factor] - Factor to use
  * @example
@@ -787,26 +772,25 @@ data:   Store data in the subprocess data field.
     this.next(p, 0, result);
   };
   /**
- * Explode string
+ * Split a string.
  * @param {String} [separator] - Explode a string into an array, split by separator
  * @example
- * expl()     // input: "This is nice.", output: ["This","is","nice."]
- * expl(',')  // input: "Some,list,of,stuff", output: ["Some","list","of","stuff]
+ * splt()     // input: "This is nice.", output: ["This","is","nice."]
+ * splt(',')  // input: "Some,list,of,stuff", output: ["Some","list","of","stuff]
  */
-  this.expl = function (p, separator) {
-    if (typeof separator === 'undefined') { separator = ' '; }
+  this.splt = function (p, separator) {
+    if (typeof separator === 'undefined') { separator = ''; }
     var result = global.hybridd.proc[p.processID].data.split(separator);
     this.next(p, 0, result);
   };
   /**
-  /**
- * Implode array
+ * Join an array into a string.
  * @param {String} [separator] - Implode an array to a string, split by separator
  * @example
- * impl()     // input: ["This","is","nice."], output: "Thisisnice."
- * impl(' ')  // input: ["Some","list","of","stuff"], output: "Some list of stuff"
+ * join()     // input: ["This","is","nice."], output: "Thisisnice."
+ * join(' ')  // input: ["Some","list","of","stuff"], output: "Some list of stuff"
  */
-  this.impl = function (p, separator) {
+  this.join = function (p, separator) {
     if (typeof separator === 'undefined') { separator = ''; }
     var result = global.hybridd.proc[p.processID].data.join(separator);
     this.next(p, 0, result);
@@ -824,9 +808,9 @@ data:   Store data in the subprocess data field.
  * @param {Object} [headers] - http headers passed to call
  * @param {Object} [overwriteProperties] -
  * - retry: max nr of retries allowed
- * - throttle:
- * - timeout:
- * - interval:
+ * - throttle: max amount of calls per second
+ * - timeout: timeout of a curl call in seconds
+ * - interval: try a new call if no response
  * - user:
  * - password:
  * - proxy:
@@ -888,37 +872,37 @@ data:   Store data in the subprocess data field.
       console.log(' [!] module quartz: unauthorized TLS/SSL certificates ignored for ' + properties.symbol);
       args['rejectUnauthorized'] = false;
     }
-    args.headers = headers;
+    args.headers = (headers?headers:{});
+
     var queueObject = {
-      'link': link,
-      'target': target,
-      'host': properties.host,
-      'user': properties.user,
-      'pass': properties.pass,
-      'args': args,
-      'method': method || 'GET',
-      'retry': properties.retry,
-      'throttle': properties.throttle,
-      'timeout': properties.timeout,
-      'interval': properties.retry,
-      'pid': p.processID
+      link: link,
+      target: target,
+      host: properties.host,
+      user: properties.user,
+      pass: properties.pass,
+      args: args,
+      method: method || 'GET',
+      retry: properties.retry,
+      throttle: properties.throttle,
+      timeout: properties.timeout,
+      interval: properties.retry,
+      pid: p.processID
     };
 
+    if (overwriteProperties) { // overwrite connection properties
+      if (overwriteProperties.hasOwnProperty('pid')) { delete overwriteProperties.pid; }
+      if (overwriteProperties.hasOwnProperty('link')) { delete overwriteProperties.link; }
+    } else { overwriteProperties = {}; }
+
     // Remove undefined values (needed to let APIqueue set defaults)
-    var cleanQueueObject = Object.keys(queueObject).reduce(
+    var cleanQueueObject = Object.keys( Object.assign(queueObject, overwriteProperties) ).reduce(
       function (cleanQueueObject, key) {
         if (typeof queueObject[key] !== 'undefined') {
           cleanQueueObject[key] = queueObject[key];
         }
         return cleanQueueObject;
       }, {});
-
-    if (overwriteProperties) { // overwrite connection properties
-      if (overwriteProperties.hasOwnProperty('pid')) { delete overwriteProperties.pid; }
-      if (overwriteProperties.hasOwnProperty('link')) { delete overwriteProperties.link; }
-      Object.assign(cleanQueueObject, overwriteProperties);
-    }
-
+      // DEBUG: console.log('##########'+JSON.stringify(cleanQueueObject)+'##########');
     APIqueue.add(cleanQueueObject);
   };
   /**
@@ -945,7 +929,7 @@ data:   Store data in the subprocess data field.
     return childPID;
   };
   /**
- * Creates a new process by calling the xpath command and wait for the data to be returned. (Combining fork and read)
+ * Creates a new process by calling the xpath command and wait for the data to be returned (combines fork and read).
  * @param {String} command -  A string containg the command path. "command/a/b". processStepID calls command using $1 = "a", $2 = "b"
  * @param {Object} data -  Optional data to be passed to the new process
  * @example
@@ -959,8 +943,7 @@ data:   Store data in the subprocess data field.
  * Route a path through hybridd and pass the result to the next step. /api/help for API information.
  * @param {String} path - Provide the routing path
  * @example
- * rout('/asset/dummy/balance/__dummyaddress__')   // retrieve the
-  balance for the dummy asset
+ * rout('/asset/dummy/balance/__dummyaddress__')   // retrieve the balance for the dummy asset
  */
   this.rout = function (p, xpath) {
     // TODO pass data to post
@@ -969,12 +952,13 @@ data:   Store data in the subprocess data field.
     if (result.id === 'id') { // if result is a process that has te be awaited, then read that proces until finished
       this.read(p, result.data);
     } else {
+      scheduler.type(p.processID, result.type);
       this.next(p, result.hasOwnProperty('error') ? result.error : 1, result.hasOwnProperty('data') ? result.data : null); // If it's a direct result pass it to next
     }
   };
 
   /**
- * Store a key value pair
+ * Store a key value pair.
  * @param {String} key - Key under which to store data
  * @param {Object} [value] - Value to store
  * @example
@@ -982,27 +966,28 @@ data:   Store data in the subprocess data field.
  */
   this.save = function (p, key, value) {
     if (typeof value === 'undefined') { value = global.hybridd.proc[p.processID].data; }
-    this.rout(p, ['engine', 'storage', 'set', encodeURIComponent(key), encodeURIComponent(JSON.stringify(value))]);
+    this.rout(p, '/engine/storage/set/' + encodeURIComponent(key) + '/' + encodeURIComponent(JSON.stringify(value)));
   };
 
   /**
- * Retrieve a value based on a key
+ * Retrieve a value based on a key.
  * @param {String} key - Key from which to retrieve data
  * @example
  * load("myFavoriteColor")  // retrieve the value for myFavoriteColor
  */
   this.load = function (p, key) {
-    this.rout(p, ['engine', 'storage', 'get', encodeURIComponent(key)]); // TODO make sure that value is decoded as well (pass postprocess callback to rout and read?)
+    this.rout(p, '/engine/storage/get/' + encodeURIComponent(key));
+    // TODO make sure that value is decoded as well (pass postprocess callback to rout and read?)
   };
 
   /**
- * Retrieve the meta data based on a key
+ * Retrieve the meta data based on a key.
  * @param {String} key - Key for which to get metadata
  * @example
  * meta("myFavoriteColor")  // retrieve the meta data for myFavoriteColor
  */
   this.meta = function (p, key) {
-    this.rout(p, ['engine', 'storage', 'meta', encodeURIComponent(key)]);
+    this.rout(p, '/engine/storage/get/' + encodeURIComponent(key));
   };
 
   /**
@@ -1061,7 +1046,7 @@ data:   Store data in the subprocess data field.
       if (finished) {
         var result;
         if (typeof processIDs === 'string') { // single
-          result = {data: global.hybridd.proc[processIDs].data, err: global.hybridd.proc[processIDs].err};
+          result = {data: global.hybridd.proc[processIDs].data, err: global.hybridd.proc[processIDs].err, type: global.hybridd.proc[processIDs].type};
         } else if (processIDs instanceof Array) { // array
           result = {data: [], err: 0};
           for (var i = 0; i &lt; processIDs.length; i++) {
@@ -1078,6 +1063,7 @@ data:   Store data in the subprocess data field.
           }
           global.hybridd.proc[p.processID].progress = 1;
         }
+        scheduler.type(p.processID, result.type);
         this.next(p, result.err, result.data);
       } else {
         setTimeout(function (p, processIDs, millisecs, quartz) {
@@ -1304,7 +1290,7 @@ data:   Store data in the subprocess data field.
   };
 
   /**
- * Scan through the values of an array or object, and return values that pass the test
+ * Scan through the values of an array or object, and return values that pass the test.
  * @param {String} test       - Test to perform when scanning
  * @param {String} cumulative - Cumulative operation
  * @param {Number} cinit      - Initial value of cumulative counter
@@ -1351,15 +1337,21 @@ data:   Store data in the subprocess data field.
   // TODO: Implement method DJB2
   this.hash = function (p, method) {
     if (DEBUG) { console.log(' [D] (' + p.parentID + ') hash [' + global.hybridd.proc[p.processID].data + '] in step ' + (global.hybridd.proc[p.parentID].step + 1) + ' of ' + (global.hybridd.proc[p.parentID].steps + 1)); }
-    var hash = nacl.to_hex(nacl.crypto_hash_sha256(global.hybridd.proc[p.processID].data));
+    var hash;
+    switch (method) {
+      case 'djb2':
+        break;
+      default:
+        hash = nacl.to_hex(nacl.crypto_hash_sha256(global.hybridd.proc[p.processID].data));
+        break;
+    }
     this.next(p, 0, hash);
   };
 
   /**
  * Change encoding of a string from one format to the other.
- * @param {String} target - Target encoding
- * @param {String} source - Source encoding
- * @param {String} string - String to change encoding
+ * @param {String} target   - Target encoding
+ * @param {String} [source] - Source encoding
  * @example
  *  code('bin')             // input: 'woot', returns: '1110111011011110110111101110100'
  *  code('utf-8','base58')  // input: 'this_is_my_data', returns: '4FtePA9kj2RpFH4tBkPUt'
@@ -1368,33 +1360,34 @@ data:   Store data in the subprocess data field.
   this.code = function (p, source, target) {
     if (DEBUG) { console.log(' [D] (' + p.parentID + ') code [' + input + '] in step ' + (global.hybridd.proc[p.parentID].step + 1) + ' of ' + (global.hybridd.proc[p.parentID].steps + 1)); }
     var input = global.hybridd.proc[p.processID].data;
+    function asciitable() {
+        var x = '';
+        for (i = 0; i &lt; 256; i++) { x = x + String.fromCharCode(i); }
+        return x;
+    }
     var BASE = function (val) {
       var out;
       switch (val) {
-        case 2:  out = '01'; break;
-        case 8:  out = '01234567'; break;
+        case 2: out = '01'; break;
+        case 8: out = '01234567'; break;
         case 10: out = '0123456789'; break;
         case 16: out = '0123456789abcdef'; break;
         case 58: out = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'; break;
-        case 256:
-          out = '';
-          for(i=0;i&lt;256;i++) {
-            out = out+String.fromCharCode(i);
-          }
-          break;
+        case 256: out = asciitable(); break;
         case 'RFC4648': out = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'; break;
       }
       return out;
-    }
+    };
     if (typeof target === 'undefined') { target = source; source = BASE(256); }
+    var postTarget = target;
     switch (source) {
       case 'base58':
-        input = input.replace(/[^1-9A-HJ-NP-Za-km-z]/g, '');;
+        input = input.replace(/[^1-9A-HJ-NP-Za-km-z]/g, '');
         source = BASE(58);
         break;
       case 'hex':
         source = BASE(16);
-        input = input.toLowerCase().replace(/[^0-9a-f]/g, '');;
+        input = input.toLowerCase().replace(/[^0-9a-f]/g, '');
         if (input.substring(0, 2) === '0x') input = input.substring(2);
         break;
       case 'dec':
@@ -1410,60 +1403,205 @@ data:   Store data in the subprocess data field.
         source = BASE(2);
         break;
       default:
-        if(source==='ascii'||source==='utf-8'||source==='utf8') { source = BASE(256); }
-        if(source==='bech32'||source==='RFC4648') {
-          input = input.toUpperCase().replace(['0','1','8','9'],['O','I','B','G']).replace(/[^A-Z2-7]/g, '');
+        if (source === 'ascii' || source === 'utf-8' || source === 'utf8') { source = BASE(256); }
+        if (source === 'bech32' || source === 'RFC4648') {          
+          input = functions.replaceBulk(input.toUpperCase(),['0', '1', '8', '9'], ['O', 'I', 'B', 'G']).replace(/[^A-Z2-7]/g, '');
           source = BASE('RFC4648');
         }
         break;
     }
     switch (target) {
       case 'base58': target = BASE(58); break;
-      case 'hex':    target = BASE(16); break;
-      case 'dec':    target = BASE(10); break;
-      case 'oct':    target = BASE(8); break;
-      case 'bin':    target = BASE(2); break;
+      case 'hex': target = BASE(16); break;
+      case 'dec': target = BASE(10); break;
+      case 'oct': target = BASE(8); break;
+      case 'bin': target = BASE(2); break;
       default:
-        if(target==='ascii'||target==='utf-8'||target==='utf8') { target = BASE(256); }
-        if(target==='bech32'||target==='RFC4648') { target = BASE('RFC4648'); }
+        if (target === 'ascii' || target === 'utf-8' || target === 'utf8') { target = BASE(256); }
+        if (target === 'bech32' || target === 'RFC4648') { target = BASE('RFC4648'); }
         if (!target) { target = BASE(256); }
         break;
     }
-    var output = new Buffer(require('base-x')(target).encode(   new Buffer(require('base-x')(source).decode(input))   )).toString();
+    var output = new Buffer(require('base-x')(target).encode(new Buffer(require('base-x')(source).decode(input)))).toString();
     // DEBUG: var output = ' #  '+source+' ### '+target+'  ############## ';
     // DEBUG: var output = ' #  '+input+' ############## ';
     this.next(p, 0, output);
   };
   /**
- * Trim an input string
- * @param {String} string - String to trim
- * @param {Integer} offset - Amount of characters to trim from start
- * @param {Integer} ending - Amount of characters to include or trim from end
+ * Change case of a string.
+ * @param {String} mode - Target encoding
  * @example
- *  trim(5)     // input: 'this_is_my_data', output: 'is_my_data'
- *  trim(-5)    // input: 'this_is_my_data', output: '_data'
- *  trim(4,7)   // input: 'this_is_my_data', output: '_is_my_'
- *  trim(5,-5)  // input: 'this_is_my_data', output: 'is_my'
+ *  case('upper')           // input: 'what is THIS?', returns: 'WHAT IS THIS?'
+ *  case('lower')           // input: 'what is THIS?', returns: 'what is this?'
+ *  case('words')           // input: 'what is THIS?', returns: 'What Is This?'
+ *  case('first')           // input: 'what is THIS?', returns: 'What is this?'
+ *  case('camel')           // input: 'what is THIS?', returns: 'whatIsThis?'
+ *  case('reverse')         // input: 'what is THIS?', returns: 'WHAT IS this?'
  */
-  this.trim = function (p, offset, ending) {
+  this.case = function (p, mode) {
+    if (DEBUG) { console.log(' [D] (' + p.parentID + ') case [' + input + '] in step ' + (global.hybridd.proc[p.parentID].step + 1) + ' of ' + (global.hybridd.proc[p.parentID].steps + 1)); }
     var input = global.hybridd.proc[p.processID].data;
-    if (DEBUG) { console.log(' [D] (' + p.parentID + ') trim [' + input + '] in step ' + (global.hybridd.proc[p.parentID].step + 1) + ' of ' + (global.hybridd.proc[p.parentID].steps + 1)); }
-    var result;
-    if (ending > 0 || ending &lt; 0) {
-      if (offset &lt; 1) { offset = 0; }
-      if (ending > 0) {
-        result = input.substr(offset, ending);
+    var output;
+    switch (mode) {
+      case 'lower': output = input.toLowerCase(); break;
+      case 'upper': output = input.toUpperCase(); break;
+      case 'words': output = input.replace(/\w\S*/g, function(txt){
+                                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                              });
+      break;
+      case 'first': output = input.replace(/.+?([\.\?\!]\s|$)/g, function (txt) {
+                                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                              });
+      break;
+      case 'camel': output = input.replace(/(?:^\w|[A-Z]|\b\w)/g, function(letter, index) {
+                                return index == 0 ? letter.toLowerCase() : letter.toUpperCase();
+                              }).replace(/\s+/g, '');
+      break;
+      // case 'reverse':
+      default:
+        output = '';
+        var j
+        for(var i=0;i&lt;input.length;i++) {
+            j = input.substr(i,1);
+            if (j == j.toLowerCase()) {
+                output=output+j.toUpperCase();
+            } else {
+                output=output+j.toLowerCase();
+            }
+        }      
+      break;
+    }    
+    this.next(p, 0, output);
+  }
+  /**
+ * Replace part or parts of a string.
+ * @param {String} mode - Target encoding
+ * @example
+ *  repl('apples ')                           // input: 'Many apples for you.', returns: 'Many for you.'
+ *  repl('apples','pears')                    // input: 'Many apples for you.', returns: 'Many pears for you.'
+ *  repl(['apples','you'],['pears','me'])     // input: 'Many apples for you.', returns: 'Many pears for me.'
+ *  repl(['apples','you'],'foo'])             // input: 'Many apples for you.', returns: 'Many foo for foo.'
+ *  repl('o',['A','I'])                       // input: 'Many apples for you.', returns: 'Many apples fAr yIu.'
+ *  repl()                                    // input: 'Many apples for you.', returns: 'Manyapplesfor ou.'
+ */
+  this.repl = function (p, srch, repl) {
+    if (DEBUG) { console.log(' [D] (' + p.parentID + ') repl [' + input + '] in step ' + (global.hybridd.proc[p.parentID].step + 1) + ' of ' + (global.hybridd.proc[p.parentID].steps + 1)); }
+    var input = global.hybridd.proc[p.processID].data;
+    var output;
+    if(typeof srch==='undefined') {
+      srch=' ';
+      repl='';
+    }
+    if(typeof repl==='undefined') {
+      repl='';
+    }
+    if(typeof srch==='string') {
+      if(typeof repl==='string') {
+        output = input.replace(new RegExp(srch, 'g'),repl);
       } else {
-        result = input.substr(offset, input.length - offset + ending);
+        output = input;
+        for(var i=0;i&lt;repl.length;i++) {
+          output = output.replace(srch,repl[i]);
+        }
       }
     } else {
-      result = input.substr(offset);
-    }
-    this.next(p, 0, result);
-  };
-
+      if(typeof repl==='string') {
+        output = input;
+        for(var i=0;i&lt;srch.length;i++) {
+          output = output.replace(srch[i],repl);
+        }
+      } else {
+        output = functions.replaceBulk(input,srch,repl)
+      }
+    }    
+    this.next(p, 0, output);
+  }
   /**
- * Sort data by using a certain method
+ * Push new data into array or string.
+ * @param {Number} input - Data to add to array
+ * @example
+ * push(0)          // add 0 to data array
+ * push('woots!')   // add 'woots!' to data array
+ * push('B',8)      // input: ['a','c'], result: ['a','B','c']
+ * push('an',8)     // input: 'This is  apple', result: 'This is an apple'
+ */
+  this.push = function (p, input, pos, del) {
+    if (DEBUG) { console.log(' [D] (' + p.parentID + ') pushing data into array'); }
+    var ydata = global.hybridd.proc[p.processID].data;
+    if (typeof ydata === 'string') {
+      var str=true;
+      ydata = ydata.split('');
+    }
+    if (Object.prototype.toString.call(ydata) !== '[object Array]') {
+      if (typeof ydata === 'undefined' || ydata === null) {
+        ydata = [];
+      } else {
+        ydata = [ ydata ];
+      }
+    }
+    if(typeof pos==='undefined') {
+      ydata.push(input);
+    } else {
+      if(del&lt;0) { pos=pos+del; del=-del; }
+      ydata.splice(pos, del, input);
+    }
+    if(str) {
+      ydata = ydata.join('');
+    }
+    this.next(p, 0, ydata);
+  };
+  /**
+ * Pull elements from an array or input string.
+ * @param {String} string - String to delete from
+ * @param {Integer} offset - Amount of elements to delete from start
+ * @param {Integer} ending - Amount of elements to include or trim from end
+ * @example
+ *  pull(5)      // pull from the left    input: 'this_is_my_data', output: 'is_my_data'
+ *  pull(-5)     // pull from the right   input: 'this_is_my_data', output: '_data'
+ *  pull(5,-5)   // pull from both edges  input: 'this_is_my_data', output: 'is_my'
+ *  pull(4,7)    // select from center    input: 'this_is_my_data', output: '_is_my_'
+ *  pull(-4,-5)  // extract edges         input: 'this_is_my_data', output: 'this_data'
+ *  pull(-4, 6)  // select inversed       input: 'this_is_my_data', output: 'thista'
+ *  pull(1,-1)   // arrays also work!     input: ['a','b','c','d'], output: ['b','c']
+ *  pull(1,4)    // another array pull    input: ['g','l','o','v','e','s'], output: ['l','o','v','e']
+ */
+  this.pull = function (p, offset, ending) {
+    var ydata = global.hybridd.proc[p.processID].data;
+    if (DEBUG) { console.log(' [D] (' + p.parentID + ') pull [' + ydata + '] in step ' + (global.hybridd.proc[p.parentID].step + 1) + ' of ' + (global.hybridd.proc[p.parentID].steps + 1)); }
+    if (typeof ydata === 'string') {
+      var str=true;
+      ydata = ydata.split('');
+    }
+    if(typeof offset!=='undefined') {
+      if(typeof ending==='undefined') {
+        ending = offset; offset = 0;
+      }
+      if(ending >= 0) {
+        if(offset > 0) {
+          ydata.splice(offset + ending,ydata.length - (offset + ending));
+        } else if(offset === 0) {
+          ydata.splice(0,ending);
+        }
+      } else if(offset >= 0) {
+        ydata.splice(ydata.length + ending,ydata.length);
+      }
+      if(offset >= 0) {
+        ydata.splice(0,offset);
+      } else if(offset &lt; 0) {
+        if(ending >= 0) {
+          ydata.splice(-offset,ydata.length - (ending + offset) + offset);
+        } else {
+          ydata.splice(-offset,ydata.length + ending + offset);
+        }
+      }
+    }
+    if(str) {
+      ydata = ydata.join('');
+    }
+    this.next(p, 0, ydata);
+  };
+  /**
+ * Sort data by using a certain method.
  * @param {String} input - Array, object or string to sort.
  * @param {String} method - Array of methods to employ.
  * @example
@@ -1507,12 +1645,14 @@ data:   Store data in the subprocess data field.
       return orderedList;
     }
     function sortArrayByObjKey (arr, key, reverse, sortInteger) {
-      // make key value index for unspents
+      // make key value index
       var unordered = {};
       for (var i in arr) {
-        unordered[arr[i][key]] = i;
+        if(typeof arr[i][key]!=='undefined') {
+          unordered[arr[i][key]] = i;
+        }
       }
-      // sort unspent list
+      // sort object list
       var ordered = [];
       var cnt = 0;
       var list;
@@ -1693,13 +1833,13 @@ exports.Quartz = Quartz; // initialize a new process
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#atom">atom</a></li><li><a href="global.html#call">call</a></li><li><a href="global.html#code">code</a></li><li><a href="global.html#curl">curl</a></li><li><a href="global.html#data">data</a></li><li><a href="global.html#done">done</a></li><li><a href="global.html#dump">dump</a></li><li><a href="global.html#each">each</a></li><li><a href="global.html#exec">exec</a></li><li><a href="global.html#expl">expl</a></li><li><a href="global.html#fail">fail</a></li><li><a href="global.html#find">find</a></li><li><a href="global.html#fork">fork</a></li><li><a href="global.html#form">form</a></li><li><a href="global.html#hash">hash</a></li><li><a href="global.html#hook">hook</a></li><li><a href="global.html#impl">impl</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#jpar">jpar</a></li><li><a href="global.html#jstr">jstr</a></li><li><a href="global.html#jump">jump</a></li><li><a href="global.html#load">load</a></li><li><a href="global.html#logs">logs</a></li><li><a href="global.html#math">math</a></li><li><a href="global.html#meta">meta</a></li><li><a href="global.html#pass">pass</a></li><li><a href="global.html#peek">peek</a></li><li><a href="global.html#poke">poke</a></li><li><a href="global.html#prog">prog</a></li><li><a href="global.html#prwt">prwt</a></li><li><a href="global.html#push">push</a></li><li><a href="global.html#Quartz">Quartz</a></li><li><a href="global.html#read">read</a></li><li><a href="global.html#rout">rout</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#scan">scan</a></li><li><a href="global.html#sort">sort</a></li><li><a href="global.html#step">step</a></li><li><a href="global.html#stop">stop</a></li><li><a href="global.html#test">test</a></li><li><a href="global.html#time">time</a></li><li><a href="global.html#tran">tran</a></li><li><a href="global.html#trim">trim</a></li><li><a href="global.html#type">type</a></li><li><a href="global.html#wait">wait</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#atom">atom</a></li><li><a href="global.html#call">call</a></li><li><a href="global.html#case">case</a></li><li><a href="global.html#code">code</a></li><li><a href="global.html#curl">curl</a></li><li><a href="global.html#data">data</a></li><li><a href="global.html#done">done</a></li><li><a href="global.html#dump">dump</a></li><li><a href="global.html#each">each</a></li><li><a href="global.html#exec">exec</a></li><li><a href="global.html#fail">fail</a></li><li><a href="global.html#find">find</a></li><li><a href="global.html#fork">fork</a></li><li><a href="global.html#form">form</a></li><li><a href="global.html#hash">hash</a></li><li><a href="global.html#hook">hook</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#join">join</a></li><li><a href="global.html#jpar">jpar</a></li><li><a href="global.html#jstr">jstr</a></li><li><a href="global.html#jump">jump</a></li><li><a href="global.html#load">load</a></li><li><a href="global.html#logs">logs</a></li><li><a href="global.html#math">math</a></li><li><a href="global.html#meta">meta</a></li><li><a href="global.html#pass">pass</a></li><li><a href="global.html#peek">peek</a></li><li><a href="global.html#poke">poke</a></li><li><a href="global.html#prog">prog</a></li><li><a href="global.html#prwt">prwt</a></li><li><a href="global.html#pull">pull</a></li><li><a href="global.html#push">push</a></li><li><a href="global.html#Quartz">Quartz</a></li><li><a href="global.html#read">read</a></li><li><a href="global.html#repl">repl</a></li><li><a href="global.html#rout">rout</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#scan">scan</a></li><li><a href="global.html#sort">sort</a></li><li><a href="global.html#splt">splt</a></li><li><a href="global.html#step">step</a></li><li><a href="global.html#stop">stop</a></li><li><a href="global.html#test">test</a></li><li><a href="global.html#time">time</a></li><li><a href="global.html#tran">tran</a></li><li><a href="global.html#type">type</a></li><li><a href="global.html#wait">wait</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Oct 16 2018 16:19:13 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Oct 24 2018 14:58:11 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

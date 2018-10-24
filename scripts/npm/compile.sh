@@ -16,7 +16,7 @@ DIST="$NODE/dist"
 # QUARTZ
 echo "[.] Generate Quartz documentation."
 mkdir -p "$NODE/docs"
-jsdoc -d="$NODE/docs" "$NODE/lib/scheduler/quartz.js"
+jsdoc -d "$NODE/docs" "$NODE/lib/scheduler/quartz.js"
 
 echo "[.] Creating hybridd release..."
 
