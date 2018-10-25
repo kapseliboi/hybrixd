@@ -144,9 +144,12 @@ test:
     - unzip -o chromedriver_linux64.zip -d /usr/bin/google-chrome/
     - cp -R . /tmp/app
     - /bin/herokuish buildpack test
+    - echo "All files | 0.0 | 1.0 | 2.0 | 3.0 | |"
+  coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
   only:
     variables:
       - $TEST_ENABLED
+  
 
 review:
   image: alpine:latest
