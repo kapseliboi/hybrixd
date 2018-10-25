@@ -35,7 +35,7 @@ if [ ! -e "$NODE/node_binaries" ];then
     if [ ! -e "$NODEJS" ];then
         cd "$HYBRIDD"
         echo " [i] Clone node js runtimes files"
-        git clone https://github.com/internetofcoins/nodejs-v8-lts.git
+        git clone https://gitlab.com/iochq/hybridd/dependencies/nodejs.git
     fi
     echo " [i] Link node_binaries"
     ln -sf "$NODEJS/$SYSTEM" "$NODE/node_binaries"
