@@ -105,9 +105,6 @@
           "_this": "Validate the address. Returns either valid, invalid or unregistered."
         }
       }
-    },
-    "command":{
-      "_access":"root"
     }
   },
   "c":{"_alias":"command"},
