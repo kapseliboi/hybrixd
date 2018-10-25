@@ -17,7 +17,7 @@
       "poke('inputval','$2')",
       "data('$1')",
       "code('base58','hex')",
-      "pull(1,-8)",
+      "pull(2,-8)",
       "poke('script','$utxo_unspent_prefix'+data+'$utxo_unspent_suffix')",
       "time($longtimeout)",
       "curl('asset://$symbol','','',{'jsonrpc':'2.0','id':0,'method':'blockchain.address.listunspent','params':['$1']},{},{'timeout':$longtimeout})",
@@ -61,14 +61,12 @@
     ],
     "push" : [
       "time($timeout)",
-      "curl('asset://$symbol','','',{'jsonrpc':'2.0','id':0,'method':'blockchain.transaction.broadcast','params':['$1']})",
-      "test(data,2,1)",
-      "stop(1,'Broadcast failed!')",
-      "tran('.result',2,1)",
-      "stop(1,'No result!')",
-      "test(data[0]===true,2,1)",
-      "stop(1,data[1])",
-      "pass(data[1])"
+	  "curl('asset://$symbol','','',{'jsonrpc':'2.0','id':0,'method':'blockchain.transaction.broadcast','params':['$1']})",
+      "tran('.result',4,1)",
+      "tran('.error',1,2)",
+      "fail(data.message)",
+      "fail('Bad transaction result!')",
+      "done()"
     ],
     "factor" : [
       "pass('$factor')"
@@ -95,11 +93,11 @@
       "done()"
     ],
     "init" : [
-      "test('$symbol',2)",
+      "test('$symbol'==='undefined',2)",
       "call('getFee')"
     ],
     "cron" : [
-      "test('$symbol',2)",
+      "test('$symbol'==='undefined',2)",
       "call('getFee')"
     ],
     "getFee" : [
