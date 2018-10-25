@@ -2,7 +2,7 @@
   "symbol":"dash",
   "name":"Dash",
   "module":"quartz",
-  "mode":"dash",
+  "mode":"dash.livenet",
   "factor":8,
   "fee":0.1,
   "host":["tcp://electrum3.cipig.net:10061","tcp://electrum2.cipig.net:10061","tcp://electrum1.cipig.net:10061"],
