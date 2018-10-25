@@ -140,16 +140,23 @@ test:
     # download chromedriver
     - "curl --location \"https://chromedriver.storage.googleapis.com/2.43/chromedriver_linux64.zip\" -o chromedriver_linux64.zip"
     
+    # sample JUnit test-result xml-file
+    echo "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><testsuites id=\"20181025_140519\" name=\"Sample (25/10/18 14:05:19)\" tests=\"225\" failures=\"1262\" time=\"0.001\"><testsuite id=\"testsuite.example\" name=\"COBOL Code Review\" tests=\"45\" failures=\"17\" time=\"0.001\">   <testcase id=\"testcase.example\" name=\"Use a program name that matches the source file name\" time=\"0.001\">            <failure message=\"PROGRAM:2 Use a program name that matches the source file name\" type=\"WARNING\">WARNING: Use a program name that matches the source file name File: /project/file Line: 2</failure></testcase></testsuite></testsuites>" > test-sample.xml
+    
     # unzip chromedriver
     - unzip -o chromedriver_linux64.zip -d /usr/bin/google-chrome/
     - cp -R . /tmp/app
     - /bin/herokuish buildpack test
+    
+    # sample result for coverage %
     - echo "All files | 0.0 | 1.0 | 2.0 | 3.0 | |"
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
   only:
     variables:
       - $TEST_ENABLED
-  
+  artifacts:
+    reports:
+      junit: test*.xml
 
 review:
   image: alpine:latest
