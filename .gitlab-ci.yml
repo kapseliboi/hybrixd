@@ -173,7 +173,7 @@ test:
     # sample result for coverage %
     - "echo \"SUCCESS RATE: 0.0%\""
     
-    - ./hybridd > /dev/null 2>&1
+    - ./hybridd > /dev/null 2>&1 &
     - node ./test/test.js
     
     # sample result for coverage %
