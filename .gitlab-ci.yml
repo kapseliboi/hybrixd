@@ -150,7 +150,7 @@ test:
     - /bin/herokuish buildpack test
     
     - "./hybridd"
-    - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/iochq/hybridd/interface/blob/master/test/test.js\" -o test.js"
+    #- "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/iochq/hybridd/interface/blob/master/test/test.js\" -o test.js"
     - "./test.js"
     
     # sample result for coverage %
