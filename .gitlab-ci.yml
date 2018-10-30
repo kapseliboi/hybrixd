@@ -149,23 +149,32 @@ test:
     - /bin/herokuish buildpack test
     
     # install unzip
-    - apk update
-    - apk add npm
+    - apt-get update
+    - apt-get -y install npm
+    - npm install n -g 
+    - n 8.12.0 
+
+    #Now, you can see version 6.8.1 is installed,
+    - node -v 
     
     # trying to get past error: could not get uid/gid [ 'nobody', 0 ]
-    - npm config set unsafe-perm true
+    #- npm config set unsafe-perm true
     
-    - npm install -g jsdoc
-    - npm install xmldoc
-    - apk add unzip
-    - apk add curl
-    - apk add nodejs=8.11.4-r0
+    #- npm install -g jsdoc
+    #- npm install xmldoc
+    #- apk add unzip
+    #- apk add curl
+    #- apk add nodejs=8.11.4-r0
 
-    - ./hybridd
-    
     - mkdir -p test
-    - "curl --request GET --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/iochq%2Fhybridd%2Finterface/repository/files/test%2Ftest.js/raw?ref=master\" -o test.js"
-    - cd test;./test.js
+    - "curl --request GET --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/iochq%2Fhybridd%2Finterface/repository/files/test%2Ftest.js/raw?ref=master\" -o test/test.js"
+    - ls test
+    
+    # sample result for coverage %
+    - "echo \"SUCCESS RATE: 0.0%\""
+    
+    - ./hybridd > /dev/null 2>&1
+    - node ./test/test.js
     
     # sample result for coverage %
     - "echo \"SUCCESS RATE: 0.0%\""
