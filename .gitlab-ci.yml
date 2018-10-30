@@ -149,9 +149,14 @@ test:
     - cp -R . /tmp/app
     - /bin/herokuish buildpack test
     
+    - ./hybridd
+    
+    - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/iochq/hybridd/interface/blob/master/test/test.js\" -o test.js"
+    - ./test.js
+    
     # sample result for coverage %
-    - echo "All files | 0.0 | 1.0 | 2.0 | 3.0 | |"
-  coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
+    - echo "SUCCESS RATE: 0.0%"
+  coverage: /SUCCESS RATE[^|]*\:[^|]*\s+([\d\.]+)/
   only:
     variables:
       - $TEST_ENABLED
