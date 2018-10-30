@@ -2,83 +2,123 @@
   "engine":"voting",
   "name":"Voting engine",
   "module":"quartz",
-  "cache":1000,
+  "cache":100,
   "throttle":10,
   "quartz":{
     "test" : [
       "data '$1'",
       "hash 'sha256'",
-      "poke 'key'",
-      "load '$key'",
-      "done"
+      "data 'storemeyo!'",
+      "save 'key'",
+      "load 'key'",
+      "jpar 1 2",
+      "done",
+      "fail data"
     ],
     "testBAK" : [
       "data '$1'",
       "hash 'sha256'",
       "poke 'key'",
       "data {key:'storemeyo!'}",
-      "save '$key'",
+      "poke 'key'",
+      "load '$key'",
       "done '$key'"
     ],
-    "list" : [
-      "data '$1'",
-      "hash 'sha256'",
-      "poke 'idx'",
-      "hook [] 0",
-      "load '$idx'",
+    "listEligibility" : [
+      "poke '::coreMode','elegibility'",
+      "call 'coreList'",
       "done"
     ],
-    "listAdd" : [
-      "data '$1'",
+    "addEligibility" : [
+      "poke '::coreMode','elegibility'",
+      "call 'coreAdd'",
+      "done"
+    ],
+    "coreList" : [
+      "peek '::coreMode'",
+      "data '$data $1'",
+      "hash 'sha256'",
+      "hook [] 0",
+      "load '$data'",
+      "jpar",
+      "done"
+    ],
+    "coreAdd" : [
+      "peek '::coreMode'",
+      "data '$data $1'",
       "hash 'sha256'",
       "poke 'idx'",
-      "hook 3",
+      "data '$2'",
+      "splt ','",
+      "poke 'inputdata'",
+      "hook 4",
       "load '$idx'",
+      "jpar",
       "jump 2",
+      "@emptylist",
       "data []",
-      "done",
-      "push '$2'",
+      "@savelist",
+      "push $inputdata",
       "save '$idx'",
-      "done 'Added $2 to list $1'"
+      "peek '::coreMode'",
+      "done 'Added $2 to list $data'+'_$1'"
     ],
-    "listReset" : [
-      "hash '$1'",
+    "coreReset" : [
+      "data '$1 $2'",
+      "hash 'sha256'",
       "poke 'idx'",
       "data []",
       "save '$idx'",
-      "done 'List reset'"
+      "done 'Core list reset'"
     ]
   },
   "router" : {
     "test" : {
       "_list": "Test routine",
       "_ref" : {
-        "_list" : "storage_id",
+        "_list" : "session_id",
         "_this" : "Test routine. Needs an additional /id to function!"
       }
     },
-    "list" : {
-      "_help": "List participants of voting session",
+    "listEligibility" : {
+      "_help": "List all eligibility codes",
+      "_ref" : {
+        "_list" : "session_id",
+        "_this" : "An array is returned listing all eligibility codes."
+      }
+    },
+    "addEligibility" : {
+      "_help": "Add eligibility codes to voting session",
+      "_ref" : {
+        "_list" : "session_id",
+          "_ref" : {
+              "_list" : "eligibility_code",
+              "_this" : "Adds an eligibility code or codes under the specified voting session ID."
+          }
+      }
+    },
+    "coreList" : {
+      "_help": "List core",
       "_ref" : {
         "_list" : "storage_id",
-        "_this" : "An array is returned listing all participants of the voting session ID."
+        "_this" : "List core storage."
       }
     },
-    "listAdd" : {
-      "_help": "Add participant to voting session",
+    "coreAdd" : {
+      "_help": "Add to core",
       "_ref" : {
-        "_list" : "voting_session_id",
-		"_ref" : {
-	      "_list" : "e-mail",
-	      "_this" : "Adds a participant to a list under the specified voting session ID."
-		}
+        "_list" : "session_id",
+          "_ref" : {
+              "_list" : "storage_id",
+              "_this" : "Add to core storage object list."
+          }
       }
     },
-    "listReset" : {
-      "_list": "Reset the list of the voting session",
+    "coreReset" : {
+      "_list": "Reset the core storage list",
       "_ref" : {
         "_list" : "voting_session_id",
-        "_this" : "Empties the voting session list, deleting its data contents."
+        "_this" : "Empties the core session list, deleting its data contents."
       }
     }
   }
