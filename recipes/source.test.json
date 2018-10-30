@@ -7,8 +7,11 @@
   },
   "quartz" : {
     "test" : [
-      "data {a:1}",
-      "stop 0 $.a"
+      "save 'a' {a:1}",
+      "load 'a'",
+      "file",
+      "jpar",
+      "done"
     ]
   }
 }

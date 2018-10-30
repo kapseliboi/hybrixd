@@ -26,7 +26,6 @@ stages:
 
 hybridd:
   stage: build
-  script:
   image: docker:stable-git
   services:
   - docker:stable-dind
@@ -149,9 +148,28 @@ test:
     - cp -R . /tmp/app
     - /bin/herokuish buildpack test
     
+    # install unzip
+    - apk update
+    - apk add npm
+    
+    # trying to get past error: could not get uid/gid [ 'nobody', 0 ]
+    - npm config set unsafe-perm true
+    
+    - npm install -g jsdoc
+    - npm install xmldoc
+    - apk add unzip
+    - apk add curl
+    - apk add nodejs=8.11.4-r0
+
+    - ./hybridd
+    
+    - mkdir -p test
+    - "curl --request GET --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/iochq%2Fhybridd%2Finterface/repository/files/test%2Ftest.js/raw?ref=master\" -o test.js"
+    - cd test;./test.js
+    
     # sample result for coverage %
-    - echo "All files | 0.0 | 1.0 | 2.0 | 3.0 | |"
-  coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
+    - "echo \"SUCCESS RATE: 0.0%\""
+  coverage: /SUCCESS RATE[^|]*\:[^|]*\s+([\d\.]+)/
   only:
     variables:
       - $TEST_ENABLED
