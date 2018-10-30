@@ -4,7 +4,7 @@
   "module":"quartz",
   "mode":"bitcoinjslib.omni",
   "factor":8,
-  "fee":0.00004946,
+  "feeOmniTX":0.00000546,
   "fee-symbol":"btc",
   "keygen-base":"btc",
   "contract":"1",
@@ -23,15 +23,10 @@
       "stop(1,'No result')"
     ],
     "unspent" : [
-      "rout('/asset/$keygen-base/unspent/$1/$fee')",
-      "poke('unspents')",
-      "math(data.change+'-$fee')",
-      "test(data<0,1,2)",
-      "data('0')",
-      "form()",
-      "poke('omnifee')",
-      "peek('unspents')",
-      "done({'unspents':data.unspents,'change':'$omnifee'})"
+      "rout('/asset/btc/fee')",
+      "math('+$feeOmniTX')",
+      "rout('/asset/$keygen-base/unspent/$1/$data')",
+      "done"
     ],
     "balance" : [
       "time($cache)",
@@ -56,14 +51,15 @@
     "transaction" : [
       "curl('asset://$symbol','/v1/transaction/tx/$1','GET','addr=$1',{'content-type':'application/x-www-form-urlencoded'})",
       "tran({id:'.txid',fee:'.fee',attachment:'',timestamp:'.blocktime',symbol:'$symbol','fee-symbol':'$fee-symbol',ammount:'.amount',source:'=.sendingaddress|unknown',target:'=.referenceaddress|unknown'},2,1)",
-      "stop(1,'error')",
-      "stop()"
+      "fail('Error retrieving data!')",
+      "done()"
     ],
     "contract" : [
-      "stop(0,'$contract')"
+      "done('$contract')"
     ],
     "fee" : [
-      "pass('$fee')"
+      "rout('/asset/btc/fee')",
+      "math('+$feeOmniTX')"
     ],
     "sample" : [
       "stop(0,{address:'18XvhJmfciiE9khPisavJ2UdC5ybG94tYk',transaction:'1989dc575f94dcb45485b78b1b762e13a3a6d2eb59422b6217c93218a54ff80b'})"
