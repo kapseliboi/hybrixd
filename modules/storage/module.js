@@ -29,7 +29,8 @@ function exec (properties) {
       subprocesses.push('done("Autoclean")');
       break;
     case 'get':
-      // TODO: breaks mutability: subprocesses.push('type("file:data")');
+    // TODO: breaks mutability:
+      subprocesses.push('type("file:data")');
       subprocesses.push('func("storage","get",{key:"' + command[1] + '"})');
       break;
     case 'set': // stores data and returns proof of work to be solved
