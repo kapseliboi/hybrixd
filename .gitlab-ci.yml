@@ -149,17 +149,22 @@ test:
     - /bin/herokuish buildpack test
     
     # install unzip
-    - apk update
-    - apk add npm
+    - apt-get update
+    - apt-get install npm
+    - npm install n -g 
+    - n 8.12.0 
+
+    #Now, you can see version 6.8.1 is installed,
+    - node -v 
     
     # trying to get past error: could not get uid/gid [ 'nobody', 0 ]
-    - npm config set unsafe-perm true
+    #- npm config set unsafe-perm true
     
-    - npm install -g jsdoc
-    - npm install xmldoc
-    - apk add unzip
-    - apk add curl
-    - apk add nodejs=8.11.4-r0
+    #- npm install -g jsdoc
+    #- npm install xmldoc
+    #- apk add unzip
+    #- apk add curl
+    #- apk add nodejs=8.11.4-r0
 
     - ./hybridd
     
