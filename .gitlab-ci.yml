@@ -102,7 +102,7 @@ hybridd:
     
     #temporary add test-script to buildpackage, TODO: test package as is, only test in test-phase
     - mkdir -p test
-    - "curl --request GET --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/iochq%2Fhybridd%2Finterface/repository/files/test%2Ftest.js/raw?ref=master\" -o test/test.js"
+    - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/iochq%2Fhybridd%2Finterface/repository/files/test%2Ftest.js/raw?ref=master\" -o test/test.js"
     - cat ./test/test.js
     
     # clean up and prepare the artifacts (instead of having a dist) 
