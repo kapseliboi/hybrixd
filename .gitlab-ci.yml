@@ -150,6 +150,8 @@ test:
     
     # install unzip
     - apt-get update
+    - apt-get -y install git
+    - apt-get -y install tar
     - apt-get -y install npm
     - npm install n -g 
     - n 8.12.0 
@@ -167,8 +169,18 @@ test:
     #- apk add nodejs=8.11.4-r0
 
     - mkdir -p test
-    - "curl --request GET --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/iochq%2Fhybridd%2Finterface/repository/files/test%2Ftest%2Ejs/raw?ref=master\" -o test/test.js"
+    
+    #https://gitlab.com/gitlab-org/gitlab-ce/issues/29566
+    #git archive --remote=git://git.foo.com/project.git HEAD:path/to/directory filename | tar -x
+    
+    
+    # https://docs.gitlab.com/ee/user/project/new_ci_build_permissions_model.html
+    - git archive --remote=https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/iochq/hybridd/interface.git HEAD:test/test.js filename | tar -x
     - cat ./test/test.js
+    
+    
+    #- "curl --request GET --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/iochq%2Fhybridd%2Finterface/repository/files/test%2Ftest%2Ejs/raw?ref=master\" -o test/test.js"
+    #- cat ./test/test.js
     
     # sample result for coverage %
     - "echo \"SUCCESS RATE: 0.0%\""
