@@ -1,0 +1,9 @@
+{
+    "symbol":"eth.spu+",
+    "name":"Spurt",
+    "module":"ethereum",
+    "mode":"ethereum.token",
+    "contract":"0xef7bce1be2ba032131326910a6c11e716daedbff",
+    "originator":"0xa507d467d6388aa7e63ff653448d834ce95b1e02",
+    "factor":18
+}
