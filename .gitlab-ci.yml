@@ -175,12 +175,13 @@ test:
     # unfortunately simple things didn't work:
     #- "curl --request GET --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/iochq%2Fhybridd%2Finterface/repository/files/test%2Ftest%2Ejs/raw?ref=master\" -o test/test.js"
     #- git archive --format=tar --remote=git://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/iochq/hybridd/interface.git HEAD:test test.js | tar -x
+    - mkdir -p test
     - mkdir -p repos
     - cd repos
     - git clone -n https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/iochq/hybridd/interface.git --depth 1
     - cd interface
-    - git checkout HEAD:test test.js
-    - mv test.js ../../test/
+    - git checkout origin/master -- test/test.js
+    - mv test/test.js ../../test/test.js
     - cd ../../
     - cat ./test/test.js
     
