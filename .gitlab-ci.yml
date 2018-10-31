@@ -183,6 +183,9 @@ test:
     - git checkout origin/master -- test/test.js
     - mv test/test.js ../../test/test.js
     - cd ../../
+    
+    # script is written for dist, so search and replace
+    - sed -i -e s:../dist/:../interface/:g ./test/test.js
     - cat ./test/test.js
     
     # sample result for coverage %
