@@ -175,7 +175,7 @@ test:
     
     
     # https://docs.gitlab.com/ee/user/project/new_ci_build_permissions_model.html
-    - git archive --remote=https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/iochq/hybridd/interface.git HEAD:test/test.js filename | tar -x
+    - git archive --remote=https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/iochq/hybridd/interface.git HEAD:test test.js | tar -x
     - cat ./test/test.js
     
     
