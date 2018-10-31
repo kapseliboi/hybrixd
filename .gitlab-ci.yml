@@ -168,19 +168,25 @@ test:
     #- apk add curl
     #- apk add nodejs=8.11.4-r0
 
-    - mkdir -p test
     
-    #https://gitlab.com/gitlab-org/gitlab-ce/issues/29566
-    #git archive --remote=git://git.foo.com/project.git HEAD:path/to/directory filename | tar -x
-    
-    
+    # retrieve test.js from iochq/hybridd/interface
+    # https://gitlab.com/gitlab-org/gitlab-ce/issues/29566
     # https://docs.gitlab.com/ee/user/project/new_ci_build_permissions_model.html
-    - git archive --remote=https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/iochq/hybridd/interface.git HEAD:test test.js | tar -x
-    - cat ./test/test.js
-    
-    
+    # unfortunately simple things didn't work:
     #- "curl --request GET --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/iochq%2Fhybridd%2Finterface/repository/files/test%2Ftest%2Ejs/raw?ref=master\" -o test/test.js"
-    #- cat ./test/test.js
+    #- git archive --format=tar --remote=git://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/iochq/hybridd/interface.git HEAD:test test.js | tar -x
+    - mkdir -p test
+    - mkdir -p repos
+    - cd repos
+    - git clone -n https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/iochq/hybridd/interface.git --depth 1
+    - cd interface
+    - git checkout origin/master -- test/test.js
+    - mv test/test.js ../../test/test.js
+    - cd ../../
+    
+    # script is written for dist, so search and replace
+    - sed -i -e s:../dist/:../interface/:g ./test/test.js
+    - cat ./test/test.js
     
     # sample result for coverage %
     - "echo \"SUCCESS RATE: 0.0%\""

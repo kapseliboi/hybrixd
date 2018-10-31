@@ -21,7 +21,7 @@ function exec (properties) {
   // set request to what command we are performing
   global.hybridd.proc[processID].request = properties.command;
 
-  var symbol = command[0].toUpperCase();
+  var symbol = command[0].toUpperCase().split('.')[0];
   var address = command[1];
 
   if (symbol === 'UBQ' || symbol === 'EXP') { symbol = 'ETH'; }
@@ -109,7 +109,7 @@ function exec (properties) {
     }
   } else {
     try {
-      var valid = WAValidator.validate(address, symbol);  // '1KFzzGtDdnq5hrwxXGjwVnKzRbvf8WVxck', 'BTC'
+      var valid = WAValidator.validate(address, symbol); // '1KFzzGtDdnq5hrwxXGjwVnKzRbvf8WVxck', 'BTC'
 
       if (valid) {
         subprocesses.push("stop(0,'valid')");

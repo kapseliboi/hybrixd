@@ -40,6 +40,15 @@
         }
       }
     },
+    "work":{
+      "_ref" : {
+        "_list" : "key",
+        "_ref" : {
+          "_list" : "proof",
+          "_this" : "Provide proof-of-work for long term storage."
+        }
+      }
+    },
     "meta":{
       "_ref" : {
         "_list" : "storage_id",

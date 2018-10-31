@@ -39,6 +39,7 @@ function exec (properties) {
     case 'seek': // stores data and returns proof of work to be solved
       subprocesses.push('func("storage","seek",{key:"' + command[1] + '"})');
       break;
+    case 'work':
     case 'pow':
       subprocesses.push('func("storage","pow",{key:"' + command[1] + '", pow:"' + command[2] + '""})');
       break;
