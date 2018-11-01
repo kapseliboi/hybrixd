@@ -41,7 +41,7 @@ function exec (properties) {
       break;
     case 'work':
     case 'pow':
-      subprocesses.push('func("storage","pow",{key:"' + command[1] + '", pow:"' + command[2] + '""})');
+      subprocesses.push('func("storage","pow",{key:"' + command[1] + '", pow:"' + command[2] + '"})');
       break;
     case 'del':
       subprocesses.push('fail("Deleting data from node storage is not supported!")');
