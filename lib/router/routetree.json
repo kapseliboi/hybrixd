@@ -6,9 +6,11 @@
     "_this" : "List all available assets",
     "_ref":{
       "_list":"asset",
+      "_sample" : "dummy",
       "balance":{
         "_ref" : {
           "_list" : "address",
+          "_sample" : "_dummyaddress_",
           "_this": "Retrieve the balance for a given address.",
           "_response": {"error":0,"info":"Process data.","id":"1519829438958324","progress":1,"started":1519829438958,"stopped":1519829440606,"data":"0.025106200000000000"}
         }
@@ -16,6 +18,7 @@
       "contract":{
         "_ref" : {
           "_list" : "address",
+          "_sample" : "_dummyaddress_",
           "_this": "Retrieve the unique identifier for an asset token.",
           "_response": [
             {"error":1,"info":"Process data.","id":"1519829579467984","progress":1,"started":1519829579467,"stopped":1519829579499,"data":"Error: Not a contract address!"},
@@ -46,6 +49,7 @@
       "history":{
         "_ref" : {
           "_list" : "address",
+          "_sample" : "_dummyaddress_",
           "_this": "Retrieve the history TODO"
         }
       },
@@ -55,12 +59,14 @@
       "transaction":{
         "_ref" : {
           "_list" : "transaction_id",
+          "_sample" : "TXIDTXIDTXIDTXIDTXIDTXIDTXID",
           "_this": "Retrieve the details for a transaction."
         }
       },
       "push":{
         "_ref" : {
           "_list" : "transaction",
+          "_sample" : "TXIDTXIDTXIDTXIDTXIDTXIDTXID",
           "_this":"Push a signed transaction to the blockchain.",
           "_response" : "{\"error\":0,\"info\":\"Process data.\",\"id\":\"1519830244168082\",\"progress\":1,\"started\":1519830244168,\"stopped\":1519830244173,\"data\":$TRANSACTION_ID}"
         }
@@ -77,14 +83,18 @@
         "_ref" : {
           "_this" : "TODO",
           "_list" : "source_address",
+          "_sample" : "_dummyaddress_",
           "_ref" : {
             "_list" : "amount",
+            "_sample" : "100",
             "_this" : "TODO",
             "_ref" : {
               "_list" : "target_address",
+              "_sample" : "_dummyaddress_",
               "_this" : "TODO",
               "_ref" : {
                 "_list" : "public_key",
+                "_sample" : "_dummypublickey_",
                 "_this" : "Retrieve the unspent. Unspent is a bitcoin related term that in hybridd is used for pretransactional data. Bitcoin: unspent means available inputs for creating a transaction. Ethereum: unspent means the most recent nonce of the cryptocurrency account needed for constructing a transaction.  NXT: unspent means the server reply information needed to construct a deterministic transaction.",
                 "_response" : {"error":0,"info":"Process data.","id":"1519830913478733","progress":1,"started":1519830913478,"stopped":1519830914923,"data":{"nonce":"1"}}
               }
@@ -95,6 +105,7 @@
       "validate": {
         "_ref" : {
           "_list" : "address",
+          "_sample" : "_dummyaddress_",
           "_this": "Validate the address. Returns either valid, invalid or unregistered."
         }
       }
