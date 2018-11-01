@@ -32,7 +32,7 @@ hybridd:
   script:
     # prepare variable for DEBUG purposes
     - if [[ "$DEBUG_ENABLED" == "1"  ]]; then DEBUG="-debug"; else DEBUG=""; fi
-    - if [[ "$DEBUG_ENABLED" == "1"  ]]; then echo "DEBUG_ENABLED is 1: debug-mode"; else echo "release-mode"; fi
+    - "if [[ \"$DEBUG_ENABLED\" == \"1\"  ]]; then echo \"DEBUG_ENABLED is 1: debug-mode\"; else echo \"release-mode\"; fi"
     
     # install unzip
     - apk update
