@@ -168,10 +168,10 @@ test:
     #- apk add curl
     #- apk add nodejs=8.11.4-r0
     
-    - git clone -n https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/iochq/hybridd/dependencies/nodejs.git --depth 1
-    - cd nodejs
-    - git checkout origin/master -- x86_64
-    - cd .. 
+    #- git clone -n https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/iochq/hybridd/dependencies/nodejs.git --depth 1
+    #- cd nodejs
+    #- git checkout origin/master -- x86_64
+    #- cd .. 
     
     # retrieve test.js from iochq/hybridd/interface
     # https://gitlab.com/gitlab-org/gitlab-ce/issues/29566
@@ -192,7 +192,8 @@ test:
     - sed -i -e s:../dist/:../interface/:g ./test/test.js
     - ./hybridd > /dev/null 2>&1 &
     - cd test
-    - ../nodejs/x86_64/bin/node ./test.js
+    #- ../nodejs/x86_64/bin/node ./test.js
+    - node ./test.js
     
   coverage: /SUCCESS RATE[^|]*\:[^|]*\s+([\d\.]+)/
   only:
