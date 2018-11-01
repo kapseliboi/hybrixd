@@ -1,28 +1,25 @@
 {
   "quartz" : {
-    "init" : [
-      "stop 1 'Not yet implemented!'"
-    ],
-    "status" : [
-      "stop 1 'Not yet implemented!'"
+    "peers" : [
+      "fail 'Not yet implemented!'"
     ],
     "unspent" : [
-      "stop 1 'Not yet implemented!'"
+      "fail 'Not yet implemented!'"
     ],
     "balance" : [
-      "stop 1 'Not yet implemented!'"
+      "fail 'Not yet implemented!'"
     ],
     "push" : [
-      "stop 1 'Not yet implemented!'"
+      "fail 'Not yet implemented!'"
     ],
     "factor" : [
       "pass '$factor'"
     ],
     "history" : [
-      "stop 1 'Not yet implemented!'"
+      "fail 'Not yet implemented!'"
     ],
     "transaction" : [
-      "stop 1 'Not yet implemented!'"
+      "fail 'Not yet implemented!'"
     ],
     "contract" : [
       "pass '$contract'"
@@ -31,7 +28,7 @@
       "pass '$fee'"
     ],
     "validate" : [
-      "stop 1 'Not yet implemented!'"
+      "fail 'Not yet implemented!'"
     ],
     "details" : [
       "each {'fee':1,'factor':1,'contract':1} 'subdetails'",
