@@ -26,7 +26,7 @@
       },
       "unspent" : {
         "_ref":{
-          "_valid": true,
+          "_ellipsis": true,
           "_list" : "address",
           "_this" : "Retrieve the unspents at one of the available blockexplorers for $SYMBOL."
         }

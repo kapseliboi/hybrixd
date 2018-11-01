@@ -3,6 +3,7 @@
   "name":"Cluster enginge.",
   "module":"cluster",
   "router" : {
+    "_access" : "root",
     "peers": "list peers",
     "status": "list peers",
 
@@ -28,7 +29,7 @@
     },
     "command" : {
       "_help" : "Execute a command on all peers",
-      "_valid" : "true"
+      "_ellipsis" : "true"
     },
     "propose" : {
        "_ref" : {

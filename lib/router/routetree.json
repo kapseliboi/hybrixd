@@ -1,4 +1,5 @@
 {
+  "_help" : "TODO API help welcome etc.",
   "a":{"_alias":"asset"},
   "asset":{
     "_help":"Assets are cryptocurrencies or tokens.",
@@ -51,13 +52,6 @@
       "sample" : {
         "_this": "Retrieve a sample address and transaction id for test purposes."
       },
-      "test":{
-        "_ref" : {
-          "_this": "Test command is available for development purposes.",
-          "_list" : "testparam_id",
-          "_response": "TODO"
-        }
-      },
       "transaction":{
         "_ref" : {
           "_list" : "transaction_id",
@@ -79,7 +73,6 @@
         "_this": "Retrieve the keygen-base TODO",
         "_response": "TODO"
       },
-      "status":"Retrieve the status of the service. TODO",
       "unspent": {
         "_ref" : {
           "_this" : "TODO",
@@ -123,7 +116,7 @@
     },
     "exec" :{
       "_ref" : {
-        "_valid" : true,
+        "_ellipsis" : true,
         "_list" : "file",
         "_this" : "Execute a quartz script."
       }
@@ -163,11 +156,8 @@
   "h":{"_alias":"help"},
   "help":{
     "_this":"Display help as html.",
-    "_valid":true
+    "_ellipsis":true
   },
-  "n":{"_alias":"network"},
-  "net":{"_alias":"network"},
-  "network":{},
   "l":{"_alias":"list"},
   "list":{
     "asset" : {
@@ -227,19 +217,21 @@
   "wchan":{
     "hash" : {
       "_this" : "Retrieve the hash for a flat file result.",
-      "_valid": true
+      "_ellipsis": true
     },
     "_help" : "TODO",
     "_ref":{
-      "_help" : "TODO",
+      "_this" : "TODO",
+      "_ellipsis": true,
       "_list":"offset",
       "_ref":{
-        "_help" : "TODO",
+        "_this" : "TODO",
+        "_ellipsis": true,
         "_list":"length",
         "_ref":{
-          "_help" : "TODO",
+          "_this" : "TODO",
           "_list":"path",
-          "_valid": true
+          "_ellipsis": true
         }
       }
     }
@@ -273,7 +265,7 @@
         "_list":"nonce",
         "_ref" : {
           "_list":"encrypted_path",
-          "_this" : " `$ENCRYPTED_PATH` , for example: `/asset/btc/command/help` encrypted using the `$SESSION_PUBLIC_KEY` is executed as an API command and the result is encrypted and returned."
+          "_this" : " `$ENCRYPTED_PATH` , for example: `/asset/btc/details` encrypted using the `$SESSION_PUBLIC_KEY` is executed as an API command and the result is encrypted and returned."
         }
       }
     }
@@ -288,7 +280,7 @@
         "_list":"nonce",
         "_ref" : {
           "_list":"encrypted_path",
-          "_this" : " `$ENCRYPTED_PATH` , for example: `/asset/btc/command/help` encrypted using the `$SESSION_PUBLIC_KEY` is executed as an API command and the result is encrypted and compressed using lmza and returned."
+          "_this" : " `$ENCRYPTED_PATH` , for example: `/asset/btc/details` encrypted using the `$SESSION_PUBLIC_KEY` is executed as an API command and the result is encrypted and compressed using lmza and returned."
         }
       }
     }

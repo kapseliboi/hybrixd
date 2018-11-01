@@ -3,7 +3,7 @@
   "name":"Web Wallet",
   "module":"web-wallet",
   "router" : {
-    "_valid": true,
+    "_ellipsis": true,
     "_this" : "TODO"
   }
 }
