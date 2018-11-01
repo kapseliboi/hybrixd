@@ -188,18 +188,10 @@ test:
     
     # script is written for dist, so search and replace
     - sed -i -e s:../dist/:../interface/:g ./test/test.js
-    - cat ./test/test.js
-    
-    # sample result for coverage %
-    - "echo \"SUCCESS RATE: 0.0%\""
-    
     - ./hybridd > /dev/null 2>&1 &
     - cd test
-    #- cat test.js
     - node ./test.js
     
-    # sample result for coverage %
-    #- "echo \"SUCCESS RATE: 0.0%\""
   coverage: /SUCCESS RATE[^|]*\:[^|]*\s+([\d\.]+)/
   only:
     variables:
