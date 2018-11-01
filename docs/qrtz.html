@@ -1,0 +1,263 @@
+
+<style>
+
+body {
+  font-family: Open Sans;
+  width: 80%;
+  line-height: 24px;
+  font-size: 14px;
+  margin: 50px auto;
+  word-break: break-word;
+  min-width: 400px;
+  padding-bottom:200px;
+}
+
+body > dl > dt, body > dt {
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+  margin-top: 40px;
+}
+
+
+.command-header {
+  font-family: verdana;
+  background-color:  #7174D8;
+  color:white;
+  margin-top:5px;
+  padding:8px;
+  border-radius:3px;
+  cursor: pointer;
+-webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+
+
+.command-body{
+  padding:15px;
+  border-style:solid;
+  border-width:1px;
+  border-radius:2px;
+}
+
+.quickDescription{
+  max-width:50%;
+  float:right;
+  font-size:80%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+code {
+  background-color: #EEEEEE;
+  padding: 3px;
+  margin: 4px;
+  display:block;
+}
+</style>
+<script>
+function toggleCommand(id){
+  var e = document.getElementById(id);
+  e.style.display=e.style.display==='block'?'none':'block';
+}
+</script>
+<div class="command-header" onclick="toggleCommand('dump')">dump [<i>data</i>]<span class="quickDescription">
+ Output debug information to the console.
+</span></div><div style="display:none;" class="command-body" id="dump">
+ Output debug information to the console.
+<code> dump();      // outputs contents of data stream to console<br/> dump({a:1}); // outputs "[D] {a:1}" to console<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('wait')">wait <i>millisecs</i><span class="quickDescription">
+ Wait a specified amount of time.
+</span></div><div style="display:none;" class="command-body" id="wait">
+ Wait a specified amount of time.
+<code> wait(2000)           // wait for two seconds<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('prwt')">prwt <i>processID</i> [<i>interval</i>]<span class="quickDescription">
+ Wait for a process to finish, and store its processID.
+</span></div><div style="display:none;" class="command-body" id="prwt">
+ Wait for a process to finish, and store its processID.
+<code> prwt("101123")        // wait for process with ID 101123 to finish, then continue<br/> prwt("209123")        // wait for process with ID 209123 to finish, then continue<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('logs')">logs [<i>level</i>] <i>message</i><span class="quickDescription">
+ Logs data to console.
+</span></div><div style="display:none;" class="command-body" id="logs">
+ Logs data to console.
+<code> logs("No level!")       // logs "[.] No level!" to console<br/> logs(0,"Nice dude!")    // logs "[.] Nice dude!" to console<br/> logs(1,"I like you")    // logs "[i] I like you" to console<br/> logs(2,"Be careful")    // logs "[!] Be careful" to console<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('pass')">pass <i>data</i><span class="quickDescription">
+ Pass data to parent process.
+</span></div><div style="display:none;" class="command-body" id="pass">
+ Pass data to parent process.
+<code> pass()               // push data stream contents to master process<br/> pass("Nice dude!")   // push data "Nice dude!" to master process<br/> pass("Wow: "+data)   // push data "Wow:" with previous subprocess data concatenated<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('jpar')">jpar <i>data</i> [<i>default</i>]<span class="quickDescription">
+ Turns a string into a JSON object. In case of failure pass default.
+</span></div><div style="display:none;" class="command-body" id="jpar">
+ Turns a string into a JSON object. In case of failure pass default.
+<code> jpar()         // input: "{key:'Some data.'}", output: {key:"Some data."}<br/> jpar(2)        // on successful parse jump 2, else 1, stream stays unchanged<br/> jpar(2,1)      // on successful parse jump 2, else 1, stream stays unchanged<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('jstr')">jstr <i>data</i><span class="quickDescription">
+ Turns JSON object into a string.
+</span></div><div style="display:none;" class="command-body" id="jstr">
+ Turns JSON object into a string.
+<code> jstr()         // input: {key:"Some data."}, output: '{key:"Some data."}'<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('prog')">prog <i>step</i> <i>steps</i> [<i>data</i>]<span class="quickDescription">
+ Set progress of parent process.
+</span></div><div style="display:none;" class="command-body" id="prog">
+ Set progress of parent process.
+<code> prog(20,40)  // progress is set to 0.5 (which means 50%)<br/> prog()       // restore automatic progress reporting<br/> <br/><br/>  </code></div></div><div class="command-header" onclick="toggleCommand('time')">time <i>millisecs</i> [<i>data</i>] [<i>er</i>]<span class="quickDescription">
+ Set timeout of current process.
+</span></div><div style="display:none;" class="command-body" id="time">
+ Set timeout of current process.
+<code> time()                  // set unlimited timeout<br/> time(0)                 // immediately timeout the process<br/> time(1000)              // set timeout to one second<br/> time(1000 "Time's up!" 0)    // set timeout to one second, if exceeded set data to "Time's up!" and give no error<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('stop')">stop <i>err</i> [<i>data</i>]<span class="quickDescription">
+ Stop processing and return data
+</span></div><div style="display:none;" class="command-body" id="stop">
+ Stop processing and return data
+<code>  stop()                          // stop processing and set no error<br/>  stop("OK")                      // stop processing, set no error, and put "OK" in main process data field<br/>  stop(0,"All is good.")          // stop processing, set no error, and put "All is good." in main process data field<br/>  stop(404,"HELP! Not found.")    // stop processing, set error to 404, and put "HELP! Not found." in main process data field<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('type')">type <i>data</i><span class="quickDescription">
+ Set the type field of a process.
+</span></div><div style="display:none;" class="command-body" id="type">
+ Set the type field of a process.
+<code>  type("data")           // set the data type to 'data'<br/>  stop(0,"hello")        // stop processing, set no error and pass string 'hello'<br/></code><code>  type("file:data")      // set the data type to 'file:data'<br/>  stop(0,"hello.txt")    // stop processing, set no error and pass the content of the hello.txt file as data in the result json<br/></code><code>  type("file:text/html") // set the data type to 'text/html'<br/>  stop(0,"hello.html")   // stop processing, set no error and pass the content of the hello.html file as flat file, resulting in webserver behaviour<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('data')">data <i>object</i><span class="quickDescription">
+ Set data stream to a value.
+</span></div><div style="display:none;" class="command-body" id="data">
+ Set data stream to a value.
+<code> data("test")            // Fill the data stream with 'test'.<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('hook')">hook <i>onError</i><span class="quickDescription">
+ Indicates a fallback target when an error is encountered.
+</span></div><div style="display:none;" class="command-body" id="hook">
+ Indicates a fallback target when an error is encountered.
+<code> hook "Something went wrong." 0<br/> fail "Something caused an error"<br/> // this will fail but the hook will cause a non error output of "Something went wrong."<br/></code><code> hook "Something went wrong." 1<br/> fail "Something caused an error"<br/> // this will fail but the hook will overwrite the error output with "Something went wrong."<br/></code><code> hook 2<br/> fail "Something caused an error"<br/> done "Something went wrong."<br/> // this will fail but the hook will cause a jump and a non error output of "Something went wrong."<br/></code><code> hook</code></div></div><div class="command-header" onclick="toggleCommand('fail')">fail [<i>err</i>] [<i>data</i>]<span class="quickDescription">
+ Fail processing and return message.
+</span></div><div style="display:none;" class="command-body" id="fail">
+ Fail processing and return message.
+<code> fail()                        // stop processing and set error to 1<br/> fail("Something wrong")       // stop processing, set error to 1, and put "Something wrong." in main process data field<br/> fail(404,"HELP! Not found.")  // stop processing, set error to 404, and put "HELP! Not found." in main process data field<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('done')">done [<i>data</i>]<span class="quickDescription">
+ Stop processing and return message.
+</span></div><div style="display:none;" class="command-body" id="done">
+ Stop processing and return message.
+<code> done()                // stop processing without error.<br/> done("Success")       // stop processing without error and put "Success." in main process data field<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('jump')">jump <i>step</i><span class="quickDescription">
+ Jump forward or backward several instructions.
+</span></div><div style="display:none;" class="command-body" id="jump">
+ Jump forward or backward several instructions.
+<code> jump(2)         // jump over the next instruction<br/> jump(-3)        // jump backwards three instructions<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('test')">test <i>condition</i> <i>onTrue</i> <i>onFalse</i> [<i>data</i>]<span class="quickDescription">
+ Test a condition and choose to jump.
+</span></div><div style="display:none;" class="command-body" id="test">
+ Test a condition and choose to jump.
+<code> test('a>3',1,-3)    // test if a>3, if true jump to the next instruction, if false jump back three instructions<br/> test('b<=1',-4,1)   // test if b<=1, if true jump back four instructions, if false jump to the next instruction<br/> test('a>3',-5)      // test if a>3, if true jump back five instructions, else default jump to the next instruction<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('tran')">tran <i>pattern</i> <i>input</i> <i>onSuccess</i> <i>onError</i> [<i>data</i>]<span class="quickDescription">
+ Transforms data using a pattern definition.
+ also for arrays and dictionaries of property paths
+ also for explicit primitive values
+</span></div><div style="display:none;" class="command-body" id="tran">
+ Transforms data using a pattern definition.
+ also for arrays and dictionaries of property paths
+ also for explicit primitive values
+<code> tran(".foo",1,2)                                         // Input: {foo:"bar"} : Passes "bar" to next<br/> tran(".foo.bar[2]",1,2)                                  // Input: {foo:{bar:[0,1,5]}} :  Passes 5 to next<br/> tran(".foo.bar[2]",1,2)                                  // Input: {foo:"bar"}   Jumps 2 instructions and passes {foo:"bar"}<br/> tran([".foo",".hello"],1,2)                              // Input: {foo:"bar",hello:"world"} Passes ["bar","world"] to next<br/> tran({a:".foo",b:".hello",c:"test"},1,2)                 // Input: {foo:"bar",hello:"world"} Passes {a:"bar", b:"world", c:"test"} to next<br/> tran("=.hello|default",1,2)                              // Input: {hello:"world"}  Passes "world" to next<br/> tran("=.hello|default",1,2)                              // Input: {foo:"bar"}  Passes "default" to next<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('find')">find <i>needle</i> [<i>onFound</i>] [<i>onNotFound</i>]<span class="quickDescription">
+ Find a string in an array of objects, and return the object it was found in.
+</span></div><div style="display:none;" class="command-body" id="find">
+ Find a string in an array of objects, and return the object it was found in.
+<code> find({'id':'abcd'})      // input: [{'id':'abcd'},{'id':'efgh'}], output: [{'id':'abcd'}]<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('form')">form [<i>factor</i>]<span class="quickDescription">
+ Format a (floating point) number and return a neatly padded string.
+</span></div><div style="display:none;" class="command-body" id="form">
+ Format a (floating point) number and return a neatly padded string.
+<code> form()     // input: 10, output: "10.00000000" (using $factor = 8)<br/> form(8)    // input: 10, output: "10.00000000"<br/> form(4)    // input: 8, output: "0.8000"<br/>  <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('atom')">atom [<i>reduce</i>] [<i>factor</i>]<span class="quickDescription">
+ Convert a number from atomic units, or convert to atomic units.
+</span></div><div style="display:none;" class="command-body" id="atom">
+ Convert a number from atomic units, or convert to atomic units.
+<code> atom()     // input: 1000000000, output: "10.00000000" (using $factor = 8)<br/> atom(1)    // input: 10, output: "1000000000" (using $factor = 8)<br/> atom(0,4)  // input: 8, output: "0.0008"<br/> atom(1,4)  // input: 8, output: "80000"<br/>  <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('splt')">splt [<i>separator</i>]<span class="quickDescription">
+ Split a string.
+</span></div><div style="display:none;" class="command-body" id="splt">
+ Split a string.
+<code> splt()     // input: "This is nice.", output: ["This","is","nice."]<br/> splt(',')  // input: "Some,list,of,stuff", output: ["Some","list","of","stuff]<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('join')">join [<i>separator</i>]<span class="quickDescription">
+ Join an array into a string.
+</span></div><div style="display:none;" class="command-body" id="join">
+ Join an array into a string.
+<code> join()     // input: ["This","is","nice."], output: "Thisisnice."<br/> join(' ')  // input: ["Some","list","of","stuff"], output: "Some list of stuff"<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('curl')">curl <i>target</i> <i>querystring</i> [<i>method</i>] [<i>data</i>] [<i>headers</i>] [<i>overwriteProperties</i>]<span class="quickDescription">
+ Use API queue to perform a curl call to an external host.
+</span></div><div style="display:none;" class="command-body" id="curl">
+ Use API queue to perform a curl call to an external host.
+</div></div><div class="command-header" onclick="toggleCommand('fork')">fork <i>command</i> <i>data</i> [<i>childId</i>]<span class="quickDescription">
+ Creates a new process by calling the command asynchronously.
+</span></div><div style="display:none;" class="command-body" id="fork">
+ Creates a new process by calling the command asynchronously.
+<code> fork("balance/_dummyaddress_")   // Starts a process to retrieve the dummy balance and continue without waiting for a reply.<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('call')">call <i>command</i> <i>data</i><span class="quickDescription">
+ Creates a new process by calling the xpath command and wait for the data to be returned (combines fork and read).
+</span></div><div style="display:none;" class="command-body" id="call">
+ Creates a new process by calling the xpath command and wait for the data to be returned (combines fork and read).
+<code> call("balance/_dummyaddress_")          // Retrieve the balance and pass it to next step.<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('rout')">rout <i>path</i><span class="quickDescription">
+ Route a path through hybridd and pass the result to the next step. /api/help for API information.
+</span></div><div style="display:none;" class="command-body" id="rout">
+ Route a path through hybridd and pass the result to the next step. /api/help for API information.
+<code> rout('/asset/dummy/balance/__dummyaddress__')   // retrieve the balance for the dummy asset<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('file')">file<span class="quickDescription">
+ TODO
+</span></div><div style="display:none;" class="command-body" id="file">
+ TODO
+<code> rout('/asset/dummy/balance/__dummyaddress__')   // retrieve the balance for the dummy asset<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('save')">save <i>key</i> [<i>value</i>]<span class="quickDescription">
+ Store a key value pair. When value is an object, it will be stored as a string.
+</span></div><div style="display:none;" class="command-body" id="save">
+ Store a key value pair. When value is an object, it will be stored as a string.
+<code> save("myFavoriteColor","blue")    // saves "blue" under key myFavoriteColor<br/> save("myObject",{key:"storeme"})  // saves "{key:\"storeme\"}" under key myObject<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('load')">load <i>key</i><span class="quickDescription">
+ Retrieve a string value stored under key.
+ NOTE: When loading saved objects, pass them through jpar() for conversion!
+</span></div><div style="display:none;" class="command-body" id="load">
+ Retrieve a string value stored under key.
+ NOTE: When loading saved objects, pass them through jpar() for conversion!
+<code> load("myFavoriteColor")  // retrieve the value for myFavoriteColor<br/> load("myObject")         // retrieve the value for myObject<br/> jpar()                   // convert loaded value to object<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('meta')">meta <i>key</i><span class="quickDescription">
+ Retrieve the meta data based on a key.
+</span></div><div style="display:none;" class="command-body" id="meta">
+ Retrieve the meta data based on a key.
+<code> meta("myFavoriteColor")  // retrieve the meta data for myFavoriteColor<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('read')">read <i>processIDs</i> <i>interval</i><span class="quickDescription">
+ Wait for one or more processes to finish and return the results.
+</span></div><div style="display:none;" class="command-body" id="read">
+ Wait for one or more processes to finish and return the results.
+<code> read("123456")                   //Wait for process 123456 to finish and return its data.<br/> read(["123456","654321"])        //Wait for processes 123456 and 654321 to finish and return their data combined into an array.<br/> read({"a":null,"b":34})        //Wait for processes 123456 and 654321 to finish and return their data combined into an object with property labels a and b.<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('each')">each <i>command</i> <i>data</i><span class="quickDescription">
+ Loop through elements of a container execute a given function for each element.
+</span></div><div style="display:none;" class="command-body" id="each">
+ Loop through elements of a container execute a given function for each element.
+<code> each(["a","b","c"],"test")           //  calls test with data = {key=0, value="a"} and further<br/> each({"a":0,"b":1,"c":2},"test")     //  calls test/x/y with data = {key="a", value=0} and further<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('poke')">poke <i>key</i> <i>value</i> [<i>data</i>]<span class="quickDescription">
+ Put data in a variable for later use. Use peek to retrieve. The data is stored in the root parent process under 'vars'. (You can see this poked data stored in global.hybridd.proc[rootID].vars, but a better way to use this data is by using the command peek("varname").
+</span></div><div style="display:none;" class="command-body" id="poke">
+ Put data in a variable for later use. Use peek to retrieve. The data is stored in the root parent process under 'vars'. (You can see this poked data stored in global.hybridd.proc[rootID].vars, but a better way to use this data is by using the command peek("varname").
+<code>  poke("fee",value)         // sets value in recipe local variable fee. Shorthand for local::fee (runtime, persisted in the .vars.json file)<br/>  poke("userDefined")         // given that the recipe does not have property userDefined sets the value in processor variable userDefined (runtime, non persistant)<br/>  poke("proc::fee",value)         // sets value in processor variable fee (runtime, non persistant)<br/>  poke("local::fee",value)         // sets value in recipe local variable fee (runtime, persisted in the .vars.json file)<br/>  poke("::fee",value)         // same as poke("local::fee",value)<br/><br/>  poke("btc::fee",value)         // results in an error.<br/>  poke("btc::local::fee",value)         // results in an error<br/><br/>  poke(2,value)     // results in an error.<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('peek')">peek <i>key</i><span class="quickDescription">
+ Gets data from a variable that was defined by poke. Used inside of other instructions.
+</span></div><div style="display:none;" class="command-body" id="peek">
+ Gets data from a variable that was defined by poke. Used inside of other instructions.
+<code>  peek("fee")         // returns value in recipe variable fee (non mutable, based on the recipe .json file)<br/>  peek("userDefined")         // given that the recipe does not have property userDefined returns value in processor variable userDefined (runtime, non persistant)<br/>  peek("proc::fee")         // returns value in processor variable fee (runtime, non persistant)<br/>  peek("local::fee")         // returns value in recipe local variable fee (runtime, persisted in the .vars.json file)<br/>  peek("::fee")         // same as peek("local::fee")<br/><br/>  peek("btc::fee")         // returns value in btc recipe variable fee (non mutable, based on the recipe btc.json file)<br/>  peek("btc::local::fee")         // returns value in btc recipe variable fee (based on the recipe .btc.vars.json file)<br/><br/>  peek(2)     // returns value of the second command path (non mutable)<br/><br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('math')">math <i>equation</i><span class="quickDescription">
+ Calculates numbers and variables. Mathematical calculations can be done with very large numbers.
+</span></div><div style="display:none;" class="command-body" id="math">
+ Calculates numbers and variables. Mathematical calculations can be done with very large numbers.
+<code>  math('10*34+8-(3^4)')  // returns 267<br/>  math('^2*5')           // returns the value of data to the power of two times five<br/>  math([2,3,4,5,6])      // returns the sum of all the numbers in the array<br/>  math([2,3,4,5,6],'*')  // multiplies all the numbers in the array<br/>  math('+')              // adds all the numbers in the data array<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('scan')">scan <i>test</i> <i>cumulative</i> <i>cinit</i><span class="quickDescription">
+ Scan through the values of an array or object, and return values that pass the test.
+</span></div><div style="display:none;" class="command-body" id="scan">
+ Scan through the values of an array or object, and return values that pass the test.
+<code> scan('value>5')           // input: [1,2,3,4,5,6,7,8], output: [6,7,8]<br/> scan('val>5')             // val is shorthand for value - input: [1,2,3,4,5,6,7,8], output: [6,7,8]<br/> scan('cnt>5')             // input: [1,2,3,4,5,6,7,8], output: [4,5,6,7,8]<br/> scan('cnt>20','+(v*2)')   // input: [2,4,6,8,10,12,14,16], output: [6,8,10,12,14,16]<br/> scan('cnt>5','',3)        // input: [1,2,3,4,5,6,7,8], output: [3,4,5,6,7,8]<br/> scan('cnt>1','+val.b')    // input: [{a:'a',b:1},{a:'b',b:1},{a:'c',b:1}], output: [{a:'b',b:1},{a:'c',b:1}]<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('hash')">hash <i>method</i><span class="quickDescription">
+ Create a sha256 hash from an input string.
+</span></div><div style="display:none;" class="command-body" id="hash">
+ Create a sha256 hash from an input string.
+<code>  hash("this_is_my_data")  // returns the hash: 5322fecfc92a5e3248a297a3df3eddfb9bd9049504272e4f572b87fa36d4b3bd<br/> <br/>  // TODO: Implement method DJB2<br/>  </code></div></div><div class="command-header" onclick="toggleCommand('code')">code <i>target</i> [<i>source</i>]<span class="quickDescription">
+ Change encoding of a string from one format to the other.
+</span></div><div style="display:none;" class="command-body" id="code">
+ Change encoding of a string from one format to the other.
+<code>  code('bin')             // input: 'woot', returns: '1110111011011110110111101110100'<br/>  code('utf-8','base58')  // input: 'this_is_my_data', returns: '4FtePA9kj2RpFH4tBkPUt'<br/>  code('hex','base58')    // input: '8BA9C1B4', returns: '4a4JJF'<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('case')">case <i>mode</i><span class="quickDescription">
+ Change case of a string.
+</span></div><div style="display:none;" class="command-body" id="case">
+ Change case of a string.
+<code>  case('upper')           // input: 'what is THIS?', returns: 'WHAT IS THIS?'<br/>  case('lower')           // input: 'what is THIS?', returns: 'what is this?'<br/>  case('words')           // input: 'what is THIS?', returns: 'What Is This?'<br/>  case('first')           // input: 'what is THIS?', returns: 'What is this?'<br/>  case('camel')           // input: 'what is THIS?', returns: 'whatIsThis?'<br/>  case('reverse')         // input: 'what is THIS?', returns: 'WHAT IS this?'<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('repl')">repl <i>needle</i> <i>replacement</i><span class="quickDescription">
+ Replace part or parts of a string.
+</span></div><div style="display:none;" class="command-body" id="repl">
+ Replace part or parts of a string.
+<code>  repl('apples ')                           // input: 'Many apples for you.', returns: 'Many for you.'<br/>  repl('apples','pears')                    // input: 'Many apples for you.', returns: 'Many pears for you.'<br/>  repl(['apples','you'],['pears','me'])     // input: 'Many apples for you.', returns: 'Many pears for me.'<br/>  repl(['apples','you'],'foo'])             // input: 'Many apples for you.', returns: 'Many foo for foo.'<br/>  repl('o',['A','I'])                       // input: 'Many apples for you.', returns: 'Many apples fAr yIu.'<br/>  repl()                                    // input: 'Many apples for you.', returns: 'Manyapplesfor ou.'<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('push')">push <i>input</i> <i>offset</i> <i>delete</i><span class="quickDescription">
+ Push new data into array or string.
+</span></div><div style="display:none;" class="command-body" id="push">
+ Push new data into array or string.
+<code> push(0)           // add 0 to data array<br/> push('woots!')    // input: ['A'], result: ['A','woots!']<br/> push('woots!')    // input: 'A', result: 'Awoots!'<br/> push('B',1)       // input: ['a','c'], result: ['a','B','c']<br/> push(['B','E'],1) // input: ['a','c'], result: ['a','B','E','c']<br/> push('an',8)      // input: 'This is  apple', result: 'This is an apple'<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('pull')">pull <i>string</i> <i>offset</i> <i>ending</i><span class="quickDescription">
+ Pull elements from an array or input string.
+</span></div><div style="display:none;" class="command-body" id="pull">
+ Pull elements from an array or input string.
+<code>  pull(5)      // pull from the left    input: 'this_is_my_data', output: 'is_my_data'<br/>  pull(-5)     // pull from the right   input: 'this_is_my_data', output: '_data'<br/>  pull(5,-5)   // pull from both edges  input: 'this_is_my_data', output: 'is_my'<br/>  pull(4,7)    // select from center    input: 'this_is_my_data', output: '_is_my_'<br/>  pull(-4,-5)  // extract edges         input: 'this_is_my_data', output: 'this_data'<br/>  pull(-4, 6)  // select inversed       input: 'this_is_my_data', output: 'thista'<br/>  pull(1,-1)   // arrays also work!     input: ['a','b','c','d'], output: ['b','c']<br/>  pull(1,4)    // another array pull    input: ['g','l','o','v','e','s'], output: ['l','o','v','e']<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('sort')">sort <i>input</i> <i>method</i><span class="quickDescription">
+ Sort data by using a certain method.
+</span></div><div style="display:none;" class="command-body" id="sort">
+ Sort data by using a certain method.
+<code>  sort()                                          // input: 'BADEFC', sorts the object ascending by value: 'ABCDEF'<br/>  sort('desc')                                    // input: [10,8,5,9], sorts the object descending by value: [10,9,8,5]<br/>  sort(['val','asc'])                             // input: {'a':'z','b':'x','c':'y'}, sorts the object ascending by value: [{'b':'x'},{'c':'y'},{'c':'z'}]<br/>  sort(['key','desc'])                            // input: {'a':2,'b':1,'c':3}, sorts the object descending by key:  [{'c':3},{'b':1},{'a':2}]<br/>  sort(['val','num','asc'])                       // input: {'a':1,'b':10,'c':3}, sorts the object ascending by numeric value:  [{'a':1},{'c':3},{'b':10}]<br/>  sort('.b')                                      // input: [{'a':4,'b':'B'},{'a':2,'b':'A'}], sorts the array by object key 'b': [{'a':2,'b':'A'},{'a':4,'b':'B'}]<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('init')">init<span class="quickDescription">
+ Initiates a client stack program. This stack can be filled using step and executed using exec.
+</span></div><div style="display:none;" class="command-body" id="init">
+ Initiates a client stack program. This stack can be filled using step and executed using exec.
+<code> init()     // Initiates a Hybridd.Interface stack program.<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('step')">step <i>key</i><span class="quickDescription">
+ Add a step to a client stack program. Executed using exec.
+</span></div><div style="display:none;" class="command-body" id="step">
+ Add a step to a client stack program. Executed using exec.
+<code> TODO<br/> <br/>  </code></div></div><div class="command-header" onclick="toggleCommand('exec')">exec<span class="quickDescription">
+ Execute a client stack program.
+</span></div><div style="display:none;" class="command-body" id="exec">
+ Execute a client stack program.
+<code> TODO<br/> <br/>  </code></div></div>
