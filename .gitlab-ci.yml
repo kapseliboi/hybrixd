@@ -159,9 +159,6 @@ test:
     - npm install n -g 
     - n 8.12.0 
 
-    #Now, you can see version 6.8.1 is installed,
-    - node -v 
-    
     # trying to get past error: could not get uid/gid [ 'nobody', 0 ]
     #- npm config set unsafe-perm true
     
@@ -170,6 +167,11 @@ test:
     #- apk add unzip
     #- apk add curl
     #- apk add nodejs=8.11.4-r0
+    
+    - git clone -n https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/iochq/hybridd/dependencies/nodejs.git --depth 1
+    - cd nodejs
+    - git checkout origin/master -- x86_64
+    - cd.. 
     
     # retrieve test.js from iochq/hybridd/interface
     # https://gitlab.com/gitlab-org/gitlab-ce/issues/29566
@@ -190,7 +192,7 @@ test:
     - sed -i -e s:../dist/:../interface/:g ./test/test.js
     - ./hybridd > /dev/null 2>&1 &
     - cd test
-    - node ./test.js
+    - ../nodejs/x86_64/bin/node ./test.js
     
   coverage: /SUCCESS RATE[^|]*\:[^|]*\s+([\d\.]+)/
   only:
