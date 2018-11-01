@@ -7,7 +7,7 @@
   "factor":8,
   "fee":0.0001,
   "host":["tcp://electrum3.cipig.net:10065","tcp://electrum2.cipig.net:10065","tcp://electrum1.cipig.net:10065"],
-  "cache":30000,
+  "cache":45000,
   "throttle":10,
   "quartz":{
     "sample" : [
