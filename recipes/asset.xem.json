@@ -24,7 +24,7 @@
       "test('$contract'==='undefined',1,2)",
       "stop(0,'Unspent returns mosaic data only in NEM tokens.')",
       "poke('proc::namespace','$contract'.split(':')[0])",
-      "curl('asset://$symbol','/account/mosaic/definition/page?address=$originator'+'&parent=$proc::namespace'),'GET')",
+      "curl('asset://$symbol','/account/mosaic/definition/page?address=$originator'+'&parent=$proc::namespace','GET')",
       "tran('.data',1,2)",
       "find({'namespaceId':'$proc::namespace'},2,1)",
       "stop(1,'Contract address invalid or no mosaics found!')",
@@ -53,9 +53,8 @@
       "data('$1')",
       "jpar()",
       "curl('asset://$symbol','/transaction/announce','POST',data,{'content-type':'application/json'})",
-      "test(typeof data.message!=='undefined' && data.message.substr(0,7)==='FAILURE',2,1)",
       "tran('.transactionHash.data',2,1)",
-      "stop(1,data.error+' : '+data.message)",
+      "fail(data.error+' : '+data.message)",
       "pass(data)"
     ],
     "factor" : [
