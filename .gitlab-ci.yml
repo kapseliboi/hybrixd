@@ -30,12 +30,13 @@ hybridd:
   services:
   - docker:stable-dind
   script:
+    # prepare variable for DEBUG purposes
+    - if [[ "$DEBUG_ENABLED" == "1"  ]]; then DEBUG="-debug"; else DEBUG=""; fi
+    - if [[ "$DEBUG_ENABLED" == "1"  ]]; then echo "DEBUG_ENABLED is 1: debug-mode"; else echo "release-mode"; fi
+    
     # install unzip
     - apk update
     - apk add npm
-    
-    # prepare variable for DEBUG purposes
-    - if [[ "$DEBUG_ENABLED" == "1"  ]]; then DEBUG="-debug"; else DEBUG=""; fi
     
     # trying to get past error: could not get uid/gid [ 'nobody', 0 ]
     - npm config set unsafe-perm true
