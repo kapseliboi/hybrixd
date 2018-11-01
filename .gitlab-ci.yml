@@ -171,7 +171,7 @@ test:
     - git clone -n https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/iochq/hybridd/dependencies/nodejs.git --depth 1
     - cd nodejs
     - git checkout origin/master -- x86_64
-    - cd.. 
+    - cd .. 
     
     # retrieve test.js from iochq/hybridd/interface
     # https://gitlab.com/gitlab-org/gitlab-ce/issues/29566
