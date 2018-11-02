@@ -1,0 +1,163 @@
+body {
+  font-family: Open Sans;
+  width: 80%;
+  line-height: 24px;
+  font-size: 14px;
+  margin: 50px auto;
+  word-break: break-word;
+  min-width: 400px;
+  padding-bottom:200px;
+}
+
+body > dl > dt, body > dt {
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+  margin-top: 40px;
+}
+a {
+  color: #7174D8;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(113,116,216,.3);
+}
+input {
+  margin: 2px;
+}
+li {
+  list-style-type: disc;
+}
+code {
+  background-color: #EEEEEE;
+  padding: 3px;
+  margin: 4px;
+}
+
+.menuItem {
+ padding:10px;
+ font-size:150%;
+ background-color: #000000;
+ color:white;
+}
+
+.current{
+ background-color:  #7174D8;
+ color:white;
+}
+
+#collapseAll {
+  float:right;
+  cursor:pointer;
+}
+.category{
+  font-size:110%;
+}
+
+.command-header {
+  font-family: verdana;
+  background-color:  #7174D8;
+  color:white;
+  margin-top:5px;
+  padding:8px;
+  border-radius:3px;
+  cursor: pointer;
+-webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+
+
+.command-body{
+  padding:15px;
+  border-style:solid;
+  border-width:1px;
+  border-radius:2px;
+}
+
+.quickDescription{
+  max-width:50%;
+  float:right;
+  font-size:80%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#console-wrapper{
+  padding:0;
+  overflow: auto;
+  border-top-style: solid;
+  border-top-width:1px ;
+  border-top-color:#AAAAAA;
+  position: fixed;
+  width:100%;
+  bottom:0;
+  left:0;
+  background-color:white;
+}
+#console-header{
+  cursor:pointer;
+  height:20px;
+  padding-left:5px;
+  background-color:#dddddd;
+}
+
+#console-results{
+  font-family: verdana;
+  width:100%;
+  overflow-y:scroll;
+  height:0;
+}
+
+
+div.result {
+  padding-left:5px;
+  border-top-style: solid;
+  border-top-width:1px ;
+  border-top-color: #dddddd;
+  width:100%;
+}
+div.error {
+  padding-left:5px;
+  background-color:#ffdddd;
+  color:CC0000;
+  border-top-style: solid;
+  border-top-width:1px ;
+  border-top-color: #ffbbbb;
+}
+input.text {
+  width:90%;
+  border-style:none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  margin:0;
+}
+span.result{
+ color: #7174D8;
+}
+
+.close{
+ float:right;
+ padding-right:10px;
+}
+div.prompt{
+  border-top-style: solid;
+  border-top-width:1px ;
+  border-top-color: #dddddd;
+}
+
+#search {
+  float:right;
+}
+
+.Download{
+  border-radius:6px;
+  font-size:200%;
+  padding:10px;
+  background-color:green;
+  color:white;
+  display:inline-block;
+}

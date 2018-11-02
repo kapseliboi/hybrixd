@@ -7,11 +7,9 @@
   },
   "quartz" : {
     "test" : [
-      "save 'a' {a:1}",
-      "load 'a'",
-      "file",
-      "jpar",
-      "done"
+      "poke 'local::a' 1",
+      "logs 0 '$local::a'",
+      "done '$local::a'"
     ]
   }
 }

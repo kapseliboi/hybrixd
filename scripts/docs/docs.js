@@ -1,6 +1,12 @@
 var fs = require('fs');
-
-var body = fs.readFileSync('../../lib/scheduler/quartz.js').toString();
+// var id = 'hybridd-lib.js';
+var files = {
+  qrtz: '../../lib/scheduler/quartz.js',
+  'hybrid-lib.js': '../../../interface/lib/interface.js',
+  'Hybridd': '../../docs/source/Hybridd.html',
+  'HelloWorld': '../../docs/source/HelloWorld.html',
+  'cli': '../../docs/source/cli.html'
+};
 
 function getMatches (re, str) {
   re.lastIndex = 0;
@@ -15,124 +21,113 @@ function getMatches (re, str) {
   return array;
 }
 
-var re = /\/\*\*([\s\S]+?)this\.(\w*)/g; // match jsdoc templates
+for (var id in files) {
+  var body = fs.readFileSync(files[id]).toString();
 
-var f = getMatches(re, body);
-var data = `
-<style>
+  var data = `<style>` + fs.readFileSync(__dirname + '/../../docs/docs.css').toString() + `</style><script>` + fs.readFileSync(__dirname + '/../../docs/docs.js').toString() + `</script>`;
 
-body {
-  font-family: Open Sans;
-  width: 80%;
-  line-height: 24px;
-  font-size: 14px;
-  margin: 50px auto;
-  word-break: break-word;
-  min-width: 400px;
-  padding-bottom:200px;
-}
+  data += '<div id="navigation"></div><script>initNavigation("' + id + '")</script>';
 
-body > dl > dt, body > dt {
-  border-top: 1px solid #eee;
-  padding-top: 20px;
-  margin-top: 40px;
-}
+  var intro = fs.readFileSync('../../docs/source/' + id + '.html').toString();
+  data += intro;
 
+  if (files[id].substr(-5) !== '.html') {
+    var re = /\/\*\*([\s\S]+?)this\.(\w*)/g; // match jsdoc templates
 
-.command-header {
-  font-family: verdana;
-  background-color:  #7174D8;
-  color:white;
-  margin-top:5px;
-  padding:8px;
-  border-radius:3px;
-  cursor: pointer;
--webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome and Opera */
-}
+    var f = getMatches(re, body);
 
+    var funcs = [];
+    for (var i = 0; i < f.length; ++i) {
+      var m = f[i];
+      var name = m[2];
+      var content = m[1].replace(/\*\//g, '').replace(/\n \*/g, '\n');
+      var lines = content.split(' @');
+      var description = lines[0].replace(/\*/g, '');
+      var parameters = [];
+      var examples = [];
+      var category = 'Misc';
+      for (var j = 0; j < lines.length; ++j) {
+        var line = lines[j];
+        if (line.startsWith('param')) {
+          parameters.push(line.substr(6));
+        } else if (line.startsWith('category')) {
+          category = line.substr(9).replace(/(\*|\s)/g, '');
+        } else if (line.startsWith('example')) {
+          examples.push(line.substr(8).replace(/\*/g, ''));
+        }
+      }
+      for (var j = 0; j < parameters.length; ++j) {
+        var parameter = parameters[j].substr(1);
+        var elements = parameter.split(' '); // "{Integer} offset - the offset" -> ["{Integer}", "offset", ...]
+        var type = elements[0].substr(0, elements[0].length - 1);
+        var pname = elements[1];
+        var pDescription = elements.slice(2).join(' ').replace(/\*/g, '');
+        var optional = false;
+        if (pname.startsWith('[')) {
+          optional = true;
+          pname = pname.substr(1, pname.length - 2);
+        }
 
-.command-body{
-  padding:15px;
-  border-style:solid;
-  border-width:1px;
-  border-radius:2px;
-}
+        parameters[j] = {type, name: pname.split('=')[0], description: pDescription, default: pname.split('=')[1], optional};
+        // TODO description
+      }
+      funcs.push({name, description, category, parameters, examples});
+    }
 
-.quickDescription{
-  max-width:50%;
-  float:right;
-  font-size:80%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+    funcs.sort((a, b) => {
+      if (a.category === b.category) {
+        return a.name.localeCompare(b.name);
+      } else {
+        var ac = a.category;
+        var bc = b.category;
+        if (ac === 'Misc' || ac === 'Depreciated') { ac = 'ZZZZZZ' + ac.slice(-1); }
+        if (bc === 'Misc' || bc === 'Depreciated') { bc = 'ZZZZZZ' + bc.slice(-1); }
+        return ac.localeCompare(bc);
+      }
+    });
 
-code {
-  background-color: #EEEEEE;
-  padding: 3px;
-  margin: 4px;
-  display:block;
-}
-</style>
-<script>
-function toggleCommand(id){
-  var e = document.getElementById(id);
-  e.style.display=e.style.display==='block'?'none':'block';
-}
-</script>
-`;
+    for (var i = 0; i < funcs.length; ++i) {
+      var func = funcs[i];
+      if (i === 0 || funcs[i - 1].category !== func.category) {
+        data += '<div class="category">' + func.category + '</div>';
+      }
+      data += '<div class="command-header" onclick="toggleCommand(\'' + func.name + '\')"><b>' + func.name + '</b>';
 
-for (var i = 0; i < f.length; ++i) {
-  var m = f[i];
-  var func = m[2];
-  var content = m[1].replace(/\*\//g, '').replace(/\n \*/g, '\n');
-  var lines = content.split(' @');
-  var description = lines[0];
-  var parameters = [];
-  var examples = [];
-  for (var j = 0; j < lines.length; ++j) {
-    var line = lines[j];
-    if (line.startsWith('param')) {
-      parameters.push(line.substr(6));
-    } else if (line.startsWith('example')) {
-      examples.push(line.substr(8).replace(/\n/g, '<br/>'));
+      if (id === 'hybrid-lib.js') { data += ' {'; }
+      for (var j = 0; j < func.parameters.length; ++j) {
+        var parameter = func.parameters[j];
+        if (parameter.name.indexOf('.') !== -1 || id === 'qrtz') {
+          var name;
+          if (id === 'hybrid-lib.js' && j > 1) { data += ', '; }
+
+          if (id === 'qrtz') {
+            data += ' ';
+            name = parameter.name;
+          } else {
+            name = parameter.name.split('.').slice(1);
+          }
+          if (parameter.optional) {
+            data += '[<i>' + name + (typeof parameter.default === 'undefined' ? '' : ('=' + parameter.default)) + '</i>]';
+          } else {
+            data += '<i>' + name + '</i>';
+          }
+        }
+      }
+      if (id === 'hybrid-lib.js') { data += '}'; }
+      data += '<span class="quickDescription">' + func.description + '</span></div><div style="display:none;" class="command-body" id="' + func.name + '">';
+      data += description;
+      data += '<table>';
+      for (var j = 0; j < func.parameters.length; ++j) {
+        var parameter = func.parameters[j];
+        data += '<tr><td>' + parameter.name + '</td><td>' + parameter.description + '</td></tr>';
+      }
+      data += '</table>';
+      for (var j = 0; j < func.examples.length; ++j) {
+        data += '<code style="display:block;white-space: pre;">' + func.examples[j] + '</code>';
+      }
+      data += '</div></div>';
     }
   }
-  for (var j = 0; j < parameters.length; ++j) {
-    var parameter = parameters[j].substr(1);
-    var elements = parameter.split(' '); // "{Integer} offset - the offset" -> ["{Integer}", "offset", ...]
-    var type = elements[0].substr(0, elements[0].length - 1);
-    var name = elements[1];
-    var optional = false;
-    if (name.startsWith('[')) {
-      optional = true;
-      name = name.substr(1, name.length - 2);
-    }
-    parameters[j] = {type, name, optional};
-    // TODO description
-  }
 
-  data += '<div class="command-header" onclick="toggleCommand(\'' + func + '\')">' + func;
-  for (var j = 0; j < parameters.length; ++j) {
-    var parameter = parameters[j];
-    if (parameter.optional) {
-      data += ' [<i>' + parameter.name + '</i>]';
-    } else {
-      data += ' <i>' + parameter.name + '</i>';
-    }
-  }
-  data += '<span class="quickDescription">' + description + '</span></div><div style="display:none;" class="command-body" id="' + func + '">';
-  data += description;
-  for (var j = 0; j < examples.length; ++j) {
-    data += '<code>' + examples[j] + '</code>';
-  }
-  data += '</div></div>';
+  fs.writeFileSync('../../docs/' + id + '.html', data);
 }
-
-fs.writeFileSync('../../docs/qrtz.html', data);
