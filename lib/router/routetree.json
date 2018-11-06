@@ -31,8 +31,7 @@
         "_this" : "Perform scheduled tasks."
       },
       "details":{
-        "_this": "Retrieve detailed information of an asset",
-        "_response": "TODO"
+        "_this": "Retrieve detailed information of an asset"
       },
       "factor":{
         "_this": "Retrieve the factor. The number of decimal digits used for this asset.",
@@ -43,14 +42,13 @@
         "_response": {"error":0,"info":"Process data.","id":"1519830189432904","progress":1,"started":1519830189432,"stopped":1519830189437,"data":"0.000420000000000000"}
       },
       "fee-symbol":{
-        "_this": "Retrieve the symbol in which the fee is calculated.",
-        "_response": "TODO"
+        "_this": "Retrieve the symbol in which the fee is calculated."
       },
       "history":{
         "_ref" : {
           "_list" : "address",
           "_sample" : "_dummyaddress_",
-          "_this": "Retrieve the history TODO"
+          "_this": "Retrieve a history for an asset. "
         }
       },
       "sample" : {
@@ -80,37 +78,29 @@
         "_this" : "Perform initialization tasks."
       },
       "keygen-base":{
-        "_this": "Retrieve the keygen-base TODO",
-        "_response": "TODO"
+        "_this": "Retrieve the keygen-base. This is the asset that is used to generate the keys."
       },
       "unspent": {
         "_ref" : {
-          "_this" : "TODO",
+          "_help" : "Retrieve the unspent. Unspent is a bitcoin related term that in hybridd is used for pretransactional data. Bitcoin: unspent means available inputs for creating a transaction. Ethereum: unspent means the most recent nonce of the cryptocurrency account needed for constructing a transaction.  NXT: unspent means the server reply information needed to construct a deterministic transaction.",
           "_list" : "source_address",
           "_sample" : "_dummyaddress_",
           "_ref" : {
             "_list" : "amount",
             "_sample" : "100",
-            "_this" : "TODO",
+            "_this" : "Retrieve the unspent.",
             "_ref" : {
               "_list" : "target_address",
               "_sample" : "_dummyaddress_",
-              "_this" : "TODO",
+              "_this" : "Retrieve the unspent.",
               "_ref" : {
                 "_list" : "public_key",
                 "_sample" : "_dummypublickey_",
-                "_this" : "Retrieve the unspent. Unspent is a bitcoin related term that in hybridd is used for pretransactional data. Bitcoin: unspent means available inputs for creating a transaction. Ethereum: unspent means the most recent nonce of the cryptocurrency account needed for constructing a transaction.  NXT: unspent means the server reply information needed to construct a deterministic transaction.",
+                "_this" : "Retrieve the unspent.",
                 "_response" : {"error":0,"info":"Process data.","id":"1519830913478733","progress":1,"started":1519830913478,"stopped":1519830914923,"data":{"nonce":"1"}}
               }
             }
           }
-        }
-      },
-      "validate": {
-        "_ref" : {
-          "_list" : "address",
-          "_sample" : "_dummyaddress_",
-          "_this": "Validate the address. Returns either valid, invalid or unregistered."
         }
       }
     }
@@ -176,8 +166,8 @@
   "l":{"_alias":"list"},
   "list":{
     "asset" : {
-      "names":"TODO",
-      "modes":"TODO",
+      "names":"Retrieve a list of all basic asset names.",
+      "modes":"Retrieve a list of all basic asset modes.",
       "details":"Retrieve a list of all basic asset details [{symbol,name,mode}]"
     }
   },
@@ -237,17 +227,17 @@
       "_this" : "Retrieve the hash for a flat file result.",
       "_ellipsis": true
     },
-    "_help" : "TODO",
+    "_help" : "Display the help website.",
     "_ref":{
-      "_this" : "TODO",
+      "_this" : "Display the help website.",
       "_ellipsis": true,
       "_list":"offset",
       "_ref":{
-        "_this" : "TODO",
+        "_this" : "Display the help website.",
         "_ellipsis": true,
         "_list":"length",
         "_ref":{
-          "_this" : "TODO",
+          "_this" : "Display the help website.",
           "_list":"path",
           "_ellipsis": true
         }
