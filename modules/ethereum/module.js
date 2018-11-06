@@ -52,6 +52,7 @@ function exec (properties) {
   // define the source address/wallet
   var sourceaddr = (typeof properties.command[1] !== 'undefined' ? properties.command[1] : false);
   // handle standard cases here, and construct the sequential process list
+  subprocesses.push('time(45000)');
   switch (properties.command[0]) {
     case 'init':
       if (!functions.isToken(target.symbol)) {
@@ -67,32 +68,31 @@ function exec (properties) {
         // set up init probe command to check if RPC and block explorer are responding and connected
         subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_gasPrice"]})');
         subprocesses.push('func("ethereum","post",{target:' + jstr(target) + ',command:["init"],data:data,data})');
-        subprocesses.push('pass( (data != null && typeof data.result=="string" && data.result[1]=="x" ? 1 : 0) )');
-        subprocesses.push('logs(1,"module ethereum: "+(data?"connected":"failed connection")+" to [' + target.symbol + '] host ' + target.host + '")');
+        subprocesses.push('pass( (data !== null && typeof data.result==="string" && data.result[1]==="x" ? 1 : 0) )');
       }
       break;
     case 'cron':
       subprocesses.push('logs(1,"module ethereum: updating fee")');
       subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_gasPrice"]})');
-      subprocesses.push('func("ethereum","post",{target:' + jstr(target) + ',command:["init"],data:data,data})');
+      subprocesses.push('func("ethereum","post",{target:' + jstr(target) + ',command:["updateFee"],data:data,data})');
       break;
     case 'status':
-    // set up init probe command to check if Altcoin RPC is responding and connected
+      // set up init probe command to check if Altcoin RPC is responding and connected
       subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_protocolVersion"]})');
       subprocesses.push('func("ethereum","post",{target:' + jstr(target) + ',command:["status"],data:data})');
       break;
     case 'factor':
-    // directly return factor, post-processing not required!
-      subprocesses.push('stop(0,"' + factor + '")');
+      // directly return factor, post-processing not required!
+      subprocesses.push('done("' + factor + '")');
       break;
     case 'fee':
-    // directly return fee, post-processing not required!
+      // directly return fee, post-processing not required!
       var fee;
       if (!functions.isToken(target.symbol)) {
         fee = (typeof target.fee !== 'undefined' ? target.fee : null);
       } else {
         fee = (typeof global.hybridd.asset[base].fee !== 'undefined' ? global.hybridd.asset[base].fee * 2.465 : null);
-        factor = (typeof global.hybridd.asset[base].factor !== 'undefined' ? global.hybridd.asset[base].factor : null);
+        factor = (typeof global.hybridd.asset[base].factor !== 'undefined' ? global.hybridd.asset[base].factor : 18);
       }
       subprocesses.push('stop((' + jstr(fee) + '!==null && ' + jstr(factor) + '!==null?0:1),' + (fee != null && factor != null ? '"' + functions.padFloat(fee, factor) + '"' : null) + ')');
       break;
@@ -116,7 +116,7 @@ function exec (properties) {
       if (deterministic_script) {
         subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_sendRawTransaction",["' + deterministic_script + '"]]})');
         // returns: { "id":1, "jsonrpc": "2.0", "result": "0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331" }
-        subprocesses.push('stop((typeof data.result!=="undefined"?0:1),(typeof data.result!=="undefined"?data.result:data.error.message))');
+        subprocesses.push('stop((typeof data.result!=="undefined"?0:1),(typeof data.result!=="undefined"?data.result: (typeof data.error!=="undefined" && data.error.message!=="undefined"?data.error.message:null) ))');
       } else {
         subprocesses.push('fail("Missing or badly formed deterministic transaction!")');
       }
@@ -130,7 +130,9 @@ function exec (properties) {
         var targetaddr = (typeof properties.command[3] !== 'undefined' ? properties.command[3] : false);
         if (isEthAddress(targetaddr)) {
           subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_getTransactionCount",["' + sourceaddr + '","pending"]]})');
-          subprocesses.push('stop(0,{"nonce":functions.hex2dec.toDec(data.result)})');
+          subprocesses.push('tran(".result",1,2)');
+          subprocesses.push('done({"nonce":functions.hex2dec.toDec(data)})');
+          subprocesses.push('fail("Error: Ethereum network not responding. Cannot get nonce!")');
         } else {
           subprocesses.push('stop(1,"Error: bad or missing target address!")');
         }
@@ -163,10 +165,11 @@ function exec (properties) {
       } else {
         fee = (typeof global.hybridd.asset[base].fee !== 'undefined' ? global.hybridd.asset[base].fee * 2.465 : null);
       }
-      fee = fee && factor ? functions.padFloat(fee, factor) : null;
       var contract = (typeof target.contract !== 'undefined' ? target.contract : null);
+      var feefactor = global.hybridd.asset[base].factor;
+      fee = fee && feefactor ? functions.padFloat(fee, feefactor) : fee;
 
-      subprocesses.push("stop(0,{symbol:'" + symbol + "', name:'" + name + "',mode:'" + mode + "',fee:'" + fee + "',contract:'" + contract + "',factor:'" + factor + "','keygen-base':'" + base + "','fee-symbol':'" + base + "'})");
+      subprocesses.push("stop(0,{symbol:'" + symbol + "', name:'" + name + "',mode:'" + mode + "',fee:'" + fee + "',contract:'" + contract + "',factor:'" + factor + "','keygen-base':'" + base + "','fee-symbol':'" + base + "','fee-factor':'" + feefactor + "'})");
 
       break;
 
@@ -195,7 +198,9 @@ function post (properties) {
   var processID = properties.processID;
   var target = properties.target;
   var postdata = properties.data;
+  var base = target.symbol.split('.')[0]; // in case of token fallback to base asset
   var factor = (typeof target.factor !== 'undefined' ? target.factor : null);
+  var feefactor = (typeof global.hybridd.asset[base].factor !== 'undefined' ? global.hybridd.asset[base].factor : 18);
   // set data to what command we are performing
   global.hybridd.proc[processID].data = properties.command;
   // handle the command
@@ -205,22 +210,16 @@ function post (properties) {
     var success = true;
     switch (properties.command[0]) {
       case 'init':
-        if (typeof postdata.result !== 'undefined' && postdata.result) {
-          global.hybridd.asset[target.symbol].fee = functions.fromInt(functions.hex2dec.toDec(postdata.result).times(21000), factor);
+        if (typeof postdata.result !== 'undefined' && postdata.result>0) {
+          global.hybridd.asset[target.symbol].fee = functions.fromInt(functions.hex2dec.toDec(String(postdata.result)).times((21000*2)), feefactor);
+        } else {
+          global.hybridd.asset[target.symbol].fee = global.hybridd.asset[base].fee;
         }
         break;
-      case 'status':
-        // nicely cherrypick and reformat status data
-        var collage = {};
-        collage.module = 'ethereum';
-        collage.synced = null;
-        collage.blocks = null;
-        collage.fee = null;
-        collage.supply = null;
-        collage.difficulty = null;
-        collage.testmode = null;
-        collage.version = (typeof postdata.result === 'string' ? postdata.result : null);
-        postdata = collage;
+      case 'updateFee':
+        if (typeof postdata.result !== 'undefined' && postdata.result>0) {
+          global.hybridd.asset[target.symbol].fee = functions.fromInt(functions.hex2dec.toDec(String(postdata.result)).times((21000*2)), feefactor);
+        }
         break;
       default:
         success = false;
@@ -253,7 +252,8 @@ function link (properties) {
     'link': 'asset["' + base + '"]', // make sure APIqueue can use initialized API link
     'host': (typeof target.host !== 'undefined' ? target.host : global.hybridd.asset[base].host), // in case of token fallback to base asset hostname
     'args': args,
+    'timeout': (typeof target.timeout !== 'undefined' ? target.timeout : global.hybridd.asset[base].timeout), // in case of token fallback to base asset throttle
     'throttle': (typeof target.throttle !== 'undefined' ? target.throttle : global.hybridd.asset[base].throttle), // in case of token fallback to base asset throttle
     'pid': processID,
-    'target': target.symbol });
+    'target': target.symbol});
 }
