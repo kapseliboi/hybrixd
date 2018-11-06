@@ -161,6 +161,11 @@ div.prompt{
   color:white;
   display:inline-block;
 }
+
+textarea{
+  width:100%;
+ font-family: monospace, monospace;
+}
 </style><script>function display (result) {
   document.getElementById('console-results').style.height = '150px';
   document.getElementById('console-close').innerHTML = 'Hide';
@@ -302,132 +307,35 @@ function initNavigation (currentMenuItem) {
   data += '<input id="search" onkeyup="search(event)" placeholder="Search" onclick="search"><br/>';
   document.getElementById('navigation').innerHTML = data;
 }
-</script><div id="navigation"></div><script>initNavigation("hybrid-lib.js")</script>
-<div class="download">Download</div>
+</script><div id="navigation"></div><script>initNavigation("hybrid-lib.js")</script><div class="download">Download</div>
 
 TODO
-<div class="category">Storage</div><div class="command-header" onclick="toggleCommand('load')"><b>load</b> {<i>key</i>, [<i>encrypted</i>], [<i>legacy</i>], [<i>host</i>], [<i>channel</i>], [<i>meta</i>]}<span class="quickDescription">
-    TODO Stringify and encrypt data with user keys.
-   </span></div><div style="display:none;" class="command-body" id="load">
-    Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
-</td><td>  </td></tr><tr><td>data.key</td><td>- TODO
-   </td></tr><tr><td>data.encrypted</td><td>- whether to encrypt the data with the user key, true by default.
-   </td></tr><tr><td>data.legacy</td><td>- TODO
-   </td></tr><tr><td>data.host</td><td>- TODO
-   </td></tr><tr><td>data.channel</td><td>- TODO
-   </td></tr><tr><td>data.meta</td><td>- TODO
-   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
-   </td></tr></table><code style="display:block;white-space: pre;">    hybridd.sequential([
-    'init',
-    {username: '', password: ''}, 'session',
-    {host: 'http://localhost:1111/'}, 'addHost',
-    {key:'Hello', value:'World!'}, 'save'
-    {key:'Hello'}, 'load'
-    ]
-      , (data) => { console.log(JSON.stringify(data)); } // Outputs "World!"
-      , (error) => { console.error(error); }
-   
-  </code></div></div><div class="command-header" onclick="toggleCommand('meta')"><b>meta</b> {<i>key</i>, [<i>host</i>], [<i>channel</i>], [<i>meta</i>]}<span class="quickDescription">
-    Retrieve the meta data for a storage key
-   </span></div><div style="display:none;" class="command-body" id="meta">
-    Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
-</td><td>  </td></tr><tr><td>data.key</td><td>- TODO
-   </td></tr><tr><td>data.host</td><td>- TODO
-   </td></tr><tr><td>data.channel</td><td>- TODO
-   </td></tr><tr><td>data.meta</td><td>- TODO
-   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
-   </td></tr></table><code style="display:block;white-space: pre;">    hybridd.sequential([
-    'init',
-    {username: '', password: ''}, 'session',
-    {host: 'http://localhost:1111/'}, 'addHost',
-    {key:'Hello', value:'World!'}, 'save'
-    {key:'Hello'}, 'meta'
-    ]
-      , (data) => { console.log(JSON.stringify(data)); } // Outputs {time,hash,size,pow,res,n,read}
-      , (error) => { console.error(error); }
-   
-  </code></div></div><div class="command-header" onclick="toggleCommand('save')"><b>save</b> {<i>key</i>, <i>value</i>, [<i>legacy=false</i>], [<i>encrypted=true</i>], [<i>work=true</i>], [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">
-    Stringify and encrypt data with user keys.
-   </span></div><div style="display:none;" class="command-body" id="save">
-    Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
-</td><td>  </td></tr><tr><td>data.key</td><td>- TODO
-   </td></tr><tr><td>data.value</td><td>- A string, array or object.
-   </td></tr><tr><td>data.legacy</td><td>- TODO
-   </td></tr><tr><td>data.encrypted</td><td>- whether to encrypt the data with the user key.
-   </td></tr><tr><td>data.work</td><td>- whether to perform and submit proof of work.
-   </td></tr><tr><td>data.host</td><td>- TODO
-   </td></tr><tr><td>data.channel</td><td>- TODO
-   </td></tr><tr><td>data.meta</td><td>- TODO
-   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
-   </td></tr></table><code style="display:block;white-space: pre;">    hybridd.sequential([
-    'init',
-    {username: '', password: ''}, 'session',
-    {host: 'http://localhost:1111/'}, 'addHost',
-    {key:'Hello', value:'World!'}, 'save'
-    {key:'Hello'}, 'load'
-    ]
-      , (data) => { console.log(JSON.stringify(data)); } // Outputs "World!"
-      , (error) => { console.error(error); }
-   
-  </code></div></div><div class="command-header" onclick="toggleCommand('seek')"><b>seek</b> {<i>key</i>, [<i>legacy</i>], [<i>host</i>], [<i>channel</i>], [<i>meta</i>]}<span class="quickDescription">
-    Check if data is associated to key
-   </span></div><div style="display:none;" class="command-body" id="seek">
-    Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
-</td><td>  </td></tr><tr><td>data.key</td><td>- TODO
-   </td></tr><tr><td>data.legacy</td><td>- TODO
-   </td></tr><tr><td>data.host</td><td>- TODO
-   </td></tr><tr><td>data.channel</td><td>- TODO
-   </td></tr><tr><td>data.meta</td><td>- TODO
-   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
-   </td></tr></table><code style="display:block;white-space: pre;">    hybridd.sequential([
-    'init',
-    {username: '', password: ''}, 'session',
-    {host: 'http://localhost:1111/'}, 'addHost',
-    {key:'Hello', value:'World!'}, 'save'
-    {key:'Hello'}, 'load'
-    ]
-      , (data) => { console.log(JSON.stringify(data)); } // Outputs "World!"
-      , (error) => { console.error(error); }
-   
-  </code></div></div><div class="command-header" onclick="toggleCommand('work')"><b>work</b> {<i>hash</i>, [<i>difficulty</i>], [<i>submit</i>], [<i>key</i>], [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">
- Perform Proof of Work
-</span></div><div style="display:none;" class="command-body" id="work">
-    Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
-</td><td></td></tr><tr><td>data.hash</td><td>- The hash that needs to be worked.
-</td></tr><tr><td>data.difficulty</td><td>- Difficulty level to use.
-</td></tr><tr><td>data.submit</td><td>- Whether to submit the proof of work
-</td></tr><tr><td>data.key</td><td>- Required for submit
-</td></tr><tr><td>data.host</td><td>- TODO
-</td></tr><tr><td>data.channel</td><td>- TODO
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
 
-  </td></tr></table></div></div><div class="category">Misc</div><div class="command-header" onclick="toggleCommand('addAsset')"><b>addAsset</b> {<i>symbol</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">
+<textarea>
+hybridd.sequential([
+    'init', // Initialize hybridd
+    {username: '****************', password: '****************'},  // Define credentials
+    'session',                                                     // Create a local deterministic session
+    {host: 'http://localhost:1111/'},                              // Define the host
+    'addHost',                                                     // Add and initialize the host
+    {symbol: 'dummy'},                                             // Define the asset
+    'addAsset',                                                    // Add and initialize the asset
+    {symbol: 'dummy', amount: 100},                                // Define the transaction
+    'transaction'                                                  // Execute the transaction
+  ],
+   onSucces,
+   onError,
+   onProgress
+  );
+</textarea>
+<div class="category">AssetManagement</div><div class="command-header" onclick="toggleCommand('addAsset')"><b>addAsset</b> {<i>symbol</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">
  Add an asset (crypto currency or token) to the session.
 </span></div><div style="display:none;" class="command-body" id="addAsset">
     Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
+<table><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset
 </td></tr><tr><td>data.host</td><td>- The host used for the calls.
 </td></tr><tr><td>data.channel</td><td>- The channel used for the calls. 'y' for encryped, 'z' for encryped and compresses;
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
- 
-  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('addHost')"><b>addHost</b> {<i>host</i>}<span class="quickDescription">
- Add a hybridd node as host.
-</span></div><div style="display:none;" class="command-body" id="addHost">
-    Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
-</td><td></td></tr><tr><td>data.host</td><td>- The hostname TODO  multiple in array?
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
@@ -435,26 +343,80 @@ TODO
  Get detailed information about assets
 </span></div><div style="display:none;" class="command-body" id="asset">
     Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data</td><td>- An array of symbols. For example: ['eth','btc','nxt']
+<table><tr><td>data</td><td>- An array of symbols. For example: ['eth','btc','nxt']
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
-  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('call')"><b>call</b> {<i>func</i>, <i>data</i>}<span class="quickDescription">
-    Execute a custom function with callbacks. Usefull for sequential and parallel.
-   </span></div><div style="display:none;" class="command-body" id="call">
+  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('getAddress')"><b>getAddress</b> {<i>symbol</i>}<span class="quickDescription">
+ Get the address associated to a specific asset for current session.
+</span></div><div style="display:none;" class="command-body" id="getAddress">
     Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
-</td><td>  </td></tr><tr><td>data.func</td><td>- A function expecting a dataCallback, errorCallback and optional progressCallback.
-   </td></tr><tr><td>data.data</td><td>- The data to be passed to the function.
-   </td></tr><tr><td>dataCallback</td><td>- Called with data provided.
+<table><tr><td>data
+</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.
+</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
+</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
+ 
+  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('getKeys')"><b>getKeys</b> {<i>symbol</i>}<span class="quickDescription">
+ Get the keys associated to a specific asset for current session. Important: handle your private keys confidentially.
+</span></div><div style="display:none;" class="command-body" id="getKeys">
+    Parallely executes several steps and collects results in a single object.
+<table><tr><td>data
+</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.
+</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
+</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
+ 
+  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('getPrivateKey')"><b>getPrivateKey</b> {<i>symbol</i>}<span class="quickDescription">
+ Get the private key associated to a specific asset for current session.
+</span></div><div style="display:none;" class="command-body" id="getPrivateKey">
+    Parallely executes several steps and collects results in a single object.
+<table><tr><td>data
+</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.
+</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
+</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
+ 
+  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('getPublicKey')"><b>getPublicKey</b> {<i>symbol</i>}<span class="quickDescription">
+ Get the public key associated to a specific asset for current session.
+</span></div><div style="display:none;" class="command-body" id="getPublicKey">
+    Parallely executes several steps and collects results in a single object.
+<table><tr><td>data
+</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.
+</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
+</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
+ 
+  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('initAsset')"><b>initAsset</b> {<i>assetDetails</i>, <i>clientModuleCodeBlob</i>}<span class="quickDescription">
+ Initialize an asset (crypto currency or token)
+</span></div><div style="display:none;" class="command-body" id="initAsset">
+    Parallely executes several steps and collects results in a single object.
+<table><tr><td>data
+</td><td></td></tr><tr><td>data.assetDetails</td><td>- Asset details as retrieved by calling `/asset/$SYMBOL/details`
+</td></tr><tr><td>data.clientModuleCodeBlob</td><td>- A string containing the client module code blob.
+</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
+</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
+ 
+  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('refreshAsset')"><b>refreshAsset</b> {[<i>symbol</i>]}<span class="quickDescription">
+ TODO
+</span></div><div style="display:none;" class="command-body" id="refreshAsset">
+    Parallely executes several steps and collects results in a single object.
+<table><tr><td>data
+</td><td></td></tr><tr><td>data.symbol</td><td>- TODO
+</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
+</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
+</td></tr><tr><td>progressCallback</td><td>- Called whenever there is a progress updated. Passes a number between 0 and 1.
+ 
+  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('removeAsset')"><b>removeAsset</b> {<i>symbol</i>}<span class="quickDescription">
+    Remove an asset (crypto currency or token) from the session.
+   </span></div><div style="display:none;" class="command-body" id="removeAsset">
+    Parallely executes several steps and collects results in a single object.
+<table><tr><td>data
+</td><td>  </td></tr><tr><td>data.symbol</td><td>- The symbol of the asset
+   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
    </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
-   </td></tr><tr><td>progressCallback</td><td>- Called whenever there is a progress updated. Passes a number between 0 and 1.
    
-  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('client')"><b>client</b> {[<i>symbol</i>], [<i>id</i>], <i>func</i>, <i>data</i>}<span class="quickDescription">
+  </td></tr></table></div></div><div class="category">ClientModule</div><div class="command-header" onclick="toggleCommand('client')"><b>client</b> {[<i>symbol</i>], [<i>id</i>], <i>func</i>, <i>data</i>}<span class="quickDescription">
  Execute a function in a client module.
 </span></div><div style="display:none;" class="command-body" id="client">
     Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
+<table><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol . Either this or the id needs to be defined.
 </td></tr><tr><td>data.id</td><td>- id of the client module. (For assets this is the first part of the mode)
 </td></tr><tr><td>data.func</td><td>- The client module function to be called
@@ -462,23 +424,38 @@ TODO
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
-  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('createAccount')"><b>createAccount</b> {[<i>entropy</i>], [<i>offset</i>], [<i>pool</i>]}<span class="quickDescription">
- TODO  Create a new deterministic account with the entropy provided.
-</span></div><div style="display:none;" class="command-body" id="createAccount">
+  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('export')"><b>export</b> {<i>id</i>}<span class="quickDescription">
+    Export a client module code blob.
+</span></div><div style="display:none;" class="command-body" id="export">
     Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
-</td><td></td></tr><tr><td>data.entropy</td><td>- CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Entropy can be provided. Must be a sufficient random string of at least 482 bytes.
-</td></tr><tr><td>data.offset</td><td>- CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Use an offset to create multiple accounts from same entropy.
-</td></tr><tr><td>data.pool</td><td>-  CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Pool function can be overridden by a custom 1600 byte pool generator.
- deterministic
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
- 
-  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('decrypt')"><b>decrypt</b> {<i>data</i>}<span class="quickDescription">
+<table><tr><td>data
+</td><td>  </td></tr><tr><td>data.id</td><td>- id of the client code blob.
+   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
+   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
+   
+  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('import')"><b>import</b> {<i>id</i>, <i>blob</i>}<span class="quickDescription">
+    Import a client module code blob.
+</span></div><div style="display:none;" class="command-body" id="import">
+    Parallely executes several steps and collects results in a single object.
+<table><tr><td>data
+</td><td>  </td></tr><tr><td>data.id</td><td>- id of the client code blob.
+   </td></tr><tr><td>data.blob</td><td>- The client code blob
+   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
+   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
+   
+  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('modules')"><b>modules</b> {}<span class="quickDescription">
+    List locally available client modules.
+</span></div><div style="display:none;" class="command-body" id="modules">
+    Parallely executes several steps and collects results in a single object.
+<table><tr><td>data</td><td>- ignored
+   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
+   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
+   
+  </td></tr></table></div></div><div class="category">Encryption</div><div class="command-header" onclick="toggleCommand('decrypt')"><b>decrypt</b> {<i>data</i>}<span class="quickDescription">
  Decrypt and parse data with user keys.
 </span></div><div style="display:none;" class="command-body" id="decrypt">
     Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
+<table><tr><td>data
 </td><td></td></tr><tr><td>data.data</td><td>- An encrypted and stringified string, array or object.
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
@@ -496,7 +473,7 @@ TODO
  Stringify and encrypt data with user keys.
 </span></div><div style="display:none;" class="command-body" id="encrypt">
     Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
+<table><tr><td>data
 </td><td></td></tr><tr><td>data.data</td><td>- A string, array or object.
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
@@ -509,84 +486,82 @@ TODO
  , (error) => { console.error(error); }
  );
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('export')"><b>export</b> {<i>id</i>}<span class="quickDescription">
-    Export a client module code blob.
-   </span></div><div style="display:none;" class="command-body" id="export">
-    Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
-</td><td>  </td></tr><tr><td>data.id</td><td>- id of the client code blob.
-   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
-   
-  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('getAddress')"><b>getAddress</b> {<i>symbol</i>}<span class="quickDescription">
- Get the address associated to a specific asset for current session.
-</span></div><div style="display:none;" class="command-body" id="getAddress">
-    Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
-</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
- 
-  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('getKeys')"><b>getKeys</b> {<i>symbol</i>}<span class="quickDescription">
- Get the keys associated to a specific asset for current session. Important: handle your private keys confidentially.
-</span></div><div style="display:none;" class="command-body" id="getKeys">
-    Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
-</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
- 
-  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('getPrivateKey')"><b>getPrivateKey</b> {<i>symbol</i>}<span class="quickDescription">
- Get the publick key associated to a specific asset for current session.
-</span></div><div style="display:none;" class="command-body" id="getPrivateKey">
-    Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
-</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
- 
-  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('getPublicKey')"><b>getPublicKey</b> {<i>symbol</i>}<span class="quickDescription">
- Get the public key associated to a specific asset for current session.
-</span></div><div style="display:none;" class="command-body" id="getPublicKey">
-    Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
-</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
- 
-  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('hash')"><b>hash</b> {<i>data</i>, [<i>salt</i>]}<span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('hash')"><b>hash</b> {<i>data</i>, [<i>salt</i>]}<span class="quickDescription">
  Stringify and create a DJB2 hash.
 </span></div><div style="display:none;" class="command-body" id="hash">
     Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
+<table><tr><td>data
 </td><td></td></tr><tr><td>data.data</td><td>- A string, array or object.
 </td></tr><tr><td>data.salt</td><td>- A string.
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
 
-  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('id')"><b>id</b> {}<span class="quickDescription">
-    Identity function, outputs the data that is passed
-   </span></div><div style="display:none;" class="command-body" id="id">
+  </td></tr></table></div></div><div class="category">Flow</div><div class="command-header" onclick="toggleCommand('call')"><b>call</b> {<i>func</i>, <i>data</i>}<span class="quickDescription">
+    Execute a custom function with callbacks. Usefull for sequential and parallel.
+   </span></div><div style="display:none;" class="command-body" id="call">
     Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data</td><td>- data passed to  dataCallback
+<table><tr><td>data
+</td><td>  </td></tr><tr><td>data.func</td><td>- A function expecting a dataCallback, errorCallback and optional progressCallback.
+   </td></tr><tr><td>data.data</td><td>- The data to be passed to the function.
+   </td></tr><tr><td>dataCallback</td><td>- Called with data provided.
+   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
+   </td></tr><tr><td>progressCallback</td><td>- Called whenever there is a progress updated. Passes a number between 0 and 1.
+   
+  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('id')"><b>id</b> {}<span class="quickDescription">
+ Identity function, outputs the data that is passed
+</span></div><div style="display:none;" class="command-body" id="id">
+    Parallely executes several steps and collects results in a single object.
+<table><tr><td>data</td><td>- data passed to  dataCallback
    </td></tr><tr><td>dataCallback</td><td>- Called with data provided.
    </td></tr><tr><td>errorCallback</td><td>- Ignored
    
-  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('import')"><b>import</b> {<i>id</i>, <i>blob</i>}<span class="quickDescription">
-    Import a client module code blob.
-   </span></div><div style="display:none;" class="command-body" id="import">
+  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('parallel')"><b>parallel</b> {<i>label</i>, <i>label,data</i>, <i>label,step</i>}<span class="quickDescription">
     Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
-</td><td>  </td></tr><tr><td>data.id</td><td>- id of the client code blob.
-   </td></tr><tr><td>data.blob</td><td>- The client code blob
-   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
+</span></div><div style="display:none;" class="command-body" id="parallel">
+    Parallely executes several steps and collects results in a single object.
+<table><tr><td>data</td><td>- Parallel steps to be processed. TODO
+   </td></tr><tr><td>data.label</td><td>- TODO
+   </td></tr><tr><td>data.label.data</td><td>- TODO
+   </td></tr><tr><td>data.label.step</td><td>- TODO
+   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful. Passes result data.
+   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs. Passes error.
+   </td></tr><tr><td>progressCallback</td><td>- Called whenever there is a progress updated. Passes a number between 0 and 1.
    
-  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('init')"><b>init</b> {<i>http</i>, <i>https</i>, <i>XMLHttpRequest</i>, <i>custom</i>}<span class="quickDescription">
+  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('sequential')"><b>sequential</b> {}<span class="quickDescription">
+    Sequentually executes functions and passes results to next step.
+</span></div><div style="display:none;" class="command-body" id="sequential">
+    Parallely executes several steps and collects results in a single object.
+<table><tr><td>data</td><td>- Sequential steps to be processed. An object indicates data that is supplied to the next step. A function is a transformation of the data of the previous step and given to the next step. A string is a method that used the data from the last step and supplies to the next step.
+   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful. Passes result data.
+   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs. Passes error.
+   </td></tr><tr><td>progressCallback</td><td>- Called whenever there is a progress updated. Passes a number between 0 and 1.
+   
+  </td></tr></table></div></div><div class="category">Host</div><div class="command-header" onclick="toggleCommand('addHost')"><b>addHost</b> {<i>host</i>}<span class="quickDescription">
+ Add a hybridd node as host.
+</span></div><div style="display:none;" class="command-body" id="addHost">
+    Parallely executes several steps and collects results in a single object.
+<table><tr><td>data
+</td><td></td></tr><tr><td>data.host</td><td>- The hostname TODO  multiple in array?
+</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
+</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
+ 
+  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('rout')"><b>rout</b> {<i>query</i>, [<i>channel</i>], [<i>meta</i>], [<i>host</i>]}<span class="quickDescription">
+ Make a routing call to hybridd node
+</span></div><div style="display:none;" class="command-body" id="rout">
+    Parallely executes several steps and collects results in a single object.
+<table><tr><td>data
+</td><td></td></tr><tr><td>data.query</td><td>- The query path. For reference: [Hybridd API]{@link https://wallet1.internetofcoins.org/api/help}
+</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression
+</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information)
+</td></tr><tr><td>data.host</td><td>- Select a specific host, if omitted one will be chosen at random.
+</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
+</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
+ 
+  </td></tr></table></div></div><div class="category">Init</div><div class="command-header" onclick="toggleCommand('init')"><b>init</b> {<i>http</i>, <i>https</i>, <i>XMLHttpRequest</i>, <i>custom</i>}<span class="quickDescription">
  Internet of Coins main API interface object. It connects to servers running Internet of Coins Hybridd using the REST API.  For reference: [Hybridd API]{@link https://wallet1.internetofcoins.org/api/help}
 </span></div><div style="display:none;" class="command-body" id="init">
     Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data</td><td>- one of the three methods below must be passed:
+<table><tr><td>data</td><td>- one of the three methods below must be passed:
 </td></tr><tr><td>data.http</td><td>- a http object. ({@link https://nodejs.org/api/http.html})
 </td></tr><tr><td>data.https</td><td>- a https object. ({@link https://nodejs.org/api/https.html})
 </td></tr><tr><td>data.XMLHttpRequest</td><td>- a XMLHttpRequest object. ({@link https://developer.mozilla.org/nl/docs/Web/API/XMLHttpRequest})
@@ -639,13 +614,15 @@ TODO
   onError,
   onProgress
  );
-</code></div></div><div class="command-header" onclick="toggleCommand('initAsset')"><b>initAsset</b> {<i>assetDetails</i>, <i>clientModuleCodeBlob</i>}<span class="quickDescription">
- Initialize an asset (crypto currency or token)
-</span></div><div style="display:none;" class="command-body" id="initAsset">
+</code></div></div><div class="category">Session</div><div class="command-header" onclick="toggleCommand('createAccount')"><b>createAccount</b> {[<i>entropy</i>], [<i>offset</i>], [<i>pool</i>]}<span class="quickDescription">
+ TODO  Create a new deterministic account with the entropy provided.
+</span></div><div style="display:none;" class="command-body" id="createAccount">
     Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
-</td><td></td></tr><tr><td>data.assetDetails</td><td>- Asset details as retrieved by calling `/asset/$SYMBOL/details`
-</td></tr><tr><td>data.clientModuleCodeBlob</td><td>- A string containing the client module code blob.
+<table><tr><td>data
+</td><td></td></tr><tr><td>data.entropy</td><td>- CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Entropy can be provided. Must be a sufficient random string of at least 482 bytes.
+</td></tr><tr><td>data.offset</td><td>- CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Use an offset to create multiple accounts from same entropy.
+</td></tr><tr><td>data.pool</td><td>-  CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Pool function can be overridden by a custom 1600 byte pool generator.
+ deterministic
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
@@ -653,7 +630,7 @@ TODO
  Create an encrypted session with a host
 </span></div><div style="display:none;" class="command-body" id="login">
     Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
+<table><tr><td>data
 </td><td></td></tr><tr><td>data.host</td><td>- The hostname TODO  multiple in array?
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
@@ -662,35 +639,130 @@ TODO
  Log out of current session.
 </span></div><div style="display:none;" class="command-body" id="logout">
     Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data</td><td>- Not used
+<table><tr><td>data</td><td>- Not used
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
-  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('modules')"><b>modules</b> {}<span class="quickDescription">
-    List locally available client modules.
-   </span></div><div style="display:none;" class="command-body" id="modules">
+  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('session')"><b>session</b> {<i>username</i>, <i>password</i>}<span class="quickDescription">
+ Create a local deterministic session and - if required - log out of current session.
+</span></div><div style="display:none;" class="command-body" id="session">
     Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data</td><td>- ignored
+<table><tr><td>data
+</td><td></td></tr><tr><td>data.username</td><td>- The username for the deterministic session
+</td></tr><tr><td>data.password</td><td>- The password for the deterministic session
+</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
+</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
+ 
+  </td></tr></table></div></div><div class="category">Storage</div><div class="command-header" onclick="toggleCommand('load')"><b>load</b> {<i>key</i>, [<i>encrypted</i>], [<i>legacy</i>], [<i>host</i>], [<i>channel</i>], [<i>meta</i>]}<span class="quickDescription">
+    TODO Stringify and encrypt data with user keys.
+   </span></div><div style="display:none;" class="command-body" id="load">
+    Parallely executes several steps and collects results in a single object.
+<table><tr><td>data
+</td><td>  </td></tr><tr><td>data.key</td><td>- TODO
+   </td></tr><tr><td>data.encrypted</td><td>- whether to encrypt the data with the user key, true by default.
+   </td></tr><tr><td>data.legacy</td><td>- TODO
+   </td></tr><tr><td>data.host</td><td>- TODO
+   </td></tr><tr><td>data.channel</td><td>- TODO
+   </td></tr><tr><td>data.meta</td><td>- TODO
    </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
    </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
+   </td></tr></table><code style="display:block;white-space: pre;">    hybridd.sequential([
+    'init',
+    {username: '', password: ''}, 'session',
+    {host: 'http://localhost:1111/'}, 'addHost',
+    {key:'Hello', value:'World!'}, 'save'
+    {key:'Hello'}, 'load'
+    ]
+      , (data) => { console.log(JSON.stringify(data)); } // Outputs "World!"
+      , (error) => { console.error(error); }
    
-  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('parallel')"><b>parallel</b> {<i>label</i>, <i>label,data</i>, <i>label,step</i>}<span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('meta')"><b>meta</b> {<i>key</i>, [<i>host</i>], [<i>channel</i>], [<i>meta</i>]}<span class="quickDescription">
+    Retrieve the meta data for a storage key
+   </span></div><div style="display:none;" class="command-body" id="meta">
     Parallely executes several steps and collects results in a single object.
-   </span></div><div style="display:none;" class="command-body" id="parallel">
-    Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data</td><td>- Parallel steps to be processed. TODO
-   </td></tr><tr><td>data.label</td><td>- TODO
-   </td></tr><tr><td>data.label.data</td><td>- TODO
-   </td></tr><tr><td>data.label.step</td><td>- TODO
-   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful. Passes result data.
-   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs. Passes error.
-   </td></tr><tr><td>progressCallback</td><td>- Called whenever there is a progress updated. Passes a number between 0 and 1.
+<table><tr><td>data
+</td><td>  </td></tr><tr><td>data.key</td><td>- TODO
+   </td></tr><tr><td>data.host</td><td>- TODO
+   </td></tr><tr><td>data.channel</td><td>- TODO
+   </td></tr><tr><td>data.meta</td><td>- TODO
+   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
+   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
+   </td></tr></table><code style="display:block;white-space: pre;">    hybridd.sequential([
+    'init',
+    {username: '', password: ''}, 'session',
+    {host: 'http://localhost:1111/'}, 'addHost',
+    {key:'Hello', value:'World!'}, 'save'
+    {key:'Hello'}, 'meta'
+    ]
+      , (data) => { console.log(JSON.stringify(data)); } // Outputs {time,hash,size,pow,res,n,read}
+      , (error) => { console.error(error); }
    
-  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('rawTransaction')"><b>rawTransaction</b> {<i>symbol</i>, <i>target</i>, <i>amount</i>, <i>fee</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('save')"><b>save</b> {<i>key</i>, <i>value</i>, [<i>legacy=false</i>], [<i>encrypted=true</i>], [<i>work=true</i>], [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">
+    Stringify and encrypt data with user keys.
+   </span></div><div style="display:none;" class="command-body" id="save">
+    Parallely executes several steps and collects results in a single object.
+<table><tr><td>data
+</td><td>  </td></tr><tr><td>data.key</td><td>- TODO
+   </td></tr><tr><td>data.value</td><td>- A string, array or object.
+   </td></tr><tr><td>data.legacy</td><td>- TODO
+   </td></tr><tr><td>data.encrypted</td><td>- whether to encrypt the data with the user key.
+   </td></tr><tr><td>data.work</td><td>- whether to perform and submit proof of work.
+   </td></tr><tr><td>data.host</td><td>- TODO
+   </td></tr><tr><td>data.channel</td><td>- TODO
+   </td></tr><tr><td>data.meta</td><td>- TODO
+   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
+   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
+   </td></tr></table><code style="display:block;white-space: pre;">    hybridd.sequential([
+    'init',
+    {username: '', password: ''}, 'session',
+    {host: 'http://localhost:1111/'}, 'addHost',
+    {key:'Hello', value:'World!'}, 'save'
+    {key:'Hello'}, 'load'
+    ]
+      , (data) => { console.log(JSON.stringify(data)); } // Outputs "World!"
+      , (error) => { console.error(error); }
+   
+  </code></div></div><div class="command-header" onclick="toggleCommand('seek')"><b>seek</b> {<i>key</i>, [<i>legacy</i>], [<i>host</i>], [<i>channel</i>], [<i>meta</i>]}<span class="quickDescription">
+    Check if data is associated to key
+   </span></div><div style="display:none;" class="command-body" id="seek">
+    Parallely executes several steps and collects results in a single object.
+<table><tr><td>data
+</td><td>  </td></tr><tr><td>data.key</td><td>- TODO
+   </td></tr><tr><td>data.legacy</td><td>- TODO
+   </td></tr><tr><td>data.host</td><td>- TODO
+   </td></tr><tr><td>data.channel</td><td>- TODO
+   </td></tr><tr><td>data.meta</td><td>- TODO
+   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
+   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
+   </td></tr></table><code style="display:block;white-space: pre;">    hybridd.sequential([
+    'init',
+    {username: '', password: ''}, 'session',
+    {host: 'http://localhost:1111/'}, 'addHost',
+    {key:'Hello', value:'World!'}, 'save'
+    {key:'Hello'}, 'load'
+    ]
+      , (data) => { console.log(JSON.stringify(data)); } // Outputs "World!"
+      , (error) => { console.error(error); }
+   
+  </code></div></div><div class="command-header" onclick="toggleCommand('work')"><b>work</b> {<i>hash</i>, [<i>difficulty</i>], [<i>submit</i>], [<i>key</i>], [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">
+ Perform Proof of Work
+</span></div><div style="display:none;" class="command-body" id="work">
+    Parallely executes several steps and collects results in a single object.
+<table><tr><td>data
+</td><td></td></tr><tr><td>data.hash</td><td>- The hash that needs to be worked.
+</td></tr><tr><td>data.difficulty</td><td>- Difficulty level to use.
+</td></tr><tr><td>data.submit</td><td>- Whether to submit the proof of work
+</td></tr><tr><td>data.key</td><td>- Required for submit
+</td></tr><tr><td>data.host</td><td>- TODO
+</td></tr><tr><td>data.channel</td><td>- TODO
+</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
+</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
+
+  </td></tr></table></div></div><div class="category">Transaction</div><div class="command-header" onclick="toggleCommand('rawTransaction')"><b>rawTransaction</b> {<i>symbol</i>, <i>target</i>, <i>amount</i>, <i>fee</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">
  Creates a raw transaction
 </span></div><div style="display:none;" class="command-body" id="rawTransaction">
     Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
+<table><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset
 </td></tr><tr><td>data.target</td><td>- The target address
 </td></tr><tr><td>data.amount</td><td>- The amount that should be transferred
@@ -701,61 +773,11 @@ TODO
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs. Passes error.
 </td></tr><tr><td>progressCallback</td><td>- Called whenever there is a progress updated. Passes a number between 0 and 1.
  
-  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('refreshAsset')"><b>refreshAsset</b> {[<i>symbol</i>]}<span class="quickDescription">
- TODO
-</span></div><div style="display:none;" class="command-body" id="refreshAsset">
-    Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
-</td><td></td></tr><tr><td>data.symbol</td><td>- TODO
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
-</td></tr><tr><td>progressCallback</td><td>- Called whenever there is a progress updated. Passes a number between 0 and 1.
- 
-  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('removeAsset')"><b>removeAsset</b> {<i>symbol</i>}<span class="quickDescription">
-    Remove an asset (crypto currency or token) from the session.
-   </span></div><div style="display:none;" class="command-body" id="removeAsset">
-    Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
-</td><td>  </td></tr><tr><td>data.symbol</td><td>- The symbol of the asset
-   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
-   
-  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('rout')"><b>rout</b> {<i>query</i>, [<i>channel</i>], [<i>meta</i>], [<i>host</i>]}<span class="quickDescription">
- Make a routing call to hybridd node
-</span></div><div style="display:none;" class="command-body" id="rout">
-    Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
-</td><td></td></tr><tr><td>data.query</td><td>- The query path. For reference: [Hybridd API]{@link https://wallet1.internetofcoins.org/api/help}
-</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression
-</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information)
-</td></tr><tr><td>data.host</td><td>- Select a specific host, if omitted one will be chosen at random.
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
- 
-  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('sequential')"><b>sequential</b> {}<span class="quickDescription">
-    Sequentually executes functions and passes results to next step.
-   </span></div><div style="display:none;" class="command-body" id="sequential">
-    Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data</td><td>- Sequential steps to be processed. An object indicates data that is supplied to the next step. A function is a transformation of the data of the previous step and given to the next step. A string is a method that used the data from the last step and supplies to the next step.
-   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful. Passes result data.
-   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs. Passes error.
-   </td></tr><tr><td>progressCallback</td><td>- Called whenever there is a progress updated. Passes a number between 0 and 1.
-   
-  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('session')"><b>session</b> {<i>username</i>, <i>password</i>}<span class="quickDescription">
- Create a local deterministic session and - if required - log out of current session.
-</span></div><div style="display:none;" class="command-body" id="session">
-    Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
-</td><td></td></tr><tr><td>data.username</td><td>- The username for the deterministic session
-</td></tr><tr><td>data.password</td><td>- The password for the deterministic session
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
- 
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('signTransaction')"><b>signTransaction</b> {<i>symbol</i>, <i>target</i>, <i>amount</i>, <i>fee</i>, <i>unspent</i>}<span class="quickDescription">
  Create a signed transaction
 </span></div><div style="display:none;" class="command-body" id="signTransaction">
     Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
+<table><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset.
 </td></tr><tr><td>data.target</td><td>- The target address.
 </td></tr><tr><td>data.amount</td><td>- The amount.
@@ -768,7 +790,7 @@ TODO
  Create and execute a transaction
 </span></div><div style="display:none;" class="command-body" id="transaction">
     Parallely executes several steps and collects results in a single object.
-   <table><tr><td>data
+<table><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset
 </td></tr><tr><td>data.target</td><td>- The target address
 </td></tr><tr><td>data.amount</td><td>- The amount that should be transferred

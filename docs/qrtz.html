@@ -161,6 +161,11 @@ div.prompt{
   color:white;
   display:inline-block;
 }
+
+textarea{
+  width:100%;
+ font-family: monospace, monospace;
+}
 </style><script>function display (result) {
   document.getElementById('console-results').style.height = '150px';
   document.getElementById('console-close').innerHTML = 'Hide';
@@ -316,9 +321,9 @@ TODO
   case('words')           // input: 'what is THIS?', returns: 'What Is This?'
   case('first')           // input: 'what is THIS?', returns: 'What is this?'
   case('camel')           // input: 'what is THIS?', returns: 'whatIsThis?'
-  case('reverse')         // input: 'what is THIS?', returns: 'WHAT IS this?'
+  case('inverse')         // input: 'what is THIS?', returns: 'WHAT IS this?'
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('code')"><b>code</b> <i>target</i> [<i>source</i>]<span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('code')"><b>code</b> <i>target</i> [<i>source='base256'</i>]<span class="quickDescription">
  Change encoding of a string from one format to the other.
 </span></div><div style="display:none;" class="command-body" id="code">
  Execute a client stack program.
@@ -328,7 +333,7 @@ TODO
   code('utf-8','base58')  // input: 'this_is_my_data', returns: '4FtePA9kj2RpFH4tBkPUt'
   code('hex','base58')    // input: '8BA9C1B4', returns: '4a4JJF'
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('find')"><b>find</b> <i>needle</i> [<i>onFound</i>] [<i>onNotFound</i>]<span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('find')"><b>find</b> <i>needle</i> [<i>onFound=1</i>] [<i>onNotFound=1</i>]<span class="quickDescription">
  Find a string in an array of objects, and return the object it was found in.
 </span></div><div style="display:none;" class="command-body" id="find">
  Execute a client stack program.
@@ -337,7 +342,7 @@ TODO
 </td></tr><tr><td>onNotFound</td><td>- Where to jump when the data is not found
 </td></tr></table><code style="display:block;white-space: pre;"> find({'id':'abcd'})      // input: [{'id':'abcd'},{'id':'efgh'}], output: [{'id':'abcd'}]
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('join')"><b>join</b> [<i>separator</i>]<span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('join')"><b>join</b> [<i>separator=''</i>]<span class="quickDescription">
  Join an array into a string.
 </span></div><div style="display:none;" class="command-body" id="join">
  Execute a client stack program.
@@ -345,29 +350,27 @@ TODO
 </td></tr></table><code style="display:block;white-space: pre;"> join()     // input: ["This","is","nice."], output: "Thisisnice."
  join(' ')  // input: ["Some","list","of","stuff"], output: "Some list of stuff"
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('jpar')"><b>jpar</b> <i>data</i> [<i>default</i>]<span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('jpar')"><b>jpar</b> [<i>onSuccess=1</i>] [<i>onError=1</i>]<span class="quickDescription">
  Turns a string into a JSON object. In case of failure pass default.
 </span></div><div style="display:none;" class="command-body" id="jpar">
  Execute a client stack program.
-<table><tr><td>data</td><td>- String to turn into a JSON object.
-</td></tr><tr><td>default</td><td>- In case of failure pass default.
+<table><tr><td>onSuccess</td><td>- TODO
+</td></tr><tr><td>onError</td><td>- TODO
 </td></tr></table><code style="display:block;white-space: pre;"> jpar()         // input: "{key:'Some data.'}", output: {key:"Some data."}
  jpar(2)        // on successful parse jump 2, else 1, stream stays unchanged
  jpar(2,1)      // on successful parse jump 2, else 1, stream stays unchanged
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('jstr')"><b>jstr</b> <i>data</i><span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('jstr')"><b>jstr</b><span class="quickDescription">
  Turns JSON object into a string.
 </span></div><div style="display:none;" class="command-body" id="jstr">
  Execute a client stack program.
-<table><tr><td>data</td><td>- String to turn into a JSON object.
-</td></tr></table><code style="display:block;white-space: pre;"> jstr()         // input: {key:"Some data."}, output: '{key:"Some data."}'
+<table></table><code style="display:block;white-space: pre;"> jstr()         // input: {key:"Some data."}, output: '{key:"Some data."}'
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('pull')"><b>pull</b> <i>string</i> <i>offset</i> <i>ending</i><span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('pull')"><b>pull</b> <i>offset</i> <i>ending</i><span class="quickDescription">
  Pull elements from an array or input string.
 </span></div><div style="display:none;" class="command-body" id="pull">
  Execute a client stack program.
-<table><tr><td>string</td><td>- String to delete from
-</td></tr><tr><td>offset</td><td>- Amount of elements to delete from start
+<table><tr><td>offset</td><td>- Amount of elements to delete from start
 </td></tr><tr><td>ending</td><td>- Amount of elements to include or trim from end
 </td></tr></table><code style="display:block;white-space: pre;">  pull(5)      // pull from the left    input: 'this_is_my_data', output: 'is_my_data'
   pull(-5)     // pull from the right   input: 'this_is_my_data', output: '_data'
@@ -378,7 +381,7 @@ TODO
   pull(1,-1)   // arrays also work!     input: ['a','b','c','d'], output: ['b','c']
   pull(1,4)    // another array pull    input: ['g','l','o','v','e','s'], output: ['l','o','v','e']
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('push')"><b>push</b> <i>input</i> <i>offset</i> <i>delete</i><span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('push')"><b>push</b> <i>input</i> [<i>offset=length</i>] [<i>delete=0</i>]<span class="quickDescription">
  Push new data into array or string.
 </span></div><div style="display:none;" class="command-body" id="push">
  Execute a client stack program.
@@ -405,12 +408,11 @@ TODO
   repl('o',['A','I'])                       // input: 'Many apples for you.', returns: 'Many apples fAr yIu.'
   repl()                                    // input: 'Many apples for you.', returns: 'Manyapplesfor ou.'
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('sort')"><b>sort</b> <i>input</i> <i>method</i><span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('sort')"><b>sort</b> <i>method</i><span class="quickDescription">
  Sort data by using a certain method.
 </span></div><div style="display:none;" class="command-body" id="sort">
  Execute a client stack program.
-<table><tr><td>input</td><td>- Array, object or string to sort.
-</td></tr><tr><td>method</td><td>- Array of methods to employ.
+<table><tr><td>method</td><td>- Array of methods to employ.
 </td></tr></table><code style="display:block;white-space: pre;">  sort()                                          // input: 'BADEFC', sorts the object ascending by value: 'ABCDEF'
   sort('desc')                                    // input: [10,8,5,9], sorts the object descending by value: [10,9,8,5]
   sort(['val','asc'])                             // input: {'a':'z','b':'x','c':'y'}, sorts the object ascending by value: [{'b':'x'},{'c':'y'},{'c':'z'}]
@@ -418,19 +420,20 @@ TODO
   sort(['val','num','asc'])                       // input: {'a':1,'b':10,'c':3}, sorts the object ascending by numeric value:  [{'a':1},{'c':3},{'b':10}]
   sort('.b')                                      // input: [{'a':4,'b':'B'},{'a':2,'b':'A'}], sorts the array by object key 'b': [{'a':2,'b':'A'},{'a':4,'b':'B'}]
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('splt')"><b>splt</b> [<i>separator</i>]<span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('splt')"><b>splt</b> [<i>separator=</i>]<span class="quickDescription">
  Split a string.
 </span></div><div style="display:none;" class="command-body" id="splt">
  Execute a client stack program.
-<table><tr><td>separator</td><td>- Explode a string into an array, split by separator
+<table><tr><td>separator</td><td>'] - Explode a string into an array, split by separator
 </td></tr></table><code style="display:block;white-space: pre;"> splt()     // input: "This is nice.", output: ["This","is","nice."]
  splt(',')  // input: "Some,list,of,stuff", output: ["Some","list","of","stuff]
  
-  </code></div></div><div class="category">Flow</div><div class="command-header" onclick="toggleCommand('hook')"><b>hook</b> <i>onError</i><span class="quickDescription">
+  </code></div></div><div class="category">Flow</div><div class="command-header" onclick="toggleCommand('hook')"><b>hook</b> <i>onError</i> [<i>err=1</i>]<span class="quickDescription">
  Indicates a fallback target when an error is encountered.
 </span></div><div style="display:none;" class="command-body" id="hook">
  Execute a client stack program.
-<table><tr><td>onError</td><td>- Determines fallback behaviour. String will st
+<table><tr><td>onError</td><td>- Determines fallback behaviour. If integer: jump, if not stop with error code err
+</td></tr><tr><td>err</td><td>- Error code for stopping hook.
 </td></tr></table><code style="display:block;white-space: pre;"> hook "Something went wrong." 0
  fail "Something caused an error"
  // this will fail but the hook will cause a non error output of "Something went wrong."
@@ -449,14 +452,13 @@ TODO
 </td></tr></table><code style="display:block;white-space: pre;"> jump(2)         // jump over the next instruction
  jump(-3)        // jump backwards three instructions
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('test')"><b>test</b> <i>condition</i> <i>onTrue</i> <i>onFalse</i> [<i>data</i>]<span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('test')"><b>test</b> <i>condition</i> [<i>onTrue=1</i>] [<i>onFalse=1</i>]<span class="quickDescription">
  Test a condition and choose to jump.
 </span></div><div style="display:none;" class="command-body" id="test">
  Execute a client stack program.
 <table><tr><td>condition</td><td>-  Javascript condition to test. (Example: a>5)
 </td></tr><tr><td>onTrue</td><td>- Amount of instructions lines to jump when condition matches true.   (1 = jump forward 1 instruction, -2 = jump backward two instructions)
 </td></tr><tr><td>onFalse</td><td>- Amount of instructions lines to jump when condition matches false.  (1 = jump forward 1 instruction, -2 = jump backward two instructions)
-</td></tr><tr><td>data</td><td>-  Store data in this subprocess data field.
 </td></tr></table><code style="display:block;white-space: pre;"> test('a>3',1,-3)    // test if a>3, if true jump to the next instruction, if false jump back three instructions
  test('b<=1',-4,1)   // test if b<=1, if true jump back four instructions, if false jump to the next instruction
  test('a>3',-5)      // test if a>3, if true jump back five instructions, else default jump to the next instruction
@@ -491,7 +493,7 @@ TODO
  logs(1,"I like you")    // logs "[i] I like you" to console
  logs(2,"Be careful")    // logs "[!] Be careful" to console
  
-  </code></div></div><div class="category">Process</div><div class="command-header" onclick="toggleCommand('call')"><b>call</b> <i>command</i> <i>data</i><span class="quickDescription">
+  </code></div></div><div class="category">Process</div><div class="command-header" onclick="toggleCommand('call')"><b>call</b> <i>command</i> [<i>data=data</i>]<span class="quickDescription">
  Creates a new process by calling the xpath command and wait for the data to be returned (combines fork and read).
 </span></div><div style="display:none;" class="command-body" id="call">
  Execute a client stack program.
@@ -506,7 +508,7 @@ TODO
 <table><tr><td>object</td><td>- Object to fill the data stream with.
 </td></tr></table><code style="display:block;white-space: pre;"> data("test")            // Fill the data stream with 'test'.
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('done')"><b>done</b> [<i>data</i>]<span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('done')"><b>done</b> [<i>data=data</i>]<span class="quickDescription">
  Stop processing and return message.
 </span></div><div style="display:none;" class="command-body" id="done">
  Execute a client stack program.
@@ -514,16 +516,17 @@ TODO
 </td></tr></table><code style="display:block;white-space: pre;"> done()                // stop processing without error.
  done("Success")       // stop processing without error and put "Success." in main process data field
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('each')"><b>each</b> <i>command</i> <i>data</i><span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('each')"><b>each</b> <i>input</i> <i>command</i> [<i>data=data</i>]<span class="quickDescription">
  Loop through elements of a container execute a given function for each element.
 </span></div><div style="display:none;" class="command-body" id="each">
  Execute a client stack program.
-<table><tr><td>command</td><td>-  A string containg the command path. "command/a/b". This calls command using $1 = "a", $2 = "b"
+<table><tr><td>input</td><td>-  TODO
+</td></tr><tr><td>command</td><td>-  A string containg the command path. "command/a/b". This calls command using $1 = "a", $2 = "b"
 </td></tr><tr><td>data</td><td>-  Optional data to be passed to the new process
 </td></tr></table><code style="display:block;white-space: pre;"> each(["a","b","c"],"test")           //  calls test with data = {key=0, value="a"} and further
  each({"a":0,"b":1,"c":2},"test")     //  calls test/x/y with data = {key="a", value=0} and further
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('fail')"><b>fail</b> [<i>err</i>] [<i>data</i>]<span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('fail')"><b>fail</b> [<i>err=1</i>] [<i>data=data</i>]<span class="quickDescription">
  Fail processing and return message.
 </span></div><div style="display:none;" class="command-body" id="fail">
  Execute a client stack program.
@@ -533,7 +536,7 @@ TODO
  fail("Something wrong")       // stop processing, set error to 1, and put "Something wrong." in main process data field
  fail(404,"HELP! Not found.")  // stop processing, set error to 404, and put "HELP! Not found." in main process data field
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('fork')"><b>fork</b> <i>command</i> <i>data</i> [<i>childId</i>]<span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('fork')"><b>fork</b> <i>command</i> [<i>data=data</i>] [<i>childId=0</i>]<span class="quickDescription">
  Creates a new process by calling the command asynchronously.
 </span></div><div style="display:none;" class="command-body" id="fork">
  Execute a client stack program.
@@ -542,7 +545,7 @@ TODO
 </td></tr><tr><td>childId</td><td>-  if undefined then the new process will be independant. If 0 or larger is will be instantiated as a child process of the current process.
 </td></tr></table><code style="display:block;white-space: pre;"> fork("balance/_dummyaddress_")   // Starts a process to retrieve the dummy balance and continue without waiting for a reply.
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('pass')"><b>pass</b> <i>data</i><span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('pass')"><b>pass</b> [<i>data=data</i>]<span class="quickDescription">
  Pass data to parent process.
 </span></div><div style="display:none;" class="command-body" id="pass">
  Execute a client stack program.
@@ -551,7 +554,7 @@ TODO
  pass("Nice dude!")   // push data "Nice dude!" to master process
  pass("Wow: "+data)   // push data "Wow:" with previous subprocess data concatenated
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('read')"><b>read</b> <i>processIDs</i> <i>interval</i><span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('read')"><b>read</b> <i>processIDs</i> [<i>interval=500</i>]<span class="quickDescription">
  Wait for one or more processes to finish and return the results.
 </span></div><div style="display:none;" class="command-body" id="read">
  Execute a client stack program.
@@ -561,7 +564,7 @@ TODO
  read(["123456","654321"])        //Wait for processes 123456 and 654321 to finish and return their data combined into an array.
  read({"a":null,"b":34})        //Wait for processes 123456 and 654321 to finish and return their data combined into an object with property labels a and b.
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('stop')"><b>stop</b> <i>err</i> [<i>data</i>]<span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('stop')"><b>stop</b> [<i>err=0</i>] [<i>data=data</i>]<span class="quickDescription">
  Stop processing and return data
 </span></div><div style="display:none;" class="command-body" id="stop">
  Execute a client stack program.
@@ -572,13 +575,13 @@ TODO
   stop(0,"All is good.")          // stop processing, set no error, and put "All is good." in main process data field
   stop(404,"HELP! Not found.")    // stop processing, set error to 404, and put "HELP! Not found." in main process data field
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('time')"><b>time</b> <i>millisecs</i> [<i>data</i>] [<i>er</i>]<span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('time')"><b>time</b> <i>millisecs</i> [<i>data=data</i>] [<i>err=1</i>]<span class="quickDescription">
  Set timeout of current process.
 </span></div><div style="display:none;" class="command-body" id="time">
  Execute a client stack program.
 <table><tr><td>millisecs</td><td>-  Amount of milliseconds to wait.
 </td></tr><tr><td>data</td><td>- Set data when process times out
-</td></tr><tr><td>er</td><td>] - Set error flag when process times out
+</td></tr><tr><td>err</td><td>- Set error flag when process times out
 </td></tr></table><code style="display:block;white-space: pre;"> time()                  // set unlimited timeout
  time(0)                 // immediately timeout the process
  time(1000)              // set timeout to one second
@@ -620,7 +623,7 @@ TODO
 <table><tr><td>key</td><td>- Key for which to get metadata
 </td></tr></table><code style="display:block;white-space: pre;"> meta("myFavoriteColor")  // retrieve the meta data for myFavoriteColor
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('save')"><b>save</b> <i>key</i> [<i>value</i>]<span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('save')"><b>save</b> <i>key</i> [<i>value=data</i>]<span class="quickDescription">
  Store a key value pair. When value is an object, it will be stored as a string.
 </span></div><div style="display:none;" class="command-body" id="save">
  Execute a client stack program.
@@ -646,13 +649,12 @@ TODO
   peek(2)     // returns value of the second command path (non mutable)
 
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('poke')"><b>poke</b> <i>key</i> <i>value</i> [<i>data</i>]<span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('poke')"><b>poke</b> <i>key</i> [<i>value=data</i>]<span class="quickDescription">
  Put data in a variable for later use. Use peek to retrieve. The data is stored in the root parent process under 'vars'. (You can see this poked data stored in global.hybridd.proc[rootID].vars, but a better way to use this data is by using the command peek("varname").
 </span></div><div style="display:none;" class="command-body" id="poke">
  Execute a client stack program.
 <table><tr><td>key</td><td>- Variable name to get data from.
 </td></tr><tr><td>value</td><td>- The data to store in the variable. This is also stored in this subprocess data field.
-</td></tr><tr><td>data</td><td>-  Store data in this subprocess data field.
 </td></tr></table><code style="display:block;white-space: pre;">  poke("fee",value)         // sets value in recipe local variable fee. Shorthand for local::fee (runtime, persisted in the .vars.json file)
   poke("userDefined")         // given that the recipe does not have property userDefined sets the value in processor variable userDefined (runtime, non persistant)
   poke("proc::fee",value)         // sets value in processor variable fee (runtime, non persistant)
@@ -664,7 +666,7 @@ TODO
 
   poke(2,value)     // results in an error.
  
-  </code></div></div><div class="category">Misc</div><div class="command-header" onclick="toggleCommand('atom')"><b>atom</b> [<i>reduce</i>] [<i>factor</i>]<span class="quickDescription">
+  </code></div></div><div class="category">Misc</div><div class="command-header" onclick="toggleCommand('atom')"><b>atom</b> [<i>reduce=false</i>] [<i>factor=$factor</i>]<span class="quickDescription">
  Convert a number from atomic units, or convert to atomic units.
 </span></div><div style="display:none;" class="command-body" id="atom">
  Execute a client stack program.
@@ -675,7 +677,7 @@ TODO
  atom(0,4)  // input: 8, output: "0.0008"
  atom(1,4)  // input: 8, output: "80000"
   
-  </code></div></div><div class="command-header" onclick="toggleCommand('curl')"><b>curl</b> <i>target</i> <i>querystring</i> [<i>method</i>] [<i>data</i>] [<i>headers</i>] [<i>overwriteProperties</i>]<span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('curl')"><b>curl</b> <i>target</i> <i>querystring</i> [<i>method</i>] [<i>data=data</i>] [<i>headers</i>] [<i>overwriteProperties</i>]<span class="quickDescription">
  Use API queue to perform a curl call to an external host.
 </span></div><div style="display:none;" class="command-body" id="curl">
  Execute a client stack program.
@@ -705,7 +707,7 @@ TODO
  Execute a client stack program.
 <table></table><code style="display:block;white-space: pre;"> rout('/asset/dummy/balance/__dummyaddress__')   // retrieve the balance for the dummy asset
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('form')"><b>form</b> [<i>factor</i>]<span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('form')"><b>form</b> [<i>factor=$factor</i>]<span class="quickDescription">
  Format a (floating point) number and return a neatly padded string.
 </span></div><div style="display:none;" class="command-body" id="form">
  Execute a client stack program.
@@ -714,7 +716,7 @@ TODO
  form(8)    // input: 10, output: "10.00000000"
  form(4)    // input: 8, output: "0.8000"
   
-  </code></div></div><div class="command-header" onclick="toggleCommand('hash')"><b>hash</b> <i>method</i><span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('hash')"><b>hash</b> [<i>method='sha256'</i>]<span class="quickDescription">
  Create a sha256 hash from an input string.
 </span></div><div style="display:none;" class="command-body" id="hash">
  Execute a client stack program.
@@ -733,13 +735,13 @@ TODO
   math([2,3,4,5,6],'')  // multiplies all the numbers in the array
   math('+')              // adds all the numbers in the data array
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('prog')"><b>prog</b> <i>step</i> <i>steps</i> [<i>data</i>]<span class="quickDescription">
+  // TODO split into math and redu
+  </code></div></div><div class="command-header" onclick="toggleCommand('prog')"><b>prog</b> <i>step</i> <i>steps</i><span class="quickDescription">
  Set progress of parent process.
 </span></div><div style="display:none;" class="command-body" id="prog">
  Execute a client stack program.
 <table><tr><td>step</td><td>- Current step in the progress. (Value -1 restores automatic progress reporting.)
 </td></tr><tr><td>steps</td><td>- Total amount of steps.
-</td></tr><tr><td>data</td><td>- Store data in this subprocess data field. (Passed to parent process on stop.)
 </td></tr></table><code style="display:block;white-space: pre;"> prog(20,40)  // progress is set to 0.5 (which means 50%)
  prog()       // restore automatic progress reporting
  
@@ -751,7 +753,7 @@ TODO
 <table><tr><td>path</td><td>- Provide the routing path
 </td></tr></table><code style="display:block;white-space: pre;"> rout('/asset/dummy/balance/__dummyaddress__')   // retrieve the balance for the dummy asset
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('scan')"><b>scan</b> <i>test</i> <i>cumulative</i> <i>cinit</i><span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('scan')"><b>scan</b> <i>test</i> <i>cumulative</i> [<i>cinit=0</i>]<span class="quickDescription">
  Scan through the values of an array or object, and return values that pass the test.
 </span></div><div style="display:none;" class="command-body" id="scan">
  Execute a client stack program.
@@ -765,7 +767,7 @@ TODO
  scan('cnt>5','',3)        // input: [1,2,3,4,5,6,7,8], output: [3,4,5,6,7,8]
  scan('cnt>1','+val.b')    // input: [{a:'a',b:1},{a:'b',b:1},{a:'c',b:1}], output: [{a:'b',b:1},{a:'c',b:1}]
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('tran')"><b>tran</b> <i>pattern</i> <i>input</i> <i>onSuccess</i> <i>onError</i> [<i>data</i>]<span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('tran')"><b>tran</b> <i>pattern</i> <i>input</i> [<i>onSuccess=1</i>] [<i>onError=1</i>]<span class="quickDescription">
  Transforms data using a pattern definition.
  also for arrays and dictionaries of property paths
  also for explicit primitive values
@@ -778,7 +780,6 @@ TODO
 </td></tr><tr><td>input</td><td>- The input
 </td></tr><tr><td>onSuccess</td><td>- amount of instructions lines to jump on success.
 </td></tr><tr><td>onError</td><td>- amount of instructions lines to jump on failure.
-</td></tr><tr><td>data</td><td>- Data to be passed on failure. If data is not defined then input is passed.
 </td></tr></table><code style="display:block;white-space: pre;"> tran(".foo",1,2)                                         // Input: {foo:"bar"} : Passes "bar" to next
  tran(".foo.bar[2]",1,2)                                  // Input: {foo:{bar:[0,1,5]}} :  Passes 5 to next
  tran(".foo.bar[2]",1,2)                                  // Input: {foo:"bar"}   Jumps 2 instructions and passes {foo:"bar"}
@@ -795,12 +796,12 @@ TODO
 </td></tr></table><code style="display:block;white-space: pre;"> dump();      // outputs contents of data stream to console
  dump({a:1}); // outputs "[D] {a:1}" to console
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('prwt')"><b>prwt</b> <i>processID</i> [<i>interval</i>]<span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('prwt')"><b>prwt</b> <i>processID</i> [<i>interval=500</i>]<span class="quickDescription">
  Wait for a process to finish, and store its processID.
 </span></div><div style="display:none;" class="command-body" id="prwt">
  Execute a client stack program.
 <table><tr><td>processID</td><td>- Process ID to wait for.
-</td></tr><tr><td>interval</td><td>- Amount of time in milliseconds between checks. Defaults to 500.
+</td></tr><tr><td>interval</td><td>- Amount of time in milliseconds between checks.
 </td></tr></table><code style="display:block;white-space: pre;"> prwt("101123")        // wait for process with ID 101123 to finish, then continue
  prwt("209123")        // wait for process with ID 209123 to finish, then continue
  

@@ -161,3 +161,8 @@ div.prompt{
   color:white;
   display:inline-block;
 }
+
+textarea{
+  width:100%;
+ font-family: monospace, monospace;
+}
