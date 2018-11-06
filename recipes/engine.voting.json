@@ -21,13 +21,24 @@
     ],
     "listAddresses" : [
       "poke '::coreMode','addresses'",
-      "call 'coreList'",
+      "#call 'coreList'",
+      "done ['addressA','addressB','addressC','addressD','addressE']",
       "done"
     ],
     "addAddress" : [
-      "poke '::coreMode','addresses'",
+      "data '$2'",
+      "splt ':'",
+      "poke 'userhash' data[0]",
+      "poke 'useraddr' data[1]",
+      "poke '::coreMode' 'addresses'",
+      "call 'coreList'",
+      "find '$userhash' 1 4",
+      "poke '::coreMode' 'addresses'",
+      "poke '::coreData' '$useraddr'",
       "call 'coreAdd'",
-      "done"
+      "done",
+      "@notelligible",
+      "done 'User not elligible!'"
     ],
     "listEligibility" : [
       "poke '::coreMode','elegibility'",
@@ -35,26 +46,27 @@
       "done"
     ],
     "addEligibility" : [
+      "poke '::coreData','$2'",
       "poke '::coreMode','elegibility'",
       "call 'coreAdd'",
       "done"
     ],
     "coreList" : [
-      "peek '::coreMode'",
-      "data '$data $1'",
+      "data '$::coreMode $1'",
       "hash 'sha256'",
       "hook [] 0",
-      "load '$data'",
-      "file",
-      "jpar",
+      "#load '$data'",
+      "#file",
+      "#jpar",
+      "data ['pietjePuk','aliB','harryVanBeek','someBody','andMe']",
       "done"
     ],
     "coreAdd" : [
-      "peek '::coreMode'",
-      "data '$data $1'",
+      "done '$::coreMode $::coreData'",
+      "data '$::coreMode $1'",
       "hash 'sha256'",
       "poke 'idx'",
-      "data '$2'",
+      "data '$::coreData'",
       "splt ','",
       "poke 'inputdata'",
       "hook 4",
@@ -67,8 +79,7 @@
       "@savelist",
       "push $inputdata",
       "save '$idx'",
-      "peek '::coreMode'",
-      "done 'Added $2 to list $data'+'_$1'"
+      "done 'Added $::coreData to list $::coreMode '+'_$1'"
     ],
     "coreReset" : [
       "data '$1 $2'",
@@ -107,7 +118,7 @@
         "_list" : "session_id",
           "_ref" : {
               "_list" : "eligibility_address",
-              "_this" : "Adds an eligibility address or addresses under the specified voting session ID."
+              "_this" : "Adds an eligibility address or addresses under the specified voting session ID. [format: hash:address]"
           }
       }
     },
