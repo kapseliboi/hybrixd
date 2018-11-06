@@ -21,8 +21,8 @@
     ],
     "listAddresses" : [
       "poke '::coreMode','addresses'",
-      "#call 'coreList'",
-      "done ['addressA','addressB','addressC','addressD','addressE']",
+      "call 'coreList'",
+      "#done ['addressA','addressB','addressC','addressD','addressE']",
       "done"
     ],
     "addAddress" : [
@@ -30,9 +30,9 @@
       "splt ':'",
       "poke 'userhash' data[0]",
       "poke 'useraddr' data[1]",
-      "poke '::coreMode' 'addresses'",
+      "poke '::coreMode' 'eligibility'",
       "call 'coreList'",
-      "find '$userhash' 1 4",
+      "find '$userhash' 1 @notelligible",
       "poke '::coreMode' 'addresses'",
       "poke '::coreData' '$useraddr'",
       "call 'coreAdd'",
@@ -55,14 +55,13 @@
       "data '$::coreMode $1'",
       "hash 'sha256'",
       "hook [] 0",
-      "#load '$data'",
-      "#file",
-      "#jpar",
-      "data ['pietjePuk','aliB','harryVanBeek','someBody','andMe']",
-      "done"
+      "load '$data'",
+      "file",
+      "jpar",
+      "done",
+      "#data ['pietjePuk','aliB','harryVanBeek','someBody','andMe']"
     ],
     "coreAdd" : [
-      "done '$::coreMode $::coreData'",
       "data '$::coreMode $1'",
       "hash 'sha256'",
       "poke 'idx'",
@@ -78,7 +77,7 @@
       "@savelist",
       "push $inputdata",
       "save '$idx'",
-      "done 'Added $::coreData to list $::coreMode '+'_$1'"
+      "done 'Added $::coreData to list $::coreMode'+'_$1'"
     ],
     "coreReset" : [
       "data '$1 $2'",
