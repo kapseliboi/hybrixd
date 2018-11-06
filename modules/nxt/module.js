@@ -64,8 +64,8 @@ function exec (properties) {
         }
 
         // set up init probe command to check if RPC and block explorer are responding and connected
-        subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["getBlockchainStatus"]})');
-        subprocesses.push('logs(1,"module nxt: "+(data?"connected":"failed connection")+" to [' + target.symbol + '] host ' + target.host + '")');
+        //subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["getBlockchainStatus"]})');
+        //subprocesses.push('logs(1,"module nxt: "+(data?"connected":"failed connection")+" to [' + target.symbol + '] host ' + target.host + '")');
       }
       break;
     case 'status':
