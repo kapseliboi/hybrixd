@@ -15,14 +15,19 @@
       "done",
       "fail data"
     ],
-    "testBAK" : [
-      "data '$1'",
-      "hash 'sha256'",
-      "poke 'key'",
-      "data {key:'storemeyo!'}",
-      "poke 'key'",
-      "load '$key'",
-      "done '$key'"
+    "listAddress" : [
+      "call 'listAddresses'",
+      "done"
+    ],
+    "listAddresses" : [
+      "poke '::coreMode','addresses'",
+      "call 'coreList'",
+      "done"
+    ],
+    "addAddress" : [
+      "poke '::coreMode','addresses'",
+      "call 'coreAdd'",
+      "done"
     ],
     "listEligibility" : [
       "poke '::coreMode','elegibility'",
@@ -40,6 +45,7 @@
       "hash 'sha256'",
       "hook [] 0",
       "load '$data'",
+      "file",
       "jpar",
       "done"
     ],
@@ -53,6 +59,7 @@
       "poke 'inputdata'",
       "hook 4",
       "load '$idx'",
+      "file",
       "jpar",
       "jump 2",
       "@emptylist",
@@ -78,6 +85,30 @@
       "_ref" : {
         "_list" : "session_id",
         "_this" : "Test routine. Needs an additional /id to function!"
+      }
+    },
+    "listAddress" : {
+      "_help": "List all eligibility addresses [alias to listAddresses]",
+      "_ref" : {
+        "_list" : "session_id",
+        "_this" : "An array is returned listing all eligibility addresses."
+      }
+    },
+    "listAddresses" : {
+      "_help": "List all eligibility addresses",
+      "_ref" : {
+        "_list" : "session_id",
+        "_this" : "An array is returned listing all eligibility addresses."
+      }
+    },
+    "addAddress" : {
+      "_help": "Add eligibility adresses to voting session",
+      "_ref" : {
+        "_list" : "session_id",
+          "_ref" : {
+              "_list" : "eligibility_address",
+              "_this" : "Adds an eligibility address or addresses under the specified voting session ID."
+          }
       }
     },
     "listEligibility" : {
