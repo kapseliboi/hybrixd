@@ -189,6 +189,7 @@
       "_this" : "Display process details."
     },
     "kill":{
+      "_access":"root",
       "_ref" : {
         "_list" : "proc",
         "_this" : "Kill a process and all child processes."
@@ -197,12 +198,14 @@
     "pause":{
       "_this" : "List all paused processes.",
       "_ref" : {
+        "_access":"root",
         "_list" : "proc",
         "_this" : "Pause a process and all child processes."
       }
     },
     "resume":{
       "_ref" : {
+        "_access":"root",
         "_list" : "proc",
         "_this" : "Resume a paused process and all child processes."
       }

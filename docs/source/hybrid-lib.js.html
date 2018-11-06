@@ -1,0 +1,21 @@
+<div class="download">Download</div>
+
+TODO
+
+<textarea>
+hybridd.sequential([
+    'init', // Initialize hybridd
+    {username: '****************', password: '****************'},  // Define credentials
+    'session',                                                     // Create a local deterministic session
+    {host: 'http://localhost:1111/'},                              // Define the host
+    'addHost',                                                     // Add and initialize the host
+    {symbol: 'dummy'},                                             // Define the asset
+    'addAsset',                                                    // Add and initialize the asset
+    {symbol: 'dummy', amount: 100},                                // Define the transaction
+    'transaction'                                                  // Execute the transaction
+  ],
+   onSucces,
+   onError,
+   onProgress
+  );
+</textarea>
