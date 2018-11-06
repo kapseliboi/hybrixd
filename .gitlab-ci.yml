@@ -132,7 +132,8 @@ hybridd:
     - echo "{\"${CI_PROJECT_PATH_SLUG}\":{\"mode\":\"${mode}\", \"project_path\":\"${CI_PROJECT_PATH}\", \"commit_ref_name\":\"${CI_COMMIT_REF_NAME}\", \"commit_ref_slug\":\"${CI_COMMIT_REF_SLUG}\", \"commit_sha\":\"${CI_COMMIT_SHA}\", \"pipeline_url\":\"${CI_PIPELINE_URL}\", \"commit_title\":\"${CI_COMMIT_TITLE}\", \"gitlab_user_login\":\"${GITLAB_USER_LOGIN}\", \"packaged\":\"${timestamp}\"}}" > .version
 
     # concatenate all .version files in the package
-    - "find . -name \".version\" -print | xargs -L1 cat | tr '\n' ' ' | sed 's:} {:,:g' > .versions"
+    - "find . -name \".version\" -print | xargs cat | tr '\n' ' ' | sed 's:} {:,:g' > .versions"
+    - mv .versions ./modules/web-wallet/versions.json
   artifacts:
     paths:
     - ./
