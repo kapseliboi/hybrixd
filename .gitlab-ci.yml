@@ -133,7 +133,7 @@ hybridd:
 
     # concatenate all .version files in the package
     - "find . -name \".version\" -print | xargs cat | tr '\n' ' ' | sed 's:} {:,:g' > .versions"
-    - mv .versions ./modules/web-wallet/versions.json
+    - mv .versions ./modules/web-wallet/files/versions.json
   artifacts:
     paths:
     - ./
