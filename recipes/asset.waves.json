@@ -14,9 +14,9 @@
   "block-explorer-host": "https://nodes.wavesplatform.com",
   "quartz":{
     "init" : [
-      "test('$contract'==='',1,3)",
-      "curl('asset://$symbol','/utils/seed/2','GET')",
-      "logs(1,'module $symbol: '+(data?'connected':'failed connection')+' to host [$host]')"
+      "#test('$contract'==='',1,3)",
+      "#curl('asset://$symbol','/utils/seed/2','GET')",
+      "#logs(1,'module $symbol: '+(data?'connected':'failed connection')+' to host [$host]')"
     ],
     "status" : [
       "curl('asset://$symbol','/utils/seed/2','GET')",

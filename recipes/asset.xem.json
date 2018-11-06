@@ -12,9 +12,9 @@
   "throttle":5,
   "quartz":{
     "init" : [
-      "test('$contract'==='undefined',1,3)",
-      "curl('asset://$symbol','/heartbeat','GET')",
-      "logs(1,'module $symbol: '+(data && typeof data.message!=='undefined' && data.message==='ok'?'connected':'failed connection')+' to host [$host]')"
+      "#test('$contract'==='undefined',1,3)",
+      "#curl('asset://$symbol','/heartbeat','GET')",
+      "#logs(1,'module $symbol: '+(data && typeof data.message!=='undefined' && data.message==='ok'?'connected':'failed connection')+' to host [$host]')"
     ],
     "status" : [
       "curl('asset://$symbol','/heartbeat','GET')",
