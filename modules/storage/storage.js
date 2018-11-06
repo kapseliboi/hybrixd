@@ -128,9 +128,10 @@ var autoClean = function () {
               // DEBUG: console.log(" [i] module storage: test on storage " + fileelement);
               if (fs.existsSync(fileelement)) {
                 var meta = JSON.parse(String(fs.readFileSync(fileelement)));
-                var mindeadline = Date.now() - (global.hybridd.maxstoragetime * 86400) - global.hybridd.maxstoragetime * (864 * meta.n);
+                // DEPRECATED: var mindeadline = Date.now() - (global.hybridd.maxstoragetime * 86400) - global.hybridd.maxstoragetime * (864 * meta.n);
+                var mindeadline = Date.now() - ((typeof global.hybridd.minstoragetime !== 'undefined' && global.hybridd.minstoragetime >= 1 ? global.hybridd.minstoragetime : 1) * 86400);
                 var maxdeadline = Date.now() - ((typeof global.hybridd.maxstoragetime !== 'undefined' && global.hybridd.maxstoragetime >= 1 ? global.hybridd.maxstoragetime : 365) * 86400);
-                if (meta.read < mindeadline || meta.read < maxdeadline) {
+                if (meta.read < maxdeadline || (meta.res===1 && meta.read < mindeadline)) {
                   var dataelement = fileelement.substr(0, fileelement.length - 5);
                   try {
                     fs.unlinkSync(dataelement);
