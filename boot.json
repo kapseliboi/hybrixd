@@ -1,3 +1,8 @@
-{"quartz":{"main":[
-"stop(0,'Done')"
-]}}
+{
+ "engine":"boot",
+ "quartz":
+  {"main":[
+    "stop(0,'Done')"
+   ]
+  }
+}
