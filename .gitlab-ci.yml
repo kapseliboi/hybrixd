@@ -69,18 +69,22 @@ hybridd:
     
     # remove link to interface and unzip the downloaded artifact to the directory (|| true --> on error, no problem)
     - rm -rf  interface || true
-    - unzip -o artifacts-interface.zip -d interface/
+    - unzip -o artifacts-interface.zip -d ./interface/
     
     # remove the zip-file (|| true --> on error, no problem)
     - rm -rf  artifacts-interface.zip || true
+    
+    # run the build-script of the hybridd-node
+    - ./scripts/npm/compile.sh
     
     # download [deterministic] artifact
     - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/iochq%2Fhybridd%2Fclient%2Fmodules%2Fdeterministic/jobs/artifacts/master/download?job=deterministic\" -o artifacts-deterministic.zip"
     
     # unzip the downloaded artifact to the directory (|| true --> on error, no problem) (consider the artifact is packed as /modules/name/filename.lzma)
     - unzip -o artifacts-deterministic.zip -d artifacts-deterministic/
-    - mkdir -p modules/deterministic
-    - cp -rf artifacts-deterministic/* modules/deterministic/
+    - rm -p ./dist/modules/deterministic
+    - cp -rf artifacts-deterministic/ ./dist/modules/deterministic/
+    - cp -rf artifacts-deterministic/ ./modules/deterministic/
     
     # remove the unzipped-files and the zip-file (|| true --> on error, no problem)
     - rm -rf  artifacts-deterministic || true
@@ -92,24 +96,18 @@ hybridd:
     
     # unzip the downloaded artifact to the directory 
     - unzip -o artifacts-web-wallet.zip -d artifacts-web-wallet/
+    - rm -rf ./dist/modules/web-wallet
     - rm -rf ./modules/web-wallet
+    - cp -rf artifacts-web-wallet/ ./dist/modules/web-wallet/
     - cp -rf artifacts-web-wallet/ ./modules/web-wallet/
+    - ls ./dist/modules/web-wallet
     - ls ./modules/web-wallet
+    - ls ./dist/modules/web-wallet/files
     - ls ./modules/web-wallet/files
     
     # remove the unzipped-files and the zip-file (|| true --> on error, no problem)
     - rm -rf  artifacts-web-wallet || true
     - rm -rf  artifacts-web-wallet.zip || true
-    
-    # run the build-script of the hybridd-node
-    - ./scripts/npm/compile.sh
-
-    # clean up and prepare the artifacts (instead of having a dist) 
-    # remove everything except () is extglob syntax, which should be enabled first
-    # - shopt -s extglob
-    # - rm -rf !(dist) || true
-    # - mv ./dist/* ./
-    # - rm -rf ./dist || true
     
     # remove .git files from artifact
     - rm -rf ./.git* || true
@@ -124,11 +122,15 @@ hybridd:
 
     # concatenate all .version files in the package
     - "find . -name \".version\" -print | xargs cat | tr '\n' ' ' | sed 's:} {:,:g' > .versions"
-    - mv .versions ./modules/web-wallet/files/versions.json
+    - cp .versions ./modules/web-wallet/files/versions.json
+    - mv .versions ./dist/modules/web-wallet/files/versions.json
     
-    - ls ./modules/web-wallet
-    - ls ./modules/web-wallet/files
-    - cat ./modules/web-wallet/files/versions.json
+    # clean up and prepare the artifacts (instead of having a dist) 
+    # remove everything except () is extglob syntax, which should be enabled first
+    #- shopt -s extglob
+    #- rm -rf !(dist) || true
+    #- mv ./dist/* ./
+    #- rm -rf ./dist || true
     
     - setup_docker
     - build
