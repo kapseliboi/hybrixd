@@ -82,7 +82,7 @@ hybridd:
     
     # unzip the downloaded artifact to the directory (|| true --> on error, no problem) (consider the artifact is packed as /modules/name/filename.lzma)
     - unzip -o artifacts-deterministic.zip -d artifacts-deterministic/
-    - rm -p ./dist/modules/deterministic
+    - rm -rf ./dist/modules/deterministic
     - cp -rf artifacts-deterministic/ ./dist/modules/deterministic/
     - cp -rf artifacts-deterministic/ ./modules/deterministic/
     
