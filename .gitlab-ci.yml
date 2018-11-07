@@ -49,9 +49,7 @@ hybridd:
     
     - WORKING_DIR=$PWD
     - echo $PWD
-    #- cd /builds/iochq/hybridd/node
-    #- echo $PWD
-    
+
     # trigger pipeline common
     # - "curl --request POST --form \"token=$CI_JOB_TOKEN\" --form ref=master https://gitlab.com/api/v4/projects/iochq%2Fhybridd%2Fcommon/trigger/pipeline"
     
