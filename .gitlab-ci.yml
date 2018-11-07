@@ -124,6 +124,10 @@ hybridd:
     - "find . -name \".version\" -print | xargs cat | tr '\n' ' ' | sed 's:} {:,:g' > .versions"
     - mv .versions ./modules/web-wallet/files/versions.json
     
+    - ls ./modules/web-wallet
+    - ls ./modules/web-wallet/files
+    - cat ./modules/web-wallet/files/versions.json
+    
     - setup_docker
     - build
   artifacts:
