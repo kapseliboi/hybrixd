@@ -106,7 +106,8 @@ function exec (properties) {
           var encoded = ethDeterministic.encode({'func': 'balanceOf(address):(uint256)', 'vars': ['address'], 'address': sourceaddr}); // returns the encoded binary (as a Buffer) data to be sent
           subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_call",[{"to":"' + target.contract + '","data":"' + encoded + '"},"pending"]]})'); // send token balance ABI query
         }
-        subprocesses.push('stop((data!==null && typeof data.result!=="undefined"?0:1),(data!==null && typeof data.result!=="undefined"? functions.padFloat(functions.fromInt(functions.hex2dec.toDec(data.result),' + factor + '),' + factor + ') :null))');
+		// when bad result returned: {"status":"0","message":"NOTOK","result":"Error! Missing Or invalid Module name"		
+        subprocesses.push('stop((data!==null && typeof data.result!=="undefined" && data.result.substr(0,2)==="0x"?0:1),(data!==null && typeof data.result!=="undefined" && data.result.substr(0,2)==="0x"?functions.padFloat(functions.fromInt(functions.hex2dec.toDec(data.result),' + factor + '),' + factor + '):null))');
       } else {
         subprocesses.push('stop(1,"Error: missing address!")');
       }
