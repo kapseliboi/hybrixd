@@ -25,6 +25,7 @@ stages:
   - cleanup
 
 hybridd:
+  cache: {}
   stage: build
   image: docker:stable-git
   services:
@@ -94,6 +95,7 @@ hybridd:
     - rm -rf modules/web-wallet
     - mkdir -p modules/web-wallet
     - cp -rf artifacts-web-wallet/* modules/web-wallet/
+    - cat ./modules/web-wallet/.version
     
     # remove the unzipped-files and the zip-file (|| true --> on error, no problem)
     - rm -rf  artifacts-web-wallet || true
@@ -135,6 +137,7 @@ hybridd:
     - ./
 
 test:
+  cache: {}
   services:
     - postgres:latest
   variables:
@@ -209,6 +212,7 @@ test:
       junit: test*.xml
 
 review:
+  cache: {}
   image: alpine:latest
   stage: review
   script:
@@ -270,6 +274,7 @@ stop_review:
 # STAGING_ENABLED.
 
 staging:
+  cache: {}
   #image: node:8.12.0-stretch --> change apk command in certain functions
   image: alpine:latest
   stage: staging
