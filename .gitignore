@@ -10,3 +10,4 @@ boot.json
 var/*
 var/log/*
 var/recipes/*
+versions.json

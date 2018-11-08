@@ -221,6 +221,10 @@
     "_help":"Sources are read-only information providers.",
     "_this":"List available sources."
   },
+  "v":{"_alias":"version"},
+  "version":{
+    "details" : "Display version details"
+  },
   "w":{"_alias":"wchan"},
   "wchan":{
     "hash" : {
