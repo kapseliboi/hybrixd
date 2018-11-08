@@ -4,6 +4,8 @@ common
 **/.tern-port
 **/*.*~
 **/#.*.*
+.version
+versions.json
 .DS_Store
 storage/*
 boot.json
