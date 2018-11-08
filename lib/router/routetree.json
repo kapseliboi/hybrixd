@@ -201,7 +201,7 @@
       }
     },
     "peek":{
-      "_access":"root",
+      "_access" : "root",
       "_ref" : {
         "_list" : "proc",
         "_this" : "Display process internal data."

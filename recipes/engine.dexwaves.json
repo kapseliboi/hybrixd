@@ -5,6 +5,7 @@
   "matcherhost": "http://matcher.wavesnodes.com",
   "timeout":10000,
   "router" : {
+    "_hidden" : true,
     "push": {
       "_ref" : {
         "_list" : "JSON arguments to push.",

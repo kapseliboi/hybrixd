@@ -5,9 +5,10 @@
   "quartz":{
     "getQuotes": [
       "func('gatherQuotes','exec', {})"
-    ]  
+    ]
   },
     "router" : {
+      "_hidden" : true,
       "getQuotes":"Retrieve aggregate quotes from all sources."
   }
 }
