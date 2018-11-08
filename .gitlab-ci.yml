@@ -90,10 +90,20 @@ hybridd:
     - rm -rf  artifacts-deterministic || true
     - rm -rf  artifacts-deterministic.zip || true
     
-    # download [web-wallet] artifact
-    - "echo \"Download the artifact for the web-wallet from branch: BRANCH_WEB_WALLET = $BRANCH_WEB_WALLET\""
-    - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/iochq%2Fhybridd%2Fclient%2Fimplementations%2Fweb-wallet/jobs/artifacts/$BRANCH_WEB_WALLET/download?job=web-wallet\" -o artifacts-web-wallet.zip"
+    # download [web-wallet] (not the latest) artifact
+    #- "echo \"Download the artifact for the web-wallet from branch: BRANCH_WEB_WALLET = $BRANCH_WEB_WALLET\""
+    #- "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/iochq%2Fhybridd%2Fclient%2Fimplementations%2Fweb-wallet/jobs/artifacts/$BRANCH_WEB_WALLET/download?job=web-wallet\" -o artifacts-web-wallet.zip"
     
+    # workaround to get the latest artifact
+    - PROJECT_REF_SLUG=iochq%2Fhybridd%2Fclient%2Fimplementations%2Fweb-wallet
+    - PROJECT_REF_PATH=iochq/hybridd/client/implementations/web-wallet
+    - PROJECT_REF_NAME=web-wallet
+    - PROJECT_REF_BRANCH=master
+    - "RESPONSE=$(curl --header \"Private-Token: $PRIVATE_TOKEN\" --silent \"https://gitlab.com/api/v4/projects/${PROJECT_REF_SLUG}/jobs?scope=success\")"
+    - "BUILD_JOB_ID=$(echo \"${RESPONSE}\" | jq -r '.[0] | select(.name == \"web-wallet\" and .ref == \"master\") | .id')"
+    - "echo \"Downloading the artifact from: https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\""
+    - "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\" -o artifacts-${PROJECT_REF_NAME}.zip"
+
     # unzip the downloaded artifact to the directory 
     - unzip -o artifacts-web-wallet.zip -d artifacts-web-wallet/
     - rm -rf ./dist/modules/web-wallet
