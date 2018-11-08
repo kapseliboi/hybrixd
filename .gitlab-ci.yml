@@ -131,9 +131,8 @@ hybridd:
     - echo "{\"${CI_PROJECT_PATH_SLUG}\":{\"mode\":\"${mode}\", \"project_path\":\"${CI_PROJECT_PATH}\", \"commit_ref_name\":\"${CI_COMMIT_REF_NAME}\", \"commit_ref_slug\":\"${CI_COMMIT_REF_SLUG}\", \"commit_sha\":\"${CI_COMMIT_SHA}\", \"pipeline_url\":\"${CI_PIPELINE_URL}\", \"packaged\":\"${timestamp}\"}}" > .version
 
     # concatenate all .version files in the package
-    - "find . -name \".version\" -print | xargs cat | tr '\n' ' ' | sed 's:} {:,:g' > .versions"
-    - cp .versions ./modules/web-wallet/files/versions.json
-    - mv .versions ./dist/modules/web-wallet/files/versions.json
+    - "find . -name \".version\" -print | xargs cat | tr '\n' ' ' | sed 's:} {:,:g' > versions.json"
+    - rm -rf .version
     
     # clean up and prepare the artifacts (instead of having a dist) 
     # remove everything except () is extglob syntax, which should be enabled first
