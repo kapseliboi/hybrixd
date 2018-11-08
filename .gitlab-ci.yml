@@ -47,6 +47,7 @@ hybridd:
     - apk add unzip
     - apk add curl
     - apk add nodejs=8.11.4-r0
+    - apk add jq
     
     - WORKING_DIR=$PWD
     - echo $PWD
