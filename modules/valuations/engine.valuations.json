@@ -2,15 +2,16 @@
   "engine":"valuations",
   "name":"Quarries the valuation of 1 currency in another.",
   "module":"quartz",
-  "quartz":{ 
+  "quartz":{
     "getValuation": [
       "call('engine://quotes', 'getQuotes')",
       "func('valuations','exec', {quotes: data, source:'$1', target: '$2', amount: '$3'})"
-    ]  
+    ]
   },
   "router" : {
     "getValuation":
     {
+      "_hidden" : true,
       "_ref" : {
         "_list" : "Source coin",
         "_ref" : {

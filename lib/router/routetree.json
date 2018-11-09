@@ -201,7 +201,7 @@
       }
     },
     "peek":{
-      "_access":"root",
+      "_access" : "root",
       "_ref" : {
         "_list" : "proc",
         "_this" : "Display process internal data."
@@ -220,6 +220,10 @@
   "source":{
     "_help":"Sources are read-only information providers.",
     "_this":"List available sources."
+  },
+  "v":{"_alias":"version"},
+  "version":{
+    "details" : "Display version details"
   },
   "w":{"_alias":"wchan"},
   "wchan":{

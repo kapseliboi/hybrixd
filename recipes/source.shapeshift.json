@@ -96,6 +96,7 @@
     ]
   },
   "router":{
+    "_hidden" : true,
     "rate" : {
       "_ref" : {
         "_list" : "symbol",
