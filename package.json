@@ -21,6 +21,7 @@
     "setup": "sh scripts/npm/setup.sh",
     "build": "sh scripts/npm/setup.sh",
     "compile": "sh scripts/npm/compile.sh",
+    "diag": "sh scripts/npm/diag.sh",
     "release": "sh scripts/npm/compile.sh",
     "release:start": "sh scripts/npm/compile.sh; sh ./dist/hybridd",
     "cluster:start": "sh scripts/npm/cluster.sh",
