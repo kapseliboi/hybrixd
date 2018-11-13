@@ -105,7 +105,10 @@ hybridd:
     - "echo \"${RESPONSE}\" | jq -r '.[] | select(.name == \"web-wallet\" and .ref == \"master\") | .id'"
     - "echo \"${RESPONSE}\" | jq -r '.[] | select(.name == \"web-wallet\" and .ref == \"master\") | .id' | head -1"
     - "echo \"${RESPONSE}\" | jq -r '.[] | select(.name == \"web-wallet\" and .ref == \"master\") | .id' | head -1 | tr -dc '0-9'"
-    - "BUILD_JOB_ID=$(echo \"${RESPONSE}\" | jq -r '.[] | select(.name == \"web-wallet\" and .ref == \"master\") | .id' | head -1 | tr -dc '0-9')"
+    # old: - "BUILD_JOB_ID=$(echo \"${RESPONSE}\" | jq -r '.[] | select(.name == \"web-wallet\" and .ref == \"master\") | .id' | head -1 | tr -dc '0-9')"
+    
+    - "BUILD_JOB_ID=`echo \"$RESPONSE\" | jq -r '.[] | select(.name == \"web-wallet\" and .ref == \"master\") | .id' | head -1 | tr -dc '0-9'`"
+
     - echo $BUILD_JOB_ID
     
     
