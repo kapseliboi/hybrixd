@@ -100,7 +100,7 @@ hybridd:
     - PROJECT_REF_PATH=iochq/hybridd/client/implementations/web-wallet
     - PROJECT_REF_NAME=web-wallet
     - PROJECT_REF_BRANCH=master
-    - "RESPONSE=$(curl --header \"Private-Token: $GITLAB_PRIVATE_TOKEN\" --silent \"https://gitlab.com/api/v4/projects/${PROJECT_REF_SLUG}/jobs?scope=success\")"
+    - "RESPONSE=$(curl --header \"Private-Token: $PRIVATE_TOKEN\" --silent \"https://gitlab.com/api/v4/projects/${PROJECT_REF_SLUG}/jobs?scope=success\")"
     - echo $RESPONSE
     #- "echo \"${RESPONSE}\" | jq -r '.[] | select(.name == \"web-wallet\" and .ref == \"master\") | .id'"
     #- "echo \"${RESPONSE}\" | jq -r '.[] | select(.name == \"web-wallet\" and .ref == \"master\") | .id' | head -1"
@@ -113,7 +113,7 @@ hybridd:
     
     
     - "echo \"Downloading the artifact from: https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\""
-    - "curl --location --header \"Private-Token: $GITLAB_PRIVATE_TOKEN\" \"https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\" -o artifacts-${PROJECT_REF_NAME}.zip"
+    - "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\" -o artifacts-${PROJECT_REF_NAME}.zip"
 
     # unzip the downloaded artifact to the directory 
     - unzip -o artifacts-web-wallet.zip -d artifacts-web-wallet/
@@ -143,7 +143,9 @@ hybridd:
 
     # concatenate all .version files in the package
     - "find . -name \".version\" -print | xargs cat | tr '\n' ' ' | sed 's:} {:,:g' > versions.json"
-    - rm -rf .version
+    
+    # don't remove .version-files
+    #- rm -rf .version
     
     # clean up and prepare the artifacts (instead of having a dist) 
     # remove everything except () is extglob syntax, which should be enabled first
