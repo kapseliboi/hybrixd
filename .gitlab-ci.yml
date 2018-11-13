@@ -113,7 +113,7 @@ hybridd:
     
     
     - "echo \"Downloading the artifact from: https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\""
-    - "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\" -o artifacts-${PROJECT_REF_NAME}.zip"
+    - "curl --location --header \"Private-Token: $GITLAB_PRIVATE_TOKEN\" \"https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\" -o artifacts-${PROJECT_REF_NAME}.zip"
 
     # unzip the downloaded artifact to the directory 
     - unzip -o artifacts-web-wallet.zip -d artifacts-web-wallet/
