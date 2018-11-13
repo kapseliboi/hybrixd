@@ -101,7 +101,14 @@ hybridd:
     - PROJECT_REF_NAME=web-wallet
     - PROJECT_REF_BRANCH=master
     - "RESPONSE=$(curl --header \"Private-Token: $PRIVATE_TOKEN\" --silent \"https://gitlab.com/api/v4/projects/${PROJECT_REF_SLUG}/jobs?scope=success\")"
+    - echo $RESPONSE
+    - "echo \"${RESPONSE}\" | jq -r '.[] | select(.name == \"web-wallet\" and .ref == \"master\") | .id'"
+    - "echo \"${RESPONSE}\" | jq -r '.[] | select(.name == \"web-wallet\" and .ref == \"master\") | .id' | head -1"
+    - "echo \"${RESPONSE}\" | jq -r '.[] | select(.name == \"web-wallet\" and .ref == \"master\") | .id' | head -1 | tr -dc '0-9'"
     - "BUILD_JOB_ID=$(echo \"${RESPONSE}\" | jq -r '.[] | select(.name == \"web-wallet\" and .ref == \"master\") | .id' | head -1 | tr -dc '0-9')"
+    - echo $BUILD_JOB_ID
+    
+    
     - "echo \"Downloading the artifact from: https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\""
     - "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\" -o artifacts-${PROJECT_REF_NAME}.zip"
 
