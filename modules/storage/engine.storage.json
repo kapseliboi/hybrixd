@@ -16,6 +16,12 @@
         "_this" : "Get data from storage."
       }
     },
+    "load":{
+      "_ref" : {
+        "_list" : "storage_id",
+        "_this" : "Get data from storage."
+      }
+    },
     "set":{
       "_ref" : {
         "_list" : "storage_id",
@@ -25,7 +31,22 @@
         }
       }
     },
+    "save":{
+      "_ref" : {
+        "_list" : "storage_id",
+        "_ref" : {
+          "_list" : "data",
+          "_this" : "Set data in storage."
+        }
+      }
+    },
     "del":{
+      "_ref" : {
+        "_list" : "storage_id",
+        "_this" : "Delete data from storage."
+      }
+    },
+    "burn":{
       "_ref" : {
         "_list" : "storage_id",
         "_this" : "Delete data from storage."

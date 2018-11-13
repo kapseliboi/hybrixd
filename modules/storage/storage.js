@@ -131,7 +131,7 @@ var autoClean = function () {
                 // DEPRECATED: var mindeadline = Date.now() - (global.hybridd.maxstoragetime * 86400) - global.hybridd.maxstoragetime * (864 * meta.n);
                 var mindeadline = Date.now() - ((typeof global.hybridd.minstoragetime !== 'undefined' && global.hybridd.minstoragetime >= 1 ? global.hybridd.minstoragetime : 1) * 86400);
                 var maxdeadline = Date.now() - ((typeof global.hybridd.maxstoragetime !== 'undefined' && global.hybridd.maxstoragetime >= 1 ? global.hybridd.maxstoragetime : 365) * 86400);
-                if (meta.read < maxdeadline || (meta.res===1 && meta.read < mindeadline)) {
+                if ((meta.res!==1 && meta.time < mindeadline) || (meta.res===1 && meta.time < maxdeadline)) {
                   var dataelement = fileelement.substr(0, fileelement.length - 5);
                   try {
                     fs.unlinkSync(dataelement);

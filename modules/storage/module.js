@@ -28,11 +28,13 @@ function exec (properties) {
       storage.autoClean();
       subprocesses.push('done("Autoclean")');
       break;
+    case 'load':
     case 'get':
     // TODO: breaks mutability:
       subprocesses.push('type("file:data")');
       subprocesses.push('func("storage","get",{key:"' + command[1] + '"})');
       break;
+    case 'save':
     case 'set': // stores data and returns proof of work to be solved
       subprocesses.push('func("storage","set",{key:"' + command[1] + '", value:"' + command[2] + '"})');
       break;
@@ -43,6 +45,7 @@ function exec (properties) {
     case 'pow':
       subprocesses.push('func("storage","pow",{key:"' + command[1] + '", pow:"' + command[2] + '"})');
       break;
+    case 'burn':
     case 'del':
       subprocesses.push('fail("Deleting data from node storage is not supported!")');
       break;
