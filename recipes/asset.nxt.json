@@ -4,7 +4,7 @@
   "module":"nxt",
   "mode":"nxt.main",
   "factor":8,
-  "host":["https://demo.nxt.org/nxt","http://nxt1.testdruif.be:7876/nxt","http://nxt.notbot.me:7876/nxt"],
+  "host":["https://eu6.woll-e.net:7876/nxt","http://nxt01.now.im:7876/nxt","http://gtwins2.f3322.net:7876/nxt","https://nxt1.y.cz:7876/nxt","https://nxt2.y.cz:7876/nxt","https://enricoip.no-ip.biz:7876/nxt","https://nxt2.utut.org:7876/nxt","https://nxt.utila.nl:7876/nxt"],
   "cache":15000,
   "throttle":5
 }
