@@ -137,6 +137,7 @@ var autoClean = function () {
                     fs.unlinkSync(dataelement);
                     fs.unlinkSync(fileelement);
                     console.log(' [i] module storage: purged stale storage element' + dataelement);
+                    // DEBUG: console.log(' [i] module storage: STORETIME ' + meta.time + ' MINDEADLINE ' + mindeadline + ' MAXDEADLINE ' + maxdeadline);
                   } catch (e) {
                     console.log(' [!] module storage: failed to purge stale storage ' + dataelement);
                   }
