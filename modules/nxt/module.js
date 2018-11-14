@@ -94,15 +94,16 @@ function exec (properties) {
             sourceaddr = 'BURST-' + sourceaddr;
           }
           subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["getBalance",["account=' + sourceaddr + '"]]})'); // send balance query
-
-          var zero = '0.' + '0'.repeat(factor);
-          subprocesses.push('stop((data!==null && ((typeof data.errorCode!=="undefined" && data.errorCode==5)|| typeof data.unconfirmedBalanceNQT!=="undefined")?0:1),(data!==null && typeof data.unconfirmedBalanceNQT!=="undefined"? functions.padFloat( functions.fromInt(data.unconfirmedBalanceNQT,' + factor + '),' + factor + ') : ((data!==null && (typeof data.errorCode!=="undefined" && data.errorCode==5))?"' + zero + '":null) ))');
+          subprocesses.push('tran ".unconfirmedBalanceNQT" 2 1');
+          subprocesses.push('data 0');
+          subprocesses.push('atom');
+          subprocesses.push('done');
         } else {
           subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["getAccount",["account=' + sourceaddr + '","includeAssets=true","includeCurrencies=true"]]})'); // send balance query
           subprocesses.push('func("nxt","post",{target:' + jstr(target) + ',command:["balance"],data:data})');
         }
       } else {
-        subprocesses.push('stop(1,"Error: missing address!")');
+        subprocesses.push('fail("Error: missing address!")');
       }
       break;
     case 'push':
