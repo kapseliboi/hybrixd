@@ -98,7 +98,7 @@ function exec (properties) {
       break;
     case 'balance':
       if (sourceaddr) {
-        subprocesses.push('poke("retries",0)');
+        subprocesses.push('@retryLoop');
         if (!functions.isToken(target.symbol)) {
           subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_getBalance",["' + sourceaddr + '","latest"]]})'); // send balance query
         } else {
@@ -107,9 +107,15 @@ function exec (properties) {
           var encoded = ethDeterministic.encode({'func': 'balanceOf(address):(uint256)', 'vars': ['address'], 'address': sourceaddr}); // returns the encoded binary (as a Buffer) data to be sent
           subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_call",[{"to":"' + target.contract + '","data":"' + encoded + '"},"pending"]]})'); // send token balance ABI query
         }
-		// when bad result returned: {"status":"0","message":"NOTOK","result":"Error! Missing Or invalid Module name"		
-        // OLD: subprocesses.push('stop((data!==null && typeof data.result!=="undefined" && data.result.substr(0,2)==="0x"?0:1),(data!==null && typeof data.result!=="undefined" && data.result.substr(0,2)==="0x"?functions.padFloat(functions.fromInt(functions.hex2dec.toDec(data.result),' + factor + '),' + factor + '):null))');
-        // DEBUG: subprocesses.push('data("failme")');
+        // when bad result returned: {"status":"0","message":"NOTOK","result":"Error! Missing Or invalid Module name"		
+        subprocesses.push('tran(".result",1,3)');
+        subprocesses.push('test((data.substr(0,2)==="0x"),1,2)');
+        subprocesses.push('done(functions.padFloat(functions.fromInt(functions.hex2dec.toDec(data),' + factor + '),' + factor + '))');
+        subprocesses.push('logs(2,"module ethereum: bad RPC response, retrying request...")');
+        subprocesses.push('wait(1500)');
+        subprocesses.push('loop(@retryLoop,"retries","<9","1")');
+        subprocesses.push('fail()');        
+        /*
         subprocesses.push('tran(".result",1,3)');
         subprocesses.push('test((data.substr(0,2)==="0x"),1,2)');
         subprocesses.push('done(functions.padFloat(functions.fromInt(functions.hex2dec.toDec(data),' + factor + '),' + factor + '))');
@@ -120,6 +126,7 @@ function exec (properties) {
         subprocesses.push('wait(1500)');
         subprocesses.push('test((data<8),-9,1)');
         subprocesses.push('fail()');        
+        */
       } else {
         subprocesses.push('stop(1,"Error: missing address!")');
       }
