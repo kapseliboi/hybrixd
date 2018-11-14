@@ -426,26 +426,26 @@ hybridd.sequential([
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('export')"><b>export</b> {<i>id</i>}<span class="quickDescription">
     Export a client module code blob.
-</span></div><div style="display:none;" class="command-body" id="export">
+   </span></div><div style="display:none;" class="command-body" id="export">
     Parallely executes several steps and collects results in a single object.
-<table><tr><td>data
-</td><td>  </td></tr><tr><td>data.id</td><td>- id of the client code blob.
+<table><tr><td>data</td><td>- if empty, exports all blobs
+   </td></tr><tr><td>data.id</td><td>- id of the client code blob.
    </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
    </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
    
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('import')"><b>import</b> {<i>id</i>, <i>blob</i>}<span class="quickDescription">
     Import a client module code blob.
-</span></div><div style="display:none;" class="command-body" id="import">
+   </span></div><div style="display:none;" class="command-body" id="import">
     Parallely executes several steps and collects results in a single object.
 <table><tr><td>data
 </td><td>  </td></tr><tr><td>data.id</td><td>- id of the client code blob.
-   </td></tr><tr><td>data.blob</td><td>- The client code blob
+   </td></tr><tr><td>data.blob</td><td>- the client code blob
    </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
    </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
    
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('modules')"><b>modules</b> {}<span class="quickDescription">
     List locally available client modules.
-</span></div><div style="display:none;" class="command-body" id="modules">
+   </span></div><div style="display:none;" class="command-body" id="modules">
     Parallely executes several steps and collects results in a single object.
 <table><tr><td>data</td><td>- ignored
    </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.

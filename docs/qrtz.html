@@ -517,7 +517,7 @@ TODO
  done("Success")       // stop processing without error and put "Success." in main process data field
  
   </code></div></div><div class="command-header" onclick="toggleCommand('each')"><b>each</b> <i>input</i> <i>command</i> [<i>data=data</i>]<span class="quickDescription">
- Loop through elements of a container execute a given function for each element.
+ Iterate through elements of a container execute a given function for each element.
 </span></div><div style="display:none;" class="command-body" id="each">
  Execute a client stack program.
 <table><tr><td>input</td><td>-  TODO
@@ -544,6 +544,18 @@ TODO
 </td></tr><tr><td>data</td><td>-  Optional data to be passed to the new process
 </td></tr><tr><td>childId</td><td>-  if undefined then the new process will be independant. If 0 or larger is will be instantiated as a child process of the current process.
 </td></tr></table><code style="display:block;white-space: pre;"> fork("balance/_dummyaddress_")   // Starts a process to retrieve the dummy balance and continue without waiting for a reply.
+ 
+  </code></div></div><div class="command-header" onclick="toggleCommand('loop')"><b>loop</b> <i>position</i> <i>variable</i> <i>condition</i> [<i>initvalue='0'</i>] [<i>stepvalue='+1'</i>]<span class="quickDescription">
+ Loop back to position or label based on criteria.
+</span></div><div style="display:none;" class="command-body" id="loop">
+ Execute a client stack program.
+<table><tr><td>position</td><td>        - Position to loop back to.
+</td></tr><tr><td>variable</td><td>        - Variable to store loop count.
+</td></tr><tr><td>condition</td><td>       - Condition that keeps loop going.
+</td></tr><tr><td>initvalue</td><td> - Value to initialize loop.
+</td></tr><tr><td>stepvalue</td><td>- Optional: How variable is iterated.
+</td></tr></table><code style="display:block;white-space: pre;"> loop(@loopStart,'loopCount','<5')             // Loops back to loopStart five times
+ loop(@loopStart,'loopCount','<10','0','+1')   // Loops back to loopStart ten times
  
   </code></div></div><div class="command-header" onclick="toggleCommand('pass')"><b>pass</b> [<i>data=data</i>]<span class="quickDescription">
  Pass data to parent process.
@@ -642,12 +654,9 @@ TODO
   peek("proc::fee")         // returns value in processor variable fee (runtime, non persistant)
   peek("local::fee")         // returns value in recipe local variable fee (runtime, persisted in the .vars.json file)
   peek("::fee")         // same as peek("local::fee")
-
   peek("btc::fee")         // returns value in btc recipe variable fee (non mutable, based on the recipe btc.json file)
   peek("btc::local::fee")         // returns value in btc recipe variable fee (based on the recipe .btc.vars.json file)
-
   peek(2)     // returns value of the second command path (non mutable)
-
  
   </code></div></div><div class="command-header" onclick="toggleCommand('poke')"><b>poke</b> <i>key</i> [<i>value=data</i>]<span class="quickDescription">
  Put data in a variable for later use. Use peek to retrieve. The data is stored in the root parent process under 'vars'. (You can see this poked data stored in global.hybridd.proc[rootID].vars, but a better way to use this data is by using the command peek("varname").
