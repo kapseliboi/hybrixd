@@ -49,11 +49,11 @@
         "_ref": {
           "_list": "address",
           "_sample" : "_dummyaddress_",
-          "_this": "Retrieve transaction history for an asset."
+          "_this": "Retrieve transaction history for an asset.",
           "_ref": {
             "_list": "count",
             "_sample" : "10",
-            "_this": "Retrieve transaction history for an asset."
+            "_this": "Retrieve transaction history for an asset.",
             "_ref": {
               "_list": "offset",
               "_sample" : "0",
