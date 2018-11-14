@@ -44,11 +44,22 @@
       "fee-symbol":{
         "_this": "Retrieve the symbol in which the fee is calculated."
       },
-      "history":{
-        "_ref" : {
-          "_list" : "address",
+      "history": {
+        "_help": "TX history, formatted as: address, count, offset",
+        "_ref": {
+          "_list": "address",
           "_sample" : "_dummyaddress_",
-          "_this": "Retrieve a history for an asset. "
+          "_this": "Retrieve transaction history for an asset."
+          "_ref": {
+            "_list": "count",
+            "_sample" : "10",
+            "_this": "Retrieve transaction history for an asset."
+            "_ref": {
+              "_list": "offset",
+              "_sample" : "0",
+              "_this": "Retrieve transaction history for an asset."
+            }
+          }
         }
       },
       "sample" : {
