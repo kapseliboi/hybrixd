@@ -93,11 +93,18 @@ function exec (properties) {
           if (target.symbol === 'burst' && !sourceaddr.startsWith('BURST-')) {
             sourceaddr = 'BURST-' + sourceaddr;
           }
+          subprocesses.push('@retryLoop');
           subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["getBalance",["account=' + sourceaddr + '"]]})'); // send balance query
-          subprocesses.push('tran ".unconfirmedBalanceNQT" 2 1');
+          subprocesses.push('tran ".unconfirmedBalanceNQT" @returnBalance 1');
+          subprocesses.push('logs(2,"module nxt: bad RPC response, retrying request...")');
+          subprocesses.push('wait(1500)');
+          subprocesses.push('loop(@retryLoop,"retries","<5","1")');
           subprocesses.push('data 0');
+          subprocesses.push('@returnBalance');
           subprocesses.push('atom');
           subprocesses.push('done');
+
+
         } else {
           subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["getAccount",["account=' + sourceaddr + '","includeAssets=true","includeCurrencies=true"]]})'); // send balance query
           subprocesses.push('func("nxt","post",{target:' + jstr(target) + ',command:["balance"],data:data})');
@@ -109,8 +116,16 @@ function exec (properties) {
     case 'push':
       var deterministic_script = (typeof properties.command[1] !== 'undefined' ? properties.command[1] : false);
       if (deterministic_script) {
+        subprocesses.push('@retryLoop');
         subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["broadcastTransaction",["transactionBytes=' + deterministic_script + '"]]})');
         // returns: { "requestProcessingTime": 4, "fullHash": "3a304584f20cf3d2cbbdd9698ff9a166427005ab98fbe9ca4ad6253651ee81f1", "transaction": "15200507403046301754" }
+        subprocesses.push('tran(".transaction",1,3)');
+        subprocesses.push('done()');
+        subprocesses.push('logs(2,"module nxt: bad RPC response, retrying request...")');
+        subprocesses.push('wait(1500)');
+        subprocesses.push('loop(@retryLoop,"retries","<5","1")');
+        subprocesses.push('fail("Error: NXT network not responding. Cannot push transaction!")');
+
         subprocesses.push('stop((typeof data.transaction==="undefined"?1:0),(typeof data.transaction==="undefined"?data.errorDescription:data.transaction))');
       } else {
         subprocesses.push('stop(1,"Missing or badly formed deterministic transaction!")');
