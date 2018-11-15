@@ -114,19 +114,7 @@ function exec (properties) {
         subprocesses.push('logs(2,"module ethereum: bad RPC response, retrying request...")');
         subprocesses.push('wait(1500)');
         subprocesses.push('loop(@retryLoop,"retries","<9","1")');
-        subprocesses.push('fail()');        
-        /*
-        subprocesses.push('tran(".result",1,3)');
-        subprocesses.push('test((data.substr(0,2)==="0x"),1,2)');
-        subprocesses.push('done(functions.padFloat(functions.fromInt(functions.hex2dec.toDec(data),' + factor + '),' + factor + '))');
-        subprocesses.push('peek("retries")');
-        subprocesses.push('math("+1")');
-        subprocesses.push('poke("retries")');
-        subprocesses.push('logs(2,"module ethereum: bad RPC response, retrying request ("+data+")")');
-        subprocesses.push('wait(1500)');
-        subprocesses.push('test((data<8),-9,1)');
-        subprocesses.push('fail()');        
-        */
+        subprocesses.push('fail("Error: Ethereum network not responding. Cannot get balance!")');
       } else {
         subprocesses.push('stop(1,"Error: missing address!")');
       }
@@ -134,9 +122,18 @@ function exec (properties) {
     case 'push':
       var deterministic_script = (typeof properties.command[1] !== 'undefined' ? properties.command[1] : false);
       if (deterministic_script) {
+        subprocesses.push('@retryLoop');
         subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_sendRawTransaction",["' + deterministic_script + '"]]})');
         // returns: { "id":1, "jsonrpc": "2.0", "result": "0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331" }
-        subprocesses.push('stop((typeof data.result!=="undefined"?0:1),(typeof data.result!=="undefined"?data.result: (typeof data.error!=="undefined" && data.error.message!=="undefined"?data.error.message:null) ))');
+        subprocesses.push('tran(".result",1,3)');
+        subprocesses.push('test((data.substr(0,2)==="0x"),1,2)');
+        subprocesses.push('done()');
+        subprocesses.push('tran(".error",1,2)');
+        subprocesses.push('fail()');
+        subprocesses.push('logs(2,"module ethereum: bad RPC response, retrying request...")');
+        subprocesses.push('wait(1500)');
+        subprocesses.push('loop(@retryLoop,"retries","<9","1")');
+        subprocesses.push('fail("Error: Ethereum network not responding. Cannot push transaction!")');
       } else {
         subprocesses.push('fail("Missing or badly formed deterministic transaction!")');
       }
@@ -149,9 +146,13 @@ function exec (properties) {
       if (isEthAddress(sourceaddr)) {
         var targetaddr = (typeof properties.command[3] !== 'undefined' ? properties.command[3] : false);
         if (isEthAddress(targetaddr)) {
+          subprocesses.push('@retryLoop');
           subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_getTransactionCount",["' + sourceaddr + '","pending"]]})');
           subprocesses.push('tran(".result",1,2)');
           subprocesses.push('done({"nonce":functions.hex2dec.toDec(data)})');
+          subprocesses.push('logs(2,"module ethereum: bad RPC response, retrying request...")');
+          subprocesses.push('wait(1500)');
+          subprocesses.push('loop(@retryLoop,"retries","<9","1")');
           subprocesses.push('fail("Error: Ethereum network not responding. Cannot get nonce!")');
         } else {
           subprocesses.push('stop(1,"Error: bad or missing target address!")');
