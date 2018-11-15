@@ -21,8 +21,8 @@
     "status" : [
       "curl('asset://$symbol','/utils/seed/2','GET')",
       "test(data,1,2)",
-      "stop(0,{module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:null,version:null})",
-      "stop(1,'No result')"
+      "done({module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:null,version:null})",
+      "fail('No result!')"
     ],
     "factor" : [
       "pass('$factor')"
@@ -33,21 +33,22 @@
       "tran('.regular',4,3)",
       "curl('$block-explorer-host','/assets/balance/$1/$contract','GET')",
       "tran('.balance',2,1)",
-      "stop(1,'No result!')",
-      "pass(Number(data)/Math.pow(10,$factor))"
+      "fail('No result!')",
+      "atom",
+      "done()"
     ],
     "fee" : [
       "data('$fee')",
       "form($waves::factor)",
-      "stop()"
+      "done()"
     ],
     "push" : [
-      "pass(JSON.parse('$1'))",
+      "jpar('$1')",
       "curl('asset://$symbol','/assets/broadcast/transfer','POST',data,{Accept:'application/json','Content-Type':'application/json'})",
       "test(data.error,1,2)",
-      "stop(1,data.message)",
+      "fail(data.message)",
       "tran('.id',2,1)",
-      "stop(1,'Transaction Failed! '+jstr(data))",
+      "fail('Transaction Failed! '+jstr(data))",
       "pass(data)"
     ],
     "contract" : [
