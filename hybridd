@@ -8,9 +8,11 @@ if [ "$1" = "" ]; then
 
   echo " [i] starting hybridd..."
   NODE_VERSION=$($NODEINST --version)
+  NODE_VERSION_MAJOR="`echo $NODE_VERSION | cut -d'.' -f1`"
+  NODE_VERSION_MINOR="`echo $NODE_VERSION | cut -d'.' -f2`"
 
-  if [ "$NODE_VERSION" != "v8.12.0" ]; then
-      echo " [!] Warning: hybridd expects Node v8.12.0. found $NODE_VERSION"
+  if [ "$NODE_VERSION_MAJOR" != "v8" ] || [ $NODE_VERSION_MINOR -lt 12 ]; then
+      echo " [!] Warning: hybridd expects Node v8.12.0 or higher (found node $NODE_VERSION)"
       echo "             $NODEINST"
       read -p " [?] Do you wish to continue? [y/N] " CONFIRM
       if [ "$CONFIRM" != "y" ]; then
