@@ -44,9 +44,9 @@ hybridd:
     
     - npm install -g jsdoc
     - npm install xmldoc
+    - npm install node@8.12.0
     - apk add unzip
     - apk add curl
-    - apk add nodejs=8.11.4-r0
     - apk add jq
     
     - WORKING_DIR=$PWD
