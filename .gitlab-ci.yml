@@ -219,6 +219,7 @@ test:
     # script is written for dist, so search and replace
     - sed -i -e s:../dist/:../interface/:g ./test/test.js
     - ./hybridd > /dev/null 2>&1 &
+    - sleep 15s
     - ./hybridd /version/details
     - cd test
     #- ../nodejs/x86_64/bin/node ./test.js
