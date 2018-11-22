@@ -106,7 +106,7 @@ hybridd:
     - "RESPONSE2=$(curl --header \"Private-Token: $PRIVATE_TOKEN\" --silent \"https://gitlab.com/api/v4/projects/${PROJECT_REF_SLUG}/jobs?scope=success&page=2\")"
     - "BUILD_JOB_ID1=$(echo \"${RESPONSE1}\" | jq -r 'first(.[] | select(.name == \"web-wallet\" and .ref == \"master\")) | .id')" 
     - "BUILD_JOB_ID2=$(echo \"${RESPONSE2}\" | jq -r 'first(.[] | select(.name == \"web-wallet\" and .ref == \"master\")) | .id')" 
-    - if [[ "$BUILD_JOB_ID1" == ""  ]]; then $BUILD_JOB_ID = $BUILD_JOB_ID2; else $BUILD_JOB_ID = $BUILD_JOB_ID1; fi 
+    - if [[ "$BUILD_JOB_ID1" == ""  ]]; then BUILD_JOB_ID=$BUILD_JOB_ID2; else BUILD_JOB_ID=$BUILD_JOB_ID1; fi 
     
     - "echo \"Downloading the artifact from: https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\""
     - "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\" -o artifacts-${PROJECT_REF_NAME}.zip"
