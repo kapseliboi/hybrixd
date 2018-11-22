@@ -5,8 +5,7 @@
   "mode":"waves",
   "factor":8,
   "fee":0.001,
-  "host": "https://nodes.wavesnodes.com",
-  "host-alt": "https://104.20.58.132",
+  "host": ["https://nodes.wavesplatform.com","https://nodes.wavesnodes.com"],
   "rejectUnauthorized":false,
   "cache":15000,
   "throttle":3,
@@ -29,9 +28,9 @@
     ],
     "balance" : [
       "test('$contract'==='',1,3)",
-      "curl('$block-explorer-host','/addresses/balance/details/$1','GET')",
+      "curl('asset://$symbol','/addresses/balance/details/$1','GET')",
       "tran('.regular',4,3)",
-      "curl('$block-explorer-host','/assets/balance/$1/$contract','GET')",
+      "curl('asset://$symbol','/assets/balance/$1/$contract','GET')",
       "tran('.balance',2,1)",
       "fail('No result!')",
       "atom",
@@ -43,8 +42,9 @@
       "done()"
     ],
     "push" : [
-      "jpar('$1')",
-      "curl('asset://$symbol','/assets/broadcast/transfer','POST',data,{Accept:'application/json','Content-Type':'application/json'})",
+      "data('$1')",
+      "jpar()",
+      "curl('asset://$symbol','/transactions/broadcast','POST',data,{'Accept':'application/json','content-type':'application/json'})",
       "test(data.error,1,2)",
       "fail(data.message)",
       "tran('.id',2,1)",
@@ -58,7 +58,7 @@
       "pass({})"
     ],
     "history" : [
-      "curl('$block-explorer-host','/transactions/address/$1/limit/50','GET')",
+      "curl('asset://$symbol','/transactions/address/$1/limit/50','GET')",
       "each(data[0],'subhistory')",
       "sort(data,['obj:timestamp','num','desc'])",
       "pass(data)"
@@ -69,7 +69,7 @@
       "pass()"
     ],
     "transaction" : [
-      "curl('$block-explorer-host','/transactions/info/$1','GET')",
+      "curl('asset://$symbol','/transactions/info/$1','GET')",
       "tran({id:'.id',fee:'.fee',attachment:'.attachment',timestamp:'.timestamp',symbol:'=.assetId|waves','fee-symbol':'=.feeAsset|waves',ammount:'=.amount|.totalAmount|unknown',source:'=.sender|unknown',target:'=.recipient|unknown'},2,1)",
       "fail('error')",
       "pass()"
