@@ -4,7 +4,7 @@
   "module":"quartz",
   "mode":"dash.livenet",
   "factor":8,
-  "fee":0.1,
+  "fee":0.0005,
   "host":["tcp://electrum3.cipig.net:10061","tcp://electrum2.cipig.net:10061","tcp://electrum1.cipig.net:10061"],
   "cache":180000,
   "throttle":10,
