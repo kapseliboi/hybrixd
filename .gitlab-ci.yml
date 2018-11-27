@@ -145,8 +145,8 @@ hybridd:
     - "find . -name \".version\" -print | xargs cat | tr '\n' ' ' | sed 's:} {:,:g' > versions.json"
     
     # prettify json in .versions
-    #- echo "const util = require('util'); const fs = require('fs'); var obj = JSON.parse(fs.readFileSync('versions.json', 'utf8')); const fs_writeFile = util.promisify(fs.writeFile); const fs_readFile = util.promisify(fs.readFile); fs_writeFile('versions.json', JSON.stringify(obj, null, 4));" > prettify.js
-    #- node prettify.js
+    - echo "const util = require('util'); const fs = require('fs'); var obj = JSON.parse(fs.readFileSync('versions.json', 'utf8')); const fs_writeFile = util.promisify(fs.writeFile); const fs_readFile = util.promisify(fs.readFile); fs_writeFile('versions.json', JSON.stringify(obj, null, 4));" > prettify.js
+    - node prettify.js
     
     # don't remove .version-files
     #- rm -rf .version
