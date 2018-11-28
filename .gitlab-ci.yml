@@ -109,6 +109,10 @@ hybridd:
     - if [[ "$BUILD_JOB_ID1" == ""  ]]; then BUILD_JOB_ID=$BUILD_JOB_ID2; else BUILD_JOB_ID=$BUILD_JOB_ID1; fi 
     
     - "echo \"Downloading the artifact from: https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\""
+    
+    #debug-line to read response from curl
+    - "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\""
+    
     - "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\" -o artifacts-${PROJECT_REF_NAME}.zip"
 
     # unzip the downloaded artifact to the directory 
