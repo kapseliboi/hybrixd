@@ -36,6 +36,9 @@ cp "$NODE/LICENSE.md" "$DIST/"
 # Copy readme
 cp "$NODE/README.md" "$DIST/"
 
+# Copy package.json
+cp "$NODE/package.json" "$DIST/"
+
 # Copy configuration
 # TODO create a default here
 cp "$NODE/hybridd.conf" "$DIST/"
