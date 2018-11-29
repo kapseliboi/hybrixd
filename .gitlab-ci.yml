@@ -76,16 +76,13 @@ hybridd:
     # remove the zip-file (|| true --> on error, no problem)
     - rm -rf  artifacts-interface.zip || true
     
-    # run the build-script of the hybridd-node
-    - ./scripts/npm/compile.sh
-    
     # download [deterministic] artifact
     - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/iochq%2Fhybridd%2Fclient%2Fmodules%2Fdeterministic/jobs/artifacts/master/download?job=deterministic\" -o artifacts-deterministic.zip"
     
     # unzip the downloaded artifact to the directory (|| true --> on error, no problem) (consider the artifact is packed as /modules/name/filename.lzma)
     - unzip -o artifacts-deterministic.zip -d artifacts-deterministic/
-    - rm -rf ./dist/modules/deterministic
-    - cp -rf artifacts-deterministic/ ./dist/modules/deterministic/
+    #- rm -rf ./dist/modules/deterministic
+    #- cp -rf artifacts-deterministic/ ./dist/modules/deterministic/
     - cp -rf artifacts-deterministic/ ./modules/deterministic/
     
     # remove the unzipped-files and the zip-file (|| true --> on error, no problem)
@@ -116,18 +113,21 @@ hybridd:
 
     # unzip the downloaded artifact to the directory 
     - unzip -o artifacts-web-wallet.zip -d artifacts-web-wallet/
-    - rm -rf ./dist/modules/web-wallet
+    #- rm -rf ./dist/modules/web-wallet
     - rm -rf ./modules/web-wallet
-    - cp -rf artifacts-web-wallet/ ./dist/modules/web-wallet/
+    #- cp -rf artifacts-web-wallet/ ./dist/modules/web-wallet/
     - cp -rf artifacts-web-wallet/ ./modules/web-wallet/
-    - ls ./dist/modules/web-wallet
+    #- ls ./dist/modules/web-wallet
     - ls ./modules/web-wallet
-    - ls ./dist/modules/web-wallet/files
+    #- ls ./dist/modules/web-wallet/files
     - ls ./modules/web-wallet/files
     
     # remove the unzipped-files and the zip-file (|| true --> on error, no problem)
     - rm -rf  artifacts-web-wallet || true
     - rm -rf  artifacts-web-wallet.zip || true
+    
+    # run the build-script of the hybridd-node
+    - ./scripts/npm/compile.sh
     
     # remove .git files from artifact
     - rm -rf ./.git* || true
