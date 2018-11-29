@@ -94,6 +94,9 @@ hybridd:
     #- "echo \"Download the artifact for the web-wallet from branch: BRANCH_WEB_WALLET = $BRANCH_WEB_WALLET\""
     #- "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/iochq%2Fhybridd%2Fclient%2Fimplementations%2Fweb-wallet/jobs/artifacts/$BRANCH_WEB_WALLET/download?job=web-wallet\" -o artifacts-web-wallet.zip"
     
+    # run the build-script of the hybridd-node
+    - ./scripts/npm/compile.sh
+    
     # workaround to get the latest artifact
     - PROJECT_REF_SLUG=iochq%2Fhybridd%2Fclient%2Fimplementations%2Fweb-wallet
     - PROJECT_REF_PATH=iochq/hybridd/client/implementations/web-wallet
@@ -114,21 +117,19 @@ hybridd:
 
     # unzip the downloaded artifact to the directory 
     - unzip -o artifacts-web-wallet.zip -d artifacts-web-wallet/
-    #- rm -rf ./dist/modules/web-wallet
-    - rm -rf ./modules/web-wallet
-    #- cp -rf artifacts-web-wallet/ ./dist/modules/web-wallet/
-    - cp -rf artifacts-web-wallet/ ./modules/web-wallet/
-    #- ls ./dist/modules/web-wallet
-    - ls ./modules/web-wallet
-    #- ls ./dist/modules/web-wallet/files
-    - ls ./modules/web-wallet/files
+    - rm -rf ./dist/modules/web-wallet
+    #- rm -rf ./modules/web-wallet
+    - cp -rf artifacts-web-wallet/ ./dist/modules/web-wallet/
+    #- cp -rf artifacts-web-wallet/ ./modules/web-wallet/
+    - ls ./dist/modules/web-wallet
+    #- ls ./modules/web-wallet
+    - ls ./dist/modules/web-wallet/files
+    #- ls ./modules/web-wallet/files
     
     # remove the unzipped-files and the zip-file (|| true --> on error, no problem)
     - rm -rf  artifacts-web-wallet || true
     - rm -rf  artifacts-web-wallet.zip || true
     
-    # run the build-script of the hybridd-node
-    - ./scripts/npm/compile.sh
     
     # remove .git files from artifact
     - rm -rf ./.git* || true
