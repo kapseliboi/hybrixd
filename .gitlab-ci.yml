@@ -156,11 +156,9 @@ hybridd:
     #- rm -rf .version
     
     # clean up and prepare the artifacts (instead of having a dist) 
-    # remove everything except () is extglob syntax, which should be enabled first
-    - shopt -s extglob
-    - rm -rf !(dist) || true
-    - mv ./dist/* ./
-    - rm -rf ./dist || true
+    - mv ./* temp
+    - mv ./temp/dist/* ./
+    - rm -rf ./temp
     
     - setup_docker
     - build
