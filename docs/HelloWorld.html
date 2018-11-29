@@ -14,17 +14,21 @@ body > dl > dt, body > dt {
   padding-top: 20px;
   margin-top: 40px;
 }
+
 a {
   color: #7174D8;
   text-decoration: none;
   border-bottom: 1px solid rgba(113,116,216,.3);
 }
+
 input {
   margin: 2px;
 }
+
 li {
   list-style-type: disc;
 }
+
 code {
   background-color: #EEEEEE;
   padding: 3px;
@@ -47,6 +51,7 @@ code {
   float:right;
   cursor:pointer;
 }
+
 .category{
   font-size:110%;
 }
@@ -67,7 +72,6 @@ code {
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
 }
-
 
 .command-body{
   padding:15px;
@@ -97,6 +101,7 @@ code {
   left:0;
   background-color:white;
 }
+
 #console-header{
   cursor:pointer;
   height:20px;
@@ -111,7 +116,6 @@ code {
   height:0;
 }
 
-
 div.result {
   padding-left:5px;
   border-top-style: solid;
@@ -119,14 +123,16 @@ div.result {
   border-top-color: #dddddd;
   width:100%;
 }
+
 div.error {
   padding-left:5px;
   background-color:#ffdddd;
-  color:CC0000;
+  color:#CC0000;
   border-top-style: solid;
   border-top-width:1px ;
   border-top-color: #ffbbbb;
 }
+
 input.text {
   width:90%;
   border-style:none;
@@ -135,6 +141,7 @@ input.text {
   box-sizing: border-box;
   margin:0;
 }
+
 span.result{
  color: #7174D8;
 }
@@ -143,6 +150,7 @@ span.result{
  float:right;
  padding-right:10px;
 }
+
 div.prompt{
   border-top-style: solid;
   border-top-width:1px ;
@@ -165,8 +173,7 @@ div.prompt{
 textarea{
   width:100%;
  font-family: monospace, monospace;
-}
-</style><script>function display (result) {
+}</style><script>function display (result) {
   document.getElementById('console-results').style.height = '150px';
   document.getElementById('console-close').innerHTML = 'Hide';
   var r = '';

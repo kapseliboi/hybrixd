@@ -60,7 +60,7 @@ for FILE in $(find -L . -name '*.js' -or -name '*.css'  -or -name '*.json' -or -
         BASEFOLDER="$2"
         IFS="$OLD_IFS"
         # Only handle files in the following folders
-        if [ "$BASEFOLDER" = "lib" ] || [ "$BASEFOLDER" = "modules" ] || [ "$BASEFOLDER" = "recipes" ] || [ "$BASEFOLDER" = "recipes.EXTRA" ] || [ "$BASEFOLDER" = "common" ] || [ "$BASEFOLDER" = "interface" ]; then
+        if [ "$BASEFOLDER" = "lib" ] || [ "$BASEFOLDER" = "docs" ] || [ "$BASEFOLDER" = "modules" ] || [ "$BASEFOLDER" = "recipes" ] || [ "$BASEFOLDER" = "recipes.EXTRA" ] || [ "$BASEFOLDER" = "common" ] || [ "$BASEFOLDER" = "interface" ]; then
 
             EXT="${FILE##*.}"
             FOLDER=$(dirname "${FILE}")
