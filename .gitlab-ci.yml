@@ -139,28 +139,28 @@ hybridd:
     # create a .version file
     - timestamp=$(date -u '+%Y-%m-%dT%H:%M:%S+00:00')
     - if [[ "$DEBUG_ENABLED" == "1"  ]]; then mode=debug; else mode=release; fi 
-    - npmlist=$(npm list -json)
+    - npmlist=$(npm list --only=prod --depth=0 -json)
     #- set +e
     #- npmaudit=$(npm audit -json)
     #- set -e #, \"npm-audit\":${npmaudit}
     - echo "{\"${CI_PROJECT_PATH_SLUG}\":{\"mode\":\"${mode}\", \"project_path\":\"${CI_PROJECT_PATH}\", \"commit_ref_name\":\"${CI_COMMIT_REF_NAME}\", \"commit_ref_slug\":\"${CI_COMMIT_REF_SLUG}\", \"commit_sha\":\"${CI_COMMIT_SHA}\", \"pipeline_url\":\"${CI_PIPELINE_URL}\", \"packaged\":\"${timestamp}\", \"npm-list\":${npmlist}}}" > .version
 
     # concatenate all .version files in the package
-    - "find . -name \".version\" -print | xargs cat | tr '\n' ' ' | sed 's:} {:,:g' > versions.json"
+    - "find . -name \".version\" -print | xargs cat | tr '\n' ' ' | sed 's:} {:,:g' > dist/versions.json"
     
     # prettify json in .versions
-    - echo "const util = require('util'); const fs = require('fs'); var obj = JSON.parse(fs.readFileSync('versions.json', 'utf8')); const fs_writeFile = util.promisify(fs.writeFile); const fs_readFile = util.promisify(fs.readFile); fs_writeFile('versions.json', JSON.stringify(obj, null, 4));" > prettify.js
-    - node prettify.js
+    - echo "const util = require('util'); const fs = require('fs'); var obj = JSON.parse(fs.readFileSync('dist/versions.json', 'utf8')); const fs_writeFile = util.promisify(fs.writeFile); const fs_readFile = util.promisify(fs.readFile); fs_writeFile('dist/versions.json', JSON.stringify(obj, null, 4));" > .prettify.js
+    - node .prettify.js
     
     # don't remove .version-files
     #- rm -rf .version
     
     # clean up and prepare the artifacts (instead of having a dist) 
     # remove everything except () is extglob syntax, which should be enabled first
-    #- shopt -s extglob
-    #- rm -rf !(dist) || true
-    #- mv ./dist/* ./
-    #- rm -rf ./dist || true
+    - shopt -s extglob
+    - rm -rf !(dist) || true
+    - mv ./dist/* ./
+    - rm -rf ./dist || true
     
     - setup_docker
     - build
