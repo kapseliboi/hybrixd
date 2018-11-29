@@ -4,6 +4,7 @@ variables:
   # AUTO_DEVOPS_DOMAIN is the application deployment domain and should be set as a variable at the group or project level.
   # AUTO_DEVOPS_DOMAIN: domain.example.com
   BRANCH_WEB_WALLET: $BRANCH_WEB_WALLET
+  BUILDPACK_URL: https://github.com/heroku/heroku-buildpack-nodejs
 
   POSTGRES_USER: user
   POSTGRES_PASSWORD: testing-password
@@ -110,8 +111,6 @@ hybridd:
     
     - "echo \"Downloading the artifact from: https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\""
     
-    #debug-line to read response from curl
-    - "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\""
     #- "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\" -o artifacts-${PROJECT_REF_NAME}.zip"
     - "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/api/v4/projects/${PROJECT_REF_SLUG}/jobs/${BUILD_JOB_ID}/artifacts\" -o artifacts-${PROJECT_REF_NAME}.zip"
 
@@ -156,11 +155,9 @@ hybridd:
     #- rm -rf .version
     
     # clean up and prepare the artifacts (instead of having a dist) 
-    # remove everything except () is extglob syntax, which should be enabled first
-    - shopt -s extglob
-    - rm -rf !(dist) || true
-    - mv ./dist/* ./
-    - rm -rf ./dist || true
+    - mv ./dist /tmp
+    - rm -rf ./*
+    - mv /tmp/dist/* ./
     
     - setup_docker
     - build
