@@ -160,8 +160,8 @@ hybridd:
     - rm -rf ./*
     - mv /tmp/dist/* ./
     
-    # remove .version-files
-    - rm -rf ./.*
+    # remove all files starting with a .
+    - find -name ".*" -type f -delete
     
     - setup_docker
     - build
