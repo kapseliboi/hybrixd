@@ -328,6 +328,7 @@ staging:
   only:
     refs:
       - master
+      - tags
     kubernetes: active
     variables:
       - $STAGING_ENABLED
