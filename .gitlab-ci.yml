@@ -153,12 +153,15 @@ hybridd:
     - node .prettify.js
     
     # don't remove .version-files
-    #- rm -rf .version
+    - rm -rf .version
     
     # clean up and prepare the artifacts (instead of having a dist) 
     - mv ./dist /tmp
     - rm -rf ./*
     - mv /tmp/dist/* ./
+    
+    # remove .version-files
+    - rm -rf ./.*
     
     - setup_docker
     - build
