@@ -110,8 +110,6 @@ hybridd:
     
     - "echo \"Downloading the artifact from: https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\""
     
-    #debug-line to read response from curl
-    - "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\""
     #- "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\" -o artifacts-${PROJECT_REF_NAME}.zip"
     - "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/api/v4/projects/${PROJECT_REF_SLUG}/jobs/${BUILD_JOB_ID}/artifacts\" -o artifacts-${PROJECT_REF_NAME}.zip"
 
