@@ -1236,7 +1236,8 @@ p {
       height: 16px;
       user-select: none; }
   .pure-button:focus {
-    background-image: none; }
+    background-image: none;
+    color: #fff; }
   .pure-button:hover {
     background-image: none;
     opacity: 0.8;
@@ -1284,7 +1285,8 @@ p {
   background-image: none; }
 
 .disabled:hover, .pure-button[disabled]:hover {
-  background-image: none; }
+  background-image: none;
+  color: #fff; }
 
 @media (min-width: 900px) {
   .button-label {
@@ -1465,6 +1467,19 @@ p {
   height: -webkit-calc(100% - 59px);
   height: calc(100% - 59px);
   overflow-y: scroll; }
+
+#manage-assets .modal-body {
+  height: calc(100% - 130px);
+  border-bottom: 1px solid #EDEDEE; }
+
+#manage-assets .pure-button-large {
+  float: right;
+  margin: 15px 10px;
+  min-height: 32px;
+  padding: 10px 15px; }
+
+#manage-assets .modal-content .manageBtnCancel {
+  margin-right: 24px; }
 
 .modal-form {
   margin-bottom: 0; }
@@ -3555,8 +3570,11 @@ function activateview (viewpath, args, data) {
   var hy_target = data['target'];
   var hy_view = LZString.decompressFromEncodedURIComponent(data['pack']);
   // DEBUG console.log(hy_view);
+  // HACK!!!
+  disableIE_HACK();
   // put hy_view into hy_frame
   $(hy_target).html(hy_view);
+
   // run init.subframe if it exists, and contains a non-empty function
   if (typeof initialize !== 'undefined' && JSON.stringify(initialize) !== '{}') {
     var initialized = initialize(init, viewpath);
@@ -3585,4 +3603,13 @@ cacheGet = function (index, millisecs) {
     return null;
   }
 };
+
+// TODO: REMOVE
+function disableIE_HACK () {
+  if (bowser.isUnsupportedBrowser({ msie: '12' }, window.navigator.userAgent)) {
+    document.querySelector('#hy_frame').innerHTML = '<div class="main" style="text-align: center;"><div class="container"><div id="login_container"><div class="logo"></div><h2 class=\'loginbox-title\' style="margin-top: 0!important;">Your browser is not supported</h2><p class=\'loginbox-text\'>We\’re sorry, but you\’re using a browser we don’t support. To use the Internet of Coins wallet, please upgrade to the latest version of <a href=\'https://www.mozilla.org/en-US/firefox/new/\' target=\'_blank\'>Firefox</a>, <a href=\'https://www.google.com/chrome/\' target=\'_blank\'>Chrome</a> or <a href=\'https://support.apple.com/downloads/safari\' target=\'_blank\'>Safari</a></p><p class=\'loginbox-text\'>Please visit <a href=\'https://internetofcoins.org/faq#browser-support\' target=\'_blank\'>our FAQ</a> for more information about browser support. </p></div></div></div>';
+    document.querySelector('#generateform').classList.add('inactive');
+    document.querySelector('#alert').classList.add('inactive');
+  }
+}
 </script></body></html>
