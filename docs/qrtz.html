@@ -14,17 +14,21 @@ body > dl > dt, body > dt {
   padding-top: 20px;
   margin-top: 40px;
 }
+
 a {
   color: #7174D8;
   text-decoration: none;
   border-bottom: 1px solid rgba(113,116,216,.3);
 }
+
 input {
   margin: 2px;
 }
+
 li {
   list-style-type: disc;
 }
+
 code {
   background-color: #EEEEEE;
   padding: 3px;
@@ -47,6 +51,7 @@ code {
   float:right;
   cursor:pointer;
 }
+
 .category{
   font-size:110%;
 }
@@ -67,7 +72,6 @@ code {
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
 }
-
 
 .command-body{
   padding:15px;
@@ -97,6 +101,7 @@ code {
   left:0;
   background-color:white;
 }
+
 #console-header{
   cursor:pointer;
   height:20px;
@@ -111,7 +116,6 @@ code {
   height:0;
 }
 
-
 div.result {
   padding-left:5px;
   border-top-style: solid;
@@ -119,14 +123,16 @@ div.result {
   border-top-color: #dddddd;
   width:100%;
 }
+
 div.error {
   padding-left:5px;
   background-color:#ffdddd;
-  color:CC0000;
+  color:#CC0000;
   border-top-style: solid;
   border-top-width:1px ;
   border-top-color: #ffbbbb;
 }
+
 input.text {
   width:90%;
   border-style:none;
@@ -135,6 +141,7 @@ input.text {
   box-sizing: border-box;
   margin:0;
 }
+
 span.result{
  color: #7174D8;
 }
@@ -143,6 +150,7 @@ span.result{
  float:right;
  padding-right:10px;
 }
+
 div.prompt{
   border-top-style: solid;
   border-top-width:1px ;
@@ -165,8 +173,7 @@ div.prompt{
 textarea{
   width:100%;
  font-family: monospace, monospace;
-}
-</style><script>function display (result) {
+}</style><script>function display (result) {
   document.getElementById('console-results').style.height = '150px';
   document.getElementById('console-close').innerHTML = 'Hide';
   var r = '';
@@ -366,20 +373,38 @@ TODO
  Execute a client stack program.
 <table></table><code style="display:block;white-space: pre;"> jstr()         // input: {key:"Some data."}, output: '{key:"Some data."}'
  
+  </code></div></div><div class="command-header" onclick="toggleCommand('pick')"><b>pick</b> [<i>separator=</i>] [<i>elements=undefined</i>]<span class="quickDescription">
+ Pick elements from an array or input string. A range or selection array can be entered.
+ Single element range selections are returned without an encapsulating array.
+ (Reversed function of pull.)
+</span></div><div style="display:none;" class="command-body" id="pick">
+ Execute a client stack program.
+<table><tr><td>separator</td><td>']      - Separator character
+</td></tr><tr><td>elements</td><td>- Elements to select from splitted string
+</td></tr></table><code style="display:block;white-space: pre;"> pick()           // input: ['A','B','C'], output: 'A'
+ pick(1)          // input: ['A','B','C'], output: ['A','B']
+ pick(-1)         // input: ['A','B','C'], output: 'C'
+ pick(1,2)        // input: ['A','B','C'], output: ['B','C']
+ pick(1,1)        // input: ['A','B','C'], output: 'B'
+ pick([1])        // input: ['A','B','C'], output: ['B']
+ pick([0,2])      // input: ['A','B','C'], output: ['A','C']
+ 
   </code></div></div><div class="command-header" onclick="toggleCommand('pull')"><b>pull</b> <i>offset</i> <i>ending</i><span class="quickDescription">
  Pull elements from an array or input string.
+ (Reversed function of pick and push.)
 </span></div><div style="display:none;" class="command-body" id="pull">
  Execute a client stack program.
 <table><tr><td>offset</td><td>- Amount of elements to delete from start
 </td></tr><tr><td>ending</td><td>- Amount of elements to include or trim from end
 </td></tr></table><code style="display:block;white-space: pre;">  pull(5)      // pull from the left    input: 'this_is_my_data', output: 'is_my_data'
-  pull(-5)     // pull from the right   input: 'this_is_my_data', output: '_data'
+  pull(-5)     // pull from the right   input: 'this_is_my_data', output: 'this_is_my'
   pull(5,-5)   // pull from both edges  input: 'this_is_my_data', output: 'is_my'
   pull(4,7)    // select from center    input: 'this_is_my_data', output: '_is_my_'
   pull(-4,-5)  // extract edges         input: 'this_is_my_data', output: 'this_data'
   pull(-4, 6)  // select inversed       input: 'this_is_my_data', output: 'thista'
   pull(1,-1)   // arrays also work!     input: ['a','b','c','d'], output: ['b','c']
   pull(1,4)    // another array pull    input: ['g','l','o','v','e','s'], output: ['l','o','v','e']
+  pull([1,4])  // selection pull        input: ['g','l','o','v','e','s'], output: ['l','o','e','s']
  
   </code></div></div><div class="command-header" onclick="toggleCommand('push')"><b>push</b> <i>input</i> [<i>offset=length</i>] [<i>delete=0</i>]<span class="quickDescription">
  Push new data into array or string.
@@ -420,15 +445,36 @@ TODO
   sort(['val','num','asc'])                       // input: {'a':1,'b':10,'c':3}, sorts the object ascending by numeric value:  [{'a':1},{'c':3},{'b':10}]
   sort('.b')                                      // input: [{'a':4,'b':'B'},{'a':2,'b':'A'}], sorts the array by object key 'b': [{'a':2,'b':'A'},{'a':4,'b':'B'}]
  
-  </code></div></div><div class="command-header" onclick="toggleCommand('splt')"><b>splt</b> [<i>separator=</i>]<span class="quickDescription">
- Split a string.
+  </code></div></div><div class="command-header" onclick="toggleCommand('splt')"><b>splt</b> [<i>separator=</i>] [<i>elements=undefined</i>]<span class="quickDescription">
+ Explode a string into an array, split by separator.
 </span></div><div style="display:none;" class="command-body" id="splt">
  Execute a client stack program.
-<table><tr><td>separator</td><td>'] - Explode a string into an array, split by separator
-</td></tr></table><code style="display:block;white-space: pre;"> splt()     // input: "This is nice.", output: ["This","is","nice."]
- splt(',')  // input: "Some,list,of,stuff", output: ["Some","list","of","stuff]
+<table><tr><td>separator</td><td>']      - Separator character
+</td></tr><tr><td>elements</td><td>- Elements to select from splitted string
+</td></tr></table><code style="display:block;white-space: pre;"> splt()           // input: "This is nice.", output: ["This","is","nice."]
+ splt(',')        // input: "Some,list,of,stuff", output: ["Some","list","of","stuff]
+ splt(',',2)      // input: "Some,list,of,stuff", output: "list"
+ splt(',',[2,3])  // input: "Some,list,of,stuff", output: ["list","of"]
  
-  </code></div></div><div class="category">Flow</div><div class="command-header" onclick="toggleCommand('hook')"><b>hook</b> <i>onError</i> [<i>err=1</i>]<span class="quickDescription">
+  </code></div></div><div class="command-header" onclick="toggleCommand('tail')"><b>tail</b> <i>variable</i> <i>data</i><span class="quickDescription">
+ Append new data to array or string.
+</span></div><div style="display:none;" class="command-body" id="tail">
+ Execute a client stack program.
+<table><tr><td>variable</td><td> - Variable to append data to.
+</td></tr><tr><td>data</td><td>     - Data value override.
+</td></tr></table><code style="display:block;white-space: pre;"> tail('myVar')    // append data value to variable $myVar
+ tail('B',1)       // append 1 to variable $B
+ 
+  </code></div></div><div class="category">Flow</div><div class="command-header" onclick="toggleCommand('have')"><b>have</b> [<i>input</i>]<span class="quickDescription">
+ Count amount of entries a list, string or object has. 
+</span></div><div style="display:none;" class="command-body" id="have">
+ Execute a client stack program.
+<table><tr><td>input</td><td>- List, string or object.
+</td></tr></table><code style="display:block;white-space: pre;"> have()              // input: 'abcde', result: 5
+ have(['a','b',5])   // result: 3
+ have({'a':1,'b':2)  // result: 2
+ 
+  </code></div></div><div class="command-header" onclick="toggleCommand('hook')"><b>hook</b> <i>onError</i> [<i>err=1</i>]<span class="quickDescription">
  Indicates a fallback target when an error is encountered.
 </span></div><div style="display:none;" class="command-body" id="hook">
  Execute a client stack program.
@@ -452,6 +498,18 @@ TODO
 </td></tr></table><code style="display:block;white-space: pre;"> jump(2)         // jump over the next instruction
  jump(-3)        // jump backwards three instructions
  
+  </code></div></div><div class="command-header" onclick="toggleCommand('loop')"><b>loop</b> <i>position</i> <i>variable</i> <i>condition</i> [<i>initvalue='0'</i>] [<i>stepvalue='+1'</i>]<span class="quickDescription">
+ Loop back to position or label based on criteria.
+</span></div><div style="display:none;" class="command-body" id="loop">
+ Execute a client stack program.
+<table><tr><td>position</td><td>        - Position to loop back to.
+</td></tr><tr><td>variable</td><td>        - Variable to store loop count.
+</td></tr><tr><td>condition</td><td>       - Condition that keeps loop going.
+</td></tr><tr><td>initvalue</td><td> - Value to initialize loop.
+</td></tr><tr><td>stepvalue</td><td>- Optional: How variable is iterated.
+</td></tr></table><code style="display:block;white-space: pre;"> loop(@loopStart,'loopCount','<5')             // Loops back to loopStart five times
+ loop(@loopStart,'loopCount','<10','0','+1')   // Loops back to loopStart ten times
+ 
   </code></div></div><div class="command-header" onclick="toggleCommand('test')"><b>test</b> <i>condition</i> [<i>onTrue=1</i>] [<i>onFalse=1</i>]<span class="quickDescription">
  Test a condition and choose to jump.
 </span></div><div style="display:none;" class="command-body" id="test">
@@ -462,6 +520,17 @@ TODO
 </td></tr></table><code style="display:block;white-space: pre;"> test('a>3',1,-3)    // test if a>3, if true jump to the next instruction, if false jump back three instructions
  test('b<=1',-4,1)   // test if b<=1, if true jump back four instructions, if false jump to the next instruction
  test('a>3',-5)      // test if a>3, if true jump back five instructions, else default jump to the next instruction
+ 
+  </code></div></div><div class="command-header" onclick="toggleCommand('true')"><b>true</b> <i>condition</i> [<i>onTrue=1</i>] [<i>onFalse=1</i>]<span class="quickDescription">
+ Test truth of a condition and choose to jump.
+</span></div><div style="display:none;" class="command-body" id="true">
+ Execute a client stack program.
+<table><tr><td>condition</td><td>-  Javascript condition to analyse. (Example: a>5)
+</td></tr><tr><td>onTrue</td><td>- Amount of instructions lines to jump when condition matches true.   (1 = jump forward 1 instruction, -2 = jump backward two instructions)
+</td></tr><tr><td>onFalse</td><td>- Amount of instructions lines to jump when condition matches false.  (1 = jump forward 1 instruction, -2 = jump backward two instructions)
+</td></tr></table><code style="display:block;white-space: pre;"> true('a>3',1,-3)    // test if a>3, if true jump to the next instruction, if false jump back three instructions
+ true('b<=1',-4,1)   // test if b<=1, if true jump back four instructions, if false jump to the next instruction
+ true('a>3',-5)      // test if a>3, if true jump back five instructions, else default jump to the next instruction
  
   </code></div></div><div class="category">Interface</div><div class="command-header" onclick="toggleCommand('exec')"><b>exec</b><span class="quickDescription">
  Execute a client stack program.
@@ -544,18 +613,6 @@ TODO
 </td></tr><tr><td>data</td><td>-  Optional data to be passed to the new process
 </td></tr><tr><td>childId</td><td>-  if undefined then the new process will be independant. If 0 or larger is will be instantiated as a child process of the current process.
 </td></tr></table><code style="display:block;white-space: pre;"> fork("balance/_dummyaddress_")   // Starts a process to retrieve the dummy balance and continue without waiting for a reply.
- 
-  </code></div></div><div class="command-header" onclick="toggleCommand('loop')"><b>loop</b> <i>position</i> <i>variable</i> <i>condition</i> [<i>initvalue='0'</i>] [<i>stepvalue='+1'</i>]<span class="quickDescription">
- Loop back to position or label based on criteria.
-</span></div><div style="display:none;" class="command-body" id="loop">
- Execute a client stack program.
-<table><tr><td>position</td><td>        - Position to loop back to.
-</td></tr><tr><td>variable</td><td>        - Variable to store loop count.
-</td></tr><tr><td>condition</td><td>       - Condition that keeps loop going.
-</td></tr><tr><td>initvalue</td><td> - Value to initialize loop.
-</td></tr><tr><td>stepvalue</td><td>- Optional: How variable is iterated.
-</td></tr></table><code style="display:block;white-space: pre;"> loop(@loopStart,'loopCount','<5')             // Loops back to loopStart five times
- loop(@loopStart,'loopCount','<10','0','+1')   // Loops back to loopStart ten times
  
   </code></div></div><div class="command-header" onclick="toggleCommand('pass')"><b>pass</b> [<i>data=data</i>]<span class="quickDescription">
  Pass data to parent process.
@@ -664,14 +721,14 @@ TODO
  Execute a client stack program.
 <table><tr><td>key</td><td>- Variable name to get data from.
 </td></tr><tr><td>value</td><td>- The data to store in the variable. This is also stored in this subprocess data field.
-</td></tr></table><code style="display:block;white-space: pre;">  poke("fee",value)         // sets value in recipe local variable fee. Shorthand for local::fee (runtime, persisted in the .vars.json file)
+</td></tr></table><code style="display:block;white-space: pre;">  poke("fee",value)           // sets value in recipe local variable fee. Shorthand for local::fee (runtime, persisted in the .vars.json file)
   poke("userDefined")         // given that the recipe does not have property userDefined sets the value in processor variable userDefined (runtime, non persistant)
-  poke("proc::fee",value)         // sets value in processor variable fee (runtime, non persistant)
-  poke("local::fee",value)         // sets value in recipe local variable fee (runtime, persisted in the .vars.json file)
+  poke("proc::fee",value)     // sets value in processor variable fee (runtime, non persistant)
+  poke("local::fee",value)    // sets value in recipe local variable fee (runtime, persisted in the .vars.json file)
   poke("::fee",value)         // same as poke("local::fee",value)
 
   poke("btc::fee",value)         // results in an error.
-  poke("btc::local::fee",value)         // results in an error
+  poke("btc::local::fee",value)  // results in an error
 
   poke(2,value)     // results in an error.
  

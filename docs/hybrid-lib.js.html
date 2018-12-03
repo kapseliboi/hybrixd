@@ -14,17 +14,21 @@ body > dl > dt, body > dt {
   padding-top: 20px;
   margin-top: 40px;
 }
+
 a {
   color: #7174D8;
   text-decoration: none;
   border-bottom: 1px solid rgba(113,116,216,.3);
 }
+
 input {
   margin: 2px;
 }
+
 li {
   list-style-type: disc;
 }
+
 code {
   background-color: #EEEEEE;
   padding: 3px;
@@ -47,6 +51,7 @@ code {
   float:right;
   cursor:pointer;
 }
+
 .category{
   font-size:110%;
 }
@@ -67,7 +72,6 @@ code {
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
 }
-
 
 .command-body{
   padding:15px;
@@ -97,6 +101,7 @@ code {
   left:0;
   background-color:white;
 }
+
 #console-header{
   cursor:pointer;
   height:20px;
@@ -111,7 +116,6 @@ code {
   height:0;
 }
 
-
 div.result {
   padding-left:5px;
   border-top-style: solid;
@@ -119,14 +123,16 @@ div.result {
   border-top-color: #dddddd;
   width:100%;
 }
+
 div.error {
   padding-left:5px;
   background-color:#ffdddd;
-  color:CC0000;
+  color:#CC0000;
   border-top-style: solid;
   border-top-width:1px ;
   border-top-color: #ffbbbb;
 }
+
 input.text {
   width:90%;
   border-style:none;
@@ -135,6 +141,7 @@ input.text {
   box-sizing: border-box;
   margin:0;
 }
+
 span.result{
  color: #7174D8;
 }
@@ -143,6 +150,7 @@ span.result{
  float:right;
  padding-right:10px;
 }
+
 div.prompt{
   border-top-style: solid;
   border-top-width:1px ;
@@ -165,8 +173,7 @@ div.prompt{
 textarea{
   width:100%;
  font-family: monospace, monospace;
-}
-</style><script>function display (result) {
+}</style><script>function display (result) {
   document.getElementById('console-results').style.height = '150px';
   document.getElementById('console-close').innerHTML = 'Hide';
   var r = '';
@@ -328,12 +335,13 @@ hybridd.sequential([
    onProgress
   );
 </textarea>
-<div class="category">AssetManagement</div><div class="command-header" onclick="toggleCommand('addAsset')"><b>addAsset</b> {<i>symbol</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">
+<div class="category">AssetManagement</div><div class="command-header" onclick="toggleCommand('addAsset')"><b>addAsset</b> {<i>symbol</i>, [<i>clientModuleCodeBlob</i>], [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">
  Add an asset (crypto currency or token) to the session.
 </span></div><div style="display:none;" class="command-body" id="addAsset">
     Parallely executes several steps and collects results in a single object.
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset
+</td></tr><tr><td>data.clientModuleCodeBlob</td><td>- A string containing the client module code blob.
 </td></tr><tr><td>data.host</td><td>- The host used for the calls.
 </td></tr><tr><td>data.channel</td><td>- The channel used for the calls. 'y' for encryped, 'z' for encryped and compresses;
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
@@ -388,7 +396,7 @@ hybridd.sequential([
 </span></div><div style="display:none;" class="command-body" id="initAsset">
     Parallely executes several steps and collects results in a single object.
 <table><tr><td>data
-</td><td></td></tr><tr><td>data.assetDetails</td><td>- Asset details as retrieved by calling `/asset/$SYMBOL/details`
+</td><td></td></tr><tr><td>data.assetDetails</td><td>- Asset details as retrieved by calling `/a/$SYMBOL/details`
 </td></tr><tr><td>data.clientModuleCodeBlob</td><td>- A string containing the client module code blob.
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
@@ -403,12 +411,14 @@ hybridd.sequential([
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
 </td></tr><tr><td>progressCallback</td><td>- Called whenever there is a progress updated. Passes a number between 0 and 1.
  
-  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('removeAsset')"><b>removeAsset</b> {<i>symbol</i>}<span class="quickDescription">
+  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('removeAsset')"><b>removeAsset</b> {<i>symbol</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">
     Remove an asset (crypto currency or token) from the session.
    </span></div><div style="display:none;" class="command-body" id="removeAsset">
     Parallely executes several steps and collects results in a single object.
 <table><tr><td>data
 </td><td>  </td></tr><tr><td>data.symbol</td><td>- The symbol of the asset
+   </td></tr><tr><td>data.host</td><td>- The host used for the calls.
+   </td></tr><tr><td>data.channel</td><td>- The channel used for the calls. 'y' for encryped, 'z' for encryped and compresses;
    </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
    </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
    
@@ -433,13 +443,16 @@ hybridd.sequential([
    </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
    </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
    
-  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('import')"><b>import</b> {<i>id</i>, <i>blob</i>}<span class="quickDescription">
+  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('import')"><b>import</b> {<i>id</i>, <i>blob</i>, [<i>check=true</i>], [<i>channel</i>], [<i>host</i>]}<span class="quickDescription">
     Import a client module code blob.
    </span></div><div style="display:none;" class="command-body" id="import">
     Parallely executes several steps and collects results in a single object.
 <table><tr><td>data
 </td><td>  </td></tr><tr><td>data.id</td><td>- id of the client code blob.
    </td></tr><tr><td>data.blob</td><td>- the client code blob
+   </td></tr><tr><td>data.check</td><td>- check if there's a different version of the blob available at the host
+   </td></tr><tr><td>data.channel</td><td>- TODO
+   </td></tr><tr><td>data.host</td><td>- TODO
    </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
    </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
    
@@ -507,9 +520,17 @@ hybridd.sequential([
    </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
    </td></tr><tr><td>progressCallback</td><td>- Called whenever there is a progress updated. Passes a number between 0 and 1.
    
+  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('escapeString')"><b>escapeString</b> {}<span class="quickDescription">
+    Identity function, outputs the data that is passed
+   </span></div><div style="display:none;" class="command-body" id="escapeString">
+    Parallely executes several steps and collects results in a single object.
+<table><tr><td>data</td><td>- data passed to  dataCallback
+   </td></tr><tr><td>dataCallback</td><td>- Called with data provided.
+   </td></tr><tr><td>errorCallback</td><td>- Ignored
+   
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('id')"><b>id</b> {}<span class="quickDescription">
- Identity function, outputs the data that is passed
-</span></div><div style="display:none;" class="command-body" id="id">
+    Identity function, outputs the data that is passed
+   </span></div><div style="display:none;" class="command-body" id="id">
     Parallely executes several steps and collects results in a single object.
 <table><tr><td>data</td><td>- data passed to  dataCallback
    </td></tr><tr><td>dataCallback</td><td>- Called with data provided.
@@ -545,7 +566,7 @@ hybridd.sequential([
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
-  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('rout')"><b>rout</b> {<i>query</i>, [<i>channel</i>], [<i>meta</i>], [<i>host</i>]}<span class="quickDescription">
+  </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('rout')"><b>rout</b> {<i>query</i>, [<i>channel</i>], [<i>meta=false</i>], [<i>host</i>], [<i>retries=3</i>]}<span class="quickDescription">
  Make a routing call to hybridd node
 </span></div><div style="display:none;" class="command-body" id="rout">
     Parallely executes several steps and collects results in a single object.
@@ -554,6 +575,7 @@ hybridd.sequential([
 </td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression
 </td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information)
 </td></tr><tr><td>data.host</td><td>- Select a specific host, if omitted one will be chosen at random.
+</td></tr><tr><td>data.retries</td><td>- Nr of retries for a call
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
@@ -615,7 +637,7 @@ hybridd.sequential([
   onProgress
  );
 </code></div></div><div class="category">Session</div><div class="command-header" onclick="toggleCommand('createAccount')"><b>createAccount</b> {[<i>entropy</i>], [<i>offset</i>], [<i>pool</i>]}<span class="quickDescription">
- TODO  Create a new deterministic account with the entropy provided.
+ Create a new deterministic account with the entropy provided.
 </span></div><div style="display:none;" class="command-body" id="createAccount">
     Parallely executes several steps and collects results in a single object.
 <table><tr><td>data
