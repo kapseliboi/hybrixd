@@ -1,5 +1,5 @@
 // (C) 2015 Internet of Coins / Metasync / Joachim de Koning
-// hybridd module - storage/module.js
+// hybrixd module - storage/module.js
 // Module to provide storage
 
 // required libraries in this context
@@ -21,7 +21,7 @@ function exec (properties) {
   var command = properties.command;
   var subprocesses = [];
   // set request to what command we are performing
-  global.hybridd.proc[processID].request = properties.command;
+  global.hybrixd.proc[processID].request = properties.command;
   // handle standard cases here, and construct the sequential process list
   switch (command[0]) {
     case 'cron' :
