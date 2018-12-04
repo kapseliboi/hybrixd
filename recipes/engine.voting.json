@@ -89,8 +89,7 @@
     "coreList" : [
       "data '$::coreMode $1'",
       "hash 'sha256'",
-      "#hook @notFoundOrEmpty :THIS STILL FAILS FOR SOME REASON!",
-      "hook [] 0",
+      "hook @notFoundOrEmpty",
       "load '$data'",
       "file",
       "jpar",
