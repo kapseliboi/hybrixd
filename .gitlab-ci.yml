@@ -161,11 +161,9 @@ hybridd:
     - mv ./dist /tmp
     - rm -rf ./*
     - mv /tmp/dist/* ./
-    - ls ./modules/web-wallet/files/doc
     
     # remove all files starting with a .
     - find -name ".*" -type f -delete
-    - ls ./modules/web-wallet/files/doc
     - setup_docker
     - build
   artifacts:
