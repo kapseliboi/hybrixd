@@ -2,7 +2,7 @@
 
 Examples of paths:
 
-`/command/reload`         Reloads hybridd
+`/command/reload`         Reloads hybrixd
 `/asset/btc/balance/1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX`      Returns the
 balance of bitcoin asset for address 1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX
 

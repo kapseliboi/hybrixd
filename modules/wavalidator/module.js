@@ -19,7 +19,7 @@ function exec (properties) {
   var processID = properties.processID;
   var subprocesses = [];
   // set request to what command we are performing
-  global.hybridd.proc[processID].request = properties.command;
+  global.hybrixd.proc[processID].request = properties.command;
 
   var symbol = command[0].toUpperCase().split('.')[0];
   var address = command[1];

@@ -289,15 +289,15 @@ const copyToClipboard = str => {
 var menuItems = {
   'HelloWorld': '/api/help/HelloWorld',
   'REST API': '/api/help',
-  'hybrid-lib.js': '/api/help/hybrid-lib.js',
-  'Hybridd': '/api/help/hybridd',
+  'hybrix-lib.js': '/api/help/hybrix-lib.js',
+  'hybrixd': '/api/help/hybrixd',
   'cli': '/api/help/cli',
   'qrtz': '/api/help/qrtz'
 };
 
 function initNavigation (currentMenuItem) {
   var data = '';
-  data += '<h1>hybridd : ' + currentMenuItem + '</h1> ';
+  data += '<h1>hybrix : ' + currentMenuItem + '</h1> ';
   for (var menuItem in menuItems) {
     if (currentMenuItem === menuItem) {
       data += '<a class="menuItem current">' + menuItem + '</a> ';
@@ -339,6 +339,17 @@ TODO
 </td></tr></table><code style="display:block;white-space: pre;">  code('bin')             // input: 'woot', returns: '1110111011011110110111101110100'
   code('utf-8','base58')  // input: 'this_is_my_data', returns: '4FtePA9kj2RpFH4tBkPUt'
   code('hex','base58')    // input: '8BA9C1B4', returns: '4a4JJF'
+ 
+  </code></div></div><div class="command-header" onclick="toggleCommand('excl')"><b>excl</b> <i>value</i><span class="quickDescription">
+ Exclude elements from an array or input string based on their value.
+ Jump to a target based on success or failure.
+ (Reversed function of find.)
+</span></div><div style="display:none;" class="command-body" id="excl">
+ Execute a client stack program.
+<table><tr><td>value</td><td>- Amount of elements to delete from start
+</td></tr></table><code style="display:block;white-space: pre;">  excl('g')        // matching exclude           input: ['g','l','o','v','e','s'], output: ['l','o','v','e','s']
+  excl(['g','s'])  // multiple exclude           input: ['g','l','o','v','e','s'], output: ['l','o','v','e']
+  excl('g',2)      // matching exclude, jump two places
  
   </code></div></div><div class="command-header" onclick="toggleCommand('find')"><b>find</b> <i>needle</i> [<i>onFound=1</i>] [<i>onNotFound=1</i>]<span class="quickDescription">
  Find a string in an array of objects, and return the object it was found in.
@@ -542,7 +553,7 @@ TODO
  Initiates a client stack program. This stack can be filled using step and executed using exec.
 </span></div><div style="display:none;" class="command-body" id="init">
  Execute a client stack program.
-<table></table><code style="display:block;white-space: pre;"> init()     // Initiates a Hybridd.Interface stack program.
+<table></table><code style="display:block;white-space: pre;"> init()     // Initiates a hybrixd.Interface stack program.
  
   </code></div></div><div class="command-header" onclick="toggleCommand('step')"><b>step</b> <i>key</i><span class="quickDescription">
  Add a step to a client stack program. Executed using exec.
@@ -716,7 +727,7 @@ TODO
   peek(2)     // returns value of the second command path (non mutable)
  
   </code></div></div><div class="command-header" onclick="toggleCommand('poke')"><b>poke</b> <i>key</i> [<i>value=data</i>]<span class="quickDescription">
- Put data in a variable for later use. Use peek to retrieve. The data is stored in the root parent process under 'vars'. (You can see this poked data stored in global.hybridd.proc[rootID].vars, but a better way to use this data is by using the command peek("varname").
+ Put data in a variable for later use. Use peek to retrieve. The data is stored in the root parent process under 'vars'. (You can see this poked data stored in global.hybrixd.proc[rootID].vars, but a better way to use this data is by using the command peek("varname").
 </span></div><div style="display:none;" class="command-body" id="poke">
  Execute a client stack program.
 <table><tr><td>key</td><td>- Variable name to get data from.
@@ -813,7 +824,7 @@ TODO
  
 
   </code></div></div><div class="command-header" onclick="toggleCommand('rout')"><b>rout</b> <i>path</i><span class="quickDescription">
- Route a path through hybridd and pass the result to the next step. /api/help for API information.
+ Route a path through hybrixd and pass the result to the next step. /api/help for API information.
 </span></div><div style="display:none;" class="command-body" id="rout">
  Execute a client stack program.
 <table><tr><td>path</td><td>- Provide the routing path

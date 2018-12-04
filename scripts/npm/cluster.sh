@@ -2,16 +2,16 @@
 
 WHEREAMI=`pwd`
 
-# $HYBRIDD/$NODE/scripts/npm  => $HYBRIDD
+# $HYBRIXD/$NODE/scripts/npm  => $HYBRIXD
 SCRIPTDIR="`dirname \"$0\"`"
-HYBRIDD="`cd \"$SCRIPTDIR/../../..\" && pwd`"
+HYBRIXD="`cd \"$SCRIPTDIR/../../..\" && pwd`"
 
-NODE="$HYBRIDD/node"
-DETERMINISTIC="$HYBRIDD/deterministic"
-NODEJS="$HYBRIDD/nodejs-v8-lts"
-COMMON="$HYBRIDD/common"
-INTERFACE="$HYBRIDD/interface"
-WEB_WALLET="$HYBRIDD/web-wallet"
+NODE="$HYBRIXD/node"
+DETERMINISTIC="$HYBRIXD/deterministic"
+NODEJS="$HYBRIXD/nodejs-v8-lts"
+COMMON="$HYBRIXD/common"
+INTERFACE="$HYBRIXD/interface"
+WEB_WALLET="$HYBRIXD/web-wallet"
 
 if [ "`uname`" = "Darwin" ]; then
     SYSTEM="darwin-x64"
@@ -33,10 +33,10 @@ fi
 
 
 if [ "$NODES" -gt "1" ]; then
-    RESTLINE=$(grep "restport" "$NODE/hybridd.conf")
+    RESTLINE=$(grep "restport" "$NODE/hybrixd.conf")
     RESTPORT=$(echo "$RESTLINE" | cut -d ' ' -f3)
 
-    USERLINE=$(grep "userport" "$NODE/hybridd.conf")
+    USERLINE=$(grep "userport" "$NODE/hybrixd.conf")
     USERPORT=$(echo "$USERLINE" | cut -d ' ' -f3)
 
 
@@ -57,11 +57,11 @@ if [ "$NODES" -gt "1" ]; then
         rsync -aK "$NODE/" "$NODE$i/"
         #increment restport
         NEWRESTLINE="restport = "$((RESTPORT+$i-1))
-        sed -i -e 's/'"$RESTLINE"'/'"$NEWRESTLINE"'/g' "$NODE$i/hybridd.conf"
+        sed -i -e 's/'"$RESTLINE"'/'"$NEWRESTLINE"'/g' "$NODE$i/hybrixd.conf"
 
         #increment userport
         NEWUSERLINE="userport = "$((USERPORT+$i-1))
-        sed -i -e 's/'"$USERLINE"'/'"$NEWUSERLINE"'/g' "$NODE$i/hybridd.conf"
+        sed -i -e 's/'"$USERLINE"'/'"$NEWUSERLINE"'/g' "$NODE$i/hybrixd.conf"
 
         cd "$NODE$i"
         # Bootscript : aAdd other nodes as peers, first as captain
@@ -77,13 +77,13 @@ if [ "$NODES" -gt "1" ]; then
         echo "]}}" >> boot.json
 
         # Start node i in the background
-        sh "$NODE$i/hybridd" &
+        sh "$NODE$i/hybrixd" &
 
     done
 fi
 
 # Start main node
 cd "$NODE"
-sh "$NODE/hybridd"
+sh "$NODE/hybrixd"
 
 cd "$WHEREAMI"

@@ -1,10 +1,10 @@
 {
-    "symbol": "xem.hybrid",
-    "name": "internetofcoins : hybrid (NEM)",
+    "symbol": "xem.hybrix",
+    "name": "internetofcoins : hybrix (NEM)",
     "module": "quartz",
     "mode": "nem.mosaic",
     "import": "xem",
-    "contract": "internetofcoins:hybrid",
+    "contract": "internetofcoins:hybrix",
     "originator": "NB6TCTRBT7KUN5T5337LBSBIAYHL375VHCFZNOAU",
     "factor": 6
 }

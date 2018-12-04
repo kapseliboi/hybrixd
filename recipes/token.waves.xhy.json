@@ -1,6 +1,6 @@
 {
   "symbol":"waves.xhy",
-  "name":"Internet of Coins Hybrid Asset (Waves)",
+  "name":"Internet of Coins hybrix Asset (Waves)",
   "module":"quartz",
   "mode":"waves.token",
   "import":"waves",

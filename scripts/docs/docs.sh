@@ -1,21 +1,20 @@
 #!/bin/sh
 WHEREAMI=`pwd`
 OLDPATH=$PATH
-# $HYBRIDD/$NODE/scripts/npm  => $HYBRIDD
 
 SCRIPTDIR="`dirname \"$0\"`"
-HYBRIDD="`cd \"$SCRIPTDIR/../../..\" && pwd`"
+HYBRIXD="`cd \"$SCRIPTDIR/../../..\" && pwd`"
 
-INTERFACE="$HYBRIDD/interface"
-NODE="$HYBRIDD/node"
-DETERMINISTIC="$HYBRIDD/deterministic"
-NODEJS="$HYBRIDD/nodejs"
-COMMON="$HYBRIDD/common"
-INTERFACE="$HYBRIDD/interface"
-WEB_WALLET="$HYBRIDD/web-wallet"
+INTERFACE="$HYBRIXD/interface"
+NODE="$HYBRIXD/node"
+DETERMINISTIC="$HYBRIXD/deterministic"
+NODEJS="$HYBRIXD/nodejs"
+COMMON="$HYBRIXD/common"
+INTERFACE="$HYBRIXD/interface"
+WEB_WALLET="$HYBRIXD/web-wallet"
 
 
-$NODE/node_binaries/bin/node docs.js
+$NODE/node_binaries/bin/node "$NODE/scripts/docs/docs.js"
 
 cd "$WHEREAMI"
 export PATH="$OLDPATH"

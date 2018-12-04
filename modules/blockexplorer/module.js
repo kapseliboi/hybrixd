@@ -1,5 +1,5 @@
 // (C) 2015 Internet of Coins / Metasync / Joachim de Koning
-// hybridd module - blockexplorer/module.js
+// hybrixd module - blockexplorer/module.js
 // Module to connect to Block explorers
 
 // Supported block explorer systems and their API's:
@@ -37,9 +37,9 @@ function stop () {
 function tick (properties) {
 }
 
-// standard functions of an asset store results in a process superglobal -> global.hybridd.process[processID]
+// standard functions of an asset store results in a process superglobal -> global.hybrixd.process[processID]
 // child processes are waited on, and the parent process is then updated by the postprocess() function
-// standard functions of an asset store results in a process superglobal -> global.hybridd.process[processID]
+// standard functions of an asset store results in a process superglobal -> global.hybrixd.process[processID]
 // child processes are waited on, and the parent process is then updated by the postprocess() function
 // http://docs.electrum.org/en/latest/protocol.html
 function exec (properties) {
@@ -63,9 +63,9 @@ function exec (properties) {
 
     if (typeof target.user !== 'undefined' && typeof target.pass !== 'undefined') {
       var options_auth = {user: target.user, password: target.pass};
-      global.hybridd.source[target.id].link = new Client(options_auth);
+      global.hybrixd.source[target.id].link = new Client(options_auth);
     } else {
-      global.hybridd.source[target.id].link = new Client();
+      global.hybrixd.source[target.id].link = new Client();
     }
     subprocesses.push('logs(1,"module blockexplorer: initialized ' + target.id + '")');
   } else {
@@ -75,10 +75,10 @@ function exec (properties) {
     var target = {};
 
     var candidates = []; // List of block explorer sources that can handle $SYMBOL
-    for (var id in global.hybridd.source) { // find the block explorer sources that can handle $SYMBOL
+    for (var id in global.hybrixd.source) { // find the block explorer sources that can handle $SYMBOL
       if (id.split('.')[1] === symbol) { // the blockexplorer id === $BLOCKEXPLORER.$SYMBOL
-        if (global.hybridd.source[id].hasOwnProperty('module') && global.hybridd.source[id].module === 'blockexplorer') { // check if source is blockexplorer
-          candidates.push(global.hybridd.source[id]);
+        if (global.hybrixd.source[id].hasOwnProperty('module') && global.hybrixd.source[id].module === 'blockexplorer') { // check if source is blockexplorer
+          candidates.push(global.hybrixd.source[id]);
         }
       }
     }
@@ -234,7 +234,7 @@ function post (properties) {
   // first do a rough validation of the data
   var postdata = properties.data;
   // set data to what command we are performing
-  global.hybridd.proc[processID].data = properties.command;
+  global.hybrixd.proc[processID].data = properties.command;
   // handle the command
   var result = null;
   var success = true;
@@ -288,14 +288,14 @@ function post (properties) {
       success = false;
   }
   // handle sorting and filtering
-  global.hybridd.proc[processID].progress = 0.5;
+  global.hybrixd.proc[processID].progress = 0.5;
   switch (properties.command[1]) {
     case 'unspent':
       if (typeof properties.command[3] !== 'undefined') {
         var amount = functions.toInt(properties.command[3], factor);
         if (amount.greaterThan(0)) {
           result = functions.sortArrayByObjKey(result, 'amount', false);
-          global.hybridd.proc[processID].progress = 0.75;
+          global.hybrixd.proc[processID].progress = 0.75;
           unspentscnt = functions.toInt(0, factor);
           var usedinputs = [];
           var unspents = [];

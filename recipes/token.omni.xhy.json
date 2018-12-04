@@ -1,6 +1,6 @@
 {
   "symbol":"omni.xhy",
-  "name":"Internet of Coins Hybrid Asset",
+  "name":"Internet of Coins hybrix Asset",
   "module":"quartz",
   "mode":"bitcoinjslib.omni",
   "import":"omni",

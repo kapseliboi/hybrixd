@@ -6,18 +6,18 @@ NODEINST=`which node`
 
 if [ "$1" = "" ]; then
 
-  echo " [i] starting hybridd..."
+  echo " [i] starting hybrixd..."
   NODE_VERSION=$($NODEINST --version)
   NODE_VERSION_MAJOR="`echo $NODE_VERSION | cut -d'.' -f1`"
   NODE_VERSION_MINOR="`echo $NODE_VERSION | cut -d'.' -f2`"
 
   if [ "$NODE_VERSION_MAJOR" != "v8" ] || [ $NODE_VERSION_MINOR -lt 12 ]; then
-      echo " [!] Warning: hybridd expects Node v8.12.0 or higher (found node $NODE_VERSION)"
+      echo " [!] Warning: hybrixd expects Node v8.12.0 or higher (found node $NODE_VERSION)"
       echo "             $NODEINST"
       read -p " [?] Do you wish to continue? [y/N] " CONFIRM
       if [ "$CONFIRM" != "y" ]; then
           PATH=$OLDPATH
-          echo "\n [i] Stopped hybridd."
+          echo "\n [i] Stopped hybrixd."
           exit 0
       fi
   else
@@ -27,11 +27,11 @@ if [ "$1" = "" ]; then
 
   cd lib
   mkdir -p $WHEREAMI/var/log
-  node hybridd.js 2>&1 | tee $WHEREAMI/var/log/hybridd.log
-  echo " [i] stopped hybridd"
+  node hybrixd.js 2>&1 | tee $WHEREAMI/var/log/hybrixd.log
+  echo " [i] stopped hybrixd"
   echo
 elif [ "$1" = "start" ]; then
-  ./hybridd.start
+  ./hybrixd.start
 else
     cd lib
     node hcmd.js $@

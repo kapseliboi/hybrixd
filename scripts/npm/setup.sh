@@ -1,18 +1,18 @@
 #!/bin/sh
 WHEREAMI=`pwd`
 OLDPATH=$PATH
-# $HYBRIDD/$NODE/scripts/npm  => $HYBRIDD
+# $HYBRIXD/$NODE/scripts/npm  => $HYBRIXD
 
 SCRIPTDIR="`dirname \"$0\"`"
-HYBRIDD="`cd \"$SCRIPTDIR/../../..\" && pwd`"
+HYBRIXD="`cd \"$SCRIPTDIR/../../..\" && pwd`"
 
-INTERFACE="$HYBRIDD/interface"
-NODE="$HYBRIDD/node"
-DETERMINISTIC="$HYBRIDD/deterministic"
-NODEJS="$HYBRIDD/nodejs"
-COMMON="$HYBRIDD/common"
-INTERFACE="$HYBRIDD/interface"
-WEB_WALLET="$HYBRIDD/web-wallet"
+INTERFACE="$HYBRIXD/interface"
+NODE="$HYBRIXD/node"
+DETERMINISTIC="$HYBRIXD/deterministic"
+NODEJS="$HYBRIXD/nodejs"
+COMMON="$HYBRIXD/common"
+INTERFACE="$HYBRIXD/interface"
+WEB_WALLET="$HYBRIXD/web-wallet"
 
 if [ "`uname`" = "Darwin" ]; then
     SYSTEM="darwin-x64"
@@ -33,9 +33,9 @@ if [ ! -e "$NODE/node_binaries" ];then
     echo " [!] node/node_binaries not found."
 
     if [ ! -e "$NODEJS" ];then
-        cd "$HYBRIDD"
+        cd "$HYBRIXD"
         echo " [i] Clone node js runtimes files"
-        git clone https://gitlab.com/iochq/hybridd/dependencies/nodejs.git
+        git clone https://gitlab.com/iochq/hybrixd/dependencies/nodejs.git
     fi
     echo " [i] Link node_binaries"
     ln -sf "$NODEJS/$SYSTEM" "$NODE/node_binaries"
@@ -50,9 +50,9 @@ if [ ! -e "$NODE/common" ];then
     echo " [!] interface/common not found."
 
     if [ ! -e "$COMMON" ];then
-        cd "$HYBRIDD"
+        cd "$HYBRIXD"
         echo " [i] Clone common files"
-        git clone https://www.gitlab.com/iochq/hybridd/common.git
+        git clone https://www.gitlab.com/iochq/hybrixd/common.git
     fi
     echo " [i] Link common files"
     ln -sf "$COMMON" "$NODE/common"

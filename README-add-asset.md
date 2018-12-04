@@ -11,7 +11,7 @@ The Client side module will handle key generation and transaction
 signing on the client side and is explained in the deterministic repo
 README.md
 
-The Node side module will create API endpoints in hybridd that relay
+The Node side module will create API endpoints in hybrixd that relay
 to API endpoints from RPC's and block explorers for the given crypto
 currency. Please see below for instructions.
 
@@ -30,7 +30,7 @@ The node side module serves as a relay between API's.
 
 Example:
 
-When you query hybridd for the balance of your waves address:
+When you query hybrixd for the balance of your waves address:
 `/asset/waves/$YOUR_ADDRESS` this will be routed to the Node side
 module defined in `recipes/asset.waves.json`. The logic there (written
 in Qrtz) will reformat the request to
@@ -38,10 +38,10 @@ in Qrtz) will reformat the request to
 it will retrieve the result, reformat that and return it.
 
 ```
-[user] -> [hybridd] -> [node side module] -> [external api]
+[user] -> [hybrixd] -> [node side module] -> [external api]
        query       route      qrtz       curl   |
                                                 |
-[user] <- [hybridd] <- [node side module]     <-
+[user] <- [hybrixd] <- [node side module]     <-
     response      qrtz                     response
 ```
 

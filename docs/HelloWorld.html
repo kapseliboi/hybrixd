@@ -289,15 +289,15 @@ const copyToClipboard = str => {
 var menuItems = {
   'HelloWorld': '/api/help/HelloWorld',
   'REST API': '/api/help',
-  'hybrid-lib.js': '/api/help/hybrid-lib.js',
-  'Hybridd': '/api/help/hybridd',
+  'hybrix-lib.js': '/api/help/hybrix-lib.js',
+  'hybrixd': '/api/help/hybrixd',
   'cli': '/api/help/cli',
   'qrtz': '/api/help/qrtz'
 };
 
 function initNavigation (currentMenuItem) {
   var data = '';
-  data += '<h1>hybridd : ' + currentMenuItem + '</h1> ';
+  data += '<h1>hybrix : ' + currentMenuItem + '</h1> ';
   for (var menuItem in menuItems) {
     if (currentMenuItem === menuItem) {
       data += '<a class="menuItem current">' + menuItem + '</a> ';

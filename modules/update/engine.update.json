@@ -1,11 +1,11 @@
 {
   "engine":"update",
-  "name":"hybridd OTA update module",
+  "name":"hybrixd OTA update module",
   "module":"update",
   "cron" : 86400,
   "router" : {
-    "_this" : "Update hybridd.",
+    "_this" : "Update hybrixd.",
     "_access":"root",
-    "cron" : "Cron scheduled update of hybridd"
+    "cron" : "Cron scheduled update of hybrixd"
   }
 }

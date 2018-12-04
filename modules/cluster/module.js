@@ -1,5 +1,5 @@
 // (C) 2015 Internet of Coins / Metasync / Joachim de Koning
-// hybridd module - storage/module.js
+// hybrixd module - storage/module.js
 // Module to provide clustering
 
 var scheduler = require('../../lib/scheduler');
@@ -22,8 +22,8 @@ function exec (properties) {
   var command = properties.command;
   var subprocesses = [];
   // set request to what command we are performing
-  global.hybridd.proc[processID].request = properties.command;
-  var me = global.hybridd.hostname[0] + ':' + global.hybridd.restport;
+  global.hybrixd.proc[processID].request = properties.command;
+  var me = global.hybrixd.hostname[0] + ':' + global.hybrixd.restport;
 
   // handle standard cases here, and construct the sequential process list
   switch (command[0]) {
