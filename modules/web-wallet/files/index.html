@@ -3516,7 +3516,7 @@ $(document).ready(function () {
 });
 
 function fetchview (viewpath, args) {
-  // avoid hitting the server with requests if fetchview is called too often
+  // avoid hitting the server with requests if fetchview is called too often.
   if (fetchview_path !== viewpath) {
     // we populate startinit to contain the viewpath as subfunction(s)
     // call init.id_object(json) via startinit to reach sub frame
@@ -3542,6 +3542,7 @@ function fetchview (viewpath, args) {
       // fetch
       $.ajax({
         url: path + 'source/web-wallet/' + viewpath + '.json',
+        type: 'POST',
         dataType: 'json'
       })
         .done(function (data) {
