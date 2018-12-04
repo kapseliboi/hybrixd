@@ -135,7 +135,6 @@ hybridd:
     - cd $WORKING_DIR
     - ls -l
     - ls ./
-    - ls ./modules/web-wallet/files/doc
     
     # create a .version file
     - timestamp=$(date -u '+%Y-%m-%dT%H:%M:%S+00:00')
@@ -166,7 +165,7 @@ hybridd:
     
     # remove all files starting with a .
     - find -name ".*" -type f -delete
-    - ls ./files/doc
+    - ls ./modules/web-wallet/files/doc
     - setup_docker
     - build
   artifacts:
