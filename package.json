@@ -1,8 +1,8 @@
 {
-  "name": "hybridd",
+  "name": "hybrixd",
   "version": "0.25.3",
-  "description": "The network agent for the Internet of Coins hybrid node",
-  "main": "lib/hybridd.js",
+  "description": "The network agent for the Internet of Coins hybrix node",
+  "main": "lib/hybrixd.js",
   "directories": {
     "lib": "lib"
   },
@@ -17,19 +17,19 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "./hybridd",
+    "start": "./hybrixd",
     "setup": "sh scripts/npm/setup.sh",
     "build": "sh scripts/npm/setup.sh",
     "compile": "sh scripts/npm/compile.sh",
     "diag": "sh scripts/npm/diag.sh",
     "release": "sh scripts/npm/compile.sh",
-    "release:start": "sh scripts/npm/compile.sh; sh ./dist/hybridd",
+    "release:start": "sh scripts/npm/compile.sh; sh ./dist/hybrixd",
     "cluster:start": "sh scripts/npm/cluster.sh",
     "clean" : "rm -rf dist/*"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/iochq/hybridd.git"
+    "url": "git+https://gitlab.com/iochq/hybrixd.git"
   },
   "keywords": [
     "cryptocurrency",
@@ -42,7 +42,7 @@
   "author": "Internet of Coins",
   "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://gitlab.com/iochq/hybridd/issues"
+    "url": "https://gitlab.com/iochq/hybrixd/issues"
   },
-  "homepage": "https://gitlab.com/iochq/hybridd#README"
+  "homepage": "https://gitlab.com/iochq/hybrixd#README"
 }

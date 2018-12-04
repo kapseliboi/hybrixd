@@ -1,10 +1,10 @@
 {
   "symbol":"xcp.xhy",
-  "name":"Internet of Coins Hybrid Asset",
+  "name":"Internet of Coins hybrix Asset",
   "module":"quartz",
   "mode":"bitcoinjslib.counterparty",
   "import":"xcp",
-  "contract":"HYBRID",
+  "contract":"HYBRIX",
   "originator":"1KWsPEb3bp7nQuodUtZYHQsXmBCDZ9dtPz",
   "factor":8
 }

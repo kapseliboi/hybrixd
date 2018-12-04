@@ -1,5 +1,5 @@
 // (C) 2015 Internet of Coins / Metasync / Joachim de Koning
-// hybridd module - ethereum/module.js
+// hybrixd module - ethereum/module.js
 // Module to connect to ethereum or any of its derivatives
 
 // required libraries in this context
@@ -35,7 +35,7 @@ function tick (properties) {
 }
 
 var ethDeterministic;
-// standard functions of an asset store results in a process superglobal -> global.hybridd.process[processID]
+// standard functions of an asset store results in a process superglobal -> global.hybrixd.process[processID]
 // child processes are waited on, and the parent process is then updated by the postprocess() function
 // http://docs.ethereum.org/en/latest/protocol.html
 function exec (properties) {
@@ -48,7 +48,7 @@ function exec (properties) {
   var tokenfeeMultiply = 16;
   var subprocesses = [];
   // set request to what command we are performing
-  global.hybridd.proc[processID].request = properties.command;
+  global.hybrixd.proc[processID].request = properties.command;
   // define the source address/wallet
   var sourceaddr = (typeof properties.command[1] !== 'undefined' ? properties.command[1] : false);
   // handle standard cases here, and construct the sequential process list
@@ -59,8 +59,8 @@ function exec (properties) {
       // set up REST API connection
         if (typeof target.user !== 'undefined' && typeof target.pass !== 'undefined') {
           var options_auth = {user: target.user, password: target.pass};
-          global.hybridd.asset[target.symbol].link = new Client(options_auth);
-        } else { global.hybridd.asset[target.symbol].link = new Client(); }
+          global.hybrixd.asset[target.symbol].link = new Client(options_auth);
+        } else { global.hybrixd.asset[target.symbol].link = new Client(); }
         // initialize deterministic code for smart contract calls
         var dcode = String(fs.readFileSync('../modules/deterministic/ethereum/deterministic.js.lzma'));
         ethDeterministic = functions.activate(LZString.decompressFromEncodedURIComponent(dcode));
@@ -91,8 +91,8 @@ function exec (properties) {
       if (!functions.isToken(target.symbol)) {
         fee = (typeof target.fee !== 'undefined' ? target.fee : null);
       } else {
-        fee = (typeof global.hybridd.asset[base].fee !== 'undefined' ? global.hybridd.asset[base].fee * 2.465 : null);
-        factor = (typeof global.hybridd.asset[base].factor !== 'undefined' ? global.hybridd.asset[base].factor : 18);
+        fee = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee * 2.465 : null);
+        factor = (typeof global.hybrixd.asset[base].factor !== 'undefined' ? global.hybrixd.asset[base].factor : 18);
       }
       subprocesses.push('stop((' + jstr(fee) + '!==null && ' + jstr(factor) + '!==null?0:1),' + (fee != null && factor != null ? '"' + functions.padFloat(fee, factor) + '"' : null) + ')');
       break;
@@ -184,10 +184,10 @@ function exec (properties) {
       if (!functions.isToken(target.symbol)) {
         fee = (typeof target.fee !== 'undefined' ? target.fee : null);
       } else {
-        fee = (typeof global.hybridd.asset[base].fee !== 'undefined' ? global.hybridd.asset[base].fee * 2.465 : null);
+        fee = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee * 2.465 : null);
       }
       var contract = (typeof target.contract !== 'undefined' ? target.contract : null);
-      var feefactor = global.hybridd.asset[base].factor;
+      var feefactor = global.hybrixd.asset[base].factor;
       fee = fee && feefactor ? functions.padFloat(fee, feefactor) : fee;
 
       subprocesses.push("stop(0,{symbol:'" + symbol + "', name:'" + name + "',mode:'" + mode + "',fee:'" + fee + "',contract:'" + contract + "',factor:'" + factor + "','keygen-base':'" + base + "','fee-symbol':'" + base + "','fee-factor':'" + feefactor + "'})");
@@ -221,9 +221,9 @@ function post (properties) {
   var postdata = properties.data;
   var base = target.symbol.split('.')[0]; // in case of token fallback to base asset
   var factor = (typeof target.factor !== 'undefined' ? target.factor : null);
-  var feefactor = (typeof global.hybridd.asset[base].factor !== 'undefined' ? global.hybridd.asset[base].factor : 18);
+  var feefactor = (typeof global.hybrixd.asset[base].factor !== 'undefined' ? global.hybrixd.asset[base].factor : 18);
   // set data to what command we are performing
-  global.hybridd.proc[processID].data = properties.command;
+  global.hybrixd.proc[processID].data = properties.command;
   // handle the command
   if (postdata == null) {
     var success = false;
@@ -232,14 +232,14 @@ function post (properties) {
     switch (properties.command[0]) {
       case 'init':
         if (typeof postdata.result !== 'undefined' && postdata.result>0) {
-          global.hybridd.asset[target.symbol].fee = functions.fromInt(functions.hex2dec.toDec(String(postdata.result)).times((21000*2)), feefactor);
+          global.hybrixd.asset[target.symbol].fee = functions.fromInt(functions.hex2dec.toDec(String(postdata.result)).times((21000*2)), feefactor);
         } else {
-          global.hybridd.asset[target.symbol].fee = global.hybridd.asset[base].fee;
+          global.hybrixd.asset[target.symbol].fee = global.hybrixd.asset[base].fee;
         }
         break;
       case 'updateFee':
         if (typeof postdata.result !== 'undefined' && postdata.result>0) {
-          global.hybridd.asset[target.symbol].fee = functions.fromInt(functions.hex2dec.toDec(String(postdata.result)).times((21000*2)), feefactor);
+          global.hybrixd.asset[target.symbol].fee = functions.fromInt(functions.hex2dec.toDec(String(postdata.result)).times((21000*2)), feefactor);
         }
         break;
       default:
@@ -250,7 +250,7 @@ function post (properties) {
   scheduler.stop(processID, success ? 0 : 1, postdata);
 }
 
-// data returned by this connector is stored in a process superglobal -> global.hybridd.process[processID]
+// data returned by this connector is stored in a process superglobal -> global.hybrixd.process[processID]
 function link (properties) {
   var target = properties.target;
   var base = target.symbol.split('.')[0]; // in case of token fallback to base asset
@@ -261,7 +261,7 @@ function link (properties) {
   // separate method and arguments
   var method = command.shift();
   var params = command.shift();
-  // launch the asynchronous rest functions and store result in global.hybridd.proc[processID]
+  // launch the asynchronous rest functions and store result in global.hybrixd.proc[processID]
   // do a GET or PUT/POST based on the command input
   if (typeof params === 'string') { try { params = JSON.parse(params); } catch (e) {} }
   var args = {
@@ -271,10 +271,10 @@ function link (properties) {
   // construct the APIqueue object
   APIqueue.add({ 'method': 'POST',
     'link': 'asset["' + base + '"]', // make sure APIqueue can use initialized API link
-    'host': (typeof target.host !== 'undefined' ? target.host : global.hybridd.asset[base].host), // in case of token fallback to base asset hostname
+    'host': (typeof target.host !== 'undefined' ? target.host : global.hybrixd.asset[base].host), // in case of token fallback to base asset hostname
     'args': args,
-    'timeout': (typeof target.timeout !== 'undefined' ? target.timeout : global.hybridd.asset[base].timeout), // in case of token fallback to base asset throttle
-    'throttle': (typeof target.throttle !== 'undefined' ? target.throttle : global.hybridd.asset[base].throttle), // in case of token fallback to base asset throttle
+    'timeout': (typeof target.timeout !== 'undefined' ? target.timeout : global.hybrixd.asset[base].timeout), // in case of token fallback to base asset throttle
+    'throttle': (typeof target.throttle !== 'undefined' ? target.throttle : global.hybrixd.asset[base].throttle), // in case of token fallback to base asset throttle
     'pid': processID,
     'target': target.symbol});
 }

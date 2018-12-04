@@ -1,5 +1,5 @@
 // (C) 2015 Internet of Coins / Metasync / Joachim de Koning
-// hybridd module - zcash/module.js
+// hybrixd module - zcash/module.js
 // Module to connect to zcash or any of its derivatives
 
 // required libraries in this context
@@ -32,7 +32,7 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
   }
 }
 
-// standard functions of an asset store results in a process superglobal -> global.hybridd.process[processID]
+// standard functions of an asset store results in a process superglobal -> global.hybrixd.process[processID]
 // child processes are waited on, and the parent process is then updated by the postprocess() function
 function exec (properties) {
   // decode our serialized properties
@@ -51,7 +51,7 @@ function exec (properties) {
     console.log(' [i] Error: recipe file contains neither asset symbol nor engine or source id.');
   }
 
-  global.hybridd.proc[processID].request = properties.command; // set request to what command we are performing
+  global.hybrixd.proc[processID].request = properties.command; // set request to what command we are performing
 
   var command = properties.command[0];
 
@@ -59,8 +59,8 @@ function exec (properties) {
   if (recipe.hasOwnProperty('quartz') && recipe.quartz.hasOwnProperty(command)) {
     addSubprocesses(subprocesses, recipe.quartz[command], recipe, properties.command);
   } else {
-    if (global.hybridd.defaultQuartz.hasOwnProperty('quartz') && global.hybridd.defaultQuartz.quartz.hasOwnProperty(command)) {
-      addSubprocesses(subprocesses, global.hybridd.defaultQuartz.quartz[command], recipe, properties.command);
+    if (global.hybrixd.defaultQuartz.hasOwnProperty('quartz') && global.hybrixd.defaultQuartz.quartz.hasOwnProperty(command)) {
+      addSubprocesses(subprocesses, global.hybrixd.defaultQuartz.quartz[command], recipe, properties.command);
     } else {
       subprocesses.push('stop(1,"Recipe function \'' + command + '\' not supported for \'' + id + '\'.")');
     }

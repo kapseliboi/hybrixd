@@ -7,9 +7,13 @@
   },
   "quartz" : {
     "test" : [
-      "poke 'local::a' 1",
-      "logs 0 '$local::a'",
-      "done '$local::a'"
+      "hook @notFoundOrEmpty",
+      "load 'a'",
+      "file",
+      "jpar",
+      "done",
+      "@notFoundOrEmpty",
+      "done []"
     ]
   }
 }

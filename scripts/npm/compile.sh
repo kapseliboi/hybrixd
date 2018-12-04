@@ -6,11 +6,11 @@ NODEINST="`which node`"
 UGLIFY=node_modules/uglify-es/bin/uglifyjs
 CSSMIN=node_modules/cssmin/bin/cssmin
 
-# $HYBRIDD/node/scripts/npm  => $HYBRIDD
+# $HYBRIXD/node/scripts/npm  => $HYBRIXD
 SCRIPTDIR="`dirname \"$0\"`"
-HYBRIDD="`cd \"$SCRIPTDIR/../../..\" && pwd`"
+HYBRIXD="`cd \"$SCRIPTDIR/../../..\" && pwd`"
 
-NODE="$HYBRIDD/node"
+NODE="$HYBRIXD/node"
 DIST="$NODE/dist"
 
 # QUARTZ
@@ -19,7 +19,7 @@ mkdir -p "$NODE/docs"
 cd "$NODE/scripts/docs"
 sh "$NODE/scripts/docs/docs.sh"
 
-echo "[.] Creating hybridd release..."
+echo "[.] Creating hybrixd release..."
 
 # Create path if required, clean otherwise
 mkdir -p "$DIST"
@@ -30,7 +30,7 @@ echo "[.] Processing files"
 cd "$NODE"
 
 # Copy the main entrypoint
-cp "$NODE/hybridd" "$DIST/"
+cp "$NODE/hybrixd" "$DIST/"
 # Copy license
 cp "$NODE/LICENSE.md" "$DIST/"
 # Copy readme
@@ -41,7 +41,7 @@ cp "$NODE/package.json" "$DIST/"
 
 # Copy configuration
 # TODO create a default here
-cp "$NODE/hybridd.conf" "$DIST/"
+cp "$NODE/hybrixd.conf" "$DIST/"
 
 # Copy node_modules
 cp -r "$NODE/node_modules" "$DIST/"
@@ -85,6 +85,6 @@ for FILE in $(find -L . -name '*.js' -or -name '*.js.map' -or -name '*.css' -or 
 done
 
 echo "[.] Release created in node/dist"
-echo "[.] Make sure you have a proper hybridd.conf and node binaries."
+echo "[.] Make sure you have a proper hybrixd.conf and node binaries."
 export PATH="$OLDPATH"
 cd "$WHEREAMI"

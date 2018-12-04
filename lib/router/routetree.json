@@ -93,7 +93,7 @@
       },
       "unspent": {
         "_ref" : {
-          "_help" : "Retrieve the unspent. Unspent is a bitcoin related term that in hybridd is used for pretransactional data. Bitcoin: unspent means available inputs for creating a transaction. Ethereum: unspent means the most recent nonce of the cryptocurrency account needed for constructing a transaction.  NXT: unspent means the server reply information needed to construct a deterministic transaction.",
+          "_help" : "Retrieve the unspent. Unspent is a bitcoin related term that in hybrixd is used for pretransactional data. Bitcoin: unspent means available inputs for creating a transaction. Ethereum: unspent means the most recent nonce of the cryptocurrency account needed for constructing a transaction.  NXT: unspent means the server reply information needed to construct a deterministic transaction.",
           "_list" : "source_address",
           "_sample" : "_dummyaddress_",
           "_ref" : {
@@ -118,7 +118,7 @@
   },
   "c":{"_alias":"command"},
   "command":{
-    "_help":"Execute a command to hybridd.",
+    "_help":"Execute a command to hybrixd.",
     "_access":"root",
     "apiqueue" :{
       "_help" : "Commands to control and check the API Queue.",
@@ -138,11 +138,11 @@
       }
     },
     "reload" : {
-      "_help":"Commands to reload hybridd or specific components",
-      "_this":"Reload hybridd.",
-      "conf":"Reload hybridd configuration files.",
-      "modules":"Reload hybridd modules.",
-      "recipes":"Reload hybridd recipes."
+      "_help":"Commands to reload hybrixd or specific components",
+      "_this":"Reload hybrixd.",
+      "conf":"Reload hybrixd configuration files.",
+      "modules":"Reload hybrixd modules.",
+      "recipes":"Reload hybrixd recipes."
     },
     "scheduler" :{
       "_help" : "Commands to control and check the Scheduler.",
@@ -162,7 +162,7 @@
       "listen":"Resume the listening on the Rest Interface when it is closed.",
       "status":"Check the status of the Rest Interface."
     },
-    "stop" : "Stop hybridd."
+    "stop" : "Stop hybrixd."
   },
   "e":{"_alias":"engine"},
   "engine":{

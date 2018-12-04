@@ -1,5 +1,5 @@
 // (C) 2015 Internet of Coins / Metasync / Joachim de Koning
-// hybridd module - deterministic/module.js
+// hybrixd module - deterministic/module.js
 // Module to provide deterministic cryptography tools
 var scheduler = require('../../lib/scheduler');
 var DJB2 = require('../../common/crypto/hashDJB2'); // fast DJB2 hashing
@@ -18,8 +18,8 @@ function init () {
   var modes = {};
   var hashes = {};
   var mode = '';
-  for (var asset in global.hybridd.asset) {
-    mode = (typeof global.hybridd.asset[asset].mode !== 'undefined' ? global.hybridd.asset[asset].mode : false);
+  for (var asset in global.hybrixd.asset) {
+    mode = (typeof global.hybrixd.asset[asset].mode !== 'undefined' ? global.hybrixd.asset[asset].mode : false);
     if (mode) {
       // index the modes
       assets[asset] = mode;
@@ -35,14 +35,14 @@ function init () {
       }
     }
   }
-  global.hybridd.source['deterministic'].assets = assets;
-  global.hybridd.source['deterministic'].modes = modes;
-  global.hybridd.source['deterministic'].hashes = hashes;
+  global.hybrixd.source['deterministic'].assets = assets;
+  global.hybrixd.source['deterministic'].modes = modes;
+  global.hybrixd.source['deterministic'].hashes = hashes;
 }
 
-// standard functions of an asset store results in a process superglobal -> global.hybridd.process[processID]
+// standard functions of an asset store results in a process superglobal -> global.hybrixd.process[processID]
 // child processes are waited on, and the parent process is then updated by the postprocess() function
-// standard functions of an asset store results in a process superglobal -> global.hybridd.process[processID]
+// standard functions of an asset store results in a process superglobal -> global.hybrixd.process[processID]
 // child processes are waited on, and the parent process is then updated by the postprocess() function
 // http://docs.electrum.org/en/latest/protocol.html
 function exec (properties) {
@@ -60,25 +60,25 @@ function exec (properties) {
 
   switch (command[0]) {
     case 'assets':
-      subprocesses.push('stop(0,' + jstr(global.hybridd.source['deterministic'].assets) + ')');
+      subprocesses.push('stop(0,' + jstr(global.hybrixd.source['deterministic'].assets) + ')');
       break;
     case 'modes':
-      subprocesses.push('stop(0,' + jstr(global.hybridd.source['deterministic'].modes) + ')');
+      subprocesses.push('stop(0,' + jstr(global.hybrixd.source['deterministic'].modes) + ')');
       break;
     case 'hashes':
-      subprocesses.push('stop(0,' + jstr(global.hybridd.source['deterministic'].hashes) + ')');
+      subprocesses.push('stop(0,' + jstr(global.hybrixd.source['deterministic'].hashes) + ')');
       break;
     case 'hash':
       if (base) {
         var modetype = base;
-        for (var entry in global.hybridd.source['deterministic'].modes) {
-          if (global.hybridd.source['deterministic'].modes[entry].indexOf(symbol) !== -1) {
+        for (var entry in global.hybrixd.source['deterministic'].modes) {
+          if (global.hybrixd.source['deterministic'].modes[entry].indexOf(symbol) !== -1) {
             modetype = entry;
           }
         }
         var basemode = modetype.split('.')[0];
-        if (typeof global.hybridd.source['deterministic'].hashes[basemode] !== 'undefined') {
-          subprocesses.push('stop(0,{deterministic:"' + modetype + '",hash:"' + global.hybridd.source['deterministic'].hashes[basemode] + '"})');
+        if (typeof global.hybrixd.source['deterministic'].hashes[basemode] !== 'undefined') {
+          subprocesses.push('stop(0,{deterministic:"' + modetype + '",hash:"' + global.hybrixd.source['deterministic'].hashes[basemode] + '"})');
         } else {
           subprocesses.push('stop(1,"Error: Mode or symbol does not exist!")');
         }

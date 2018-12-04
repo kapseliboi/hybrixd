@@ -5,13 +5,13 @@ There are two different types of modules ($TYPE)
 - Sources : Output only
 - Engines : Input and Output
 
-A module consists of a folder `$HYBRIDD_HOME/modules/$MODULE_NAME`
+A module consists of a folder `$HYBRIXD_HOME/modules/$MODULE_NAME`
 containing at least the following files:
 
 - `module.js`         The main code
 - `package.json`      The package information
 
-and a recipe `$HYBRIDD_HOME/recipes/$TYPE.$MODULE_NAME.json`.
+and a recipe `$HYBRIXD_HOME/recipes/$TYPE.$MODULE_NAME.json`.
 
 
 ## module.js

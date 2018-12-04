@@ -1,9 +1,9 @@
 var fs = require('fs');
-// var id = 'hybridd-lib.js';
+
 var files = {
   qrtz: '../../lib/scheduler/quartz.js',
-  'hybrid-lib.js': '../../../interface/lib/interface.js',
-  'Hybridd': '../../docs/source/Hybridd.html',
+  'hybrix-lib.js': '../../../interface/lib/interface.js',
+  'hybrixd': '../../docs/source/hybrixd.html',
   'HelloWorld': '../../docs/source/HelloWorld.html',
   'cli': '../../docs/source/cli.html'
 };
@@ -93,12 +93,12 @@ for (var id in files) {
       }
       data += '<div class="command-header" onclick="toggleCommand(\'' + func.name + '\')"><b>' + func.name + '</b>';
 
-      if (id === 'hybrid-lib.js') { data += ' {'; }
+      if (id === 'hybrix-lib.js') { data += ' {'; }
       for (var j = 0; j < func.parameters.length; ++j) {
         var parameter = func.parameters[j];
         if (parameter.name.indexOf('.') !== -1 || id === 'qrtz') {
           var name;
-          if (id === 'hybrid-lib.js' && j > 1) { data += ', '; }
+          if (id === 'hybrix-lib.js' && j > 1) { data += ', '; }
 
           if (id === 'qrtz') {
             data += ' ';
@@ -113,7 +113,7 @@ for (var id in files) {
           }
         }
       }
-      if (id === 'hybrid-lib.js') { data += '}'; }
+      if (id === 'hybrix-lib.js') { data += '}'; }
       data += '<span class="quickDescription">' + func.description + '</span></div><div style="display:none;" class="command-body" id="' + func.name + '">';
       data += description;
       data += '<table>';

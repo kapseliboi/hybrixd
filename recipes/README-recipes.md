@@ -131,13 +131,13 @@ https://www.npmjs.com/package/node-rest-client#options-parameters )
 quartz                Defines the quartz code.
 
 router                Defines the routing definitions. See
-$HYBRIDD/lib/router/README-router.txt
+$HYBRIXD/lib/router/README-router.txt
 
 
 ## Quartz
 
 
-Cf. $HYBRIDD_HOME/lib/README-scheduler
+Cf. $HYBRIXD_HOME/lib/README-scheduler
 
 
 ## $ Operator  $PROPERTY

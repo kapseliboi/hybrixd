@@ -1,5 +1,5 @@
 // (C) 2015 Internet of Coins / Metasync / Joachim de Koning
-// hybridd module - lisk/module.js
+// hybrixd module - lisk/module.js
 // Module to connect to CryptoNote currencies like Monero/Bytecoin or any of their derivatives
 
 // required libraries in this context
@@ -33,7 +33,7 @@ function stop () {
 function tick (properties) {
 }
 
-// standard functions of an asset store results in a process superglobal -> global.hybridd.process[processID]
+// standard functions of an asset store results in a process superglobal -> global.hybrixd.process[processID]
 // child processes are waited on, and the parent process is then updated by the postprocess() function
 function exec (properties) {
   // decode our serialized properties
@@ -46,15 +46,15 @@ function exec (properties) {
   var command = [];
   var postprocessing = true;
   // set request to what command we are performing
-  global.hybridd.proc[processID].request = properties.command;
+  global.hybrixd.proc[processID].request = properties.command;
   // handle standard cases here, and construct the sequential process list
   switch (properties.command[0]) {
     case 'init':
     // set up REST API connection
       if (typeof target.user !== 'undefined' && typeof target.pass !== 'undefined') {
         var options_auth = {user: target.user, password: target.pass};
-        global.hybridd.asset[target.symbol].link = new Client(options_auth);
-      } else { global.hybridd.asset[target.symbol].link = new Client(); }
+        global.hybrixd.asset[target.symbol].link = new Client(options_auth);
+      } else { global.hybrixd.asset[target.symbol].link = new Client(); }
       // set up init probe command to check if Altcoin RPC is responding and connected
       subprocesses.push('func("lisk","link",{target:' + jstr(target) + ',command:["/api/blocks/getStatus"]})');
       subprocesses.push('func("lisk","post",{target:' + jstr(target) + ',command:["init"],data:data,data})');
@@ -158,7 +158,7 @@ function post (properties) {
   var postdata = properties.data;
   var factor = (typeof target.factor !== 'undefined' ? target.factor : null);
   // set data to what command we are performing
-  global.hybridd.proc[processID].data = properties.command;
+  global.hybrixd.proc[processID].data = properties.command;
   // handle the command
   if (postdata == null) {
     var success = false;
@@ -168,7 +168,7 @@ function post (properties) {
       case 'init':
       // set asset fee for Lisk transactions
         if (typeof postdata.fee !== 'undefined' && postdata.fee) {
-          global.hybridd.asset[target.symbol].fee = functions.fromInt(postdata.fee, factor);
+          global.hybrixd.asset[target.symbol].fee = functions.fromInt(postdata.fee, factor);
         }
         break;
       case 'status':
@@ -210,7 +210,7 @@ function post (properties) {
   scheduler.stop(processID, success ? 0 : 1, postdata);
 }
 
-// data returned by this connector is stored in a process superglobal -> global.hybridd.process[processID]
+// data returned by this connector is stored in a process superglobal -> global.hybrixd.process[processID]
 function link (properties) {
   var processID = properties.processID;
   var target = properties.target;
@@ -266,9 +266,9 @@ function link (properties) {
   // construct the APIqueue object
   APIqueue.add({ 'method': type,
     'link': 'asset["' + base + '"]', // make sure APIqueue can use initialized API link
-    'host': (typeof target.host !== 'undefined' ? target.host : global.hybridd.asset[base].host), // in case of token fallback to base asset hostname
+    'host': (typeof target.host !== 'undefined' ? target.host : global.hybrixd.asset[base].host), // in case of token fallback to base asset hostname
     'args': args,
-    'throttle': (typeof target.throttle !== 'undefined' ? target.throttle : global.hybridd.asset[base].throttle), // in case of token fallback to base asset throttle
+    'throttle': (typeof target.throttle !== 'undefined' ? target.throttle : global.hybrixd.asset[base].throttle), // in case of token fallback to base asset throttle
     'pid': processID,
     'target': target.symbol });
 }

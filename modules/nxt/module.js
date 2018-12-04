@@ -1,5 +1,5 @@
 // (C) 2015 Internet of Coins / Metasync / Joachim de Koning
-// hybridd module - nxt/module.js
+// hybrixd module - nxt/module.js
 // Module to connect to NXT or any of its derivatives
 
 // required libraries in this context
@@ -33,7 +33,7 @@ function stop () {
 function tick (properties) {
 }
 
-// standard functions of an asset store results in a process superglobal -> global.hybridd.process[processID]
+// standard functions of an asset store results in a process superglobal -> global.hybrixd.process[processID]
 // child processes are waited on, and the parent process is then updated by the postprocess() function
 // http://docs.nxt.org/en/latest/protocol.html
 function exec (properties) {
@@ -46,7 +46,7 @@ function exec (properties) {
   var fee = (typeof target.fee !== 'undefined' ? target.fee : 1);
   var subprocesses = [];
   // set request to what command we are performing
-  global.hybridd.proc[processID].request = properties.command;
+  global.hybrixd.proc[processID].request = properties.command;
   // define the source address/wallet
   var sourceaddr = (typeof properties.command[1] !== 'undefined' ? properties.command[1] : false);
   // handle standard cases here, and construct the sequential process list
@@ -56,11 +56,11 @@ function exec (properties) {
       // set up REST API connection
         if (typeof target.user !== 'undefined' && typeof target.pass !== 'undefined') {
           var options_auth = {user: target.user, password: target.pass};
-          global.hybridd.asset[target.symbol].link = new Client(options_auth);
-        } else { global.hybridd.asset[target.symbol].link = new Client(); }
+          global.hybrixd.asset[target.symbol].link = new Client(options_auth);
+        } else { global.hybrixd.asset[target.symbol].link = new Client(); }
 
-        if (typeof global.hybridd.asset[target.symbol].fee === 'undefined') {
-          global.hybridd.asset[target.symbol].fee = 1;
+        if (typeof global.hybrixd.asset[target.symbol].fee === 'undefined') {
+          global.hybrixd.asset[target.symbol].fee = 1;
         }
 
         // set up init probe command to check if RPC and block explorer are responding and connected
@@ -82,8 +82,8 @@ function exec (properties) {
       if (!functions.isToken(target.symbol)) {
         var fee = (typeof target.fee !== 'undefined' ? target.fee : null);
       } else {
-        var fee = (typeof global.hybridd.asset[base].fee !== 'undefined' ? global.hybridd.asset[base].fee : null);
-        factor = (typeof global.hybridd.asset[base].factor !== 'undefined' ? global.hybridd.asset[base].factor : null);
+        var fee = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee : null);
+        factor = (typeof global.hybrixd.asset[base].factor !== 'undefined' ? global.hybrixd.asset[base].factor : null);
       }
       subprocesses.push('stop((' + jstr(fee) + '!=null && ' + jstr(factor) + '!=null?0:1),' + (fee != null && factor != null ? '"' + functions.padFloat(fee, factor) + '"' : null) + ')');
       break;
@@ -151,8 +151,8 @@ function exec (properties) {
               subprocesses.push('stop(1,"Error: missing NXT public key!")');
             }
             if (target.symbol === 'burst') { // without doNotSign parameter
-              var fee = (typeof global.hybridd.asset[base].fee !== 'undefined' ? global.hybridd.asset[base].fee : null);
-              var feefactor = (typeof global.hybridd.asset[base].factor !== 'undefined' ? global.hybridd.asset[base].factor : null);
+              var fee = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee : null);
+              var feefactor = (typeof global.hybrixd.asset[base].factor !== 'undefined' ? global.hybrixd.asset[base].factor : null);
               // if(base==='nxt' && functions.toInt(amount,factor).toString()!==functions.toInt(amount,factor).toInteger().toString() ) {
               //  subprocesses.push('stop(1,"Error: NXT token transactions support only integer amounts!")');
               // }
@@ -165,8 +165,8 @@ function exec (properties) {
               }
               subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["sendMoney",["recipient=' + targetaddr + '",' + publicKey + ',"amountNQT=' + functions.toInt(amount, factor) + '","feeNQT=' + functions.toInt(fee, factor) + '","deadline=300","doNotSign=1","broadcast=false"] ]})');
             } else {
-              var fee = (typeof global.hybridd.asset[base].fee !== 'undefined' ? global.hybridd.asset[base].fee : null);
-              var feefactor = (typeof global.hybridd.asset[base].factor !== 'undefined' ? global.hybridd.asset[base].factor : null);
+              var fee = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee : null);
+              var feefactor = (typeof global.hybrixd.asset[base].factor !== 'undefined' ? global.hybrixd.asset[base].factor : null);
               // if(base==='nxt' && functions.toInt(amount,factor).toString()!==functions.toInt(amount,factor).toInteger().toString() ) {
               //  subprocesses.push('stop(1,"Error: NXT token transactions support only integer amounts!")');
               // }
@@ -208,8 +208,8 @@ function exec (properties) {
       if (!functions.isToken(target.symbol)) {
         var fee = (typeof target.fee !== 'undefined' ? target.fee : null);
       } else {
-        var fee = (typeof global.hybridd.asset[base].fee !== 'undefined' ? global.hybridd.asset[base].fee : null);
-        factor = (typeof global.hybridd.asset[base].factor !== 'undefined' ? global.hybridd.asset[base].factor : null);
+        var fee = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee : null);
+        factor = (typeof global.hybrixd.asset[base].factor !== 'undefined' ? global.hybrixd.asset[base].factor : null);
       }
       fee = functions.padFloat(fee, factor);
       // var base; already defined
@@ -244,7 +244,7 @@ function post (properties) {
   var postdata = properties.data;
   var factor = (typeof target.factor !== 'undefined' ? target.factor : null);
   // set data to what command we are performing
-  global.hybridd.proc[processID].data = properties.command;
+  global.hybrixd.proc[processID].data = properties.command;
   // handle the command
   if (postdata == null) {
     var success = false;
@@ -288,7 +288,7 @@ function post (properties) {
   scheduler.stop(processID, success ? 0 : 1, postdata);
 }
 
-// data returned by this connector is stored in a process superglobal -> global.hybridd.process[processID]
+// data returned by this connector is stored in a process superglobal -> global.hybrixd.process[processID]
 function link (properties) {
   var target = properties.target;
   var symbol = target.symbol;
@@ -301,7 +301,7 @@ function link (properties) {
   // separate method and arguments
   var method = command.shift();
   var params = command.shift();
-  // launch the asynchronous rest functions and store result in global.hybridd.proc[processID]
+  // launch the asynchronous rest functions and store result in global.hybrixd.proc[processID]
   // do a GET or PUT/POST based on the command input
   var type;
   if (typeof params === 'object') {
@@ -323,9 +323,9 @@ function link (properties) {
   // construct the APIqueue object
   APIqueue.add({ 'method': type,
     'link': 'asset["' + base + '"]', // make sure APIqueue can use initialized API link
-    'host': (typeof target.host !== 'undefined' ? target.host : global.hybridd.asset[base].host), // in case of token fallback to base asset hostname
+    'host': (typeof target.host !== 'undefined' ? target.host : global.hybrixd.asset[base].host), // in case of token fallback to base asset hostname
     'args': args,
-    'throttle': (typeof target.throttle !== 'undefined' ? target.throttle : global.hybridd.asset[base].throttle), // in case of token fallback to base asset throttle
+    'throttle': (typeof target.throttle !== 'undefined' ? target.throttle : global.hybrixd.asset[base].throttle), // in case of token fallback to base asset throttle
     'pid': processID,
     'target': target.symbol });
 }
