@@ -118,32 +118,34 @@ hybridd:
     # unzip the downloaded artifact to the directory 
     - unzip -o artifacts-web-wallet.zip -d artifacts-web-wallet/
     - rm -rf ./dist/modules/web-wallet
-    #- rm -rf ./modules/web-wallet
+    
     - cp -rf artifacts-web-wallet/ ./dist/modules/web-wallet/
-    #- cp -rf artifacts-web-wallet/ ./modules/web-wallet/
+    
     - ls ./dist/modules/web-wallet
-    #- ls ./modules/web-wallet
     - ls ./dist/modules/web-wallet/files
-    #- ls ./modules/web-wallet/files
+    - ls ./dist/modules/web-wallet/files/doc
     
     # remove the unzipped-files and the zip-file (|| true --> on error, no problem)
     - rm -rf  artifacts-web-wallet || true
     - rm -rf  artifacts-web-wallet.zip || true
-    
     
     # remove .git files from artifact
     - rm -rf ./.git* || true
     
     - cd $WORKING_DIR
     - ls -l
+    - ls ./
+    - ls ./files/doc
     
     # create a .version file
     - timestamp=$(date -u '+%Y-%m-%dT%H:%M:%S+00:00')
     - if [[ "$DEBUG_ENABLED" == "1"  ]]; then mode=debug; else mode=release; fi 
     - npmlist=$(npm list --only=prod --depth=0 -json)
+    
     #- set +e
     #- npmaudit=$(npm audit -json)
     #- set -e #, \"npm-audit\":${npmaudit}
+    
     - echo "{\"${CI_PROJECT_PATH_SLUG}\":{\"mode\":\"${mode}\", \"project_path\":\"${CI_PROJECT_PATH}\", \"commit_ref_name\":\"${CI_COMMIT_REF_NAME}\", \"commit_ref_slug\":\"${CI_COMMIT_REF_SLUG}\", \"commit_sha\":\"${CI_COMMIT_SHA}\", \"pipeline_url\":\"${CI_PIPELINE_URL}\", \"packaged\":\"${timestamp}\", \"npm-list\":${npmlist}}}" > .version
 
     # concatenate all .version files in the package
@@ -160,10 +162,11 @@ hybridd:
     - mv ./dist /tmp
     - rm -rf ./*
     - mv /tmp/dist/* ./
+    - ls ./files/doc
     
     # remove all files starting with a .
     - find -name ".*" -type f -delete
-    
+    - ls ./files/doc
     - setup_docker
     - build
   artifacts:
