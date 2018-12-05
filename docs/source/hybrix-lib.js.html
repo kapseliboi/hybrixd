@@ -1,27 +1,43 @@
-<h3>Introduction</h3>
-This library makes it possible for you to implement blockchain technology and deterministic code 
-routines in your front-end. This could be your browser and/or NodeJS application. It enables
-you to build and sign transactions, as well as communicate with a hybrix node over an
-encrypted communications channel.
-<br />
-<br />
-<a href="#TODO"><div class="download">Download</div></a>
-<br />
+<p>
+  <div class="download">Download for web<br/><span style="font-size:12px">&lt;script src="./hybrix-lib.web.js"&gt;&lt;/script&gt;</span></div>
+  <div class="download">Download for NodeJS<br/><span style="font-size:12px"">var Hybrix = require("./hybrix.nodejs");</span></div>
+</p>
 
-<h3>Getting started</h3>
-Want to start right away? Download the library, and put it on your server.
-<br />
-Here is an example of how to use hybrixd-lib.js in your front-end. First include the library
-using script tags.
-<br />
-<textarea>
-<script src='hybrixd-lib.js'></script>
-</textarea>
-<br />
-<br />
-Use the sequential call to put the library to work.
-<br />
-<textarea>
+<h3>Welcome to the hybrix Javascript Library guide</h3>
+
+This library can be used to connect software to leverage the capabilities of the hybrix platform. It serves two purposes: first to facilitate the logistics of interfacing with the hybrixd REST API, secondly to handle all client side operations securely and privately. This ensures that keys required for transaction never leave the users device and communication over an encrypted channel.
+
+
+
+<p><a onclick="document.getElementById('more').style.display='block'; event.target.style.display='none';">Read more...</a></p>
+<div id="more" style="display:none;">
+
+
+  <p><b>Getting started</b></p>
+
+  To start with your
+
+  <br />
+  Here is an example of how to use hybrixd-lib.js in your front-end. First include the library
+  using script tags.
+  <br />
+  <textarea>
+    <script src='hybrixd-lib.js'></script>
+  </textarea>
+  <br />
+  <br />
+  Use the sequential call to put the library to work.
+  <br />
+
+
+
+  html inclusion
+
+  nodejs inclusion
+
+  <p><b>Examples</b></p>
+
+  <textarea>
 hybrixd.sequential([
     'init', // Initialize hybrixd
     {username: '****************', password: '****************'},  // Define credentials
@@ -37,7 +53,19 @@ hybrixd.sequential([
    onError,
    onProgress
   );
-</textarea>
-<br />
+  </textarea>
+
+
+  Sequential / Waterfall / Streams / Callback Hell
+
+  Advice you to implement your favoroute flavour of handling the callback hell be it Promises, Streams, Async Waterfall
+
+
+
+
+
+
+
+</div>
 
 <h3>Command reference</h3>

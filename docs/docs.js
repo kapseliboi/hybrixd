@@ -115,9 +115,9 @@ var menuItems = {
   'HelloWorld': '/api/help/HelloWorld',
   'REST API': '/api/help',
   'hybrix-lib.js': '/api/help/hybrix-lib.js',
-  'hybrixd': '/api/help/hybrixd',
-  'cli': '/api/help/cli',
-  'qrtz': '/api/help/qrtz'
+  'hybrixd': '/api/help/hybrixd'
+//  'cli': '/api/help/cli',
+//  'qrtz': '/api/help/qrtz'
 };
 
 function initNavigation (currentMenuItem) {
