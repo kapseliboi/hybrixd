@@ -1,4 +1,42 @@
+<h3>Introduction</h3>
+The <i>hybrix</i> platform environment can be run on your own personal computer or server
+by downloading the daemon called <i>hybrixd</i>. This makes it possible to host your own
+wallet, be your own bank and have a powerful multi blockchain automated contract and transaction
+system at your fingertips.
 
-<div class="download">Download</div>
+<br />
+<br />
+<a href="https://github.com/internetofcoins/hybrixd/archive/master.zip"><div class="download">Download</div></a>
+<br />
 
-TODO
+<h3>Getting started</h3>
+
+<i>hybrixd</i> can be run on the following operating systems:
+
+<ul>
+ <li>GNU/Linux</li>
+ <li>MacOS (Darwin)</li>
+ <li>Windows (WSL)</li>
+</ul>
+
+To install <i>hybrixd</i> download the release above, and extract
+the zip file to your computer.
+<br />
+You can now start <i>hybrixd</i> using the following command:
+
+<textarea>
+./hybrixd
+</textarea>
+
+<h3>Using <i>hybrixd</i></h3>
+
+<b>Webwallet:</b> Browse to <a href="http://localhost:8080">http://localhost:8080</a> to access the web wallet.
+<br />
+<b>Command line interface:</b> Use '.\hybrixd --help' to view available command line options.
+<br />
+<b>REST-API:</b> Use <a href="http://localhost:1111">http://localhost:1111</a> or <a href="http://localhost:8080/api">http://localhost:8080/api</a> to access the REST API.
+<br />
+<h4>Configuring <i>hybrixd</i></h4>
+General settings for hybrixd can be configured using the configuration file: 'hybrixd.conf'
+See 'hybrixd.conf.example' for an example configuration.
+For the configuration and addition of tokens please see the recipe folder located in: recipes/
