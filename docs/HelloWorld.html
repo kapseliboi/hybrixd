@@ -474,5 +474,65 @@ function initNavigation (currentMenuItem) {
   data += '</div>';
   document.getElementById('navigation').innerHTML = data;
 }
-</script><div id="navigation"></div><script>initNavigation("HelloWorld")</script>TODO
+</script><div id="navigation"></div><script>initNavigation("HelloWorld")</script><h3>Welcome to the <i>hybrix</i> Hello World guide</h3>
+
+<i>hybrix</i> is a highly inclusive distributed platform environment to network and manage digital forms of value
+transfer, interlinking other decentralized networks. It solves the problem of a currently fragmented ecosystem
+of solutions in digital ledger technologies and alternative economies. The <i>hybrix</i> network runs through
+a collection of decentralized nodes and puts a lot of power at your fingertips.
+<br /><br />
+How about putting it to work?<br />
+Is is easy to use <i>hybrix</i>! Check out the examples below.
+
+<h4>Getting information about an asset</h4>
+ Any call can be done by simply entering an URL in your browser.
+ How about getting some information about an asset first?
+<textarea>
+  https://wallet1.internetofcoins.org/api/asset/btc/details
+</textarea>
+ The same call can be done effortlessly on the command line.
+<textarea>
+  ./hybrixd /asset/btc/details
+</textarea>
+
+<h4>Get the network fee for a transaction</h4>
+ Want to know what the average fee is for an Ethereum transaction?
+<textarea>
+  https://wallet1.internetofcoins.org/api/asset/eth/fee
+</textarea>
+ Or like this on the command line.
+<textarea>
+  ./hybrixd /asset/asset/eth/fee
+</textarea>
+
+<h4>Getting a cryptocurrency balance</h4>
+ How about getting the balance of a Bitcoin blockchain address?
+<textarea>
+  https://wallet1.internetofcoins.org/api/asset/btc/balance/1J3St3rp3hVsuLGhegbLWicyPL3NRD3YJ7
+</textarea>
+ Or from the prompt.
+<textarea>
+  ./hybrixd /asset/btc/balance/1J3St3rp3hVsuLGhegbLWicyPL3NRD3YJ7
+</textarea>
+
+<h4>Getting the contract address for an Ethereum token</h4>
+ It is also possible to find out the contract address or identifier of a token.
+<textarea>
+  https://wallet1.internetofcoins.org/api/asset/eth.xhy/contract
+</textarea>
+ And again for the terminal lovers.
+<textarea>
+  ./hybrixd /asset/eth.xhy/contract
+</textarea>
+
+<h4>Retrieving unspents</h4>
+ Retrieving the unspents (UXTO's) for a Bitcoin address can be done like this. If you want
+ to calculate the change for a transaction, you can specify another number than zero.
+<textarea>
+  https://wallet1.internetofcoins.org/api/asset/btc/unspent/1J3St3rp3hVsuLGhegbLWicyPL3NRD3YJ7/0
+</textarea>
+ By now you're probably getting an idea.
+<textarea>
+  ./hybrixd /asset/btc/unspent/1J3St3rp3hVsuLGhegbLWicyPL3NRD3YJ7/0
+</textarea>
 </body></html>

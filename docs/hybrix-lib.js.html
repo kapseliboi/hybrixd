@@ -717,7 +717,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
 </td><td></td></tr><tr><td>data.data</td><td>- An encrypted and stringified string, array or object.
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
-</td></tr></table><code style="display:block;white-space: pre;"> hybrixd.sequential([
+</td></tr></table><code style="display:block;white-space: pre;"> hybridd.sequential([
  'init',
  {username: '', password: ''}, 'session',
  {data:'Hello World!'}, 'encrypt',
@@ -735,7 +735,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
 </td><td></td></tr><tr><td>data.data</td><td>- A string, array or object.
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
-</td></tr></table><code style="display:block;white-space: pre;"> hybrixd.sequential([
+</td></tr></table><code style="display:block;white-space: pre;"> hybridd.sequential([
  'init',
  {username: '', password: ''}, 'session',
  {data:'Hello World!'}, 'encrypt'
@@ -803,7 +803,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
    </td></tr><tr><td>progressCallback</td><td>- Called whenever there is a progress updated. Passes a number between 0 and 1.
    
   </td></tr></table></div></div><div class="category">Host</div><div class="command-header" onclick="toggleCommand('addHost')"><b>addHost</b> {<i>host</i>}<span class="quickDescription">
- Add a hybrixd node as host.
+ Add a hybridd node as host.
 </span></div><div style="display:none;" class="command-body" id="addHost">
     Parallely executes several steps and collects results in a single object.
 <table><tr><td>data
@@ -812,11 +812,11 @@ But that result in serious problems due to asynchronicity. One could use the cal
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('rout')"><b>rout</b> {<i>query</i>, [<i>channel</i>], [<i>meta=false</i>], [<i>host</i>], [<i>retries=3</i>]}<span class="quickDescription">
- Make a routing call to hybrixd node
+ Make a routing call to hybridd node
 </span></div><div style="display:none;" class="command-body" id="rout">
     Parallely executes several steps and collects results in a single object.
 <table><tr><td>data
-</td><td></td></tr><tr><td>data.query</td><td>- The query path. For reference: [hybrixd API]{@link https://wallet1.internetofcoins.org/api/help}
+</td><td></td></tr><tr><td>data.query</td><td>- The query path. For reference: [Hybridd API]{@link https://wallet1.internetofcoins.org/api/help}
 </td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression
 </td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information)
 </td></tr><tr><td>data.host</td><td>- Select a specific host, if omitted one will be chosen at random.
@@ -824,15 +824,64 @@ But that result in serious problems due to asynchronicity. One could use the cal
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
-  </td></tr></table></div></div><div class="category">Init</div><div class="command-header" onclick="toggleCommand('init')"><b>init</b> {}<span class="quickDescription">
- Initialize the NACL factory if nacl has not been defined yet.
+  </td></tr></table></div></div><div class="category">Init</div><div class="command-header" onclick="toggleCommand('init')"><b>init</b> {<i>http</i>, <i>https</i>, <i>XMLHttpRequest</i>, <i>custom</i>}<span class="quickDescription">
+ Internet of Coins main API interface object. It connects to servers running Internet of Coins Hybridd using the REST API.  For reference: [Hybridd API]{@link https://wallet1.internetofcoins.org/api/help}
 </span></div><div style="display:none;" class="command-body" id="init">
     Parallely executes several steps and collects results in a single object.
-<table><tr><td>data</td><td>- Not used
+<table><tr><td>data</td><td>- one of the three methods below must be passed:
+</td></tr><tr><td>data.http</td><td>- a http object. ({@link https://nodejs.org/api/http.html})
+</td></tr><tr><td>data.https</td><td>- a https object. ({@link https://nodejs.org/api/https.html})
+</td></tr><tr><td>data.XMLHttpRequest</td><td>- a XMLHttpRequest object. ({@link https://developer.mozilla.org/nl/docs/Web/API/XMLHttpRequest})
+</td></tr><tr><td>data.custom</td><td>- a custom connector method which receives a hostname, query, dataCallback and errorCallback parameters and returns a string.
+</td></tr><tr><td>data</td><td>- Not used
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
-  </td></tr></table></div></div><div class="category">Session</div><div class="command-header" onclick="toggleCommand('createAccount')"><b>createAccount</b> {[<i>entropy</i>], [<i>offset</i>], [<i>pool</i>]}<span class="quickDescription">
+  </td></tr></table><code style="display:block;white-space: pre;"> // Node JS
+ var Hybridd = require('./hybridd.interface.nodejs');
+
+ var hybridd = new Hybridd.Interface({http:require('http')});
+
+ function onSucces(){
+  console.error('Done.');
+ }
+
+ function onError(){
+   console.error('Oops, something went wrong!');
+ }
+
+ hybridd.init(null, onSucces, onError);
+</code><code style="display:block;white-space: pre;"> <!-- Webpage -->
+ <script src="./hybridd.interface.web.js"></script> to html header
+ <script>
+ var hybridd = new Hybridd.Interface({XMLHttpRequest:XMLHttpRequest});
+
+ function onSucces(){
+  console.error('Done.');
+ }
+
+ function onError(){
+   console.error('Oops, something went wrong!');
+ }
+
+ hybridd.init(null, onSucces, onError);
+ </script>
+</code><code style="display:block;white-space: pre;"> hybridd.sequential([
+   'init', // Initialize hybridd
+   {username: '', password: ''}, // Define credentials
+   'session', // Create a local deterministic session
+   {host: 'http://localhost:1111/'}, // Define the host
+   'addHost', // Add and initialize the host
+   {symbol: 'dummy'}, // Define the asset
+   'addAsset', // Add and initialize the asset
+   {symbol: 'dummy', amount: 100}, // Define the transaction
+   'transaction' // Execute the transaction
+ ],
+  onSucces,
+  onError,
+  onProgress
+ );
+</code></div></div><div class="category">Session</div><div class="command-header" onclick="toggleCommand('createAccount')"><b>createAccount</b> {[<i>entropy</i>], [<i>offset</i>], [<i>pool</i>]}<span class="quickDescription">
  Create a new deterministic account with the entropy provided.
 </span></div><div style="display:none;" class="command-body" id="createAccount">
     Parallely executes several steps and collects results in a single object.
@@ -884,7 +933,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
    </td></tr><tr><td>data.meta</td><td>- TODO
    </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
    </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
-   </td></tr></table><code style="display:block;white-space: pre;">    hybrixd.sequential([
+   </td></tr></table><code style="display:block;white-space: pre;">    hybridd.sequential([
     'init',
     {username: '', password: ''}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
@@ -905,7 +954,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
    </td></tr><tr><td>data.meta</td><td>- TODO
    </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
    </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
-   </td></tr></table><code style="display:block;white-space: pre;">    hybrixd.sequential([
+   </td></tr></table><code style="display:block;white-space: pre;">    hybridd.sequential([
     'init',
     {username: '', password: ''}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
@@ -930,7 +979,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
    </td></tr><tr><td>data.meta</td><td>- TODO
    </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
    </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
-   </td></tr></table><code style="display:block;white-space: pre;">    hybrixd.sequential([
+   </td></tr></table><code style="display:block;white-space: pre;">    hybridd.sequential([
     'init',
     {username: '', password: ''}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
@@ -952,7 +1001,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
    </td></tr><tr><td>data.meta</td><td>- TODO
    </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
    </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
-   </td></tr></table><code style="display:block;white-space: pre;">    hybrixd.sequential([
+   </td></tr></table><code style="display:block;white-space: pre;">    hybridd.sequential([
     'init',
     {username: '', password: ''}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
