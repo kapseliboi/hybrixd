@@ -29,15 +29,17 @@ li {
   list-style-type: disc;
 }
 
-code {
+code,pre {
   background-color: #EEEEEE;
   padding: 5px 10px 6px;
-  margin: 4px 0;
   word-break: break-all;
   color: #222;
   margin: 0.25rem 0.25rem 0.25rem 0;
   overflow: scroll;
 }
+
+
+
 h1 {
   font-size: 32px;
   margin-bottom: 24px;
@@ -482,38 +484,56 @@ function initNavigation (currentMenuItem) {
 This library can be used to connect software to leverage the capabilities of the hybrix platform. It serves two purposes: first to facilitate the logistics of interfacing with the hybrixd REST API, secondly to handle all client side operations securely and privately. This ensures that keys required for transaction never leave the users device and communication over an encrypted channel.
 
 
-
 <p><a onclick="document.getElementById('more').style.display='block'; event.target.style.display='none';">Read more...</a></p>
 <div id="more" style="display:none;">
 
 
-  <p><b>Getting started</b></p>
+  <h3>Getting started</h3>
 
-  To start with your
+  <p>There are two flavours of the library: the web version to include in your webpage or front-end; and the node js version to include when you are building back-end software.</p>
 
-  <br />
-  Here is an example of how to use hybrixd-lib.js in your front-end. First include the library
-  using script tags.
-  <br />
-  <textarea>
-    <script src='hybrixd-lib.js'></script>
-  </textarea>
-  <br />
-  <br />
-  Use the sequential call to put the library to work.
-  <br />
+  <p>Here is a Hello World example of how to use hybrixd-lib.js in your front-end. First include the library
+    using script tags.</p>
+
+  <pre>
+    &lt;html&gt;
+    &nbsp;&lt;head&gt;
+    &nbsp;&nbsp;&lt;script src='hybrixd-lib.web.js'&gt;&lt;/script&gt;
+    &nbsp;&lt;/head&gt;
+    &nbsp;&lt;body&gt;
+     &nbsp;&lt;script&gt;
+       var hybrix = new Hybrix.Interface({XMLHttpRequest:XMLHttpRequest});
+       hybrix.sequential(
+        [
+         'init',                                                        // Initialize hybrix
+        ],
+        ()=>{alert('Hello World!');},                                   // Define action to execute on succesfull completion
+        error=>{alert('Oops, something went wrong: '+error);}     // Define action to exectue when an error is encountered
+       );
+     &nbsp;&lt;/script&gt;
+    &nbsp;&lt;/body&gt;
+    &lt;/html&gt;</pre>
+
+ <p>For nodejs projects:</p>
+
+ <pre>
+    //TODO include nacl
+    var Hybrix = require('hybrix-lib.nodejs.js');
+    var hybrix = new Hybrix.Interface({http:require('http')});
+    hybrix.sequential(
+     [
+      'init',                                                        // Initialize hybrix
+     ],
+     ()=>{console.log('Hello World!');},                             // Define action to execute on succesfull completion
+     error=>{console.log('Oops, something went wrong: '+error);}     // Define action to exectue when an error is encountered
+    );</pre>
 
 
+  <h3>Examples</h3>
 
-  html inclusion
-
-  nodejs inclusion
-
-  <p><b>Examples</b></p>
-
-  <textarea>
-hybrixd.sequential([
-    'init', // Initialize hybrixd
+  <pre>
+hybrix.sequential([
+    'init',                                                        // Initialize hybrix
     {username: '****************', password: '****************'},  // Define credentials
     'session',                                                     // Create a local deterministic session
     {host: 'http://localhost:1111/'},                              // Define the host
@@ -526,9 +546,13 @@ hybrixd.sequential([
    onSucces,
    onError,
    onProgress
-  );
-  </textarea>
+  );</pre>
 
+
+  <h3>Design</h3>
+
+
+  <h3>Handling Asyncronicity</h3>
 
   Sequential / Waterfall / Streams / Callback Hell
 
@@ -787,64 +811,15 @@ hybrixd.sequential([
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
-  </td></tr></table></div></div><div class="category">Init</div><div class="command-header" onclick="toggleCommand('init')"><b>init</b> {<i>http</i>, <i>https</i>, <i>XMLHttpRequest</i>, <i>custom</i>}<span class="quickDescription">
- Internet of Coins main API interface object. It connects to servers running Internet of Coins hybrixd using the REST API.  For reference: [hybrixd API]{@link https://wallet1.internetofcoins.org/api/help}
+  </td></tr></table></div></div><div class="category">Init</div><div class="command-header" onclick="toggleCommand('init')"><b>init</b> {}<span class="quickDescription">
+ Initialize the NACL factory if nacl has not been defined yet.
 </span></div><div style="display:none;" class="command-body" id="init">
     Parallely executes several steps and collects results in a single object.
-<table><tr><td>data</td><td>- one of the three methods below must be passed:
-</td></tr><tr><td>data.http</td><td>- a http object. ({@link https://nodejs.org/api/http.html})
-</td></tr><tr><td>data.https</td><td>- a https object. ({@link https://nodejs.org/api/https.html})
-</td></tr><tr><td>data.XMLHttpRequest</td><td>- a XMLHttpRequest object. ({@link https://developer.mozilla.org/nl/docs/Web/API/XMLHttpRequest})
-</td></tr><tr><td>data.custom</td><td>- a custom connector method which receives a hostname, query, dataCallback and errorCallback parameters and returns a string.
-</td></tr><tr><td>data</td><td>- Not used
+<table><tr><td>data</td><td>- Not used
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
-  </td></tr></table><code style="display:block;white-space: pre;"> // Node JS
- var hybrixd = require('./hybrixd.interface.nodejs');
-
- var hybrixd = new hybrixd.Interface({http:require('http')});
-
- function onSucces(){
-  console.error('Done.');
- }
-
- function onError(){
-   console.error('Oops, something went wrong!');
- }
-
- hybrixd.init(null, onSucces, onError);
-</code><code style="display:block;white-space: pre;"> <!-- Webpage -->
- <script src="./hybrixd.interface.web.js"></script> to html header
- <script>
- var hybrixd = new hybrixd.Interface({XMLHttpRequest:XMLHttpRequest});
-
- function onSucces(){
-  console.error('Done.');
- }
-
- function onError(){
-   console.error('Oops, something went wrong!');
- }
-
- hybrixd.init(null, onSucces, onError);
- </script>
-</code><code style="display:block;white-space: pre;"> hybrixd.sequential([
-   'init', // Initialize hybrixd
-   {username: '', password: ''}, // Define credentials
-   'session', // Create a local deterministic session
-   {host: 'http://localhost:1111/'}, // Define the host
-   'addHost', // Add and initialize the host
-   {symbol: 'dummy'}, // Define the asset
-   'addAsset', // Add and initialize the asset
-   {symbol: 'dummy', amount: 100}, // Define the transaction
-   'transaction' // Execute the transaction
- ],
-  onSucces,
-  onError,
-  onProgress
- );
-</code></div></div><div class="category">Session</div><div class="command-header" onclick="toggleCommand('createAccount')"><b>createAccount</b> {[<i>entropy</i>], [<i>offset</i>], [<i>pool</i>]}<span class="quickDescription">
+  </td></tr></table></div></div><div class="category">Session</div><div class="command-header" onclick="toggleCommand('createAccount')"><b>createAccount</b> {[<i>entropy</i>], [<i>offset</i>], [<i>pool</i>]}<span class="quickDescription">
  Create a new deterministic account with the entropy provided.
 </span></div><div style="display:none;" class="command-body" id="createAccount">
     Parallely executes several steps and collects results in a single object.
