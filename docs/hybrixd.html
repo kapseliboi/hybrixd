@@ -319,10 +319,17 @@ div.prompt{
   float:right;
 }
 .download{
+  background-image:url('download.svg');
+  background-repeat: no-repeat;
+  background-size: 100px 100px;
+  background-position: -30px center;
   border-radius: 6px;
   font-size: 14px;
-  padding: 8px 24px;
-  background-color: #7174D8;
+  background-color: #73c4c0;
+  padding-top:8px;
+  padding-bottom:8px;
+  padding-right:24px;
+  padding-left:54px;
   color: white;
   display: inline-block;
   font-weight: 600;
@@ -474,16 +481,17 @@ function initNavigation (currentMenuItem) {
   data += '</div>';
   document.getElementById('navigation').innerHTML = data;
 }
-</script><div id="navigation"></div><script>initNavigation("hybrixd")</script><h3>Introduction</h3>
+</script><div id="navigation"></div><script>initNavigation("hybrixd")</script><br />
+<br />
+<a href="https://github.com/internetofcoins/hybrixd/archive/master.zip"><div class="download">Download for Linux/MacOS</div></a>
+<br />
+
+<h3>Introduction</h3>
 The <i>hybrix</i> platform environment can be run on your own personal computer or server
 by downloading the daemon called <i>hybrixd</i>. This makes it possible to host your own
 wallet, be your own bank and have a powerful multi blockchain automated contract and transaction
 system at your fingertips.
 
-<br />
-<br />
-<a href="https://github.com/internetofcoins/hybrixd/archive/master.zip"><div class="download">Download</div></a>
-<br />
 
 <h3>Getting started</h3>
 
@@ -492,7 +500,6 @@ system at your fingertips.
 <ul>
  <li>GNU/Linux</li>
  <li>MacOS (Darwin)</li>
- <li>Windows (WSL)</li>
 </ul>
 
 To install <i>hybrixd</i> download the release above, and extract
