@@ -1,5 +1,5 @@
 // (C) 2015 Internet of Coins / Metasync / Joachim de Koning
-// hybrixd module - web-wallet/module.js
+// hybridd module - web-wallet/module.js
 // Module to provide the web wallet
 
 // required libraries in this context
