@@ -680,7 +680,7 @@ hybrixd.sequential([
 </td><td></td></tr><tr><td>data.data</td><td>- An encrypted and stringified string, array or object.
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
-</td></tr></table><code style="display:block;white-space: pre;"> hybrixd.sequential([
+</td></tr></table><code style="display:block;white-space: pre;"> hybridd.sequential([
  'init',
  {username: '', password: ''}, 'session',
  {data:'Hello World!'}, 'encrypt',
@@ -698,7 +698,7 @@ hybrixd.sequential([
 </td><td></td></tr><tr><td>data.data</td><td>- A string, array or object.
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
-</td></tr></table><code style="display:block;white-space: pre;"> hybrixd.sequential([
+</td></tr></table><code style="display:block;white-space: pre;"> hybridd.sequential([
  'init',
  {username: '', password: ''}, 'session',
  {data:'Hello World!'}, 'encrypt'
@@ -766,7 +766,7 @@ hybrixd.sequential([
    </td></tr><tr><td>progressCallback</td><td>- Called whenever there is a progress updated. Passes a number between 0 and 1.
    
   </td></tr></table></div></div><div class="category">Host</div><div class="command-header" onclick="toggleCommand('addHost')"><b>addHost</b> {<i>host</i>}<span class="quickDescription">
- Add a hybrixd node as host.
+ Add a hybridd node as host.
 </span></div><div style="display:none;" class="command-body" id="addHost">
     Parallely executes several steps and collects results in a single object.
 <table><tr><td>data
@@ -775,11 +775,11 @@ hybrixd.sequential([
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('rout')"><b>rout</b> {<i>query</i>, [<i>channel</i>], [<i>meta=false</i>], [<i>host</i>], [<i>retries=3</i>]}<span class="quickDescription">
- Make a routing call to hybrixd node
+ Make a routing call to hybridd node
 </span></div><div style="display:none;" class="command-body" id="rout">
     Parallely executes several steps and collects results in a single object.
 <table><tr><td>data
-</td><td></td></tr><tr><td>data.query</td><td>- The query path. For reference: [hybrixd API]{@link https://wallet1.internetofcoins.org/api/help}
+</td><td></td></tr><tr><td>data.query</td><td>- The query path. For reference: [Hybridd API]{@link https://wallet1.internetofcoins.org/api/help}
 </td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression
 </td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information)
 </td></tr><tr><td>data.host</td><td>- Select a specific host, if omitted one will be chosen at random.
@@ -788,7 +788,7 @@ hybrixd.sequential([
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
   </td></tr></table></div></div><div class="category">Init</div><div class="command-header" onclick="toggleCommand('init')"><b>init</b> {<i>http</i>, <i>https</i>, <i>XMLHttpRequest</i>, <i>custom</i>}<span class="quickDescription">
- Internet of Coins main API interface object. It connects to servers running Internet of Coins hybrixd using the REST API.  For reference: [hybrixd API]{@link https://wallet1.internetofcoins.org/api/help}
+ Internet of Coins main API interface object. It connects to servers running Internet of Coins Hybridd using the REST API.  For reference: [Hybridd API]{@link https://wallet1.internetofcoins.org/api/help}
 </span></div><div style="display:none;" class="command-body" id="init">
     Parallely executes several steps and collects results in a single object.
 <table><tr><td>data</td><td>- one of the three methods below must be passed:
@@ -801,9 +801,9 @@ hybrixd.sequential([
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
   </td></tr></table><code style="display:block;white-space: pre;"> // Node JS
- var hybrixd = require('./hybrixd.interface.nodejs');
+ var Hybridd = require('./hybridd.interface.nodejs');
 
- var hybrixd = new hybrixd.Interface({http:require('http')});
+ var hybridd = new Hybridd.Interface({http:require('http')});
 
  function onSucces(){
   console.error('Done.');
@@ -813,11 +813,11 @@ hybrixd.sequential([
    console.error('Oops, something went wrong!');
  }
 
- hybrixd.init(null, onSucces, onError);
+ hybridd.init(null, onSucces, onError);
 </code><code style="display:block;white-space: pre;"> <!-- Webpage -->
- <script src="./hybrixd.interface.web.js"></script> to html header
+ <script src="./hybridd.interface.web.js"></script> to html header
  <script>
- var hybrixd = new hybrixd.Interface({XMLHttpRequest:XMLHttpRequest});
+ var hybridd = new Hybridd.Interface({XMLHttpRequest:XMLHttpRequest});
 
  function onSucces(){
   console.error('Done.');
@@ -827,10 +827,10 @@ hybrixd.sequential([
    console.error('Oops, something went wrong!');
  }
 
- hybrixd.init(null, onSucces, onError);
+ hybridd.init(null, onSucces, onError);
  </script>
-</code><code style="display:block;white-space: pre;"> hybrixd.sequential([
-   'init', // Initialize hybrixd
+</code><code style="display:block;white-space: pre;"> hybridd.sequential([
+   'init', // Initialize hybridd
    {username: '', password: ''}, // Define credentials
    'session', // Create a local deterministic session
    {host: 'http://localhost:1111/'}, // Define the host
@@ -896,7 +896,7 @@ hybrixd.sequential([
    </td></tr><tr><td>data.meta</td><td>- TODO
    </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
    </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
-   </td></tr></table><code style="display:block;white-space: pre;">    hybrixd.sequential([
+   </td></tr></table><code style="display:block;white-space: pre;">    hybridd.sequential([
     'init',
     {username: '', password: ''}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
@@ -917,7 +917,7 @@ hybrixd.sequential([
    </td></tr><tr><td>data.meta</td><td>- TODO
    </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
    </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
-   </td></tr></table><code style="display:block;white-space: pre;">    hybrixd.sequential([
+   </td></tr></table><code style="display:block;white-space: pre;">    hybridd.sequential([
     'init',
     {username: '', password: ''}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
@@ -942,7 +942,7 @@ hybrixd.sequential([
    </td></tr><tr><td>data.meta</td><td>- TODO
    </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
    </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
-   </td></tr></table><code style="display:block;white-space: pre;">    hybrixd.sequential([
+   </td></tr></table><code style="display:block;white-space: pre;">    hybridd.sequential([
     'init',
     {username: '', password: ''}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
@@ -964,7 +964,7 @@ hybrixd.sequential([
    </td></tr><tr><td>data.meta</td><td>- TODO
    </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
    </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
-   </td></tr></table><code style="display:block;white-space: pre;">    hybrixd.sequential([
+   </td></tr></table><code style="display:block;white-space: pre;">    hybridd.sequential([
     'init',
     {username: '', password: ''}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
