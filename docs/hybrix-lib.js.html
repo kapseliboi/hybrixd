@@ -102,7 +102,7 @@ hr {
   opacity: .8;
 }
 .category{
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   margin-top: 32px;
 }
@@ -544,7 +544,7 @@ This library can be used to connect software to leverage the capabilities of the
 
  <p>Here only on parameter is passed but each member function has four parameters: data, onSuccess, onError and onProgress.</p>
 
- <p>The first is used to pass parameter data to the function, the last three are callback functions. onSuccess is called once when the method has finished successfully. onError is called once when an error is called. onProgress is called whenever an progress update is available, passing a number between 0 and 1, and 1 upon completion.</p>
+ <p>The first is used to pass parameter data to the function, the last three are callback functions. onSuccess is called once when the method has finished successfully. onError is called once when an error is encountred. onProgress is called whenever an progress update is available, passing a number between 0 and 1, and 1 upon completion.</p>
 
  <p>To first initialize the interface, then add a host and then add an asset one could do the following:</p>
 
@@ -586,7 +586,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
 
 </div>
 
-<h3>Command reference</h3>
+<h3>Reference</h3>
 <div class="category">AssetManagement</div><div class="command-header" onclick="toggleCommand('addAsset')"><b>addAsset</b> {<i>symbol</i>, [<i>clientModuleCodeBlob</i>], [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">
  Add an asset (crypto currency or token) to the session.
 </span></div><div style="display:none;" class="command-body" id="addAsset">
@@ -596,16 +596,12 @@ But that result in serious problems due to asynchronicity. One could use the cal
 </td></tr><tr><td>data.clientModuleCodeBlob</td><td>- A string containing the client module code blob.
 </td></tr><tr><td>data.host</td><td>- The host used for the calls.
 </td></tr><tr><td>data.channel</td><td>- The channel used for the calls. 'y' for encryped, 'z' for encryped and compresses;
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('asset')"><b>asset</b> {}<span class="quickDescription">
  Get detailed information about assets
 </span></div><div style="display:none;" class="command-body" id="asset">
  Get detailed information about assets
 <table><tr><td>data</td><td>- An array of symbols. For example: ['eth','btc','nxt']
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('getAddress')"><b>getAddress</b> {<i>symbol</i>}<span class="quickDescription">
  Get the address associated to a specific asset for current session.
@@ -613,8 +609,6 @@ But that result in serious problems due to asynchronicity. One could use the cal
  Get the address associated to a specific asset for current session.
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('getKeys')"><b>getKeys</b> {<i>symbol</i>}<span class="quickDescription">
  Get the keys associated to a specific asset for current session. Important: handle your private keys confidentially.
@@ -622,8 +616,6 @@ But that result in serious problems due to asynchronicity. One could use the cal
  Get the keys associated to a specific asset for current session. Important: handle your private keys confidentially.
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('getPrivateKey')"><b>getPrivateKey</b> {<i>symbol</i>}<span class="quickDescription">
  Get the private key associated to a specific asset for current session.
@@ -631,8 +623,6 @@ But that result in serious problems due to asynchronicity. One could use the cal
  Get the private key associated to a specific asset for current session.
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('getPublicKey')"><b>getPublicKey</b> {<i>symbol</i>}<span class="quickDescription">
  Get the public key associated to a specific asset for current session.
@@ -640,8 +630,6 @@ But that result in serious problems due to asynchronicity. One could use the cal
  Get the public key associated to a specific asset for current session.
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('initAsset')"><b>initAsset</b> {<i>assetDetails</i>, <i>clientModuleCodeBlob</i>}<span class="quickDescription">
  Initialize an asset (crypto currency or token)
@@ -650,8 +638,6 @@ But that result in serious problems due to asynchronicity. One could use the cal
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.assetDetails</td><td>- Asset details as retrieved by calling `/a/$SYMBOL/details`
 </td></tr><tr><td>data.clientModuleCodeBlob</td><td>- A string containing the client module code blob.
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('refreshAsset')"><b>refreshAsset</b> {[<i>symbol</i>]}<span class="quickDescription">
  TODO
@@ -659,9 +645,6 @@ But that result in serious problems due to asynchronicity. One could use the cal
  TODO
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- TODO
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
-</td></tr><tr><td>progressCallback</td><td>- Called whenever there is a progress updated. Passes a number between 0 and 1.
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('removeAsset')"><b>removeAsset</b> {<i>symbol</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">
     Remove an asset (crypto currency or token) from the session.
@@ -671,8 +654,6 @@ But that result in serious problems due to asynchronicity. One could use the cal
 </td><td>  </td></tr><tr><td>data.symbol</td><td>- The symbol of the asset
    </td></tr><tr><td>data.host</td><td>- The host used for the calls.
    </td></tr><tr><td>data.channel</td><td>- The channel used for the calls. 'y' for encryped, 'z' for encryped and compresses;
-   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
    
   </td></tr></table></div></div><div class="category">ClientModule</div><div class="command-header" onclick="toggleCommand('client')"><b>client</b> {[<i>symbol</i>], [<i>id</i>], <i>func</i>, <i>data</i>}<span class="quickDescription">
  Execute a function in a client module.
@@ -683,8 +664,6 @@ But that result in serious problems due to asynchronicity. One could use the cal
 </td></tr><tr><td>data.id</td><td>- id of the client module. (For assets this is the first part of the mode)
 </td></tr><tr><td>data.func</td><td>- The client module function to be called
 </td></tr><tr><td>data.data</td><td>- The data to be passed to the client module function
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('export')"><b>export</b> {<i>id</i>}<span class="quickDescription">
     Export a client module code blob.
@@ -692,8 +671,6 @@ But that result in serious problems due to asynchronicity. One could use the cal
     Export a client module code blob.
    <table><tr><td>data</td><td>- if empty, exports all blobs
    </td></tr><tr><td>data.id</td><td>- id of the client code blob.
-   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
    
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('import')"><b>import</b> {<i>id</i>, <i>blob</i>, [<i>check=true</i>], [<i>channel</i>], [<i>host</i>]}<span class="quickDescription">
     Import a client module code blob.
@@ -705,16 +682,12 @@ But that result in serious problems due to asynchronicity. One could use the cal
    </td></tr><tr><td>data.check</td><td>- check if there's a different version of the blob available at the host
    </td></tr><tr><td>data.channel</td><td>- TODO
    </td></tr><tr><td>data.host</td><td>- TODO
-   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
    
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('modules')"><b>modules</b> {}<span class="quickDescription">
     List locally available client modules.
    </span></div><div style="display:none;" class="command-body" id="modules">
     List locally available client modules.
    <table><tr><td>data</td><td>- ignored
-   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
    
   </td></tr></table></div></div><div class="category">Encryption</div><div class="command-header" onclick="toggleCommand('decrypt')"><b>decrypt</b> {<i>data</i>}<span class="quickDescription">
  Decrypt and parse data with user keys.
@@ -722,8 +695,6 @@ But that result in serious problems due to asynchronicity. One could use the cal
  Decrypt and parse data with user keys.
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.data</td><td>- An encrypted and stringified string, array or object.
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
 </td></tr></table><code style="display:block;white-space: pre;"> hybrixd.sequential([
  'init',
  {username: '', password: ''}, 'session',
@@ -740,8 +711,6 @@ But that result in serious problems due to asynchronicity. One could use the cal
  Stringify and encrypt data with user keys.
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.data</td><td>- A string, array or object.
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
 </td></tr></table><code style="display:block;white-space: pre;"> hybrixd.sequential([
  'init',
  {username: '', password: ''}, 'session',
@@ -758,8 +727,6 @@ But that result in serious problems due to asynchronicity. One could use the cal
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.data</td><td>- A string, array or object.
 </td></tr><tr><td>data.salt</td><td>- A string.
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
   </td></tr></table></div></div><div class="category">Flow</div><div class="command-header" onclick="toggleCommand('call')"><b>call</b> {<i>func</i>, <i>data</i>}<span class="quickDescription">
     Execute a custom function with callbacks. Usefull for sequential and parallel.
@@ -768,25 +735,18 @@ But that result in serious problems due to asynchronicity. One could use the cal
    <table><tr><td>data
 </td><td>  </td></tr><tr><td>data.func</td><td>- A function expecting a dataCallback, errorCallback and optional progressCallback.
    </td></tr><tr><td>data.data</td><td>- The data to be passed to the function.
-   </td></tr><tr><td>dataCallback</td><td>- Called with data provided.
-   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
-   </td></tr><tr><td>progressCallback</td><td>- Called whenever there is a progress updated. Passes a number between 0 and 1.
    
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('escapeString')"><b>escapeString</b> {}<span class="quickDescription">
     Identity function, outputs the data that is passed
    </span></div><div style="display:none;" class="command-body" id="escapeString">
     Identity function, outputs the data that is passed
    <table><tr><td>data</td><td>- data passed to  dataCallback
-   </td></tr><tr><td>dataCallback</td><td>- Called with data provided.
-   </td></tr><tr><td>errorCallback</td><td>- Ignored
    
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('id')"><b>id</b> {}<span class="quickDescription">
     Identity function, outputs the data that is passed
    </span></div><div style="display:none;" class="command-body" id="id">
     Identity function, outputs the data that is passed
    <table><tr><td>data</td><td>- data passed to  dataCallback
-   </td></tr><tr><td>dataCallback</td><td>- Called with data provided.
-   </td></tr><tr><td>errorCallback</td><td>- Ignored
    
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('parallel')"><b>parallel</b> {<i>label</i>, <i>label,data</i>, <i>label,step</i>}<span class="quickDescription">
     Parallely executes several steps and collects results in a single object.
@@ -796,18 +756,12 @@ But that result in serious problems due to asynchronicity. One could use the cal
    </td></tr><tr><td>data.label</td><td>- TODO
    </td></tr><tr><td>data.label.data</td><td>- TODO
    </td></tr><tr><td>data.label.step</td><td>- TODO
-   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful. Passes result data.
-   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs. Passes error.
-   </td></tr><tr><td>progressCallback</td><td>- Called whenever there is a progress updated. Passes a number between 0 and 1.
    
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('sequential')"><b>sequential</b> {}<span class="quickDescription">
     Sequentually executes functions and passes results to next step.
 </span></div><div style="display:none;" class="command-body" id="sequential">
     Sequentually executes functions and passes results to next step.
 <table><tr><td>data</td><td>- Sequential steps to be processed. An object indicates data that is supplied to the next step. A function is a transformation of the data of the previous step and given to the next step. A string is a method that used the data from the last step and supplies to the next step.
-   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful. Passes result data.
-   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs. Passes error.
-   </td></tr><tr><td>progressCallback</td><td>- Called whenever there is a progress updated. Passes a number between 0 and 1.
    
   </td></tr></table></div></div><div class="category">Host</div><div class="command-header" onclick="toggleCommand('addHost')"><b>addHost</b> {<i>host</i>}<span class="quickDescription">
  Add a hybrixd node as host.
@@ -815,8 +769,6 @@ But that result in serious problems due to asynchronicity. One could use the cal
  Add a hybrixd node as host.
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.host</td><td>- The hostname TODO  multiple in array?
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('rout')"><b>rout</b> {<i>query</i>, [<i>channel</i>], [<i>meta=false</i>], [<i>host</i>], [<i>retries=3</i>]}<span class="quickDescription">
  Make a routing call to hybrixd node
@@ -828,16 +780,12 @@ But that result in serious problems due to asynchronicity. One could use the cal
 </td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information)
 </td></tr><tr><td>data.host</td><td>- Select a specific host, if omitted one will be chosen at random.
 </td></tr><tr><td>data.retries</td><td>- Nr of retries for a call
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
   </td></tr></table></div></div><div class="category">Init</div><div class="command-header" onclick="toggleCommand('init')"><b>init</b> {}<span class="quickDescription">
  Initialize the NACL factory if nacl has not been defined yet.
 </span></div><div style="display:none;" class="command-body" id="init">
  Initialize the NACL factory if nacl has not been defined yet.
 <table><tr><td>data</td><td>- Not used
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
   </td></tr></table></div></div><div class="category">Session</div><div class="command-header" onclick="toggleCommand('createAccount')"><b>createAccount</b> {[<i>entropy</i>], [<i>offset</i>], [<i>pool</i>]}<span class="quickDescription">
  Create a new deterministic account with the entropy provided.
@@ -848,8 +796,6 @@ But that result in serious problems due to asynchronicity. One could use the cal
 </td></tr><tr><td>data.offset</td><td>- CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Use an offset to create multiple accounts from same entropy.
 </td></tr><tr><td>data.pool</td><td>-  CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Pool function can be overridden by a custom 1600 byte pool generator.
  deterministic
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('login')"><b>login</b> {<i>host</i>}<span class="quickDescription">
  Create an encrypted session with a host
@@ -857,16 +803,12 @@ But that result in serious problems due to asynchronicity. One could use the cal
  Create an encrypted session with a host
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.host</td><td>- The hostname TODO  multiple in array?
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('logout')"><b>logout</b> {}<span class="quickDescription">
  Log out of current session.
 </span></div><div style="display:none;" class="command-body" id="logout">
  Log out of current session.
 <table><tr><td>data</td><td>- Not used
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('session')"><b>session</b> {<i>username</i>, <i>password</i>}<span class="quickDescription">
  Create a local deterministic session and - if required - log out of current session.
@@ -875,8 +817,6 @@ But that result in serious problems due to asynchronicity. One could use the cal
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.username</td><td>- The username for the deterministic session
 </td></tr><tr><td>data.password</td><td>- The password for the deterministic session
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
   </td></tr></table></div></div><div class="category">Storage</div><div class="command-header" onclick="toggleCommand('load')"><b>load</b> {<i>key</i>, [<i>encrypted</i>], [<i>legacy</i>], [<i>host</i>], [<i>channel</i>], [<i>meta</i>]}<span class="quickDescription">
     TODO Stringify and encrypt data with user keys.
@@ -889,8 +829,6 @@ But that result in serious problems due to asynchronicity. One could use the cal
    </td></tr><tr><td>data.host</td><td>- TODO
    </td></tr><tr><td>data.channel</td><td>- TODO
    </td></tr><tr><td>data.meta</td><td>- TODO
-   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
    </td></tr></table><code style="display:block;white-space: pre;">    hybrixd.sequential([
     'init',
     {username: '', password: ''}, 'session',
@@ -910,8 +848,6 @@ But that result in serious problems due to asynchronicity. One could use the cal
    </td></tr><tr><td>data.host</td><td>- TODO
    </td></tr><tr><td>data.channel</td><td>- TODO
    </td></tr><tr><td>data.meta</td><td>- TODO
-   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
    </td></tr></table><code style="display:block;white-space: pre;">    hybrixd.sequential([
     'init',
     {username: '', password: ''}, 'session',
@@ -935,8 +871,6 @@ But that result in serious problems due to asynchronicity. One could use the cal
    </td></tr><tr><td>data.host</td><td>- TODO
    </td></tr><tr><td>data.channel</td><td>- TODO
    </td></tr><tr><td>data.meta</td><td>- TODO
-   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
    </td></tr></table><code style="display:block;white-space: pre;">    hybrixd.sequential([
     'init',
     {username: '', password: ''}, 'session',
@@ -957,8 +891,6 @@ But that result in serious problems due to asynchronicity. One could use the cal
    </td></tr><tr><td>data.host</td><td>- TODO
    </td></tr><tr><td>data.channel</td><td>- TODO
    </td></tr><tr><td>data.meta</td><td>- TODO
-   </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-   </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
    </td></tr></table><code style="display:block;white-space: pre;">    hybrixd.sequential([
     'init',
     {username: '', password: ''}, 'session',
@@ -980,8 +912,6 @@ But that result in serious problems due to asynchronicity. One could use the cal
 </td></tr><tr><td>data.key</td><td>- Required for submit
 </td></tr><tr><td>data.host</td><td>- TODO
 </td></tr><tr><td>data.channel</td><td>- TODO
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
 
   </td></tr></table></div></div><div class="category">Transaction</div><div class="command-header" onclick="toggleCommand('rawTransaction')"><b>rawTransaction</b> {<i>symbol</i>, <i>target</i>, <i>amount</i>, <i>fee</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">
  Creates a raw transaction
@@ -994,9 +924,6 @@ But that result in serious problems due to asynchronicity. One could use the cal
 </td></tr><tr><td>data.fee</td><td>   - The fee.
 </td></tr><tr><td>data.host</td><td>- The host that should be used.
 </td></tr><tr><td>data.channel</td><td> - Indicate the channel 'y' for encryption, 'z' for both encryption and compression
-</td></tr><tr><td>dataCallback</td><td> - Called when the method is succesful. Passes result data.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs. Passes error.
-</td></tr><tr><td>progressCallback</td><td>- Called whenever there is a progress updated. Passes a number between 0 and 1.
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('signTransaction')"><b>signTransaction</b> {<i>symbol</i>, <i>target</i>, <i>amount</i>, <i>fee</i>, <i>unspent</i>}<span class="quickDescription">
  Create a signed transaction
@@ -1008,8 +935,6 @@ But that result in serious problems due to asynchronicity. One could use the cal
 </td></tr><tr><td>data.amount</td><td>- The amount.
 </td></tr><tr><td>data.fee</td><td>- The fee.
 </td></tr><tr><td>data.unspent</td><td>- Pretransaction data.
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('transaction')"><b>transaction</b> {<i>symbol</i>, <i>target</i>, <i>amount</i>, <i>fee</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">
  Create and execute a transaction
@@ -1022,8 +947,5 @@ But that result in serious problems due to asynchronicity. One could use the cal
 </td></tr><tr><td>data.fee</td><td>- The fee.
 </td></tr><tr><td>data.host</td><td>- The host that should be used.
 </td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression
-</td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful. Passes result data.
-</td></tr><tr><td>errorCallback</td><td>- Called when an error occurs. Passes error.
-</td></tr><tr><td>progressCallback</td><td>- Called whenever there is a progress updated. Passes a number between 0 and 1.
  
   </td></tr></table></div></div></body></html>
