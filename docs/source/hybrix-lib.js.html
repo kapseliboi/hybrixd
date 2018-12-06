@@ -8,38 +8,56 @@
 This library can be used to connect software to leverage the capabilities of the hybrix platform. It serves two purposes: first to facilitate the logistics of interfacing with the hybrixd REST API, secondly to handle all client side operations securely and privately. This ensures that keys required for transaction never leave the users device and communication over an encrypted channel.
 
 
-
 <p><a onclick="document.getElementById('more').style.display='block'; event.target.style.display='none';">Read more...</a></p>
 <div id="more" style="display:none;">
 
 
-  <p><b>Getting started</b></p>
+  <h3>Getting started</h3>
 
-  To start with your
+  <p>There are two flavours of the library: the web version to include in your webpage or front-end; and the node js version to include when you are building back-end software.</p>
 
-  <br />
-  Here is an example of how to use hybrixd-lib.js in your front-end. First include the library
-  using script tags.
-  <br />
-  <textarea>
-    <script src='hybrixd-lib.js'></script>
-  </textarea>
-  <br />
-  <br />
-  Use the sequential call to put the library to work.
-  <br />
+  <p>Here is a Hello World example of how to use hybrixd-lib.js in your front-end. First include the library
+    using script tags.</p>
+
+  <pre>
+    &lt;html&gt;
+    &nbsp;&lt;head&gt;
+    &nbsp;&nbsp;&lt;script src='hybrixd-lib.web.js'&gt;&lt;/script&gt;
+    &nbsp;&lt;/head&gt;
+    &nbsp;&lt;body&gt;
+     &nbsp;&lt;script&gt;
+       var hybrix = new Hybrix.Interface({XMLHttpRequest:XMLHttpRequest});
+       hybrix.sequential(
+        [
+         'init',                                                        // Initialize hybrix
+        ],
+        ()=>{alert('Hello World!');},                                   // Define action to execute on succesfull completion
+        error=>{alert('Oops, something went wrong: '+error);}     // Define action to exectue when an error is encountered
+       );
+     &nbsp;&lt;/script&gt;
+    &nbsp;&lt;/body&gt;
+    &lt;/html&gt;</pre>
+
+ <p>For nodejs projects:</p>
+
+ <pre>
+    //TODO include nacl
+    var Hybrix = require('hybrix-lib.nodejs.js');
+    var hybrix = new Hybrix.Interface({http:require('http')});
+    hybrix.sequential(
+     [
+      'init',                                                        // Initialize hybrix
+     ],
+     ()=>{console.log('Hello World!');},                             // Define action to execute on succesfull completion
+     error=>{console.log('Oops, something went wrong: '+error);}     // Define action to exectue when an error is encountered
+    );</pre>
 
 
+  <h3>Examples</h3>
 
-  html inclusion
-
-  nodejs inclusion
-
-  <p><b>Examples</b></p>
-
-  <textarea>
-hybrixd.sequential([
-    'init', // Initialize hybrixd
+  <pre>
+hybrix.sequential([
+    'init',                                                        // Initialize hybrix
     {username: '****************', password: '****************'},  // Define credentials
     'session',                                                     // Create a local deterministic session
     {host: 'http://localhost:1111/'},                              // Define the host
@@ -52,9 +70,13 @@ hybrixd.sequential([
    onSucces,
    onError,
    onProgress
-  );
-  </textarea>
+  );</pre>
 
+
+  <h3>Design</h3>
+
+
+  <h3>Handling Asyncronicity</h3>
 
   Sequential / Waterfall / Streams / Callback Hell
 
