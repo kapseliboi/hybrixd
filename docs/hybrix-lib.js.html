@@ -108,6 +108,29 @@ But that result in serious problems due to asynchronicity. One could use the cal
 
 </div>
 
+<div class="try">
+  <h3>Live example</h3>
+  <textarea id="try" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+hybrix.sequential([
+   'init',                                                        // Initialize hybrix
+    {host: 'http://localhost:1111/'},  'addHost',                  // Add and initialize the host
+    {query: '/asset/dummy/details'}, 'rout'                                  // Add the asset
+  ],
+   onSuccess,                                                       // Define action to execute on successfull completion
+   onError,                                                        // Define action to exectue when an error is encountered
+   onProgress                                                      // Define action to exectue whenever there is a progress update
+  );
+  </textarea>
+  <div id="progressContainer">
+    <div id="progress"></div>
+  </div>
+  Result:
+  <div id="result">&nbsp;</div>
+  <input type="submit" value="Try it" onclick="runExample(event)">
+</div>
+
+
+
 <h3>Reference</h3>
 <div class="category">AssetManagement</div><div class="command-header" onclick="toggleCommand('addAsset')"><b>addAsset</b> {<i>symbol</i>, [<i>clientModuleCodeBlob</i>], [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">
  Add an asset (crypto currency or token) to the session.

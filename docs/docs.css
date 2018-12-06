@@ -89,6 +89,7 @@ hr {
   color:white;
 }
 #collapseAll {
+  display:none;
   float:right;
   cursor:pointer;
   background: #7174D8;
@@ -295,6 +296,14 @@ input[type="submit"] {
 input[type="submit"]:hover {
   opacity: .9;
 }
+
+input[type="submit"]:disabled,
+input[type="submit"][disabled], input[type="submit"][disabled]:hover{
+  background-color: #cccccc;
+  cursor:default;
+}
+
+
 select {
   border: 1px solid #dedede;
   background: white;
@@ -336,4 +345,37 @@ div.prompt{
 textarea{
   width:100%;
  font-family: monospace, monospace;
+}
+
+#try{
+  height:120px;
+}
+
+#progressContainer {
+  background-color:grey;
+}
+
+#result {
+  background-color:#dddddd;
+  font-family: monospace, monospace;
+
+}
+
+#progress {
+  text-align:center;
+  color:white;
+  font-weight: 600;
+  width:0;
+  height:20px;
+  background-color:blue;
+}
+
+div.try{
+  padding:10px;
+  background-color:rgba(48, 230, 135, 0.2);
+  border-color:rgb(48, 230, 135);
+  border-radius: 6px;
+  border-style:solid;
+  border-width:1px;
+
 }

@@ -79,13 +79,27 @@ function search (e) {
 function toggleCommand (id) {
   var e = document.getElementById(id);
   e.style.display = e.style.display === 'block' ? 'none' : 'block';
+  var collapseAll = document.getElementById('collapseAll');
+  if (e.style.display === 'none') {
+    var es = document.getElementsByClassName('command-body');
+    collapseAll.style.display = 'none';
+    for (let i = 1; i < es.length; ++i) {
+      if (es[i].style.display !== 'none') {
+        collapseAll.style.display = 'block';
+      }
+    }
+  } else {
+    collapseAll.style.display = 'block';
+  }
 }
 
 function collapseAll () {
   var es = document.getElementsByClassName('command-body');
-  for (let i = 1; i < es.length; ++i) {
+  for (let i = 0; i < es.length; ++i) {
     es[i].style.display = 'none';
   }
+  var collapseAll = document.getElementById('collapseAll');
+  collapseAll.style.display = 'none';
 }
 
 function toggleConsole () {
@@ -140,4 +154,24 @@ function initNavigation (currentMenuItem) {
   data += '<input id="search" onkeyup="search(event)" placeholder="Search" onclick="search"><br/>';
   data += '</div>';
   document.getElementById('navigation').innerHTML = data;
+}
+function runExample (event) {
+  var script = document.createElement('script');
+  script.onload = function () {
+    var hybrix = new Hybrixd.Interface({XMLHttpRequest: XMLHttpRequest});
+    var onProgress = progress => {
+      document.getElementById('progress').style.width = (progress * 100) + '%';
+      document.getElementById('progress').innerHTML = Math.floor(progress * 100) + '%';
+    };
+    var onSuccess = data => {
+      onProgress(1);
+      document.getElementById('result').innerHTML = JSON.stringify(data);
+    };
+    var onError = error => {
+      document.getElementById('result').innerHTML = 'Error:' + JSON.stringify(error);
+    };
+    eval(document.getElementById('try').value);
+  };
+  script.src = 'hybrix-lib.web.js';
+  document.head.appendChild(script);
 }
