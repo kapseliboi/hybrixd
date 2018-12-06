@@ -96,9 +96,9 @@ But that result in serious problems due to asynchronicity. One could use the cal
     {host: 'http://localhost:1111/'},  'addHost',                  // Add and initialize the host
     {symbol: 'dummy'}, 'addAsset'                                  // Add the asset
   ],
-   onSuccess,                                                       // Define action to execute on successfull completion
-   onError,                                                        // Define action to exectue when an error is encountered
-   onProgress                                                      // Define action to exectue whenever there is a progress update
+   onSuccess,                                                      // Define action to execute on successfull completion
+   onError,                                                        // Define action to execute when an error is encountered
+   onProgress                                                      // Define action to execute whenever there is a progress update
   );
  </pre>
 
@@ -108,17 +108,18 @@ But that result in serious problems due to asynchronicity. One could use the cal
 
 </div>
 
+<h3>Live example</h3>
+
 <div class="try">
-  <h3>Live example</h3>
   <textarea id="try" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 hybrix.sequential([
    'init',                                                        // Initialize hybrix
-    {host: 'http://localhost:1111/'},  'addHost',                  // Add and initialize the host
-    {query: '/asset/dummy/details'}, 'rout'                                  // Add the asset
+    {host: 'http://localhost:1111/'},  'addHost',                 // Add and initialize the host
+    {query: '/asset/dummy/details'}, 'rout'                       // Add the asset
   ],
-   onSuccess,                                                       // Define action to execute on successfull completion
-   onError,                                                        // Define action to exectue when an error is encountered
-   onProgress                                                      // Define action to exectue whenever there is a progress update
+   onSuccess,                                                     // Define action to execute on successfull completion
+   onError,                                                       // Define action to execute when an error is encountered
+   onProgress                                                     // Define action to execute whenever there is a progress update
   );
   </textarea>
   <div id="progressContainer">
