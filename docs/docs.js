@@ -115,14 +115,14 @@ var menuItems = {
   'HelloWorld': '/api/help/HelloWorld',
   'REST API': '/api/help',
   'hybrix-lib.js': '/api/help/hybrix-lib.js',
-  'hybrixd': '/api/help/hybrixd',
-  'cli': '/api/help/cli',
-  'qrtz': '/api/help/qrtz'
+  'hybrixd': '/api/help/hybrixd'
+//  'cli': '/api/help/cli',
+//  'qrtz': '/api/help/qrtz'
 };
 
 function initNavigation (currentMenuItem) {
   var data = '';
-  data += '<h1>hybrix : ' + currentMenuItem + '</h1> ';
+  data += '<img src="/api/help/hybrix.png"/ style="width:300px;"/><br/>';
   for (var menuItem in menuItems) {
     if (currentMenuItem === menuItem) {
       data += '<a class="menuItem current">' + menuItem + '</a> ';
@@ -136,6 +136,8 @@ function initNavigation (currentMenuItem) {
   data += '<a id="collapseAll" onclick="collapseAll()">Collapse all</a>';
   data += '<br/>';
   data += '<br/>';
+  data += '<div class="subnav"> ';
   data += '<input id="search" onkeyup="search(event)" placeholder="Search" onclick="search"><br/>';
+  data += '</div>';
   document.getElementById('navigation').innerHTML = data;
 }
