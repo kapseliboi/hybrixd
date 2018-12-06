@@ -53,39 +53,52 @@ This library can be used to connect software to leverage the capabilities of the
     );</pre>
 
 
-  <h3>Examples</h3>
+ <h3>Callbacks</h3>
 
-  <pre>
-hybrix.sequential([
+ Each command is implemented as a member function of the Hybrix.Interface class. Adding a host be done as follows:
+
+ <pre>hybrix.addHost({host:'https://www.myhost.io'});</pre>
+
+ <p>Each member function has four parameters: data, onSucces, onError and onProgress.</p>
+
+ <p>The first is used to pass parameter data to the function, the last three are callback functions. onSucces is called once when the method has finished succesfully. onError is called once when an error is called. onProgress is called whenever an progress update is available, passing a number between 0 and 1, and 1 upon completion.</p>
+
+ <p>To first Initialize the interface, then add a host and then add an asset one could do the following:</p>
+
+ <pre>
+hybrix.init();                                                     // This is an asynchronious function. It can take some time to complete.
+hybrix.addHost({host:'https://www.myhost.io'});  <font color="red">// Problem! This will try to add the host before the initialization is done.</font>
+hybrix.addAsset({symbol:'btc'});                 <font color="red">// Problem! This will try to add the host before the initialization and/or addition of the host is done.</font>
+ </pre>
+
+But that result in serious problems due to asynchronicity. One could use the callbacks to ensure execute order.
+
+ <pre>hybrix.init(null,
+                  function(){
+                    hybrix.addHost({host:'https://www.myhost.io'}, // This will now be called after initialization is succesfully completed.
+                      function(){
+                       hybrix.addAsset({symbol:'btc'};             // This will now be called after adding the host is succesfully completed.
+                      }
+                    );
+                  }
+                 );</pre>
+
+ <p>Note that adding more steps or error handling will end up with code that is both very hard to read and maintain. (Sometimes dubbed as 'callback hell'.) To mitigate this the library comes equiped with a sequential and a parallel command to handle these asynchronious call flows. With an added bonus of handling the progress for combined commands as well.</p>
+
+ <pre>
+  hybrix.sequential([
     'init',                                                        // Initialize hybrix
-    {username: '****************', password: '****************'},  // Define credentials
-    'session',                                                     // Create a local deterministic session
-    {host: 'http://localhost:1111/'},                              // Define the host
-    'addHost',                                                     // Add and initialize the host
-    {symbol: 'dummy'},                                             // Define the asset
-    'addAsset',                                                    // Add and initialize the asset
-    {symbol: 'dummy', amount: 100},                                // Define the transaction
-    'transaction'                                                  // Execute the transaction
+    {host: 'http://localhost:1111/'},  'addHost',                  // Add and initialize the host
+    {symbol: 'dummy'}, 'addAsset'                                  // Add the asset
   ],
-   onSucces,
-   onError,
-   onProgress
-  );</pre>
+   onSucces,                                                       // Define action to execute on succesfull completion
+   onError,                                                        // Define action to exectue when an error is encountered
+   onProgress                                                      // Define action to exectue whenever there is a progress update
+  );
+ </pre>
 
 
-  <h3>Design</h3>
-
-
-  <h3>Handling Asyncronicity</h3>
-
-  Sequential / Waterfall / Streams / Callback Hell
-
-  Advice you to implement your favoroute flavour of handling the callback hell be it Promises, Streams, Async Waterfall
-
-
-
-
-
+ <p>For even more complex behaviour we advice you to implement your own favourite flavour method of handling the call flow, be it promises, streams, or async etc.</p>
 
 
 </div>
