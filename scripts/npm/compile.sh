@@ -51,7 +51,7 @@ cp -r "$NODE/node_modules" "$DIST/"
 
 
 # Only copy files certain with certain exenstions
-for FILE in $(find -L . -name '*.js' -or -name '*.js.map' -or -name '*.css' -or -name '*.json' -or -name '*.html' -or -name '*.ico' -or -name '*.svg' -or -name '*.lzma' -or -name '*.ttf' -or -name '*.woff' -or -name '*.woff2' -or -name '*.eot'); do
+for FILE in $(find -L . -name '*.js' -or -name '*.js.map' -or -name '*.css' -or -name '*.json' -or -name '*.html' -or -name '*.ico' -or -name '*.png' -or -name '*.svg' -or -name '*.lzma' -or -name '*.ttf' -or -name '*.woff' -or -name '*.woff2' -or -name '*.eot'); do
     # Skip files in ./common/node and ./common/node_modules
     if [ "$FILE" != "./common/node"* ]; then
 
