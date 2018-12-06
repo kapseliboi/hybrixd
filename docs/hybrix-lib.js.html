@@ -508,7 +508,7 @@ This library can be used to connect software to leverage the capabilities of the
          'init',                                                        // Initialize hybrix
         ],
         ()=>{alert('Hello World!');},                                   // Define action to execute on succesfull completion
-        error=>{alert('Oops, something went wrong: '+error);}     // Define action to exectue when an error is encountered
+        error=>{alert('Oops, something went wrong: '+error);}           // Define action to exectue when an error is encountered
        );
      &nbsp;&lt;/script&gt;
     &nbsp;&lt;/body&gt;
@@ -533,17 +533,17 @@ This library can be used to connect software to leverage the capabilities of the
 
  Each command is implemented as a member function of the Hybrix.Interface class. Adding a host be done as follows:
 
- <pre>hybrix.addHost({host:'https://www.myhost.io'});</pre>
+ <pre>hybrix.addHost({host:'https://www.example.com'});</pre>
 
- <p>Each member function has four parameters: data, onSucces, onError and onProgress.</p>
+ <p>Here only on parameter is passed but each member function has four parameters: data, onSucces, onError and onProgress.</p>
 
  <p>The first is used to pass parameter data to the function, the last three are callback functions. onSucces is called once when the method has finished succesfully. onError is called once when an error is called. onProgress is called whenever an progress update is available, passing a number between 0 and 1, and 1 upon completion.</p>
 
- <p>To first Initialize the interface, then add a host and then add an asset one could do the following:</p>
+ <p>To first initialize the interface, then add a host and then add an asset one could do the following:</p>
 
  <pre>
-hybrix.init();                                                     // This is an asynchronious function. It can take some time to complete.
-hybrix.addHost({host:'https://www.myhost.io'});  <font color="red">// Problem! This will try to add the host before the initialization is done.</font>
+hybrix.init();                                   // This is an asynchronious function. It can take some time to complete.
+hybrix.addHost({host:'https://www.example.com'});  <font color="red">// Problem! This will try to add the host before the initialization is done.</font>
 hybrix.addAsset({symbol:'btc'});                 <font color="red">// Problem! This will try to add the host before the initialization and/or addition of the host is done.</font>
  </pre>
 
@@ -551,7 +551,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
 
  <pre>hybrix.init(null,
                   function(){
-                    hybrix.addHost({host:'https://www.myhost.io'}, // This will now be called after initialization is succesfully completed.
+                    hybrix.addHost({host:'https://www.example.com'}, // This will now be called after initialization is succesfully completed.
                       function(){
                        hybrix.addAsset({symbol:'btc'};             // This will now be called after adding the host is succesfully completed.
                       }
@@ -559,7 +559,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
                   }
                  );</pre>
 
- <p>Note that adding more steps or error handling will end up with code that is both very hard to read and maintain. (Sometimes dubbed as 'callback hell'.) To mitigate this the library comes equiped with a sequential and a parallel command to handle these asynchronious call flows. With an added bonus of handling the progress for combined commands as well.</p>
+ <p>But adding more steps or error handling will end up with code that is both very hard to read and maintain. (This is sometimes dubbed as <i>callback hell</i>.) To mitigate this the library comes equiped with a sequential and a parallel command to handle these asynchronious call flows. With an added bonus of handling the progress for combined commands as well.</p>
 
  <pre>
   hybrix.sequential([
@@ -574,7 +574,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
  </pre>
 
 
- <p>For even more complex behaviour we advice you to implement your own favourite flavour method of handling the call flow, be it promises, streams, or async etc.</p>
+ <p>For even more complex behaviour we advice you to implement your own favourite flavour method of handling the call flow, be it <i>promises</i>, <i>streams</i>, or <i>async</i>, etc.</p>
 
 
 </div>
@@ -583,7 +583,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
 <div class="category">AssetManagement</div><div class="command-header" onclick="toggleCommand('addAsset')"><b>addAsset</b> {<i>symbol</i>, [<i>clientModuleCodeBlob</i>], [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">
  Add an asset (crypto currency or token) to the session.
 </span></div><div style="display:none;" class="command-body" id="addAsset">
-    Parallely executes several steps and collects results in a single object.
+ Add an asset (crypto currency or token) to the session.
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset
 </td></tr><tr><td>data.clientModuleCodeBlob</td><td>- A string containing the client module code blob.
@@ -595,7 +595,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('asset')"><b>asset</b> {}<span class="quickDescription">
  Get detailed information about assets
 </span></div><div style="display:none;" class="command-body" id="asset">
-    Parallely executes several steps and collects results in a single object.
+ Get detailed information about assets
 <table><tr><td>data</td><td>- An array of symbols. For example: ['eth','btc','nxt']
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
@@ -603,7 +603,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('getAddress')"><b>getAddress</b> {<i>symbol</i>}<span class="quickDescription">
  Get the address associated to a specific asset for current session.
 </span></div><div style="display:none;" class="command-body" id="getAddress">
-    Parallely executes several steps and collects results in a single object.
+ Get the address associated to a specific asset for current session.
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
@@ -612,7 +612,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('getKeys')"><b>getKeys</b> {<i>symbol</i>}<span class="quickDescription">
  Get the keys associated to a specific asset for current session. Important: handle your private keys confidentially.
 </span></div><div style="display:none;" class="command-body" id="getKeys">
-    Parallely executes several steps and collects results in a single object.
+ Get the keys associated to a specific asset for current session. Important: handle your private keys confidentially.
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
@@ -621,7 +621,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('getPrivateKey')"><b>getPrivateKey</b> {<i>symbol</i>}<span class="quickDescription">
  Get the private key associated to a specific asset for current session.
 </span></div><div style="display:none;" class="command-body" id="getPrivateKey">
-    Parallely executes several steps and collects results in a single object.
+ Get the private key associated to a specific asset for current session.
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
@@ -630,7 +630,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('getPublicKey')"><b>getPublicKey</b> {<i>symbol</i>}<span class="quickDescription">
  Get the public key associated to a specific asset for current session.
 </span></div><div style="display:none;" class="command-body" id="getPublicKey">
-    Parallely executes several steps and collects results in a single object.
+ Get the public key associated to a specific asset for current session.
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
@@ -639,7 +639,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('initAsset')"><b>initAsset</b> {<i>assetDetails</i>, <i>clientModuleCodeBlob</i>}<span class="quickDescription">
  Initialize an asset (crypto currency or token)
 </span></div><div style="display:none;" class="command-body" id="initAsset">
-    Parallely executes several steps and collects results in a single object.
+ Initialize an asset (crypto currency or token)
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.assetDetails</td><td>- Asset details as retrieved by calling `/a/$SYMBOL/details`
 </td></tr><tr><td>data.clientModuleCodeBlob</td><td>- A string containing the client module code blob.
@@ -649,7 +649,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('refreshAsset')"><b>refreshAsset</b> {[<i>symbol</i>]}<span class="quickDescription">
  TODO
 </span></div><div style="display:none;" class="command-body" id="refreshAsset">
-    Parallely executes several steps and collects results in a single object.
+ TODO
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- TODO
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
@@ -659,8 +659,8 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('removeAsset')"><b>removeAsset</b> {<i>symbol</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">
     Remove an asset (crypto currency or token) from the session.
    </span></div><div style="display:none;" class="command-body" id="removeAsset">
-    Parallely executes several steps and collects results in a single object.
-<table><tr><td>data
+    Remove an asset (crypto currency or token) from the session.
+   <table><tr><td>data
 </td><td>  </td></tr><tr><td>data.symbol</td><td>- The symbol of the asset
    </td></tr><tr><td>data.host</td><td>- The host used for the calls.
    </td></tr><tr><td>data.channel</td><td>- The channel used for the calls. 'y' for encryped, 'z' for encryped and compresses;
@@ -670,7 +670,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="category">ClientModule</div><div class="command-header" onclick="toggleCommand('client')"><b>client</b> {[<i>symbol</i>], [<i>id</i>], <i>func</i>, <i>data</i>}<span class="quickDescription">
  Execute a function in a client module.
 </span></div><div style="display:none;" class="command-body" id="client">
-    Parallely executes several steps and collects results in a single object.
+ Execute a function in a client module.
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol . Either this or the id needs to be defined.
 </td></tr><tr><td>data.id</td><td>- id of the client module. (For assets this is the first part of the mode)
@@ -682,8 +682,8 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('export')"><b>export</b> {<i>id</i>}<span class="quickDescription">
     Export a client module code blob.
    </span></div><div style="display:none;" class="command-body" id="export">
-    Parallely executes several steps and collects results in a single object.
-<table><tr><td>data</td><td>- if empty, exports all blobs
+    Export a client module code blob.
+   <table><tr><td>data</td><td>- if empty, exports all blobs
    </td></tr><tr><td>data.id</td><td>- id of the client code blob.
    </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
    </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
@@ -691,8 +691,8 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('import')"><b>import</b> {<i>id</i>, <i>blob</i>, [<i>check=true</i>], [<i>channel</i>], [<i>host</i>]}<span class="quickDescription">
     Import a client module code blob.
    </span></div><div style="display:none;" class="command-body" id="import">
-    Parallely executes several steps and collects results in a single object.
-<table><tr><td>data
+    Import a client module code blob.
+   <table><tr><td>data
 </td><td>  </td></tr><tr><td>data.id</td><td>- id of the client code blob.
    </td></tr><tr><td>data.blob</td><td>- the client code blob
    </td></tr><tr><td>data.check</td><td>- check if there's a different version of the blob available at the host
@@ -704,15 +704,15 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('modules')"><b>modules</b> {}<span class="quickDescription">
     List locally available client modules.
    </span></div><div style="display:none;" class="command-body" id="modules">
-    Parallely executes several steps and collects results in a single object.
-<table><tr><td>data</td><td>- ignored
+    List locally available client modules.
+   <table><tr><td>data</td><td>- ignored
    </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
    </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
    
   </td></tr></table></div></div><div class="category">Encryption</div><div class="command-header" onclick="toggleCommand('decrypt')"><b>decrypt</b> {<i>data</i>}<span class="quickDescription">
  Decrypt and parse data with user keys.
 </span></div><div style="display:none;" class="command-body" id="decrypt">
-    Parallely executes several steps and collects results in a single object.
+ Decrypt and parse data with user keys.
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.data</td><td>- An encrypted and stringified string, array or object.
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
@@ -730,7 +730,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </code></div></div><div class="command-header" onclick="toggleCommand('encrypt')"><b>encrypt</b> {<i>data</i>}<span class="quickDescription">
  Stringify and encrypt data with user keys.
 </span></div><div style="display:none;" class="command-body" id="encrypt">
-    Parallely executes several steps and collects results in a single object.
+ Stringify and encrypt data with user keys.
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.data</td><td>- A string, array or object.
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
@@ -747,7 +747,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </code></div></div><div class="command-header" onclick="toggleCommand('hash')"><b>hash</b> {<i>data</i>, [<i>salt</i>]}<span class="quickDescription">
  Stringify and create a DJB2 hash.
 </span></div><div style="display:none;" class="command-body" id="hash">
-    Parallely executes several steps and collects results in a single object.
+ Stringify and create a DJB2 hash.
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.data</td><td>- A string, array or object.
 </td></tr><tr><td>data.salt</td><td>- A string.
@@ -757,8 +757,8 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="category">Flow</div><div class="command-header" onclick="toggleCommand('call')"><b>call</b> {<i>func</i>, <i>data</i>}<span class="quickDescription">
     Execute a custom function with callbacks. Usefull for sequential and parallel.
    </span></div><div style="display:none;" class="command-body" id="call">
-    Parallely executes several steps and collects results in a single object.
-<table><tr><td>data
+    Execute a custom function with callbacks. Usefull for sequential and parallel.
+   <table><tr><td>data
 </td><td>  </td></tr><tr><td>data.func</td><td>- A function expecting a dataCallback, errorCallback and optional progressCallback.
    </td></tr><tr><td>data.data</td><td>- The data to be passed to the function.
    </td></tr><tr><td>dataCallback</td><td>- Called with data provided.
@@ -768,16 +768,16 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('escapeString')"><b>escapeString</b> {}<span class="quickDescription">
     Identity function, outputs the data that is passed
    </span></div><div style="display:none;" class="command-body" id="escapeString">
-    Parallely executes several steps and collects results in a single object.
-<table><tr><td>data</td><td>- data passed to  dataCallback
+    Identity function, outputs the data that is passed
+   <table><tr><td>data</td><td>- data passed to  dataCallback
    </td></tr><tr><td>dataCallback</td><td>- Called with data provided.
    </td></tr><tr><td>errorCallback</td><td>- Ignored
    
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('id')"><b>id</b> {}<span class="quickDescription">
     Identity function, outputs the data that is passed
    </span></div><div style="display:none;" class="command-body" id="id">
-    Parallely executes several steps and collects results in a single object.
-<table><tr><td>data</td><td>- data passed to  dataCallback
+    Identity function, outputs the data that is passed
+   <table><tr><td>data</td><td>- data passed to  dataCallback
    </td></tr><tr><td>dataCallback</td><td>- Called with data provided.
    </td></tr><tr><td>errorCallback</td><td>- Ignored
    
@@ -796,7 +796,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('sequential')"><b>sequential</b> {}<span class="quickDescription">
     Sequentually executes functions and passes results to next step.
 </span></div><div style="display:none;" class="command-body" id="sequential">
-    Parallely executes several steps and collects results in a single object.
+    Sequentually executes functions and passes results to next step.
 <table><tr><td>data</td><td>- Sequential steps to be processed. An object indicates data that is supplied to the next step. A function is a transformation of the data of the previous step and given to the next step. A string is a method that used the data from the last step and supplies to the next step.
    </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful. Passes result data.
    </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs. Passes error.
@@ -805,7 +805,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="category">Host</div><div class="command-header" onclick="toggleCommand('addHost')"><b>addHost</b> {<i>host</i>}<span class="quickDescription">
  Add a hybrixd node as host.
 </span></div><div style="display:none;" class="command-body" id="addHost">
-    Parallely executes several steps and collects results in a single object.
+ Add a hybrixd node as host.
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.host</td><td>- The hostname TODO  multiple in array?
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
@@ -814,7 +814,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('rout')"><b>rout</b> {<i>query</i>, [<i>channel</i>], [<i>meta=false</i>], [<i>host</i>], [<i>retries=3</i>]}<span class="quickDescription">
  Make a routing call to hybrixd node
 </span></div><div style="display:none;" class="command-body" id="rout">
-    Parallely executes several steps and collects results in a single object.
+ Make a routing call to hybrixd node
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.query</td><td>- The query path. For reference: [hybrixd API]{@link https://wallet1.internetofcoins.org/api/help}
 </td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression
@@ -827,7 +827,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="category">Init</div><div class="command-header" onclick="toggleCommand('init')"><b>init</b> {}<span class="quickDescription">
  Initialize the NACL factory if nacl has not been defined yet.
 </span></div><div style="display:none;" class="command-body" id="init">
-    Parallely executes several steps and collects results in a single object.
+ Initialize the NACL factory if nacl has not been defined yet.
 <table><tr><td>data</td><td>- Not used
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
@@ -835,7 +835,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="category">Session</div><div class="command-header" onclick="toggleCommand('createAccount')"><b>createAccount</b> {[<i>entropy</i>], [<i>offset</i>], [<i>pool</i>]}<span class="quickDescription">
  Create a new deterministic account with the entropy provided.
 </span></div><div style="display:none;" class="command-body" id="createAccount">
-    Parallely executes several steps and collects results in a single object.
+ Create a new deterministic account with the entropy provided.
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.entropy</td><td>- CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Entropy can be provided. Must be a sufficient random string of at least 482 bytes.
 </td></tr><tr><td>data.offset</td><td>- CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Use an offset to create multiple accounts from same entropy.
@@ -847,7 +847,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('login')"><b>login</b> {<i>host</i>}<span class="quickDescription">
  Create an encrypted session with a host
 </span></div><div style="display:none;" class="command-body" id="login">
-    Parallely executes several steps and collects results in a single object.
+ Create an encrypted session with a host
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.host</td><td>- The hostname TODO  multiple in array?
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
@@ -856,7 +856,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('logout')"><b>logout</b> {}<span class="quickDescription">
  Log out of current session.
 </span></div><div style="display:none;" class="command-body" id="logout">
-    Parallely executes several steps and collects results in a single object.
+ Log out of current session.
 <table><tr><td>data</td><td>- Not used
 </td></tr><tr><td>dataCallback</td><td>- Called when the method is succesful.
 </td></tr><tr><td>errorCallback</td><td>- Called when an error occurs.
@@ -864,7 +864,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('session')"><b>session</b> {<i>username</i>, <i>password</i>}<span class="quickDescription">
  Create a local deterministic session and - if required - log out of current session.
 </span></div><div style="display:none;" class="command-body" id="session">
-    Parallely executes several steps and collects results in a single object.
+ Create a local deterministic session and - if required - log out of current session.
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.username</td><td>- The username for the deterministic session
 </td></tr><tr><td>data.password</td><td>- The password for the deterministic session
@@ -874,8 +874,8 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="category">Storage</div><div class="command-header" onclick="toggleCommand('load')"><b>load</b> {<i>key</i>, [<i>encrypted</i>], [<i>legacy</i>], [<i>host</i>], [<i>channel</i>], [<i>meta</i>]}<span class="quickDescription">
     TODO Stringify and encrypt data with user keys.
    </span></div><div style="display:none;" class="command-body" id="load">
-    Parallely executes several steps and collects results in a single object.
-<table><tr><td>data
+    TODO Stringify and encrypt data with user keys.
+   <table><tr><td>data
 </td><td>  </td></tr><tr><td>data.key</td><td>- TODO
    </td></tr><tr><td>data.encrypted</td><td>- whether to encrypt the data with the user key, true by default.
    </td></tr><tr><td>data.legacy</td><td>- TODO
@@ -897,8 +897,8 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </code></div></div><div class="command-header" onclick="toggleCommand('meta')"><b>meta</b> {<i>key</i>, [<i>host</i>], [<i>channel</i>], [<i>meta</i>]}<span class="quickDescription">
     Retrieve the meta data for a storage key
    </span></div><div style="display:none;" class="command-body" id="meta">
-    Parallely executes several steps and collects results in a single object.
-<table><tr><td>data
+    Retrieve the meta data for a storage key
+   <table><tr><td>data
 </td><td>  </td></tr><tr><td>data.key</td><td>- TODO
    </td></tr><tr><td>data.host</td><td>- TODO
    </td></tr><tr><td>data.channel</td><td>- TODO
@@ -918,8 +918,8 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </code></div></div><div class="command-header" onclick="toggleCommand('save')"><b>save</b> {<i>key</i>, <i>value</i>, [<i>legacy=false</i>], [<i>encrypted=true</i>], [<i>work=true</i>], [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">
     Stringify and encrypt data with user keys.
    </span></div><div style="display:none;" class="command-body" id="save">
-    Parallely executes several steps and collects results in a single object.
-<table><tr><td>data
+    Stringify and encrypt data with user keys.
+   <table><tr><td>data
 </td><td>  </td></tr><tr><td>data.key</td><td>- TODO
    </td></tr><tr><td>data.value</td><td>- A string, array or object.
    </td></tr><tr><td>data.legacy</td><td>- TODO
@@ -943,8 +943,8 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </code></div></div><div class="command-header" onclick="toggleCommand('seek')"><b>seek</b> {<i>key</i>, [<i>legacy</i>], [<i>host</i>], [<i>channel</i>], [<i>meta</i>]}<span class="quickDescription">
     Check if data is associated to key
    </span></div><div style="display:none;" class="command-body" id="seek">
-    Parallely executes several steps and collects results in a single object.
-<table><tr><td>data
+    Check if data is associated to key
+   <table><tr><td>data
 </td><td>  </td></tr><tr><td>data.key</td><td>- TODO
    </td></tr><tr><td>data.legacy</td><td>- TODO
    </td></tr><tr><td>data.host</td><td>- TODO
@@ -965,7 +965,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </code></div></div><div class="command-header" onclick="toggleCommand('work')"><b>work</b> {<i>hash</i>, [<i>difficulty</i>], [<i>submit</i>], [<i>key</i>], [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">
  Perform Proof of Work
 </span></div><div style="display:none;" class="command-body" id="work">
-    Parallely executes several steps and collects results in a single object.
+ Perform Proof of Work
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.hash</td><td>- The hash that needs to be worked.
 </td></tr><tr><td>data.difficulty</td><td>- Difficulty level to use.
@@ -979,7 +979,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="category">Transaction</div><div class="command-header" onclick="toggleCommand('rawTransaction')"><b>rawTransaction</b> {<i>symbol</i>, <i>target</i>, <i>amount</i>, <i>fee</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">
  Creates a raw transaction
 </span></div><div style="display:none;" class="command-body" id="rawTransaction">
-    Parallely executes several steps and collects results in a single object.
+ Creates a raw transaction
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset
 </td></tr><tr><td>data.target</td><td>- The target address
@@ -994,7 +994,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('signTransaction')"><b>signTransaction</b> {<i>symbol</i>, <i>target</i>, <i>amount</i>, <i>fee</i>, <i>unspent</i>}<span class="quickDescription">
  Create a signed transaction
 </span></div><div style="display:none;" class="command-body" id="signTransaction">
-    Parallely executes several steps and collects results in a single object.
+ Create a signed transaction
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset.
 </td></tr><tr><td>data.target</td><td>- The target address.
@@ -1007,7 +1007,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('transaction')"><b>transaction</b> {<i>symbol</i>, <i>target</i>, <i>amount</i>, <i>fee</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">
  Create and execute a transaction
 </span></div><div style="display:none;" class="command-body" id="transaction">
-    Parallely executes several steps and collects results in a single object.
+ Create and execute a transaction
 <table><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset
 </td></tr><tr><td>data.target</td><td>- The target address

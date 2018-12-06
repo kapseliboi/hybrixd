@@ -118,7 +118,7 @@ for (var id in files) {
       }
       if (id === 'hybrix-lib.js') { data += '}'; }
       data += '<span class="quickDescription">' + func.description + '</span></div><div style="display:none;" class="command-body" id="' + func.name + '">';
-      data += description;
+      data += func.description;
       data += '<table>';
       for (var j = 0; j < func.parameters.length; ++j) {
         var parameter = func.parameters[j];

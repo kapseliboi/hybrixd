@@ -32,7 +32,7 @@ This library can be used to connect software to leverage the capabilities of the
          'init',                                                        // Initialize hybrix
         ],
         ()=>{alert('Hello World!');},                                   // Define action to execute on succesfull completion
-        error=>{alert('Oops, something went wrong: '+error);}     // Define action to exectue when an error is encountered
+        error=>{alert('Oops, something went wrong: '+error);}           // Define action to exectue when an error is encountered
        );
      &nbsp;&lt;/script&gt;
     &nbsp;&lt;/body&gt;
@@ -57,17 +57,17 @@ This library can be used to connect software to leverage the capabilities of the
 
  Each command is implemented as a member function of the Hybrix.Interface class. Adding a host be done as follows:
 
- <pre>hybrix.addHost({host:'https://www.myhost.io'});</pre>
+ <pre>hybrix.addHost({host:'https://www.example.com'});</pre>
 
- <p>Each member function has four parameters: data, onSucces, onError and onProgress.</p>
+ <p>Here only on parameter is passed but each member function has four parameters: data, onSucces, onError and onProgress.</p>
 
  <p>The first is used to pass parameter data to the function, the last three are callback functions. onSucces is called once when the method has finished succesfully. onError is called once when an error is called. onProgress is called whenever an progress update is available, passing a number between 0 and 1, and 1 upon completion.</p>
 
- <p>To first Initialize the interface, then add a host and then add an asset one could do the following:</p>
+ <p>To first initialize the interface, then add a host and then add an asset one could do the following:</p>
 
  <pre>
-hybrix.init();                                                     // This is an asynchronious function. It can take some time to complete.
-hybrix.addHost({host:'https://www.myhost.io'});  <font color="red">// Problem! This will try to add the host before the initialization is done.</font>
+hybrix.init();                                   // This is an asynchronious function. It can take some time to complete.
+hybrix.addHost({host:'https://www.example.com'});  <font color="red">// Problem! This will try to add the host before the initialization is done.</font>
 hybrix.addAsset({symbol:'btc'});                 <font color="red">// Problem! This will try to add the host before the initialization and/or addition of the host is done.</font>
  </pre>
 
@@ -75,7 +75,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
 
  <pre>hybrix.init(null,
                   function(){
-                    hybrix.addHost({host:'https://www.myhost.io'}, // This will now be called after initialization is succesfully completed.
+                    hybrix.addHost({host:'https://www.example.com'}, // This will now be called after initialization is succesfully completed.
                       function(){
                        hybrix.addAsset({symbol:'btc'};             // This will now be called after adding the host is succesfully completed.
                       }
@@ -83,7 +83,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
                   }
                  );</pre>
 
- <p>Note that adding more steps or error handling will end up with code that is both very hard to read and maintain. (Sometimes dubbed as 'callback hell'.) To mitigate this the library comes equiped with a sequential and a parallel command to handle these asynchronious call flows. With an added bonus of handling the progress for combined commands as well.</p>
+ <p>But adding more steps or error handling will end up with code that is both very hard to read and maintain. (This is sometimes dubbed as <i>callback hell</i>.) To mitigate this the library comes equiped with a sequential and a parallel command to handle these asynchronious call flows. With an added bonus of handling the progress for combined commands as well.</p>
 
  <pre>
   hybrix.sequential([
@@ -98,7 +98,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
  </pre>
 
 
- <p>For even more complex behaviour we advice you to implement your own favourite flavour method of handling the call flow, be it promises, streams, or async etc.</p>
+ <p>For even more complex behaviour we advice you to implement your own favourite flavour method of handling the call flow, be it <i>promises</i>, <i>streams</i>, or <i>async</i>, etc.</p>
 
 
 </div>
