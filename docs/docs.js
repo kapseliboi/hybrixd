@@ -165,10 +165,14 @@ function runExample (event) {
     };
     var onSuccess = data => {
       onProgress(1);
-      document.getElementById('result').innerHTML = JSON.stringify(data);
+      var result = document.getElementById('result');
+      result.classList.remove('error');
+      result.innerHTML = JSON.stringify(data);
     };
     var onError = error => {
-      document.getElementById('result').innerHTML = 'Error:' + JSON.stringify(error);
+      var result = document.getElementById('result');
+      result.classList.add('error');
+      result.innerHTML = 'Error:' + JSON.stringify(error);
     };
     eval(document.getElementById('try').value);
   };
