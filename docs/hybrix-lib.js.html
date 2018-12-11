@@ -137,7 +137,7 @@ hybrix.sequential([
  Add an asset (crypto currency or token) to the session.
 </span></div><div style="display:none;" class="command-body" id="addAsset">
  Add an asset (crypto currency or token) to the session.
-<table><tr><td>data
+<table class="parameters"><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset
 </td></tr><tr><td>data.clientModuleCodeBlob</td><td>- A string containing the client module code blob.
 </td></tr><tr><td>data.host</td><td>- The host used for the calls.
@@ -147,41 +147,41 @@ hybrix.sequential([
  Get detailed information about assets
 </span></div><div style="display:none;" class="command-body" id="asset">
  Get detailed information about assets
-<table><tr><td>data</td><td>- An array of symbols. For example: ['eth','btc','nxt']
+<table class="parameters"><tr><td>data</td><td>- An array of symbols. For example: ['eth','btc','nxt']
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('getAddress')"><b>getAddress</b> {<i>symbol</i>}<span class="quickDescription">
  Get the address associated to a specific asset for current session.
 </span></div><div style="display:none;" class="command-body" id="getAddress">
  Get the address associated to a specific asset for current session.
-<table><tr><td>data
+<table class="parameters"><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('getKeys')"><b>getKeys</b> {<i>symbol</i>}<span class="quickDescription">
  Get the keys associated to a specific asset for current session. Important: handle your private keys confidentially.
 </span></div><div style="display:none;" class="command-body" id="getKeys">
  Get the keys associated to a specific asset for current session. Important: handle your private keys confidentially.
-<table><tr><td>data
+<table class="parameters"><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('getPrivateKey')"><b>getPrivateKey</b> {<i>symbol</i>}<span class="quickDescription">
  Get the private key associated to a specific asset for current session.
 </span></div><div style="display:none;" class="command-body" id="getPrivateKey">
  Get the private key associated to a specific asset for current session.
-<table><tr><td>data
+<table class="parameters"><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('getPublicKey')"><b>getPublicKey</b> {<i>symbol</i>}<span class="quickDescription">
  Get the public key associated to a specific asset for current session.
 </span></div><div style="display:none;" class="command-body" id="getPublicKey">
  Get the public key associated to a specific asset for current session.
-<table><tr><td>data
+<table class="parameters"><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('initAsset')"><b>initAsset</b> {<i>assetDetails</i>, <i>clientModuleCodeBlob</i>}<span class="quickDescription">
  Initialize an asset (crypto currency or token)
 </span></div><div style="display:none;" class="command-body" id="initAsset">
  Initialize an asset (crypto currency or token)
-<table><tr><td>data
+<table class="parameters"><tr><td>data
 </td><td></td></tr><tr><td>data.assetDetails</td><td>- Asset details as retrieved by calling `/a/$SYMBOL/details`
 </td></tr><tr><td>data.clientModuleCodeBlob</td><td>- A string containing the client module code blob.
  
@@ -189,14 +189,14 @@ hybrix.sequential([
  TODO
 </span></div><div style="display:none;" class="command-body" id="refreshAsset">
  TODO
-<table><tr><td>data
+<table class="parameters"><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- TODO
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('removeAsset')"><b>removeAsset</b> {<i>symbol</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">
     Remove an asset (crypto currency or token) from the session.
    </span></div><div style="display:none;" class="command-body" id="removeAsset">
     Remove an asset (crypto currency or token) from the session.
-   <table><tr><td>data
+   <table class="parameters"><tr><td>data
 </td><td>  </td></tr><tr><td>data.symbol</td><td>- The symbol of the asset
    </td></tr><tr><td>data.host</td><td>- The host used for the calls.
    </td></tr><tr><td>data.channel</td><td>- The channel used for the calls. 'y' for encryped, 'z' for encryped and compresses;
@@ -205,7 +205,7 @@ hybrix.sequential([
  Execute a function in a client module.
 </span></div><div style="display:none;" class="command-body" id="client">
  Execute a function in a client module.
-<table><tr><td>data
+<table class="parameters"><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol . Either this or the id needs to be defined.
 </td></tr><tr><td>data.id</td><td>- id of the client module. (For assets this is the first part of the mode)
 </td></tr><tr><td>data.func</td><td>- The client module function to be called
@@ -215,14 +215,14 @@ hybrix.sequential([
     Export a client module code blob.
    </span></div><div style="display:none;" class="command-body" id="export">
     Export a client module code blob.
-   <table><tr><td>data</td><td>- if empty, exports all blobs
+   <table class="parameters"><tr><td>data</td><td>- if empty, exports all blobs
    </td></tr><tr><td>data.id</td><td>- id of the client code blob.
    
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('import')"><b>import</b> {<i>id</i>, <i>blob</i>, [<i>check=true</i>], [<i>channel</i>], [<i>host</i>]}<span class="quickDescription">
     Import a client module code blob.
    </span></div><div style="display:none;" class="command-body" id="import">
     Import a client module code blob.
-   <table><tr><td>data
+   <table class="parameters"><tr><td>data
 </td><td>  </td></tr><tr><td>data.id</td><td>- id of the client code blob.
    </td></tr><tr><td>data.blob</td><td>- the client code blob
    </td></tr><tr><td>data.check</td><td>- check if there's a different version of the blob available at the host
@@ -233,13 +233,13 @@ hybrix.sequential([
     List locally available client modules.
    </span></div><div style="display:none;" class="command-body" id="modules">
     List locally available client modules.
-   <table><tr><td>data</td><td>- ignored
+   <table class="parameters"><tr><td>data</td><td>- ignored
    
   </td></tr></table></div></div><div class="category">Encryption</div><div class="command-header" onclick="toggleCommand('decrypt')"><b>decrypt</b> {<i>data</i>}<span class="quickDescription">
  Decrypt and parse data with user keys.
 </span></div><div style="display:none;" class="command-body" id="decrypt">
  Decrypt and parse data with user keys.
-<table><tr><td>data
+<table class="parameters"><tr><td>data
 </td><td></td></tr><tr><td>data.data</td><td>- An encrypted and stringified string, array or object.
 </td></tr></table><code style="display:block;white-space: pre;"> hybrixd.sequential([
  'init',
@@ -255,7 +255,7 @@ hybrix.sequential([
  Stringify and encrypt data with user keys.
 </span></div><div style="display:none;" class="command-body" id="encrypt">
  Stringify and encrypt data with user keys.
-<table><tr><td>data
+<table class="parameters"><tr><td>data
 </td><td></td></tr><tr><td>data.data</td><td>- A string, array or object.
 </td></tr></table><code style="display:block;white-space: pre;"> hybrixd.sequential([
  'init',
@@ -270,7 +270,7 @@ hybrix.sequential([
  Stringify and create a DJB2 hash.
 </span></div><div style="display:none;" class="command-body" id="hash">
  Stringify and create a DJB2 hash.
-<table><tr><td>data
+<table class="parameters"><tr><td>data
 </td><td></td></tr><tr><td>data.data</td><td>- A string, array or object.
 </td></tr><tr><td>data.salt</td><td>- A string.
  
@@ -278,7 +278,7 @@ hybrix.sequential([
     Execute a custom function with callbacks. Usefull for sequential and parallel.
    </span></div><div style="display:none;" class="command-body" id="call">
     Execute a custom function with callbacks. Usefull for sequential and parallel.
-   <table><tr><td>data
+   <table class="parameters"><tr><td>data
 </td><td>  </td></tr><tr><td>data.func</td><td>- A function expecting a dataCallback, errorCallback and optional progressCallback.
    </td></tr><tr><td>data.data</td><td>- The data to be passed to the function.
    
@@ -286,19 +286,19 @@ hybrix.sequential([
     Identity function, outputs the data that is passed
    </span></div><div style="display:none;" class="command-body" id="escapeString">
     Identity function, outputs the data that is passed
-   <table><tr><td>data</td><td>- data passed to  dataCallback
+   <table class="parameters"><tr><td>data</td><td>- data passed to  dataCallback
    
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('id')"><b>id</b> {}<span class="quickDescription">
     Identity function, outputs the data that is passed
    </span></div><div style="display:none;" class="command-body" id="id">
     Identity function, outputs the data that is passed
-   <table><tr><td>data</td><td>- data passed to  dataCallback
+   <table class="parameters"><tr><td>data</td><td>- data passed to  dataCallback
    
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('parallel')"><b>parallel</b> {<i>label</i>, <i>label,data</i>, <i>label,step</i>}<span class="quickDescription">
     Parallely executes several steps and collects results in a single object.
 </span></div><div style="display:none;" class="command-body" id="parallel">
     Parallely executes several steps and collects results in a single object.
-<table><tr><td>data</td><td>- Parallel steps to be processed. TODO
+<table class="parameters"><tr><td>data</td><td>- Parallel steps to be processed. TODO
    </td></tr><tr><td>data.label</td><td>- TODO
    </td></tr><tr><td>data.label.data</td><td>- TODO
    </td></tr><tr><td>data.label.step</td><td>- TODO
@@ -307,20 +307,20 @@ hybrix.sequential([
     Sequentually executes functions and passes results to next step.
 </span></div><div style="display:none;" class="command-body" id="sequential">
     Sequentually executes functions and passes results to next step.
-<table><tr><td>data</td><td>- Sequential steps to be processed. An object indicates data that is supplied to the next step. A function is a transformation of the data of the previous step and given to the next step. A string is a method that used the data from the last step and supplies to the next step.
+<table class="parameters"><tr><td>data</td><td>- Sequential steps to be processed. An object indicates data that is supplied to the next step. A function is a transformation of the data of the previous step and given to the next step. A string is a method that used the data from the last step and supplies to the next step.
    
   </td></tr></table></div></div><div class="category">Host</div><div class="command-header" onclick="toggleCommand('addHost')"><b>addHost</b> {<i>host</i>}<span class="quickDescription">
  Add a hybrixd node as host.
 </span></div><div style="display:none;" class="command-body" id="addHost">
  Add a hybrixd node as host.
-<table><tr><td>data
+<table class="parameters"><tr><td>data
 </td><td></td></tr><tr><td>data.host</td><td>- The hostname TODO  multiple in array?
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('rout')"><b>rout</b> {<i>query</i>, [<i>channel</i>], [<i>meta=false</i>], [<i>host</i>], [<i>retries=3</i>]}<span class="quickDescription">
  Make a routing call to hybrixd node
 </span></div><div style="display:none;" class="command-body" id="rout">
  Make a routing call to hybrixd node
-<table><tr><td>data
+<table class="parameters"><tr><td>data
 </td><td></td></tr><tr><td>data.query</td><td>- The query path. For reference: [hybrixd API]{@link https://wallet1.internetofcoins.org/api/help}
 </td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression
 </td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information)
@@ -331,13 +331,13 @@ hybrix.sequential([
  Initialize the NACL factory if nacl has not been defined yet.
 </span></div><div style="display:none;" class="command-body" id="init">
  Initialize the NACL factory if nacl has not been defined yet.
-<table><tr><td>data</td><td>- Not used
+<table class="parameters"><tr><td>data</td><td>- Not used
  
   </td></tr></table></div></div><div class="category">Session</div><div class="command-header" onclick="toggleCommand('createAccount')"><b>createAccount</b> {[<i>entropy</i>], [<i>offset</i>], [<i>pool</i>]}<span class="quickDescription">
  Create a new deterministic account with the entropy provided.
 </span></div><div style="display:none;" class="command-body" id="createAccount">
  Create a new deterministic account with the entropy provided.
-<table><tr><td>data
+<table class="parameters"><tr><td>data
 </td><td></td></tr><tr><td>data.entropy</td><td>- CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Entropy can be provided. Must be a sufficient random string of at least 482 bytes.
 </td></tr><tr><td>data.offset</td><td>- CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Use an offset to create multiple accounts from same entropy.
 </td></tr><tr><td>data.pool</td><td>-  CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Pool function can be overridden by a custom 1600 byte pool generator.
@@ -347,20 +347,20 @@ hybrix.sequential([
  Create an encrypted session with a host
 </span></div><div style="display:none;" class="command-body" id="login">
  Create an encrypted session with a host
-<table><tr><td>data
+<table class="parameters"><tr><td>data
 </td><td></td></tr><tr><td>data.host</td><td>- The hostname TODO  multiple in array?
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('logout')"><b>logout</b> {}<span class="quickDescription">
  Log out of current session.
 </span></div><div style="display:none;" class="command-body" id="logout">
  Log out of current session.
-<table><tr><td>data</td><td>- Not used
+<table class="parameters"><tr><td>data</td><td>- Not used
  
   </td></tr></table></div></div><div class="command-header" onclick="toggleCommand('session')"><b>session</b> {<i>username</i>, <i>password</i>}<span class="quickDescription">
  Create a local deterministic session and - if required - log out of current session.
 </span></div><div style="display:none;" class="command-body" id="session">
  Create a local deterministic session and - if required - log out of current session.
-<table><tr><td>data
+<table class="parameters"><tr><td>data
 </td><td></td></tr><tr><td>data.username</td><td>- The username for the deterministic session
 </td></tr><tr><td>data.password</td><td>- The password for the deterministic session
  
@@ -368,7 +368,7 @@ hybrix.sequential([
     TODO Stringify and encrypt data with user keys.
    </span></div><div style="display:none;" class="command-body" id="load">
     TODO Stringify and encrypt data with user keys.
-   <table><tr><td>data
+   <table class="parameters"><tr><td>data
 </td><td>  </td></tr><tr><td>data.key</td><td>- TODO
    </td></tr><tr><td>data.encrypted</td><td>- whether to encrypt the data with the user key, true by default.
    </td></tr><tr><td>data.legacy</td><td>- TODO
@@ -389,7 +389,7 @@ hybrix.sequential([
     Retrieve the meta data for a storage key
    </span></div><div style="display:none;" class="command-body" id="meta">
     Retrieve the meta data for a storage key
-   <table><tr><td>data
+   <table class="parameters"><tr><td>data
 </td><td>  </td></tr><tr><td>data.key</td><td>- TODO
    </td></tr><tr><td>data.host</td><td>- TODO
    </td></tr><tr><td>data.channel</td><td>- TODO
@@ -408,7 +408,7 @@ hybrix.sequential([
     Stringify and encrypt data with user keys.
    </span></div><div style="display:none;" class="command-body" id="save">
     Stringify and encrypt data with user keys.
-   <table><tr><td>data
+   <table class="parameters"><tr><td>data
 </td><td>  </td></tr><tr><td>data.key</td><td>- TODO
    </td></tr><tr><td>data.value</td><td>- A string, array or object.
    </td></tr><tr><td>data.legacy</td><td>- TODO
@@ -431,7 +431,7 @@ hybrix.sequential([
     Check if data is associated to key
    </span></div><div style="display:none;" class="command-body" id="seek">
     Check if data is associated to key
-   <table><tr><td>data
+   <table class="parameters"><tr><td>data
 </td><td>  </td></tr><tr><td>data.key</td><td>- TODO
    </td></tr><tr><td>data.legacy</td><td>- TODO
    </td></tr><tr><td>data.host</td><td>- TODO
@@ -451,7 +451,7 @@ hybrix.sequential([
  Perform Proof of Work
 </span></div><div style="display:none;" class="command-body" id="work">
  Perform Proof of Work
-<table><tr><td>data
+<table class="parameters"><tr><td>data
 </td><td></td></tr><tr><td>data.hash</td><td>- The hash that needs to be worked.
 </td></tr><tr><td>data.difficulty</td><td>- Difficulty level to use.
 </td></tr><tr><td>data.submit</td><td>- Whether to submit the proof of work
@@ -463,7 +463,7 @@ hybrix.sequential([
  Creates a raw transaction
 </span></div><div style="display:none;" class="command-body" id="rawTransaction">
  Creates a raw transaction
-<table><tr><td>data
+<table class="parameters"><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset
 </td></tr><tr><td>data.target</td><td>- The target address
 </td></tr><tr><td>data.amount</td><td>- The amount that should be transferred
@@ -475,7 +475,7 @@ hybrix.sequential([
  Create a signed transaction
 </span></div><div style="display:none;" class="command-body" id="signTransaction">
  Create a signed transaction
-<table><tr><td>data
+<table class="parameters"><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset.
 </td></tr><tr><td>data.target</td><td>- The target address.
 </td></tr><tr><td>data.amount</td><td>- The amount.
@@ -486,7 +486,7 @@ hybrix.sequential([
  Create and execute a transaction
 </span></div><div style="display:none;" class="command-body" id="transaction">
  Create and execute a transaction
-<table><tr><td>data
+<table class="parameters"><tr><td>data
 </td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset
 </td></tr><tr><td>data.target</td><td>- The target address
 </td></tr><tr><td>data.amount</td><td>- The amount that should be transferred
