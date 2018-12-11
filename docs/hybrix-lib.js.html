@@ -127,6 +127,13 @@ But that result in serious problems due to asynchronicity. One could use the cal
        button.value="Try it";
        button.onclick = (event) => {
          document.getElementById('try').innerHTML= example.innerHTML.replace('http://localhost:1111',window.location.origin+'/api');
+         for(let option of document.getElementById('selectExample').options){
+           if(option.value===example.id){
+             option.selected='selected';
+           }
+         }
+         var tr = document.getElementById('try');
+         tr.scrollIntoView();
          runExample(event);
        }
        example.parentNode.insertBefore(button, example.nextSibling);
@@ -151,7 +158,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
  Add an asset (crypto currency or token) to the session.
 <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset</td></tr><tr><td>data.clientModuleCodeBlob</td><td>- A string containing the client module code blob.</td></tr><tr><td>data.host</td><td>- The host used for the calls.</td></tr><tr><td>data.channel</td><td>- The channel used for the calls. 'y' for encryped, 'z' for encryped and compresses;</td></tr></table><code class="example" title="addAsset" id="example58">hybrix.sequential([
     'init',
-    {username: '', password: ''}, 'session',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
     {symbol: 'dummy'}, 'addAsset'
     ]
@@ -162,7 +169,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
  Get detailed information about assets
 <table class="parameters"><tr><td>data</td><td>- An array of symbols. For example: ['eth','btc','nxt']</td></tr></table><code class="example" title="asset" id="example59">hybrix.sequential([
     'init',
-    {username: '', password: ''}, 'session',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
     TODO
     ]
@@ -173,7 +180,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
  Get the address associated to a specific asset for current session.
 <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.</td></tr></table><code class="example" title="getAddress" id="example60">hybrix.sequential([
     'init',
-    {username: '', password: ''}, 'session',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
     {symbol: 'dummy'}, 'getAddress'
     ]
@@ -184,7 +191,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
  Get the keys associated to a specific asset for current session. Important: handle your private keys confidentially.
 <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.</td></tr></table><code class="example" title="getKeys" id="example61">hybrix.sequential([
     'init',
-    {username: '', password: ''}, 'session',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
     {symbol: 'dummy'}, 'getKeys'
     ]
@@ -195,7 +202,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
  Get the private key associated to a specific asset for current session.
 <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.</td></tr></table><code class="example" title="getPrivateKey" id="example62">hybrix.sequential([
     'init',
-    {username: '', password: ''}, 'session',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
     {symbol: 'dummy'}, 'getPrivateKey'
     ]
@@ -206,7 +213,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
  Get the public key associated to a specific asset for current session.
 <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.</td></tr></table><code class="example" title="getPublicKey" id="example63">hybrix.sequential([
     'init',
-    {username: '', password: ''}, 'session',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
     {symbol: 'dummy'}, 'getPublicKey'
     ]
@@ -229,7 +236,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
  Execute a function in a client module.
 <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol . Either this or the id needs to be defined.</td></tr><tr><td>data.id</td><td>- id of the client module. (For assets this is the first part of the mode)</td></tr><tr><td>data.func</td><td>- The client module function to be called</td></tr><tr><td>data.data</td><td>- The data to be passed to the client module function</td></tr></table><code class="example" title="client" id="example64">hybrix.sequential([
     'init',
-    {username: '', password: ''}, 'session',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
     {symbol: 'dummy', func:'address', data:{}}, 'client'
     ]
@@ -252,7 +259,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
  Decrypt and parse data with user keys.
 <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.data</td><td>- An encrypted and stringified string, array or object.</td></tr></table><code class="example" title="decrypt" id="example65">hybrix.sequential([
  'init',
- {username: '', password: ''}, 'session',
+ {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
  {data:'Hello World!'}, 'encrypt',
  data=>{return {data:data}}, 'decrypt'
  ]
@@ -263,7 +270,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
  Stringify and encrypt data with user keys.
 <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.data</td><td>- A string, array or object.</td></tr></table><code class="example" title="encrypt" id="example66">hybrix.sequential([
  'init',
- {username: '', password: ''}, 'session',
+ {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
  {data:'Hello World!'}, 'encrypt'
  ]
    , onSuccess
@@ -315,7 +322,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
  Create an encrypted session with a host.
 <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.host</td><td>- The hostname for the hybrixd node.</td></tr></table><code class="example" title="login" id="example70">hybrix.sequential([
     'init',
-    {username: '', password: ''}, 'session',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
     {host: 'http://localhost:1111/'}, 'login'
     ]
@@ -326,7 +333,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
  Log out of current session.
 <table class="parameters"><tr><td>data</td><td>- Not used</td></tr></table><code class="example" title="logout" id="example71">hybrix.sequential([
     'init',
-    {username: '', password: ''}, 'session',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     'logout'
     ]
       , onSuccess
@@ -336,7 +343,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
  Create a local deterministic session and - if required - log out of current session.
 <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.username</td><td>- The username for the deterministic session</td></tr><tr><td>data.password</td><td>- The password for the deterministic session</td></tr></table><code class="example" title="session" id="example72">hybrix.sequential([
     'init',
-    {username: '', password: ''}, 'session'
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session'
     ]
       , onSuccess
       , onError
@@ -345,7 +352,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
     TODO Stringify and encrypt data with user keys.
    <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.encrypted</td><td>- whether to encrypt the data with the user key, true by default.</td></tr><tr><td>data.legacy</td><td>- A toggle to use a legacy storage method.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="load" id="example73">hybrix.sequential([
     'init',
-    {username: '', password: ''}, 'session',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
     {key:'Hello', value:'World!'}, 'save',
     {key:'Hello'}, 'load'
@@ -357,7 +364,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
     Retrieve the meta data for a storage key
    <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="meta" id="example74">hybrix.sequential([
     'init',
-    {username: '', password: ''}, 'session',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
     {key:'Hello', value:'World!'}, 'save',
     {key:'Hello'}, 'meta'
@@ -369,7 +376,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
     Stringify and encrypt data with user keys.
    <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.value</td><td>- A string, array or object.</td></tr><tr><td>data.legacy</td><td>- A toggle to use a legacy storage method.</td></tr><tr><td>data.encrypted</td><td>- whether to encrypt the data with the user key.</td></tr><tr><td>data.work</td><td>- whether to perform and submit proof of work.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="save" id="example75">hybrix.sequential([
     'init',
-    {username: '', password: ''}, 'session',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
     {key:'Hello', value:'World!'}, 'save',
     {key:'Hello'}, 'load'
@@ -381,7 +388,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
     Check if data is associated to key
    <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.legacy</td><td>- A toggle to use a legacy storage method.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="seek" id="example76">hybrix.sequential([
     'init',
-    {username: '', password: ''}, 'session',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
     {key:'Hello', value:'World!'}, 'save',
     {key:'Hello'}, 'load'
