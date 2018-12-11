@@ -126,7 +126,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
        option.innerHTML = example.title;
        selectExample.appendChild(option);
      }
-     document.getElementById('try').innerHTML=document.getElementById('exampleHelloWorld').innerHTML;
+     document.getElementById('try').innerHTML=document.getElementById('exampleHelloWorld').innerHTML.replace('http://localhost:1111',window.location.origin+'/api');
    },250);
   </script>
   <textarea id="try" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
