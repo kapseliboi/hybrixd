@@ -6,9 +6,11 @@
     "_help" : "Validates an address format",
     "_ref" : {
       "_list" : "symbol",
+      "_sample" : "dummy",
       "_ref" : {
         "_list" : "address",
-        "_this" : "Validate $ADDRESS for asset $SYMBOL using the wallet-address-validator module."
+        "_sample" : "_dummyaddress_",
+        "_this" : "Validate $ADDRESS for asset $SYMBOL."
       }
     }
   }

@@ -66,16 +66,17 @@
     ]
   },
   "router":{
-  	"done"  : "Test done()",
-  	"fail"  : "Test fail()",
-  	"data"  : "Test data()",
-  	"call"  : "Test call()",
-  	"each"  : "Test each()",
-  	"true"  : "Test true()",
-  	"flow"  : "Test flow()",
-  	"save"  : "Test save()",
-  	"load"  : "Test load()",
-  	"Y" : "Test ",
-  	"X" : "Test "
+    "_hidden" : true,
+    "done"  : "Test done()",
+    "fail"  : "Test fail()",
+    "data"  : "Test data()",
+    "call"  : "Test call()",
+    "each"  : "Test each()",
+    "true"  : "Test true()",
+    "flow"  : "Test flow()",
+    "save"  : "Test save()",
+    "load"  : "Test load()",
+    "Y" : "Test ",
+    "X" : "Test "
   }
 }
