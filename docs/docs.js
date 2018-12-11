@@ -158,6 +158,8 @@ function initNavigation (currentMenuItem) {
 function runExample (event) {
   var script = document.createElement('script');
   script.onload = function () {
+    var tr = document.getElementById('try');
+    tr.scrollIntoView();
     var hybrix = new Hybrixd.Interface({XMLHttpRequest: XMLHttpRequest});
     var progressBar = document.getElementById('progress');
     var onProgress = progress => {
