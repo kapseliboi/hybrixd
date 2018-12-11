@@ -125,7 +125,6 @@
     ]
   },
   "router" : {
-    "_hidden" : true,
     "test" : {
       "_list": "Test routine",
       "_ref" : {

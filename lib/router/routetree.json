@@ -250,17 +250,17 @@
       "_this" : "Retrieve the hash for a flat file result.",
       "_ellipsis": true
     },
-    "_help" : "Display the help website.",
+    "_help" : "Wchan can be used to retrieve parts of a file result.",
     "_ref":{
-      "_this" : "Display the help website.",
+      "_this" : "Retrieve file from given offset.",
       "_ellipsis": true,
       "_list":"offset",
       "_ref":{
-        "_this" : "Display the help website.",
+        "_this" : "Retrieve file from given offset with given length.",
         "_ellipsis": true,
         "_list":"length",
         "_ref":{
-          "_this" : "Display the help website.",
+          "_this" : "",
           "_list":"path",
           "_ellipsis": true
         }
