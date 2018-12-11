@@ -156,122 +156,260 @@ But that result in serious problems due to asynchronicity. One could use the cal
 <h3>Reference</h3>
 <div class="category">AssetManagement</div><div class="command-header" onclick="toggleCommand('addAsset')"><b>addAsset</b> {<i>symbol</i>, [<i>clientModuleCodeBlob</i>], [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">Add an asset (crypto currency or token) to the session.</span></div><div style="display:none;" class="command-body" id="addAsset">
  Add an asset (crypto currency or token) to the session.
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset</td></tr><tr><td>data.clientModuleCodeBlob</td><td>- A string containing the client module code blob.</td></tr><tr><td>data.host</td><td>- The host used for the calls.</td></tr><tr><td>data.channel</td><td>- The channel used for the calls. 'y' for encryped, 'z' for encryped and compresses;</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('asset')"><b>asset</b> {}<span class="quickDescription">Get detailed information about assets</span></div><div style="display:none;" class="command-body" id="asset">
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset</td></tr><tr><td>data.clientModuleCodeBlob</td><td>- A string containing the client module code blob.</td></tr><tr><td>data.host</td><td>- The host used for the calls.</td></tr><tr><td>data.channel</td><td>- The channel used for the calls. 'y' for encryped, 'z' for encryped and compresses;</td></tr></table><code class="example" title="addAsset" id="example58">hybrix.sequential([
+    'init',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
+    {host: 'http://localhost:1111/'}, 'addHost',
+    {symbol: 'dummy'}, 'addAsset'
+    ]
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="command-header" onclick="toggleCommand('asset')"><b>asset</b> {}<span class="quickDescription">Get detailed information about assets</span></div><div style="display:none;" class="command-body" id="asset">
  Get detailed information about assets
-<table class="parameters"><tr><td>data</td><td>- An array of symbols. For example: ['eth','btc','nxt']</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('getAddress')"><b>getAddress</b> {<i>symbol</i>}<span class="quickDescription">Get the address associated to a specific asset for current session.</span></div><div style="display:none;" class="command-body" id="getAddress">
+<table class="parameters"><tr><td>data</td><td>- An array of symbols. For example: ['eth','btc','nxt']</td></tr></table><code class="example" title="asset" id="example59">hybrix.sequential([
+    'init',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
+    {host: 'http://localhost:1111/'}, 'addHost',
+    TODO
+    ]
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="command-header" onclick="toggleCommand('getAddress')"><b>getAddress</b> {<i>symbol</i>}<span class="quickDescription">Get the address associated to a specific asset for current session.</span></div><div style="display:none;" class="command-body" id="getAddress">
  Get the address associated to a specific asset for current session.
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('getKeys')"><b>getKeys</b> {<i>symbol</i>}<span class="quickDescription">Get the keys associated to a specific asset for current session. Important: handle your private keys confidentially.</span></div><div style="display:none;" class="command-body" id="getKeys">
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.</td></tr></table><code class="example" title="getAddress" id="example60">hybrix.sequential([
+    'init',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
+    {host: 'http://localhost:1111/'}, 'addHost',
+    {symbol: 'dummy'}, 'getAddress'
+    ]
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="command-header" onclick="toggleCommand('getKeys')"><b>getKeys</b> {<i>symbol</i>}<span class="quickDescription">Get the keys associated to a specific asset for current session. Important: handle your private keys confidentially.</span></div><div style="display:none;" class="command-body" id="getKeys">
  Get the keys associated to a specific asset for current session. Important: handle your private keys confidentially.
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('getPrivateKey')"><b>getPrivateKey</b> {<i>symbol</i>}<span class="quickDescription">Get the private key associated to a specific asset for current session.</span></div><div style="display:none;" class="command-body" id="getPrivateKey">
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.</td></tr></table><code class="example" title="getKeys" id="example61">hybrix.sequential([
+    'init',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
+    {host: 'http://localhost:1111/'}, 'addHost',
+    {symbol: 'dummy'}, 'getKeys'
+    ]
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="command-header" onclick="toggleCommand('getPrivateKey')"><b>getPrivateKey</b> {<i>symbol</i>}<span class="quickDescription">Get the private key associated to a specific asset for current session.</span></div><div style="display:none;" class="command-body" id="getPrivateKey">
  Get the private key associated to a specific asset for current session.
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('getPublicKey')"><b>getPublicKey</b> {<i>symbol</i>}<span class="quickDescription">Get the public key associated to a specific asset for current session.</span></div><div style="display:none;" class="command-body" id="getPublicKey">
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.</td></tr></table><code class="example" title="getPrivateKey" id="example62">hybrix.sequential([
+    'init',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
+    {host: 'http://localhost:1111/'}, 'addHost',
+    {symbol: 'dummy'}, 'getPrivateKey'
+    ]
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="command-header" onclick="toggleCommand('getPublicKey')"><b>getPublicKey</b> {<i>symbol</i>}<span class="quickDescription">Get the public key associated to a specific asset for current session.</span></div><div style="display:none;" class="command-body" id="getPublicKey">
  Get the public key associated to a specific asset for current session.
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('initAsset')"><b>initAsset</b> {<i>assetDetails</i>, <i>clientModuleCodeBlob</i>}<span class="quickDescription">Initialize an asset (crypto currency or token)</span></div><div style="display:none;" class="command-body" id="initAsset">
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol.</td></tr></table><code class="example" title="getPublicKey" id="example63">hybrix.sequential([
+    'init',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
+    {host: 'http://localhost:1111/'}, 'addHost',
+    {symbol: 'dummy'}, 'getPublicKey'
+    ]
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="command-header" onclick="toggleCommand('initAsset')"><b>initAsset</b> {<i>assetDetails</i>, <i>clientModuleCodeBlob</i>}<span class="quickDescription">Initialize an asset (crypto currency or token)</span></div><div style="display:none;" class="command-body" id="initAsset">
  Initialize an asset (crypto currency or token)
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.assetDetails</td><td>- Asset details as retrieved by calling `/a/$SYMBOL/details`</td></tr><tr><td>data.clientModuleCodeBlob</td><td>- A string containing the client module code blob.</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('refreshAsset')"><b>refreshAsset</b> {[<i>symbol</i>]}<span class="quickDescription">TODO</span></div><div style="display:none;" class="command-body" id="refreshAsset">
- TODO
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- TODO</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('removeAsset')"><b>removeAsset</b> {<i>symbol</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">Remove an asset (crypto currency or token) from the session.</span></div><div style="display:none;" class="command-body" id="removeAsset">
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.assetDetails</td><td>- Asset details as retrieved by calling `/a/$SYMBOL/details`</td></tr><tr><td>data.clientModuleCodeBlob</td><td>- A string containing the client module code blob.
+ 
+  //TODO example</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('refreshAsset')"><b>refreshAsset</b> {[<i>symbol</i>]}<span class="quickDescription">Update the balance of a given asset (or all assets if no symbol is defined)</span></div><div style="display:none;" class="command-body" id="refreshAsset">
+ Update the balance of a given asset (or all assets if no symbol is defined)
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- TODO
+ 
+  //TODO example</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('removeAsset')"><b>removeAsset</b> {<i>symbol</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">Remove an asset (crypto currency or token) from the session.</span></div><div style="display:none;" class="command-body" id="removeAsset">
     Remove an asset (crypto currency or token) from the session.
-   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset</td></tr><tr><td>data.host</td><td>- The host used for the calls.</td></tr><tr><td>data.channel</td><td>- The channel used for the calls. 'y' for encryped, 'z' for encryped and compresses;</td></tr></table></div></div><div class="category">ClientModule</div><div class="command-header" onclick="toggleCommand('client')"><b>client</b> {[<i>symbol</i>], [<i>id</i>], <i>func</i>, <i>data</i>}<span class="quickDescription">Execute a function in a client module.</span></div><div style="display:none;" class="command-body" id="client">
+   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset</td></tr><tr><td>data.host</td><td>- The host used for the calls.</td></tr><tr><td>data.channel</td><td>- The channel used for the calls. 'y' for encryped, 'z' for encryped and compresses;
+   
+  //TODO example</td></tr></table></div></div><div class="category">ClientModule</div><div class="command-header" onclick="toggleCommand('client')"><b>client</b> {[<i>symbol</i>], [<i>id</i>], <i>func</i>, <i>data</i>}<span class="quickDescription">Execute a function in a client module.</span></div><div style="display:none;" class="command-body" id="client">
  Execute a function in a client module.
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol . Either this or the id needs to be defined.</td></tr><tr><td>data.id</td><td>- id of the client module. (For assets this is the first part of the mode)</td></tr><tr><td>data.func</td><td>- The client module function to be called</td></tr><tr><td>data.data</td><td>- The data to be passed to the client module function</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('export')"><b>export</b> {<i>id</i>}<span class="quickDescription">Export a client module code blob.</span></div><div style="display:none;" class="command-body" id="export">
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol . Either this or the id needs to be defined.</td></tr><tr><td>data.id</td><td>- id of the client module. (For assets this is the first part of the mode)</td></tr><tr><td>data.func</td><td>- The client module function to be called</td></tr><tr><td>data.data</td><td>- The data to be passed to the client module function</td></tr></table><code class="example" title="client" id="example64">hybrix.sequential([
+    'init',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
+    {host: 'http://localhost:1111/'}, 'addHost',
+    {symbol: 'dummy', func:'address', data:{}}, 'client'
+    ]
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="command-header" onclick="toggleCommand('export')"><b>export</b> {<i>id</i>}<span class="quickDescription">Export a client module code blob.</span></div><div style="display:none;" class="command-body" id="export">
     Export a client module code blob.
-   <table class="parameters"><tr><td>data</td><td>- if empty, exports all blobs</td></tr><tr><td>data.id</td><td>- id of the client code blob.</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('import')"><b>import</b> {<i>id</i>, <i>blob</i>, [<i>check=true</i>], [<i>channel</i>], [<i>host</i>]}<span class="quickDescription">Import a client module code blob.</span></div><div style="display:none;" class="command-body" id="import">
+   <table class="parameters"><tr><td>data</td><td>- if empty, exports all blobs</td></tr><tr><td>data.id</td><td>- id of the client code blob.
+   
+  //TODO example</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('import')"><b>import</b> {<i>id</i>, <i>blob</i>, [<i>check=true</i>], [<i>channel</i>], [<i>host</i>]}<span class="quickDescription">Import a client module code blob.</span></div><div style="display:none;" class="command-body" id="import">
     Import a client module code blob.
-   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.id</td><td>- id of the client code blob.</td></tr><tr><td>data.blob</td><td>- the client code blob</td></tr><tr><td>data.check</td><td>- check if there's a different version of the blob available at the host</td></tr><tr><td>data.channel</td><td>- TODO</td></tr><tr><td>data.host</td><td>- TODO</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('modules')"><b>modules</b> {}<span class="quickDescription">List locally available client modules.</span></div><div style="display:none;" class="command-body" id="modules">
+   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.id</td><td>- id of the client code blob.</td></tr><tr><td>data.blob</td><td>- the client code blob</td></tr><tr><td>data.check</td><td>- check if there's a different version of the blob available at the host</td></tr><tr><td>data.channel</td><td>- TODO</td></tr><tr><td>data.host</td><td>- TODO
+   
+  //TODO example</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('modules')"><b>modules</b> {}<span class="quickDescription">List locally available client modules.</span></div><div style="display:none;" class="command-body" id="modules">
     List locally available client modules.
-   <table class="parameters"><tr><td>data</td><td>- ignored</td></tr></table></div></div><div class="category">Encryption</div><div class="command-header" onclick="toggleCommand('decrypt')"><b>decrypt</b> {<i>data</i>}<span class="quickDescription">Decrypt and parse data with user keys.</span></div><div style="display:none;" class="command-body" id="decrypt">
+   <table class="parameters"><tr><td>data</td><td>- ignored
+   
+  //TODO example</td></tr></table></div></div><div class="category">Encryption</div><div class="command-header" onclick="toggleCommand('decrypt')"><b>decrypt</b> {<i>data</i>}<span class="quickDescription">Decrypt and parse data with user keys.</span></div><div style="display:none;" class="command-body" id="decrypt">
  Decrypt and parse data with user keys.
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.data</td><td>- An encrypted and stringified string, array or object.</td></tr></table><code class="example" title="decrypt" id="example58">hybrixd.sequential([
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.data</td><td>- An encrypted and stringified string, array or object.</td></tr></table><code class="example" title="decrypt" id="example65">hybrix.sequential([
  'init',
- {username: '', password: ''}, 'session',
+ {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
  {data:'Hello World!'}, 'encrypt',
  data=>{return {data:data}}, 'decrypt'
  ]
- , (data) => { console.log(JSON.stringify(data)); } // Outputs "Hello World!"
- , (error) => { console.error(error); }
+   , onSuccess
+   , onError
+   , onProgress
  );</code></div></div><div class="command-header" onclick="toggleCommand('encrypt')"><b>encrypt</b> {<i>data</i>}<span class="quickDescription">Stringify and encrypt data with user keys.</span></div><div style="display:none;" class="command-body" id="encrypt">
  Stringify and encrypt data with user keys.
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.data</td><td>- A string, array or object.</td></tr></table><code class="example" title="encrypt" id="example59">hybrixd.sequential([
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.data</td><td>- A string, array or object.</td></tr></table><code class="example" title="encrypt" id="example66">hybrix.sequential([
  'init',
- {username: '', password: ''}, 'session',
+ {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
  {data:'Hello World!'}, 'encrypt'
  ]
- , (data) => { console.log(JSON.stringify(data)); }  // Outputs something like "T3dRd3pUUmdaZ3BnYkFSZ01ZQllBTVNDc01LWWVL3kFKaVFFNDBJMHdSVG9RSUFURUZBRGlwVXpSU0E="
- , (error) => { console.error(error); }
+   , onSuccess
+   , onError
+   , onProgress
  );</code></div></div><div class="command-header" onclick="toggleCommand('hash')"><b>hash</b> {<i>data</i>, [<i>salt</i>]}<span class="quickDescription">Stringify and create a DJB2 hash.</span></div><div style="display:none;" class="command-body" id="hash">
  Stringify and create a DJB2 hash.
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.data</td><td>- A string, array or object.</td></tr><tr><td>data.salt</td><td>- A string.</td></tr></table></div></div><div class="category">Flow</div><div class="command-header" onclick="toggleCommand('call')"><b>call</b> {<i>func</i>, <i>data</i>}<span class="quickDescription">Execute a custom function with callbacks. Usefull for sequential and parallel.</span></div><div style="display:none;" class="command-body" id="call">
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.data</td><td>- A string, array or object.</td></tr><tr><td>data.salt</td><td>- A string.
+ 
+  //TODO example</td></tr></table></div></div><div class="category">Flow</div><div class="command-header" onclick="toggleCommand('call')"><b>call</b> {<i>func</i>, <i>data</i>}<span class="quickDescription">Execute a custom function with callbacks. Usefull for sequential and parallel.</span></div><div style="display:none;" class="command-body" id="call">
     Execute a custom function with callbacks. Usefull for sequential and parallel.
    <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.func</td><td>- A function expecting a dataCallback, errorCallback and optional progressCallback.</td></tr><tr><td>data.data</td><td>- The data to be passed to the function.</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('escapeString')"><b>escapeString</b> {}<span class="quickDescription">Identity function, outputs the data that is passed</span></div><div style="display:none;" class="command-body" id="escapeString">
     Identity function, outputs the data that is passed
    <table class="parameters"><tr><td>data</td><td>- data passed to  dataCallback</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('id')"><b>id</b> {}<span class="quickDescription">Identity function, outputs the data that is passed</span></div><div style="display:none;" class="command-body" id="id">
     Identity function, outputs the data that is passed
-   <table class="parameters"><tr><td>data</td><td>- data passed to  dataCallback</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('parallel')"><b>parallel</b> {<i>label</i>, <i>label,data</i>, <i>label,step</i>}<span class="quickDescription">Parallely executes several steps and collects results in a single object.</span></div><div style="display:none;" class="command-body" id="parallel">
-    Parallely executes several steps and collects results in a single object.
-<table class="parameters"><tr><td>data</td><td>- Parallel steps to be processed. TODO</td></tr><tr><td>data.label</td><td>- TODO</td></tr><tr><td>data.label.data</td><td>- TODO</td></tr><tr><td>data.label.step</td><td>- TODO</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('sequential')"><b>sequential</b> {}<span class="quickDescription">Sequentually executes functions and passes results to next step.</span></div><div style="display:none;" class="command-body" id="sequential">
+   <table class="parameters"><tr><td>data</td><td>- data passed to  dataCallback</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('parallel')"><b>parallel</b> {<i>label</i>, <i>label,data</i>, <i>label,step</i>}<span class="quickDescription">Parallely executes several threads and collects results in a single object.</span></div><div style="display:none;" class="command-body" id="parallel">
+    Parallely executes several threads and collects results in a single object.
+<table class="parameters"><tr><td>data</td><td>- Parallel steps to be processed.</td></tr><tr><td>data.label</td><td>- A label given to the thread.</td></tr><tr><td>data.label.data</td><td>- The initial data passed to this thread.</td></tr><tr><td>data.label.step</td><td>- The step to execute with the data. Use 'sequential' to create multi step thread process.</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('sequential')"><b>sequential</b> {}<span class="quickDescription">Sequentually executes functions and passes results to next step.</span></div><div style="display:none;" class="command-body" id="sequential">
     Sequentually executes functions and passes results to next step.
 <table class="parameters"><tr><td>data</td><td>- Sequential steps to be processed. An object indicates data that is supplied to the next step. A function is a transformation of the data of the previous step and given to the next step. A string is a method that used the data from the last step and supplies to the next step.</td></tr></table></div></div><div class="category">Host</div><div class="command-header" onclick="toggleCommand('addHost')"><b>addHost</b> {<i>host</i>}<span class="quickDescription">Add a hybrixd node as host.</span></div><div style="display:none;" class="command-body" id="addHost">
  Add a hybrixd node as host.
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.host</td><td>- The hostname TODO  multiple in array?</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('rout')"><b>rout</b> {<i>query</i>, [<i>channel</i>], [<i>meta=false</i>], [<i>host</i>], [<i>retries=3</i>]}<span class="quickDescription">Make a routing call to hybrixd node</span></div><div style="display:none;" class="command-body" id="rout">
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.host</td><td>- The hostname TODO  multiple in array?</td></tr></table><code class="example" title="addHost" id="example67">hybrix.sequential([
+    'init',
+    {host: 'http://localhost:1111/'}, 'addHost'
+    ]
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="command-header" onclick="toggleCommand('rout')"><b>rout</b> {<i>query</i>, [<i>channel</i>], [<i>meta=false</i>], [<i>host</i>], [<i>retries=3</i>]}<span class="quickDescription">Make a routing call to hybrixd node</span></div><div style="display:none;" class="command-body" id="rout">
  Make a routing call to hybrixd node
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.query</td><td>- The query path. For reference: [hybrixd API]{@link https://wallet1.internetofcoins.org/api/help}</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information)</td></tr><tr><td>data.host</td><td>- Select a specific host, if omitted one will be chosen at random.</td></tr><tr><td>data.retries</td><td>- Nr of retries for a call</td></tr></table></div></div><div class="category">Init</div><div class="command-header" onclick="toggleCommand('init')"><b>init</b> {}<span class="quickDescription">Initialize the NACL factory if nacl has not been defined yet.</span></div><div style="display:none;" class="command-body" id="init">
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.query</td><td>- The query path. For reference: <a href="/api/help">REST API help</a>.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr><tr><td>data.host</td><td>- Select a specific host, if omitted one will be chosen at random.</td></tr><tr><td>data.retries</td><td>- Nr of retries for a call</td></tr></table><code class="example" title="rout" id="example68">hybrix.sequential([
+    'init',
+    {host: 'http://localhost:1111/'}, 'addHost',
+    {query: '/asset/dummy/details'}, 'rout'
+    ]
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="category">Init</div><div class="command-header" onclick="toggleCommand('init')"><b>init</b> {}<span class="quickDescription">Initialize the NACL factory if nacl has not been defined yet.</span></div><div style="display:none;" class="command-body" id="init">
  Initialize the NACL factory if nacl has not been defined yet.
-<table class="parameters"><tr><td>data</td><td>- Not used</td></tr></table></div></div><div class="category">Session</div><div class="command-header" onclick="toggleCommand('createAccount')"><b>createAccount</b> {[<i>entropy</i>], [<i>offset</i>], [<i>pool</i>]}<span class="quickDescription">Create a new deterministic account with the entropy provided.</span></div><div style="display:none;" class="command-body" id="createAccount">
+<table class="parameters"><tr><td>data</td><td>- Not used</td></tr></table><code class="example" title="init" id="example69">hybrix.sequential([
+    'init'
+    ]
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="category">Session</div><div class="command-header" onclick="toggleCommand('createAccount')"><b>createAccount</b> {[<i>entropy</i>], [<i>offset</i>], [<i>pool</i>]}<span class="quickDescription">Create a new deterministic account with the entropy provided.</span></div><div style="display:none;" class="command-body" id="createAccount">
  Create a new deterministic account with the entropy provided.
 <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.entropy</td><td>- CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Entropy can be provided. Must be a sufficient random string of at least 482 bytes.</td></tr><tr><td>data.offset</td><td>- CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Use an offset to create multiple accounts from same entropy.</td></tr><tr><td>data.pool</td><td>-  CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Pool function can be overridden by a custom 1600 byte pool generator.
- deterministic</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('login')"><b>login</b> {<i>host</i>}<span class="quickDescription">Create an encrypted session with a host</span></div><div style="display:none;" class="command-body" id="login">
- Create an encrypted session with a host
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.host</td><td>- The hostname TODO  multiple in array?</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('logout')"><b>logout</b> {}<span class="quickDescription">Log out of current session.</span></div><div style="display:none;" class="command-body" id="logout">
- Log out of current session.
-<table class="parameters"><tr><td>data</td><td>- Not used</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('session')"><b>session</b> {<i>username</i>, <i>password</i>}<span class="quickDescription">Create a local deterministic session and - if required - log out of current session.</span></div><div style="display:none;" class="command-body" id="session">
- Create a local deterministic session and - if required - log out of current session.
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.username</td><td>- The username for the deterministic session</td></tr><tr><td>data.password</td><td>- The password for the deterministic session</td></tr></table></div></div><div class="category">Storage</div><div class="command-header" onclick="toggleCommand('load')"><b>load</b> {<i>key</i>, [<i>encrypted</i>], [<i>legacy</i>], [<i>host</i>], [<i>channel</i>], [<i>meta</i>]}<span class="quickDescription">TODO Stringify and encrypt data with user keys.</span></div><div style="display:none;" class="command-body" id="load">
-    TODO Stringify and encrypt data with user keys.
-   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- TODO</td></tr><tr><td>data.encrypted</td><td>- whether to encrypt the data with the user key, true by default.</td></tr><tr><td>data.legacy</td><td>- TODO</td></tr><tr><td>data.host</td><td>- TODO</td></tr><tr><td>data.channel</td><td>- TODO</td></tr><tr><td>data.meta</td><td>- TODO</td></tr></table><code class="example" title="load" id="example60">hybrixd.sequential([
+ deterministic</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('login')"><b>login</b> {<i>host</i>}<span class="quickDescription">Create an encrypted session with a host.</span></div><div style="display:none;" class="command-body" id="login">
+ Create an encrypted session with a host.
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.host</td><td>- The hostname for the hybrixd node.</td></tr></table><code class="example" title="login" id="example70">hybrix.sequential([
     'init',
-    {username: '', password: ''}, 'session',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
-    {key:'Hello', value:'World!'}, 'save'
+    {host: 'http://localhost:1111/'}, 'login'
+    ]
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="command-header" onclick="toggleCommand('logout')"><b>logout</b> {}<span class="quickDescription">Log out of current session.</span></div><div style="display:none;" class="command-body" id="logout">
+ Log out of current session.
+<table class="parameters"><tr><td>data</td><td>- Not used</td></tr></table><code class="example" title="logout" id="example71">hybrix.sequential([
+    'init',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
+    'logout'
+    ]
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="command-header" onclick="toggleCommand('session')"><b>session</b> {<i>username</i>, <i>password</i>}<span class="quickDescription">Create a local deterministic session and - if required - log out of current session.</span></div><div style="display:none;" class="command-body" id="session">
+ Create a local deterministic session and - if required - log out of current session.
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.username</td><td>- The username for the deterministic session</td></tr><tr><td>data.password</td><td>- The password for the deterministic session</td></tr></table><code class="example" title="session" id="example72">hybrix.sequential([
+    'init',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session'
+    ]
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="category">Storage</div><div class="command-header" onclick="toggleCommand('load')"><b>load</b> {<i>key</i>, [<i>encrypted</i>], [<i>legacy=false</i>], [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">TODO Stringify and encrypt data with user keys.</span></div><div style="display:none;" class="command-body" id="load">
+    TODO Stringify and encrypt data with user keys.
+   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.encrypted</td><td>- whether to encrypt the data with the user key, true by default.</td></tr><tr><td>data.legacy</td><td>- A toggle to use a legacy storage method.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="load" id="example73">hybrix.sequential([
+    'init',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
+    {host: 'http://localhost:1111/'}, 'addHost',
+    {key:'Hello', value:'World!'}, 'save',
     {key:'Hello'}, 'load'
     ]
-      , (data) => { console.log(JSON.stringify(data)); } // Outputs "World!"
-      , (error) => { console.error(error); }</code></div></div><div class="command-header" onclick="toggleCommand('meta')"><b>meta</b> {<i>key</i>, [<i>host</i>], [<i>channel</i>], [<i>meta</i>]}<span class="quickDescription">Retrieve the meta data for a storage key</span></div><div style="display:none;" class="command-body" id="meta">
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="command-header" onclick="toggleCommand('meta')"><b>meta</b> {<i>key</i>, [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">Retrieve the meta data for a storage key</span></div><div style="display:none;" class="command-body" id="meta">
     Retrieve the meta data for a storage key
-   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- TODO</td></tr><tr><td>data.host</td><td>- TODO</td></tr><tr><td>data.channel</td><td>- TODO</td></tr><tr><td>data.meta</td><td>- TODO</td></tr></table><code class="example" title="meta" id="example61">hybrixd.sequential([
+   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="meta" id="example74">hybrix.sequential([
     'init',
-    {username: '', password: ''}, 'session',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
-    {key:'Hello', value:'World!'}, 'save'
+    {key:'Hello', value:'World!'}, 'save',
     {key:'Hello'}, 'meta'
     ]
-      , (data) => { console.log(JSON.stringify(data)); } // Outputs {time,hash,size,pow,res,n,read}
-      , (error) => { console.error(error); }</code></div></div><div class="command-header" onclick="toggleCommand('save')"><b>save</b> {<i>key</i>, <i>value</i>, [<i>legacy=false</i>], [<i>encrypted=true</i>], [<i>work=true</i>], [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">Stringify and encrypt data with user keys.</span></div><div style="display:none;" class="command-body" id="save">
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="command-header" onclick="toggleCommand('save')"><b>save</b> {<i>key</i>, <i>value</i>, [<i>legacy=false</i>], [<i>encrypted=true</i>], [<i>work=true</i>], [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">Stringify and encrypt data with user keys.</span></div><div style="display:none;" class="command-body" id="save">
     Stringify and encrypt data with user keys.
-   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- TODO</td></tr><tr><td>data.value</td><td>- A string, array or object.</td></tr><tr><td>data.legacy</td><td>- TODO</td></tr><tr><td>data.encrypted</td><td>- whether to encrypt the data with the user key.</td></tr><tr><td>data.work</td><td>- whether to perform and submit proof of work.</td></tr><tr><td>data.host</td><td>- TODO</td></tr><tr><td>data.channel</td><td>- TODO</td></tr><tr><td>data.meta</td><td>- TODO</td></tr></table><code class="example" title="save" id="example62">hybrixd.sequential([
+   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.value</td><td>- A string, array or object.</td></tr><tr><td>data.legacy</td><td>- A toggle to use a legacy storage method.</td></tr><tr><td>data.encrypted</td><td>- whether to encrypt the data with the user key.</td></tr><tr><td>data.work</td><td>- whether to perform and submit proof of work.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="save" id="example75">hybrix.sequential([
     'init',
-    {username: '', password: ''}, 'session',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
-    {key:'Hello', value:'World!'}, 'save'
+    {key:'Hello', value:'World!'}, 'save',
     {key:'Hello'}, 'load'
     ]
-      , (data) => { console.log(JSON.stringify(data)); } // Outputs "World!"
-      , (error) => { console.error(error); }</code></div></div><div class="command-header" onclick="toggleCommand('seek')"><b>seek</b> {<i>key</i>, [<i>legacy</i>], [<i>host</i>], [<i>channel</i>], [<i>meta</i>]}<span class="quickDescription">Check if data is associated to key</span></div><div style="display:none;" class="command-body" id="seek">
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="command-header" onclick="toggleCommand('seek')"><b>seek</b> {<i>key</i>, [<i>legacy=false</i>], [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">Check if data is associated to key</span></div><div style="display:none;" class="command-body" id="seek">
     Check if data is associated to key
-   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- TODO</td></tr><tr><td>data.legacy</td><td>- TODO</td></tr><tr><td>data.host</td><td>- TODO</td></tr><tr><td>data.channel</td><td>- TODO</td></tr><tr><td>data.meta</td><td>- TODO</td></tr></table><code class="example" title="seek" id="example63">hybrixd.sequential([
+   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.legacy</td><td>- A toggle to use a legacy storage method.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="seek" id="example76">hybrix.sequential([
     'init',
-    {username: '', password: ''}, 'session',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
-    {key:'Hello', value:'World!'}, 'save'
+    {key:'Hello', value:'World!'}, 'save',
     {key:'Hello'}, 'load'
     ]
-      , (data) => { console.log(JSON.stringify(data)); } // Outputs "World!"
-      , (error) => { console.error(error); }</code></div></div><div class="command-header" onclick="toggleCommand('work')"><b>work</b> {<i>hash</i>, [<i>difficulty</i>], [<i>submit</i>], [<i>key</i>], [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">Perform Proof of Work</span></div><div style="display:none;" class="command-body" id="work">
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="command-header" onclick="toggleCommand('work')"><b>work</b> {<i>hash</i>, [<i>difficulty</i>], [<i>submit</i>], [<i>key</i>], [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">Perform Proof of Work</span></div><div style="display:none;" class="command-body" id="work">
  Perform Proof of Work
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.hash</td><td>- The hash that needs to be worked.</td></tr><tr><td>data.difficulty</td><td>- Difficulty level to use.</td></tr><tr><td>data.submit</td><td>- Whether to submit the proof of work</td></tr><tr><td>data.key</td><td>- Required for submit</td></tr><tr><td>data.host</td><td>- TODO</td></tr><tr><td>data.channel</td><td>- TODO</td></tr></table></div></div><div class="category">Transaction</div><div class="command-header" onclick="toggleCommand('rawTransaction')"><b>rawTransaction</b> {<i>symbol</i>, <i>target</i>, <i>amount</i>, <i>fee</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">Creates a raw transaction</span></div><div style="display:none;" class="command-body" id="rawTransaction">
- Creates a raw transaction
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset</td></tr><tr><td>data.target</td><td>- The target address</td></tr><tr><td>data.amount</td><td>- The amount that should be transferred</td></tr><tr><td>data.fee</td><td>- The fee.</td></tr><tr><td>data.host</td><td>- The host that should be used.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('signTransaction')"><b>signTransaction</b> {<i>symbol</i>, <i>target</i>, <i>amount</i>, <i>fee</i>, <i>unspent</i>}<span class="quickDescription">Create a signed transaction</span></div><div style="display:none;" class="command-body" id="signTransaction">
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.hash</td><td>- The hash that needs to be worked.</td></tr><tr><td>data.difficulty</td><td>- Difficulty level to use.</td></tr><tr><td>data.submit</td><td>- Whether to submit the proof of work</td></tr><tr><td>data.key</td><td>- Required for submit</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table></div></div><div class="category">Transaction</div><div class="command-header" onclick="toggleCommand('rawTransaction')"><b>rawTransaction</b> {<i>symbol</i>, <i>target</i>, <i>amount</i>, <i>fee</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">Creates a raw transaction that is signed but not yet pushed to the network.</span></div><div style="display:none;" class="command-body" id="rawTransaction">
+ Creates a raw transaction that is signed but not yet pushed to the network.
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset</td></tr><tr><td>data.target</td><td>- The target address</td></tr><tr><td>data.amount</td><td>- The amount that should be transferred</td></tr><tr><td>data.fee</td><td>- The fee.</td></tr><tr><td>data.host</td><td>- The host that should be used.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression
+ 
+  //TODO example</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('signTransaction')"><b>signTransaction</b> {<i>symbol</i>, <i>target</i>, <i>amount</i>, <i>fee</i>, <i>unspent</i>}<span class="quickDescription">Create a signed transaction</span></div><div style="display:none;" class="command-body" id="signTransaction">
  Create a signed transaction
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset.</td></tr><tr><td>data.target</td><td>- The target address.</td></tr><tr><td>data.amount</td><td>- The amount.</td></tr><tr><td>data.fee</td><td>- The fee.</td></tr><tr><td>data.unspent</td><td>- Pretransaction data.</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('transaction')"><b>transaction</b> {<i>symbol</i>, <i>target</i>, <i>amount</i>, <i>fee</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">Create and execute a transaction</span></div><div style="display:none;" class="command-body" id="transaction">
- Create and execute a transaction
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset</td></tr><tr><td>data.target</td><td>- The target address</td></tr><tr><td>data.amount</td><td>- The amount that should be transferred</td></tr><tr><td>data.fee</td><td>- The fee.</td></tr><tr><td>data.host</td><td>- The host that should be used.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression</td></tr></table></div></div></body></html>
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset.</td></tr><tr><td>data.target</td><td>- The target address.</td></tr><tr><td>data.amount</td><td>- The amount.</td></tr><tr><td>data.fee</td><td>- The fee.</td></tr><tr><td>data.unspent</td><td>- Pretransaction data.
+ 
+  //TODO example</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('transaction')"><b>transaction</b> {<i>symbol</i>, <i>target</i>, <i>amount</i>, <i>fee</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">Create, sign and execute a transaction e.g. push it into the netwerol.</span></div><div style="display:none;" class="command-body" id="transaction">
+ Create, sign and execute a transaction e.g. push it into the netwerol.
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset</td></tr><tr><td>data.target</td><td>- The target address</td></tr><tr><td>data.amount</td><td>- The amount that should be transferred</td></tr><tr><td>data.fee</td><td>- The fee.</td></tr><tr><td>data.host</td><td>- The host that should be used.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression
+ 
+  //TODO example</td></tr></table></div></div></body></html>
