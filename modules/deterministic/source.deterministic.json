@@ -3,20 +3,18 @@
   "name":"Deterministic",
   "module":"deterministic",
   "router" : {
-    "command" : {
-        "_this":"Execute a direct command.",
-        "_access":"root"
-      },
       "assets":"List available assets.",
       "code": {
         "_ref":{
           "_list" : "mode",
+          "_sample" : "dummycoin",
           "_this" : "Returns the lzma compressed deterministic blobs (client side code) for a `$MODE` ."
         }
       },
       "hash":  {
         "_ref":{
           "_list" : "mode",
+          "_sample" : "dummycoin",
           "_this" : "Returns the DJB2 hash of the deterministic blobs (client side code) for `$MODE` ."
         }
       },
