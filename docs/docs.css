@@ -383,3 +383,8 @@ div.try{
 table.parameters {
   margin:5px;
 }
+
+code.example {
+  display:block;
+  white-space: pre;
+}

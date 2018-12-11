@@ -104,8 +104,25 @@ But that result in serious problems due to asynchronicity. One could use the cal
 </div>
 
 <h3>Live example</h3>
+<!--
 
-<div class="try">
+     .innerHTML
+-->
+<div class="try"> <select id="selectExample" onchange="var s = document.getElementById('selectExample');document.getElementById('try').value=document.getElementById(s[s.selectedIndex].value).innerHTML;">
+    <option value="x">Hello World</option>
+  </select>
+  <script>
+   setTimeout(function(){
+     var examples = document.getElementsByClassName('example');
+     var selectExample = document.getElementById('selectExample');
+       for (let example of examples) {
+         var option = document.createElement('OPTION');
+         option.value= example.id;
+         option.innerHTML = example.title;
+         selectExample.appendChild(option);
+       }
+   },500);
+  </script>
   <textarea id="try" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 hybrix.sequential([
    'init',                                                        // Initialize hybrix
