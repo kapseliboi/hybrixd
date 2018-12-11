@@ -104,11 +104,8 @@ But that result in serious problems due to asynchronicity. One could use the cal
 </div>
 
 <h3>Live example</h3>
-<!--
 
-     .innerHTML
--->
-<div class="try"> <select id="selectExample" onchange="var s = document.getElementById('selectExample');document.getElementById('try').innerHTML=document.getElementById(s[s.selectedIndex].value).innerHTML;">
+<div class="try"> <select id="selectExample" onchange="var s = document.getElementById('selectExample');document.getElementById('try').innerHTML=document.getElementById(s[s.selectedIndex].value).innerHTML.replace('http://localhost:1111',window.location.origin+'/api');">
   <option value="exampleHelloWorld">Hello World</option>
   </select>
   <script>
