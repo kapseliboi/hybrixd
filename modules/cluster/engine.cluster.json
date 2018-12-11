@@ -4,6 +4,7 @@
   "module":"cluster",
   "router" : {
     "_access" : "root",
+    "_hidden" : true,
     "peers": "list peers",
     "status": "list peers",
 

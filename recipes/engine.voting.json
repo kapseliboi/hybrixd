@@ -21,7 +21,7 @@
     ],
     "listAddresses" : [
       "poke '::coreMode','elegibility'",
-      "call 'coreList'",    
+      "call 'coreList'",
       "each data 'readAddress'",
       "excl ''",
       "done"
@@ -125,6 +125,7 @@
     ]
   },
   "router" : {
+    "_hidden" : true,
     "test" : {
       "_list": "Test routine",
       "_ref" : {

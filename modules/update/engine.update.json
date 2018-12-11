@@ -5,6 +5,7 @@
   "cron" : 86400,
   "router" : {
     "_this" : "Update hybrixd.",
+    "_hidden" : true,
     "_access":"root",
     "cron" : "Cron scheduled update of hybrixd"
   }

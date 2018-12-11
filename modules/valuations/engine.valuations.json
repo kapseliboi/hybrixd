@@ -9,9 +9,9 @@
     ]
   },
   "router" : {
+    "_hidden" : true,
     "getValuation":
     {
-      "_hidden" : true,
       "_ref" : {
         "_list" : "Source coin",
         "_ref" : {
