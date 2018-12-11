@@ -85,7 +85,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
 
  <p>But adding more steps or error handling will end up with code that is both very hard to read and maintain. (This is sometimes dubbed as <i>callback hell</i>.) To mitigate this the library comes equiped with a sequential and a parallel command to handle these asynchronious call flows. With an added bonus of handling the progress for combined commands as well.</p>
 
- <pre>
+ <pre id="exampleHelloWorld">
   hybrix.sequential([
     'init',                                                        // Initialize hybrix
     {host: 'http://localhost:1111/'},  'addHost',                  // Add and initialize the host
@@ -108,8 +108,8 @@ But that result in serious problems due to asynchronicity. One could use the cal
 
      .innerHTML
 -->
-<div class="try"> <select id="selectExample" onchange="var s = document.getElementById('selectExample');document.getElementById('try').value=document.getElementById(s[s.selectedIndex].value).innerHTML;">
-    <option value="x">Hello World</option>
+<div class="try"> <select id="selectExample" onchange="var s = document.getElementById('selectExample');document.getElementById('try').innerHTML=document.getElementById(s[s.selectedIndex].value).innerHTML;">
+  <option value="exampleHelloWorld">Hello World</option>
   </select>
   <script>
    setTimeout(function(){
@@ -125,13 +125,13 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </script>
   <textarea id="try" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 hybrix.sequential([
-   'init',                                                        // Initialize hybrix
-    {host: 'http://localhost:1111/'},  'addHost',                 // Add and initialize the host
-    {query: '/asset/dummy/details'}, 'rout'                       // Add the asset
+    'init',                                                        // Initialize hybrix
+    {host: 'http://localhost:1111/'},  'addHost',                  // Add and initialize the host
+    {symbol: 'dummy'}, 'addAsset'                                  // Add the asset
   ],
-   onSuccess,                                                     // Define action to execute on successfull completion
-   onError,                                                       // Define action to execute when an error is encountered
-   onProgress                                                     // Define action to execute whenever there is a progress update
+   onSuccess,                                                      // Define action to execute on successfull completion
+   onError,                                                        // Define action to execute when an error is encountered
+   onProgress                                                      // Define action to execute whenever there is a progress update
   );
   </textarea>
   <div id="progressContainer">

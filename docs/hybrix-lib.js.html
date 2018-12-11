@@ -90,7 +90,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
 
  <p>But adding more steps or error handling will end up with code that is both very hard to read and maintain. (This is sometimes dubbed as <i>callback hell</i>.) To mitigate this the library comes equiped with a sequential and a parallel command to handle these asynchronious call flows. With an added bonus of handling the progress for combined commands as well.</p>
 
- <pre>
+ <pre id="exampleHelloWorld">
   hybrix.sequential([
     'init',                                                        // Initialize hybrix
     {host: 'http://localhost:1111/'},  'addHost',                  // Add and initialize the host
@@ -113,8 +113,8 @@ But that result in serious problems due to asynchronicity. One could use the cal
 
      .innerHTML
 -->
-<div class="try"> <select id="selectExample" onchange="var s = document.getElementById('selectExample');document.getElementById('try').value=document.getElementById(s[s.selectedIndex].value).innerHTML;">
-    <option value="x">Hello World</option>
+<div class="try"> <select id="selectExample" onchange="var s = document.getElementById('selectExample');document.getElementById('try').innerHTML=document.getElementById(s[s.selectedIndex].value).innerHTML;">
+  <option value="exampleHelloWorld">Hello World</option>
   </select>
   <script>
    setTimeout(function(){
@@ -130,13 +130,13 @@ But that result in serious problems due to asynchronicity. One could use the cal
   </script>
   <textarea id="try" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 hybrix.sequential([
-   'init',                                                        // Initialize hybrix
-    {host: 'http://localhost:1111/'},  'addHost',                 // Add and initialize the host
-    {query: '/asset/dummy/details'}, 'rout'                       // Add the asset
+    'init',                                                        // Initialize hybrix
+    {host: 'http://localhost:1111/'},  'addHost',                  // Add and initialize the host
+    {symbol: 'dummy'}, 'addAsset'                                  // Add the asset
   ],
-   onSuccess,                                                     // Define action to execute on successfull completion
-   onError,                                                       // Define action to execute when an error is encountered
-   onProgress                                                     // Define action to execute whenever there is a progress update
+   onSuccess,                                                      // Define action to execute on successfull completion
+   onError,                                                        // Define action to execute when an error is encountered
+   onProgress                                                      // Define action to execute whenever there is a progress update
   );
   </textarea>
   <div id="progressContainer">
@@ -178,23 +178,25 @@ hybrix.sequential([
     List locally available client modules.
    <table class="parameters"><tr><td>data</td><td>- ignored</td></tr></table></div></div><div class="category">Encryption</div><div class="command-header" onclick="toggleCommand('decrypt')"><b>decrypt</b> {<i>data</i>}<span class="quickDescription">Decrypt and parse data with user keys.</span></div><div style="display:none;" class="command-body" id="decrypt">
  Decrypt and parse data with user keys.
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.data</td><td>- An encrypted and stringified string, array or object.</td></tr></table><code class="example" title="decrypt" id="example58">hybrixd.sequential([
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.data</td><td>- An encrypted and stringified string, array or object.</td></tr></table><code class="example" title="decrypt" id="example58">hybrix.sequential([
  'init',
  {username: '', password: ''}, 'session',
  {data:'Hello World!'}, 'encrypt',
  data=>{return {data:data}}, 'decrypt'
  ]
- , (data) => { console.log(JSON.stringify(data)); } // Outputs "Hello World!"
- , (error) => { console.error(error); }
+   , onSuccess
+   , onError
+   , onProgress
  );</code></div></div><div class="command-header" onclick="toggleCommand('encrypt')"><b>encrypt</b> {<i>data</i>}<span class="quickDescription">Stringify and encrypt data with user keys.</span></div><div style="display:none;" class="command-body" id="encrypt">
  Stringify and encrypt data with user keys.
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.data</td><td>- A string, array or object.</td></tr></table><code class="example" title="encrypt" id="example59">hybrixd.sequential([
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.data</td><td>- A string, array or object.</td></tr></table><code class="example" title="encrypt" id="example59">hybrix.sequential([
  'init',
  {username: '', password: ''}, 'session',
  {data:'Hello World!'}, 'encrypt'
  ]
- , (data) => { console.log(JSON.stringify(data)); }  // Outputs something like "T3dRd3pUUmdaZ3BnYkFSZ01ZQllBTVNDc01LWWVL3kFKaVFFNDBJMHdSVG9RSUFURUZBRGlwVXpSU0E="
- , (error) => { console.error(error); }
+   , onSuccess
+   , onError
+   , onProgress
  );</code></div></div><div class="command-header" onclick="toggleCommand('hash')"><b>hash</b> {<i>data</i>, [<i>salt</i>]}<span class="quickDescription">Stringify and create a DJB2 hash.</span></div><div style="display:none;" class="command-body" id="hash">
  Stringify and create a DJB2 hash.
 <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.data</td><td>- A string, array or object.</td></tr><tr><td>data.salt</td><td>- A string.</td></tr></table></div></div><div class="category">Flow</div><div class="command-header" onclick="toggleCommand('call')"><b>call</b> {<i>func</i>, <i>data</i>}<span class="quickDescription">Execute a custom function with callbacks. Usefull for sequential and parallel.</span></div><div style="display:none;" class="command-body" id="call">
@@ -224,45 +226,53 @@ hybrix.sequential([
  Create a local deterministic session and - if required - log out of current session.
 <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.username</td><td>- The username for the deterministic session</td></tr><tr><td>data.password</td><td>- The password for the deterministic session</td></tr></table></div></div><div class="category">Storage</div><div class="command-header" onclick="toggleCommand('load')"><b>load</b> {<i>key</i>, [<i>encrypted</i>], [<i>legacy=false</i>], [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">TODO Stringify and encrypt data with user keys.</span></div><div style="display:none;" class="command-body" id="load">
     TODO Stringify and encrypt data with user keys.
-   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.encrypted</td><td>- whether to encrypt the data with the user key, true by default.</td></tr><tr><td>data.legacy</td><td>- A toggle to use a legacy storage method.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="load" id="example60">hybrixd.sequential([
+   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.encrypted</td><td>- whether to encrypt the data with the user key, true by default.</td></tr><tr><td>data.legacy</td><td>- A toggle to use a legacy storage method.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="load" id="example60">hybrix.sequential([
     'init',
     {username: '', password: ''}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
-    {key:'Hello', value:'World!'}, 'save'
+    {key:'Hello', value:'World!'}, 'save',
     {key:'Hello'}, 'load'
     ]
-      , (data) => { console.log(JSON.stringify(data)); } // Outputs "World!"
-      , (error) => { console.error(error); }</code></div></div><div class="command-header" onclick="toggleCommand('meta')"><b>meta</b> {<i>key</i>, [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">Retrieve the meta data for a storage key</span></div><div style="display:none;" class="command-body" id="meta">
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="command-header" onclick="toggleCommand('meta')"><b>meta</b> {<i>key</i>, [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">Retrieve the meta data for a storage key</span></div><div style="display:none;" class="command-body" id="meta">
     Retrieve the meta data for a storage key
-   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="meta" id="example61">hybrixd.sequential([
+   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="meta" id="example61">hybrix.sequential([
     'init',
     {username: '', password: ''}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
-    {key:'Hello', value:'World!'}, 'save'
+    {key:'Hello', value:'World!'}, 'save',
     {key:'Hello'}, 'meta'
     ]
-      , (data) => { console.log(JSON.stringify(data)); } // Outputs {time,hash,size,pow,res,n,read}
-      , (error) => { console.error(error); }</code></div></div><div class="command-header" onclick="toggleCommand('save')"><b>save</b> {<i>key</i>, <i>value</i>, [<i>legacy=false</i>], [<i>encrypted=true</i>], [<i>work=true</i>], [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">Stringify and encrypt data with user keys.</span></div><div style="display:none;" class="command-body" id="save">
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="command-header" onclick="toggleCommand('save')"><b>save</b> {<i>key</i>, <i>value</i>, [<i>legacy=false</i>], [<i>encrypted=true</i>], [<i>work=true</i>], [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">Stringify and encrypt data with user keys.</span></div><div style="display:none;" class="command-body" id="save">
     Stringify and encrypt data with user keys.
-   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.value</td><td>- A string, array or object.</td></tr><tr><td>data.legacy</td><td>- A toggle to use a legacy storage method.</td></tr><tr><td>data.encrypted</td><td>- whether to encrypt the data with the user key.</td></tr><tr><td>data.work</td><td>- whether to perform and submit proof of work.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="save" id="example62">hybrixd.sequential([
+   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.value</td><td>- A string, array or object.</td></tr><tr><td>data.legacy</td><td>- A toggle to use a legacy storage method.</td></tr><tr><td>data.encrypted</td><td>- whether to encrypt the data with the user key.</td></tr><tr><td>data.work</td><td>- whether to perform and submit proof of work.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="save" id="example62">hybrix.sequential([
     'init',
     {username: '', password: ''}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
-    {key:'Hello', value:'World!'}, 'save'
+    {key:'Hello', value:'World!'}, 'save',
     {key:'Hello'}, 'load'
     ]
-      , (data) => { console.log(JSON.stringify(data)); } // Outputs "World!"
-      , (error) => { console.error(error); }</code></div></div><div class="command-header" onclick="toggleCommand('seek')"><b>seek</b> {<i>key</i>, [<i>legacy=false</i>], [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">Check if data is associated to key</span></div><div style="display:none;" class="command-body" id="seek">
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="command-header" onclick="toggleCommand('seek')"><b>seek</b> {<i>key</i>, [<i>legacy=false</i>], [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">Check if data is associated to key</span></div><div style="display:none;" class="command-body" id="seek">
     Check if data is associated to key
-   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.legacy</td><td>- A toggle to use a legacy storage method.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="seek" id="example63">hybrixd.sequential([
+   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.legacy</td><td>- A toggle to use a legacy storage method.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="seek" id="example63">hybrix.sequential([
     'init',
     {username: '', password: ''}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
-    {key:'Hello', value:'World!'}, 'save'
+    {key:'Hello', value:'World!'}, 'save',
     {key:'Hello'}, 'load'
     ]
-      , (data) => { console.log(JSON.stringify(data)); } // Outputs "World!"
-      , (error) => { console.error(error); }</code></div></div><div class="command-header" onclick="toggleCommand('work')"><b>work</b> {<i>hash</i>, [<i>difficulty</i>], [<i>submit</i>], [<i>key</i>], [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">Perform Proof of Work</span></div><div style="display:none;" class="command-body" id="work">
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="command-header" onclick="toggleCommand('work')"><b>work</b> {<i>hash</i>, [<i>difficulty</i>], [<i>submit</i>], [<i>key</i>], [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">Perform Proof of Work</span></div><div style="display:none;" class="command-body" id="work">
  Perform Proof of Work
 <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.hash</td><td>- The hash that needs to be worked.</td></tr><tr><td>data.difficulty</td><td>- Difficulty level to use.</td></tr><tr><td>data.submit</td><td>- Whether to submit the proof of work</td></tr><tr><td>data.key</td><td>- Required for submit</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table></div></div><div class="category">Transaction</div><div class="command-header" onclick="toggleCommand('rawTransaction')"><b>rawTransaction</b> {<i>symbol</i>, <i>target</i>, <i>amount</i>, <i>fee</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">Creates a raw transaction that is signed but not yet pushed to the network.</span></div><div style="display:none;" class="command-body" id="rawTransaction">
  Creates a raw transaction that is signed but not yet pushed to the network.
