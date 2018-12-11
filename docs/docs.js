@@ -159,21 +159,26 @@ function runExample (event) {
   var script = document.createElement('script');
   script.onload = function () {
     var hybrix = new Hybrixd.Interface({XMLHttpRequest: XMLHttpRequest});
+    var progressBar = document.getElementById('progress');
     var onProgress = progress => {
-      document.getElementById('progress').style.width = (progress * 100) + '%';
-      document.getElementById('progress').innerHTML = Math.floor(progress * 100) + '%';
+      progressBar.style.width = (progress * 100) + '%';
+      progressBar.innerHTML = Math.floor(progress * 100) + '%';
     };
     var onSuccess = data => {
       onProgress(1);
       var result = document.getElementById('result');
       result.classList.remove('error');
-      result.innerHTML = JSON.stringify(data);
+      result.innerHTML = typeof data === 'string' ? data : JSON.stringify(data);
     };
     var onError = error => {
       var result = document.getElementById('result');
       result.classList.add('error');
-      result.innerHTML = 'Error:' + JSON.stringify(error);
+      result.innerHTML = 'Error: ' + (typeof error === 'string' ? error : JSON.stringify(error));
+      progressBar.style.backgroundColor = 'red';
     };
+    progressBar.style.width = 0;
+    progressBar.style.backgroundColor = 'blue';
+    progressBar.innerHTML = '0%';
     eval(document.getElementById('try').value);
   };
   script.src = 'hybrix-lib.web.js';

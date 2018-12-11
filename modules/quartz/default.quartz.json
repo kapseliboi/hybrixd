@@ -27,6 +27,15 @@
     "fee" : [
       "pass '$fee'"
     ],
+    "fee-symbol" : [
+      "data '$symbol'",
+      "splt '.'",
+      "pick 0",
+      "done"
+    ],
+    "keygen-base" : [
+      "pass '$keygen-base'"
+    ],
     "validate" : [
       "fail 'Not yet implemented!'"
     ],

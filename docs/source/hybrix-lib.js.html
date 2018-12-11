@@ -63,12 +63,12 @@ This library can be used to connect software to leverage the capabilities of the
 
  <p>The first is used to pass parameter data to the function, the last three are callback functions. onSuccess is called once when the method has finished successfully. onError is called once when an error is encountred. onProgress is called whenever an progress update is available, passing a number between 0 and 1, and 1 upon completion.</p>
 
- <p>To first initialize the interface, then add a host and then add an asset one could do the following:</p>
+ <p>To first initialize the interface, then add a host and then rout query for asset details to the host one could try the following:</p>
 
  <pre>
 hybrix.init();                                   // This is an asynchronious function. It can take some time to complete.
 hybrix.addHost({host:'https://www.example.com'});  <font color="red">// Problem! This will try to add the host before the initialization is done.</font>
-hybrix.addAsset({symbol:'btc'});                 <font color="red">// Problem! This will try to add the host before the initialization and/or addition of the host is done.</font>
+hybrix.rout({query: '/asset/dummy/details'});      <font color="red">// Problem! This will try to add the host before the initialization and/or addition of the host is done.</font>
  </pre>
 
 But that result in serious problems due to asynchronicity. One could use the callbacks to ensure execute order.
@@ -77,7 +77,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
                   function(){
                     hybrix.addHost({host:'https://www.example.com'}, // This will now be called after initialization is successfully completed.
                       function(){
-                       hybrix.addAsset({symbol:'btc'};             // This will now be called after adding the host is successfully completed.
+                       hybrix.rout({query: '/asset/dummy/details'});             // This will now be called after adding the host is successfully completed.
                       }
                     );
                   }
@@ -85,11 +85,11 @@ But that result in serious problems due to asynchronicity. One could use the cal
 
  <p>But adding more steps or error handling will end up with code that is both very hard to read and maintain. (This is sometimes dubbed as <i>callback hell</i>.) To mitigate this the library comes equiped with a sequential and a parallel command to handle these asynchronious call flows. With an added bonus of handling the progress for combined commands as well.</p>
 
- <pre>
+ <pre id="exampleHelloWorld">
   hybrix.sequential([
     'init',                                                        // Initialize hybrix
-    {host: 'http://localhost:1111/'},  'addHost',                  // Add and initialize the host
-    {symbol: 'dummy'}, 'addAsset'                                  // Add the asset
+    {host: 'http://localhost:1111/'}, 'addHost',                   // Add and initialize the host
+    {query: '/asset/dummy/details'}, 'rout'                        // Query for asset details
   ],
    onSuccess,                                                      // Define action to execute on successfull completion
    onError,                                                        // Define action to execute when an error is encountered
@@ -105,17 +105,38 @@ But that result in serious problems due to asynchronicity. One could use the cal
 
 <h3>Live example</h3>
 
-<div class="try">
+<div class="try"> <select id="selectExample" onchange="var s = document.getElementById('selectExample');document.getElementById('try').innerHTML=document.getElementById(s[s.selectedIndex].value).innerHTML.replace('http://localhost:1111',window.location.origin+'/api');">
+  <option value="exampleHelloWorld">Hello World</option>
+  </select>
+  <script>
+   setTimeout(function(){
+     var examples = document.getElementsByClassName('example');
+     var selectExample = document.getElementById('selectExample');
+     for (let example of examples) {
+       var option = document.createElement('OPTION');
+       option.value= example.id;
+       option.innerHTML = example.title;
+       selectExample.appendChild(option);
+       var button = document.createElement('input');
+       button.type='submit';
+       button.value="Try it";
+       button.onclick = (event) => {
+         document.getElementById('try').innerHTML= example.innerHTML.replace('http://localhost:1111',window.location.origin+'/api');
+         for(let option of document.getElementById('selectExample').options){
+           if(option.value===example.id){
+             option.selected='selected';
+           }
+         }
+         var tr = document.getElementById('try');
+         tr.scrollIntoView();
+         runExample(event);
+       }
+       example.parentNode.insertBefore(button, example.nextSibling);
+     }
+     document.getElementById('try').innerHTML=document.getElementById('exampleHelloWorld').innerHTML.replace('http://localhost:1111',window.location.origin+'/api');
+   },250);
+  </script>
   <textarea id="try" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-hybrix.sequential([
-   'init',                                                        // Initialize hybrix
-    {host: 'http://localhost:1111/'},  'addHost',                 // Add and initialize the host
-    {query: '/asset/dummy/details'}, 'rout'                       // Add the asset
-  ],
-   onSuccess,                                                     // Define action to execute on successfull completion
-   onError,                                                       // Define action to execute when an error is encountered
-   onProgress                                                     // Define action to execute whenever there is a progress update
-  );
   </textarea>
   <div id="progressContainer">
     <div id="progress"></div>

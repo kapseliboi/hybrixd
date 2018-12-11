@@ -1,75 +1,69 @@
 {
-  "_help" : "TODO API help welcome etc.",
+  "_help" : "Welcome to the hybrixd REST API. This Application Programming Interface can be used to retrieve information from hybrixd. The requests are formated as / separated commands. (Similar to a website url or file path.)",
   "a":{"_alias":"asset"},
   "asset":{
     "_help":"Assets are cryptocurrencies or tokens.",
-    "_this" : "List all available assets",
+    "_this" : "List all available assets.",
     "_ref":{
       "_list":"asset",
       "_sample" : "dummy",
       "balance":{
+        "_help":"Get the balance of an asset.",
         "_ref" : {
           "_list" : "address",
           "_sample" : "_dummyaddress_",
-          "_this": "Retrieve the balance for a given address.",
+          "_this": "Query an address to get its balance.",
           "_response": {"error":0,"info":"Process data.","id":"1519829438958324","progress":1,"started":1519829438958,"stopped":1519829440606,"data":"0.025106200000000000"}
         }
       },
       "contract":{
-        "_ref" : {
-          "_list" : "address",
-          "_sample" : "_dummyaddress_",
-          "_this": "Retrieve the unique identifier for an asset token.",
-          "_response": [
-            {"error":1,"info":"Process data.","id":"1519829579467984","progress":1,"started":1519829579467,"stopped":1519829579499,"data":"Error: Not a contract address!"},
-            {"error":0,"info":"Process data.","id":"1519829634775083","progress":1,"started":1519829634775,"stopped":1519829634778,"data":"0xf230b790E05390FC8295F4d3F60332c93BEd42e2"}
-          ]
-        }
-      },
-      "cron":{
-        "_access" : "root",
-        "_this" : "Perform scheduled tasks."
+        "_this" : "Get the contract unique identifier for a token asset.",
+        "_response": {"error":0,"info":"Process data.","id":"1519829634775083","progress":1,"started":1519829634775,"stopped":1519829634778,"data":"0xf230b790E05390FC8295F4d3F60332c93BEd42e2"}
       },
       "details":{
-        "_this": "Retrieve detailed information of an asset"
+        "_this": "Retrieve detailed information of an asset.",
+        "_response": {"fee":0.00011149,"factor":"8","contract":"undefined","symbol":"btc","name":"Bitcoin","mode":"bitcoinjslib.bitcoin","unified-symbols":"undefined","fee-symbol":"btc","fee-factor":"8","keygen-base":"btc","generated":"never"}
       },
       "factor":{
         "_this": "Retrieve the factor. The number of decimal digits used for this asset.",
         "_response": {"error":0,"info":"Process data.","id":"1519829794292742","progress":1,"started":1519829794292,"stopped":1519829794316,"data":"18"}
       },
       "fee":{
-        "_this": "Retrieve the transaction fee",
+        "_this": "Retrieve the average transaction fee for sending an asset.",
         "_response": {"error":0,"info":"Process data.","id":"1519830189432904","progress":1,"started":1519830189432,"stopped":1519830189437,"data":"0.000420000000000000"}
       },
       "fee-symbol":{
-        "_this": "Retrieve the symbol in which the fee is calculated."
+        "_this": "Retrieve the symbol in which the transaction fee is calculated.",
+        "_response": "TODO"
       },
       "history": {
-        "_help": "TX history, formatted as: address, count, offset",
+        "_help": "Retrieve the transaction history for an asset.",
         "_ref": {
           "_list": "address",
           "_sample" : "_dummyaddress_",
-          "_this": "Retrieve transaction history for an asset.",
+          "_this": "Get the history belonging to an address on the ledger.",
           "_ref": {
             "_list": "count",
             "_sample" : "10",
-            "_this": "Retrieve transaction history for an asset.",
+            "_this": "Specify the amount of entries to return.",
             "_ref": {
               "_list": "offset",
               "_sample" : "0",
-              "_this": "Retrieve transaction history for an asset."
+              "_this": "Specify the offset starting from the latest transaction."
             }
           }
         }
       },
       "sample" : {
-        "_this": "Retrieve a sample address and transaction id for test purposes."
+        "_this": "Retrieve a sample address and transaction id for test purposes.",
+        "_response": {"address":"1J3St3rp3hVsuLGhegbLWicyPL3NRD3YJ7","transaction":"2c0832c153cf33327dae0e95a3bc39f4b02ae887725a32c07b1be47a2faffc55"}
       },
       "transaction":{
+        "_help" : "Get transaction information.",
         "_ref" : {
           "_list" : "transaction_id",
-          "_sample" : "TXIDTXIDTXIDTXIDTXIDTXIDTXID",
-          "_this": "Retrieve the details for a transaction."
+          "_sample" : "$TRANSACTION_ID",
+          "_this": "Retrieve the details belonging to a transaction ID."
         }
       },
       "peers":{
@@ -77,37 +71,35 @@
         "_response": {"error":0,"info":"Process data.","id":"1519830189432904","progress":1,"started":1519830189432,"stopped":1519830189437,"data":["001.peer","002.peer","003.peer"]}
       },
       "push":{
+        "_help":"Push a signed transaction to a blockchain, DAG or other ledger system.",
         "_ref" : {
           "_list" : "transaction",
-          "_sample" : "TXIDTXIDTXIDTXIDTXIDTXIDTXID",
-          "_this":"Push a signed transaction to the blockchain.",
-          "_response" : "{\"error\":0,\"info\":\"Process data.\",\"id\":\"1519830244168082\",\"progress\":1,\"started\":1519830244168,\"stopped\":1519830244173,\"data\":$TRANSACTION_ID}"
+          "_this":"Signed transaction data pushed into the network will return a transaction ID.",
+          "_sample" : "$HEXADECIMAL_TRANSACTION_DATA",
+          "_response" : "$TRANSACTION_ID"
         }
       },
-      "init":{
-        "_access" : "root",
-        "_this" : "Perform initialization tasks."
-      },
       "keygen-base":{
-        "_this": "Retrieve the keygen-base. This is the asset that is used to generate the keys."
+        "_this": "Retrieve the keygen-base. This is the asset that is used to generate keys."
       },
       "unspent": {
+        "_help" : "Retrieve the unspents for an asset. Unspent is a bitcoin related term that in hybrixd is used for pre-transactional data. Bitcoin: 'unspent' means available inputs for creating a transaction. Ethereum: 'unspent' means the most recent nonce of the cryptocurrency account needed for constructing a transaction.  NXT: 'unspent' means the server reply information needed to construct a deterministic transaction.",
         "_ref" : {
-          "_help" : "Retrieve the unspent. Unspent is a bitcoin related term that in hybrixd is used for pretransactional data. Bitcoin: unspent means available inputs for creating a transaction. Ethereum: unspent means the most recent nonce of the cryptocurrency account needed for constructing a transaction.  NXT: unspent means the server reply information needed to construct a deterministic transaction.",
+          "_this": "Specify the source address from which you wish to calculate unspents.",
           "_list" : "source_address",
           "_sample" : "_dummyaddress_",
           "_ref" : {
             "_list" : "amount",
             "_sample" : "100",
-            "_this" : "Retrieve the unspent.",
+            "_this" : "Specify the amount to calculate unspents for.",
             "_ref" : {
               "_list" : "target_address",
               "_sample" : "_dummyaddress_",
-              "_this" : "Retrieve the unspent.",
+              "_this" : "Specify the target address to calculate unspents for.",
               "_ref" : {
                 "_list" : "public_key",
                 "_sample" : "_dummypublickey_",
-                "_this" : "Retrieve the unspent.",
+                "_this" : "Optional: specify the public key (needed for certain cryptocurrencies, like NXT for example).",
                 "_response" : {"error":0,"info":"Process data.","id":"1519830913478733","progress":1,"started":1519830913478,"stopped":1519830914923,"data":{"nonce":"1"}}
               }
             }
@@ -118,7 +110,7 @@
   },
   "c":{"_alias":"command"},
   "command":{
-    "_help":"Execute a command to hybrixd.",
+    "_help":"Execute a direct command to hybrixd.",
     "_access":"root",
     "apiqueue" :{
       "_help" : "Commands to control and check the API Queue.",

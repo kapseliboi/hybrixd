@@ -21,6 +21,8 @@ function getMatches (re, str) {
   return array;
 }
 
+var exampleId = 0;
+
 for (var id in files) {
   var body = fs.readFileSync(files[id]).toString();
 
@@ -94,9 +96,9 @@ for (var id in files) {
     for (var i = 0; i < funcs.length; ++i) {
       var func = funcs[i];
       if (i === 0 || funcs[i - 1].category !== func.category) {
-        data += '<div class="category">' + func.category + '</div>';
+        data += '<div class="category">' + func.category.trim() + '</div>';
       }
-      data += '<div class="command-header" onclick="toggleCommand(\'' + func.name + '\')"><b>' + func.name + '</b>';
+      data += '<div class="command-header" onclick="toggleCommand(\'' + func.name.trim() + '\')"><b>' + func.name.trim() + '</b>';
 
       if (id === 'hybrix-lib.js') { data += ' {'; }
       for (var j = 0; j < func.parameters.length; ++j) {
@@ -119,16 +121,17 @@ for (var id in files) {
         }
       }
       if (id === 'hybrix-lib.js') { data += '}'; }
-      data += '<span class="quickDescription">' + func.description + '</span></div><div style="display:none;" class="command-body" id="' + func.name + '">';
+      data += '<span class="quickDescription">' + func.description.trim() + '</span></div><div style="display:none;" class="command-body" id="' + func.name.trim() + '">';
       data += func.description;
       data += '<table class="parameters">';
       for (var j = 0; j < func.parameters.length; ++j) {
         var parameter = func.parameters[j];
-        data += '<tr><td>' + parameter.name + '</td><td>' + parameter.description + '</td></tr>';
+        data += '<tr><td>' + parameter.name.trim() + '</td><td>' + parameter.description.trim() + '</td></tr>';
       }
       data += '</table>';
       for (var j = 0; j < func.examples.length; ++j) {
-        data += '<code style="display:block;white-space: pre;">' + func.examples[j] + '</code>';
+        data += '<code class="example" title="' + func.name + '" id="example' + exampleId + '">' + func.examples[j].trim() + '</code>';
+        exampleId++;
       }
       data += '</div></div>';
     }
