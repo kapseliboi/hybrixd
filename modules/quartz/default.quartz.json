@@ -13,7 +13,7 @@
       "fail 'Not yet implemented!'"
     ],
     "factor" : [
-      "pass '$factor'"
+      "data '$factor'"
     ],
     "history" : [
       "fail 'Not yet implemented!'"
@@ -22,10 +22,15 @@
       "fail 'Not yet implemented!'"
     ],
     "contract" : [
-      "pass '$contract'"
+      "done '$contract'"
     ],
     "fee" : [
-      "pass '$fee'"
+      "data '$fee'"
+    ],
+    "fee-factor" : [
+      "call 'fee-symbol'",
+      "peek data+'::factor'",
+      "done"
     ],
     "fee-symbol" : [
       "data '$symbol'",
@@ -33,17 +38,32 @@
       "pick 0",
       "done"
     ],
+    "generated" : [
+      "data '$generated'",
+      "flow 'undefined' 1 2",
+      "data 'never'",
+      "done"
+    ],
     "keygen-base" : [
-      "pass '$keygen-base'"
+      "data '$keygen-base'",
+      "flow 'undefined' 1 2",
+      "data '$symbol'",
+      "splt '.'",
+      "pick 0",
+      "done"
+    ],
+    "unified-symbols" : [
+      "data '$unified-symbols'",
+      "flow 'undefined' 1 2",
+      "data null",
+      "done"
     ],
     "validate" : [
       "fail 'Not yet implemented!'"
     ],
     "details" : [
-      "peek '$symbol'.split('.')[0]+'::factor'",
-      "poke 'feeFactor'",
-      "each {'fee':1,'factor':1,'contract':1} 'subdetails'",
-      "done {fee:data.fee,factor:data.factor,contract:data.contract,symbol:'$symbol',name:'$name',mode:'$mode','unified-symbols':'$unified-symbols','fee-symbol':'$fee-symbol'!=='undefined'?'$fee-symbol':'$symbol'.split('.')[0],'fee-factor':'$feeFactor','keygen-base':'$keygen-base'!=='undefined'?'$keygen-base':'$symbol'.split('.')[0], generated:'$generated'==='undefined'?'never':'$generated'}"
+      "each {'fee':null,'fee-factor':null,'fee-symbol':null,'generated':null,'factor':null,'contract':null,'unified-symbols':null} 'subdetails'",
+      "done {fee:data.fee,factor:data.factor,contract:data.contract,symbol:'$symbol',name:'$name',mode:'$mode','unified-symbols':data['unified-symbols'],'fee-symbol':data['fee-symbol'],'fee-factor':data['fee-factor'],'keygen-base':data['keygen-base'], generated:data['generated']}"
     ],
     "subdetails" : [
       "call data.key"
