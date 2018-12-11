@@ -28,7 +28,10 @@
       "data '$fee'"
     ],
     "fee-factor" : [
-      "call 'fee-symbol'",
+      "# TODO: doesn't work when using in details!  call 'fee-symbol'",
+      "data '$symbol'",
+      "splt '.'",
+      "pick 0",
       "peek data+'::factor'",
       "done"
     ],
