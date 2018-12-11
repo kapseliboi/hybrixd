@@ -68,7 +68,7 @@
       "fail 'Not yet implemented!'"
     ],
     "details" : [
-      "each {'contract':null,'factor':null,'fee':null,'fee-factor':null,'fee-symbol':null,'generated':null,'unified-symbols':null} 'subdetails'",
+      "each {'contract':null,'factor':null,'fee':null,'fee-factor':null,'fee-symbol':null,'generated':null,'keygen-base':null,'unified-symbols':null} 'subdetails'",
       "done {fee:data.fee,factor:data.factor,contract:data.contract,symbol:'$symbol',name:'$name',mode:'$mode','unified-symbols':data['unified-symbols'],'fee-symbol':data['fee-symbol'],'fee-factor':data['fee-factor'],'keygen-base':data['keygen-base'], generated:data['generated']}"
     ],
     "subdetails" : [
