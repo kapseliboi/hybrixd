@@ -48,7 +48,7 @@
       "done"
     ],
     "mode" : [
-      "done '$mode'",
+      "done '$mode'"
     ],
     "keygen-base" : [
       "data '$keygen-base'",
