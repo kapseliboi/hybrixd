@@ -51,6 +51,15 @@ TODO
 </td></tr><tr><td>onNotFound</td><td>- Where to jump when the data is not found
 </td></tr></table><code style="display:block;white-space: pre;"> find({'id':'abcd'})      // input: [{'id':'abcd'},{'id':'efgh'}], output: [{'id':'abcd'}]
  
+  </code></div></div><div class="command-header" onclick="toggleCommand('have')"><b>have</b> [<i>input</i>]<span class="quickDescription">
+ Count amount of entries a list, string or object has.
+</span></div><div style="display:none;" class="command-body" id="have">
+ Count amount of entries a list, string or object has.
+<table class="parameters"><tr><td>input</td><td>- List, string or object.
+</td></tr></table><code style="display:block;white-space: pre;"> have()              // input: 'abcde', result: 5
+ have(['a','b',5])   // result: 3
+ have({'a':1,'b':2)  // result: 2
+ 
   </code></div></div><div class="command-header" onclick="toggleCommand('join')"><b>join</b> [<i>separator=''</i>]<span class="quickDescription">
  Join an array into a string.
 </span></div><div style="display:none;" class="command-body" id="join">
@@ -180,15 +189,6 @@ TODO
 </td></tr></table><code style="display:block;white-space: pre;"> flow('yes',1,-3)          // test if data equals 'yes', if true jump to the next instruction, if false jump back three instructions
  flow({'yes':3,'no':2})    // if data equals 'yes' jump three instructions, if no jump two instructions, else jump to next instruction
  flow({'yes':3,'no':2},5)  // if data equals 'yes' jump three instructions, if no jump two instructions, else jump five instructions
- 
-  </code></div></div><div class="command-header" onclick="toggleCommand('have')"><b>have</b> [<i>input</i>]<span class="quickDescription">
- Count amount of entries a list, string or object has.
-</span></div><div style="display:none;" class="command-body" id="have">
- Count amount of entries a list, string or object has.
-<table class="parameters"><tr><td>input</td><td>- List, string or object.
-</td></tr></table><code style="display:block;white-space: pre;"> have()              // input: 'abcde', result: 5
- have(['a','b',5])   // result: 3
- have({'a':1,'b':2)  // result: 2
  
   </code></div></div><div class="command-header" onclick="toggleCommand('hook')"><b>hook</b> <i>onError</i> [<i>err=1</i>]<span class="quickDescription">
  Indicates a fallback target when an error is encountered.
