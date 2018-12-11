@@ -34,15 +34,19 @@
       },
       "fee-factor":{
         "_this": "Retrieve the factor belonging to an asset's fee.",
-        "_response": "TODO"
+        "_response": "8"
       },
       "fee-symbol":{
         "_this": "Retrieve the symbol in which the transaction fee is calculated.",
-        "_response": "TODO"
+        "_response": "btc"
       },
       "keygen-base":{
         "_this": "Retrieve the base symbol used to generated the private and public keys of an asset.",
-        "_response": "TODO"
+        "_response": "btc"
+      },
+      "mode":{
+        "_this": "Retrieve the mode for proper initialization of deterministic code blobs on the client-side.",
+        "_response": "bitcoinjslib.bitcoin"
       },
       "history": {
         "_help": "Retrieve the transaction history for an asset.",
@@ -92,7 +96,7 @@
       },
       "unified-symbols":{
         "_this": "Retrieve the unified symbols that form a hybrid asset.",
-        "_response": "TODO"
+        "_response": ['eth','nxt','omni','waves','xcp','xem']
       },
       "unspent": {
         "_help" : "Retrieve the unspents for an asset. Unspent is a bitcoin related term that in hybrixd is used for pre-transactional data. Bitcoin: 'unspent' means available inputs for creating a transaction. Ethereum: 'unspent' means the most recent nonce of the cryptocurrency account needed for constructing a transaction.  NXT: 'unspent' means the server reply information needed to construct a deterministic transaction.",
