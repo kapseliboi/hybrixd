@@ -4,6 +4,6 @@
   "module":"web-wallet",
   "router" : {
     "_ellipsis": true,
-    "_this" : "TODO"
+    "_this" : "Provides the necessary bindings to host the web wallet interface."
   }
 }

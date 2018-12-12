@@ -111,7 +111,7 @@
     ]
   },
   "router" : {
-    "_help" : "(experimental!) Voting engine utilizing decentralized consensus and storage."
+    "_help" : "(experimental!) Voting engine utilizing decentralized consensus and storage.",
     "listAddresses" : {
       "_help": "List all eligibility addresses",
       "_ref" : {
@@ -119,7 +119,7 @@
         "_this" : "An array is returned listing all eligibility addresses."
       }
     },
-    "listAddress" : {'_alias':'listAddresses'}
+    "listAddress" : {"_alias":"listAddresses"},
     "addAddress" : {
       "_help": "Add eligibility adresses to voting session",
       "_ref" : {

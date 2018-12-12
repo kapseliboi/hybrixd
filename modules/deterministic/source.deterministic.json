@@ -3,24 +3,27 @@
   "name":"Deterministic",
   "module":"deterministic",
   "router" : {
+    "_help" : "This module provides deterministic code blobs and checksum hashes.",
     "command" : {
         "_this":"Execute a direct command.",
         "_access":"root"
       },
       "assets":"List available assets.",
       "code": {
+        "_help" : "Returns an lzma compressed deterministic blob (client side code).",
         "_ref":{
           "_list" : "mode",
-          "_this" : "Returns the lzma compressed deterministic blobs (client side code) for a `$MODE` ."
+          "_this" : "Provide a `$MODE` to get the corresponding deterministic blob."
         }
       },
       "hash":  {
+        "_help" : "Returns the DJB2 checksum hash of a deterministic blob.",
         "_ref":{
           "_list" : "mode",
-          "_this" : "Returns the DJB2 hash of the deterministic blobs (client side code) for `$MODE` ."
+          "_this" : "Provide a `$MODE` to get a DJB2 hash."
         }
       },
-      "hashes":"Returns the DJB2 hash of all deterministic blobs (client side code).",
+      "hashes":"Returns the DJB2 checksum hashes of all deterministic blobs.",
       "modes":"List available modes."
   }
 }

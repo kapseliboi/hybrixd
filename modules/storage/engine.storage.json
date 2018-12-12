@@ -4,7 +4,7 @@
   "module":"storage",
   "cron" : 300,
   "router" : {
-    "_help" : "Control the decentralized storage engine."
+    "_help" : "Control the decentralized storage engine.",
     "seek":{
       "_help" : "Check if a storage key exists.",
       "_ref" : {

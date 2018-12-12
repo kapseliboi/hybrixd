@@ -3,6 +3,7 @@
   "name":"test",
   "module":"quartz",
   "router" : {
+    "_hidden":true,
     "test": "test"
   },
   "quartz" : {

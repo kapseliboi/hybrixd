@@ -281,9 +281,10 @@
         "_response" : "{error:0, nonce1:$NONCE1}"
       },
       "1" : {
+        "_help": "Step 1 consists of sending the signed `$NONCE1` , if this is verified the session public key is given.",
         "_ref" : {
-          "_list":"crypt_hex",
-          "_this": "Step 1 consists of sending the signed `$NONCE1` , if this is verified the session public key is given.",
+          "_list": "crypt_hex",
+          "_this": "Make sure to include the hexadecimal signature.",
           "_response" : "{error:0,server_sign_pubkey:$SERVER_SIGN_PUBKEY,server_session_pubkey:$SERVER_SESSION_PUBKEY,current_nonce:$NONCE_CONHEX,crhex:$CRYPT_HEX}"
         }
       }
