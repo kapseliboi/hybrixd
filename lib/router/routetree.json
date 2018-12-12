@@ -189,7 +189,7 @@
     "asset" : {
       "names":"Retrieve a list of all basic asset names.",
       "modes":"Retrieve a list of all basic asset modes.",
-      "details":"Retrieve a list of all basic asset details [{symbol,name,mode}]"
+      "details":"Retrieve a list of all basic asset details [{symbol,name,mode}]."
     }
   },
   "p":{"_alias":"proc"},
@@ -197,13 +197,14 @@
     "_this" : "List all processes.",
     "_ref" : {
       "_list" : "proc",
-      "_this" : "Display process details."
+      "_this" : "Specify a process ID to see its details."
     },
     "kill":{
       "_access":"root",
+      "_help" : "Kill a process and all child processes.",
       "_ref" : {
         "_list" : "proc",
-        "_this" : "Kill a process and all child processes."
+        "_this" : "Specify the process ID to kill."
       }
     },
     "pause":{
@@ -211,21 +212,23 @@
       "_ref" : {
         "_access":"root",
         "_list" : "proc",
-        "_this" : "Pause a process and all child processes."
+        "_this" : "Specify the process ID to pause. All its child processes are also paused."
       }
     },
     "resume":{
+      "_help" : "Resume a paused process and all child processes.",
       "_ref" : {
         "_access":"root",
         "_list" : "proc",
-        "_this" : "Resume a paused process and all child processes."
+        "_this" : "Specify the process ID to resume."
       }
     },
     "peek":{
       "_access" : "root",
+      "_help" : "Display the internal data of a process.",
       "_ref" : {
         "_list" : "proc",
-        "_this" : "Display process internal data."
+        "_this" : "Specify the process ID to get its internal data."
       }
     },
     "queue":{
@@ -233,7 +236,7 @@
       "_this" : "Display queued processes.",
       "_ref" : {
         "_list" : "proc",
-        "_this" : "Display process queue status."
+        "_this" : "Specify the process ID to get its queue status."
       }
     }
   },
