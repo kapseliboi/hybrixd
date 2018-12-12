@@ -14,7 +14,7 @@ hybrixd can be run on the following operating systems:
 To install hybrixd please clone the repository using the following command:
 
 ```
-git clone https://github.com/internetofcoins/hybrixd
+git clone https://gitlab.com/hybrix/hybrixd
 ```
 
 Or download and extract the following zip file:
