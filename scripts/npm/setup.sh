@@ -35,7 +35,7 @@ if [ ! -e "$NODE/node_binaries" ];then
     if [ ! -e "$NODEJS" ];then
         cd "$HYBRIXD"
         echo " [i] Clone node js runtimes files"
-        git clone https://gitlab.com/iochq/hybrixd/dependencies/nodejs.git
+        git clone https://gitlab.com/hybrix/hybrixd/dependencies/nodejs.git
     fi
     echo " [i] Link node_binaries"
     ln -sf "$NODEJS/$SYSTEM" "$NODE/node_binaries"
@@ -52,7 +52,7 @@ if [ ! -e "$NODE/common" ];then
     if [ ! -e "$COMMON" ];then
         cd "$HYBRIXD"
         echo " [i] Clone common files"
-        git clone https://www.gitlab.com/iochq/hybrixd/common.git
+        git clone https://www.gitlab.com/hybrix/hybrixd/common.git
     fi
     echo " [i] Link common files"
     ln -sf "$COMMON" "$NODE/common"
