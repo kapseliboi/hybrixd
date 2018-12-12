@@ -6,15 +6,18 @@
     "test": "test"
   },
   "quartz" : {
+    "fee":[
+      "rout('/asset/eth/fee')",
+      "math('+1')",
+      "done"
+    ],
+
     "test" : [
-      "_hidden":true,
-      "hook @notFoundOrEmpty",
-      "load 'a'",
-      "file",
-      "jpar",
-      "done",
-      "@notFoundOrEmpty",
-      "done []"
+      "each {'fee':null} 'subdetails'",
+      "done {fee:data.fee}"
+    ],
+    "subdetails" : [
+      "call data.key"
     ]
   }
 }

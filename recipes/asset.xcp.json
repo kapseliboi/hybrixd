@@ -66,7 +66,8 @@
     ],
     "fee" : [
       "rout('/asset/btc/fee')",
-      "math('+$feeCounterpartyTX')"
+      "math('+$feeCounterpartyTX')",
+      "done"
     ],
     "sample" : [
       "done({address:'1AeqgtHedfA2yVXH6GiKLS2JGkfWfgyTC6',transaction:'8162e98734c94b5b32682ce43041c2fdd5a6bf957c0684e42092284a4478bd0b'})"
