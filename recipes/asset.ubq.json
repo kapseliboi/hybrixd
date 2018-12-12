@@ -5,7 +5,7 @@
   "mode":"ethereum.main",
   "fee":0.00005,
   "factor":18,
-  "host":["https://pyrus2.ubiqscan.io/"],
+  "host":["https://pyrus2.ubiqscan.io/","https://pyrus1.ubiqscan.io/"],
   "contract":"0x0000000000000000000000000000000000000000",
   "cache":15000,
   "timeout":30000,

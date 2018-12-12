@@ -108,12 +108,19 @@ function exec (properties) {
           subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_call",[{"to":"' + target.contract + '","data":"' + encoded + '"},"pending"]]})'); // send token balance ABI query
         }
         // when bad result returned: {"status":"0","message":"NOTOK","result":"Error! Missing Or invalid Module name"		
-        subprocesses.push('tran(".result",1,3)');
-        subprocesses.push('test((data.substr(0,2)==="0x"),1,2)');
-        subprocesses.push('done(functions.padFloat(functions.fromInt(functions.hex2dec.toDec(data),' + factor + '),' + factor + '))');
-        subprocesses.push('logs(2,"module ethereum: bad RPC response, retrying request...")');
-        subprocesses.push('wait(1500)');
-        subprocesses.push('loop(@retryLoop,"retries","<9","1")');
+		// UBQ {"jsonrpc":"2.0","id":8123,"address":"0xa8201e4dacbe1f098791a0f11ab6271570277bb8","result":"0"}
+		subprocesses.push('tran(".result",1,3)');
+		if(base==='ubq') {
+			subprocesses.push('test(!isNaN(data.substr(0,1)),1,2)');
+			subprocesses.push('atom()');
+			subprocesses.push('done()');
+		} else {		
+			subprocesses.push('test((data.substr(0,2)==="0x"),1,2)');
+			subprocesses.push('done(functions.padFloat(functions.fromInt(functions.hex2dec.toDec(data),' + factor + '),' + factor + '))');
+			subprocesses.push('logs(2,"module ethereum: bad RPC response, retrying request...")');
+			subprocesses.push('wait(1500)');
+			subprocesses.push('loop(@retryLoop,"retries","<9","1")');
+		}
         subprocesses.push('fail("Error: Ethereum network not responding. Cannot get balance!")');
       } else {
         subprocesses.push('stop(1,"Error: missing address!")');
@@ -125,6 +132,7 @@ function exec (properties) {
         subprocesses.push('@retryLoop');
         subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_sendRawTransaction",["' + deterministic_script + '"]]})');
         // returns: { "id":1, "jsonrpc": "2.0", "result": "0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331" }
+        subprocesses.push('flow(".result",1,3)');
         subprocesses.push('tran(".result",1,3)');
         subprocesses.push('test((data.substr(0,2)==="0x"),1,2)');
         subprocesses.push('done()');
