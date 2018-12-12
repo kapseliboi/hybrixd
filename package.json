@@ -10,10 +10,11 @@
     "cssmin": "^0.4.3",
     "progress": "^2.0.0",
     "stdio": "^0.2.7",
+    "teletype": "^0.2.0",
     "uglify-es": "^3.3.9",
     "wallet-address-validator": "^0.1.7",
     "ws": "^6.0.0",
-    "teletype": "^0.2.0"
+    "xmldoc": "^1.1.2"
   },
   "devDependencies": {},
   "scripts": {
@@ -25,7 +26,7 @@
     "release": "sh scripts/npm/compile.sh",
     "release:start": "sh scripts/npm/compile.sh; sh ./dist/hybrixd",
     "cluster:start": "sh scripts/npm/cluster.sh",
-    "clean" : "rm -rf dist/*"
+    "clean": "rm -rf dist/*"
   },
   "repository": {
     "type": "git",
