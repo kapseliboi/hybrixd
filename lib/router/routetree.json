@@ -139,10 +139,11 @@
       "clear" : "Clear the cache."
     },
     "exec" :{
+      "_help" : "Execute a Qrtz script.",
       "_ref" : {
         "_ellipsis" : true,
         "_list" : "file",
-        "_this" : "Execute a quartz script."
+        "_this" : "Specify the file containing the code to execute."
       }
     },
     "reload" : {
@@ -184,6 +185,7 @@
   },
   "l":{"_alias":"list"},
   "list":{
+    "_help" : "Produce standard property lists of assets, sources or engines.",
     "asset" : {
       "names":"Retrieve a list of all basic asset names.",
       "modes":"Retrieve a list of all basic asset modes.",
@@ -242,7 +244,8 @@
   },
   "v":{"_alias":"version"},
   "version":{
-    "details" : "Display version details"
+    "_help" : "Display version information.",
+    "details" : "Get version details."
   },
   "w":{"_alias":"wchan"},
   "wchan":{
@@ -269,7 +272,7 @@
   },
   "x":{"_alias":"xauth"},
   "xauth":{
-    "_help" : "Create a secure channel.",
+    "_help" : "Create an authenticated session channel for a encrypted communications.",
     "_ref":{
       "_help" : "The 64 char session hex key is given as as a public key.",
       "_list":"session_hexkey",
@@ -288,7 +291,7 @@
   },
   "y":{"_alias":"ychan"},
   "ychan":{
-    "_help" : "Send an encrypted request through the channel and recieve an encrypted response.",
+    "_help" : "Send an encrypted request through the session channel and recieve an encrypted response.",
     "_ref":{
       "_help" : "The 64 char session hex key is given as a public key.",
       "_list":"session_hexkey",
@@ -303,7 +306,7 @@
   },
   "z":{"_alias":"zchan"},
   "zchan":{
-    "_help" : "Send an encrypted request through the channel and recieve an encrypted and compressed response.",
+    "_help" : "Send an encrypted request through the session channel and recieve an encrypted and compressed response.",
     "_ref":{
       "_list":"session_hexkey",
       "_help" : "The 64 char session hex key is given as a public key.",

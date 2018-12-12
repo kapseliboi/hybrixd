@@ -1,79 +1,63 @@
 {
   "engine":"storage",
-  "name":"Storage engine placeholder.",
+  "name":"Storage engine module",
   "module":"storage",
   "cron" : 300,
   "router" : {
+    "_help" : "Control the decentralized storage engine."
     "seek":{
+      "_help" : "Check if a storage key exists.",
       "_ref" : {
         "_list" : "storage_id",
-        "_this" : "Check if data with this id exists."
-      }
-    },
-    "get":{
-      "_ref" : {
-        "_list" : "storage_id",
-        "_this" : "Get data from storage."
+        "_this" : "Specify the ID key too check if it exists."
       }
     },
     "load":{
+      "_help" : "Load data from storage.",
       "_ref" : {
         "_list" : "storage_id",
-        "_this" : "Get data from storage."
+        "_this" : "Specify the ID key to get storage from."
       }
     },
-    "set":{
-      "_ref" : {
-        "_list" : "storage_id",
-        "_ref" : {
-          "_list" : "data",
-          "_this" : "Set data in storage."
-        }
-      }
-    },
+    "get":{"_alias":"load"},
     "save":{
+      "_help" : "Save data to storage.",
       "_ref" : {
         "_list" : "storage_id",
+        "_help" : "Specify the ID key to save storage to.",
         "_ref" : {
           "_list" : "data",
-          "_this" : "Set data in storage."
+          "_this" : "Specify the data string value to be saved."
         }
       }
     },
-    "del":{
-      "_ref" : {
-        "_list" : "storage_id",
-        "_this" : "Delete data from storage."
-      }
-    },
+    "set":{"_alias":"save"},
     "burn":{
+      "_access" : "root",
+      "_help" : "Delete data from storage.",
       "_ref" : {
         "_list" : "storage_id",
-        "_this" : "Delete data from storage."
+        "_this" : "Specify the ID key to delete the storage object."
       }
     },
-    "pow":{
-      "_ref" : {
-        "_list" : "key",
-        "_ref" : {
-          "_list" : "proof",
-          "_this" : "Provide proof-of-work for long term storage."
-        }
-      }
-    },
+    "del":{"_alias":"burn"},
     "work":{
+	  "_help" : "Provide proof-of-work for long term storage.",
       "_ref" : {
         "_list" : "key",
+        "_help" : "Specify the ID key to provide proof for.",
         "_ref" : {
           "_list" : "proof",
-          "_this" : "Provide proof-of-work for long term storage."
+          "_this" : "Specify a proof string that solves the puzzle."
         }
       }
     },
+    "pow":{"_alias":"work"},
     "meta":{
+      "_help" : "Get metadata about a storage object.",
       "_ref" : {
         "_list" : "storage_id",
-        "_this" : "Get metadata from storage."
+        "_this" : "Specify the ID key to get metadata for."
       }
     }
   }

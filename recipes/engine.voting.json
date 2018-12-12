@@ -5,20 +5,6 @@
   "cache":100,
   "throttle":10,
   "quartz":{
-    "test" : [
-      "data '$1'",
-      "hash 'sha256'",
-      "data 'storemeyo!'",
-      "save 'key'",
-      "load 'key'",
-      "jpar 1 2",
-      "done",
-      "fail data"
-    ],
-    "listAddress" : [
-      "call 'listAddresses'",
-      "done"
-    ],
     "listAddresses" : [
       "poke '::coreMode','elegibility'",
       "call 'coreList'",
@@ -125,20 +111,7 @@
     ]
   },
   "router" : {
-    "test" : {
-      "_list": "Test routine",
-      "_ref" : {
-        "_list" : "session_id",
-        "_this" : "Test routine. Needs an additional /id to function!"
-      }
-    },
-    "listAddress" : {
-      "_help": "List all eligibility addresses [alias to listAddresses]",
-      "_ref" : {
-        "_list" : "session_id",
-        "_this" : "An array is returned listing all eligibility addresses."
-      }
-    },
+    "_help" : "(experimental!) Voting engine utilizing decentralized consensus and storage."
     "listAddresses" : {
       "_help": "List all eligibility addresses",
       "_ref" : {
@@ -146,6 +119,7 @@
         "_this" : "An array is returned listing all eligibility addresses."
       }
     },
+    "listAddress" : {'_alias':'listAddresses'}
     "addAddress" : {
       "_help": "Add eligibility adresses to voting session",
       "_ref" : {
@@ -171,30 +145,6 @@
               "_list" : "eligibility_code",
               "_this" : "Adds an eligibility code or codes under the specified voting session ID."
           }
-      }
-    },
-    "coreList" : {
-      "_help": "List core",
-      "_ref" : {
-        "_list" : "storage_id",
-        "_this" : "List core storage."
-      }
-    },
-    "coreAdd" : {
-      "_help": "Add to core",
-      "_ref" : {
-        "_list" : "session_id",
-          "_ref" : {
-              "_list" : "storage_id",
-              "_this" : "Add to core storage object list."
-          }
-      }
-    },
-    "coreReset" : {
-      "_list": "Reset the core storage list",
-      "_ref" : {
-        "_list" : "voting_session_id",
-        "_this" : "Empties the core session list, deleting its data contents."
       }
     }
   }
