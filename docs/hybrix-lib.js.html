@@ -125,17 +125,19 @@ But that result in serious problems due to asynchronicity. One could use the cal
        var button = document.createElement('input');
        button.type='submit';
        button.value="Try it";
-       button.onclick = (event) => {
-         document.getElementById('try').innerHTML= example.innerHTML.replace('http://localhost:1111',window.location.origin+'/api');
-         for(let option of document.getElementById('selectExample').options){
-           if(option.value===example.id){
-             option.selected='selected';
+       button.onclick = function(body,id){
+         return event => {
+           document.getElementById('try').innerHTML= body.replace('http://localhost:1111',window.location.origin+'/api');
+           for(let option of document.getElementById('selectExample').options){
+             if(option.value===id){
+               option.selected='selected';
+             }
            }
+           var tr = document.getElementById('try');
+           tr.scrollIntoView();
+           runExample(event);
          }
-         var tr = document.getElementById('try');
-         tr.scrollIntoView();
-         runExample(event);
-       }
+       }(example.innerHTML,example.id);
        example.parentNode.insertBefore(button, example.nextSibling);
      }
      document.getElementById('try').innerHTML=document.getElementById('exampleHelloWorld').innerHTML.replace('http://localhost:1111',window.location.origin+'/api');
@@ -171,7 +173,8 @@ But that result in serious problems due to asynchronicity. One could use the cal
     'init',
     {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
-    TODO
+    {symbol: 'dummy'}, 'addAsset',
+    {symbol: 'dummy'}, 'asset'
     ]
       , onSuccess
       , onError
@@ -222,19 +225,33 @@ But that result in serious problems due to asynchronicity. One could use the cal
       , onProgress
     );</code></div></div><div class="command-header" onclick="toggleCommand('initAsset')"><b>initAsset</b> {<i>assetDetails</i>, <i>clientModuleCodeBlob</i>}<span class="quickDescription">Initialize an asset (crypto currency or token)</span></div><div style="display:none;" class="command-body" id="initAsset">
  Initialize an asset (crypto currency or token)
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.assetDetails</td><td>- Asset details as retrieved by calling `/a/$SYMBOL/details`</td></tr><tr><td>data.clientModuleCodeBlob</td><td>- A string containing the client module code blob.
- 
-  //TODO example</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('refreshAsset')"><b>refreshAsset</b> {[<i>symbol</i>]}<span class="quickDescription">Update the balance of a given asset (or all assets if no symbol is defined)</span></div><div style="display:none;" class="command-body" id="refreshAsset">
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.assetDetails</td><td>- Asset details as retrieved by calling `/a/$SYMBOL/details`</td></tr><tr><td>data.clientModuleCodeBlob</td><td>- A string containing the client module code blob.</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('refreshAsset')"><b>refreshAsset</b> {[<i>symbol</i>]}<span class="quickDescription">Update the balance of a given asset (or all assets if no symbol is defined)</span></div><div style="display:none;" class="command-body" id="refreshAsset">
  Update the balance of a given asset (or all assets if no symbol is defined)
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- TODO
- 
-  //TODO example</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('removeAsset')"><b>removeAsset</b> {<i>symbol</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">Remove an asset (crypto currency or token) from the session.</span></div><div style="display:none;" class="command-body" id="removeAsset">
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset to be refreshed, leave undefined to refresh all assets.</td></tr></table><code class="example" title="refreshAsset" id="example64">hybrix.sequential([
+    'init',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
+    {host: 'http://localhost:1111/'}, 'addHost',
+    {symbol: 'dummy'}, 'addAsset',
+    {symbol: 'dummy'}, 'refreshAsset',
+    ]
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="command-header" onclick="toggleCommand('removeAsset')"><b>removeAsset</b> {<i>symbol</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">Remove an asset (crypto currency or token) from the session.</span></div><div style="display:none;" class="command-body" id="removeAsset">
     Remove an asset (crypto currency or token) from the session.
-   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset</td></tr><tr><td>data.host</td><td>- The host used for the calls.</td></tr><tr><td>data.channel</td><td>- The channel used for the calls. 'y' for encryped, 'z' for encryped and compresses;
-   
-  //TODO example</td></tr></table></div></div><div class="category">ClientModule</div><div class="command-header" onclick="toggleCommand('client')"><b>client</b> {[<i>symbol</i>], [<i>id</i>], <i>func</i>, <i>data</i>}<span class="quickDescription">Execute a function in a client module.</span></div><div style="display:none;" class="command-body" id="client">
+   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset</td></tr><tr><td>data.host</td><td>- The host used for the calls.</td></tr><tr><td>data.channel</td><td>- The channel used for the calls. 'y' for encryped, 'z' for encryped and compresses;</td></tr></table><code class="example" title="removeAsset" id="example65">hybrix.sequential([
+    'init',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
+    {host: 'http://localhost:1111/'}, 'addHost',
+    {symbol: 'dummy'}, 'addAsset',
+    {symbol: 'dummy'}, 'removeAsset'
+    ]
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="category">ClientModule</div><div class="command-header" onclick="toggleCommand('client')"><b>client</b> {[<i>symbol</i>], [<i>id</i>], <i>func</i>, <i>data</i>}<span class="quickDescription">Execute a function in a client module.</span></div><div style="display:none;" class="command-body" id="client">
  Execute a function in a client module.
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol . Either this or the id needs to be defined.</td></tr><tr><td>data.id</td><td>- id of the client module. (For assets this is the first part of the mode)</td></tr><tr><td>data.func</td><td>- The client module function to be called</td></tr><tr><td>data.data</td><td>- The data to be passed to the client module function</td></tr></table><code class="example" title="client" id="example64">hybrix.sequential([
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The asset symbol . Either this or the id needs to be defined.</td></tr><tr><td>data.id</td><td>- id of the client module. (For assets this is the first part of the mode)</td></tr><tr><td>data.func</td><td>- The client module function to be called</td></tr><tr><td>data.data</td><td>- The data to be passed to the client module function</td></tr></table><code class="example" title="client" id="example66">hybrix.sequential([
     'init',
     {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
@@ -245,15 +262,21 @@ But that result in serious problems due to asynchronicity. One could use the cal
       , onProgress
     );</code></div></div><div class="command-header" onclick="toggleCommand('export')"><b>export</b> {<i>id</i>}<span class="quickDescription">Export a client module code blob.</span></div><div style="display:none;" class="command-body" id="export">
     Export a client module code blob.
-   <table class="parameters"><tr><td>data</td><td>- if empty, exports all blobs</td></tr><tr><td>data.id</td><td>- id of the client code blob.
-   
-  //TODO example</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('import')"><b>import</b> {<i>id</i>, <i>blob</i>, [<i>check=true</i>], [<i>channel</i>], [<i>host</i>]}<span class="quickDescription">Import a client module code blob.</span></div><div style="display:none;" class="command-body" id="import">
+   <table class="parameters"><tr><td>data</td><td>- if empty, exports all blobs</td></tr><tr><td>data.id</td><td>- id of the client code blob.</td></tr></table><code class="example" title="export" id="example67">hybrix.sequential([
+    'init',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
+    {host: 'http://localhost:1111/'}, 'addHost',
+    {symbol: 'dummy'}, 'addAsset',
+    {id: 'dummycoin'},'export'
+    ]
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="command-header" onclick="toggleCommand('import')"><b>import</b> {<i>id</i>, <i>blob</i>, [<i>check=true</i>], [<i>channel</i>], [<i>host</i>]}<span class="quickDescription">Import a client module code blob.</span></div><div style="display:none;" class="command-body" id="import">
     Import a client module code blob.
-   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.id</td><td>- id of the client code blob.</td></tr><tr><td>data.blob</td><td>- the client code blob</td></tr><tr><td>data.check</td><td>- check if there's a different version of the blob available at the host</td></tr><tr><td>data.channel</td><td>- TODO</td></tr><tr><td>data.host</td><td>- TODO
-   
-  //TODO example</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('modules')"><b>modules</b> {}<span class="quickDescription">List locally available client modules.</span></div><div style="display:none;" class="command-body" id="modules">
+   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.id</td><td>- id of the client code blob.</td></tr><tr><td>data.blob</td><td>- the client code blob</td></tr><tr><td>data.check</td><td>- check if there's a different version of the blob available at the host</td></tr><tr><td>data.channel</td><td>- TODO</td></tr><tr><td>data.host</td><td>- TODO</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('modules')"><b>modules</b> {}<span class="quickDescription">List locally available client modules.</span></div><div style="display:none;" class="command-body" id="modules">
     List locally available client modules.
-   <table class="parameters"><tr><td>data</td><td>- ignored</td></tr></table><code class="example" title="modules" id="example65">hybrix.sequential([
+   <table class="parameters"><tr><td>data</td><td>- ignored</td></tr></table><code class="example" title="modules" id="example68">hybrix.sequential([
     'init',
     {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
@@ -265,7 +288,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
       , onProgress
     );</code></div></div><div class="category">Encryption</div><div class="command-header" onclick="toggleCommand('decrypt')"><b>decrypt</b> {<i>data</i>}<span class="quickDescription">Decrypt and parse data with user keys.</span></div><div style="display:none;" class="command-body" id="decrypt">
  Decrypt and parse data with user keys.
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.data</td><td>- An encrypted and stringified string, array or object.</td></tr></table><code class="example" title="decrypt" id="example66">hybrix.sequential([
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.data</td><td>- An encrypted and stringified string, array or object.</td></tr></table><code class="example" title="decrypt" id="example69">hybrix.sequential([
  'init',
  {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
  {data:'Hello World!'}, 'encrypt',
@@ -276,7 +299,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
    , onProgress
  );</code></div></div><div class="command-header" onclick="toggleCommand('encrypt')"><b>encrypt</b> {<i>data</i>}<span class="quickDescription">Stringify and encrypt data with user keys.</span></div><div style="display:none;" class="command-body" id="encrypt">
  Stringify and encrypt data with user keys.
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.data</td><td>- A string, array or object.</td></tr></table><code class="example" title="encrypt" id="example67">hybrix.sequential([
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.data</td><td>- A string, array or object.</td></tr></table><code class="example" title="encrypt" id="example70">hybrix.sequential([
  'init',
  {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
  {data:'Hello World!'}, 'encrypt'
@@ -290,13 +313,18 @@ But that result in serious problems due to asynchronicity. One could use the cal
  
   //TODO example</td></tr></table></div></div><div class="category">Flow</div><div class="command-header" onclick="toggleCommand('call')"><b>call</b> {<i>func</i>, <i>data</i>}<span class="quickDescription">Execute a custom function with callbacks. Usefull for sequential and parallel.</span></div><div style="display:none;" class="command-body" id="call">
     Execute a custom function with callbacks. Usefull for sequential and parallel.
-   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.func</td><td>- A function expecting a dataCallback, errorCallback and optional progressCallback.</td></tr><tr><td>data.data</td><td>- The data to be passed to the function.</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('escapeString')"><b>escapeString</b> {}<span class="quickDescription">Identity function, outputs the data that is passed</span></div><div style="display:none;" class="command-body" id="escapeString">
+   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.func</td><td>- A function expecting a dataCallback, errorCallback and optional progressCallback.</td></tr><tr><td>data.data</td><td>- The data to be passed to the function.</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('id')"><b>id</b> {}<span class="quickDescription">Identity function, outputs the data that is passed</span></div><div style="display:none;" class="command-body" id="id">
     Identity function, outputs the data that is passed
-   <table class="parameters"><tr><td>data</td><td>- data passed to  dataCallback</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('id')"><b>id</b> {}<span class="quickDescription">Identity function, outputs the data that is passed</span></div><div style="display:none;" class="command-body" id="id">
-    Identity function, outputs the data that is passed
-   <table class="parameters"><tr><td>data</td><td>- data passed to  dataCallback</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('parallel')"><b>parallel</b> {<i>label</i>, <i>label,data</i>, <i>label,step</i>}<span class="quickDescription">Parallely executes several threads and collects results in a single object.</span></div><div style="display:none;" class="command-body" id="parallel">
+   <table class="parameters"><tr><td>data</td><td>- data passed to  dataCallback</td></tr></table><code class="example" title="id" id="example71">hybrix.sequential([
+ 'init',
+ {hello:'world'}, 'id'
+ ]
+   , onSuccess
+   , onError
+   , onProgress
+ );</code></div></div><div class="command-header" onclick="toggleCommand('parallel')"><b>parallel</b> {<i>label</i>, <i>label,data</i>, <i>label,step</i>}<span class="quickDescription">Parallely executes several threads and collects results in a single object.</span></div><div style="display:none;" class="command-body" id="parallel">
     Parallely executes several threads and collects results in a single object.
-<table class="parameters"><tr><td>data</td><td>- Parallel steps to be processed.</td></tr><tr><td>data.label</td><td>- A label given to the thread.</td></tr><tr><td>data.label.data</td><td>- The initial data passed to this thread.</td></tr><tr><td>data.label.step</td><td>- The step to execute with the data. Use 'sequential' to create multi step thread process.</td></tr></table><code class="example" title="parallel" id="example68">hybrix.sequential([
+<table class="parameters"><tr><td>data</td><td>- Parallel steps to be processed.</td></tr><tr><td>data.label</td><td>- A label given to the thread.</td></tr><tr><td>data.label.data</td><td>- The initial data passed to this thread.</td></tr><tr><td>data.label.step</td><td>- The step to execute with the data. Use 'sequential' to create multi step thread process.</td></tr></table><code class="example" title="parallel" id="example72">hybrix.sequential([
  'init',
  {host: 'http://localhost:1111/'}, 'addHost',
  {fee: {data:{query:'/asset/dummy/fee'}, step: 'rout'}, factor: {data:{query:'/asset/dummy/factor'}, step: 'rout'}} , 'parallel'
@@ -306,7 +334,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
    , onProgress
  );</code></div></div><div class="command-header" onclick="toggleCommand('sequential')"><b>sequential</b> {}<span class="quickDescription">Sequentually executes functions and passes results to next step.</span></div><div style="display:none;" class="command-body" id="sequential">
     Sequentually executes functions and passes results to next step.
-<table class="parameters"><tr><td>data</td><td>- Sequential steps to be processed. An object indicates data that is supplied to the next step. A function is a transformation of the data of the previous step and given to the next step. A string is a method that used the data from the last step and supplies to the next step.</td></tr></table><code class="example" title="sequential" id="example69">hybrix.sequential([
+<table class="parameters"><tr><td>data</td><td>- Sequential steps to be processed. An object indicates data that is supplied to the next step. A function is a transformation of the data of the previous step and given to the next step. A string is a method that used the data from the last step and supplies to the next step.</td></tr></table><code class="example" title="sequential" id="example73">hybrix.sequential([
  'init',
  {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
  {data:'Hello World!'}, 'encrypt',
@@ -317,7 +345,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
    , onProgress
  );</code></div></div><div class="category">Host</div><div class="command-header" onclick="toggleCommand('addHost')"><b>addHost</b> {<i>host</i>}<span class="quickDescription">Add a hybrixd node as host.</span></div><div style="display:none;" class="command-body" id="addHost">
  Add a hybrixd node as host.
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.host</td><td>- The hostname TODO  multiple in array?</td></tr></table><code class="example" title="addHost" id="example70">hybrix.sequential([
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.host</td><td>- The hostname TODO  multiple in array?</td></tr></table><code class="example" title="addHost" id="example74">hybrix.sequential([
     'init',
     {host: 'http://localhost:1111/'}, 'addHost'
     ]
@@ -326,7 +354,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
       , onProgress
     );</code></div></div><div class="command-header" onclick="toggleCommand('rout')"><b>rout</b> {<i>query</i>, [<i>channel</i>], [<i>meta=false</i>], [<i>host</i>], [<i>retries=3</i>]}<span class="quickDescription">Make a routing call to hybrixd node</span></div><div style="display:none;" class="command-body" id="rout">
  Make a routing call to hybrixd node
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.query</td><td>- The query path. For reference: <a href="/api/help">REST API help</a>.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr><tr><td>data.host</td><td>- Select a specific host, if omitted one will be chosen at random.</td></tr><tr><td>data.retries</td><td>- Nr of retries for a call</td></tr></table><code class="example" title="rout" id="example71">hybrix.sequential([
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.query</td><td>- The query path. For reference: <a href="/api/help">REST API help</a>.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr><tr><td>data.host</td><td>- Select a specific host, if omitted one will be chosen at random.</td></tr><tr><td>data.retries</td><td>- Nr of retries for a call</td></tr></table><code class="example" title="rout" id="example75">hybrix.sequential([
     'init',
     {host: 'http://localhost:1111/'}, 'addHost',
     {query: '/asset/dummy/details'}, 'rout'
@@ -336,7 +364,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
       , onProgress
     );</code></div></div><div class="category">Init</div><div class="command-header" onclick="toggleCommand('init')"><b>init</b> {}<span class="quickDescription">Initialize the NACL factory if nacl has not been defined yet.</span></div><div style="display:none;" class="command-body" id="init">
  Initialize the NACL factory if nacl has not been defined yet.
-<table class="parameters"><tr><td>data</td><td>- Not used</td></tr></table><code class="example" title="init" id="example72">hybrix.sequential([
+<table class="parameters"><tr><td>data</td><td>- Not used</td></tr></table><code class="example" title="init" id="example76">hybrix.sequential([
     'init'
     ]
       , onSuccess
@@ -347,7 +375,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
 <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.entropy</td><td>- CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Entropy can be provided. Must be a sufficient random string of at least 482 bytes.</td></tr><tr><td>data.offset</td><td>- CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Use an offset to create multiple accounts from same entropy.</td></tr><tr><td>data.pool</td><td>-  CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Pool function can be overridden by a custom 1600 byte pool generator.
  deterministic</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('login')"><b>login</b> {<i>host</i>}<span class="quickDescription">Create an encrypted session with a host.</span></div><div style="display:none;" class="command-body" id="login">
  Create an encrypted session with a host.
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.host</td><td>- The hostname for the hybrixd node.</td></tr></table><code class="example" title="login" id="example73">hybrix.sequential([
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.host</td><td>- The hostname for the hybrixd node.</td></tr></table><code class="example" title="login" id="example77">hybrix.sequential([
     'init',
     {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
@@ -358,7 +386,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
       , onProgress
     );</code></div></div><div class="command-header" onclick="toggleCommand('logout')"><b>logout</b> {}<span class="quickDescription">Log out of current session.</span></div><div style="display:none;" class="command-body" id="logout">
  Log out of current session.
-<table class="parameters"><tr><td>data</td><td>- Not used</td></tr></table><code class="example" title="logout" id="example74">hybrix.sequential([
+<table class="parameters"><tr><td>data</td><td>- Not used</td></tr></table><code class="example" title="logout" id="example78">hybrix.sequential([
     'init',
     {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     'logout'
@@ -368,7 +396,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
       , onProgress
     );</code></div></div><div class="command-header" onclick="toggleCommand('session')"><b>session</b> {<i>username</i>, <i>password</i>}<span class="quickDescription">Create a local deterministic session and - if required - log out of current session.</span></div><div style="display:none;" class="command-body" id="session">
  Create a local deterministic session and - if required - log out of current session.
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.username</td><td>- The username for the deterministic session</td></tr><tr><td>data.password</td><td>- The password for the deterministic session</td></tr></table><code class="example" title="session" id="example75">hybrix.sequential([
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.username</td><td>- The username for the deterministic session</td></tr><tr><td>data.password</td><td>- The password for the deterministic session</td></tr></table><code class="example" title="session" id="example79">hybrix.sequential([
     'init',
     {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session'
     ]
@@ -377,7 +405,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
       , onProgress
     );</code></div></div><div class="category">Storage</div><div class="command-header" onclick="toggleCommand('load')"><b>load</b> {<i>key</i>, [<i>encrypted</i>], [<i>legacy=false</i>], [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">TODO Stringify and encrypt data with user keys.</span></div><div style="display:none;" class="command-body" id="load">
     TODO Stringify and encrypt data with user keys.
-   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.encrypted</td><td>- whether to encrypt the data with the user key, true by default.</td></tr><tr><td>data.legacy</td><td>- A toggle to use a legacy storage method.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="load" id="example76">hybrix.sequential([
+   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.encrypted</td><td>- whether to encrypt the data with the user key, true by default.</td></tr><tr><td>data.legacy</td><td>- A toggle to use a legacy storage method.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="load" id="example80">hybrix.sequential([
     'init',
     {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
@@ -389,7 +417,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
       , onProgress
     );</code></div></div><div class="command-header" onclick="toggleCommand('meta')"><b>meta</b> {<i>key</i>, [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">Retrieve the meta data for a storage key</span></div><div style="display:none;" class="command-body" id="meta">
     Retrieve the meta data for a storage key
-   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="meta" id="example77">hybrix.sequential([
+   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="meta" id="example81">hybrix.sequential([
     'init',
     {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
@@ -401,7 +429,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
       , onProgress
     );</code></div></div><div class="command-header" onclick="toggleCommand('save')"><b>save</b> {<i>key</i>, <i>value</i>, [<i>legacy=false</i>], [<i>encrypted=true</i>], [<i>work=true</i>], [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">Stringify and encrypt data with user keys.</span></div><div style="display:none;" class="command-body" id="save">
     Stringify and encrypt data with user keys.
-   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.value</td><td>- A string, array or object.</td></tr><tr><td>data.legacy</td><td>- A toggle to use a legacy storage method.</td></tr><tr><td>data.encrypted</td><td>- whether to encrypt the data with the user key.</td></tr><tr><td>data.work</td><td>- whether to perform and submit proof of work.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="save" id="example78">hybrix.sequential([
+   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.value</td><td>- A string, array or object.</td></tr><tr><td>data.legacy</td><td>- A toggle to use a legacy storage method.</td></tr><tr><td>data.encrypted</td><td>- whether to encrypt the data with the user key.</td></tr><tr><td>data.work</td><td>- whether to perform and submit proof of work.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="save" id="example82">hybrix.sequential([
     'init',
     {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
@@ -413,7 +441,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
       , onProgress
     );</code></div></div><div class="command-header" onclick="toggleCommand('seek')"><b>seek</b> {<i>key</i>, [<i>legacy=false</i>], [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">Check if data is associated to key</span></div><div style="display:none;" class="command-body" id="seek">
     Check if data is associated to key
-   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.legacy</td><td>- A toggle to use a legacy storage method.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="seek" id="example79">hybrix.sequential([
+   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.legacy</td><td>- A toggle to use a legacy storage method.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="seek" id="example83">hybrix.sequential([
     'init',
     {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
@@ -425,16 +453,38 @@ But that result in serious problems due to asynchronicity. One could use the cal
       , onProgress
     );</code></div></div><div class="command-header" onclick="toggleCommand('work')"><b>work</b> {<i>hash</i>, [<i>difficulty</i>], [<i>submit</i>], [<i>key</i>], [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">Perform Proof of Work</span></div><div style="display:none;" class="command-body" id="work">
  Perform Proof of Work
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.hash</td><td>- The hash that needs to be worked.</td></tr><tr><td>data.difficulty</td><td>- Difficulty level to use.</td></tr><tr><td>data.submit</td><td>- Whether to submit the proof of work</td></tr><tr><td>data.key</td><td>- Required for submit</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table></div></div><div class="category">Transaction</div><div class="command-header" onclick="toggleCommand('rawTransaction')"><b>rawTransaction</b> {<i>symbol</i>, <i>target</i>, <i>amount</i>, <i>fee</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">Creates a raw transaction that is signed but not yet pushed to the network.</span></div><div style="display:none;" class="command-body" id="rawTransaction">
- Creates a raw transaction that is signed but not yet pushed to the network.
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset</td></tr><tr><td>data.target</td><td>- The target address</td></tr><tr><td>data.amount</td><td>- The amount that should be transferred</td></tr><tr><td>data.fee</td><td>- The fee.</td></tr><tr><td>data.host</td><td>- The host that should be used.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression
- 
-  //TODO example</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('signTransaction')"><b>signTransaction</b> {<i>symbol</i>, <i>target</i>, <i>amount</i>, <i>fee</i>, <i>unspent</i>}<span class="quickDescription">Create a signed transaction</span></div><div style="display:none;" class="command-body" id="signTransaction">
- Create a signed transaction
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset.</td></tr><tr><td>data.target</td><td>- The target address.</td></tr><tr><td>data.amount</td><td>- The amount.</td></tr><tr><td>data.fee</td><td>- The fee.</td></tr><tr><td>data.unspent</td><td>- Pretransaction data.
- 
-  //TODO example</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('transaction')"><b>transaction</b> {<i>symbol</i>, <i>target</i>, <i>amount</i>, <i>fee</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">Create, sign and execute a transaction e.g. push it into the netwerol.</span></div><div style="display:none;" class="command-body" id="transaction">
- Create, sign and execute a transaction e.g. push it into the netwerol.
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset</td></tr><tr><td>data.target</td><td>- The target address</td></tr><tr><td>data.amount</td><td>- The amount that should be transferred</td></tr><tr><td>data.fee</td><td>- The fee.</td></tr><tr><td>data.host</td><td>- The host that should be used.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression
- 
-  //TODO example</td></tr></table></div></div></body></html>
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.hash</td><td>- The hash that needs to be worked.</td></tr><tr><td>data.difficulty</td><td>- Difficulty level to use.</td></tr><tr><td>data.submit</td><td>- Whether to submit the proof of work</td></tr><tr><td>data.key</td><td>- Required for submit</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table></div></div><div class="category">Transaction</div><div class="command-header" onclick="toggleCommand('rawTransaction')"><b>rawTransaction</b> {<i>symbol</i>, <i>target</i>, <i>amount</i>, [<i>fee</i>], [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">Creates a raw transaction that is signed but not yet pushed to the network. Required assets and inputs are collected accordingly.</span></div><div style="display:none;" class="command-body" id="rawTransaction">
+ Creates a raw transaction that is signed but not yet pushed to the network. Required assets and inputs are collected accordingly.
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset</td></tr><tr><td>data.target</td><td>- The target address</td></tr><tr><td>data.amount</td><td>- The amount that should be transferred</td></tr><tr><td>data.fee</td><td>- The fee.</td></tr><tr><td>data.host</td><td>- The host that should be used.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression</td></tr></table><code class="example" title="rawTransaction" id="example84">hybrix.sequential([
+    'init',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
+    {host: 'http://localhost:1111/'}, 'addHost',
+    {symbol: 'dummy', target: '_dummyaddress_', amount:1}, 'rawTransaction',
+    ]
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="command-header" onclick="toggleCommand('signTransaction')"><b>signTransaction</b> {<i>symbol</i>, <i>target</i>, <i>amount</i>, <i>fee</i>, <i>unspent</i>}<span class="quickDescription">Create a signed transaction using all inputs.</span></div><div style="display:none;" class="command-body" id="signTransaction">
+ Create a signed transaction using all inputs.
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset.</td></tr><tr><td>data.target</td><td>- The target address.</td></tr><tr><td>data.amount</td><td>- The amount.</td></tr><tr><td>data.fee</td><td>- The fee.</td></tr><tr><td>data.unspent</td><td>- Pretransaction data.</td></tr></table><code class="example" title="signTransaction" id="example85">hybrix.sequential([
+    'init',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
+    {host: 'http://localhost:1111/'}, 'addHost',
+    {symbol: 'dummy'}, 'addAsset',
+    {symbol: 'dummy', target: '_dummyaddress_', amount:1, unspent: [{"amount":"1","txid":"TXIDTXIDTXIDTXIDTXIDTXIDTXID","txn":1}]}, 'rawTransaction',
+    ]
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div><div class="command-header" onclick="toggleCommand('transaction')"><b>transaction</b> {<i>symbol</i>, <i>target</i>, <i>amount</i>, <i>fee</i>, [<i>host</i>], [<i>channel</i>]}<span class="quickDescription">Create, sign and execute a transaction e.g. push it into the network.</span></div><div style="display:none;" class="command-body" id="transaction">
+ Create, sign and execute a transaction e.g. push it into the network.
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset</td></tr><tr><td>data.target</td><td>- The target address</td></tr><tr><td>data.amount</td><td>- The amount that should be transferred</td></tr><tr><td>data.fee</td><td>- The fee.</td></tr><tr><td>data.host</td><td>- The host that should be used.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression</td></tr></table><code class="example" title="transaction" id="example86">hybrix.sequential([
+    'init',
+    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
+    {host: 'http://localhost:1111/'}, 'addHost',
+    {symbol: 'dummy', target: '_dummyaddress_', amount:1}, 'transaction',
+    ]
+      , onSuccess
+      , onError
+      , onProgress
+    );</code></div></div></body></html>

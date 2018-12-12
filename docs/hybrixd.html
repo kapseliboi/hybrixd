@@ -39,16 +39,17 @@ wallet, be your own bank and have a powerful multi blockchain system at your fin
 
 
 
-<h3>Using <i>hybrixd</i></h3>
+<br/><br/><h3>Using <i>hybrixd</i></h3>
 
 <p><b>Webwallet</b></p>
 
 <p>Browse to <u>http://localhost:8080</u> to access the web wallet.</p>
 
 
-<p><b>REST-API</b></p>
+<p><br/><br/><b>REST-API</b></p>
 
 <p>Use <u>http://localhost:1111</u> or <u>http://localhost:8080/api</u> to access the REST API.</p>
+<p>The distinction between the 8080 and 1111 ports is that the first is for public access and the later for restricted root access.</p>
 
 <p>You can perform API calls using a browser or <code class="ref">curl</code> commands:</p>
 
@@ -56,11 +57,9 @@ wallet, be your own bank and have a powerful multi blockchain system at your fin
 
 <p><code class="prompt">curl http://localhost:8080/api/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</code></p>
 
-<p>The distinction between the 8080 and 1111 ports is that the first is for public access and the later for restricted root access.</p>
-
 <p>See also: <a href="/api/help">REST API reference</a>.</p>
 
-<p><b>Command line interface</b></p>
+<p><br/><br/><b>Command line interface</b></p>
 
 <p>Perform REST API calls from the command line by using:</p>
 
@@ -73,11 +72,11 @@ wallet, be your own bank and have a powerful multi blockchain system at your fin
 to view available command line options and browse to <a href="http://localhost:8080/api/help">REST API</a> for reference.</p>
 
 
-<h4>Configuring <i>hybrixd</i></h4>
+<br/><br/><h3>Configuring <i>hybrixd</i></h4>
 
 <p>General settings for hybrixd can be configured using the configuration file: <code class="ref">hybrixd.conf</code></p>
 
 <p>See <code class="ref">hybrixd.conf.example</code> for an example configuration.</p>
 
-<p>For the configuration and addition of tokens please see the recipe folder located in: <code class="ref">recipes/</code>. All assets and tokens are stored there as <code class="ref">json</code> files which we call <i>recipes</i>.</p>
+<!-- <p>For the configuration and addition of tokens please see the recipe folder located in: <code class="ref">recipes/</code>. All assets and tokens are stored there as <code class="ref">json</code> files which we call <i>recipes</i>.</p> -->
 </body></html>
