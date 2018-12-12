@@ -10,11 +10,69 @@
   of solutions in digital ledger technologies and alternative economies. The <i>hybrix</i> network runs through
   a collection of decentralized nodes and puts a lot of power at your fingertips.</p>
 
-  <img src="hybrix_overview.png" style="width:100%;" />
+<br/><br/><p><img src="hybrix_overview.png" style="width:100%;" /></p><br/><br/>
 
-  <div style="background-color:orange;"><h3 style="color:white;">REST API</h3></div>
+<div style="background-color:purple;"><h3 style="color:white;">Connect to every blockchain</h3></div>
 
-  <div style="background-color:blue;"><h3 style="color:white;">hybrix-lib.js</h3></div>
+<p>Connect your application to a multitude of blockchains. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 
-  <div style="background-color:purple;"><h3 style="color:white;">hybrixd</h3></div>
+<div style="background-color:orange;"><h3 style="color:white;">REST API</h3></div>
+
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+<p><code>https://api.hybrix.io<span style="color:blue">/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</span></code> returns the balance of the Bitcoin address 32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ.<input type="submit" value="Try it" onclick="rout('/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ');"></p>
+
+
+<div style="background-color:blue;"><h3 style="color:white;">hybrix-lib.js</h3></div>
+
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+<div class="try"> <select id="selectExample" onchange="var s = document.getElementById('selectExample');document.getElementById('try').innerHTML=document.getElementById(s[s.selectedIndex].value).innerHTML.replace('http://localhost:1111',window.location.origin+'/api');">
+  <option value="exampleHelloWorld">Hello World</option>
+</select>
+<script>
+ setTimeout(function(){
+   var examples = document.getElementsByClassName('example');
+   var selectExample = document.getElementById('selectExample');
+   for (let example of examples) {
+     var option = document.createElement('OPTION');
+     option.value= example.id;
+     option.innerHTML = example.title;
+     selectExample.appendChild(option);
+     var button = document.createElement('input');
+     button.type='submit';
+     button.value="Try it";
+     button.onclick = function(body,id){
+       return event => {
+         document.getElementById('try').innerHTML= body.replace('http://localhost:1111',window.location.origin+'/api');
+         for(let option of document.getElementById('selectExample').options){
+           if(option.value===id){
+             option.selected='selected';
+           }
+         }
+         var tr = document.getElementById('try');
+         tr.scrollIntoView();
+         runExample(event);
+       }
+     }(example.innerHTML,example.id);
+     example.parentNode.insertBefore(button, example.nextSibling);
+   }
+   document.getElementById('try').innerHTML=document.getElementById('exampleHelloWorld').innerHTML.replace('http://localhost:1111',window.location.origin+'/api');
+ },250);
+</script>
+<textarea id="try" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+</textarea>
+<div id="progressContainer">
+  <div id="progress"></div>
+</div>
+Result:
+<div id="result">&nbsp;</div>
+<input type="submit" value="Try it" onclick="runExample(event)">
+</div>
+
+<div style="background-color:cyan;"><h3 style="color:white;">hybrixd</h3></div>
+
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+<p><code class="prompt">.\hybrixd /asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</code>.</p>
 </body></html>
