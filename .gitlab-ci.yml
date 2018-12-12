@@ -54,10 +54,10 @@ hybrixd:
     - echo $PWD
 
     # trigger pipeline common
-    # - "curl --request POST --form \"token=$CI_JOB_TOKEN\" --form ref=master https://gitlab.com/api/v4/projects/iochq%2Fhybrixd%2Fcommon/trigger/pipeline"
+    # - "curl --request POST --form \"token=$CI_JOB_TOKEN\" --form ref=master https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fcommon/trigger/pipeline"
     
     # download [common] artifact
-    - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/iochq%2Fhybrixd%2Fcommon/jobs/artifacts/master/download?job=common\" -o artifacts-common.zip"
+    - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fcommon/jobs/artifacts/master/download?job=common\" -o artifacts-common.zip"
     
     # remove link to common and unzip the downloaded artifact to the directory (|| true --> on error, no problem)
     - rm -rf  common || true
@@ -67,7 +67,7 @@ hybrixd:
     - rm -rf  artifacts-common.zip || true
     
     # download [interface] artifact
-    - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/iochq%2Fhybrixd%2Finterface/jobs/artifacts/master/download?job=interface${DEBUG}\" -o artifacts-interface.zip"
+    - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Finterface/jobs/artifacts/master/download?job=interface${DEBUG}\" -o artifacts-interface.zip"
     
     # remove link to interface and unzip the downloaded artifact to the directory (|| true --> on error, no problem)
     - rm -rf  interface || true
@@ -77,7 +77,7 @@ hybrixd:
     - rm -rf  artifacts-interface.zip || true
     
     # download [deterministic] artifact
-    - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/iochq%2Fhybrixd%2Fclient%2Fmodules%2Fdeterministic/jobs/artifacts/master/download?job=deterministic\" -o artifacts-deterministic.zip"
+    - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fmodules%2Fdeterministic/jobs/artifacts/master/download?job=deterministic\" -o artifacts-deterministic.zip"
     
     # unzip the downloaded artifact to the directory (|| true --> on error, no problem) (consider the artifact is packed as /modules/name/filename.lzma)
     - unzip -o artifacts-deterministic.zip -d artifacts-deterministic/
@@ -92,14 +92,14 @@ hybrixd:
     
     # download [web-wallet] (not the latest) artifact
     #- "echo \"Download the artifact for the web-wallet from branch: BRANCH_WEB_WALLET = $BRANCH_WEB_WALLET\""
-    #- "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/iochq%2Fhybrixd%2Fclient%2Fimplementations%2Fweb-wallet/jobs/artifacts/$BRANCH_WEB_WALLET/download?job=web-wallet\" -o artifacts-web-wallet.zip"
+    #- "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fweb-wallet/jobs/artifacts/$BRANCH_WEB_WALLET/download?job=web-wallet\" -o artifacts-web-wallet.zip"
     
     # run the build-script of the hybrixd-node
     - ./scripts/npm/compile.sh
     
     # workaround to get the latest artifact
-    - PROJECT_REF_SLUG=iochq%2Fhybrixd%2Fclient%2Fimplementations%2Fweb-wallet
-    - PROJECT_REF_PATH=iochq/hybrixd/client/implementations/web-wallet
+    - PROJECT_REF_SLUG=hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fweb-wallet
+    - PROJECT_REF_PATH=hybrix/hybrixd/client/implementations/web-wallet
     - PROJECT_REF_NAME=web-wallet
     - PROJECT_REF_BRANCH=master
     
@@ -210,21 +210,21 @@ test:
     #- apk add curl
     #- apk add nodejs=8.11.4-r0
     
-    #- git clone -n https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/iochq/hybrixd/dependencies/nodejs.git --depth 1
+    #- git clone -n https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/hybrix/hybrixd/dependencies/nodejs.git --depth 1
     #- cd nodejs
     #- git checkout origin/master -- x86_64
     #- cd .. 
     
-    # retrieve test.js from iochq/hybrixd/interface
+    # retrieve test.js from hybrix/hybrixd/interface
     # https://gitlab.com/gitlab-org/gitlab-ce/issues/29566
     # https://docs.gitlab.com/ee/user/project/new_ci_build_permissions_model.html
     # unfortunately simple things didn't work:
-    #- "curl --request GET --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/iochq%2Fhybrixd%2Finterface/repository/files/test%2Ftest%2Ejs/raw?ref=master\" -o test/test.js"
-    #- git archive --format=tar --remote=git://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/iochq/hybrixd/interface.git HEAD:test test.js | tar -x
+    #- "curl --request GET --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Finterface/repository/files/test%2Ftest%2Ejs/raw?ref=master\" -o test/test.js"
+    #- git archive --format=tar --remote=git://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/hybrix/hybrixd/interface.git HEAD:test test.js | tar -x
     - mkdir -p test
     - mkdir -p repos
     - cd repos
-    - git clone -n https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/iochq/hybrixd/interface.git --depth 1
+    - git clone -n https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/hybrix/hybrixd/interface.git --depth 1
     - cd interface
     - git checkout origin/master -- test/test.js
     - mv test/test.js ../../test/test.js
