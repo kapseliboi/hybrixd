@@ -388,3 +388,15 @@ code.example {
   display:block;
   white-space: pre;
 }
+
+
+code.prompt:before{
+  color:darkgrey;
+    content: '$ ';
+}
+
+code.ref{
+  margin:0;
+  padding:0;
+  background-color:rgba(0,0,0,0);
+}

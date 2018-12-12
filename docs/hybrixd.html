@@ -11,8 +11,7 @@
 <h3>Introduction</h3>
 The <i>hybrix</i> platform environment can be run on your own personal computer or server
 by downloading the daemon called <i>hybrixd</i>. This makes it possible to host your own
-wallet, be your own bank and have a powerful multi blockchain automated contract and transaction
-system at your fingertips.
+wallet, be your own bank and have a powerful multi blockchain system at your fingertips.
 
 
 <h3>Getting started</h3>
@@ -24,26 +23,61 @@ system at your fingertips.
  <li>MacOS (Darwin)</li>
 </ul>
 
-<p><i>hybrixd</i> requires <i>NodeJS</i> (<a href=">https://nodejs.org">https://nodejs.org</a> ). We recommend using NodeJS version 8.12.</p>
+<p><i>hybrixd</i> requires <i>NodeJS</i> (<a href=">https://nodejs.org">https://nodejs.org</a> ). We recommend using NodeJS version 8.12 or higher.</p>
 
 <p>To install <i>hybrixd</i> download the release above, and extract
   the zip file to your computer.</p>
 
-
 <p>You can now start <i>hybrixd</i> using the following command:</p>
 
-<p><code>./hybrixd</code></p>
+<p><code class="prompt">./hybrixd</code></p>
+
+
+
+
+
+
+
 
 <h3>Using <i>hybrixd</i></h3>
 
-<b>Webwallet:</b> Browse to <a href="http://localhost:8080">http://localhost:8080</a> to access the web wallet.
-<br />
-<b>Command line interface:</b> Perform REST API calls from the command line by using: <code>.\hybrixd /asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</code>. See <code>.\hybrixd --help</code> to view available command line options.
-<br />
-<b>REST-API:</b> Use <a href="http://localhost:1111">http://localhost:1111</a> or <a href="http://localhost:8080/api">http://localhost:8080/api</a> to access the REST API. Browse to <a href="/api/help">http://localhost:8080/api/help</a> for help.
-<br />
+<p><b>Webwallet</b></p>
+
+<p>Browse to <u>http://localhost:8080</u> to access the web wallet.</p>
+
+
+<p><b>REST-API</b></p>
+
+<p>Use <u>http://localhost:1111</u> or <u>http://localhost:8080/api</u> to access the REST API.</p>
+
+<p>You can perform API calls using a browser or <code class="ref">curl</code> commands:</p>
+
+<p><u>http://localhost:8080/api/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</u></p>
+
+<p><code class="prompt">curl http://localhost:8080/api/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</code></p>
+
+<p>The distinction between the 8080 and 1111 ports is that the first is for public access and the later for restricted root access.</p>
+
+<p>See also: <a href="/api/help">REST API reference</a>.</p>
+
+<p><b>Command line interface</b></p>
+
+<p>Perform REST API calls from the command line by using:</p>
+
+<p><code class="prompt">.\hybrixd /asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</code>.</p>
+
+<p>See</p>
+
+<p><code  class="prompt">.\hybrixd --help</code></p>
+
+to view available command line options and browse to <a href="http://localhost:8080/api/help">REST API</a> for reference.</p>
+
+
 <h4>Configuring <i>hybrixd</i></h4>
-General settings for hybrixd can be configured using the configuration file: 'hybrixd.conf'
-See 'hybrixd.conf.example' for an example configuration.
-For the configuration and addition of tokens please see the recipe folder located in: recipes/
+
+<p>General settings for hybrixd can be configured using the configuration file: <code class="ref">hybrixd.conf</code></p>
+
+<p>See <code class="ref">hybrixd.conf.example</code> for an example configuration.</p>
+
+<p>For the configuration and addition of tokens please see the recipe folder located in: <code class="ref">recipes/</code>. All assets and tokens are stored there as <code class="ref">json</code> files which we call <i>recipes</i>.</p>
 </body></html>
