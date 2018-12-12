@@ -39,7 +39,8 @@
       "time($cache)"
     ],
     "push" : [
-      "rout('/asset/$keygen-base/push/$1')"
+      "rout('/asset/$keygen-base/push/$1')",
+      "done"
     ],
     "pushAPI" : [
       "curl('asset://$symbol','/_api','POST',{'jsonrpc':'2.0','id':0,'method':'broadcast_tx','params':{'signed_tx_hex':'$1'}},{'content-type':'text/plain'})",
@@ -50,11 +51,12 @@
       "done"
     ],
     "factor" : [
-      "data('$factor')"
+      "data('$factor')",
+      "done"
     ],
     "transaction" : [
       "rout('/source/blockexplorer/$fee-symbol/transaction/$1')",
-      "stop()",
+      "done()",
       "fail('This used btc network, not xcp.')"
     ],
     "history" : [

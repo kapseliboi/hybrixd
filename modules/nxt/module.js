@@ -205,18 +205,20 @@ function exec (properties) {
       var symbol = target.symbol;
       var name = target.name;
       var fee;
+      var feeFactor;
       if (!functions.isToken(target.symbol)) {
         var fee = (typeof target.fee !== 'undefined' ? target.fee : null);
+        feeFactor = factor;
       } else {
         var fee = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee : null);
-        factor = (typeof global.hybrixd.asset[base].factor !== 'undefined' ? global.hybrixd.asset[base].factor : null);
+        feeFactor = (typeof global.hybrixd.asset[base].factor !== 'undefined' ? global.hybrixd.asset[base].factor : null);
       }
       fee = functions.padFloat(fee, factor);
       // var base; already defined
       // var mode; already defined
       // var factor; already defined
       var contract = (typeof target.contract !== 'undefined' ? target.contract : null);
-      subprocesses.push("stop(0,{symbol:'" + symbol + "', name:'" + name + "',mode:'" + mode + "',fee:'" + fee + "',contract:'" + contract + "',factor:'" + factor + "','keygen-base':'" + base + "','fee-symbol':'" + base + "'})");
+      subprocesses.push("stop(0,{'symbol':'" + symbol + "','name':'" + name + "','mode':'" + mode + "','contract':'" + contract + "','fee':'" + fee + "','fee-factor':'" + feeFactor + "','factor':'" + factor + "','keygen-base':'" + base + "','fee-symbol':'" + base + "','generated':'never'})");
       break;
     case 'sample':
       var address;

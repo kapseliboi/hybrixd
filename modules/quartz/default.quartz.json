@@ -28,10 +28,7 @@
       "data '$fee'"
     ],
     "fee-factor" : [
-      "# TODO: doesn't work when using in details!  call 'fee-symbol'",
-      "data '$symbol'",
-      "splt '.'",
-      "pick 0",
+      "call 'fee-symbol'",
       "peek data+'::factor'",
       "done"
     ],
@@ -68,8 +65,8 @@
       "fail 'Not yet implemented!'"
     ],
     "details" : [
-      "each {'contract':null,'factor':null,'fee':null,'fee-factor':null,'fee-symbol':null,'generated':null,'keygen-base':null,'unified-symbols':null} 'subdetails'",
-      "done {fee:data.fee,factor:data.factor,contract:data.contract,symbol:'$symbol',name:'$name',mode:'$mode','unified-symbols':data['unified-symbols'],'fee-symbol':data['fee-symbol'],'fee-factor':data['fee-factor'],'keygen-base':data['keygen-base'], generated:data['generated']}"
+      "each {'contract':null,'factor':null,'fee':null,'fee-factor':null,'fee-symbol':null,'generated':null,'mode':null,'keygen-base':null,'unified-symbols':null} 'subdetails'",
+      "done {symbol:'$symbol',name:'$name',fee:data.fee,factor:data.factor,contract:data.contract,mode:data.mode,'unified-symbols':data['unified-symbols'],'fee-symbol':data['fee-symbol'],'fee-factor':data['fee-factor'],'keygen-base':data['keygen-base'], generated:data['generated']}"
     ],
     "subdetails" : [
       "call data.key"

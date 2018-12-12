@@ -189,8 +189,7 @@ function exec (properties) {
       var contract = (typeof target.contract !== 'undefined' ? target.contract : null);
       var feefactor = global.hybrixd.asset[base].factor;
       fee = fee && feefactor ? functions.padFloat(fee, feefactor) : fee;
-
-      subprocesses.push("stop(0,{symbol:'" + symbol + "', name:'" + name + "',mode:'" + mode + "',fee:'" + fee + "',contract:'" + contract + "',factor:'" + factor + "','keygen-base':'" + base + "','fee-symbol':'" + base + "','fee-factor':'" + feefactor + "'})");
+      subprocesses.push("stop(0,{symbol:'" + symbol + "', name:'" + name + "',mode:'" + mode + "',fee:'" + fee + "',contract:'" + contract + "',factor:'" + factor + "','keygen-base':'" + base + "','fee-symbol':'" + base + "','fee-factor':'" + feefactor + "','generated':'never'})");
 
       break;
 
