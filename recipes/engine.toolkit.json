@@ -1,0 +1,67 @@
+{
+  "engine":"toolkit",
+  "name":"Toolkit Testing Engine",
+  "module":"quartz",
+  "cache":1000,
+  "throttle":10,
+  "quartz":{
+    "checkpeer" : [
+      "time 300000",
+      "each ['95.216.40.145'],'checkpeers_curl'",
+      "done"
+	],
+    "checkpeers" : [
+      "time 300000",
+      "each ['90.64.93.116','178.143.153.182','13.81.25.74','108.61.7.242','178.197.227.20','178.197.236.62','184.75.210.59','51.75.13.235','185.213.152.167','185.213.152.169','185.213.152.161','185.213.152.164','213.136.88.142','95.179.160.3','18.223.102.119','78.192.117.13','178.197.225.25','47.47.49.26','172.17.0.1','90.64.73.2','70.189.143.183','141.0.205.28','51.68.82.199','82.69.152.198','51.68.80.122','90.64.86.27','188.61.93.115','145.132.53.237','64.33.91.124','178.197.229.74','178.197.228.253','178.197.234.236','2.85.121.70','90.64.67.220','104.42.106.112','99.165.105.231','185.61.253.189','185.65.132.137','163.172.157.87','90.64.112.236','95.216.40.145','217.182.81.172'],'checkpeers_curl'",
+      "done"
+    ],
+    "checkpeers_curl" : [
+      "poke 'testhost',data.value",
+      "time 60000,'timeout',0",
+      "hook null,0",
+      "curl('http://$testhost:17876/nxt','','GET','',{'content-type':'text/plain'})",
+      "poke('hostresponse')",
+      "tran('.errorCode',1,2)",
+      "done('error')",
+      "peek('hostresponse')",
+      "done()",
+      "tran('.result',2,1)",
+      "done('noresult')",
+      "peek('testhost')",
+      "done(data)"
+    ],
+    "test" : [
+      "data ['A','B','C']",
+      "hook @thisfails",
+      "load 'doesntexist'",
+      "done 'You will not see this.'",
+      "@thisfails",
+      "data 'Do not stop here!'",
+      "done 'Hook works properly.'"
+    ],
+    "testeach" : [
+      "time 60000",
+      "each [1,2,3,4,5] 'waitalittle'",
+      "done"
+    ],
+    "waitalittle" : [
+      "time 4000 'stopped!' 0",
+      "math data.key+'*1000'",
+      "wait data",
+      "done 'OK'"
+    ]
+  },
+  "router":{
+    "_help" : "(experimental!) Toolkit engine to stage new functional dependencies.",
+  	"test"  : {
+  		"_help" : "This is just a test.",
+  		"_ref" : {
+  		    "_list" : "argument",
+ 			"_this" : "Accepts an argument."
+  		}
+  	},
+  	"testeach"  : "Break Qrtz!",
+  	"checkpeer"  : "Checks a peer and returns if active. TEST STUFF",
+  	"checkpeers" : "Checks an array of peers and returns if active. TEST STUFF"
+  }
+}
