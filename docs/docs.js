@@ -158,7 +158,7 @@ function initNavigation (currentMenuItem) {
 function runExample (event) {
   var script = document.createElement('script');
   script.onload = function () {
-    var hybrix = new Hybrixd.Interface({XMLHttpRequest: XMLHttpRequest});
+    var hybrix = new Hybrix.Interface({XMLHttpRequest: XMLHttpRequest});
     var progressBar = document.getElementById('progress');
     var onProgress = progress => {
       progressBar.style.width = (progress * 100) + '%';
