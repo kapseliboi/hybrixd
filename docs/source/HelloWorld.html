@@ -11,16 +11,35 @@
 
 <p>Connect your application to a multitude of blockchains. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 
+<p>TODO remark about seperation of client side and node side!!!!</p>
+
 <div style="background-color:orange;"><h3 style="color:white;">REST API</h3></div>
 
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+<p>This Application Programming Interface can be used to retrieve information from hybrixd.</p>
 
 <p><code>https://api.hybrix.io<span style="color:blue">/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</span></code> returns the balance of the Bitcoin address 32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ.<input type="submit" value="Try it" onclick="rout('/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ');"></p>
 
+<b>Features</b>
+<ul>
+  <li>Retrieve balances</li>
+  <li>Retrieve transaction history</li>
+  <li>Address validation</li>
+  <li>Push transactions</li>
+  <li>Ecrypted and compressed communication channels</li>
+  <li>Retrieve client side code</li>
+  <li>Decentralized storage</li>
+</ul>
 
 <div style="background-color:blue;"><h3 style="color:white;">hybrix-lib.js</h3></div>
 
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+<p>This library can be used to connect software to leverage the capabilities of the hybrix platform. It serves two purposes: first to facilitate the logistics of interfacing with the hybrixd REST API, secondly to handle all client side operations securely and privately. This ensures that keys required for transaction never leave the users device and communication over an encrypted channel.</p>
+
+<b>Features</b>
+<ul>
+  <li>Seamlessly interface with hybrixd</li>
+  <li>Handle all client side operations securely</li>
+  <li>Encrypted channels</li>
+</ul>
 
 <div class="try"> <select id="selectExample" onchange="var s = document.getElementById('selectExample');document.getElementById('try').innerHTML=document.getElementById(s[s.selectedIndex].value).innerHTML.replace('http://localhost:1111',window.location.origin+'/api');">
   <option value="exampleHelloWorld">Hello World</option>
@@ -56,18 +75,15 @@
  },250);
 </script>
 <textarea id="try" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
- DEBUG=true;
-
-hybrix.sequential([
-    'init',
-    {username: 'POMEW4B5XACN3ZCX', password: 'TVZS7LODA5CSGP6U'}, 'session',
-    {host: 'http://localhost:8080/api/'}, 'addHost',
-    {query: '/s/deterministic/code/dummycoin', channel:'z'}, 'rout'
-    ]
-      , onSuccess
-      , onError
-      , onProgress
-    );
+  hybrix.sequential([
+    'init',                                                        // Initialize hybrix
+    {host: 'http://localhost:1111/'}, 'addHost',                   // Add and initialize the host
+    {query: '/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'}, 'rout'  // Query for asset balance
+  ],
+   onSuccess,                                                      // Define action to execute on successfull completion
+   onError,                                                        // Define action to execute when an error is encountered
+   onProgress                                                      // Define action to execute whenever there is a progress update
+  );
 </textarea>
 <div id="progressContainer">
   <div id="progress"></div>
@@ -79,6 +95,13 @@ Result:
 
 <div style="background-color:cyan;"><h3 style="color:white;">hybrixd</h3></div>
 
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+<p>The <i>hybrix</i> platform environment can be run on your own personal computer or server
+  by downloading the daemon called <i>hybrixd</i>. This makes it possible to host your own
+  wallet, be your own bank and have a powerful multi blockchain system at your fingertips.</p>
 
 <p><code class="prompt">.\hybrixd /asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</code>.</p>
+
+<b>Features</b>
+<ul>
+  <li>TODO</li>
+</ul>

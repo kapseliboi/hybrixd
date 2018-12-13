@@ -63,12 +63,12 @@ This library can be used to connect software to leverage the capabilities of the
 
  <p>The first is used to pass parameter data to the function, the last three are callback functions. onSuccess is called once when the method has finished successfully. onError is called once when an error is encountred. onProgress is called whenever an progress update is available, passing a number between 0 and 1, and 1 upon completion.</p>
 
- <p>To first initialize the interface, then add a host and then rout query for asset details to the host one could try the following:</p>
+ <p>To first initialize the interface, then add a host and then rout query for asset balance to the host one could try the following:</p>
 
  <pre>
 hybrix.init();                                   // This is an asynchronious function. It can take some time to complete.
 hybrix.addHost({host:'https://www.example.com'});  <font color="red">// Problem! This will try to add the host before the initialization is done.</font>
-hybrix.rout({query: '/asset/dummy/details'});      <font color="red">// Problem! This will try to add the host before the initialization and/or addition of the host is done.</font>
+hybrix.rout({query: 'Query for asset balance'});      <font color="red">// Problem! This will try to add the host before the initialization and/or addition of the host is done.</font>
  </pre>
 
 But that result in serious problems due to asynchronicity. One could use the callbacks to ensure execute order.
@@ -77,7 +77,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
                   function(){
                     hybrix.addHost({host:'https://www.example.com'}, // This will now be called after initialization is successfully completed.
                       function(){
-                       hybrix.rout({query: '/asset/dummy/details'});             // This will now be called after adding the host is successfully completed.
+                       hybrix.rout({query: '/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'});     // Query for asset balance
                       }
                     );
                   }
@@ -89,7 +89,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
   hybrix.sequential([
     'init',                                                        // Initialize hybrix
     {host: 'http://localhost:1111/'}, 'addHost',                   // Add and initialize the host
-    {query: '/asset/dummy/details'}, 'rout'                        // Query for asset details
+    {query: '/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'}, 'rout'  // Query for asset balance
   ],
    onSuccess,                                                      // Define action to execute on successfull completion
    onError,                                                        // Define action to execute when an error is encountered
