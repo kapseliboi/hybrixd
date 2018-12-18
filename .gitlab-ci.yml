@@ -23,6 +23,7 @@ stages:
   #- dast
   - staging
   #- production
+  - release
   - cleanup
 
 hybrixd:
@@ -272,6 +273,7 @@ review:
       - branches
     kubernetes: active
   except:
+    - /^v.*release$/
     refs:
       - master
     variables:
@@ -294,6 +296,7 @@ stop_review:
       - branches
     kubernetes: active
   except:
+  - /^v.*release$/
     refs:
       - master
     variables:
@@ -336,6 +339,67 @@ staging:
     kubernetes: active
     variables:
       - $STAGING_ENABLED
+      
+dist: 
+  image: alpine:latest
+  stage: release
+  script:
+  # install the packages that we need
+  - apk update
+  - apk add curl
+  - apk add git
+  - apk add tar
+  - apk add xz
+  - apk add unzip
+   
+  # set variables
+  # version -> branchname without '-release'
+  - version=${CI_COMMIT_REF_NAME/-release/}
+  - component=node
+  - file=hybrixd.${component}.${version}
+  - path=node/${version}/
+  
+  - cp -r ./dist/. /tmp/${component}/
+  - cp .version . /tmp/${component}/
+    
+  - cd /tmp
+  - git clone --depth=1 https://oauth2:${PRIVATE_TOKEN}@gitlab.com/hybrix/dist
+  - mkdir -p ./dist/{$component}/${version}/
+  
+  # download [interface] artifact
+  #- "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Finterface/jobs/artifacts/${CI_COMMIT_REF_NAME}/download?job=interface\" -o ${path}${file}.zip"
+  
+  # go to folder
+  #- ls ./dist/${path}
+  
+  #- cp ${path}${file}.zip ./../${file}.zip
+  #- unzip ${file}.zip -d ${component}
+  
+  - ls
+  - ls ${component}
+  
+  - tar -zcvf ${file}.tar.gz ${component}
+  - tar cfJ ${file}.tar.xz ${component} 
+  
+  - cp ${file}.tar.gz ./dist/${path}${file}.tar.gz
+  - cp ${file}.tar.xz ./dist/${path}${file}.tar.xz
+  
+  # for interface we like to distribute the js files directly as well
+  #- cp -r ./${component}/*.js ./dist/${path}
+  - cd ./dist/
+  
+  # configure git-user
+  - "git config --global user.name \"${GITLAB_USER_NAME}\""
+  - "git config --global user.email \"${GITLAB_USER_EMAIL}\""
+  
+  # add, commit and push
+  - "git add ."
+  - "git commit -m \"release ${version} ${component}\" || true"
+  - "git push https://oauth2:${PRIVATE_TOKEN}@gitlab.com/hybrix/dist -f || true"
+
+  only:
+  - /^v.*release$/
+
 
 # ---------------------------------------------------------------------------
 
