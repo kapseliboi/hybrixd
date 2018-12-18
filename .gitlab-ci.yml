@@ -273,9 +273,9 @@ review:
       - branches
     kubernetes: active
   except:
-    - /^v.*release$/
     refs:
       - master
+      - /^v.*release$/
     variables:
       - $REVIEW_DISABLED
 
