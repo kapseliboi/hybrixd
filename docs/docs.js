@@ -65,9 +65,9 @@ function toggleSearch () {
   var button = document.querySelector('#toggle-search');
   var search = document.querySelector('#search');
   if (search.style.opacity == 0) {
-      search.style.opacity = 1;
+    search.style.opacity = 1;
   } else {
-      search.style.opacity = 0;
+    search.style.opacity = 0;
   }
 }
 
@@ -92,8 +92,8 @@ function toggleCommand (id) {
   var collapseAll = document.getElementById('collapseAll');
   if (e.style.display === 'none') {
     var es = document.getElementsByClassName('command-body');
-    collapseAll.style.opacity = 1;
-    for (let i = 1; i < es.length; ++i) {
+    collapseAll.style.opacity = 0;
+    for (let i = 0; i < es.length; ++i) {
       if (es[i].style.display !== 'none') {
         collapseAll.style.opacity = 1;
         collapseAll.style.visibility = 'visible';
