@@ -3,12 +3,11 @@
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,700italic,400,600,700" rel="stylesheet" type="text/css">
 <link rel="stylesheet" type="text/css" href="./docs.css">
 <script src="./docs.js"></script>
-</head><body><div id="navigation"></div><script>initNavigation("hybrix-lib.js")</script><p>
+</head><body><div id="navigation"></div><script>initNavigation("hybrix-lib.js")</script>
   <div class="download">Download for web<br/><span style="font-size:10px">&lt;script src="./hybrix-lib.web.js"&gt;&lt;/script&gt;</span></div>
   <div class="download">Download for NodeJS<br/><span style="font-size:10px"">var Hybrix = require("./hybrix-lib.nodejs");</span></div>
-</p>
 
-<h3>Welcome to the hybrix Javascript Library guide</h3>
+<h2>Welcome to the hybrix Javascript Library guide</h2>
 
 This library can be used to connect software to leverage the capabilities of the hybrix platform. It serves two purposes: first to facilitate the logistics of interfacing with the hybrixd REST API, secondly to handle all client side operations securely and privately. This ensures that keys required for transaction never leave the users device and communication over an encrypted channel.
 
@@ -309,7 +308,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
  );</code></div></div><div class="command-header" onclick="toggleCommand('hash')"><b>hash</b> {<i>data</i>, [<i>salt</i>]}<span class="quickDescription">Stringify and create a DJB2 hash.</span></div><div style="display:none;" class="command-body" id="hash">
  Stringify and create a DJB2 hash.
 <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.data</td><td>- A string, array or object.</td></tr><tr><td>data.salt</td><td>- A string.
- 
+
   //TODO example</td></tr></table></div></div><div class="category">Flow</div><div class="command-header" onclick="toggleCommand('call')"><b>call</b> {<i>func</i>, <i>data</i>}<span class="quickDescription">Execute a custom function with callbacks. Usefull for sequential and parallel.</span></div><div style="display:none;" class="command-body" id="call">
     Execute a custom function with callbacks. Usefull for sequential and parallel.
    <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.func</td><td>- A function expecting a dataCallback, errorCallback and optional progressCallback.</td></tr><tr><td>data.data</td><td>- The data to be passed to the function.</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('id')"><b>id</b> {}<span class="quickDescription">Identity function, outputs the data that is passed</span></div><div style="display:none;" class="command-body" id="id">
