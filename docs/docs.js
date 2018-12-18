@@ -11,7 +11,6 @@ function display (result) {
     }
   } else {
     r += '<div class="error">[!] <span class="result">' + result.path + '</span> - ';
-    if (result.hasOwnProperty('info')) { r += result.info; }
     if (result.hasOwnProperty('help')) {
       r += result.help.replace(/\`([^\`])*\`/g, (a, x) => {
         var url = a.substr(1, a.length - 2);
@@ -45,7 +44,7 @@ function rout (path, noHistory) {
           try {
             result = JSON.parse(xhr.responseText);
           } catch (e) {
-            result = {info: 'Unknown Error', error: 1};
+            result = {data: 'Unknown Error', error: 1};
           }
           if (result.error === 0 && result.hasOwnProperty('progress') && result.progress !== 1) {
             setTimeout(() => { rout(path, true); }, 500);
