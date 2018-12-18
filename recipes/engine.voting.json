@@ -60,17 +60,33 @@
     "listEligibility" : [
       "poke '::coreMode','elegibility'",
       "call 'coreList'",
+      "excl '.EOF'",
       "done"
     ],
     "addEligibility" : [
       "poke '::coreData','$2'",
       "poke '::coreMode','elegibility'",
       "call 'coreList'",
+      "find '.EOF' @immutable",
       "find '$2' @alreadyadd",
       "call 'coreAdd'",
       "done",
       "@alreadyadd",
-      "done 'Elligibility already added!'"
+      "done 'Elligibility already added!'",
+      "@immutable",
+      "fail 1 'Elligibility list is immutable!'"
+    ],
+    "closeEligibility" : [
+      "poke '::coreData','.EOF'",
+      "poke '::coreMode','elegibility'",
+      "call 'coreList'",
+      "find '.EOF' @immutable",
+      "call 'coreAdd'",
+      "@immutable",
+      "call 'coreList'",
+      "excl '.EOF'",
+      "hash",
+      "done data"
     ],
     "coreList" : [
       "data '$::coreMode $1'",
@@ -89,7 +105,10 @@
       "poke 'idx'",
       "data '$::coreData'",
       "splt ','",
+      "excl '.EOF'",
       "poke 'inputdata'",
+      "have",
+      "true '=0' @badinput",
       "hook @emptylist",
       "load '$idx'",
       "file",
@@ -97,9 +116,13 @@
       "@emptylist",
       "data []",
       "@savelist",
+      "# diff $inputdata -> removing all doubles from the inputdata + remove push",
+      "# fuse $inputdata -> combine all unique entries",
       "push $inputdata",
       "save '$idx'",
-      "done 'Added $::coreData to list $::coreMode'+'_$1'"
+      "done 'Added to $::coreMode list $1'",
+      "@badinput",
+      "fail 1 'Bad input, or no data to add to list!'"
     ],
     "coreReset" : [
       "data '$1 $2'",
@@ -135,6 +158,13 @@
       "_ref" : {
         "_list" : "session_id",
         "_this" : "An array is returned listing all eligibility codes."
+      }
+    },
+    "closeEligibility" : {
+      "_help": "Close an eligibility list, making it immutable",
+      "_ref" : {
+        "_list" : "session_id",
+        "_this" : "A hash is returned of the eligibility code list."
       }
     },
     "addEligibility" : {
