@@ -127,7 +127,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
                option.selected='selected';
              }
            }
-           var tr = document.getElementById('try');
+           var tr = document.getElementById('try').parentNode;
            tr.scrollIntoView();
            runExample(event);
          }
@@ -135,6 +135,14 @@ But that result in serious problems due to asynchronicity. One could use the cal
        example.parentNode.insertBefore(button, example.nextSibling);
      }
      document.getElementById('try').innerHTML=document.getElementById('exampleHelloWorld').innerHTML.replace('http://localhost:1111',window.location.origin+'/api');
+
+     var editor = CodeMirror.fromTextArea(document.getElementById("try"), {
+       lineNumbers: true,
+       mode: "application/javascript",
+       matchBrackets: true
+     });
+
+
    },250);
   </script>
   <textarea id="try" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">

@@ -71,20 +71,30 @@
      }(example.innerHTML,example.id);
      example.parentNode.insertBefore(button, example.nextSibling);
    }
-   //   document.getElementById('try').innerHTML=document.getElementById('exampleHelloWorld').innerHTML.replace('http://localhost:1111',window.location.origin+'/api');
+
+   document.getElementById('try').innerHTML=document.getElementById('try').innerHTML.replace('http://localhost:1111',window.location.origin+'/api');
+
+   var editor = CodeMirror.fromTextArea(document.getElementById("try"), {
+     lineNumbers: true,
+     mode: "application/javascript",
+     matchBrackets: true
+   });
+
  },250);
 </script>
-<textarea id="try" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-  hybrix.sequential([
-    'init',                                                        // Initialize hybrix
-    {host: 'http://localhost:1111/'}, 'addHost',                   // Add and initialize the host
-    {query: '/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'}, 'rout'  // Query for asset balance
-  ],
-   onSuccess,                                                      // Define action to execute on successfull completion
-   onError,                                                        // Define action to execute when an error is encountered
-   onProgress                                                      // Define action to execute whenever there is a progress update
-  );
-</textarea>
+
+<textarea id="try">
+hybrix.sequential([
+      'init',                                                        // Initialize hybrix
+      {host: 'http://localhost:1111/'}, 'addHost',                   // Add and initialize the host
+      {query: '/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'}, 'rout'  // Query for asset balance
+    ],
+    onSuccess,                                                      // Define action to execute on successfull completion
+    onError,                                                        // Define action to execute when an error is encountered
+    onProgress                                                      // Define action to execute whenever there is a progress update
+);
+  </textarea>
+
 <div id="progressContainer">
   <div id="progress"></div>
 </div>
