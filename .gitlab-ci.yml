@@ -362,7 +362,7 @@ dist:
   # set variables
   # version -> branchname without '-release'
   #- version=${CI_COMMIT_REF_NAME/-release/}
-  - version=${CI_COMMIT_TAG/-release/}}
+  - version=${CI_COMMIT_TAG/-release/}
   - component=node
   - file=hybrixd.${component}.${version}
   - path=${component}/${version}/
