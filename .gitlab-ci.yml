@@ -414,7 +414,7 @@ dist:
   # add, commit and push
   - "git add ."
   - "git commit -m \"release ${version} ${component}\" || true"
-  - "git push https://oauth2:${PRIVATE_TOKEN}@gitlab.com/hybrix/dist -f || true"
+  - "git push https://oauth2:${PRIVATE_TOKEN}@gitlab.com/hybrix/dist.git -f || true"
 
   only:
     refs:
