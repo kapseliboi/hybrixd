@@ -399,7 +399,7 @@ dist:
   - gunzip < ${file}.tar.gz | xz > ${file}.tar.xz
   #- tar cfJ ${file}.tar.xz ${component} 
 
-  - cp ${file}.zip ./dist/${component}/${version}/${file}.tar.xz
+  - cp ${file}.zip ./dist/${component}/${version}/${file}.zip
   - cp ${file}.tar.gz ./dist/${component}/${version}/${file}.tar.gz
   - cp ${file}.tar.xz ./dist/${component}/${version}/${file}.tar.xz
   
