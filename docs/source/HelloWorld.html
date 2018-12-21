@@ -85,15 +85,14 @@
 
 <textarea id="try">
 hybrix.sequential([
-      'init',                                                        // Initialize hybrix
-      {host: 'http://localhost:1111/'}, 'addHost',                   // Add and initialize the host
-      {query: '/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'}, 'rout'  // Query for asset balance
-    ],
-    onSuccess,                                                      // Define action to execute on successfull completion
-    onError,                                                        // Define action to execute when an error is encountered
-    onProgress                                                      // Define action to execute whenever there is a progress update
-);
-  </textarea>
+    'init',                                                        // Initialize hybrix
+    {host: 'http://localhost:1111/'}, 'addHost',                   // Add and initialize the host
+    {query: '/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'}, 'rout'  // Query for asset balance
+  ],
+  onSuccess,                                                      // Define action to execute on successfull completion
+  onError,                                                        // Define action to execute when an error is encountered
+  onProgress                                                      // Define action to execute whenever there is a progress update
+);</textarea>
 
 <div id="progressContainer">
   <div id="progress"></div>
