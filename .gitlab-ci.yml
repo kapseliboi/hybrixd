@@ -114,7 +114,7 @@ hybrixd:
     
     #- "echo \"Downloading the artifact from: https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\""
     
-    ##- "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\" -o artifacts-${PROJECT_REF_NAME}.zip"
+    #- "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\" -o artifacts-${PROJECT_REF_NAME}.zip"
     #- "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/api/v4/projects/${PROJECT_REF_SLUG}/jobs/${BUILD_JOB_ID}/artifacts\" -o artifacts-${PROJECT_REF_NAME}.zip"
 
     # unzip the downloaded artifact to the directory 
@@ -243,6 +243,10 @@ test:
     - node ./test.js
     
   coverage: /SUCCESS RATE[^|]*\:[^|]*\s+([\d\.]+)/
+  except:
+   refs:
+     #- /^v.*release$/
+     - tags
   only:
     variables:
       - $TEST_ENABLED
@@ -276,7 +280,8 @@ review:
   except:
     refs:
       - master
-      - /^v.*release$/
+      - tags
+      #- /^v.*release$/
     variables:
       - $REVIEW_DISABLED
 
@@ -299,7 +304,8 @@ stop_review:
   except:
     refs:
       - master
-      - /^v.*release$/
+      - tags
+      #- /^v.*release$/
     variables:
       - $REVIEW_DISABLED
 
@@ -351,21 +357,25 @@ dist:
   - apk add git
   - apk add tar
   - apk add xz
-  - apk add unzip
+  - apk add zip
    
   # set variables
   # version -> branchname without '-release'
-  - version=${CI_COMMIT_REF_NAME/-release/}
+  #- version=${CI_COMMIT_REF_NAME/-release/}
+  - version=${CI_COMMIT_TAG/-release/}
   - component=node
   - file=hybrixd.${component}.${version}
-  - path=node/${version}/
+  - path=${component}/${version}/
   
-  - cp -r ./dist/. /tmp/${component}/
-  - cp .version . /tmp/${component}/
+  - ls
+  
+  #- cp -r ./dist/. /tmp/${component}/
+  - cp -r . /tmp/${component}/
+  #- cp .version . /tmp/${component}/
     
   - cd /tmp
   - git clone --depth=1 https://oauth2:${PRIVATE_TOKEN}@gitlab.com/hybrix/dist
-  - mkdir -p ./dist/{$component}/${version}/
+  - mkdir -p ./dist/${component}/${version}/
   
   # download [interface] artifact
   #- "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Finterface/jobs/artifacts/${CI_COMMIT_REF_NAME}/download?job=interface\" -o ${path}${file}.zip"
@@ -379,11 +389,19 @@ dist:
   - ls
   - ls ${component}
   
-  - tar -zcvf ${file}.tar.gz ${component}
-  - tar cfJ ${file}.tar.xz ${component} 
+  # archive to zip
+  - zip -r ${file}.zip ${component}
   
-  - cp ${file}.tar.gz ./dist/${path}${file}.tar.gz
-  - cp ${file}.tar.xz ./dist/${path}${file}.tar.xz
+  # archive to tar.gz
+  - tar -zcvf ${file}.tar.gz ${component}
+  
+  # create a xz-archive as well
+  - gunzip < ${file}.tar.gz | xz > ${file}.tar.xz
+  #- tar cfJ ${file}.tar.xz ${component} 
+
+  - cp ${file}.zip ./dist/${component}/${version}/${file}.zip
+  - cp ${file}.tar.gz ./dist/${component}/${version}/${file}.tar.gz
+  - cp ${file}.tar.xz ./dist/${component}/${version}/${file}.tar.xz
   
   # for interface we like to distribute the js files directly as well
   #- cp -r ./${component}/*.js ./dist/${path}
@@ -396,10 +414,12 @@ dist:
   # add, commit and push
   - "git add ."
   - "git commit -m \"release ${version} ${component}\" || true"
-  - "git push https://oauth2:${PRIVATE_TOKEN}@gitlab.com/hybrix/dist -f || true"
+  - "git push https://oauth2:${PRIVATE_TOKEN}@gitlab.com/hybrix/dist.git -f || true"
 
   only:
-  - /^v.*release$/
+    refs:
+      - tags
+  #- /^v.*release$/
 
 
 # ---------------------------------------------------------------------------

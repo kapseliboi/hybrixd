@@ -3,6 +3,9 @@
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,700italic,400,600,700" rel="stylesheet" type="text/css">
 <link rel="stylesheet" type="text/css" href="./docs.css">
 <script src="./docs.js"></script>
+    <link rel=stylesheet href="codemirror.css">
+    <script src="codemirror.js"></script>
+    <script src="javascript.js"></script>
 </head><body><div id="navigation"></div><script>initNavigation("hybrix-lib.js")</script><p>
   <div class="download">Download for web<br/><span style="font-size:10px">&lt;script src="./hybrix-lib.web.js"&gt;&lt;/script&gt;</span></div>
   <div class="download">Download for NodeJS<br/><span style="font-size:10px"">var Hybrix = require("./hybrix-lib.nodejs");</span></div>
@@ -132,7 +135,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
                option.selected='selected';
              }
            }
-           var tr = document.getElementById('try');
+           var tr = document.getElementById('try').parentNode;
            tr.scrollIntoView();
            runExample(event);
          }
@@ -140,6 +143,14 @@ But that result in serious problems due to asynchronicity. One could use the cal
        example.parentNode.insertBefore(button, example.nextSibling);
      }
      document.getElementById('try').innerHTML=document.getElementById('exampleHelloWorld').innerHTML.replace('http://localhost:1111',window.location.origin+'/api');
+
+     var editor = CodeMirror.fromTextArea(document.getElementById("try"), {
+       lineNumbers: true,
+       mode: "application/javascript",
+       matchBrackets: true
+     });
+
+
    },250);
   </script>
   <textarea id="try" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
@@ -412,9 +423,9 @@ But that result in serious problems due to asynchronicity. One could use the cal
       , onSuccess
       , onError
       , onProgress
-    );</code></div></div><div class="category">Storage</div><div class="command-header" onclick="toggleCommand('load')"><b>load</b> {<i>key</i>, [<i>encrypted</i>], [<i>legacy=false</i>], [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">TODO Stringify and encrypt data with user keys.</span></div><div style="display:none;" class="command-body" id="load">
+    );</code></div></div><div class="category">Storage</div><div class="command-header" onclick="toggleCommand('load')"><b>load</b> {<i>key</i>, [<i>encrypted=true</i>], [<i>legacy=false</i>], [<i>host</i>], [<i>channel=''</i>]}<span class="quickDescription">TODO Stringify and encrypt data with user keys.</span></div><div style="display:none;" class="command-body" id="load">
     TODO Stringify and encrypt data with user keys.
-   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.encrypted</td><td>- whether to encrypt the data with the user key, true by default.</td></tr><tr><td>data.legacy</td><td>- A toggle to use a legacy storage method.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="load" id="example82">hybrix.sequential([
+   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.encrypted</td><td>- whether to encrypt the data with the user key, true by default.</td></tr><tr><td>data.legacy</td><td>- A toggle to use a legacy storage method.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr></table><code class="example" title="load" id="example82">hybrix.sequential([
     'init',
     {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
@@ -448,9 +459,9 @@ But that result in serious problems due to asynchronicity. One could use the cal
       , onSuccess
       , onError
       , onProgress
-    );</code></div></div><div class="command-header" onclick="toggleCommand('seek')"><b>seek</b> {<i>key</i>, [<i>legacy=false</i>], [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}<span class="quickDescription">Check if data is associated to key</span></div><div style="display:none;" class="command-body" id="seek">
+    );</code></div></div><div class="command-header" onclick="toggleCommand('seek')"><b>seek</b> {<i>key</i>, [<i>legacy=false</i>], [<i>host</i>], [<i>channel=''</i>]}<span class="quickDescription">Check if data is associated to key</span></div><div style="display:none;" class="command-body" id="seek">
     Check if data is associated to key
-   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.legacy</td><td>- A toggle to use a legacy storage method.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="seek" id="example85">hybrix.sequential([
+   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.legacy</td><td>- A toggle to use a legacy storage method.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr></table><code class="example" title="seek" id="example85">hybrix.sequential([
     'init',
     {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',

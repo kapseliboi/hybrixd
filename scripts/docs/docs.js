@@ -31,6 +31,9 @@ for (var id in files) {
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,700italic,400,600,700" rel="stylesheet" type="text/css">
 <link rel="stylesheet" type="text/css" href="./docs.css">
 <script src="./docs.js"></script>
+    <link rel=stylesheet href="codemirror.css">
+    <script src="codemirror.js"></script>
+    <script src="javascript.js"></script>
 </head><body>`;
 
   data += '<div id="navigation"></div><script>initNavigation("' + id + '")</script>';
