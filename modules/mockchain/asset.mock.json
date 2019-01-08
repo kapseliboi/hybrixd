@@ -1,0 +1,48 @@
+{
+  "symbol":"mock",
+  "name":"Mock coin (test coin for Internet of Coins)",
+  "module":"quartz",
+  "mode":"mockcoin.main",
+  "contract" :"main",
+  "factor":8,
+  "fee":0.15,
+  "host":"none",
+  "cache":10000,
+  "throttle":10,
+  "quartz":{
+    "init" : [
+      "logs(1,'module $symbol: initialized')"
+    ],
+    "unspent" : [
+      "pass([{}])"
+    ],
+    "balance" : [
+      "rout('/engine/mockchain/balance/$contract/$1')",
+      "form()"
+    ],
+    "push" : [
+      "rout('/engine/mockchain/push/$1')",
+      "done"
+    ],
+    "factor" : [
+      "pass('$factor')"
+    ],
+    "sample" : [
+      "stop(0,{address:'123',transaction:'0'})"
+    ],
+    "transaction" : [
+      "rout('/engine/mockchain/transaction/$1')",
+      "done"
+    ],
+    "history" : [
+      "rout('/engine/mockchain/history/$1')",
+      "done"
+    ],
+    "contract" : [
+      "pass('$contract')"
+    ],
+    "fee" : [
+      "pass('$fee')"
+    ]
+  }
+}
