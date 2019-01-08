@@ -35,7 +35,7 @@
       "done"
     ],
     "history" : [
-      "rout('/engine/mockchain/history/$1')",
+      "rout('/engine/mockchain/history/$contract/$1')",
       "done"
     ],
     "contract" : [

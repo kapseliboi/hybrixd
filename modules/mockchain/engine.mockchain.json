@@ -18,7 +18,6 @@
         "_this" : "Push a transaction to the mockchain."
       }
     },
-
     "transaction" : {
       "_ref" : {
         "_list" : "transactionid",
@@ -27,8 +26,11 @@
     },
     "history" : {
       "_ref" : {
-        "_list" : "address",
-        "_this" : "Retrieve the history for a given address."
+        "_list" : "symbol",
+        "_ref" : {
+          "_list" : "address",
+          "_this" : "Retrieve the history for a given address."
+        }
       }
     },
     "mine" : {

@@ -71,6 +71,7 @@ function exec (properties) {
           if (transaction.source === source && transaction.contract === contract) { balance -= transaction.amount + transaction.fee; }
         }
         if (balance >= amount + fee) {
+          newTransaction.timestamp = Date.now();
           newTransaction.id = mockchain.length;
           newTransaction.type = 'tran';
           mockchain.push(newTransaction);
@@ -82,18 +83,46 @@ function exec (properties) {
       }
       break;
     case 'history' :
-      var address = Number(command[1]);
+
+      var contract = command[1];
+      var address = Number(command[2]);
       var history = [];
-      for (var i = 0; i < mockchain.length; ++i) {
-        var transaction = mockchain[i];
-        if (transaction.target === address || transaction.source === address) { history.push(transaction); }
+      for (let i = 0; i < mockchain.length; ++i) {
+        let transaction = mockchain[i];
+        if ((transaction.target === address || transaction.source === address) && transaction.contract === contract) {
+          var normalizedTransaction = {
+            id: transaction.id,
+            timestamp: transaction.id,
+            amount: transaction.amount,
+            symbol: transaction.contract === 'main' ? 'mock' : 'mock.' + transaction.contract,
+            fee: transaction.fee,
+            'fee-symbol': transaction.contract === 'main' ? 'mock' : 'mock.' + transaction.contract,
+            source: transaction.source,
+            target: transaction.target,
+            data: transaction.message
+          };
+          history.push(normalizedTransaction);
+        }
       }
       subprocesses.push('pass(' + JSON.stringify(history) + ')');
       break;
     case 'transaction' :
       var transactionId = Number(command[1]);
       if (transactionId < mockchain.length) {
-        subprocesses.push('pass(' + JSON.stringify(mockchain[transactionId]) + ')');
+        let transaction = mockchain[transactionId];
+        let normalizedTransaction = {
+          id: transaction.id,
+          timestamp: transaction.id,
+          amount: transaction.amount,
+          symbol: transaction.contract === 'main' ? 'mock' : 'mock.' + transaction.contract,
+          fee: transaction.fee,
+          'fee-symbol': transaction.contract === 'main' ? 'mock' : 'mock.' + transaction.contract,
+          source: transaction.source,
+          target: transaction.target,
+          data: transaction.message,
+          details: {type: transaction.type}
+        };
+        subprocesses.push('pass(' + JSON.stringify(normalizedTransaction) + ')');
       } else {
         subprocesses.push("fail 'unknown transaction'");
       }
