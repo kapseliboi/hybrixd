@@ -1,0 +1,50 @@
+{
+  "engine":"mockchain",
+  "name":"Mockchain Explorer.",
+  "module":"mockchain",
+  "router" : {
+    "balance" : {
+      "_ref" : {
+        "_list" : "contract",
+        "_ref" : {
+          "_list" : "address",
+          "_this" : "Retrieve the balance for a given contract asset."
+        }
+      }
+    },
+    "push" : {
+      "_ref" : {
+        "_list" : "transaction",
+        "_this" : "Push a transaction to the mockchain."
+      }
+    },
+    "transaction" : {
+      "_ref" : {
+        "_list" : "transactionid",
+        "_this" : "Retrieve a transaction."
+      }
+    },
+    "history" : {
+      "_ref" : {
+        "_list" : "symbol",
+        "_ref" : {
+          "_list" : "address",
+          "_this" : "Retrieve the history for a given address."
+        }
+      }
+    },
+    "mine" : {
+      "_ref" : {
+        "_list" : "contract",
+        "_ref" : {
+          "_list" : "address",
+          "_ref" : {
+            "_list" : "amount",
+            "_this" : "Mine an amount of contract asset and transferr to address."
+          }
+        }
+      }
+    }
+
+  }
+}

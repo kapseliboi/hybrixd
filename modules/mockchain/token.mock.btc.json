@@ -1,0 +1,13 @@
+{
+  "symbol":"mock.btc",
+  "name":"Mock Bitcoin",
+  "module":"quartz",
+  "mode":"mockchain.btc",
+  "contract":"btc",
+  "factor":8,
+  "fee":0.000025,
+  "cache":60000,
+  "throttle":10,
+  "import":"mock",
+  "quartz":{}
+}

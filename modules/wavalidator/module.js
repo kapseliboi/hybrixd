@@ -1,5 +1,4 @@
 // (C) 2015 Internet of Coins / Metasync / Joachim de Koning
-
 // required libraries in this context
 var scheduler = require('../../lib/scheduler');
 
@@ -29,6 +28,12 @@ function exec (properties) {
 
   if (symbol === 'DUMMY') {
     if (address === '_dummyaddress_') {
+      subprocesses.push("stop(0,'valid')");
+    } else {
+      subprocesses.push("stop(0,'invalid')");
+    }
+  } else if (symbol.startsWith('MOCK')) {
+    if (Number(address) >= 0 && Number(address) < 1000) {
       subprocesses.push("stop(0,'valid')");
     } else {
       subprocesses.push("stop(0,'invalid')");
