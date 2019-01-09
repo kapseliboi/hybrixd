@@ -348,6 +348,8 @@ staging:
       - $STAGING_ENABLED
       
 dist: 
+  dependencies: 
+    - hybrixd
   image: alpine:latest
   stage: release
   script:
