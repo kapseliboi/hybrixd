@@ -132,7 +132,6 @@ function exec (properties) {
         subprocesses.push('@retryLoop');
         subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_sendRawTransaction",["' + deterministic_script + '"]]})');
         // returns: { "id":1, "jsonrpc": "2.0", "result": "0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331" }
-        subprocesses.push('flow(".result",1,3)');
         subprocesses.push('tran(".result",1,3)');
         subprocesses.push('test((data.substr(0,2)==="0x"),1,2)');
         subprocesses.push('done()');
