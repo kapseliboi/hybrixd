@@ -360,6 +360,7 @@ dist:
   - apk add tar
   - apk add xz
   - apk add zip
+  - apk add jq
    
   # set variables
   # version -> branchname without '-release'
