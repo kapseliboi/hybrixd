@@ -207,6 +207,14 @@
         "_this" : "Specify the process ID to kill."
       }
     },
+    "debug":{
+      "_help" : "Debug a process.",
+      "_ref" : {
+        "_access":"root",
+        "_list" : "proc",
+        "_this" : "Specify the process ID to resume."
+      }
+    },
     "pause":{
       "_this" : "List all paused processes.",
       "_ref" : {
