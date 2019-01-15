@@ -388,11 +388,24 @@ dist:
   #- cp ${path}${file}.zip ./../${file}.zip
   #- unzip ${file}.zip -d ${component}
   
+  # workaround to get the latest artifact
+  - PROJECT_REF_SLUG=hybrix%2Fhybrixd%2Fnode
+  - PROJECT_REF_PATH=hybrix/hybrixd/node
+  - PROJECT_REF_NAME=hybrixd
+  - PROJECT_REF_BRANCH=${CI_COMMIT_TAG}
+  - "RESPONSE=$(curl --header \"Private-Token: $PRIVATE_TOKEN\" --silent \"https://gitlab.com/api/v4/projects/${PROJECT_REF_SLUG}/jobs?scope=success\")"
+  - "echo \"${RESPONSE}\" | jq -r 'first(.[] | select(.name == \"hybrixd\" and .ref == \"${PROJECT_REF_BRANCH}\")) | .id'"
+  - "BUILD_JOB_ID=$(echo \"${RESPONSE}\" | jq -r 'first(.[] | select(.name == \"hybrixd\" and .ref == \"${PROJECT_REF_BRANCH}\")) | .id')"
+  - "echo \"Downloading the artifact from: https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\""
+  #- "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\" -o artifacts-${PROJECT_REF_NAME}.zip"
+  - "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/api/v4/projects/${PROJECT_REF_SLUG}/jobs/${BUILD_JOB_ID}/artifacts\" -o artifacts-${PROJECT_REF_NAME}.zip"
+  - unzip -o artifacts-hybrixd.zip -d ./${component}/
+
   - ls
   - ls ${component}
   
   # archive to zip
-  - zip -r ${file}.zip ${component}
+  - mv artifacts-hybrixd.zip > ${file}
   
   # archive to tar.gz
   - tar -zcvf ${file}.tar.gz ${component}
