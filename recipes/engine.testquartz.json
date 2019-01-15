@@ -20,6 +20,12 @@
       "call 'done'",
       "done"
     ],
+    "with" : [
+      "data '100'",
+      "poke 'testVar'",
+      "with 'testVar' 'hash'",
+      "done data+' $testVar '"
+    ],
     "each" : [
       "each [0,1,2,3,4] 'each_test'",
       "done"
@@ -71,6 +77,7 @@
     "fail"  : "Test fail()",
     "data"  : "Test data()",
     "call"  : "Test call()",
+    "with"  : "Test with()",
     "each"  : "Test each()",
     "true"  : "Test true()",
     "flow"  : "Test flow()",

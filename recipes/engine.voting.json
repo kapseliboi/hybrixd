@@ -23,6 +23,9 @@
       "@filenotfound",
       "done ''"
     ],
+    "addAddressRedirect" : [
+      "rout 'engine/voting/addAddress/$1/$2'"      
+    ],
     "addAddress" : [
       "data '$2'",
       "splt ':'",
@@ -34,7 +37,6 @@
       "poke 'userhash' $userdata[0]",
       "poke 'useraddr' $userdata[1]",
       "poke '::coreMode' 'eligibility'",
-      "poke '::coreData' '$userhash'",
       "call 'coreList'",
       "excl '$userhash' 1 @notelligible",
     "# reinsert hash at beginning of array",
@@ -42,12 +44,25 @@
     "# check if address is not already added",
       "each data 'readAddress'",
       "find '$useraddr' @alreadyadd 1",
-    "# add address under Eligibility key",
+    "# set file index to write to",
       "data 'address $userhash'",
       "hash 'sha256'",
+      "poke 'tmpA'",
+      "data 'addresz $userhash'",
+      "hash 'sha256'",
+      "poke 'tmpB'",
+      "done '$tmpA $tmpB'",
       "poke 'idx'",
+    "# check if Eligibility already taken",
+      "#hook @addAddress",
+      "load '$idx'",
+      "file",
+      "done '$useraddr '+data",
+      "flow '$useraddr' 1 @keyused",
+    "# add address under Eligibility key",
+      "@addAddress",
       "peek 'useraddr'",
-      "save '$idx'",
+      "#save '$idx'",
       "done 'User added to elligible voters.'",
     "# error messages on fail",
       "@notelligible",
@@ -55,7 +70,9 @@
       "@alreadyadd",
       "fail 1 'User already on list!'",
       "@badinputfmt",
-      "fail 1 'Bad input format! Expecting: /userhash:useraddr'"
+      "fail 1 'Bad input format! Expecting: /userhash:useraddr'",
+      "@keyused",
+      "fail 1 'Eligibility key is already in use!'"
     ],
     "listEligibility" : [
       "poke '::coreMode','elegibility'",
@@ -131,10 +148,53 @@
       "data []",
       "save '$idx'",
       "done 'Core list reset'"
-    ]
+    ],
+  "testMe":[
+      "poke '::someVar' 'x1'",
+      "call 'callMe'",
+      "logs",
+      "poke '::someVar' 'x2'",
+      "call 'callMe'",
+      "logs",
+      "poke '::someVar' 'x3'",
+      "call 'callMe'",
+      "logs",
+      "poke '::someVar' 'x4'",
+      "call 'callMe'",
+      "logs",
+      "poke '::someVar' 'x5'",
+      "call 'callMe'",
+      "logs",
+      "poke '::someVar' 'x6'",
+      "call 'callMe'",
+      "done"
+    ],
+    "callMe":[
+      "data 'SomeRandomHash4298430983204'",
+      "poke 'userhash'",    
+      "data 'address $userhash'",
+      "hash 'sha256'",
+      "poke 'tmpA'",
+      "data 'addrezz $userhash'",
+      "hash 'sha256'",
+      "poke 'tmpB'",
+      "done '$tmpA $tmpB'"
+    ],
+    "callMeMore":[
+      "data '$::someVar'",
+      "hash 'sha256'",
+      "done"
+    ]    
   },
   "router" : {
     "_help" : "(experimental!) Voting engine utilizing decentralized consensus and storage.",
+    "testMe" : {
+      "_help": "TEST",
+      "_ref" : {
+        "_list" : "session_id",
+        "_this" : "An array is returned listing all eligibility addresses."
+      }
+    },
     "listAddresses" : {
       "_help": "List all eligibility addresses",
       "_ref" : {
@@ -143,6 +203,16 @@
       }
     },
     "listAddress" : {"_alias":"listAddresses"},
+    "addAddressRedirect" : {
+      "_help": "Add eligibility adresses to voting session (redirecting page)",
+      "_ref" : {
+        "_list" : "session_id",
+          "_ref" : {
+              "_list" : "eligibility_address",
+              "_this" : "Adds an eligibility address or addresses under the specified voting session ID. [format: hash:address]"
+          }
+      }
+    },
     "addAddress" : {
       "_help": "Add eligibility adresses to voting session",
       "_ref" : {
