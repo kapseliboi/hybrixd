@@ -16,15 +16,22 @@
       "data '$OK'",
       "done"
     ],
+    "size" : [
+      "data '$OK'",
+      "size",
+      "done"
+    ],
     "call" : [
       "call 'done'",
       "done"
     ],
     "with" : [
       "data '100'",
-      "poke 'testVar'",
-      "with 'testVar' 'hash'",
-      "done data+' $testVar '"
+      "poke 'testVarA'",
+      "poke 'testVarB'",
+      "with 'testVarA' 'hash'",
+      "with 'testVarB' ['math','+100'] ['math','+50']",
+      "done data+' $testVarA $testVarB'"
     ],
     "each" : [
       "each [0,1,2,3,4] 'each_test'",
@@ -67,6 +74,47 @@
       "file",
       "done"
     ],
+    "push" : [
+      "data ['A','B','C','D','E','F']",
+      "#push '*',[-1,1,3]",
+      "#push 'Yolo',[0,3,-2]",
+      "push '*' 0",
+      "done"
+    ],
+    "fuse" : [
+      "data ['A','B']",
+      "fuse ['C','D']",
+      "done"
+    ],
+    "drop" : [
+      "data 'testmenow'",
+      "drop -1,-1",
+      "done"
+    ],
+    "excl" : [
+      "data ['a','b','c','d','c','e','f']",
+      "excl ['c','b','a']",
+      "done"
+    ],
+    "filt" : [
+      "data ['a','b','c','d','c','e','f']",
+      "filt ['c','b']",
+      "done"
+    ],
+    "uniq" : [
+      "data ['a','b','c','c','d','d','c','e','f','g','g','g','g','h']",
+      "uniq",
+      "done"
+    ],
+    "many" : [
+      "data ['a','b','c','d','c','e','f']",
+      "many",
+      "done"
+    ],
+    "peek" : [
+      "peek 'proc::1'",
+      "done"
+    ],
     "X" : [
       "data 'placeholder'"
     ]
@@ -76,6 +124,7 @@
     "done"  : "Test done()",
     "fail"  : "Test fail()",
     "data"  : "Test data()",
+    "size"  : "Test size()",
     "call"  : "Test call()",
     "with"  : "Test with()",
     "each"  : "Test each()",
@@ -83,6 +132,14 @@
     "flow"  : "Test flow()",
     "save"  : "Test save()",
     "load"  : "Test load()",
+    "push"  : "Test push()",
+    "fuse"  : "Test fuse()",
+    "drop"  : "Test drop()",
+    "excl"  : "Test excl()",
+    "filt"  : "Test filt()",
+    "uniq"  : "Test uniq()",
+    "many"  : "Test many()",
+    "peek"  : "Test peek()",
     "Y" : "Test ",
     "X" : "Test "
   }
