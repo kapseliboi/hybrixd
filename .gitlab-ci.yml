@@ -373,7 +373,7 @@ dist:
   - ls
   
   #- cp -r ./dist/. /tmp/${component}/
-  - cp -r . /tmp/${component}/
+  #- cp -r . /tmp/${component}/
   #- cp .version . /tmp/${component}/
     
   - cd /tmp
