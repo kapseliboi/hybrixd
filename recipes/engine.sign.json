@@ -1,0 +1,84 @@
+{
+  "engine":"sign",
+  "name":"sign",
+  "module":"quartz",
+  "router" : {
+    "verify":{
+      "_ref": {
+        "_list": "message",
+        "_ref": {
+          "_list": "key_id",
+          "_this" : "Verify that the message was signed with the given key."
+        }
+      }
+    },
+    "authenticate":{
+      "_ref": {
+        "_list": "message",
+        "_ref": {
+          "_list": "key_id",
+          "_this" : "Prove that you can sign with the given key."
+        }
+      }
+    },
+    "public":{
+      "_this" : "List all my public signing keys."
+    },
+
+    "sign":{
+      "_access" : "root",
+      "_ref" :{
+        "_list": "message",
+        "_ref": {
+          "_list": "key_id",
+          "_this" : "Sign a message using the given key."
+        }
+      }
+    },
+
+    "create":{
+      "_access" : "root",
+      "_ref": {
+        "_list": "entropy",
+        "_this" : "Create a new key."
+      }
+    },
+    "delete":{
+      "_access" : "root",
+      "_ref": {
+        "_list": "key_id",
+        "_this" : "Delete a key."
+      }
+    }
+  },
+  "quartz" : {
+    "verify":[
+      "logs 'veri $1 $2'",
+      "done"
+    ],
+    "authenticate":[
+      "logs 'get private_key $2'",
+      "logs 'poke 'private_key''",
+      "logs 'TODO $1 max length and add salt in front or something'",
+      "logs 'data $1'",
+      "logs 'sign $private_key'",
+      "done"
+    ],
+    "public":[
+      "done ['public_key1','public_key2']"
+    ],
+    "sign":[
+      "logs 'get private_key $2'",
+      "logs 'poke private_key'",
+      "logs 'data $1'",
+      "logs 'sign $private_key'",
+      "done"
+    ],
+    "create":[
+      "fail 'NOT YET IMPLEMENTED'"
+    ],
+    "delete":[
+      "fail 'NOT YET IMPLEMENTED'"
+    ]
+  }
+}
