@@ -397,7 +397,7 @@ dist:
   - "echo ${CI_COMMIT_TAG}"
   - "RESPONSE=$(curl --header \"Private-Token: $PRIVATE_TOKEN\" --silent \"https://gitlab.com/api/v4/projects/${PROJECT_REF_SLUG}/jobs?scope=success\")"
   - "echo \"${RESPONSE}\" | jq -r 'first(.[] | select(.name == \"hybrixd\" and .ref == \"'${PROJECT_REF_BRANCH}'\")) | .id'"
-  - "BUILD_JOB_ID=$(echo \"${RESPONSE}\" | jq -r 'first(.[] | select(.name == \"hybrixd\" and .ref == \"'${PROJECT_REF_BRANCH}\"')) | .id')"
+  - "BUILD_JOB_ID=$(echo \"${RESPONSE}\" | jq -r 'first(.[] | select(.name == \"hybrixd\" and .ref == \"'${PROJECT_REF_BRANCH}'\")) | .id')"
   - "echo \"Downloading the artifact from: https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\""
   #- "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\" -o artifacts-${PROJECT_REF_NAME}.zip"
   - "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/api/v4/projects/${PROJECT_REF_SLUG}/jobs/${BUILD_JOB_ID}/artifacts\" -o artifacts-${PROJECT_REF_NAME}.zip"
