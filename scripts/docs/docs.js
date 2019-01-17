@@ -36,10 +36,15 @@ for (var id in files) {
     <script src="javascript.js"></script>
 </head><body>`;
 
-  data += '<div id="navigation"></div><script>initNavigation("' + id + '")</script>';
+  data += '<div id="navigation"></div>';
 
   var intro = fs.readFileSync('../../docs/source/' + id + '.html').toString();
   data += intro;
+  if (files[id].substr(-5) !== '.html') {
+    data += '<div id="filterBox">Filter</div>';
+  }
+
+  data += '<script>initNavigation("' + id + '")</script>';
 
   if (files[id].substr(-5) !== '.html') {
     var re = /\/\*\*([\s\S]+?)this\.(\w*)/g; // match jsdoc templates
@@ -139,6 +144,6 @@ for (var id in files) {
       data += '</div></div>';
     }
   }
-  data += '</body></html>';
+  data += '<div id="noResults">No results.</div></body></html>';
   fs.writeFileSync('../../docs/' + id + '.html', data);
 }

@@ -6,7 +6,7 @@
     <link rel=stylesheet href="codemirror.css">
     <script src="codemirror.js"></script>
     <script src="javascript.js"></script>
-</head><body><div id="navigation"></div><script>initNavigation("HelloWorld")</script><h3>Welcome to the <i>hybrix</i></h3>
+</head><body><div id="navigation"></div><h3>Welcome to the <i>hybrix</i></h3>
 
 <p><i>hybrix</i> is a highly inclusive distributed platform environment to network and manage digital forms of value
   transfer, interlinking other decentralized networks. It solves the problem of a currently fragmented ecosystem
@@ -93,15 +93,14 @@
 
 <textarea id="try">
 hybrix.sequential([
-      'init',                                                        // Initialize hybrix
-      {host: 'http://localhost:1111/'}, 'addHost',                   // Add and initialize the host
-      {query: '/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'}, 'rout'  // Query for asset balance
-    ],
-    onSuccess,                                                      // Define action to execute on successfull completion
-    onError,                                                        // Define action to execute when an error is encountered
-    onProgress                                                      // Define action to execute whenever there is a progress update
-);
-  </textarea>
+    'init',                                                        // Initialize hybrix
+    {host: 'http://localhost:1111/'}, 'addHost',                   // Add and initialize the host
+    {query: '/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'}, 'rout'  // Query for asset balance
+  ],
+  onSuccess,                                                      // Define action to execute on successfull completion
+  onError,                                                        // Define action to execute when an error is encountered
+  onProgress                                                      // Define action to execute whenever there is a progress update
+);</textarea>
 
 <div id="progressContainer">
   <div id="progress"></div>
@@ -128,4 +127,4 @@ Result:
   <li>Execute Qrtz script applications</li>
 </ul>
 </ul>
-</body></html>
+<script>initNavigation("HelloWorld")</script><div id="noResults">No results.</div></body></html>
