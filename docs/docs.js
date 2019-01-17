@@ -239,7 +239,7 @@ function runExample (event) {
     progressBar.style.width = 0;
     progressBar.style.backgroundColor = 'blue';
     progressBar.innerHTML = '0%';
-    eval(document.getElementById('try').value);
+    eval(codeMirrorEditor.getValue());
   };
   script.src = 'hybrix-lib.web.js';
   document.head.appendChild(script);
