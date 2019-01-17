@@ -407,7 +407,7 @@ dist:
   - ls ${component}
   
   # archive to zip
-  - mv artifacts-hybrixd.zip > ${file}
+  - mv artifacts-hybrixd.zip ${file}.zip
   
   # archive to tar.gz
   - tar -zcvf ${file}.tar.gz ${component}
