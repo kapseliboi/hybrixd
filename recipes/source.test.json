@@ -14,9 +14,11 @@
     ],
 
     "test" : [
-      "each {'fee':null} 'subdetails'",
-      "done {fee:data.fee}"
+      "data 'abcdefg'",
+      "take -2 2",
+      "done"
     ],
+
     "subdetails" : [
       "call data.key"
     ]

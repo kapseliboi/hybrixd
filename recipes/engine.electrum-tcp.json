@@ -10,7 +10,7 @@
   "utxo_unspent_prefix":"76a914",
   "utxo_unspent_suffix":"88ac",
   "trimAddrHexL":"2",
-  "trimAddrHexR":"-8",
+  "trimAddrHexR":"8",
   "cron":600,
   "quartz":{
     "peers" : [
@@ -25,7 +25,7 @@
       "poke('inputval','$2')",
       "data('$1')",
       "code('base58','hex')",
-      "pull($trimAddrHexL,$trimAddrHexR)",
+      "drop($trimAddrHexL,$trimAddrHexR)",
       "poke('script','$utxo_unspent_prefix'+data+'$utxo_unspent_suffix')",
       "time($longtimeout)",
       "curl('asset://$symbol','','',{'jsonrpc':'2.0','id':0,'method':'blockchain.address.listunspent','params':['$1']},{},{'timeout':$longtimeout})",
