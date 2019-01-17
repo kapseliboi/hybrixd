@@ -104,10 +104,11 @@ But that result in serious problems due to asynchronicity. One could use the cal
 
 <h3>Live example</h3>
 
-<div class="try"> <select id="selectExample" onchange="var s = document.getElementById('selectExample');document.getElementById('try').innerHTML=document.getElementById(s[s.selectedIndex].value).innerHTML.replace('http://localhost:1111',window.location.origin+'/api');">
+<div class="try"> <select id="selectExample" onchange="var s = document.getElementById('selectExample');codeMirrorEditor.setValue(document.getElementById(s[s.selectedIndex].value).innerHTML.replace('http://localhost:1111',window.location.origin+'/api'));">
   <option value="exampleHelloWorld">Hello World</option>
   </select>
   <script>
+   var codeMirrorEditor;
    setTimeout(function(){
      var examples = document.getElementsByClassName('example');
      var selectExample = document.getElementById('selectExample');
@@ -119,9 +120,13 @@ But that result in serious problems due to asynchronicity. One could use the cal
        var button = document.createElement('input');
        button.type='submit';
        button.value="Try it";
+
        button.onclick = function(body,id){
          return event => {
-           document.getElementById('try').innerHTML= body.replace('http://localhost:1111',window.location.origin+'/api');
+
+           console.log(body);
+           codeMirrorEditor.setValue(body.replace('http://localhost:1111',window.location.origin+'/api'))
+
            for(let option of document.getElementById('selectExample').options){
              if(option.value===id){
                option.selected='selected';
@@ -136,7 +141,7 @@ But that result in serious problems due to asynchronicity. One could use the cal
      }
      document.getElementById('try').innerHTML=document.getElementById('exampleHelloWorld').innerHTML.replace('http://localhost:1111',window.location.origin+'/api');
 
-     var editor = CodeMirror.fromTextArea(document.getElementById("try"), {
+     codeMirrorEditor = CodeMirror.fromTextArea(document.getElementById("try"), {
        lineNumbers: true,
        mode: "application/javascript",
        matchBrackets: true
