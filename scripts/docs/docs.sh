@@ -13,7 +13,7 @@ COMMON="$HYBRIXD/common"
 INTERFACE="$HYBRIXD/interface"
 WEB_WALLET="$HYBRIXD/web-wallet"
 
-
+cd "$NODE/scripts/docs"
 $NODE/node_binaries/bin/node "$NODE/scripts/docs/docs.js"
 
 cd "$WHEREAMI"
