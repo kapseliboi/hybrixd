@@ -30,7 +30,6 @@ function exec (properties) {
       break;
     case 'load':
     case 'get':
-    // TODO: breaks mutability:
       subprocesses.push('type("file:data")');
       subprocesses.push('func("storage","get",{key:"' + command[1] + '"})');
       break;
@@ -60,6 +59,14 @@ function exec (properties) {
 var get = function (properties) {
   var processID = properties.processID;
   storage.get(properties.key,
+    value => { scheduler.stop(processID, 0, value); },
+    error => { scheduler.stop(processID, 1, error); }
+  );
+};
+
+var qrtzLoad = function (properties) {
+  var processID = properties.processID;
+  storage.qrtzLoad(properties.key,
     value => { scheduler.stop(processID, 0, value); },
     error => { scheduler.stop(processID, 1, error); }
   );
@@ -105,3 +112,4 @@ exports.set = set;
 exports.seek = seek;
 exports.pow = pow;
 exports.meta = meta;
+exports.qrtzLoad = qrtzLoad;

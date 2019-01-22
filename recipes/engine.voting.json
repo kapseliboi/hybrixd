@@ -4,6 +4,7 @@
   "module":"quartz",
   "cache":100,
   "throttle":10,
+  "hashSalt":"Th3S4lt0fTh3H4shMustN0tB3F0rg0t!Th4t1sf0rsur3!",
   "quartz":{
     "listAddresses" : [
       "poke '::coreMode','elegibility'",
@@ -38,6 +39,7 @@
       "poke 'useraddr' $userdata[1]",
       "poke '::coreMode' 'eligibility'",
       "call 'coreList'",
+      "done",
       "excl '$userhash' 1 @notelligible",
     "# reinsert hash at beginning of array",
       "push '$userhash' 0",
@@ -45,13 +47,8 @@
       "each data 'readAddress'",
       "find '$useraddr' @alreadyadd 1",
     "# set file index to write to",
-      "data 'address $userhash'",
+      "data 'address $userhash $hashSalt'",
       "hash 'sha256'",
-      "poke 'tmpA'",
-      "data 'addresz $userhash'",
-      "hash 'sha256'",
-      "poke 'tmpB'",
-      "done '$tmpA $tmpB'",
       "poke 'idx'",
     "# check if Eligibility already taken",
       "#hook @addAddress",
@@ -61,8 +58,7 @@
       "flow '$useraddr' 1 @keyused",
     "# add address under Eligibility key",
       "@addAddress",
-      "peek 'useraddr'",
-      "#save '$idx'",
+      "with 'useraddr' 'save' '$idx'",
       "done 'User added to elligible voters.'",
     "# error messages on fail",
       "@notelligible",
@@ -75,27 +71,23 @@
       "fail 1 'Eligibility key is already in use!'"
     ],
     "listEligibility" : [
-      "poke '::coreMode','elegibility'",
-      "call 'coreList'",
+      "call 'coreList' ['eligibility','$1','$hashSalt']",
       "excl '.EOF'",
       "done"
     ],
     "addEligibility" : [
-      "poke '::coreData','$2'",
-      "poke '::coreMode','elegibility'",
-      "call 'coreList'",
-      "find '.EOF' @immutable",
+      "call 'coreList' ['eligibility','$1','$hashSalt']",
+      "excl '.EOF' 1 @immutable",
       "find '$2' @alreadyadd",
-      "call 'coreAdd'",
-      "done",
+      "call 'coreAdd' [['eligibility','$1','$hashSalt'],'$2']",
       "@alreadyadd",
       "done 'Elligibility already added!'",
       "@immutable",
       "fail 1 'Elligibility list is immutable!'"
     ],
     "closeEligibility" : [
-      "poke '::coreData','.EOF'",
-      "poke '::coreMode','elegibility'",
+      "poke '::coreData' '.EOF'",
+      "poke '::coreMode' 'elegibility'",
       "call 'coreList'",
       "find '.EOF' @immutable",
       "call 'coreAdd'",
@@ -106,21 +98,23 @@
       "done data"
     ],
     "coreList" : [
-      "data '$::coreMode $1'",
+      "join",
       "hash 'sha256'",
       "hook @notFoundOrEmpty",
-      "load '$data'",
-      "file",
+      "load",
       "jpar",
       "done",
       "@notFoundOrEmpty",
       "done []"
     ],
     "coreAdd" : [
-      "data '$::coreMode $1'",
+      "poke 'coreData'",
+      "pick 0",
+      "join",
       "hash 'sha256'",
       "poke 'idx'",
-      "data '$::coreData'",
+      "peek 'coreData'",
+      "pick 1",
       "splt ','",
       "excl '.EOF'",
       "poke 'inputdata'",
@@ -140,14 +134,14 @@
       "fail 1 'Bad input, or no data to add to list!'"
     ],
     "coreReset" : [
-      "data '$1 $2'",
+      "data '$1 $2 $hashSalt'",
       "hash 'sha256'",
       "poke 'idx'",
       "data []",
       "save '$idx'",
       "done 'Core list reset'"
     ],
-  "testMe":[
+    "testMe":[
       "poke '::someVar' 'x1'",
       "call 'callMe'",
       "logs",
@@ -170,16 +164,16 @@
     "callMe":[
       "data 'SomeRandomHash4298430983204'",
       "poke 'userhash'",    
-      "data 'address $userhash'",
+      "data 'address $userhash $hashSalt'",
       "hash 'sha256'",
       "poke 'tmpA'",
-      "data 'addrezz $userhash'",
+      "data 'addrezz $userhash $hashSalt'",
       "hash 'sha256'",
       "poke 'tmpB'",
       "done '$tmpA $tmpB'"
     ],
     "callMeMore":[
-      "data '$::someVar'",
+      "data '$::someVar $hashSalt'",
       "hash 'sha256'",
       "done"
     ]    

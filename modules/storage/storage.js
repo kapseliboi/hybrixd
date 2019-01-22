@@ -38,6 +38,22 @@ var get = function (key, dataCallback, errorCallback) {
   }
 };
 
+var qrtzLoad = function (key, dataCallback, errorCallback) {
+  var fold = key.substr(0, 2) + '/';
+  var filePath = storagePath + fold + key;
+
+  if (fs.existsSync(filePath)) {
+    // update meta data with last time read
+    var meta = JSON.parse(String(fs.readFileSync(filePath + '.meta')));
+    meta.read = Date.now();
+    fs.writeFileSync(filePath + '.meta', JSON.stringify(meta));
+
+    dataCallback(fs.readFileSync(filePath).toString());
+  } else {
+    errorCallback('File not found');
+  }
+};
+
 var setMeta = function (data, dataCallback, errorCallback) {
   var fold = data.key.substr(0, 2) + '/';
   makeDir(storagePath + fold);
@@ -158,3 +174,4 @@ exports.del = del;
 exports.getMeta = getMeta;
 exports.provideProof = provideProof;
 exports.autoClean = autoClean;
+exports.qrtzLoad = qrtzLoad;
