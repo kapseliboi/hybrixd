@@ -108,7 +108,10 @@ for (var id in files) {
       }
       data += '<div class="command-header" onclick="toggleCommand(\'' + func.name.trim() + '\')"><b>' + func.name.trim() + '</b>';
 
-      if (id === 'hybrix-lib.js') { data += '<span class="quickDescription"> {'; }
+      data += '<span class="quickDescription">';
+
+      if (id === 'hybrix-lib.js') { data += '{'; }
+
       for (var j = 0; j < func.parameters.length; ++j) {
         var parameter = func.parameters[j];
         if (parameter.name.indexOf('.') !== -1 || id === 'qrtz') {
