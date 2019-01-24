@@ -1,0 +1,52 @@
+{
+  "engine":"transport",
+  "name":"Transport engine module",
+  "module":"transport",
+  "nodeId":"TemporaryID_A",
+  "defaultChannel":"hybrixAnnouncements",
+  "cron" : 300,
+  "router" : {
+    "_help" : "Control the announcement engine.",
+    "open":{
+      "_help" : "Connect to a transport network. When initialized the transport returns a handle.",
+      "_this" : "When entering no other information, the possible protocols are listed.",
+      "_ref" : {
+        "_list" : "protocol",
+        "_this" : "Protocol to use. (irc or bittorrent)",
+        "_ref" : {
+          "_list" : "target",
+          "_this" : "Target group or host to connect to.",
+          "_ref" : {
+            "_list" : "channel",
+            "_this" : "Channel or network name specifier."
+          }
+        }
+      }
+    },
+    "stop":{
+      "_help" : "Close an active transport.",
+      "_ref" : {
+        "_list" : "handle",
+        "_this" : "Specify the handle of the transport to close."
+      }
+    },
+    "info":{
+      "_help" : "Get information about an active transport.",
+      "_ref" : {
+        "_list" : "handle",
+        "_this" : "Specify the handle of the transport to query."
+      }
+    },
+    "list":{
+      "_help" : "List active transports.",
+      "_this" : "Active transport handles are listed."
+    },
+    "meta":{
+      "_help" : "Get metadata about a storage object.",
+      "_ref" : {
+        "_list" : "storage_id",
+        "_this" : "Specify the ID key to get metadata for."
+      }
+    }
+  }
+}
