@@ -1,4 +1,38 @@
-
 <div class="download">Download</div>
 
-TODO
+<p>qrtz is the processing language for hybrixd. It is used to handle routing requests. Each routing request
+  spawns a process that follows qrtz steps to a result, or a failure.</p>
+
+
+<p>A qrtz command always consists of 4 characters. The parameters are
+  appended in either a space or a comma separated fashion:</p>
+
+<p><code>head parameter1 parameter2 ...</code></p>
+
+<p><code>head(parameter1,parameter2,...)</code></p>
+
+<p><a onclick="document.getElementById('more').style.display='block'; event.target.style.display='none';">Read more...</a></p>
+<div id="more" style="display:none;">
+
+  <h3>Recipe</h3>
+
+  TODO
+
+  <h3>Data flow</h3>
+
+  TODO
+
+  <h3>Variables and Scopes</h3>
+
+  <p><code>$</code> the main stream variable it is the output of the previous step </p>
+  <p><code>$.property</code></p>
+
+  <p><code>$variable</code>  Retrieve a propery from the recipe.(read only) (falls back to proc:: scope if no recipe variable is found)</p>
+  <p><code>$local::variable</code>  or <code>$::variable</code> Use a local scope (maintained between all processes spawned from the same recipe).</p>
+  <p><code>$proc::variable</code> process scope.</p>
+  <p><code>$otherRecipe::variable</code> the local scope of another recipe (read only)</p>
+
+
+</div>
+
+<h3>Reference</h3>

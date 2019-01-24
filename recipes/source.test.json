@@ -7,20 +7,18 @@
     "test": "test"
   },
   "quartz" : {
-    "fee":[
-      "rout('/asset/eth/fee')",
-      "math('+1')",
-      "done"
-    ],
 
     "test" : [
-      "data 'abcdefg'",
-      "take -2 2",
-      "done"
-    ],
-
-    "subdetails" : [
-      "call data.key"
+      "keys",
+      "poke 'keys'",
+      "keys",
+      "poke 'keys2'",
+      "data 'hello world'",
+      "sign $keys.secret",
+      "logs",
+      "sign $keys.public 1 2",
+      "done",
+      "fail"
     ]
   }
 }

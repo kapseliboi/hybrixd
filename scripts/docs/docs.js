@@ -36,10 +36,15 @@ for (var id in files) {
     <script src="javascript.js"></script>
 </head><body>`;
 
-  data += '<div id="navigation"></div><script>initNavigation("' + id + '")</script>';
+  data += '<div id="navigation"></div>';
 
   var intro = fs.readFileSync('../../docs/source/' + id + '.html').toString();
   data += intro;
+  if (files[id].substr(-5) !== '.html') {
+    data += '<div id="filterBox">Filter</div>';
+  }
+
+  data += '<script>initNavigation("' + id + '")</script>';
 
   if (files[id].substr(-5) !== '.html') {
     var re = /\/\*\*([\s\S]+?)this\.(\w*)/g; // match jsdoc templates
@@ -103,7 +108,10 @@ for (var id in files) {
       }
       data += '<div class="command-header" onclick="toggleCommand(\'' + func.name.trim() + '\')"><b>' + func.name.trim() + '</b>';
 
-      if (id === 'hybrix-lib.js') { data += ' {'; }
+      data += '<span class="quickDescription">';
+
+      if (id === 'hybrix-lib.js') { data += '{'; }
+
       for (var j = 0; j < func.parameters.length; ++j) {
         var parameter = func.parameters[j];
         if (parameter.name.indexOf('.') !== -1 || id === 'qrtz') {
@@ -124,7 +132,7 @@ for (var id in files) {
         }
       }
       if (id === 'hybrix-lib.js') { data += '}'; }
-      data += '<span class="quickDescription">' + func.description.trim() + '</span></div><div style="display:none;" class="command-body" id="' + func.name.trim() + '">';
+      data += '' + func.description.trim() + '</span></div><div style="display:none;" class="command-body" id="' + func.name.trim() + '">';
       data += func.description;
       data += '<table class="parameters">';
       for (var j = 0; j < func.parameters.length; ++j) {
@@ -139,6 +147,6 @@ for (var id in files) {
       data += '</div></div>';
     }
   }
-  data += '</body></html>';
+  data += '<div id="noResults">No results.</div></body></html>';
   fs.writeFileSync('../../docs/' + id + '.html', data);
 }

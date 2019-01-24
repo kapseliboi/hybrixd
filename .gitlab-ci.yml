@@ -246,6 +246,7 @@ test:
   except:
    refs:
      #- /^v.*release$/
+     - /^Issue.*$/
      - tags
   only:
     variables:
@@ -281,6 +282,7 @@ review:
     refs:
       - master
       - tags
+      - /^Issue.*$/
       #- /^v.*release$/
     variables:
       - $REVIEW_DISABLED
@@ -303,6 +305,7 @@ stop_review:
     kubernetes: active
   except:
     refs:
+      - /^Issue.*$/
       - master
       - tags
       #- /^v.*release$/
@@ -343,6 +346,7 @@ staging:
     refs:
       - master
       - tags
+      - /^Issue.*$/
     kubernetes: active
     variables:
       - $STAGING_ENABLED
@@ -373,7 +377,7 @@ dist:
   - ls
   
   #- cp -r ./dist/. /tmp/${component}/
-  - cp -r . /tmp/${component}/
+  #- cp -r . /tmp/${component}/
   #- cp .version . /tmp/${component}/
     
   - cd /tmp
@@ -433,6 +437,9 @@ dist:
   - "git commit -m \"release ${version} ${component}\" || true"
   - "git push https://oauth2:${PRIVATE_TOKEN}@gitlab.com/hybrix/dist.git -f"
 
+  except:
+    refs:
+      - /^Issue.*$/
   only:
     refs:
       - tags

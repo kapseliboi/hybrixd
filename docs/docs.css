@@ -90,17 +90,8 @@ hr {
   float: left;
   width: 180px;
 }
-.subnav {
-  height: 50px;
-}
-.subnav input#search {
-  padding: 12px 20px;
-  margin-right: 0px;
-  font-size: 14px;
-  margin-top: 5px;
-  background: #efefef;
-  border: none;
-}
+
+
 .menuItem {
   font-size: 18px;
   min-width: 40px;
@@ -148,8 +139,9 @@ hr {
   -moz-box-shadow: 0px 0px 20px 0px rgba(160,160,160,.5);
   box-shadow: 0px 0px 20px 0px rgba(160,160,160,.5);
   position: fixed;
-  top: 5px;
+  top: 45px;
   right: 5px;
+  z-index:999;
 }
 #collapseAll:hover {
   opacity: 0.8 !important;
@@ -238,6 +230,7 @@ hr {
   max-width: unset;
   bottom:0;
   left:0;
+  z-index:1000;
   background-color:white;
 }
 
@@ -329,13 +322,7 @@ div.prompt{
   border-top-color: #dddddd;
   padding: 4px 8px;
 }
-#search {
-  float:right;
-  width: 200px;
-  max-width: 90%;
-  border-radius: 0;
-  transition: 0.2s all ease-in;
-}
+
 .download{
   background-image:url('download.svg');
   background-repeat: no-repeat;
@@ -441,7 +428,39 @@ code.ref{
   .menuItem {
     margin-top: 0;
   }
-  #search{
-    float: none;
-  }
+}
+
+p._alias, p._access {
+  font-size:75%;
+}
+
+#filterBox {
+  height: 30px;
+ float:right;
+ position:relative;
+ top:-35px;
+  border-radius: 2px;
+  transition: 0.2s all ease-in;
+  -webkit-box-shadow: 0px 0px 20px 0px rgba(160,160,160,.5);
+  -moz-box-shadow: 0px 0px 20px 0px rgba(160,160,160,.5);
+  box-shadow: 0px 0px 20px 0px rgba(160,160,160,.5);
+  background: #73C4BF;
+  color: white;
+  width:169px;
+  z-index:1000;
+}
+
+#filterBox.active{
+  position:fixed;
+  right:5px;
+  top:5px;
+}
+
+#filterBox input#search {
+  width: 90px;
+  border-radius: 0;
+}
+
+#noResults {
+  display:none;
 }
