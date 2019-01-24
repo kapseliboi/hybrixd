@@ -6,9 +6,11 @@
     "balance" : {
       "_ref" : {
         "_list" : "contract",
+        "_sample": "dummy",
         "_ref" : {
           "_list" : "address",
-          "_this" : "Retrieve the balance for a given contract asset."
+          "_sample": "123",
+          "_this" : "Retrieve the balance for a given contract asset. Use the mine command to fill the balance."
         }
       }
     },
@@ -21,14 +23,17 @@
     "transaction" : {
       "_ref" : {
         "_list" : "transactionid",
+        "_sample": "0",
         "_this" : "Retrieve a transaction."
       }
     },
     "history" : {
       "_ref" : {
         "_list" : "symbol",
+        "_sample": "dummy",
         "_ref" : {
           "_list" : "address",
+          "_sample": "123",
           "_this" : "Retrieve the history for a given address."
         }
       }
@@ -36,11 +41,14 @@
     "mine" : {
       "_ref" : {
         "_list" : "contract",
+        "_sample": "dummy",
         "_ref" : {
           "_list" : "address",
+          "_sample": "123",
           "_ref" : {
             "_list" : "amount",
-            "_this" : "Mine an amount of contract asset and transferr to address."
+            "_sample": "100",
+            "_this" : "Mine an amount of contract asset and transfer to address."
           }
         }
       }
