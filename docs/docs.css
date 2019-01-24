@@ -242,7 +242,7 @@ hr {
 }
 #console-results{
   font-family: verdana;
-  width:100%;
+  width:98%;
   overflow-y:scroll;
   height:0;
 }
@@ -250,7 +250,7 @@ div.result {
   border-top-style: solid;
   border-top-width:1px ;
   border-top-color: #dddddd;
-  width:100%;
+  width:95%;
   padding: 4px 8px;
 }
 
