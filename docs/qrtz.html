@@ -210,8 +210,10 @@
    <table class="parameters"><tr><td>level</td><td>- Log level between 0-2.</td></tr><tr><td>message</td><td>- The message you want to log.</td></tr></table><code class="example" title="logs" id="example38">logs("No level!")       // logs "[.] No level!" to console
     logs(0,"Nice dude!")    // logs "[.] Nice dude!" to console
     logs(1,"I like you")    // logs "[i] I like you" to console
-    logs(2,"Be careful")    // logs "[!] Be careful" to console</code></div></div><div class="category">Process</div><div class="command-header" onclick="toggleCommand('call')"><b>call</b><span class="quickDescription"> <i>command</i> [<i>data=data</i>]Creates a new process by calling the xpath command and wait for the data to be returned (combines fork and read).</span></div><div style="display:none;" class="command-body" id="call">
+    logs(2,"Be careful")    // logs "[!] Be careful" to console</code></div></div><div class="category">Process</div><div class="command-header" onclick="toggleCommand('call')"><b>call</b><span class="quickDescription"> <i>command</i> [<i>data=data</i>]Creates a new process by calling the xpath command and wait for the data to be returned (combines fork and read).
+    TODO: the description below of the command path is incorrect, the path cannot be retrieved in the child fork!</span></div><div style="display:none;" class="command-body" id="call">
     Creates a new process by calling the xpath command and wait for the data to be returned (combines fork and read).
+    TODO: the description below of the command path is incorrect, the path cannot be retrieved in the child fork!
    <table class="parameters"><tr><td>command</td><td>-  A string containg the command path. "command/a/b". processStepID calls command using $1 = "a", $2 = "b"</td></tr><tr><td>data</td><td>-  Optional data to be passed to the new process</td></tr></table><code class="example" title="call" id="example39">call("balance/_dummyaddress_")          // Retrieve the balance and pass it to next step.</code></div></div><div class="command-header" onclick="toggleCommand('data')"><b>data</b><span class="quickDescription"> <i>object</i>Set data stream to a value.</span></div><div style="display:none;" class="command-body" id="data">
     Set data stream to a value.
    <table class="parameters"><tr><td>object</td><td>- Object to fill the data stream with.</td></tr></table><code class="example" title="data" id="example40">data("test")            // Fill the data stream with 'test'.</code></div></div><div class="command-header" onclick="toggleCommand('done')"><b>done</b><span class="quickDescription"> [<i>data=data</i>]Stop processing and return message.</span></div><div style="display:none;" class="command-body" id="done">
@@ -328,7 +330,10 @@
      math('^25')           // returns the value of data to the power of two times five
      math([2,3,4,5,6])      // returns the sum of all the numbers in the array
      math([2,3,4,5,6],'')  // multiplies all the numbers in the array
-     math('+')              // adds all the numbers in the data array</code></div></div><div class="command-header" onclick="toggleCommand('prog')"><b>prog</b><span class="quickDescription"> <i>step</i> <i>steps</i>Set progress of parent process.</span></div><div style="display:none;" class="command-body" id="prog">
+     math('+')              // adds all the numbers in the data array
+     math('10/3 .round')    // divide 10 by 3, and round the result: 3
+   
+  // TODO split into math and redu</code></div></div><div class="command-header" onclick="toggleCommand('prog')"><b>prog</b><span class="quickDescription"> <i>step</i> <i>steps</i>Set progress of parent process.</span></div><div style="display:none;" class="command-body" id="prog">
     Set progress of parent process.
    <table class="parameters"><tr><td>step</td><td>- Current step in the progress. (Value -1 restores automatic progress reporting.)</td></tr><tr><td>steps</td><td>- Total amount of steps.</td></tr></table><code class="example" title="prog" id="example64">prog(20,40)  // progress is set to 0.5 (which means 50%)
     prog()       // restore automatic progress reporting</code></div></div><div class="command-header" onclick="toggleCommand('rout')"><b>rout</b><span class="quickDescription"> <i>path</i>Route a path through hybrixd and pass the result to the next step. /api/help for API information.</span></div><div style="display:none;" class="command-body" id="rout">
