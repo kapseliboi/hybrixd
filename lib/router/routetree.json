@@ -159,17 +159,18 @@
       "resume":"Resume the Scheduler when it is paused.",
       "status":"Check the status of the Scheduler."
     },
-    "userinterface" :{
-      "_help" : "Commands to control and check the User Interface.",
-      "close":"Close the User Interface.",
-      "listen":"Resume the listening on the User Interface when it is closed.",
-      "status":"Check the status of the User Interface."
-    },
-    "restinterface" :{
-      "_help" : "Commands to control and check the Rest Interface.",
-      "close":"Close the Rest Interface.",
-      "listen":"Resume the listening on the Rest Interface when it is closed.",
-      "status":"Check the status of the Rest Interface."
+    "endpoint" :{
+      "_this" : "List all interface endpoints.",
+      "_ref" : {
+        "_list" : "protocol",
+        "_ref" : {
+          "_help" : "Commands to control and check the interface endpoints.",
+          "_list" : "endpoint",
+          "close":"Close the endpoint.",
+          "open":"Resume the listening on the endpoint when it is closed.",
+          "status":"Check the status of the endpoint."
+        }
+      }
     },
     "stop" : "Stop hybrixd."
   },

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 WHEREAMI=`pwd`
 
@@ -20,10 +20,9 @@ elif [ "`uname -m`" = "i386" ] || [ "`uname -m`" = "i686" ]; then
 elif [ "`uname -m`" = "x86_64" ]; then
     SYSTEM="x86_64"
 else
-    echo "[!] Unknown Architecture (or incomplete implementation)"
+    echo " [!] cluster: unknown architecture (or incomplete implementation)"
     exit 1;
 fi
-
 
 if [ -z "$1" ]; then
     NODES=1
@@ -31,14 +30,14 @@ else
     NODES=$1
 fi
 
-
 if [ "$NODES" -gt "1" ]; then
-    RESTLINE=$(grep "restport" "$NODE/hybrixd.conf")
+    RESTLINE=$(grep "restport" "$NODE/hybrixd.conf" | grep -v \# )
     RESTPORT=$(echo "$RESTLINE" | cut -d ' ' -f3)
 
-    USERLINE=$(grep "userport" "$NODE/hybrixd.conf")
+    USERLINE=$(grep "userport" "$NODE/hybrixd.conf" | grep -v \# )
     USERPORT=$(echo "$USERLINE" | cut -d ' ' -f3)
 
+    NODELINE=$(grep "nodeId" "$NODE/hybrixd.conf" | grep -v \# )
 
     # Bootscript : add other nodes as peers to first node (which will be captian)
     echo "{\"quartz\":{\"main\":[" > "$NODE/boot.json"
@@ -52,7 +51,7 @@ if [ "$NODES" -gt "1" ]; then
     for (( i=2; i<=$NODES; i++ ))
     do
 
-        echo "[i] Preparing Node $i"
+        echo " [i] cluster: preparing node $i..."
 
         rsync -aK "$NODE/" "$NODE$i/"
         #increment restport
@@ -62,6 +61,15 @@ if [ "$NODES" -gt "1" ]; then
         #increment userport
         NEWUSERLINE="userport = "$((USERPORT+$i-1))
         sed -i -e 's/'"$USERLINE"'/'"$NEWUSERLINE"'/g' "$NODE$i/hybrixd.conf"
+
+                #force set encryption pubkeys TESTING!
+                if ( i -eq 1 ); then
+          NEWNODELINE="nodeId = 6118abfd4fe4582d0fc7de7295975147c7aa53dd9982c2c962025e7f34b76b63"
+        fi
+                if ( i -eq 2 ); then
+          NEWNODELINE="nodeId = 13b2cc321cb565d7bc2f3e6959af295d7315e3137e70ea505ea79161d4502ccc"
+        fi
+        sed -i -e 's/'"$NODELINE"'/'"$NEWNODELINE"'/g' "$NODE$i/hybrixd.conf"
 
         cd "$NODE$i"
         # Bootscript : aAdd other nodes as peers, first as captain
