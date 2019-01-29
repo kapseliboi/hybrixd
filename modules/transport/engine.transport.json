@@ -38,8 +38,10 @@
       }
     },
     "list":{
-      "_help" : "List active transports.",
-      "_this" : "Active transport handles are listed."
+      "_help" : "List active transports, endpoints or peers.",
+      "endpoints" : "Current node endpoints are listed.",
+      "handles" : "Active transport handles are listed.",
+      "peers" : "Peers across all networks are listed."
     },
     "meta":{
       "_help" : "Get metadata about a storage object.",
