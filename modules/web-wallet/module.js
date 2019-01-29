@@ -3,6 +3,7 @@
 // Module to provide the web wallet
 
 // required libraries in this context
+var route = require('../../lib/router');
 
 // initialization function
 function init () {}
@@ -11,6 +12,15 @@ function init () {}
 function exec (properties) {
   var source = properties.target.module;
   var command = properties.command;
+
+  var request = {sessionID: global.hybrixd.proc[properties.processID.split('.')[0]].sid};
+  if (command.length >= 2 && command[0] === 'api' && command[1] === 'v1') {
+    request.url = '/' + command.slice(2).join('/');
+    return route.route(request);
+  } else if (command.length >= 1 && (command[0] === 'api' || command[0] === 'v1')) {
+    request.url = '/' + command.slice(1).join('/');
+    return route.route(request);
+  }
 
   var fileName;
   if (command.length === 0) {
