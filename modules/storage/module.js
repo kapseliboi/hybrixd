@@ -31,25 +31,25 @@ function exec (properties) {
     case 'load':
     case 'get':
       subprocesses.push('type("file:data")');
-      subprocesses.push('func("storage","get",{key:"' + command[1] + '"})');
+      subprocesses.push('func("get",{key:"' + command[1] + '"})');
       break;
     case 'save':
     case 'set': // stores data and returns proof of work to be solved
-      subprocesses.push('func("storage","set",{key:"' + command[1] + '", value:"' + command[2] + '"})');
+      subprocesses.push('func("set",{key:"' + command[1] + '", value:"' + command[2] + '"})');
       break;
     case 'seek': // stores data and returns proof of work to be solved
-      subprocesses.push('func("storage","seek",{key:"' + command[1] + '"})');
+      subprocesses.push('func("seek",{key:"' + command[1] + '"})');
       break;
     case 'work':
     case 'pow':
-      subprocesses.push('func("storage","pow",{key:"' + command[1] + '", pow:"' + command[2] + '"})');
+      subprocesses.push('func("pow",{key:"' + command[1] + '", pow:"' + command[2] + '"})');
       break;
     case 'burn':
     case 'del':
       subprocesses.push('fail("Deleting data from node storage is not supported!")');
       break;
     case 'meta':
-      subprocesses.push('func("storage","meta",{key:"' + command[1] + '"})');
+      subprocesses.push('func("meta",{key:"' + command[1] + '"})');
       break;
   }
   // fire the Qrtz-language program into the subprocess queue

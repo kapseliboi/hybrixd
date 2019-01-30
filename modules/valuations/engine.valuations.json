@@ -4,7 +4,7 @@
   "module":"valuations",
   "sources" : {
     "EUCentralBank" : {
-      "notes": "European central bank for fiat-exchange rates: http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml",
+      "notes": "European central bank for fiat-exchange rates: https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml",
       "type":"none",
       "site": "http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
     },
@@ -55,7 +55,6 @@
     ]
   },
   "router" : {
-    "_hidden" : true,
     "cron" : "Download new price data",
     "rate": {
       "_ref" : {
