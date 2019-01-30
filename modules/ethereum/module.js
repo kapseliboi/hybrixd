@@ -66,20 +66,20 @@ function exec (properties) {
         ethDeterministic = functions.activate(LZString.decompressFromEncodedURIComponent(dcode));
 
         // set up init probe command to check if RPC and block explorer are responding and connected
-        subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_gasPrice"]})');
-        subprocesses.push('func("ethereum","post",{target:' + jstr(target) + ',command:["init"],data:data,data})');
+        subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_gasPrice"]})');
+        subprocesses.push('func("post",{target:' + jstr(target) + ',command:["init"],data:data,data})');
         subprocesses.push('pass( (data !== null && typeof data.result==="string" && data.result[1]==="x" ? 1 : 0) )');
       }
       break;
     case 'cron':
       subprocesses.push('logs(1,"module ethereum: updating fee")');
-      subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_gasPrice"]})');
-      subprocesses.push('func("ethereum","post",{target:' + jstr(target) + ',command:["updateFee"],data:data,data})');
+      subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_gasPrice"]})');
+      subprocesses.push('func("post",{target:' + jstr(target) + ',command:["updateFee"],data:data,data})');
       break;
     case 'status':
       // set up init probe command to check if Altcoin RPC is responding and connected
-      subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_protocolVersion"]})');
-      subprocesses.push('func("ethereum","post",{target:' + jstr(target) + ',command:["status"],data:data})');
+      subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_protocolVersion"]})');
+      subprocesses.push('func("post",{target:' + jstr(target) + ',command:["status"],data:data})');
       break;
     case 'factor':
       // directly return factor, post-processing not required!
@@ -100,27 +100,27 @@ function exec (properties) {
       if (sourceaddr) {
         subprocesses.push('@retryLoop');
         if (!functions.isToken(target.symbol)) {
-          subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_getBalance",["' + sourceaddr + '","latest"]]})'); // send balance query
+          subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_getBalance",["' + sourceaddr + '","latest"]]})'); // send balance query
         } else {
           var symbol = target.symbol.split('.')[0];
           // DEPRECATED: var encoded = '0x'+abi.simpleEncode('balanceOf(address):(uint256)',sourceaddr).toString('hex'); // returns the encoded binary (as a Buffer) data to be sent
           var encoded = ethDeterministic.encode({'func': 'balanceOf(address):(uint256)', 'vars': ['address'], 'address': sourceaddr}); // returns the encoded binary (as a Buffer) data to be sent
-          subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_call",[{"to":"' + target.contract + '","data":"' + encoded + '"},"pending"]]})'); // send token balance ABI query
+          subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_call",[{"to":"' + target.contract + '","data":"' + encoded + '"},"pending"]]})'); // send token balance ABI query
         }
-        // when bad result returned: {"status":"0","message":"NOTOK","result":"Error! Missing Or invalid Module name"		
-		// UBQ {"jsonrpc":"2.0","id":8123,"address":"0xa8201e4dacbe1f098791a0f11ab6271570277bb8","result":"0"}
-		subprocesses.push('tran(".result",1,3)');
-		if(base==='ubq') {
-			subprocesses.push('test(!isNaN(data.substr(0,1)),1,2)');
-			subprocesses.push('atom()');
-			subprocesses.push('done()');
-		} else {		
-			subprocesses.push('test((data.substr(0,2)==="0x"),1,2)');
-			subprocesses.push('done(functions.padFloat(functions.fromInt(functions.hex2dec.toDec(data),' + factor + '),' + factor + '))');
-			subprocesses.push('logs(2,"module ethereum: bad RPC response, retrying request...")');
-			subprocesses.push('wait(1500)');
-			subprocesses.push('loop(@retryLoop,"retries","<9","1")');
-		}
+        // when bad result returned: {"status":"0","message":"NOTOK","result":"Error! Missing Or invalid Module name"
+        // UBQ {"jsonrpc":"2.0","id":8123,"address":"0xa8201e4dacbe1f098791a0f11ab6271570277bb8","result":"0"}
+        subprocesses.push('tran(".result",1,3)');
+        if (base === 'ubq') {
+          subprocesses.push('test(!isNaN(data.substr(0,1)),1,2)');
+          subprocesses.push('atom()');
+          subprocesses.push('done()');
+        } else {
+          subprocesses.push('test((data.substr(0,2)==="0x"),1,2)');
+          subprocesses.push('done(functions.padFloat(functions.fromInt(functions.hex2dec.toDec(data),' + factor + '),' + factor + '))');
+          subprocesses.push('logs(2,"module ethereum: bad RPC response, retrying request...")');
+          subprocesses.push('wait(1500)');
+          subprocesses.push('loop(@retryLoop,"retries","<9","1")');
+        }
         subprocesses.push('fail("Error: Ethereum network not responding. Cannot get balance!")');
       } else {
         subprocesses.push('stop(1,"Error: missing address!")');
@@ -130,7 +130,7 @@ function exec (properties) {
       var deterministic_script = (typeof properties.command[1] !== 'undefined' ? properties.command[1] : false);
       if (deterministic_script) {
         subprocesses.push('@retryLoop');
-        subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_sendRawTransaction",["' + deterministic_script + '"]]})');
+        subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_sendRawTransaction",["' + deterministic_script + '"]]})');
         // returns: { "id":1, "jsonrpc": "2.0", "result": "0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331" }
         subprocesses.push('tran(".result",1,3)');
         subprocesses.push('test((data.substr(0,2)==="0x"),1,2)');
@@ -154,7 +154,7 @@ function exec (properties) {
         var targetaddr = (typeof properties.command[3] !== 'undefined' ? properties.command[3] : false);
         if (isEthAddress(targetaddr)) {
           subprocesses.push('@retryLoop');
-          subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_getTransactionCount",["' + sourceaddr + '","pending"]]})');
+          subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_getTransactionCount",["' + sourceaddr + '","pending"]]})');
           subprocesses.push('tran(".result",1,2)');
           subprocesses.push('done({"nonce":functions.hex2dec.toDec(data)})');
           subprocesses.push('logs(2,"module ethereum: bad RPC response, retrying request...")');
@@ -174,13 +174,13 @@ function exec (properties) {
       subprocesses.push('stop(0,"' + contract + '")');
       break;
     case 'transaction' :
-      subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_getTransactionByHash",["' + sourceaddr + '"]]})');
+      subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_getTransactionByHash",["' + sourceaddr + '"]]})');
       subprocesses.push("tran({id:'.result.hash',fee:'.result.gas',attachment:'.result.input',timestamp:'unknown',symbol:'" + target.symbol + "','fee-symbol':'eth',ammount:'.result.value',source:'.result.from',target:'.result.to',data:'.result'},2,1)");//, data:'.'
       subprocesses.push('stop(1,data)');
       subprocesses.push('stop(0,data)');
       break;
     case 'history':
-      subprocesses.push('func("ethereum","link",{target:' + jstr(target) + ',command:["eth_getLogs",[{"fromBlock":"earliest","address":["' + sourceaddr + '"]}]]})');
+      subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_getLogs",[{"fromBlock":"earliest","address":["' + sourceaddr + '"]}]]})');
 
       // TODO formatting
       break;
@@ -237,15 +237,15 @@ function post (properties) {
     var success = true;
     switch (properties.command[0]) {
       case 'init':
-        if (typeof postdata.result !== 'undefined' && postdata.result>0) {
-          global.hybrixd.asset[target.symbol].fee = functions.fromInt(functions.hex2dec.toDec(String(postdata.result)).times((21000*2)), feefactor);
+        if (typeof postdata.result !== 'undefined' && postdata.result > 0) {
+          global.hybrixd.asset[target.symbol].fee = functions.fromInt(functions.hex2dec.toDec(String(postdata.result)).times((21000 * 2)), feefactor);
         } else {
           global.hybrixd.asset[target.symbol].fee = global.hybrixd.asset[base].fee;
         }
         break;
       case 'updateFee':
-        if (typeof postdata.result !== 'undefined' && postdata.result>0) {
-          global.hybrixd.asset[target.symbol].fee = functions.fromInt(functions.hex2dec.toDec(String(postdata.result)).times((21000*2)), feefactor);
+        if (typeof postdata.result !== 'undefined' && postdata.result > 0) {
+          global.hybrixd.asset[target.symbol].fee = functions.fromInt(functions.hex2dec.toDec(String(postdata.result)).times((21000 * 2)), feefactor);
         }
         break;
       default:

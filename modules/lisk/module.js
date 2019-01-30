@@ -56,19 +56,19 @@ function exec (properties) {
         global.hybrixd.asset[target.symbol].link = new Client(options_auth);
       } else { global.hybrixd.asset[target.symbol].link = new Client(); }
       // set up init probe command to check if Altcoin RPC is responding and connected
-      subprocesses.push('func("lisk","link",{target:' + jstr(target) + ',command:["/api/blocks/getStatus"]})');
-      subprocesses.push('func("lisk","post",{target:' + jstr(target) + ',command:["init"],data:data,data})');
+      subprocesses.push('func("link",{target:' + jstr(target) + ',command:["/api/blocks/getStatus"]})');
+      subprocesses.push('func("post",{target:' + jstr(target) + ',command:["init"],data:data,data})');
       subprocesses.push('pass( (data != null && typeof data.success!="undefined" && data.success ? 1 : 0) )');
       subprocesses.push('logs(1,"module lisk: "+(data?"connected":"failed connection")+" to [' + target.symbol + '] host ' + target.host + '",data)');
       break;
     case 'status':
     // set up init probe command to check if Altcoin RPC is responding and connected
-      subprocesses.push('func("lisk","link",{target:' + jstr(target) + ',command:["/api/loader/status/sync"]})'); // get sync status
+      subprocesses.push('func("link",{target:' + jstr(target) + ',command:["/api/loader/status/sync"]})'); // get sync status
       subprocesses.push('poke("liskA",data)'); // store the resulting data for post-process collage
-      subprocesses.push('func("lisk","link",{target:' + jstr(target) + ',command:["/api/blocks/getStatus"]})'); // get milestone / difficulty
+      subprocesses.push('func("link",{target:' + jstr(target) + ',command:["/api/blocks/getStatus"]})'); // get milestone / difficulty
       subprocesses.push('poke("::liskB",data)'); // store the resulting data for post-process collage
-      subprocesses.push('func("lisk","link",{target:' + jstr(target) + ',command:["/api/peers/version"]})'); // get version
-      subprocesses.push('func("lisk","post",{target:' + jstr(target) + ',command:["status"],data:{liskA:"$::liskA",liskB:"$::liskB",liskC:data}})'); // post process the data
+      subprocesses.push('func("link",{target:' + jstr(target) + ',command:["/api/peers/version"]})'); // get version
+      subprocesses.push('func("post",{target:' + jstr(target) + ',command:["status"],data:{liskA:"$::liskA",liskB:"$::liskB",liskC:data}})'); // post process the data
       break;
     case 'factor':
     // directly relay factor, post-processing not required!
@@ -82,7 +82,7 @@ function exec (properties) {
     // define the source address/wallet
       var sourceaddr = (typeof properties.command[1] !== 'undefined' ? properties.command[1] : '');
       if (sourceaddr) {
-        subprocesses.push('func("lisk","link",{target:' + jstr(target) + ',command:["/api/accounts/getBalance?address=' + sourceaddr + '"]})'); // send balance query
+        subprocesses.push('func("link",{target:' + jstr(target) + ',command:["/api/accounts/getBalance?address=' + sourceaddr + '"]})'); // send balance query
         subprocesses.push('stop((typeof data.balance!=="undefined"?0:1),(typeof data.balance==="undefined"?null:functions.padFloat(functions.fromInt(data.balance,' + factor + '),' + factor + ')))');
       } else {
         subprocesses.push('stop(1,"Error: missing address!")');
@@ -91,11 +91,11 @@ function exec (properties) {
     case 'push':
       var deterministic_script = (typeof properties.command[1] !== 'undefined' ? properties.command[1] : false);
       if (deterministic_script && typeof deterministic_script === 'string') {
-        subprocesses.push('func("lisk","link",{target:' + jstr(target) + ',command:["/api/blocks/getNetHash"]})'); // get the nethash to be able to send transactions
-        subprocesses.push('func("lisk","link",{target:' + jstr(target) + ',command:' + jstr(['/peer/transactions', deterministic_script]) + ',nethash:data.nethash})'); // shoot deterministic script object to peer node
+        subprocesses.push('func("link",{target:' + jstr(target) + ',command:["/api/blocks/getNetHash"]})'); // get the nethash to be able to send transactions
+        subprocesses.push('func("link",{target:' + jstr(target) + ',command:' + jstr(['/peer/transactions', deterministic_script]) + ',nethash:data.nethash})'); // shoot deterministic script object to peer node
         subprocesses.push('stop((typeof data.success!="undefined" && data.success?0:1),(typeof data.transactionId!=="undefined"?functions.clean(data.transactionId): (typeof data.error==="string"?data.error:(typeof data.message==="string"?data.message:data.error.message)) ))'); // shoot deterministic script object to peer node
       } else {
-        subprocesses.push('func("lisk","link",{target:' + jstr(target) + ',command:["/api/blocks/getNetHash"]})'); // get the nethash to be able to send transactions
+        subprocesses.push('func("link",{target:' + jstr(target) + ',command:["/api/blocks/getNetHash"]})'); // get the nethash to be able to send transactions
         subprocesses.push('stop(1,"Missing or badly formed deterministic transaction!")');
       }
       break;
@@ -104,7 +104,7 @@ function exec (properties) {
       break;
     case 'transaction':
       // lsk api endpoints do not seem to exist
-      // subprocesses.push('func("lisk","link",{target:' + jstr(target) + ',command:["/api/transaction/getTransaction?transactionId=' + properties.command[1] + '"]})');
+      // subprocesses.push('func("link",{target:' + jstr(target) + ',command:["/api/transaction/getTransaction?transactionId=' + properties.command[1] + '"]})');
       subprocesses.push('stop(1,"Transaction not yet supported for lisk module!")');
       break;
     case 'history':
@@ -117,7 +117,7 @@ function exec (properties) {
       // var enddate = (typeof properties.command[1] != 'undefined'?properties.command[1]:Date.now());
       var params = 'recipientId=' + sourceaddr + limit + offset + '&orderBy=timestamp:desc';
       command = ['/api/transactions?' + params];
-      subprocesses.push('func("lisk","link",' + jstr({target, command}) + ')');
+      subprocesses.push('func("link",' + jstr({target, command}) + ')');
       break;
     case 'details':
       var symbol = target.symbol;
