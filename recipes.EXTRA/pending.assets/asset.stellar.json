@@ -33,7 +33,9 @@
       "data '$1'",
       "repl '*' '/'",
       "data encodeURIComponent('$')",
-      "curl('$host','/transactions?tx=$','POST', {})",
+      "poke 'tx'",
+      "data {}",
+      "curl('$host','/transactions?tx=$tx','POST')",
       "logs",
       "done"
     ],

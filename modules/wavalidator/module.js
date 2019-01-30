@@ -45,7 +45,8 @@ function exec (properties) {
       subprocesses.push("stop(0,'invalid')");
     }
   } else if (symbol === 'BTS') {
-    subprocesses.push("curl('asset://bts','','',{'method':'call', 'params':[0,'get_account_by_name',['" + address + "']], id: Math.floor(Math.random()*10000)})");
+    subprocesses.push("data {'method':'call', 'params':[0,'get_account_by_name',['" + address + "']], id: Math.floor(Math.random()*10000)}");
+    subprocesses.push("curl('asset://bts','','POST')");
     subprocesses.push("tran('.result.id',2,1)");
     subprocesses.push("stop(0,'invalid')");
     subprocesses.push("stop(0,'valid')");

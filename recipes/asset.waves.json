@@ -44,7 +44,7 @@
     "push" : [
       "data('$1')",
       "jpar()",
-      "curl('asset://$symbol','/transactions/broadcast','POST',data,{'Accept':'application/json','content-type':'application/json'})",
+      "curl('asset://$symbol','/transactions/broadcast','POST',{'Accept':'application/json','content-type':'application/json'})",
       "test(data.error,1,2)",
       "fail(data.message)",
       "tran('.id',2,1)",

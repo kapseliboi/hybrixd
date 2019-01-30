@@ -27,13 +27,20 @@
     }
   },
   "quartz" : {
-    "push" : ["curl('$host', '$1', 'POST', '$2')"],
+    "push" : [
+      "data '$2'",
+      "curl('$host', '$1', 'POST')"
+    ],
     "getNextNonce" :
     [
-      "curl('$host', 'returnNextNonce?address='+'$1', 'POST', '')",
+      "data ''",
+      "curl('$host', 'returnNextNonce?address=$1', 'POST')",
       "tran('.nonce',1,1)",
       "pass()"
     ],
-    "getOrderBook" : ["curl('$host', 'returnOrderBook?market='+'$1', 'POST', '')"]
+    "getOrderBook" : [
+      "data ''",
+      "curl('$host', 'returnOrderBook?market=$1', 'POST')"
+    ]
   }
 }

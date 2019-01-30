@@ -16,19 +16,20 @@
       "stop(1,'Not yet implemented!')"
     ],
     "unspent" : [
-      "curl('asset://$symbol','/api/v2/get_tx_unspent/DASH/$1','GET','')",
+      "curl('asset://$symbol','/api/v2/get_tx_unspent/DASH/$1','GET')",
       "tran '.data.txs' 2 1",
       "fail 'No Result'",
       "done"
     ],
     "balance" : [
-      "curl('asset://$symbol','/api/v2/get_address_balance/DASH/$1','GET','')",
+      "curl('asset://$symbol','/api/v2/get_address_balance/DASH/$1','GET')",
       "tran '.data.confirmed_balance' 2 1",
       "fail 'No Result'",
       "done"
     ],
     "push" : [
-      "curl('asset://$symbol','/api/v2/send_tx/DASH','POST','','$1')",
+      "data '$1'";
+      "curl('asset://$symbol','/api/v2/send_tx/DASH','POST')",
       "done"
     ],
     "factor" : [

@@ -53,7 +53,7 @@
     "push" : [
       "data('$1')",
       "jpar()",
-      "curl('asset://$symbol','/transaction/announce','POST',data,{'content-type':'application/json'})",
+      "curl('asset://$symbol','/transaction/announce','POST',{'content-type':'application/json'})",
       "tran('.transactionHash.data',2,1)",
       "fail(data.error+' : '+data.message)",
       "pass(data)"
@@ -76,7 +76,7 @@
       "poke 'loopVar' 0",
       "@countLoop",
       "data '$address'+'$hash'",
-      "curl 'asset://$symbol','/account/transfers/all?address='+data,'GET','',{'content-type':'application/json'}",
+      "curl 'asset://$symbol','/account/transfers/all?address='+data,'GET',{'content-type':'application/json'}",
       "tran '.data' 1 @badResponse",
       "each data 'format_tran'",
       "poke 'tempResultArray'",
@@ -99,7 +99,7 @@
       "poke 'unformattedDataArray'",
       "tran {id:'.meta.hash.data',amount:'.transaction.amount',fee:'.transaction.fee',target:'.transaction.recipient',data:'.transaction.message'} 1 @badObject",
       "poke 'reformatObj'",
-      "with 'reformatFee' ['data',$reformatObj] ['tran','.fee'] ['atom']",      
+      "with 'reformatFee' ['data',$reformatObj] ['tran','.fee'] ['atom']",
       "with 'reformatAmount' ['data',$reformatObj] ['tran','.amount'] ['atom']",
       "with 'reformatId' ['data',$reformatObj] ['tran','.id']",
       "with 'reformatData' ['data',$reformatObj] ['tran','.dat'] ['jstr'] ['flow','{}',1,2] ['data',''] ['done']",
