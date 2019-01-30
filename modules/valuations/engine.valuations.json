@@ -1,26 +1,45 @@
 {
   "engine":"valuations",
-  "name":"Quarries the valuation of 1 currency in another.",
-  "module":"quartz",
-  "quartz":{
-    "getValuation": [
-      "call('engine://quotes', 'getQuotes')",
-      "func('valuations','exec', {quotes: data, source:'$1', target: '$2', amount: '$3'})"
-    ]
+  "name":"Querries the valuation of 1 currency in another.",
+  "module":"valuations",
+  "sources" : {
+    "EUCentralBank" : {
+      "notes": "European central bank for fiat-exchange rates: http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml",
+      "site": "http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
+    },
+    "coinmarketcap": {
+      "notes" :"coinmarketcap: https://coinmarketcap.com/api/",
+      "site": "https://api.coinmarketcap.com/v2/ticker/"
+    },
+    "coinbase" : {
+      "notes":"coinbase: https://developers.coinbase.com/api/v2#exchange-rates",
+      "site": "https://api.coinbase.com/v2/exchange-rates"
+    },
+    "binance": {
+      "notes":"https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md",
+      "site": "https://api.binance.com/api/v1/ticker/price"
+    },
+    "hitbtc_symbols":{
+      "notes":"hitbtc: https://api.hitbtc.com/",
+      "site": "https://api.hitbtc.com/api/2/public/symbol"
+    },
+    "hitbtc_prices": {
+      "notes":"hitbtc: https://api.hitbtc.com/",
+      "site": "https://api.hitbtc.com/api/2/public/ticker"
+    }
   },
   "router" : {
     "_hidden" : true,
-    "getValuation":
-    {
+    "cron" : "Download new price data",
+    "_ref" : {
+    "_this" : "",
+      "_list" : "Source_Symbol",
       "_ref" : {
-        "_list" : "Source coin",
+        "_list" : "Target_Symbol",
+        "_this" : "Retrieve the median exchange-rate for one coin in another coin.",
         "_ref" : {
-          "_list" : "Target coin",
-          "_this" : "Retrieve the median exchange-rate for one coin in another coin.",
-           "_ref" : {
-            "_list" : "Amount",
-            "_this" : "Retrieve the median exchange-rate for a given amount of one coin in another coin."
-          }
+          "_list" : "Amount",
+          "_this" : "Retrieve the median exchange-rate for a given amount of one coin in another coin."
         }
       }
     }
