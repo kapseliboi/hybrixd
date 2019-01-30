@@ -14,38 +14,45 @@
   "quartz":{
     "init" : [
       "#test('$contract'==='1.3.0',1,3)",
-      "#curl('asset://$symbol','','',{'method': 'call', 'params': [1, 'login', ['', '']], 'id': Math.floor(Math.random()*10000)})",
+      "#data {'method': 'call', 'params': [1, 'login', ['', '']], 'id': Math.floor(Math.random()*10000)}",
+      "#curl('asset://$symbol')",
       "#logs(1,'module $symbol: '+(data?'connected':'failed connection')+' to host [$host]')"
     ],
     "status" : [
-      "curl('asset://$symbol','','',{'method':'call', 'params':[0,'get_dynamic_global_properties',[]], id: Math.floor(Math.random()*10000)})",
+      "data {'method':'call', 'params':[0,'get_dynamic_global_properties',[]], id: Math.floor(Math.random()*10000)}",
+      "curl('asset://$symbol')",
       "test(data,1,2)",
       "stop(0,{module:'$symbol',synced:null,blocks:data.result.head_block_number,fee:null,supply:null,difficulty:null,testmode:null,version:null})",
       "stop(1,'No result')"
     ],
     "unspent" : [
-      "curl('asset://$symbol','','',{'method': 'call', 'params': [1, 'login', ['', '']], 'id': Math.floor(Math.random()*10000)})",
+      "data {'method': 'call', 'params': [1, 'login', ['', '']], 'id': Math.floor(Math.random()*10000)}",
+      "curl('asset://$symbol')",
       "test(data.result,2,1)",
       "stop(1,'Log in for validation unsuccesfull.')",
-      "curl('asset://$symbol','','',{'method':'call', 'params':[0,'get_account_by_name',['$1']], id: Math.floor(Math.random()*10000)})",
+      "data {'method':'call', 'params':[0,'get_account_by_name',['$1']], id: Math.floor(Math.random()*10000)}",
+      "curl('asset://$symbol')",
       "tran('.result.id',2,1)",
       "stop(1,'Source Id could not be found.')",
       "poke 'source'",
-      "curl('asset://$symbol','','',{'method':'call', 'params':[0,'get_account_by_name',['$3']], id: Math.floor(Math.random()*10000)})",
+      "data {'method':'call', 'params':[0,'get_account_by_name',['$3']], id: Math.floor(Math.random()*10000)}",
+      "curl('asset://$symbol')",
       "tran('.result.id',2,1)",
       "stop(1,'Target Id could not be found.')",
       "poke 'target'",
       "stop(0,{source:'$source',target:'$target'})"
     ],
     "balance" : [
-      "curl('asset://$symbol','','',{'method':'call', 'params':[0,'get_named_account_balances',['$1',['$contract']]], id: Math.floor(Math.random()*10000)})",
+      "data {'method':'call', 'params':[0,'get_named_account_balances',['$1',['$contract']]], id: Math.floor(Math.random()*10000)}",
+      "curl('asset://$symbol')",
       "tran('.result[0].amount',2,1)",
       "stop(1,'Balance could not be retrieved.')",
       "atom",
       "pass"
     ],
     "push" : [
-      "curl('asset://$symbol','','',{'method':'call', 'params':['broadcast_transaction',['$1']], id: Math.floor(Math.random()*10000)})",
+      "{'method':'call', 'params':['broadcast_transaction',['$1']], id: Math.floor(Math.random()*10000)}",
+      "curl('asset://$symbol')",
       "test(data,2,1)",
       "stop(1,'Broadcast failed!')",
       "tran('.result',2,1)",
@@ -53,10 +60,12 @@
       "pass()"
     ],
     "validate" : [
-      "curl('asset://$symbol','','',{'method': 'call', 'params': [1, 'login', ['', '']], 'id': Math.floor(Math.random()*10000)})",
+      "{'method': 'call', 'params': [1, 'login', ['', '']], 'id': Math.floor(Math.random()*10000)}",
+      "curl('asset://$symbol')",
       "test(data.result,2,1)",
       "stop(1,'Log in for validation unsuccesfull.')",
-      "curl('asset://$symbol','','',{'method':'call', 'params':[0,'get_account_by_name',['$1']], id: Math.floor(Math.random()*10000)})",
+      "data {'method':'call', 'params':[0,'get_account_by_name',['$1']], id: Math.floor(Math.random()*10000)}",
+      "curl('asset://$symbol')",
       "test(data.result,2,1)",
       "stop(0,'unregistered')",
       "stop(0,'valid')"
@@ -75,10 +84,12 @@
       "pass('$fee')"
     ],
     "history" : [
-      "curl('asset://$symbol','','',{'method':'call', 'params':[0,'get_account_history',['$1']], id: Math.floor(Math.random()*10000)})"
+      "{'method':'call', 'params':[0,'get_account_history',['$1']], id: Math.floor(Math.random()*10000)}",
+      "curl('asset://$symbol')"
     ],
     "transaction" : [
-      "curl('asset://$symbol','','',{'method':'call', 'params':[0,'get_recent_transaction_by_id',['$1']], id: Math.floor(Math.random()*10000)})"
+      "{'method':'call', 'params':[0,'get_recent_transaction_by_id',['$1']], id: Math.floor(Math.random()*10000)}",
+      "curl('asset://$symbol')"
     ],
     "sample" : [
       "stop(0,{address:'internet-of-coins',transaction:'67693820ff7f4e039d6ca18658461e967d8ecd11'})"

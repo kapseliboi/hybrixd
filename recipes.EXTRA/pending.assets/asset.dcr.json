@@ -7,14 +7,14 @@
   "fee":0.001,
   "host":["https://dcrblockexplorer.com/api","https://mainnet.decred.org/api","https://explorer.dcrdata.org/insight/api"],
   "cache":20000,
-  "throttle":10,  
+  "throttle":10,
   "quartz":{
     "unspent" : [
       "poke 'inputval' '99999999999999999999'",
       "test $2 1 2",
       "poke 'inputval' '$2'",
       "time $longtimeout",
-      "curl 'asset://$symbol' '/addr/$1/utxo' 'GET' '' {'content-type':'application/json'}",
+      "curl 'asset://$symbol' '/addr/$1/utxo' 'GET' {'content-type':'application/json'}",
       "test (typeof data[0]==='undefined') 1 2",
       "fail 'Bad input unspents from Decred block explorer!'",
       "each data 'unspent_tran'",
@@ -41,20 +41,21 @@
       "tran {script:'.scriptPubKey',amount:'$amount',txid:'.txid',txn:'.vout'} 2 1",
       "fail 'Bad input unspents from Decred block explorer!'",
       "done"
-    ],  
+    ],
     "balance" : [
-      "curl 'asset://$symbol' '/addr/$1' 'GET' '' {'content-type':'application/json'}",
+      "curl 'asset://$symbol' '/addr/$1' 'GET' {'content-type':'application/json'}",
       "tran {confirmed:'.balance',unconfirmed:'.unconfirmedBalance'} 2 1",
       "data {confirmed:0,unconfirmed:0}",
       "math data.confirmed+'+'+data.unconfirmed"
     ],
     "fee" : [
-      "curl 'asset://$symbol' '/utils/estimatefee' 'GET' '' {'content-type':'application/json'}",
+      "curl 'asset://$symbol' '/utils/estimatefee' 'GET' {'content-type':'application/json'}",
       "tran '.2' 2 1",
       "data $fee"
     ],
     "push" : [
-      "curl 'asset://$symbol' '/tx/send' 'POST' {rawtx:'$1'} {'content-type':'application/json'}",
+      "data {rawtx:'$1'}",
+      "curl 'asset://$symbol' '/tx/send' 'POST' {'content-type':'application/json'}",
       "tran '.txid' 2 1",
       "fail",
       "done"

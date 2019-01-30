@@ -14,7 +14,8 @@
   "cron":600,
   "quartz":{
     "peers" : [
-      "curl 'asset://$symbol','','',{'jsonrpc':'2.0','id':0,'method':'server.peers.subscribe','params':[]},{},{'timeout':$longtimeout}",
+      "data {'jsonrpc':'2.0','id':0,'method':'server.peers.subscribe','params':[]}",
+      "curl 'asset://$symbol','','',{},{'timeout':$longtimeout}",
       "tran '.result' 2 1",
       "data []",
       "done"
@@ -28,7 +29,8 @@
       "drop($trimAddrHexL,$trimAddrHexR)",
       "poke('script','$utxo_unspent_prefix'+data+'$utxo_unspent_suffix')",
       "time($longtimeout)",
-      "curl('asset://$symbol','','',{'jsonrpc':'2.0','id':0,'method':'blockchain.address.listunspent','params':['$1']},{},{'timeout':$longtimeout})",
+      "data {'jsonrpc':'2.0','id':0,'method':'blockchain.address.listunspent','params':['$1']}",
+      "curl('asset://$symbol','','',{},{'timeout':$longtimeout})",
       "tran('.result',2,1)",
       "fail('Bad input unspents from Electrum!')",
       "each(data,'unspent_tran')",
@@ -58,7 +60,8 @@
     ],
     "balance" : [
       "time($timeout)",
-      "curl('asset://$symbol','','',{'jsonrpc':'2.0','id':0,'method':'blockchain.address.get_balance','params':['$1']})",
+      "data {'jsonrpc':'2.0','id':0,'method':'blockchain.address.get_balance','params':['$1']}",
+      "curl('asset://$symbol')",
       "tran({confirmed:'.result.confirmed',unconfirmed:'.result.unconfirmed'},3,1)",
       "data(0)",
       "jump(3)",
@@ -69,7 +72,8 @@
     ],
     "push" : [
       "time($timeout)",
-	  "curl('asset://$symbol','','',{'jsonrpc':'2.0','id':0,'method':'blockchain.transaction.broadcast','params':['$1']})",
+      "data {'jsonrpc':'2.0','id':0,'method':'blockchain.transaction.broadcast','params':['$1']}",
+      "curl('asset://$symbol')",
       "tran('.result',4,1)",
       "tran('.error',1,2)",
       "fail(data.message)",
@@ -81,7 +85,8 @@
     ],
     "transaction" : [
       "time($timeout)",
-      "curl('asset://$symbol','','',{'jsonrpc':'2.0','id': 1, 'method': 'blockchain.transaction.get', 'params': ['$1'] })",
+      "data {'jsonrpc':'2.0','id': 1, 'method': 'blockchain.transaction.get', 'params': ['$1'] }",
+      "curl('asset://$symbol')",
       "tran('.result',2,1)",
       "stop(1,'No result')",
       "pass(data)"
@@ -97,7 +102,7 @@
     ],
     "fee" : [
       "hook('$fee',0)",
-	  "peek('local::fee')",
+          "peek('local::fee')",
       "done()"
     ],
     "init" : [
@@ -110,7 +115,8 @@
     ],
     "getFee" : [
       "time($timeout)",
-      "curl('asset://$symbol','','',{'jsonrpc':'2.0','id': 1, 'method': 'blockchain.estimatefee', 'params': ['$confirmsRequired'] })",
+      "data {'jsonrpc':'2.0','id': 1, 'method': 'blockchain.estimatefee', 'params': ['$confirmsRequired'] }",
+      "curl('asset://$symbol')",
       "tran('.result',1,4)",
       "test(data>0,1,3)",
       "poke('local::fee')",

@@ -18,9 +18,12 @@
   "quartz" : {
     "push" : [
       "jpar('$1',{})",
-      "curl('$matcherhost', '/matcher/orderbook', 'POST', data,{'Content-Type':'application/json'},{'parsing':'none'})",
+      "curl('$matcherhost', '/matcher/orderbook', 'POST',{'Content-Type':'application/json'},{},{'parsing':'none'})",
       "pass(data)"
       ],
-    "getMatcherPublicKey" : [ "curl('$matcherhost', '/matcher/','','',{},{parsing:'none'})" ]
+    "getMatcherPublicKey" : [
+      "data {}",
+      "curl('$matcherhost', '/matcher/','POST',{parsing:'none'})"
+    ]
   }
 }

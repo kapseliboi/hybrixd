@@ -10,7 +10,7 @@
   "throttle":5,
   "quartz":{
     "status" : [
-      "curl('asset://$symbol','/api/node/status','GET','',{Accept:'application/json','Content-Type':'application/json'})",
+      "curl('asset://$symbol','/api/node/status','GET',{Accept:'application/json','Content-Type':'application/json'})",
       "test(data,1,2)",
       "stop(0,{module:'$symbol',synced:!data.data.syncing,blocks:data.data.height,fee:$fee,supply:null,difficulty:null,testmode:null,version:null})",
       "stop(1,'No result!')"
@@ -19,7 +19,7 @@
       "pass({'unspents':[],'change':'0.00000000'})"
     ],
     "balance" : [
-      "curl('asset://$symbol','/api/accounts?address=$1&limit=1&offset=0&sort=balance:asc','GET','',{Accept:'application/json','Content-Type':'application/json'})",
+      "curl('asset://$symbol','/api/accounts?address=$1&limit=1&offset=0&sort=balance:asc','GET',{Accept:'application/json','Content-Type':'application/json'})",
       "tran('[0].unconfirmedBalance',2,1)",
       "stop(0,'0.00000000')",
       "time($cache)",
@@ -28,19 +28,20 @@
     ],
 
     "push" : [
-      "curl('asset://$symbol','/api/transactions','POST', '$1', {Accept:'application/json','Content-Type':'application/json', Accept: 'application/json'})"
+      "data '$1'",
+      "curl('asset://$symbol','/api/transactions','POST', {Accept:'application/json','Content-Type':'application/json', Accept: 'application/json'})"
     ],
     "factor" : [
       "pass('$factor')"
     ],
     "transaction" : [
-      "curl('asset://$symbol','/api/transactions?id=$1&limit=1&offset=0','GET','',{Accept:'application/json','Content-Type':'application/json'})"
+      "curl('asset://$symbol','/api/transactions?id=$1&limit=1&offset=0','GET',{Accept:'application/json','Content-Type':'application/json'})"
     ],
     "sample" : [
       "stop(0,{address:'5920921428156130553L',transaction:'12391912764023208573'})"
     ],
     "history" : [
-      "curl('asset://$symbol','/api/transactions?recipientId=$1','GET','',{Accept:'application/json','Content-Type':'application/json'})"
+      "curl('asset://$symbol','/api/transactions?recipientId=$1','GET',{Accept:'application/json','Content-Type':'application/json'})"
     ],
     "contract" : [
       "pass('undefined')"
