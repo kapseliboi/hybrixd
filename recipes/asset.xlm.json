@@ -1,0 +1,60 @@
+{
+  "symbol": "xlm",
+  "name": "Stellar",
+  "description": "The Stellar project, https://www.stellar.org/. Please note that in order to use an account properly, it has to be funded with 1 XLM or more. If this requirement is not met, a 404 Not Found error is returned by the API when operating the account.",
+  "module": "quartz",
+  "mode": "stellar",
+  "factor": 7,
+  "fee": 0.001,
+  "host": "https://horizon.stellar.org",
+  "rejectUnauthorized": false,
+  "cache": 15000,
+  "throttle": 3,
+  "contract": "native",
+  "quartz": {
+    "init": [
+      "done"
+    ],
+    "factor": [
+      "pass('$factor')"
+    ],
+    "balance": [
+      "curl('$host','/accounts/$1','GET')",
+      "tran('.balances',2,1)",
+      "fail",
+      "find({'asset_type':'$contract'})",
+      "tran('[0].balance',2,1)",
+      "fail",
+      "pass"
+    ],
+    "fee": [
+      "data('$fee')"
+    ],
+    "push": [
+      "data '$1'",
+      "repl '*' '/'",
+      "data encodeURIComponent('$')",
+      "curl('$host','/transactions?tx=$','POST', {})",
+      "logs",
+      "done"
+    ],
+    "contract": [
+      "pass('$contract')"
+    ],
+    "unspent": [
+      "curl('$host','/accounts/$1','GET')",
+      "tran('.sequence',2,1)",
+      "fail",
+      "done"
+    ],
+    "history": [
+      "done []"
+    ],
+    "transaction": [
+      "done {a:1}"
+    ],
+    "sample": [
+      "pass({address:'GCUBGHIGXAJBPEBSX5IWUK2HNQPFXPNXEN6YJI7YNLTFU3VBYOEBLMT3',transaction:''})"
+    ]
+  }
+}
