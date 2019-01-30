@@ -5,26 +5,32 @@
   "sources" : {
     "EUCentralBank" : {
       "notes": "European central bank for fiat-exchange rates: http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml",
+      "type":"none",
       "site": "http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
     },
     "coinmarketcap": {
       "notes" :"coinmarketcap: https://coinmarketcap.com/api/",
+      "type":"json",
       "site": "https://api.coinmarketcap.com/v2/ticker/"
     },
     "coinbase" : {
       "notes":"coinbase: https://developers.coinbase.com/api/v2#exchange-rates",
+      "type":"json",
       "site": "https://api.coinbase.com/v2/exchange-rates"
     },
     "binance": {
       "notes":"https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md",
+      "type":"json",
       "site": "https://api.binance.com/api/v1/ticker/price"
     },
     "hitbtc_symbols":{
       "notes":"hitbtc: https://api.hitbtc.com/",
+      "type":"json",
       "site": "https://api.hitbtc.com/api/2/public/symbol"
     },
     "hitbtc_prices": {
       "notes":"hitbtc: https://api.hitbtc.com/",
+      "type":"json",
       "site": "https://api.hitbtc.com/api/2/public/ticker"
     }
   },

@@ -1,3 +1,5 @@
+var scheduler = require('../../lib/scheduler');
+
 function singleHop (exchangeRates, startSymbol, history, rate_mode) {
   var accumulator = {};
   if (exchangeRates.hasOwnProperty(startSymbol)) {
@@ -50,7 +52,6 @@ function bestTransactionChain (exchangeRates, startSymbol, targetSymbol, maxHops
     }).concat(transactionChains);
     transactionChains = accumulator.reduce(function (history1, history2) { return optimalTransaction(history1, history2); });
   }
-
   if (transactionChains.hasOwnProperty(targetSymbol)) {
     return transactionChains[targetSymbol];
   } else {
@@ -61,11 +62,21 @@ function bestTransactionChain (exchangeRates, startSymbol, targetSymbol, maxHops
   }
 }
 
-function valuate (quotes, source, target) {
-  source = source.toUpperCase();
-  target = target.toUpperCase();
+function valuate (data) {
+  var processID = data.processID;
+
+  var source = data.source.toUpperCase();
+  var target = data.target.toUpperCase();
+  var amount = typeof data.amount === 'undefined' ? 1 : Number(data.amount);
+
   var rate_mode = 'median_rate';
   var whitelist = ['BTC', 'ETH', 'USD', 'EUR'];
-  return bestTransactionChain(quotes, source, target, 5, true, rate_mode, whitelist, true);
+  var result = bestTransactionChain(data.prices, source, target, 5, true, rate_mode, whitelist, true);
+  if (result.error) {
+    scheduler.pass(processID, result.error, 'Failed to compute rate');
+  } else {
+    var data = result.rate * amount;
+    scheduler.pass(processID, 0, data);
+  }
 }
 exports.valuate = valuate;
