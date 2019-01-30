@@ -64,14 +64,14 @@ function exec (properties) {
         }
 
         // set up init probe command to check if RPC and block explorer are responding and connected
-        //subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["getBlockchainStatus"]})');
-        //subprocesses.push('logs(1,"module nxt: "+(data?"connected":"failed connection")+" to [' + target.symbol + '] host ' + target.host + '")');
+        // subprocesses.push('func("link",{target:' + jstr(target) + ',command:["getBlockchainStatus"]})');
+        // subprocesses.push('logs(1,"module nxt: "+(data?"connected":"failed connection")+" to [' + target.symbol + '] host ' + target.host + '")');
       }
       break;
     case 'status':
     // set up init probe command to check if Altcoin RPC is responding and connected
-      subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["getBlockchainStatus",[]]})'); // send balance query
-      subprocesses.push('func("nxt","post",{target:' + jstr(target) + ',command:["status"],data:data})');
+      subprocesses.push('func("link",{target:' + jstr(target) + ',command:["getBlockchainStatus",[]]})'); // send balance query
+      subprocesses.push('func("post",{target:' + jstr(target) + ',command:["status"],data:data})');
       break;
     case 'factor':
     // directly return factor, post-processing not required!
@@ -79,10 +79,11 @@ function exec (properties) {
       break;
     case 'fee':
     // directly return fee, post-processing not required!
+      var fee;
       if (!functions.isToken(target.symbol)) {
-        var fee = (typeof target.fee !== 'undefined' ? target.fee : null);
+        fee = (typeof target.fee !== 'undefined' ? target.fee : 1);
       } else {
-        var fee = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee : null);
+        fee = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee : 1);
         factor = (typeof global.hybrixd.asset[base].factor !== 'undefined' ? global.hybrixd.asset[base].factor : null);
       }
       subprocesses.push('stop((' + jstr(fee) + '!=null && ' + jstr(factor) + '!=null?0:1),' + (fee != null && factor != null ? '"' + functions.padFloat(fee, factor) + '"' : null) + ')');
@@ -94,7 +95,7 @@ function exec (properties) {
             sourceaddr = 'BURST-' + sourceaddr;
           }
           subprocesses.push('@retryLoop');
-          subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["getBalance",["account=' + sourceaddr + '"]]})'); // send balance query
+          subprocesses.push('func("link",{target:' + jstr(target) + ',command:["getBalance",["account=' + sourceaddr + '"]]})'); // send balance query
           subprocesses.push('tran ".unconfirmedBalanceNQT" @returnBalance 1');
           subprocesses.push('logs(2,"module nxt: bad RPC response, retrying request...")');
           subprocesses.push('wait(1500)');
@@ -103,11 +104,9 @@ function exec (properties) {
           subprocesses.push('@returnBalance');
           subprocesses.push('atom');
           subprocesses.push('done');
-
-
         } else {
-          subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["getAccount",["account=' + sourceaddr + '","includeAssets=true","includeCurrencies=true"]]})'); // send balance query
-          subprocesses.push('func("nxt","post",{target:' + jstr(target) + ',command:["balance"],data:data})');
+          subprocesses.push('func("link",{target:' + jstr(target) + ',command:["getAccount",["account=' + sourceaddr + '","includeAssets=true","includeCurrencies=true"]]})'); // send balance query
+          subprocesses.push('func("post",{target:' + jstr(target) + ',command:["balance"],data:data})');
         }
       } else {
         subprocesses.push('fail("Error: missing address!")');
@@ -117,7 +116,7 @@ function exec (properties) {
       var deterministic_script = (typeof properties.command[1] !== 'undefined' ? properties.command[1] : false);
       if (deterministic_script) {
         subprocesses.push('@retryLoop');
-        subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["broadcastTransaction",["transactionBytes=' + deterministic_script + '"]]})');
+        subprocesses.push('func("link",{target:' + jstr(target) + ',command:["broadcastTransaction",["transactionBytes=' + deterministic_script + '"]]})');
         // returns: { "requestProcessingTime": 4, "fullHash": "3a304584f20cf3d2cbbdd9698ff9a166427005ab98fbe9ca4ad6253651ee81f1", "transaction": "15200507403046301754" }
         subprocesses.push('tran(".transaction",1,3)');
         subprocesses.push('done()');
@@ -146,7 +145,7 @@ function exec (properties) {
               publicKey = '"publicKey=' + publicKey + '"';
             } else {
               publicKey = '"publicKey="+data.publicKey';
-              subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["getAccount",["account=' + sourceaddr + '"]]})'); // send balance query
+              subprocesses.push('func("link",{target:' + jstr(target) + ',command:["getAccount",["account=' + sourceaddr + '"]]})'); // send balance query
               subprocesses.push('test((typeof data.publicKey!=="undefined" && data.publicKey),2,1,data)');
               subprocesses.push('stop(1,"Error: missing NXT public key!")');
             }
@@ -157,13 +156,13 @@ function exec (properties) {
               //  subprocesses.push('stop(1,"Error: NXT token transactions support only integer amounts!")');
               // }
               amount = functions.fromInt(functions.toInt(amount, factor).minus(functions.toInt(fee, factor)).toInteger(), factor).toString(); // with NXT the unspent function is a transaction preparation, so must subtract the fee
-              subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["transferAsset",["recipient=' + targetaddr + '","asset=' + target.contract + '",' + publicKey + ',"quantityQNT=' + functions.toInt(amount, factor) + '","feeNQT=' + functions.toInt(fee, feefactor) + '","deadline=300","broadcast=false"] ]})');
+              subprocesses.push('func("link",{target:' + jstr(target) + ',command:["transferAsset",["recipient=' + targetaddr + '","asset=' + target.contract + '",' + publicKey + ',"quantityQNT=' + functions.toInt(amount, factor) + '","feeNQT=' + functions.toInt(fee, feefactor) + '","deadline=300","broadcast=false"] ]})');
             } else if (!functions.isToken(target.symbol)) {
               amount = functions.fromInt(functions.toInt(amount, factor).minus(functions.toInt(fee, factor)), factor).toString(); // with NXT the unspent function is a transaction preparation, so must subtract the fee
-              if(base==='xel') {
+              if (base === 'xel') {
                 amount = functions.toInt(amount, factor);
               }
-              subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["sendMoney",["recipient=' + targetaddr + '",' + publicKey + ',"amountNQT=' + functions.toInt(amount, factor) + '","feeNQT=' + functions.toInt(fee, factor) + '","deadline=300","doNotSign=1","broadcast=false"] ]})');
+              subprocesses.push('func("link",{target:' + jstr(target) + ',command:["sendMoney",["recipient=' + targetaddr + '",' + publicKey + ',"amountNQT=' + functions.toInt(amount, factor) + '","feeNQT=' + functions.toInt(fee, factor) + '","deadline=300","doNotSign=1","broadcast=false"] ]})');
             } else {
               var fee = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee : null);
               var feefactor = (typeof global.hybrixd.asset[base].factor !== 'undefined' ? global.hybrixd.asset[base].factor : null);
@@ -171,11 +170,11 @@ function exec (properties) {
               //  subprocesses.push('stop(1,"Error: NXT token transactions support only integer amounts!")');
               // }
               amount = functions.fromInt(functions.toInt(amount, factor).minus(functions.toInt(fee, factor)).toInteger(), factor).toString(); // with NXT the unspent function is a transaction preparation, so must subtract the fee
-              if(base==='xel') {
+              if (base === 'xel') {
                 amount = functions.toInt(amount, factor);
               }
 
-              subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["transferAsset",["recipient=' + targetaddr + '","asset=' + target.contract + '",' + publicKey + ',"quantityQNT=' + functions.toInt(amount, factor) + '","feeNQT=' + functions.toInt(fee, feefactor) + '","deadline=300","doNotSign=1","broadcast=false"] ]})');
+              subprocesses.push('func("link",{target:' + jstr(target) + ',command:["transferAsset",["recipient=' + targetaddr + '","asset=' + target.contract + '",' + publicKey + ',"quantityQNT=' + functions.toInt(amount, factor) + '","feeNQT=' + functions.toInt(fee, feefactor) + '","deadline=300","doNotSign=1","broadcast=false"] ]})');
             }
             subprocesses.push('stop((typeof data.errorCode==="undefined"?0:data.errorCode),(typeof data.errorCode==="undefined"?data:data.errorDescription))');
           } else {
@@ -195,7 +194,7 @@ function exec (properties) {
     // getBlockchainTransactions
       break;
     case 'transaction':
-      subprocesses.push('func("nxt","link",{target:' + jstr(target) + ',command:["getTransaction",["transaction=' + properties.command[1] + '"] ]})');
+      subprocesses.push('func("link",{target:' + jstr(target) + ',command:["getTransaction",["transaction=' + properties.command[1] + '"] ]})');
       subprocesses.push("tran({id:'.transaction',fee:'.feeNQT',attachment:'=.attachment|none',timestamp:'.timestamp',symbol:'" + target.symbol + "','fee-symbol':'" + target['symbol'] + "',amount:'.amountNQT',source:'.sender',target:'.recipient'},2,1)");//, data:'.'
       subprocesses.push('stop(1,data)');
       subprocesses.push('stop(0,data)');
@@ -207,10 +206,10 @@ function exec (properties) {
       var fee;
       var feeFactor;
       if (!functions.isToken(target.symbol)) {
-        var fee = (typeof target.fee !== 'undefined' ? target.fee : null);
+        var fee = (typeof target.fee !== 'undefined' ? target.fee : 1);
         feeFactor = factor;
       } else {
-        var fee = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee : null);
+        var fee = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee : 1);
         feeFactor = (typeof global.hybrixd.asset[base].factor !== 'undefined' ? global.hybrixd.asset[base].factor : null);
       }
       fee = functions.padFloat(fee, factor);

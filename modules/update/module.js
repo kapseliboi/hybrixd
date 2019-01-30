@@ -42,7 +42,7 @@ function exec (properties) {
   subprocesses.push('test(data === "' + lastUpdated + '",1,2,data)');
   subprocesses.push('stop(0,"hybrixd is up to date.")');
   subprocesses.push('logs(0,"Update available: "+data,data)');
-  subprocesses.push("func('update','update',{updated:data})");
+  subprocesses.push("func('update',{updated:data})");
   // Restart hybrixd
   subprocesses.push('rout("/command/reload")');
 
