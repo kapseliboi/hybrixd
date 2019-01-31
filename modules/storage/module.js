@@ -1,4 +1,4 @@
-// (C) 2015 Internet of Coins / Metasync / Joachim de Koning
+// (C) 2015 Internet of Coins / Joachim de Koning
 // hybrixd module - storage/module.js
 // Module to provide storage
 
