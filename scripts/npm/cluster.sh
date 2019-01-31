@@ -65,11 +65,14 @@ if [ "$NODES" -gt "1" ]; then
         sed -i -e 's/'"$USERLINE"'/'"$NEWUSERLINE"'/g' "$NODE$i/hybrixd.conf"
 
 		#force set encryption pubkeys TESTING!
-		if ( i -eq 1 ); then
+		if [ "$i" = "1" ]; then
           NEWNODELINE="nodeId = 6118abfd4fe4582d0fc7de7295975147c7aa53dd9982c2c962025e7f34b76b63"
         fi
-		if ( i -eq 2 ); then
+		if [ "$i" = "2" ]; then
           NEWNODELINE="nodeId = 13b2cc321cb565d7bc2f3e6959af295d7315e3137e70ea505ea79161d4502ccc"
+        fi
+		if [ "$i" = "3" ]; then
+          NEWNODELINE="nodeId = ffb2cc321cb565d7bc2f3e6959af295d7315e4d7e9a0bc123459af295d7315e4"
         fi
         sed -i -e 's/'"$NODELINE"'/'"$NEWNODELINE"'/g' "$NODE$i/hybrixd.conf"
         
