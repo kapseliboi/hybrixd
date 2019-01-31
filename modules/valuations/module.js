@@ -115,8 +115,8 @@ function parseHitbtc (prices, symbols) {
 }
 
 function combineQuoteSources (sources) {
-  combinedQuotes = sources.reduce(function (accumulatedSources, newSource) {
-    newQuotes = newSource['quotes'];
+  var combinedQuotes = sources.reduce(function (accumulatedSources, newSource) {
+    var newQuotes = newSource['quotes'];
     Object.keys(newQuotes).map(function (quoteCurrency, index) {
       if (!accumulatedSources.hasOwnProperty(quoteCurrency)) {
         accumulatedSources[quoteCurrency] = {quotes: {}};
@@ -136,17 +136,22 @@ function combineQuoteSources (sources) {
 
 function updateMinAndMedians (exchangeRates) {
   Object.keys(exchangeRates).map(function (sourceCurrency, _) {
-    quotes = exchangeRates[sourceCurrency]['quotes'];
+    var quotes = exchangeRates[sourceCurrency]['quotes'];
     Object.keys(quotes).map(function (targetCurrency, _) {
-      exchanges = quotes[targetCurrency]['sources'];
-      sortedExchanges = Object.keys(exchanges).sort(function (exchange1, exchange2) {
+      var exchanges = quotes[targetCurrency]['sources'];
+      var sortedExchanges = Object.keys(exchanges).sort(function (exchange1, exchange2) {
         return exchanges[exchange2] - exchanges[exchange1];
       });
-      exchangeRates[sourceCurrency]['quotes'][targetCurrency]['highest_rate'] = {'exchange': sortedExchanges[0], rate: exchanges[sortedExchanges[0]]};
 
-      midPoint = (sortedExchanges.length - 1) / 2;
-      exchangeRates[sourceCurrency]['quotes'][targetCurrency]['median_rate'] = {'exchange': '',
-        'rate': (exchanges[sortedExchanges[Math.floor(midPoint)]] + exchanges[sortedExchanges[Math.ceil(midPoint)]]) / 2};
+      exchangeRates[sourceCurrency]['quotes'][targetCurrency]['highest_rate'] = {'exchange': sortedExchanges[0], rate: exchanges[sortedExchanges[0]]};
+      var lowPoint = sortedExchanges.length - 1;
+      exchangeRates[sourceCurrency]['quotes'][targetCurrency]['lowest_rate'] = {'exchange': sortedExchanges[lowPoint], rate: exchanges[sortedExchanges[lowPoint]]};
+      var midPoint = (sortedExchanges.length - 1) / 2;
+      var floorExchange = sortedExchanges[Math.floor(midPoint)];
+      var ceilExchange = sortedExchanges[Math.ceil(midPoint)];
+      var exchange = floorExchange === ceilExchange ? ceilExchange : (floorExchange + '|' + ceilExchange);
+      exchangeRates[sourceCurrency]['quotes'][targetCurrency]['median_rate'] = {exchange,
+        rate: (exchanges[floorExchange] + exchanges[ceilExchange]) / 2};
     });
   });
   return exchangeRates;
@@ -233,17 +238,42 @@ function valuate (data) {
 
   var source = data.source.toUpperCase();
   var target = data.target.toUpperCase();
-  var amount = typeof data.amount === 'undefined' ? 1 : Number(data.amount);
-
-  var rate_mode = 'median_rate';
-  var whitelist = ['BTC', 'ETH', 'USD', 'EUR'];
-  var result = bestTransactionChain(data.prices, source, target, 5, true, rate_mode, whitelist, true);
-  if (result.error) {
-    scheduler.pass(processID, result.error, 'Failed to compute rate');
-  } else {
-    var r = result.rate * amount;
-    scheduler.pass(processID, 0, r);
+  var amount = data.amount === 'undefined' || typeof data.amount === 'undefined' ? 1 : Number(data.amount);
+  var mode = 'median_rate';
+  if (data.mode === 'max') {
+    mode = 'highest_rate';
+  } else if (data.mode === 'min') {
+    mode = 'lowest_rate';
+  } else if (data.mode === 'meta') {
+    mode = 'meta';
   }
+
+  var whitelist = ['BTC', 'ETH', 'USD', 'EUR'];
+  var r;
+  if (mode === 'meta') {
+    var resultLow = bestTransactionChain(data.prices, source, target, 5, true, 'lowest_rate', whitelist, true);
+    var resultMedian = bestTransactionChain(data.prices, source, target, 5, true, 'median_rate', whitelist, true);
+    var resultHigh = bestTransactionChain(data.prices, source, target, 5, true, 'highest_rate', whitelist, true);
+
+    if (resultLow.error) {
+      scheduler.pass(processID, resultLow.error, 'Failed to compute rate');
+    } else {
+      r = {
+        min: {rate: resultLow.rate * amount, path: JSON.parse(JSON.stringify(resultLow.transactionPath))},
+        median: {rate: resultMedian.rate * amount, path: JSON.parse(JSON.stringify(resultMedian.transactionPath))},
+        max: {rate: resultHigh.rate * amount, path: JSON.parse(JSON.stringify(resultHigh.transactionPath))}
+      };
+    }
+  } else {
+    var result = bestTransactionChain(data.prices, source, target, 5, true, mode, whitelist, true);
+    if (result.error) {
+      scheduler.pass(processID, result.error, 'Failed to compute rate');
+      return;
+    } else {
+      r = result.rate * amount;
+    }
+  }
+  scheduler.pass(processID, 0, r);
 }
 
 exports.valuate = valuate;
