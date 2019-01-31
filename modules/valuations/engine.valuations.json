@@ -49,22 +49,32 @@
       "done"
     ],
     "rate":[
-      "data {source: '$1', target:'$2', amount:'$3', prices: $local::prices}",
+      "data {source: '$1', target:'$2', amount:'$3', mode: '$4',  prices: $local::prices}",
       "func 'valuate'",
       "done"
+    ],
+    "list":[
+      "done Object.keys($local::prices)"
     ]
   },
   "router" : {
-    "cron" : "Download new price data",
+    "cron" : "Download new price data.",
+    "list" : "List available symbols.",
     "rate": {
       "_ref" : {
         "_list" : "Source_Symbol",
         "_ref" : {
           "_list" : "Target_Symbol",
+          "_sample" : "btc",
           "_this" : "Retrieve the median exchange-rate for one coin in another coin.",
           "_ref" : {
             "_list" : "Amount",
-            "_this" : "Retrieve the median exchange-rate for a given amount of one coin in another coin."
+            "_sample" : "usd",
+            "_this" : "Retrieve the median exchange-rate for a given amount of one coin in another coin.",
+            "max" : "Retrieve the highest exchange-rate data for a given amount of one coin in another coin.",
+            "median" : "Retrieve the median exchange-rate data for a given amount of one coin in another coin.",
+            "min" : "Retrieve the lowest exchange-rate data for a given amount of one coin in another coin.",
+            "meta" : "Retrieve extended exchange-rate data."
           }
         }
       }
