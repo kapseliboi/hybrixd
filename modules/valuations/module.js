@@ -1,4 +1,3 @@
-var scheduler = require('../../lib/scheduler');
 var xmldoc = require('xmldoc');
 
 function addQuote (accumulator, quote_currency, base_currency, price) {
@@ -157,8 +156,7 @@ function updateMinAndMedians (exchangeRates) {
   return exchangeRates;
 }
 
-function parse (data) {
-  var processID = data.processID;
+function parse (proc, data) {
   var sourcesOut = combineQuoteSources([
     parseEUCentralBank(data.EUCentralBank),
     parseHitbtc(data.hitbtc_symbols, data.hitbtc_prices),
@@ -168,7 +166,7 @@ function parse (data) {
   ]);
   var result = updateMinAndMedians(sourcesOut);
 
-  scheduler.pass(processID, 0, result);
+  proc.pass(result);
 }
 
 function singleHop (exchangeRates, startSymbol, history, rate_mode) {
@@ -233,9 +231,7 @@ function bestTransactionChain (exchangeRates, startSymbol, targetSymbol, maxHops
   }
 }
 
-function valuate (data) {
-  var processID = data.processID;
-
+function valuate (proc, data) {
   var source = data.source.toUpperCase();
   var target = data.target.toUpperCase();
   var amount = data.amount === 'undefined' || typeof data.amount === 'undefined' ? 1 : Number(data.amount);
@@ -256,7 +252,7 @@ function valuate (data) {
     var resultHigh = bestTransactionChain(data.prices, source, target, 5, true, 'highest_rate', whitelist, true);
 
     if (resultLow.error) {
-      scheduler.pass(processID, resultLow.error, 'Failed to compute rate');
+      proc.fail(resultLow.error, 'Failed to compute rate');
     } else {
       r = {
         min: {rate: resultLow.rate * amount, path: JSON.parse(JSON.stringify(resultLow.transactionPath))},
@@ -267,13 +263,13 @@ function valuate (data) {
   } else {
     var result = bestTransactionChain(data.prices, source, target, 5, true, mode, whitelist, true);
     if (result.error) {
-      scheduler.pass(processID, result.error, 'Failed to compute rate');
+      proc.fail(result.error, 'Failed to compute rate');
       return;
     } else {
       r = result.rate * amount;
     }
   }
-  scheduler.pass(processID, 0, r);
+  proc.pass(r);
 }
 
 exports.valuate = valuate;
