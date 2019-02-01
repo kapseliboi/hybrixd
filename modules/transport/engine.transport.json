@@ -43,13 +43,11 @@
       "_help" : "Send a message over an active transport.",
       "_ref" : {
         "_list" : "handle",
-        "_this" : "Specify the handle of the transport to use.",
         "_ref" : {
           "_list" : "target",
-          "_this" : "Specify the nodeId to target, or use a * wildcard.",
           "_ref" : {
             "_list" : "message",
-            "_this" : "Message to send must be a string."
+            "_this" : "Message to send must be a string. A message ID is returned."
           }
         }
       }
@@ -60,13 +58,6 @@
       "handles" : "Active transport handles are listed.",
       "peers" : "Peers across all networks are listed.",
       "peersURIs" : "Peers enpoint URIs across all networks are listed."
-    },
-    "meta":{
-      "_help" : "Get metadata about a storage object.",
-      "_ref" : {
-        "_list" : "storage_id",
-        "_this" : "Specify the ID key to get metadata for."
-      }
     }
   }
 }

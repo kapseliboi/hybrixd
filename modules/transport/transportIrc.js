@@ -9,11 +9,13 @@ function open(processID,engine,host,chan,hashSalt) {
 
   if(typeof global.hybrixd.engine[engine][handle]==='undefined') {
     var irc = require('irc');
+    var port = 6667;
     // setup the irc socket
     var peerId = 'H'+shaHash(nodeId+openTime+hashSalt).substr(0,15);
-    global.hybrixd.engine[engine][handle] = { opened:openTime,protocol:'irc',channel:chan,host:host,peerId:peerId,peers:{} };
+    global.hybrixd.engine[engine][handle] = { opened:openTime,protocol:'irc',host:host,channel:chan,peerId:peerId,peers:{} };
     // start the irc socket
     global.hybrixd.engine[engine][handle].socket = new irc.Client(host, peerId, {
+      port: port,
       showErrors: false,
       autoRejoin: true,
       autoConnect: true,
@@ -37,12 +39,12 @@ function open(processID,engine,host,chan,hashSalt) {
     });
     // event: event fires when online
     global.hybrixd.engine[engine][handle].socket.addListener('registered', function(message) {
-      console.log(' [i] transport irc: connected as peer ['+global.hybrixd.engine[engine][handle].peerId+']');
+      console.log(' [i] transport irc: connected as peer ['+global.hybrixd.engine[engine][handle].peerId+'] on port '+port);
       var endpoint = 'irc://'+host+'/'+chan+'/'+global.hybrixd.engine[engine][handle].peerId;
       if(global.hybrixd.engine[engine].endpoints.indexOf(endpoint)===-1) {
         global.hybrixd.engine[engine].endpoints.push(endpoint);
         global.hybrixd.engine[engine].handles.push(handle);
-        global.hybrixd.engine[engine][handle].buffer = [];
+        global.hybrixd.engine[engine][handle].buffer = { id:[],time:[],data:[] };
         scheduler.stop(processID, 0, handle);   
       }
       // peer maintenance interval
@@ -54,63 +56,57 @@ function open(processID,engine,host,chan,hashSalt) {
         var peersArray = Object.keys(global.hybrixd.engine[engine][handle].peers);
         var timenow = (new Date).getTime();
         for (var i=0;i<peersArray.length;i++) {
-          if(global.hybrixd.engine[engine][handle].peers[peersArray[i]].time+120<timenow) {
+          if((Number(global.hybrixd.engine[engine][handle].peers[peersArray[i]].time)+90000)<timenow) {
             console.log(' [.] transport irc: peer ['+global.hybrixd.engine[engine][handle].peers[peersArray[i]].peerId+'] offline');
             delete global.hybrixd.engine[engine][handle].peers[peersArray[i]];
           }
         }
-      },60000,engine,handle,chan,nodeId);
+      },30000,engine,handle,chan,nodeId);
     });
     // event: incoming message on channel
     global.hybrixd.engine[engine][handle].socket.addListener('message#'+chan, function(from,message) {
-      console.log(' [.] transport irc: message '+from+' | '+message);
-      // register new users in peer list
+      // peer announcements: register new users in peer list
       if(message.substr(0,2)==='@|') {
         // store information in peer table
         message = message.substr(2).split('|');
-        var peer = { nodeId:'',peerId:'',data:'' };
-        peer.nodeId = message[0];
-        peer.peerId = from;
-        global.hybrixd.engine[engine][handle].peers[peer.nodeId]={peerId:from,time:(new Date).getTime()};
-        console.log(' [.] transport irc: peer ['+peer.peerId+'] online');
+        var fromNodeId = message[0];
+        var fromPeerId = from;
+        if(!global.hybrixd.engine[engine][handle].peers.hasOwnProperty(fromNodeId)) {
+          console.log(' [.] transport irc: peer ['+fromPeerId+'] online');
+        }
+        global.hybrixd.engine[engine][handle].peers[fromNodeId]={peerId:fromPeerId,time:(new Date).getTime()};
         var peers = message[1].split(',');
         for (var i=0;i<peers.length;i++) {
-          if(!global.hybrixd.engine[engine].peersURIs.hasOwnProperty(peer.nodeId)) {
-            global.hybrixd.engine[engine].peersURIs[peer.nodeId] = [];
+          if(!global.hybrixd.engine[engine].peersURIs.hasOwnProperty(fromNodeId)) {
+            global.hybrixd.engine[engine].peersURIs[fromNodeId] = [];
           }
-          if(global.hybrixd.engine[engine].peersURIs[peer.nodeId].indexOf(peers[i])===-1) {
-            global.hybrixd.engine[engine].peersURIs[peer.nodeId].push(peers[i]);
-            if(global.hybrixd.engine[engine].peersURIs[peer.nodeId].length>24) {
-              global.hybrixd.engine[engine].peersURIs[peer.nodeId].shift();
+          if(global.hybrixd.engine[engine].peersURIs[fromNodeId].indexOf(peers[i])===-1) {
+            global.hybrixd.engine[engine].peersURIs[fromNodeId].splice(0,0,peers[i]);
+            if(global.hybrixd.engine[engine].peersURIs[fromNodeId].length>24) {
+              global.hybrixd.engine[engine].peersURIs[fromNodeId].pop();
             }
           }
         }
       } else {
-        // skip messages if buffer becomes too large!
-        if(global.hybrixd.engine[engine][handle].buffer.length<global.hybrixd.engine[engine].announceMaxBufferSize) {
-          global.hybrixd.engine[engine][handle].buffer.push(message);
-        } else {
-          console.log(' [!] transport irc: buffer overflow, discarding messages!');
-        }
+        // split message into functional parts
+        message = message.split('|');
+        var nodeIdTarget = message.shift();                 // get nodeIdTarget
+        if(nodeIdTarget==='*' || nodeIdTarget===nodeId) {   // message addressed to us?
+          var messageId = message.shift();                  // get unique ID
+          var messageContent = message.join('|');           // re-assemble/join rest of message
+          var timenow = (new Date).getTime();               // add internal timestamp
+          // skip messages if buffer becomes too large!
+          if(global.hybrixd.engine[engine][handle].buffer.id.length<global.hybrixd.engine[engine].announceMaxBufferSize) {
+            global.hybrixd.engine[engine][handle].buffer.id.push(messageId);
+            global.hybrixd.engine[engine][handle].buffer.time.push(timenow);
+            global.hybrixd.engine[engine][handle].buffer.data.push(messageContent);
+            console.log(' [.] transport irc: message arrived for ['+nodeIdTarget+'] | '+messageId+' | '+messageContent); 
+          } else {
+            console.log(' [!] transport irc: buffer overflow, discarding messages!');
+          }
+        } // TODO: deduplication - if message to another peer cannot be found in other handles after 30 seconds, insert into other handles
       }
     });
-    /* DEPRECATED IN FAVOUR OF ANNOUNCED PEERING
-    global.hybrixd.engine[engine][handle].socket.addListener('names#'+chan, function(peersObj) {
-      var peersArray = Object.keys(peersObj);
-      // ignore self
-      var i = peersArray.indexOf(global.hybrixd.engine[engine][handle].peerId);
-      if (i > -1) {
-        peersArray.splice(i, 1);
-      }
-      // insert into peers table, and filter admin + moderator flags
-      for (var i=0;i++;i<peersArray.length) {
-        peersArray[i].replace(new RegExp('^[\+\@]+'),'');
-        global.hybrixd.engine[engine][handle].peers[peer.nodeId]={peerId:from,time:(new Date).getTime()};        
-      }
-      
-      console.log(' [.] transport irc: peer list updated';
-    });
-    */
     // event: warnings and errors
     global.hybrixd.engine[engine][handle].socket.addListener('error', function(message) {
       console.log(' [!] transport irc: Error! '+JSON.stringify(message));
@@ -130,6 +126,11 @@ function stop(processID,engine,handle,callback) {
   setTimeout(function() {
     callback();
   },8000);
+}
+
+function send(processID,engine,handle,nodeIdTarget,messageId,message,hashSalt) {
+  var messageContent = nodeIdTarget+'|'+messageId+'|'+message;  
+  global.hybrixd.engine[engine][handle].socket.say('#'+global.hybrixd.engine[engine][handle].channel,messageContent);
 }
 
 function simpleProgress(processID,count) {
@@ -153,3 +154,4 @@ function simpleProgress(processID,count) {
 
 exports.open = open;
 exports.stop = stop;
+exports.send = send;

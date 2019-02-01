@@ -109,46 +109,52 @@ function exec(properties) {
       }
       break;
     case 'send':
-      function sendMessage(engine,handle,protocol,nodeId,message) {
+      function sendMessage(engine,handle,protocol,nodeIdTarget,messageId,message) {
         switch (protocol) {
           case 'irc':
-            global.hybrixd.engine[engine][handle].socket.say('#'+global.hybrixd.engine[engine][handle].channel,nodeId+'|'+message);
+            transportIrc.send(processID,engine,handle,nodeIdTarget,messageId,message,target.hashSalt);
           break;
           case 'torrent':
-            // send message to every peer
-            global.hybrixd.engine[engine][handle].socket.send(Buffer.from(nodeId+'|'+message), peerId);
+            transportTorrent.send(processID,engine,handle,nodeIdTarget,messageId,message,target.hashSalt);
           break;
         }
+        return messageId;
       }
       var handle = command[1];
       var nodeIdTarget = command[2]; // if is *, sends broadcast to all targets
       var message = command[3];      // unencrypted message
+      // create unique message ID
+      var shaHash = require('js-sha256').sha224
+      var openTime = (new Date).getTime();
+      var messageId = shaHash(nodeId+target.hashSalt+openTime).substr(16,24);        
       if(handle && nodeIdTarget && message) {
         if(handle==='*') {
           // loop through all handles and broadcast
           for(var i=0;i<global.hybrixd.engine[target.id].handles.length;i++) {
             handle = global.hybrixd.engine[target.id].handles[i];
             if(global.hybrixd.engine[target.id].hasOwnProperty(handle) && global.hybrixd.engine[target.id][handle].hasOwnProperty('protocol')) {
-              sendMessage( target.id,
+              messageId = sendMessage( target.id,
                            handle,
                            global.hybrixd.engine[target.id][handle].protocol,
                            nodeIdTarget,
+                           messageId,
                            message );
             }
           }
-          scheduler.stop(processID, 0, 'Sent to '+global.hybrixd.engine[target.id].handles.length+' handles');
+          scheduler.stop(processID, 0, messageId);
         } else {
           if(global.hybrixd.engine[target.id].handles.indexOf(handle)>-1) {
             if(global.hybrixd.engine[target.id].hasOwnProperty(handle) && global.hybrixd.engine[target.id][handle].hasOwnProperty('protocol')) {
-              sendMessage( target.id,
+              messageId = sendMessage( target.id,
                            handle,
                            global.hybrixd.engine[target.id][handle].protocol,
                            nodeIdTarget,
+                           messageId,
                            message );
             }
-            scheduler.stop(processID, 0, 'Sent');
+            scheduler.stop(processID, 0, messageId);
           } else {
-            scheduler.stop(processID, 404, 'Handle does not exist!');
+            scheduler.stop(processID, 404, 'Specified handle does not exist!');
           }
         }
       } else {
