@@ -52,9 +52,6 @@
     "factor" : [
       "pass('$factor')"
     ],
-    "history" : [
-      "done"
-    ],
     "contract" : [
       "pass('')"
     ],
@@ -65,7 +62,6 @@
       "pass({})"
     ],
     "history" : [
-      "pass '[]",
       "done",
       "curl 'asset://$symbol' '/walletextension/gettransactionstothis' 'POST'",
       "poke 'txTo'",
