@@ -64,7 +64,9 @@
     "unspent" : [
       "pass({})"
     ],
-    "foo" : [
+    "history" : [
+      "pass '[]",
+      "done",
       "curl 'asset://$symbol' '/walletextension/gettransactionstothis' 'POST'",
       "poke 'txTo'",
       "curl 'asset://$symbol' '/walletextension/gettransactionsfromthis' 'POST'",
