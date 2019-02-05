@@ -31,31 +31,44 @@
       "atom"
     ],
     "push" : [
-      "logs",
-      "done",
       "data '$1'",
+      "code 'hex' 'utf-8'",
+      "poke 'txData'",
+      "curl 'asset://$symbol' '/wallet/broadcasttransaction' 'POST'",
+      "tran '.result' @end @fail",
+      "@end",
+      "flow 'true' 1 @fail",
+      "peek 'txData'",
       "jpar",
-      "curl 'asset://$symbol' 'wallet/broadcasttransaction' 'POST' '$data'",
-      "test(data.error,1,2)",
-      "fail(data.message)",
-      "tran('.id',2,1)",
-      "fail('Transaction Failed! '+jstr(data))",
-      "pass(data)"
+      "tran '.txID' 1 @failDetails",
+      "done",
+      "@fail",
+      "pass \"Couldn't make transaction\"",
+      "done",
+      "@failDetails",
+      "pass \"Couldn't retrieve transaction ID\"",
+      "done"
     ],
     "factor" : [
       "pass('$factor')"
     ],
     "history" : [
-      "curl 'asset://$symbol' '/walletextension/gettransactionstothis' POST",
-      "poke 'txTo'",
-      "curl 'asset://$symbol' '/walletextension/gettransactionsfromthis' POST",
-      "fuse 'txTo'"
+      "done"
     ],
     "contract" : [
       "pass('')"
     ],
     "fee" : [
       "pass('$fee')"
+    ],
+    "unspent" : [
+      "pass({})"
+    ],
+    "foo" : [
+      "curl 'asset://$symbol' '/walletextension/gettransactionstothis' 'POST'",
+      "poke 'txTo'",
+      "curl 'asset://$symbol' '/walletextension/gettransactionsfromthis' 'POST'",
+      "fuse 'txTo'"
     ]
   }
 }
