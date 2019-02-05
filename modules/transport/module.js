@@ -63,20 +63,10 @@ function exec(properties) {
         if(global.hybrixd.engine[target.id].hasOwnProperty(handle) && global.hybrixd.engine[target.id][handle].hasOwnProperty('protocol')) {
           switch (global.hybrixd.engine[target.id][handle].protocol) {
             case 'irc':
-              transportIrc.stop(processID,target.id,handle, function() {
-                removeEndpoint(target.id,'irc://'+global.hybrixd.engine[target.id][handle].host+'/'+global.hybrixd.engine[target.id][handle].channel+'/'+global.hybrixd.engine[target.id][handle].peerId);
-                removeHandle(target.id,handle);
-                scheduler.stop(processID, 0, 'irc socket closed');
-                console.log(' [i] transport irc: stopped and closed socket '+handle);
-              });              
+              transportIrc.stop(processID,target.id,handle);
             break;
             case 'torrent':
-              transportTorrent.stop(processID,target.id,handle, function() {
-                removeEndpoint(target.id,'torrent://'+global.hybrixd.engine[target.id][handle].channel+'/'+global.hybrixd.engine[target.id][handle].peerId);
-                removeHandle(target.id,handle);
-                scheduler.stop(processID, 0, 'torrent socket closed');
-                console.log(' [i] transport torrent: stopped and closed socket '+handle);
-              });              
+              transportTorrent.stop(processID,target.id,handle);
             break;
             default:
               scheduler.stop(processID, 1, 'Cannot close socket! Protocol not recognized!');
@@ -109,15 +99,9 @@ function exec(properties) {
       }
       break;
     case 'send':
-      function sendMessage(engine,handle,protocol,nodeIdTarget,messageId,message) {
-        switch (protocol) {
-          case 'irc':
-            transportIrc.send(processID,engine,handle,nodeIdTarget,messageId,message,target.hashSalt);
-          break;
-          case 'torrent':
-            transportTorrent.send(processID,engine,handle,nodeIdTarget,messageId,message,target.hashSalt);
-          break;
-        }
+      function sendMessage(engine,handle,nodeIdTarget,messageId,message) {
+        var messageContent = nodeIdTarget+'|'+messageId+'|'+message;
+        global.hybrixd.engine[engine][handle].send(engine,handle,messageContent);
         return messageId;
       }
       var handle = command[1];
@@ -135,7 +119,6 @@ function exec(properties) {
             if(global.hybrixd.engine[target.id].hasOwnProperty(handle) && global.hybrixd.engine[target.id][handle].hasOwnProperty('protocol')) {
               messageId = sendMessage( target.id,
                            handle,
-                           global.hybrixd.engine[target.id][handle].protocol,
                            nodeIdTarget,
                            messageId,
                            message );
@@ -147,7 +130,6 @@ function exec(properties) {
             if(global.hybrixd.engine[target.id].hasOwnProperty(handle) && global.hybrixd.engine[target.id][handle].hasOwnProperty('protocol')) {
               messageId = sendMessage( target.id,
                            handle,
-                           global.hybrixd.engine[target.id][handle].protocol,
                            nodeIdTarget,
                            messageId,
                            message );
@@ -199,22 +181,6 @@ function exec(properties) {
       break;
   }
 }
-
-function removeEndpoint(targetId,endpoint) {
-  var index = global.hybrixd.engine[targetId].endpoints.indexOf(endpoint);
-  if (index > -1) {
-    global.hybrixd.engine[targetId].endpoints.splice(index, 1);
-  }
-}
-
-function removeHandle(targetId,handle) {
-  var index = global.hybrixd.engine[targetId].handles.indexOf(handle);
-  if (index > -1) {
-    global.hybrixd.engine[targetId].handles.splice(index, 1);
-  }
-  delete global.hybrixd.engine[targetId][handle];
-}
-
 
 // exports
 exports.init = init;
