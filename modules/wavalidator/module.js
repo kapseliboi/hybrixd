@@ -113,6 +113,13 @@ function exec (properties) {
     } else {
       subprocesses.push("stop(0,'invalid')");
     }
+  } else if (symbol === 'TRX') {
+    if (address.length === 34 && address.startsWith('T')) {
+      // TODO should be improved
+      subprocesses.push("stop(0,'valid')");
+    } else {
+      subprocesses.push("stop(0,'invalid')");
+    }
   } else {
     try {
       var valid = WAValidator.validate(address, symbol); // '1KFzzGtDdnq5hrwxXGjwVnKzRbvf8WVxck', 'BTC'
