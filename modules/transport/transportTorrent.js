@@ -10,7 +10,7 @@ function open(processID,engine,channel,passwd,hashSalt) {
 
   if(typeof global.hybrixd.engine[engine][handle]==='undefined') {
     var peerNetwork = require('./torrent/peer-network-fork');
-    var port = Math.floor(Math.random() * 10000) + 21201;  // default: var port = 21201;
+    var port = Math.floor(Math.random() * 10000) + 21201;  // choose random port
     // setup the torrent socket
     global.hybrixd.engine[engine][handle] = { opened:openTime,protocol:'torrent',host:'DHT',channel:channel,peerId:null,peers:{} };
     // start the torrent socket
@@ -21,23 +21,21 @@ function open(processID,engine,channel,passwd,hashSalt) {
     global.hybrixd.engine[engine][handle].socket.on("ready", (peerId) => {
       if(peerId) {
         console.log(' [i] transport torrent: connected as peer ['+peerId+'] on port '+port);
-        endpoint = 'torrent://'+channel+'/'+peerId;
-        if(global.hybrixd.engine[engine].endpoints.indexOf(endpoint)===-1) {
-          global.hybrixd.engine[engine].endpoints.push(endpoint);
-          global.hybrixd.engine[engine].handles.push(handle);
-          global.hybrixd.engine[engine][handle].peerId = peerId;
-          global.hybrixd.engine[engine][handle].buffer = { id:[],time:[],data:[] };
-          scheduler.stop(processID, 0, handle);
-        }
+        // add handle and endpoint
+        functions.addHandleAndEndpoint(engine,handle,peerId,'torrent://'+channel+'/'+peerId);
         // send message function
         global.hybrixd.engine[engine][handle].send = function (engine,handle,message) {
           // send message to every peer, or specified peer
           if(global.hybrixd.engine[engine][handle].hasOwnProperty('peers')) {
             var nodeIdTarget = message.split('|')[0];
+            var peerId, broadcast=false;
+            if(nodeIdTarget==='*'||nodeIdTarget==='@'||nodeIdTarget==='~'||
+               !global.hybrixd.engine[engine][handle].peers.hasOwnProperty(nodeIdTarget)) {
+                broadcast = true;
+            }
             var peersArray = Object.keys(global.hybrixd.engine[engine][handle].peers);
-            var peerId;
             for (var i=0;i<peersArray.length;i++) {
-              if(nodeIdTarget==='*'||nodeIdTarget==='@'||nodeIdTarget==='~'||nodeIdTarget===peersArray[i]) {
+              if(broadcast || nodeIdTarget===peersArray[i]) {
                 peerId = global.hybrixd.engine[engine][handle].peers[peersArray[i]].peerId;
                 global.hybrixd.engine[engine][handle].socket.send(Buffer.from(message), peerId);
               }
@@ -53,7 +51,7 @@ function open(processID,engine,channel,passwd,hashSalt) {
           var relayPeers, relayHandles;
           for (var i=0;i<peersArray.length;i++) {
             // delete idle peers
-            if((Number(global.hybrixd.engine[engine][handle].peers[peersArray[i]].time)+300000)<timenow) {
+            if((Number(global.hybrixd.engine[engine][handle].peers[peersArray[i]].time)+240000)<timenow) {
               if(global.hybrixd.engine[engine][handle].peers[peersArray[i]].peerId) {
                 // only mention non-relayed peers going offline
                 console.log(' [.] transport torrent: peer ['+global.hybrixd.engine[engine][handle].peers[peersArray[i]].peerId+'] offline');
@@ -61,10 +59,10 @@ function open(processID,engine,channel,passwd,hashSalt) {
               delete global.hybrixd.engine[engine][handle].peers[peersArray[i]];
             }
             // deduplicate peer announce if not found on other channels
-            relayPeers = functions.relayPeers(engine,handle,peersArray[i]);
+            functions.relayPeers(engine,handle,peersArray[i]);
           }
-          // TODO: deduplicate messages not found on other channels
         },30000,engine,handle);
+        scheduler.stop(processID, 0, handle);   
       } else {
         console.log(' [!] transport torrent: failed to connect on port '+port);
         scheduler.stop(processID, 1, 'failed to connect to torrent!');
@@ -72,58 +70,46 @@ function open(processID,engine,channel,passwd,hashSalt) {
     // event: incoming message on channel
     });
     global.hybrixd.engine[engine][handle].socket.on("message", (msg, fromPeerId) => {
-        // ignore self
-        if(fromPeerId !== global.hybrixd.engine[engine][handle].peerId) {
-          var message = msg.toString();  // DEBUG: console.log(' [.] transport torrent: incoming message '+fromPeerId+' '+message);
-          // peer announcements: register new users in peer list (and return announce)
-          if(message.substr(0,2)==='@|'||message.substr(0,2)==='~|') {
-            // determine if peer relay message
-            var relay = message.substr(0,1)==='~'||false;
-            // store information in peer table
-            message = message.substr(2).split('|');
-            var fromNodeId = message[0];
-            if(fromNodeId !== nodeId) {
-              if(!relay) {
-                if(!global.hybrixd.engine[engine][handle].peers.hasOwnProperty(fromNodeId)) {
-                  console.log(' [.] transport torrent: peer ['+fromPeerId+'] online');
-                  // announce self (return endpoint information)
-                  var message = '@|'+nodeId+'|'+global.hybrixd.engine[engine].endpoints.join();
-                  // init announce message must be directly through the socket to start filling remote empty peer list
-                  global.hybrixd.engine[engine][handle].socket.send(Buffer.from(message), fromPeerId);
-                  console.log(' [.] transport torrent: returning endpoint information to peer ['+fromPeerId+']');
-                  global.hybrixd.engine[engine][handle].peers[fromNodeId]={peerId:fromPeerId,time:(new Date).getTime()};
-                } else {
-                  global.hybrixd.engine[engine][handle].peers[fromNodeId].time=(new Date).getTime();
-                }
+      // ignore self
+      if(fromPeerId !== global.hybrixd.engine[engine][handle].peerId) {
+        var message = msg.toString();  // DEBUG: console.log(' [.] transport torrent: incoming message '+fromPeerId+' '+message);
+        // peer announcements: register new users in peer list (and return announce)
+        if(message.substr(0,2)==='@|'||message.substr(0,2)==='~|') {
+          // determine if peer relay message
+          var relay = message.substr(0,1)==='~'||false;
+          // store information in peer table
+          message = message.substr(2).split('|');
+          var fromNodeId = message[0];
+          if(fromNodeId !== nodeId) {
+            if(!relay) {
+              if(!global.hybrixd.engine[engine][handle].peers.hasOwnProperty(fromNodeId)) {
+                console.log(' [.] transport torrent: peer ['+fromPeerId+'] online');
+                // announce self (return endpoint information)
+                var message = '@|'+nodeId+'|'+global.hybrixd.engine[engine].endpoints.join();
+                // init announce message must be directly through the socket to start filling remote empty peer list
+                global.hybrixd.engine[engine][handle].socket.send(Buffer.from(message), fromPeerId);
+                console.log(' [.] transport torrent: returning endpoint information to peer ['+fromPeerId+']');
+                global.hybrixd.engine[engine][handle].peers[fromNodeId]={peerId:fromPeerId,time:(new Date).getTime()};
               } else {
-                if(!global.hybrixd.engine[engine][handle].peers.hasOwnProperty(fromNodeId)) {
-                  global.hybrixd.engine[engine][handle].peers[fromNodeId] = { peerId:null };
-                }                
                 global.hybrixd.engine[engine][handle].peers[fromNodeId].time=(new Date).getTime();
-                console.log(' [.] transport torrent: relay peer information from node '+fromNodeId);
               }
-              functions.managePeerURIs(engine,handle,relay||fromPeerId,fromNodeId,message[1]);
+            } else {
+              if(!global.hybrixd.engine[engine][handle].peers.hasOwnProperty(fromNodeId)) {
+                global.hybrixd.engine[engine][handle].peers[fromNodeId] = { peerId:null };
+              }                
+              global.hybrixd.engine[engine][handle].peers[fromNodeId].time=(new Date).getTime();
+              console.log(' [.] transport torrent: relay peer information from node '+fromNodeId);
             }
-          } else {
-            // split message into functional parts
-            var messageContent = message.substr(message.indexOf('|',1)+1,message.length);  // assemble content of message
-            message = message.split('|');
-            var nodeIdTarget = message.shift();                 // get nodeIdTarget
-            if(nodeIdTarget==='*' || nodeIdTarget===nodeId) {   // message addressed to us?
-              var messageId = message.shift();                  // get unique ID
-              var timenow = (new Date).getTime();               // add internal timestamp
-              // skip messages if buffer becomes too large!
-              if(global.hybrixd.engine[engine][handle].buffer.id.length<global.hybrixd.engine[engine].announceMaxBufferSize) {
-                global.hybrixd.engine[engine][handle].buffer.id.push(messageId);
-                global.hybrixd.engine[engine][handle].buffer.time.push(timenow);
-                global.hybrixd.engine[engine][handle].buffer.data.push(messageContent);
-                console.log(' [.] transport torrent: message arrived for ['+nodeIdTarget+'] | '+messageId+' | '+messageContent); 
-              } else {
-                console.log(' [!] transport torrent: buffer overflow, discarding messages!');
-              }
-            } // TODO: deduplication - if message to another peer cannot be found in other handles after 30 seconds, insert into other handles
+            functions.managePeerURIs(engine,handle,relay||fromPeerId,fromNodeId,message[1]);
+          }
+        } else {
+          var messageData = functions.readMessage(engine,handle,message);
+          // if target not in current channel, relay message!
+          if(messageData.nodeIdTarget!==nodeId) {
+            functions.relayMessage(engine,handle,messageData.nodeIdTarget,messageData.messageId,messageData.messageContent);
           }
         }
+      }
     });
     global.hybrixd.engine[engine][handle].socket.on("peer", (fromPeerId) => {
       // announce self (to new peer)

@@ -10,7 +10,7 @@ function open(processID,engine,host,chan,hashSalt) {
 
   if(typeof global.hybrixd.engine[engine][handle]==='undefined') {
     var irc = require('irc');
-    var port = 6667;
+    var port = 6667;  // default IRC port
     // setup the irc socket
     var peerId = 'h'+shaHash(nodeId+openTime+hashSalt).substr(0,15);
     global.hybrixd.engine[engine][handle] = { opened:openTime,protocol:'irc',host:host,channel:chan,peerId:peerId,peers:{} };
@@ -41,13 +41,8 @@ function open(processID,engine,host,chan,hashSalt) {
     // event: event fires when online
     global.hybrixd.engine[engine][handle].socket.addListener('registered', function(message) {
       console.log(' [i] transport irc: connected as peer ['+global.hybrixd.engine[engine][handle].peerId+'] on port '+port);
-      var endpoint = 'irc://'+host+'/'+chan+'/'+global.hybrixd.engine[engine][handle].peerId;
-      if(global.hybrixd.engine[engine].endpoints.indexOf(endpoint)===-1) {
-        global.hybrixd.engine[engine].endpoints.push(endpoint);
-        global.hybrixd.engine[engine].handles.push(handle);
-        global.hybrixd.engine[engine][handle].buffer = { id:[],time:[],data:[] };
-        scheduler.stop(processID, 0, handle);   
-      }
+      // add handle and endpoint
+      functions.addHandleAndEndpoint(engine,handle,global.hybrixd.engine[engine][handle].peerId,'irc://'+host+'/'+chan+'/'+global.hybrixd.engine[engine][handle].peerId);
       // send message function
       global.hybrixd.engine[engine][handle].send = function (engine,handle,message) {
         global.hybrixd.engine[engine][handle].socket.say('#'+global.hybrixd.engine[engine][handle].channel,message);
@@ -63,7 +58,7 @@ function open(processID,engine,host,chan,hashSalt) {
         var relayPeers, relayHandles;
         for (var i=0;i<peersArray.length;i++) {
           // delete idle peers
-          if((Number(global.hybrixd.engine[engine][handle].peers[peersArray[i]].time)+90000)<timenow) {
+          if((Number(global.hybrixd.engine[engine][handle].peers[peersArray[i]].time)+240000)<timenow) {
             if(global.hybrixd.engine[engine][handle].peers[peersArray[i]].peerId) {
               // only mention non-relayed peers going offline
               console.log(' [.] transport irc: peer ['+global.hybrixd.engine[engine][handle].peers[peersArray[i]].peerId+'] offline');
@@ -71,10 +66,10 @@ function open(processID,engine,host,chan,hashSalt) {
             delete global.hybrixd.engine[engine][handle].peers[peersArray[i]];
           }
           // deduplicate peer announce if not found on other channels
-          relayPeers = functions.relayPeers(engine,handle,peersArray[i]);
+          functions.relayPeers(engine,handle,peersArray[i]);
         }
-        // TODO: deduplicate messages not found on other channels
       },30000,engine,handle,chan,nodeId);
+      scheduler.stop(processID, 0, handle);   
     });
     // event: incoming message on channel
     global.hybrixd.engine[engine][handle].socket.addListener('message#'+chan, function(from,message) {
@@ -104,23 +99,11 @@ function open(processID,engine,host,chan,hashSalt) {
           functions.managePeerURIs(engine,handle,relay||fromPeerId,fromNodeId,message[1]);
         }
       } else {
-        // split message into functional parts
-        var messageContent = message.substr(message.indexOf('|',1)+1,message.length);  // assemble content of message
-        message = message.split('|');
-        var nodeIdTarget = message.shift();                 // get nodeIdTarget
-        if(nodeIdTarget==='*' || nodeIdTarget===nodeId) {   // message addressed to us?
-          var messageId = message.shift();                  // get unique ID
-          var timenow = (new Date).getTime();               // add internal timestamp
-          // skip messages if buffer becomes too large!
-          if(global.hybrixd.engine[engine][handle].buffer.id.length<global.hybrixd.engine[engine].announceMaxBufferSize) {
-            global.hybrixd.engine[engine][handle].buffer.id.push(messageId);
-            global.hybrixd.engine[engine][handle].buffer.time.push(timenow);
-            global.hybrixd.engine[engine][handle].buffer.data.push(messageContent);
-            console.log(' [.] transport irc: message arrived for ['+nodeIdTarget+'] | '+messageId+' | '+messageContent); 
-          } else {
-            console.log(' [!] transport irc: buffer overflow, discarding messages!');
-          }
-        } // TODO: deduplication - if message to another peer cannot be found in other handles after 30 seconds, insert into other handles
+        var messageData = functions.readMessage(engine,handle,message);
+        // if target not in current channel, relay message!
+        if(messageData.nodeIdTarget!==nodeId) {
+          functions.relayMessage(engine,handle,messageData.nodeIdTarget,messageData.messageId,messageData.messageContent);
+        }
       }
     });
     // event: warnings and errors
