@@ -2,10 +2,11 @@
   "symbol":"trx",
   "name":"Tron",
   "module":"quartz",
-  "mode":"trx",
+  "mode":"tron",
   "factor":6,
   "fee":0,
-  "host":["https://api.trongrid.io/wallet"],
+  "contract": "",
+  "host":["https://api.trongrid.io"],
   "cache":10000,
   "throttle":10,
   "quartz":{
@@ -13,15 +14,28 @@
       "logs(1,'module $symbol: initialized')"
     ],
     "balance" : [
-      "data('$1')",
-      "code('hex','base58')",
+      "data '$1'",
+      "code 'base58' 'hex'",
+      "case 'lower'",
       "drop -8",
-      "curl('asset://$symbol','wallet/getaccount','POST', '{\"account\": {\"address\” : $data}')"
+      "test('$contract'==='', @tronBalance, @tokenBalance)",
+      "@tronBalance",
+      "data '{address: \"$data\"}'",
+      "curl 'asset://$symbol' '/walletsolidity/getaccount' 'POST'",
+      "tran '.balance' @end @fail",
+      "@tokenBalance",
+      "pass '0'",
+      "@fail",
+      "pass '0'",
+      "@end",
+      "atom"
     ],
     "push" : [
-      "data('$1')",
-      "jpar()",
-      "curl('asset://$symbol','wallet/broadcasttransaction','POST',{'Accept':'application/json','content-type':'application/json'})",
+      "logs",
+      "done",
+      "data '$1'",
+      "jpar",
+      "curl 'asset://$symbol' 'wallet/broadcasttransaction' 'POST' '$data'",
       "test(data.error,1,2)",
       "fail(data.message)",
       "tran('.id',2,1)",
@@ -31,17 +45,11 @@
     "factor" : [
       "pass('$factor')"
     ],
-    "transaction" : [
-      "test('$1'==='TXIDTXIDTXIDTXIDTXIDTXIDTXID',1,2)",
-      "stop(0,{id:'TXIDTXIDTXIDTXIDTXIDTXIDTXID',symbol:'$symbol','fee-symbol':'$symbol'})",
-      "stop(1,'Illegal transaction id.')"
-    ],
     "history" : [
       "curl 'asset://$symbol' '/walletextension/gettransactionstothis' POST",
       "poke 'txTo'",
       "curl 'asset://$symbol' '/walletextension/gettransactionsfromthis' POST",
       "fuse 'txTo'"
-
     ],
     "contract" : [
       "pass('')"
