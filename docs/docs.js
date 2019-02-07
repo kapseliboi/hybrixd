@@ -5,7 +5,7 @@ function display (result) {
   if (result.error === 0) {
     if (result.id === 'id') {
       r += '<div class="result">[.] Waiting for result ' + result.data + '...';
-      rout('/proc/' + result.data);
+      rout('/p/' + result.data);
     } else {
       r += '<div class="result">[i] <span class="result">' + result.path + '</span> - <code>' + JSON.stringify(result.data) + '</code>';
     }
@@ -45,7 +45,7 @@ function rout (path, noHistory) {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', url, true);
   xhr.onreadystatechange = e => {
-    if (xhr.readyState == 4) {
+    if (xhr.readyState === 4) {
       if (xhr.status >= 200 && xhr.status <= 299) {
         var header = xhr.getResponseHeader('Content-Type');
         if (header === 'application/json') {
@@ -56,7 +56,9 @@ function rout (path, noHistory) {
             result = {data: 'Unknown Error', error: 1};
           }
           if (result.error === 0 && result.hasOwnProperty('progress') && result.progress !== 1) {
-            setTimeout(() => { rout(path, true); }, 500);
+            setTimeout(() => {
+              rout(path, true);
+            }, 500);
           } else {
             display(result);
           }
@@ -66,6 +68,7 @@ function rout (path, noHistory) {
       }
     }
   };
+
   xhr.send();
 }
 
