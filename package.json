@@ -16,7 +16,9 @@
     "ws": "^6.0.0",
     "xmldoc": "^1.1.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^5.8.0"
+  },
   "scripts": {
     "start": "./hybrixd",
     "setup": "sh scripts/npm/setup.sh",
