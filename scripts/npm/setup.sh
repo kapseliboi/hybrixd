@@ -59,20 +59,8 @@ if [ ! -e "$NODE/common" ];then
 
 fi
 
-
-# GIT PRE-PUSH HOOK
-if [ ! -x "$NODE/.git/hooks/pre-push" ]; then
-  echo "[i] Install git pre-push hook..."
-  cp "$NODE/hooks/pre-push" "$NODE/.git/hooks/pre-push"
-  chmod +x ./.git/hooks/pre-push
-fi
-
-# GIT COMMIT-MSG HOOK
-if [ ! -x "$NODE/.git/hooks/commit-msg" ]; then
-  echo "[i] Install git commit-msg hook..."
-  cp "$NODE/hooks/commit-msg" "$NODE/.git/hooks/commit-msg"
-  chmod +x "$NODE/.git/hooks/commit-msg"
-fi
+# GIT HOOKS
+sh "$COMMON/hooks/hooks.sh" "$NODE"
 
 cd "$WHEREAMI"
 export PATH="$OLDPATH"
