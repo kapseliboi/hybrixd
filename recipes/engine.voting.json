@@ -85,9 +85,7 @@
       "excl '.EOF' @immutable 1",
       "find '$2' @alreadyadd",
       "call 'coreAdd/eligibility/$1/$2'",
-      "done",
       "@alreadyadd",
-      "done",
       "done 'Elligibility already added!'",
       "@immutable",
       "fail 1 'Elligibility list is immutable!'"
@@ -116,7 +114,6 @@
     ],
     "coreAdd" : [
       "data '$1 $2 $hashSalt'",
-      "done",
       "hash 'sha256'",
       "poke 'idx'",
       "data '$3'",
@@ -134,7 +131,7 @@
       "@savelist",
       "fuse $inputdata",
       "save '$idx'",
-      "done 'Added $1 to list $1'",
+      "done 'Added $1 to list $2'",
       "@badinput",
       "fail 1 'Bad input, or no data to add to list!'"
     ],
