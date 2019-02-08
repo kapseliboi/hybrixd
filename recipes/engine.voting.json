@@ -76,16 +76,18 @@
       "fail 1 'Eligibility key is already in use!'"
     ],
     "listEligibility" : [
-      "call 'coreList' ['eligibility','$1','$hashSalt']",
+      "call 'coreList/eligibility/$1'",
       "excl '.EOF'",
       "done"
     ],
     "addEligibility" : [
-      "call 'coreList' ['eligibility','$1','$hashSalt']",
-      "excl '.EOF' 1 @immutable",
+      "call 'coreList/eligibility/$1'",
+      "excl '.EOF' @immutable 1",
       "find '$2' @alreadyadd",
-      "call 'coreAdd' [['eligibility','$1','$hashSalt'],'$2']",
+      "call 'coreAdd/eligibility/$1/$2'",
+      "done",
       "@alreadyadd",
+      "done",
       "done 'Elligibility already added!'",
       "@immutable",
       "fail 1 'Elligibility list is immutable!'"
@@ -103,7 +105,7 @@
       "done data"
     ],
     "coreList" : [
-      "join",
+      "data '$1 $2 $hashSalt'",
       "hash 'sha256'",
       "hook @notFoundOrEmpty",
       "load",
@@ -113,13 +115,11 @@
       "done []"
     ],
     "coreAdd" : [
-      "poke 'coreData'",
-      "pick 0",
-      "join",
+      "data '$1 $2 $hashSalt'",
+      "done",
       "hash 'sha256'",
       "poke 'idx'",
-      "peek 'coreData'",
-      "pick 1",
+      "data '$3'",
       "splt ','",
       "excl '.EOF'",
       "poke 'inputdata'",
@@ -127,14 +127,14 @@
       "true '=0' @badinput",
       "hook @emptylist",
       "load '$idx'",
-      "file",
+      "# TODO - file",
       "jpar @savelist",
       "@emptylist",
       "data []",
       "@savelist",
       "fuse $inputdata",
       "save '$idx'",
-      "done 'Added to $::coreMode list $1'",
+      "done 'Added $1 to list $1'",
       "@badinput",
       "fail 1 'Bad input, or no data to add to list!'"
     ],

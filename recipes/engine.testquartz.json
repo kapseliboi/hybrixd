@@ -115,6 +115,11 @@
       "peek 'proc::1'",
       "done"
     ],
+    "keys" : [
+      "keys",
+      "done"
+    ],
+    
     "X" : [
       "data 'placeholder'"
     ]
@@ -140,6 +145,7 @@
     "uniq"  : "Test uniq()",
     "many"  : "Test many()",
     "peek"  : "Test peek()",
+    "keys"  : "Test keys()",
     "Y" : "Test ",
     "X" : "Test "
   }
