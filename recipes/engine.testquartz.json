@@ -71,7 +71,6 @@
       "data 'OK'",
       "save 'testfile'",
       "load 'testfile'",
-      "file",
       "done"
     ],
     "push" : [
