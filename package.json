@@ -29,6 +29,7 @@
     "release": "sh scripts/npm/compile.sh",
     "release:start": "sh scripts/npm/compile.sh; sh ./dist/hybrixd",
     "cluster:start": "sh scripts/npm/cluster.sh",
+    "lint": "sh ../common/scripts/lint/lint.sh node",
     "clean": "rm -rf dist/*"
   },
   "repository": {
