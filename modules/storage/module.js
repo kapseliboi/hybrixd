@@ -1,4 +1,4 @@
-// (C) 2015 Internet of Coins / Metasync / Joachim de Koning
+// (C) 2015 Internet of Coins / Joachim de Koning
 // hybrixd module - storage/module.js
 // Module to provide storage
 
@@ -30,8 +30,9 @@ function exec (properties) {
       break;
     case 'load':
     case 'get':
-      subprocesses.push('type("file:data")');
-      subprocesses.push('func("get",{key:"' + command[1] + '"})');
+      subprocesses.push('type "file:data"');
+      subprocesses.push('func "get" {key:"' + command[1] + '"}');
+      subprocesses.push('file');
       break;
     case 'save':
     case 'set': // stores data and returns proof of work to be solved
@@ -67,8 +68,8 @@ var get = function (properties) {
 var qrtzLoad = function (properties) {
   var processID = properties.processID;
   storage.qrtzLoad(properties.key,
-    value => { scheduler.stop(processID, 0, value); },
-    error => { scheduler.stop(processID, 1, error); }
+    value => { scheduler.pass(processID, 0, value); },
+    error => { scheduler.pass(processID, 1, error); }
   );
 };
 
@@ -112,4 +113,4 @@ exports.set = set;
 exports.seek = seek;
 exports.pow = pow;
 exports.meta = meta;
-exports.qrtzLoad = qrtzLoad;
+//exports.load = qrtzLoad;
