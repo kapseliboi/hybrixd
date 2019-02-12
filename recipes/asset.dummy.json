@@ -3,6 +3,7 @@
   "name":"Dummycoin (test coin for Internet of Coins)",
   "module":"quartz",
   "mode":"dummycoin",
+  "addressRegex":"^_dummyaddress_$",
   "factor":8,
   "fee":0.15,
   "host":"none",
