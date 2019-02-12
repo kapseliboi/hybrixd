@@ -121,6 +121,14 @@
             }
           }
         }
+      },
+      "validate":{
+        "_ref" : {
+          "_list" : "address",
+          "_this":"Validate an address for this symbol.",
+          "_sample" : "_dummyaddress_",
+          "_response" : "$TRANSACTION_ID"
+        }
       }
     }
   },

@@ -62,7 +62,13 @@
       "done"
     ],
     "validate" : [
-      "fail 'Not yet implemented!'"
+      "test '$addressRegex'==='undefined' 1 3",
+      "rout '/source/wavalidator/$symbol/$1'",
+      "done",
+      "data '$1'",
+      "regx '$addressRegex' 1 2",
+      "done 'valid'",
+      "done 'invalid'"
     ],
     "details" : [
       "each {'contract':null,'factor':null,'fee':null,'fee-factor':null,'fee-symbol':null,'generated':null,'mode':null,'keygen-base':null,'unified-symbols':null} 'subdetails'",
