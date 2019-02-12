@@ -10,6 +10,8 @@ const DhtProtocol = require('./network/dht');
 const NetworkDht = require('./network/network-dht');
 const CallbackQueue = require('./callback-queue');
 
+var emissionInterval;
+
 class PeerNetwork extends EventEmitter {
     /**
      * Peer-to-peer Network
@@ -34,7 +36,7 @@ class PeerNetwork extends EventEmitter {
 
         this.__dht = new DhtProtocol(opts);
         this.__network = new NetworkDht(this.__dht);
-        this.__queue = new CallbackQueue(1000);
+        this.__queue = new CallbackQueue(10000);
 
         this.__network.on('message', (msg, from) => {
             if (!this.__network.isReady()) {
@@ -46,12 +48,16 @@ class PeerNetwork extends EventEmitter {
         });
 
         this.__network.on('destroy', () => {
+            clearInterval(emissionInterval);
             this.emit('close');
         });
 
         this.__network.on('online', (peer) => {
             this.emit('online', peer);
-            this.emit('peer', peer);
+            // agent725: fix premature peer emit
+            emissionInterval = setInterval(function() {
+              this.emit('peer', peer);
+            }.bind(this),60000,peer)
         });
 
         this.__network.on('offline', (peer) => {

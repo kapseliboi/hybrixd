@@ -53,16 +53,16 @@ function exec (properties) {
 
   global.hybrixd.proc[processID].request = properties.command; // set request to what command we are performing
 
-  var command = properties.command[0];
+  var recipecall = properties.command[0];
 
   var subprocesses = [];
-  if (recipe.hasOwnProperty('quartz') && recipe.quartz.hasOwnProperty(command)) {
-    addSubprocesses(subprocesses, recipe.quartz[command], recipe, properties.command);
+  if (recipe.hasOwnProperty('quartz') && recipe.quartz.hasOwnProperty(recipecall)) {
+    addSubprocesses(subprocesses, recipe.quartz[recipecall], recipe, properties.command);
   } else {
-    if (global.hybrixd.defaultQuartz.hasOwnProperty('quartz') && global.hybrixd.defaultQuartz.quartz.hasOwnProperty(command)) {
-      addSubprocesses(subprocesses, global.hybrixd.defaultQuartz.quartz[command], recipe, properties.command);
+    if (global.hybrixd.defaultQuartz.hasOwnProperty('quartz') && global.hybrixd.defaultQuartz.quartz.hasOwnProperty(recipecall)) {
+      addSubprocesses(subprocesses, global.hybrixd.defaultQuartz.quartz[recipecall], recipe, properties.command);
     } else {
-      subprocesses.push('stop(1,"Recipe function \'' + command + '\' not supported for \'' + id + '\'.")');
+      subprocesses.push('stop(1,"Recipe function \'' + recipecall + '\' not supported for \'' + id + '\'.")');
     }
   }
 
