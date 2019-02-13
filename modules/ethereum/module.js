@@ -3,15 +3,15 @@
 // Module to connect to ethereum or any of its derivatives
 
 // required libraries in this context
-var fs = require('fs');
-var Client = require('../../lib/rest').Client;
-var functions = require('../../lib/functions');
-var APIqueue = require('../../lib/APIqueue');
-var scheduler = require('../../lib/scheduler');
-var modules = require('../../lib/modules');
-var LZString = require('../../common/crypto/lz-string');
+let fs = require('fs');
+let Client = require('../../lib/rest').Client;
+let functions = require('../../lib/functions');
+let APIqueue = require('../../lib/APIqueue');
+let scheduler = require('../../lib/scheduler');
+let modules = require('../../lib/modules');
+let LZString = require('../../common/crypto/lz-string');
 
-var jstr = function (data) { return JSON.stringify(data); };
+let jstr = function (data) { return JSON.stringify(data).replace(/[$]/g, () => '$$'); };
 
 // exports
 exports.init = init;
@@ -20,6 +20,11 @@ exports.exec = exec;
 exports.stop = stop;
 exports.link = link;
 exports.post = post;
+
+// Checks if the given string is a plausible ETH address
+function isEthAddress (address) {
+  return (/^(0x){1}[0-9a-fA-F]{40}$/i.test(address));
+}
 
 // initialization function
 function init () {
@@ -34,23 +39,23 @@ function stop () {
 function tick (properties) {
 }
 
-var ethDeterministic;
+let ethDeterministic;
 // standard functions of an asset store results in a process superglobal -> global.hybrixd.process[processID]
 // child processes are waited on, and the parent process is then updated by the postprocess() function
 // http://docs.ethereum.org/en/latest/protocol.html
 function exec (properties) {
   // decode our serialized properties
-  var processID = properties.processID;
-  var target = properties.target;
-  var base = target.symbol.split('.')[0]; // in case of token fallback to base asset
-  var mode = target.mode;
-  var factor = (typeof target.factor !== 'undefined' ? target.factor : null);
-  var tokenfeeMultiply = 16;
-  var subprocesses = [];
+  let processID = properties.processID;
+  let target = properties.target;
+  let base = target.symbol.split('.')[0]; // in case of token fallback to base asset
+  let mode = target.mode;
+  let factor = (typeof target.factor !== 'undefined' ? target.factor : null);
+  let tokenfeeMultiply = 16;
+  let subprocesses = [];
   // set request to what command we are performing
   global.hybrixd.proc[processID].request = properties.command;
   // define the source address/wallet
-  var sourceaddr = (typeof properties.command[1] !== 'undefined' ? properties.command[1] : false);
+  let sourceaddr = (typeof properties.command[1] !== 'undefined' ? properties.command[1] : false);
   // handle standard cases here, and construct the sequential process list
   subprocesses.push('time(45000)');
   switch (properties.command[0]) {
@@ -58,11 +63,11 @@ function exec (properties) {
       if (!functions.isToken(target.symbol)) {
       // set up REST API connection
         if (typeof target.user !== 'undefined' && typeof target.pass !== 'undefined') {
-          var options_auth = {user: target.user, password: target.pass};
+          let options_auth = {user: target.user, password: target.pass};
           global.hybrixd.asset[target.symbol].link = new Client(options_auth);
         } else { global.hybrixd.asset[target.symbol].link = new Client(); }
         // initialize deterministic code for smart contract calls
-        var dcode = String(fs.readFileSync('../modules/deterministic/ethereum/deterministic.js.lzma'));
+        let dcode = String(fs.readFileSync('../modules/deterministic/ethereum/deterministic.js.lzma'));
         ethDeterministic = functions.activate(LZString.decompressFromEncodedURIComponent(dcode));
 
         // set up init probe command to check if RPC and block explorer are responding and connected
@@ -77,17 +82,17 @@ function exec (properties) {
       subprocesses.push('func("post",{target:' + jstr(target) + ',command:["updateFee"],data:data,data})');
       break;
     case 'status':
-      // set up init probe command to check if Altcoin RPC is responding and connected
+    // set up init probe command to check if Altcoin RPC is responding and connected
       subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_protocolVersion"]})');
       subprocesses.push('func("post",{target:' + jstr(target) + ',command:["status"],data:data})');
       break;
     case 'factor':
-      // directly return factor, post-processing not required!
+    // directly return factor, post-processing not required!
       subprocesses.push('done("' + factor + '")');
       break;
     case 'fee':
-      // directly return fee, post-processing not required!
-      var fee;
+    // directly return fee, post-processing not required!
+      let fee;
       if (!functions.isToken(target.symbol)) {
         fee = (typeof target.fee !== 'undefined' ? target.fee : null);
       } else {
@@ -102,9 +107,9 @@ function exec (properties) {
         if (!functions.isToken(target.symbol)) {
           subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_getBalance",["' + sourceaddr + '","latest"]]})'); // send balance query
         } else {
-          var symbol = target.symbol.split('.')[0];
+          let symbol = target.symbol.split('.')[0];
           // DEPRECATED: var encoded = '0x'+abi.simpleEncode('balanceOf(address):(uint256)',sourceaddr).toString('hex'); // returns the encoded binary (as a Buffer) data to be sent
-          var encoded = ethDeterministic.encode({'func': 'balanceOf(address):(uint256)', 'vars': ['address'], 'address': sourceaddr}); // returns the encoded binary (as a Buffer) data to be sent
+          let encoded = ethDeterministic.encode({'func': 'balanceOf(address):(uint256)', 'vars': ['address'], 'address': sourceaddr}); // returns the encoded binary (as a Buffer) data to be sent
           subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_call",[{"to":"' + target.contract + '","data":"' + encoded + '"},"pending"]]})'); // send token balance ABI query
         }
         // when bad result returned: {"status":"0","message":"NOTOK","result":"Error! Missing Or invalid Module name"
@@ -146,12 +151,9 @@ function exec (properties) {
       }
       break;
     case 'unspent':
-    // Checks if the given string is a plausible ETH address
-      function isEthAddress (address) {
-        return (/^(0x){1}[0-9a-fA-F]{40}$/i.test(address));
-      }
+
       if (isEthAddress(sourceaddr)) {
-        var targetaddr = (typeof properties.command[3] !== 'undefined' ? properties.command[3] : false);
+        let targetaddr = (typeof properties.command[3] !== 'undefined' ? properties.command[3] : false);
         if (isEthAddress(targetaddr)) {
           subprocesses.push('@retryLoop');
           subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_getTransactionCount",["' + sourceaddr + '","pending"]]})');
@@ -170,7 +172,7 @@ function exec (properties) {
       break;
     case 'contract':
     // directly return factor, post-processing not required!
-      var contract = (typeof target.contract !== 'undefined' ? target.contract : null);
+      let contract = (typeof target.contract !== 'undefined' ? target.contract : null);
       subprocesses.push('stop(0,"' + contract + '")');
       break;
     case 'transaction' :
@@ -185,18 +187,18 @@ function exec (properties) {
       // TODO formatting
       break;
     case 'details':
-      var symbol = target.symbol;
-      var name = target.name;
-      var fee;
+      let symbol = target.symbol;
+      let name = target.name;
+      var feeX;
       if (!functions.isToken(target.symbol)) {
-        fee = (typeof target.fee !== 'undefined' ? target.fee : null);
+        feeX = (typeof target.fee !== 'undefined' ? target.fee : null);
       } else {
-        fee = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee * 2.465 : null);
+        feeX = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee * 2.465 : null);
       }
-      var contract = (typeof target.contract !== 'undefined' ? target.contract : null);
-      var feefactor = global.hybrixd.asset[base].factor;
-      fee = fee && feefactor ? functions.padFloat(fee, feefactor) : fee;
-      subprocesses.push("stop(0,{symbol:'" + symbol + "', name:'" + name + "',mode:'" + mode + "',fee:'" + fee + "',contract:'" + contract + "',factor:'" + factor + "','keygen-base':'" + base + "','fee-symbol':'" + base + "','fee-factor':'" + feefactor + "','generated':'never'})");
+      var contractX = (typeof target.contract !== 'undefined' ? target.contract : null);
+      let feefactor = global.hybrixd.asset[base].factor;
+      feeX = feeX && feefactor ? functions.padFloat(feeX, feefactor) : feeX;
+      subprocesses.push("stop(0,{symbol:'" + symbol + "', name:'" + name + "',mode:'" + mode + "',fee:'" + feeX + "',contract:'" + contractX + "',factor:'" + factor + "','keygen-base':'" + base + "','fee-symbol':'" + base + "','fee-factor':'" + feefactor + "','generated':'never'})");
 
       break;
 
@@ -222,19 +224,20 @@ function exec (properties) {
 // standard function for postprocessing the data of a sequential set of instructions
 function post (properties) {
   // decode our serialized properties
-  var processID = properties.processID;
-  var target = properties.target;
-  var postdata = properties.data;
-  var base = target.symbol.split('.')[0]; // in case of token fallback to base asset
-  var factor = (typeof target.factor !== 'undefined' ? target.factor : null);
-  var feefactor = (typeof global.hybrixd.asset[base].factor !== 'undefined' ? global.hybrixd.asset[base].factor : 18);
+  let processID = properties.processID;
+  let target = properties.target;
+  let postdata = properties.data;
+  let base = target.symbol.split('.')[0]; // in case of token fallback to base asset
+  let factor = (typeof target.factor !== 'undefined' ? target.factor : null);
+  let feefactor = (typeof global.hybrixd.asset[base].factor !== 'undefined' ? global.hybrixd.asset[base].factor : 18);
   // set data to what command we are performing
   global.hybrixd.proc[processID].data = properties.command;
   // handle the command
+  let success;
   if (postdata == null) {
-    var success = false;
+    success = false;
   } else {
-    var success = true;
+    success = true;
     switch (properties.command[0]) {
       case 'init':
         if (typeof postdata.result !== 'undefined' && postdata.result > 0) {
@@ -258,19 +261,19 @@ function post (properties) {
 
 // data returned by this connector is stored in a process superglobal -> global.hybrixd.process[processID]
 function link (properties) {
-  var target = properties.target;
-  var base = target.symbol.split('.')[0]; // in case of token fallback to base asset
+  let target = properties.target;
+  let base = target.symbol.split('.')[0]; // in case of token fallback to base asset
   // decode our serialized properties
-  var processID = properties.processID;
-  var command = properties.command;
+  let processID = properties.processID;
+  let command = properties.command;
   if (DEBUG) { console.log(' [D] module ethereum: sending REST call for [' + target.symbol + '] -> ' + JSON.stringify(command)); }
   // separate method and arguments
-  var method = command.shift();
-  var params = command.shift();
+  let method = command.shift();
+  let params = command.shift();
   // launch the asynchronous rest functions and store result in global.hybrixd.proc[processID]
   // do a GET or PUT/POST based on the command input
   if (typeof params === 'string') { try { params = JSON.parse(params); } catch (e) {} }
-  var args = {
+  let args = {
     headers: {'Content-Type': 'application/json'},
     data: {'jsonrpc': '2.0', 'method': method, 'params': params, 'id': Math.floor(Math.random() * 10000)}
   };

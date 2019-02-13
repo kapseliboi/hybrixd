@@ -2,6 +2,7 @@
   "symbol":"etc",
   "name":"Ethereum Classic",
   "module":"ethereum",
+  "import":"eth",
   "mode":"ethereum.main",
   "fee":0.00005,
   "factor":18,

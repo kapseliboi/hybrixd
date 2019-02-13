@@ -3,14 +3,14 @@
 // Module to connect to NXT or any of its derivatives
 
 // required libraries in this context
-var fs = require('fs');
-var Client = require('../../lib/rest').Client;
-var functions = require('../../lib/functions');
-var APIqueue = require('../../lib/APIqueue');
-var scheduler = require('../../lib/scheduler');
-var modules = require('../../lib/modules');
+let fs = require('fs');
+let Client = require('../../lib/rest').Client;
+let functions = require('../../lib/functions');
+let APIqueue = require('../../lib/APIqueue');
+let scheduler = require('../../lib/scheduler');
+let modules = require('../../lib/modules');
 
-var jstr = function (data) { return JSON.stringify(data); };
+let jstr = function (data) { return JSON.stringify(data).replace(/[$]/g, () => '$$'); };
 
 // exports
 exports.init = init;
@@ -38,24 +38,23 @@ function tick (properties) {
 // http://docs.nxt.org/en/latest/protocol.html
 function exec (properties) {
   // decode our serialized properties
-  var processID = properties.processID;
-  var target = properties.target;
-  var base = target.symbol.split('.')[0]; // in case of token fallback to base asset
-  var mode = target.mode;
-  var factor = (typeof target.factor !== 'undefined' ? target.factor : null);
-  var fee = (typeof target.fee !== 'undefined' ? target.fee : 1);
-  var subprocesses = [];
+  let processID = properties.processID;
+  let target = properties.target;
+  let base = target.symbol.split('.')[0]; // in case of token fallback to base asset
+  let mode = target.mode;
+  let factor = (typeof target.factor !== 'undefined' ? target.factor : null);
+  let subprocesses = [];
   // set request to what command we are performing
   global.hybrixd.proc[processID].request = properties.command;
   // define the source address/wallet
-  var sourceaddr = (typeof properties.command[1] !== 'undefined' ? properties.command[1] : false);
+  let sourceaddr = (typeof properties.command[1] !== 'undefined' ? properties.command[1] : false);
   // handle standard cases here, and construct the sequential process list
   switch (properties.command[0]) {
     case 'init':
       if (!functions.isToken(target.symbol)) {
       // set up REST API connection
         if (typeof target.user !== 'undefined' && typeof target.pass !== 'undefined') {
-          var options_auth = {user: target.user, password: target.pass};
+          let options_auth = {user: target.user, password: target.pass};
           global.hybrixd.asset[target.symbol].link = new Client(options_auth);
         } else { global.hybrixd.asset[target.symbol].link = new Client(); }
 
@@ -63,9 +62,9 @@ function exec (properties) {
           global.hybrixd.asset[target.symbol].fee = 1;
         }
 
-        // set up init probe command to check if RPC and block explorer are responding and connected
-        // subprocesses.push('func("link",{target:' + jstr(target) + ',command:["getBlockchainStatus"]})');
-        // subprocesses.push('logs(1,"module nxt: "+(data?"connected":"failed connection")+" to [' + target.symbol + '] host ' + target.host + '")');
+      // set up init probe command to check if RPC and block explorer are responding and connected
+      // subprocesses.push('func("link",{target:' + jstr(target) + ',command:["getBlockchainStatus"]})');
+      // subprocesses.push('logs(1,"module nxt: "+(data?"connected":"failed connection")+" to [' + target.symbol + '] host ' + target.host + '")');
       }
       break;
     case 'status':
@@ -79,7 +78,7 @@ function exec (properties) {
       break;
     case 'fee':
     // directly return fee, post-processing not required!
-      var fee;
+      let fee;
       if (!functions.isToken(target.symbol)) {
         fee = (typeof target.fee !== 'undefined' ? target.fee : 1);
       } else {
@@ -150,22 +149,23 @@ function exec (properties) {
               subprocesses.push('stop(1,"Error: missing NXT public key!")');
             }
             if (target.symbol === 'burst') { // without doNotSign parameter
-              var fee = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee : null);
-              var feefactor = (typeof global.hybrixd.asset[base].factor !== 'undefined' ? global.hybrixd.asset[base].factor : null);
+              let fee = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee : null);
+              let feefactor = (typeof global.hybrixd.asset[base].factor !== 'undefined' ? global.hybrixd.asset[base].factor : null);
               // if(base==='nxt' && functions.toInt(amount,factor).toString()!==functions.toInt(amount,factor).toInteger().toString() ) {
               //  subprocesses.push('stop(1,"Error: NXT token transactions support only integer amounts!")');
               // }
               amount = functions.fromInt(functions.toInt(amount, factor).minus(functions.toInt(fee, factor)).toInteger(), factor).toString(); // with NXT the unspent function is a transaction preparation, so must subtract the fee
               subprocesses.push('func("link",{target:' + jstr(target) + ',command:["transferAsset",["recipient=' + targetaddr + '","asset=' + target.contract + '",' + publicKey + ',"quantityQNT=' + functions.toInt(amount, factor) + '","feeNQT=' + functions.toInt(fee, feefactor) + '","deadline=300","broadcast=false"] ]})');
             } else if (!functions.isToken(target.symbol)) {
+              let fee = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee : null);
               amount = functions.fromInt(functions.toInt(amount, factor).minus(functions.toInt(fee, factor)), factor).toString(); // with NXT the unspent function is a transaction preparation, so must subtract the fee
               if (base === 'xel') {
                 amount = functions.toInt(amount, factor);
               }
               subprocesses.push('func("link",{target:' + jstr(target) + ',command:["sendMoney",["recipient=' + targetaddr + '",' + publicKey + ',"amountNQT=' + functions.toInt(amount, factor) + '","feeNQT=' + functions.toInt(fee, factor) + '","deadline=300","doNotSign=1","broadcast=false"] ]})');
             } else {
-              var fee = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee : null);
-              var feefactor = (typeof global.hybrixd.asset[base].factor !== 'undefined' ? global.hybrixd.asset[base].factor : null);
+              let fee = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee : null);
+              let feefactor = (typeof global.hybrixd.asset[base].factor !== 'undefined' ? global.hybrixd.asset[base].factor : null);
               // if(base==='nxt' && functions.toInt(amount,factor).toString()!==functions.toInt(amount,factor).toInteger().toString() ) {
               //  subprocesses.push('stop(1,"Error: NXT token transactions support only integer amounts!")');
               // }
@@ -187,7 +187,7 @@ function exec (properties) {
       break;
     case 'contract':
     // directly return factor, post-processing not required!
-      var contract = (typeof target.contract !== 'undefined' ? target.contract : null);
+      let contract = (typeof target.contract !== 'undefined' ? target.contract : null);
       subprocesses.push('stop(0,"' + contract + '")');
       break;
     case 'history':
@@ -203,26 +203,25 @@ function exec (properties) {
     case 'details':
       var symbol = target.symbol;
       var name = target.name;
-      var fee;
-      var feeFactor;
+      let feeFactor;
+      let feeFix;
       if (!functions.isToken(target.symbol)) {
-        var fee = (typeof target.fee !== 'undefined' ? target.fee : 1);
+        feeFix = (typeof target.fee !== 'undefined' ? target.fee : 1);
         feeFactor = factor;
       } else {
-        var fee = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee : 1);
+        feeFix = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee : 1);
         feeFactor = (typeof global.hybrixd.asset[base].factor !== 'undefined' ? global.hybrixd.asset[base].factor : null);
       }
-      fee = functions.padFloat(fee, factor);
+      feeFix = functions.padFloat(feeFix, factor);
       // var base; already defined
       // var mode; already defined
       // var factor; already defined
-      var contract = (typeof target.contract !== 'undefined' ? target.contract : null);
-      subprocesses.push("stop(0,{'symbol':'" + symbol + "','name':'" + name + "','mode':'" + mode + "','contract':'" + contract + "','fee':'" + fee + "','fee-factor':'" + feeFactor + "','factor':'" + factor + "','keygen-base':'" + base + "','fee-symbol':'" + base + "','generated':'never'})");
+      var contractFix = (typeof target.contract !== 'undefined' ? target.contract : null);
+      subprocesses.push("stop(0,{'symbol':'" + symbol + "','name':'" + name + "','mode':'" + mode + "','contract':'" + contractFix + "','fee':'" + feeFix + "','fee-factor':'" + feeFactor + "','factor':'" + factor + "','keygen-base':'" + base + "','fee-symbol':'" + base + "','generated':'never'})");
       break;
     case 'sample':
-      var address;
-      var transaction;
-      var publicKey;
+      let address;
+      let transaction;
       switch (mode.split('.')[1]) {
         case 'main' : address = 'NXT-4RU9-TNCT-F3MU-8952K'; transaction = '13821793329980543744'; publicKey = '32f5fa059b39fae92e41fee6606c5afa4db80d426532fa94f50415c062794c4b'; break;
         case 'elastic' : address = 'XEL-WVUH-342G-KUK2-BJCAU'; transaction = '12238083156285810252'; publicKey = 'ac98288464ff917788a49d2ca4ccf078b66e4090e2b81c8daef8b492bcc1ef0e'; break;
@@ -240,17 +239,18 @@ function exec (properties) {
 // standard function for postprocessing the data of a sequential set of instructions
 function post (properties) {
   // decode our serialized properties
-  var processID = properties.processID;
-  var target = properties.target;
-  var postdata = properties.data;
-  var factor = (typeof target.factor !== 'undefined' ? target.factor : null);
+  let processID = properties.processID;
+  let target = properties.target;
+  let postdata = properties.data;
+  let factor = (typeof target.factor !== 'undefined' ? target.factor : null);
   // set data to what command we are performing
   global.hybrixd.proc[processID].data = properties.command;
   // handle the command
+  let success;
   if (postdata == null) {
-    var success = false;
+    success = false;
   } else {
-    var success = true;
+    success = true;
     switch (properties.command[0]) {
       case 'init':
         break;
@@ -272,7 +272,7 @@ function post (properties) {
         var balance = 0;
         if (typeof postdata.unconfirmedAssetBalances !== 'undefined' && Array.isArray(postdata.unconfirmedAssetBalances)) {
         // subprocesses.push('stop((data===null || typeof data.assetBalances==="undefined"?1:0),(data===null || typeof data.assetBalances==="undefined"?data.assetBalances:[]))');
-          for (var i = 0; i < postdata.unconfirmedAssetBalances.length; i++) {
+          for (let i = 0; i < postdata.unconfirmedAssetBalances.length; i++) {
             if (postdata.unconfirmedAssetBalances[i].asset === target.contract) {
               balance += postdata.assetBalances[i].balanceQNT;
             }
@@ -291,32 +291,34 @@ function post (properties) {
 
 // data returned by this connector is stored in a process superglobal -> global.hybrixd.process[processID]
 function link (properties) {
-  var target = properties.target;
-  var symbol = target.symbol;
-  var addRandom = symbol !== 'burst'; // Burst fails with an error if random parameter is provided
-  var base = target.symbol.split('.')[0]; // in case of token fallback to base asset
+  let target = properties.target;
+  let symbol = target.symbol;
+  let addRandom = symbol !== 'burst'; // Burst fails with an error if random parameter is provided
+  let base = target.symbol.split('.')[0]; // in case of token fallback to base asset
   // decode our serialized properties
-  var processID = properties.processID;
-  var command = properties.command;
+  let processID = properties.processID;
+  let command = properties.command;
   if (DEBUG) { console.log(' [D] module nxt: sending REST call for [' + target.symbol + '] -> ' + JSON.stringify(command)); }
   // separate method and arguments
-  var method = command.shift();
-  var params = command.shift();
+  let method = command.shift();
+  let params = command.shift();
   // launch the asynchronous rest functions and store result in global.hybrixd.proc[processID]
   // do a GET or PUT/POST based on the command input
-  var type;
+  let type;
+  let args;
+  let upath;
   if (typeof params === 'object') {
     type = 'POST';
-    var upath = '?requestType=' + method;
-    var args = {
+    upath = '?requestType=' + method;
+    args = {
       headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
       data: params.join('&') + (addRandom ? '&random=' + Math.random() : ''),
       path: upath
     };
   } else {
     type = 'GET';
-    var upath = '?requestType=' + method + (typeof params === 'undefined' ? '' : '&' + params) + (addRandom ? '&random=' + Math.random() : '');
-    var args = {
+    upath = '?requestType=' + method + (typeof params === 'undefined' ? '' : '&' + params) + (addRandom ? '&random=' + Math.random() : '');
+    args = {
       headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
       path: upath
     };
