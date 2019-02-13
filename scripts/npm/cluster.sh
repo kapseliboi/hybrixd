@@ -31,12 +31,9 @@ else
 fi
 
 if [ "$NODES" -gt "1" ]; then
-    RESTLINE=$(grep "restport" "$NODE/hybrixd.conf" | grep -v \# )
-    RESTPORT=$(echo "$RESTLINE" | cut -d ' ' -f3)
-
-    USERLINE=$(grep "userport" "$NODE/hybrixd.conf" | grep -v \# )
-    USERPORT=$(echo "$USERLINE" | cut -d ' ' -f3)
-
+    RESTPORT=8080
+    USERPORT=1111
+	SERVERLINE='servers = { "http://127.0.0.1:1111" : "/root", "http://127.0.0.1:8080" : "/source/web-wallet" }'
     NODELINE=$(grep "nodeId" "$NODE/hybrixd.conf" | grep -v \# )
 
     # Bootscript : add other nodes as peers to first node (which will be captian)
@@ -54,13 +51,11 @@ if [ "$NODES" -gt "1" ]; then
         echo " [i] cluster: preparing node $i..."
 
         rsync -aK "$NODE/" "$NODE$i/"
-        #increment restport
-        NEWRESTLINE="restport = "$((RESTPORT+$i-1))
-        sed -i -e 's/'"$RESTLINE"'/'"$NEWRESTLINE"'/g' "$NODE$i/hybrixd.conf"
 
-        #increment userport
-        NEWUSERLINE="userport = "$((USERPORT+$i-1))
-        sed -i -e 's/'"$USERLINE"'/'"$NEWUSERLINE"'/g' "$NODE$i/hybrixd.conf"
+        #replace serverline
+        NEWSERVERLINE="servers = { \"http://127.0.0.1:$((USERPORT+$i-1))\" : \"/root\", \"http://127.0.0.1:$((RESTPORT+$i-1))\" : \"/source/web-wallet\" }"
+        cat "$NODE/hybrixd.conf" | grep -v 'servers =' > "$NODE$i/hybrixd.conf"
+		echo "$NEWSERVERLINE" >> "$NODE$i/hybrixd.conf"
 
 		#force set encryption pubkeys TESTING!
 		if [ "$i" = "1" ]; then
@@ -73,7 +68,11 @@ if [ "$NODES" -gt "1" ]; then
           NEWNODELINE="nodeId = ffb2cc321cb565d7bc2f3e6959af295d7315e4d7e9a0bc123459af295d7315e4"
         fi
         sed -i -e 's/'"$NODELINE"'/'"$NEWNODELINE"'/g' "$NODE$i/hybrixd.conf"
-        
+
+		# DEBUG:
+		#echo ' ################################### '
+		#cat "$NODE$i/hybrixd.conf"
+		
         cd "$NODE$i"
         # Bootscript : aAdd other nodes as peers, first as captain
         echo "{\"quartz\":{\"main\":[" > boot.json
