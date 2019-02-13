@@ -2,6 +2,7 @@
   "engine":"transport",
   "name":"Transport engine module",
   "module":"transport",
+  "readTimeout":15000,
   "hashSalt":"Th1s1sS0m3S4lty3ntr0pyf0rTh0s3H4sh1ngFunct10ns!",
   "defaultChannel":"hybrixAnnouncements",
   "defaultIrcHost":"irc.freenode.net",

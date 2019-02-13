@@ -1,3 +1,4 @@
+var router = require('../../lib/router');
 
 function simpleProgress(processID,count) {
   setTimeout( ()=>{
@@ -117,6 +118,17 @@ function relayMessage(engine,handle,nodeIdTarget,messageId,messageContent) {
         }
       }
     },500+(2500*Math.random()),engine,handle,nodeIdTarget,messageId,messageContent);
+  }
+}
+
+function routeMessage(engine,handle,nodeIdTarget,messadeId,messageContent) {
+  // check if message can be interpreted as a REST-API call
+  if(messageContent.substr(0,1)==='/') {
+    var messageResponseId = shaHash(nodeIdTarget+messageId).substr(16,24);   // response messageId
+    var nodeIdSource = messageContent.substr(1).split('/')[0];
+    var xpath = messageContent.substr( nthIndex(messageContent,'/',2)+1 ,messageContent.length);
+    var result = router.route({url: xpath, sessionID: nodeIdTarget});
+    global.hybrixd.engine[engine][handle].send(engine,handle,nodeIdSource+'|'+messageResponseId+'|'+result);
   }
 }
 

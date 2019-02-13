@@ -143,6 +143,37 @@ function exec(properties) {
         scheduler.stop(processID, 1, 'Please specify $HANDLE/$TARGET/$MESSAGE!');
       }
       break;    
+    case 'read':
+      var handle = command[1];
+      var nodeIdTarget = command[2];   // if is *, reads messages from all targets
+      if(command[3]) {
+        var messageResponseId = shaHash(nodeIdTarget+command[3]).substr(16,24);   // if specified, read message response to previous messageId
+      }
+      var loopHandles;
+      if(handle === '*') {
+        loopHandles = global.hybrixd.engine[target.id].handles;
+      } else {
+        loopHandles = [ handle ];
+      }
+      var readInterval = setInterval(function() {
+        var handle, idx;
+        for(var i=0;i<loopHandles;i++) {
+          handle = loopHandles[i];
+          if(global.hybrixd.engine[target.id].hasOwnProperty(handle) && global.hybrixd.engine[target.id][handle].hasOwnProperty('buffer')) {
+            idx = global.hybrixd.engine[target.id][handle].buffer.id.indexOf(messageResponseId);
+            if(idx>-1) {
+              var messageData = global.hybrixd.engine[target.id][handle].buffer.data[idx];
+              global.hybrixd.engine[target.id][handle].buffer.data.splice(idx,1);
+              scheduler.stop(processID, 0, messageData);
+            }
+          }
+        }
+      },250,processID,loopHandles,messageResponseId);
+      setTimeout(function() {
+        clearInterval(readInterval);
+        scheduler.stop(processID, 1, 'Transport message read timeout!');
+      },target.readTimeout||15000,processID,readInterval);
+      break;
     case 'list':
       var err = 0;
       var result;
