@@ -10,5 +10,11 @@
   "cache":15000,
   "timeout":30000,
   "throttle":1,
-  "cron":300
+  "cron":300,
+  "quartz":{
+    "validate" : [
+      "rout '/source/wavalidator/$symbol/$1'",
+      "done"
+    ]
+  }
 }

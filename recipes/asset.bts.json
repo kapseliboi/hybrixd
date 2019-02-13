@@ -70,7 +70,6 @@
       "stop(0,'unregistered')",
       "stop(0,'valid')"
     ],
-
     "factor" : [
       "pass('$factor')"
     ],

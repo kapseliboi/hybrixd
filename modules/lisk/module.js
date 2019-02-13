@@ -3,14 +3,14 @@
 // Module to connect to CryptoNote currencies like Monero/Bytecoin or any of their derivatives
 
 // required libraries in this context
-var fs = require('fs');
-var Client = require('../../lib/rest').Client;
-var APIqueue = require('../../lib/APIqueue');
-var scheduler = require('../../lib/scheduler');
-var modules = require('../../lib/modules');
-var functions = require('../../lib/functions');
+let fs = require('fs');
+let Client = require('../../lib/rest').Client;
+let APIqueue = require('../../lib/APIqueue');
+let scheduler = require('../../lib/scheduler');
+let modules = require('../../lib/modules');
+let functions = require('../../lib/functions');
 
-var jstr = function (data) { return JSON.stringify(data); };
+let jstr = function (data) { return JSON.stringify(data).replace(/[$]/g, () => '$$'); };
 
 // exports
 exports.init = init;
@@ -37,14 +37,15 @@ function tick (properties) {
 // child processes are waited on, and the parent process is then updated by the postprocess() function
 function exec (properties) {
   // decode our serialized properties
-  var processID = properties.processID;
-  var target = properties.target;
-  var mode = target.mode;
-  var factor = (typeof target.factor !== 'undefined' ? target.factor : null);
-  var fee = (typeof target.fee !== 'undefined' ? target.fee : null);
-  var subprocesses = [];
-  var command = [];
-  var postprocessing = true;
+  let processID = properties.processID;
+  let target = properties.target;
+  let mode = target.mode;
+  let factor = (typeof target.factor !== 'undefined' ? target.factor : null);
+  let fee = (typeof target.fee !== 'undefined' ? target.fee : 8);
+
+  let subprocesses = [];
+  let command = [];
+  let postprocessing = true;
   // set request to what command we are performing
   global.hybrixd.proc[processID].request = properties.command;
   // handle standard cases here, and construct the sequential process list
@@ -52,12 +53,12 @@ function exec (properties) {
     case 'init':
     // set up REST API connection
       if (typeof target.user !== 'undefined' && typeof target.pass !== 'undefined') {
-        var options_auth = {user: target.user, password: target.pass};
+        let options_auth = {user: target.user, password: target.pass};
         global.hybrixd.asset[target.symbol].link = new Client(options_auth);
       } else { global.hybrixd.asset[target.symbol].link = new Client(); }
       // set up init probe command to check if Altcoin RPC is responding and connected
       subprocesses.push('func("link",{target:' + jstr(target) + ',command:["/api/blocks/getStatus"]})');
-      subprocesses.push('func("post",{target:' + jstr(target) + ',command:["init"],data:data,data})');
+      subprocesses.push('func("post",{target:' + jstr(target) + ',command:["init"],data})');
       subprocesses.push('pass( (data != null && typeof data.success!="undefined" && data.success ? 1 : 0) )');
       subprocesses.push('logs(1,"module lisk: "+(data?"connected":"failed connection")+" to [' + target.symbol + '] host ' + target.host + '",data)');
       break;
@@ -75,12 +76,13 @@ function exec (properties) {
       subprocesses.push('stop(0,"' + factor + '")');
       break;
     case 'fee':
-    // directly relay factor, post-processing not required!
+      let fee = (typeof target.fee !== 'undefined' ? target.fee : null);
+      // directly relay factor, post-processing not required!
       subprocesses.push('stop(0,"' + functions.padFloat(fee, factor) + '")');
       break;
     case 'balance':
     // define the source address/wallet
-      var sourceaddr = (typeof properties.command[1] !== 'undefined' ? properties.command[1] : '');
+      let sourceaddr = (typeof properties.command[1] !== 'undefined' ? properties.command[1] : '');
       if (sourceaddr) {
         subprocesses.push('func("link",{target:' + jstr(target) + ',command:["/api/accounts/getBalance?address=' + sourceaddr + '"]})'); // send balance query
         subprocesses.push('stop((typeof data.balance!=="undefined"?0:1),(typeof data.balance==="undefined"?null:functions.padFloat(functions.fromInt(data.balance,' + factor + '),' + factor + ')))');
@@ -103,14 +105,14 @@ function exec (properties) {
       subprocesses.push('stop(0,{"unspents":[],"change":"0"})');
       break;
     case 'transaction':
-      // lsk api endpoints do not seem to exist
-      // subprocesses.push('func("link",{target:' + jstr(target) + ',command:["/api/transaction/getTransaction?transactionId=' + properties.command[1] + '"]})');
+    // lsk api endpoints do not seem to exist
+    // subprocesses.push('func("link",{target:' + jstr(target) + ',command:["/api/transaction/getTransaction?transactionId=' + properties.command[1] + '"]})');
       subprocesses.push('stop(1,"Transaction not yet supported for lisk module!")');
       break;
     case 'history':
     // if(typeof properties.command[1] != 'undefined') { if(properties.command[1] == 'pending') { var transfertype = 'unavailable' } else { var transfertype = 'available'; } } else { var transfertype = 'available'; }
     // /api/transactions?blockId=blockId&senderId=senderId&recipientId=recipientId&limit=limit&offset=offset&orderBy=field
-      var sourceaddr = (typeof properties.command[1] !== 'undefined' ? properties.command[1] : 'local');
+      sourceaddr = (typeof properties.command[1] !== 'undefined' ? properties.command[1] : 'local');
       var limit = (typeof properties.command[2] !== 'undefined' ? '&limit=' + properties.command[2] : '');
       var offset = (typeof properties.command[3] !== 'undefined' ? '&offset=' + properties.command[3] : '');
       // var startdate = (typeof properties.command[1] != 'undefined'?properties.command[1]:(Date.now()-(86400*14)));
@@ -120,18 +122,20 @@ function exec (properties) {
       subprocesses.push('func("link",' + jstr({target, command}) + ')');
       break;
     case 'details':
-      var symbol = target.symbol;
-      var name = target.name;
-      var fee = fee && factor ? functions.padFloat(fee, factor) : null;
-      var base = target.symbol.split('.')[0];
+      const symbol = target.symbol;
+      const name = target.name;
+      let factorX = (typeof target.factor !== 'undefined' ? target.factor : null);
+      let feeX = (typeof target.fee !== 'undefined' ? target.fee : 8);
+      feeX = feeX && factorX ? functions.padFloat(feeX, factor) : null;
+      const base = target.symbol.split('.')[0];
       // var mode; already defined
       // var factor; already defined
-      var contract = null;
-      subprocesses.push("stop(0,{symbol:'" + symbol + "', name:'" + name + "',mode:'" + mode + "',fee:'" + fee + "',contract:'" + contract + "',factor:'" + factor + "','keygen-base':'" + base + "','fee-symbol':'" + base + "'})");
+      const contract = null;
+      subprocesses.push("stop(0,{symbol:'" + symbol + "', name:'" + name + "',mode:'" + mode + "',fee:'" + feeX + "',contract:'" + contract + "',factor:'" + factorX + "','keygen-base':'" + base + "','fee-symbol':'" + base + "'})");
       break;
     case 'sample':
-      var address;
-      var transaction;
+      let address;
+      let transaction;
       if (mode === 'ark') {
         address = 'AQYZJ6Mkv4DhnXhrXdxXwNKRKGvgrkhnRF'; transaction = 'f70e8f32e8a16c1dd1a0e97fa4075f96d8e8e16065d1a4406851252832d8e608';
       } else {
@@ -153,17 +157,18 @@ function exec (properties) {
 // standard function for postprocessing the data of a sequential set of instructions
 function post (properties) {
   // decode our serialized properties
-  var processID = properties.processID;
-  var target = properties.target;
-  var postdata = properties.data;
-  var factor = (typeof target.factor !== 'undefined' ? target.factor : null);
+  let processID = properties.processID;
+  let target = properties.target;
+  let postdata = properties.data;
+  let factor = (typeof target.factor !== 'undefined' ? target.factor : null);
   // set data to what command we are performing
   global.hybrixd.proc[processID].data = properties.command;
   // handle the command
+  let success;
   if (postdata == null) {
-    var success = false;
+    success = false;
   } else {
-    var success = true;
+    success = true;
     switch (properties.command[0]) {
       case 'init':
       // set asset fee for Lisk transactions
@@ -182,7 +187,7 @@ function post (properties) {
         collage.testmode = 0;
 
         var rTrim = function (str, charlist) {
-          if (charlist === undefined) { charlist = '\s'; }
+          if (charlist === undefined) { charlist = '\\s'; }
           return str.replace(new RegExp('[' + charlist + ']+$'), '');
         };
 
@@ -190,13 +195,13 @@ function post (properties) {
 
         if (postdata.liskA != null) {
           if (typeof postdata.liskA !== 'undefined') {
-            collage.synced = (typeof postdata.liskA.blocks !== 'undefined'	? (postdata.liskA.blocks ? 0 : 1) : null);
-            collage.blocks = (typeof postdata.liskA.height !== 'undefined'	? postdata.liskA.height : null);
+            collage.synced = (typeof postdata.liskA.blocks !== 'undefined' ? (postdata.liskA.blocks ? 0 : 1) : null);
+            collage.blocks = (typeof postdata.liskA.height !== 'undefined' ? postdata.liskA.height : null);
           // ADD blocktime
           }
           if (typeof postdata.liskB !== 'undefined') {
-          // collage.fee = (typeof postdata.liskB.fee != 'undefined'	? postdata.liskB.fee : null);
-            collage.supply = (typeof postdata.liskB.supply !== 'undefined'	? postdata.liskB.supply : null);
+          // collage.fee = (typeof postdata.liskB.fee != 'undefined' ? postdata.liskB.fee : null);
+            collage.supply = (typeof postdata.liskB.supply !== 'undefined' ? postdata.liskB.supply : null);
             collage.difficulty = (typeof postdata.liskB.milestone !== 'undefined' ? postdata.liskB.milestone : null);
           }
         }
@@ -212,22 +217,22 @@ function post (properties) {
 
 // data returned by this connector is stored in a process superglobal -> global.hybrixd.process[processID]
 function link (properties) {
-  var processID = properties.processID;
-  var target = properties.target;
-  var mode = target.mode;
-  var base = target.symbol.split('.')[0]; // in case of token fallback to base asset
-  var command = properties.command;
+  let processID = properties.processID;
+  let target = properties.target;
+  let mode = target.mode;
+  let base = target.symbol.split('.')[0]; // in case of token fallback to base asset
+  let command = properties.command;
   if (DEBUG) { console.log(' [D] module lisk: sending REST call for [' + target.symbol + '] -> ' + JSON.stringify(command)); }
   // separate path and arguments
-  var upath = command.shift();
-  var params = command.shift();
-  var args = {};
+  let upath = command.shift();
+  let params = command.shift();
+  let args = {};
   // do a GET or PUT/POST based on the command input
-  var type;
+  let type;
   if (typeof params !== 'undefined') {
     if (typeof params === 'string') { try { params = JSON.parse(params); } catch (e) {} }
-    var nethash = (typeof properties.nethash !== 'undefined' ? properties.nethash : '');
-    var version;
+    let nethash = (typeof properties.nethash !== 'undefined' ? properties.nethash : '');
+    let version;
     // alternative version reporting for other lisk derivatives
     switch (mode.split('.')[1]) {
       case 'rise':
@@ -240,7 +245,7 @@ function link (properties) {
         version = '0.9.9';
         break;
     }
-    if (upath.substr(0, 5) == '/api/') {
+    if (upath.substr(0, 5) === '/api/') {
       type = 'PUT';
       args = {
         headers: {'Content-Type': 'application/json', 'version': version, 'port': 1, 'nethash': nethash},

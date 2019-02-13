@@ -2,6 +2,7 @@
   "symbol":"exp",
   "name":"Expanse",
   "module":"ethereum",
+  "import":"eth",
   "mode":"ethereum.main",
   "fee":0.00025,
   "factor":18,

@@ -3,6 +3,8 @@
   "name":"Ark",
   "module":"lisk",
   "mode":"ark",
+  "import":"rise",
+  "addressRegex":"^A\\w{33}$",
   "factor":8,
   "fee":0.1,
   "host":["https://node1.arknet.cloud"],

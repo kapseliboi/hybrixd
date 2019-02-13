@@ -14,7 +14,7 @@
         }
       },
       "history" : {
-        "_help" : "Retrieve the transaction history for an address at one of the available blockexplorers."
+        "_help" : "Retrieve the transaction history for an address at one of the available blockexplorers.",
         "_ref":{
           "_list" : "address",
           "_this" : "Provide the $ADDRESS for which to get the transaction history."
@@ -28,15 +28,15 @@
         }
       },
       "unspent" : {
-        "_help" : "Retrieve the unspents at one of the available blockexplorers for $SYMBOL."
+        "_help" : "Retrieve the unspents at one of the available blockexplorers for $SYMBOL.",
         "_ref":{
           "_ellipsis": true,
           "_list" : "address",
-          "_this" : "Provide the $ADDRESS to get the unspents."
-	      "_ref":{
-	        "_list" : "amount",
-	        "_this" : "Provide the $AMOUNT to calculate the unspents and change value."
-	      }
+          "_this" : "Provide the $ADDRESS to get the unspents.",
+          "_ref":{
+            "_list" : "amount",
+            "_this" : "Provide the $AMOUNT to calculate the unspents and change value."
+          }
         }
       }
     }

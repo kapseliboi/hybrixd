@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 WHEREAMI=`pwd`
 
@@ -53,9 +53,9 @@ if [ "$NODES" -gt "1" ]; then
         fi
 
         #force set encryption pubkeys TESTING!
-        if [ "$i" -eq 1 ]; then
+        if [ "$i" -eq "1" ]; then
             NEWNODELINE="nodeId = 6118abfd4fe4582d0fc7de7295975147c7aa53dd9982c2c962025e7f34b76b63"
-        elif [ "$i" -eq 2 ]; then
+        elif [ "$i" -eq "2" ]; then
             NEWNODELINE="nodeId = 13b2cc321cb565d7bc2f3e6959af295d7315e3137e70ea505ea79161d4502ccc"
         fi
         if [ "$i" -eq "3" ]; then
