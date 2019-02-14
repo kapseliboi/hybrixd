@@ -3,6 +3,7 @@
   "name":"Mock coin (test coin for Internet of Coins)",
   "module":"quartz",
   "mode":"mockcoin.main",
+  "addressRegex":"^\\d{3}$",
   "contract" :"main",
   "factor":8,
   "fee":0.15,

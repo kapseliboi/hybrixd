@@ -3,6 +3,7 @@
   "name":"Bitcoin Cash - MAINTENANCE",
   "module":"quartz",
   "mode":"bitcoinjslib.bitcoincash",
+  "addressRegex":"^[a-zA-Z0-9]{34}$",
   "factor":8,
   "fee":0.00001,
   "host":["tcp://electrum3.cipig.net:10051","tcp://electrum2.cipig.net:10051","tcp://electrum1.cipig.net:10051"],

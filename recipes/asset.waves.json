@@ -3,6 +3,7 @@
   "name":"Waves",
   "module":"quartz",
   "mode":"waves",
+  "addressRegex":"3[A-Za-z0-9]{34}$",
   "factor":8,
   "fee":0.001,
   "host": ["https://nodes.wavesplatform.com","https://nodes.wavesnodes.com"],
