@@ -1,9 +1,10 @@
 {
-    "symbol":"nxt.adl",
-    "name":"Adelphoi",
-    "module":"nxt",
-    "mode":"nxt.token",
-    "contract":"17477397104276156702",
-    "originator":"NXT-RLML-Z42X-VJAH-HMW55",
-    "factor":6
+  "symbol":"nxt.adl",
+  "name":"Adelphoi",
+  "module":"quartz",
+  "import":"nxt",
+  "mode":"nxt.token",
+  "contract":"17477397104276156702",
+  "originator":"NXT-RLML-Z42X-VJAH-HMW55",
+  "factor":6
 }

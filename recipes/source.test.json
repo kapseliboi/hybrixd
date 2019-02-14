@@ -9,16 +9,9 @@
   "quartz" : {
 
     "test" : [
-      "keys",
-      "poke 'keys'",
-      "keys",
-      "poke 'keys2'",
-      "data 'hello world'",
-      "sign $keys.secret",
-      "logs",
-      "sign $keys.public 1 2",
-      "done",
-      "fail"
+      "data ['1','2']",
+      "math",
+      "done"
     ]
   }
 }

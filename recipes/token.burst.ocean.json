@@ -1,9 +1,10 @@
 {
-    "symbol":"burst.ocean",
-    "name":"BurstOcean",
-    "module":"nxt",
-    "mode":"nxt.burst-token",
-    "contract":"6896197830923766736",
-    "originator":"BURST-HP7D-PER2-2DGS-8SZM5",
-    "factor":2
+  "symbol":"burst.ocean",
+  "name":"BurstOcean",
+  "module":"quartz",
+  "import":"burst",
+  "mode":"nxt.burst-token",
+  "contract":"6896197830923766736",
+  "originator":"BURST-HP7D-PER2-2DGS-8SZM5",
+  "factor":2
 }

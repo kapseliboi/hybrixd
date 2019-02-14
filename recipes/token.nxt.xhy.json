@@ -1,9 +1,10 @@
 {
-    "symbol":"nxt.xhy",
-    "name":"Internet of Coins hybrix Asset (NXT)",
-    "module":"nxt",
-    "mode":"nxt.token",
-    "contract":"17179021398403681515",
-    "originator":"NXT-FCXQ-K5NB-EA5E-CF36G",
-    "factor":8
+  "symbol":"nxt.xhy",
+  "name":"Internet of Coins hybrix Asset (NXT)",
+  "module":"quartz",
+  "import":"nxt",
+  "mode":"nxt.token",
+  "contract":"17179021398403681515",
+  "originator":"NXT-FCXQ-K5NB-EA5E-CF36G",
+  "factor":8
 }

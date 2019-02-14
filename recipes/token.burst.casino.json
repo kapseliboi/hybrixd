@@ -1,9 +1,10 @@
 {
-    "symbol":"burst.casino",
-    "name":"Casino",
-    "module":"nxt",
-    "mode":"nxt.burst-token",
-    "contract":"15266167261394017138",
-    "originator":"BURST-9JXW-F3YW-U8RG-ESSDG",
-    "factor":8
+  "symbol":"burst.casino",
+  "name":"Casino",
+  "module":"quartz",
+  "import":"burst",
+  "mode":"nxt.burst-token",
+  "contract":"15266167261394017138",
+  "originator":"BURST-9JXW-F3YW-U8RG-ESSDG",
+  "factor":8
 }
