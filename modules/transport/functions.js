@@ -1,3 +1,5 @@
+var router = require('../../lib/router');
+var shaHash = require('js-sha256').sha224;
 
 function simpleProgress(processID,count) {
   setTimeout( ()=>{
@@ -120,6 +122,17 @@ function relayMessage(engine,handle,nodeIdTarget,messageId,messageContent) {
   }
 }
 
+function routeMessage(engine,handle,nodeIdTarget,messageId,messageContent) {
+  var sessionID = nodeIdTarget;
+  var messageResponseId = shaHash(nodeIdTarget+messageId).substr(16,24);   // response messageId
+  var nodeIdSource = messageContent.split('/')[0];
+  var xpath = '/'+messageContent.substr( messageContent.indexOf('/')+1 , messageContent.length );
+  if(xpath) {
+    var response = JSON.stringify( router.route({url: xpath, sessionID: sessionID}) );
+    global.hybrixd.engine[engine][handle].send(engine,handle,nodeIdSource+'|'+messageResponseId+'|'+response);
+  }
+}
+
 function nthIndex(str, pat, n){
     var L= str.length, i= -1;
     while(n-- && i++<L){
@@ -167,3 +180,4 @@ exports.relayPeers = relayPeers;
 exports.relayMessage = relayMessage;
 exports.addHandleAndEndpoint = addHandleAndEndpoint;
 exports.readMessage = readMessage;
+exports.routeMessage = routeMessage;

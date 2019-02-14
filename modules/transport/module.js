@@ -8,6 +8,8 @@ var scheduler = require('../../lib/scheduler');
 var modules = require('../../lib/modules');
 var transportIrc = require('./transportIrc.js');
 var transportTorrent = require('./transportTorrent.js');
+var shaHash = require('js-sha256').sha224
+var jstr = function (data) { return JSON.stringify(data); };
 
 // initialization function
 function init () {
@@ -99,50 +101,29 @@ function exec(properties) {
       }
       break;
     case 'send':
-      function sendMessage(engine,handle,nodeIdTarget,messageId,message) {
-        var messageContent = nodeIdTarget+'|'+messageId+'|'+message;
-        global.hybrixd.engine[engine][handle].send(engine,handle,messageContent);
-        return messageId;
-      }
-      var handle = command[1];
-      var nodeIdTarget = command[2]; // if is *, sends broadcast to all targets
-      var message = command[3];      // unencrypted message
-      // create unique message ID
-      var shaHash = require('js-sha256').sha224
-      var openTime = (new Date).getTime();
-      var messageId = shaHash(nodeId+target.hashSalt+openTime).substr(16,24);        
-      if(handle && nodeIdTarget && message) {
-        if(handle==='*') {
-          // loop through all handles and broadcast
-          for(var i=0;i<global.hybrixd.engine[target.id].handles.length;i++) {
-            handle = global.hybrixd.engine[target.id].handles[i];
-            if(global.hybrixd.engine[target.id].hasOwnProperty(handle) && global.hybrixd.engine[target.id][handle].hasOwnProperty('protocol')) {
-              messageId = sendMessage( target.id,
-                           handle,
-                           nodeIdTarget,
-                           messageId,
-                           message );
-            }
-          }
-          scheduler.stop(processID, 0, messageId);
-        } else {
-          if(global.hybrixd.engine[target.id].handles.indexOf(handle)>-1) {
-            if(global.hybrixd.engine[target.id].hasOwnProperty(handle) && global.hybrixd.engine[target.id][handle].hasOwnProperty('protocol')) {
-              messageId = sendMessage( target.id,
-                           handle,
-                           nodeIdTarget,
-                           messageId,
-                           message );
-            }
-            scheduler.stop(processID, 0, messageId);
-          } else {
-            scheduler.stop(processID, 404, 'Specified handle does not exist!');
-          }
-        }
-      } else {
-        scheduler.stop(processID, 1, 'Please specify $HANDLE/$TARGET/$MESSAGE!');
-      }
+      send(target.id,command);
       break;    
+    case 'read':
+      read(target.id,command);
+      break;
+    /*
+    case 'call':
+      command.shift();   // remove call item
+      var nodeIdTarget = command.shift();
+      var sendCommand = ['*',nodeIdTarget].concat(command);
+      var subprocesses = [];
+      subprocesses.push('poke "readCommand" ["*","'+nodeIdTarget+'"]');
+      subprocesses.push('func "send" {target:'+jstr(target)+',command:'+jstr(sendCommand)+'}');
+      subprocesses.push('poke "messageId"');
+      subprocesses.push('peek "readCommand"');
+      subprocesses.push('push "$messageId"');
+      subprocesses.push('fuse '+jstr(command));
+      subprocesses.push('done');
+      subprocesses.push('func "read" {target:'+jstr(target)+',command:["*","'+nodeIdTarget+'",data}');
+      //subprocesses.push('func("send",'+JSON.stringify(sendCommand)+')');
+      scheduler.fire(processID, subprocesses);
+      break;
+      */
     case 'list':
       var err = 0;
       var result;
@@ -182,6 +163,105 @@ function exec(properties) {
   }
 }
 
+function sendMessage(engine,handle,nodeIdTarget,messageId,message) {
+  var messageContent = nodeIdTarget+'|'+messageId+'|'+message;
+  global.hybrixd.engine[engine][handle].send(engine,handle,messageContent);
+  return messageId;
+}
+
+function send(properties) {
+  var processID = properties.processID;
+  var engine = properties.target.id;
+  var command = properties.command;
+  var nodeId = global.hybrixd.nodeId;
+  var handle = command.shift();         // get handle
+  var nodeIdTarget = command.shift();   // if is *, sends broadcast to all targets
+  var message = command.join('/');      // unencrypted message
+  // create unique message ID
+  var openTime = (new Date).getTime();
+  var messageId = shaHash(nodeId+engine.hashSalt+openTime).substr(16,24);        
+  if(handle && nodeIdTarget && message) {
+    if(handle==='*') {
+      // loop through all handles and broadcast
+      for(var i=0;i<global.hybrixd.engine[engine].handles.length;i++) {
+        handle = global.hybrixd.engine[engine].handles[i];
+        if(global.hybrixd.engine[engine].hasOwnProperty(handle) && global.hybrixd.engine[engine][handle].hasOwnProperty('protocol')) {
+          messageId = sendMessage( engine,
+                       handle,
+                       nodeIdTarget,
+                       messageId,
+                       message );
+        }
+      }
+      scheduler.stop(processID, 0, messageId);
+    } else {
+      if(global.hybrixd.engine[engine].handles.indexOf(handle)>-1) {
+        if(global.hybrixd.engine[engine].hasOwnProperty(handle) && global.hybrixd.engine[engine][handle].hasOwnProperty('protocol')) {
+          messageId = sendMessage( engine,
+                       handle,
+                       nodeIdTarget,
+                       messageId,
+                       message );
+        }
+        scheduler.stop(processID, 0, messageId);
+      } else {
+        scheduler.stop(processID, 1, 'Specified handle does not exist!');
+      }
+    }
+  } else {
+    scheduler.stop(processID, 1, 'Please specify $HANDLE/$TARGET/$MESSAGE!');
+  }
+}
+
+function read(properties) {
+  var processID = properties.processID;
+  var engine = properties.target.id;
+  var command = properties.command;
+  var handle = command[1];
+  var nodeId = global.hybrixd.nodeId;
+  var nodeIdTarget = command[2];   // if is *, reads messages from all targets
+  if(command[3]) {
+    var messageResponseId = shaHash(nodeIdTarget+command[3]).substr(16,24);   // if specified, read message response to previous messageId
+    var loopHandles;
+    if(handle === '*') {
+      loopHandles = global.hybrixd.engine[engine].handles;
+    } else {
+      loopHandles = [ handle ];
+    }
+    if(loopHandles.length>0) {
+      var readInterval = setInterval(function() {
+        var curHandle, idx;
+        for(var i=0;i<loopHandles.length;i++) {
+          curHandle = loopHandles[i];
+          if(global.hybrixd.engine[engine].hasOwnProperty(curHandle) && global.hybrixd.engine[engine][curHandle].hasOwnProperty('buffer')) {
+            idx = global.hybrixd.engine[engine][curHandle].buffer.id.indexOf(messageResponseId);
+            if(idx>-1) {
+              try {
+                var messageData = JSON.parse(global.hybrixd.engine[engine][curHandle].buffer.data[idx]);
+                global.hybrixd.engine[engine][curHandle].buffer.data.splice(idx,1);
+                scheduler.stop(processID, 0, messageData);
+              }
+              catch(e) {
+                scheduler.stop(processID, 1, 'Cannot decode response message!');
+              }
+            }
+          }
+        }
+      },250,processID,loopHandles,messageResponseId);
+      setTimeout(function() {
+        clearInterval(readInterval);
+        scheduler.stop(processID, 1, 'Transport message read timeout!');
+      },engine.readTimeout?engine.readTimeout:15000,processID,readInterval);
+    } else {
+      scheduler.stop(processID, 1, 'There are no active transport handles!');
+    }
+  } else {
+    scheduler.stop(processID, 1, 'Please specify a message ID!');
+  }
+}  
+
 // exports
 exports.init = init;
 exports.exec = exec;
+exports.send = send;
+exports.read = read;
