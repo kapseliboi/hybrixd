@@ -1,9 +1,10 @@
 {
-    "symbol":"burst.lex",
-    "name":"Lex4All",
-    "module":"nxt",
-    "mode":"nxt.burst-token",
-    "contract":"2264511436216725766",
-    "originator":"BURST-KN9G-WJH6-BGAA-GWLWF",
-    "factor":0
+  "symbol":"burst.lex",
+  "name":"Lex4All",
+  "module":"quartz",
+  "import":"burst",
+  "mode":"nxt.burst-token",
+  "contract":"2264511436216725766",
+  "originator":"BURST-KN9G-WJH6-BGAA-GWLWF",
+  "factor":0
 }

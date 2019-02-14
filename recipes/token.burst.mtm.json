@@ -1,9 +1,10 @@
 {
-    "symbol":"burst.mtm",
-    "name":"MTMGaming",
-    "module":"nxt",
-    "mode":"nxt.burst-token",
-    "contract":"15836104858047390466",
-    "originator":"BURST-5ANP-LRWY-77B8-2F72Y",
-    "factor":0
+  "symbol":"burst.mtm",
+  "name":"MTMGaming",
+  "module":"quartz",
+  "import":"burst",
+  "mode":"nxt.burst-token",
+  "contract":"15836104858047390466",
+  "originator":"BURST-5ANP-LRWY-77B8-2F72Y",
+  "factor":0
 }

@@ -1,20 +1,118 @@
 {
   "symbol":"nxt",
   "name":"NXT",
-  "module":"nxt",
+  "module":"quartz",
   "mode":"nxt.main",
   "addressRegex":"^NXT(-[A-HJ-N-P-Z2-9]{4}){4}[A-HJ-N-P-Z2-9]$",
   "factor":8,
-  "fee":"1",
+  "fee":1,
   "host":["https://eu6.woll-e.net:7876/nxt","http://nxt01.now.im:7876/nxt","http://gtwins2.f3322.net:7876/nxt","https://nxt1.y.cz:7876/nxt","https://nxt2.y.cz:7876/nxt","https://enricoip.no-ip.biz:7876/nxt","https://nxt2.utut.org:7876/nxt","https://nxt.utila.nl:7876/nxt"],
   "cache":15000,
   "throttle":5,
   "quartz":{
-    "validate" : [
-      "data '$1'",
-      "regx '$addressRegex' 1 2",
-      "done 'valid'",
-      "done 'invalid'"
-      ]
+    "balance":[
+      "data '$symbol'",
+      "find '.' 1 3",
+      "call 'tokenBalance/$1'",
+      "jump 2",
+      "call 'mainBalance/$1'"
+    ],
+    "mainBalance":[
+      "@retryLoop",
+      "curl 'asset://$symbol' '?requestType=getBalance&account=$1' 'GET' {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}",
+      "tran '.unconfirmedBalanceNQT' @returnBalance 1",
+      "tran '.errorCode' 1 @retry",
+      "flow 5 1 @retry",
+      "done 0",
+      "atom",
+      "@retry",
+      "logs 2,'module nxt: bad RPC response, retrying request...'",
+      "wait 1500",
+      "loop @retryLoop 'retries' '<5' '1'",
+      "fail '0'",
+      "@returnBalance",
+      "atom",
+      "done"
+    ],
+    "tokenBalance":[
+      "@tokenRetryLoop",
+      "curl 'asset://$symbol' '?requestType=getAccount&account=$1&includeAssets=true&includeCurrencies=true' 'GET' {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}",
+      "tran '.unconfirmedAssetBalances' @returnTokenBalance 1",
+      "logs 2,'module nxt: bad RPC response, retrying request...'",
+      "wait 1500",
+      "loop @tokenRetryLoop 'retries' '<5' '1'",
+      "data '0'",
+      "@returnTokenBalance",
+      "find {asset:'$contract'} 4 1",
+      "data '0'",
+      "atom",
+      "done",
+      "tran '[0].unconfirmedBalanceQNT' 2 1",
+      "fail",
+      "atom",
+      "done"
+    ],
+    "unspent":[
+      "data '$symbol'",
+      "find '.' 1 3",
+      "call 'tokenUnspent/$1/$2/$3/$4'",
+      "done",
+      "call 'mainUnspent/$1/$2/$3/$4'",
+      "done"
+    ],
+    "mainUnspent":[
+      "call 'fee'",
+      "poke 'numFee'",
+      "atom true",
+      "poke 'txFee'",
+      "data '$2'",
+      "math '-$numFee'",
+      "atom true",
+      "poke 'txAmount'",
+      "data 'recipient=$3&publicKey=$4&amountNQT=$txAmount&feeNQT=$txFee&deadline=300&doNotSign=1&broadcast=false'",
+      "curl 'asset://$symbol' '?requestType=sendMoney' 'POST' {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}",
+      "poke 'result'",
+      "logs",
+      "tran '.errorDescription' 1 2",
+      "fail",
+      "done $result"
+    ],
+    "tokenUnspent":[
+      "call 'fee'",
+      "poke 'numFee'",
+      "atom true",
+      "poke 'txFee'",
+      "data '$2'",
+      "math '-$numFee'",
+      "atom true",
+      "poke 'txAmount'",
+      "data 'recipient=$3&asset=$contract&publicKey=$4&quantityQNT=$txAmount&feeNQT=$txFee&deadline=300&doNotSign=1&broadcast=false'",
+      "curl 'asset://$symbol' '?requestType=transferAsset' 'POST' {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}",
+      "tran '.errorDescription' 1 2",
+      "fail",
+      "done"
+    ],
+    "push":[
+      "@retryLoop",
+      "curl 'asset://$symbol' '?requestType=broadcastTransaction&transactionBytes=$1' 'GET' {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}",
+      "tran('.transaction',1,3)",
+      "done",
+      "logs(2,'module nxt: bad RPC response, retrying request...')",
+      "wait(1500)",
+      "loop(@retryLoop,'retries','<5','1')",
+      "fail('Error: $symbol network not responding. Cannot push transaction!')"
+    ],
+    "transaction" : [
+      "curl 'asset://$symbol' '?requestType=getTransaction&transaction=$1' 'GET' {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}",
+      "tran({id:'.transaction',fee:'.feeNQT',attachment:'=.attachment|none',timestamp:'.timestamp',symbol:'$symbol','fee-symbol':'$symbol',amount:'.amountNQT',source:'.sender',target:'.recipient'},2,1)",
+      "stop(1,data)",
+      "stop(0,data)"
+    ],
+    "history" : [
+      "fail 'Not Implemented Yet.'"
+    ],
+    "sample" : [
+      "done({address:'NXT-4RU9-TNCT-F3MU-8952K',transaction:'13821793329980543744',publicKey:'32f5fa059b39fae92e41fee6606c5afa4db80d426532fa94f50415c062794c4b'})"
+    ]
   }
 }

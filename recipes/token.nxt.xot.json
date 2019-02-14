@@ -1,9 +1,10 @@
 {
-    "symbol":"nxt.xot",
-    "name":"Internet of Things",
-    "module":"nxt",
-    "mode":"nxt.token",
-    "contract":"2334865625411578067",
-    "originator":"NXT-JDAD-PQ4J-LMHA-29QGG",
-    "factor":7
+  "symbol":"nxt.xot",
+  "name":"Internet of Things",
+  "module":"quartz",
+  "import":"nxt",
+  "mode":"nxt.token",
+  "contract":"2334865625411578067",
+  "originator":"NXT-JDAD-PQ4J-LMHA-29QGG",
+  "factor":7
 }

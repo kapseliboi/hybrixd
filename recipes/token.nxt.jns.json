@@ -1,9 +1,10 @@
 {
-    "symbol":"nxt.jns",
-    "name":"Janus",
-    "module":"nxt",
-    "mode":"nxt.token",
-    "contract":"4348103880042995903",
-    "originator":"NXT-QG74-VNQK-7FQ3-4KFBA",
-    "factor":5
+  "symbol":"nxt.jns",
+  "name":"Janus",
+  "module":"quartz",
+  "import":"nxt",
+  "mode":"nxt.token",
+  "contract":"4348103880042995903",
+  "originator":"NXT-QG74-VNQK-7FQ3-4KFBA",
+  "factor":5
 }
