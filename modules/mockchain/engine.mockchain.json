@@ -2,6 +2,24 @@
   "engine":"mockchain",
   "name":"Mockchain Explorer.",
   "module":"mockchain",
+  "quartz":{
+    "mine" : ["func 'mine'"],
+    "balance" : [
+      "data '$1'",
+      "logs",
+      "flow {'main':1} 3",
+      "rout '/asset/mock/factor'",
+      "jump 2",
+      "rout '/asset/mock.$1/factor'",
+      "poke 'factor'",
+      "func 'balance'",
+      "form '$factor'",
+      "done"
+    ],
+    "history" : ["func 'history'"],
+    "push" : ["func 'push'"],
+    "transaction" : ["func 'transaction'"]
+  },
   "router" : {
     "balance" : {
       "_ref" : {
