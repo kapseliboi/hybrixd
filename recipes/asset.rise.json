@@ -1,19 +1,42 @@
 {
   "symbol":"rise",
   "name":"Rise",
-  "module":"lisk",
+  "module":"quartz",
   "mode":"lisk.rise",
   "addressRegex":"^\\d{19}\\d?R$",
   "factor":8,
+  "fee":"0.1",
   "host":["https://wallet.rise.vision"],
   "cache":15000,
   "throttle":5,
+  "version" : "0.1.2",
   "quartz":{
-    "validate" : [
-      "data '$1'",
-      "regx '$addressRegex' 1 2",
-      "done 'valid'",
-      "done 'invalid'"
+    "balance" :[
+      "curl 'asset://$symbol' '/api/accounts/getBalance?address=$1' 'GET' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': ''}",
+      "tran('.unconfirmedBalance',2,1)",
+      "fail 'Balance could not be retrieved'",
+      "atom",
+      "done"
+    ],
+    "unspent" :[
+      "done {unspents:[],change:'0'}"
+    ],
+    "sample" : [
+      "done {address:'13188395790866768123R',transaction:'11931543500510473853'}"
+    ],
+    "history":[
+      "curl 'asset://$symbol' '/api/transactions?recipientId=$1&limit=50&offset=0' 'GET' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': ''}"
+    ],
+    "push":[
+      "curl 'asset://$symbol' '/api/blocks/getNetHash' 'GET' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': ''}",
+      "tran('.nethash',2,1)",
+      "fail 'nethash could not be retrieved'",
+      "poke 'nethash'",
+      "data {transaction: '$1'}",
+      "curl 'asset://$symbol' '/peer/transactions' 'POST' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': '$nethash'}",
+      "tran('.transactionId',2,1)",
+      "fail",
+      "done"
     ]
   }
 }

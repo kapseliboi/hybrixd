@@ -1,12 +1,19 @@
 {
   "symbol":"shift",
   "name":"Shift",
-  "module":"lisk",
+  "module":"quartz",
   "mode":"lisk.shift",
   "import":"rise",
   "addressRegex":"^\\d{19}\\d?S$",
   "factor":8,
+  "fee":"0.1",
   "host":["https://wallet.shiftnrg.org/"],
   "cache":15000,
-  "throttle":5
+  "throttle":5,
+  "version":"6.6.2",
+  "quartz":{
+    "sample" : [
+      "done {address:'16296503595969372386S',transaction:'6908341461331361507'}"
+    ]
+  }
 }

@@ -1,7 +1,7 @@
 {
   "symbol":"ark",
   "name":"Ark",
-  "module":"lisk",
+  "module":"quartz",
   "mode":"ark",
   "import":"rise",
   "addressRegex":"^A\\w{33}$",
@@ -9,5 +9,12 @@
   "fee":0.1,
   "host":["https://node1.arknet.cloud"],
   "cache":15000,
-  "throttle":5
+  "throttle":5,
+  "version":"0.9.9",
+  "quartz":{
+    "sample" : [
+      "done {address:'AQYZJ6Mkv4DhnXhrXdxXwNKRKGvgrkhnRF',transaction:'f70e8f32e8a16c1dd1a0e97fa4075f96d8e8e16065d1a4406851252832d8e608'}"
+    ]
+  }
+
 }
