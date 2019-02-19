@@ -39,7 +39,7 @@
       "curl('asset://$symbol','/api/transactions?id=$1&limit=1&offset=0','GET',{Accept:'application/json','Content-Type':'application/json'})"
     ],
     "sample" : [
-      "stop(0,{address:'5920921428156130553L',transaction:'12391912764023208573'})"
+      "done {address:'5920921428156130553L',transaction:'12391912764023208573'}"
     ],
     "history" : [
       "curl('asset://$symbol','/api/transactions?recipientId=$1','GET',{Accept:'application/json','Content-Type':'application/json'})"
