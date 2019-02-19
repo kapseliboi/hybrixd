@@ -1,34 +1,33 @@
 // (C) 2015 Internet of Coins / Metasync / Joachim de Koning
 // hybrixd module - deterministic/module.js
 // Module to provide deterministic cryptography tools
-var scheduler = require('../../lib/scheduler');
-var DJB2 = require('../../common/crypto/hashDJB2'); // fast DJB2 hashing
-var fs = require('fs');
 
-var jstr = function (data) { return JSON.stringify(data); };
+let DJB2 = require('../../common/crypto/hashDJB2'); // fast DJB2 hashing
+let fs = require('fs');
 
 // exports
 exports.init = init;
-exports.exec = exec;
+exports.assets = assets;
+exports.modes = modes;
+exports.hashes = hashes;
+exports.hash = hash;
 
 // initialization function
 function init () {
   // initialize available modes
-  var assets = {};
-  var modes = {};
-  var hashes = {};
-  var mode = '';
-  for (var asset in global.hybrixd.asset) {
-    mode = (typeof global.hybrixd.asset[asset].mode !== 'undefined' ? global.hybrixd.asset[asset].mode : false);
+  let assets = {};
+  let modes = {};
+  let hashes = {};
+  for (let asset in global.hybrixd.asset) {
+    let mode = (typeof global.hybrixd.asset[asset].mode !== 'undefined' ? global.hybrixd.asset[asset].mode : false);
     if (mode) {
       // index the modes
       assets[asset] = mode;
       if (typeof modes[mode] === 'undefined') { modes[mode] = []; }
       modes[mode].push(asset);
-      // if(typeof modes[mode.split('.')[0]]==='undefined') { modes[mode.split('.')[0]]=[]; }
-      // modes[mode.split('.')[0]].push(asset);
+
       // hash the deterministic packages
-      var filename = '../modules/deterministic/' + mode.split('.')[0] + '/deterministic.js.lzma';
+      let filename = '../modules/deterministic/' + mode.split('.')[0] + '/deterministic.js.lzma';
       if (typeof hashes[mode.split('.')[0]] === 'undefined' && fs.existsSync(filename)) {
         hashes[mode.split('.')[0]] = DJB2.hash(String(fs.readFileSync(filename)));
         console.log(' [i] module deterministic: hashed mode ' + mode.split('.')[0]);
@@ -40,68 +39,33 @@ function init () {
   global.hybrixd.source['deterministic'].hashes = hashes;
 }
 
-// standard functions of an asset store results in a process superglobal -> global.hybrixd.process[processID]
-// child processes are waited on, and the parent process is then updated by the postprocess() function
-// standard functions of an asset store results in a process superglobal -> global.hybrixd.process[processID]
-// child processes are waited on, and the parent process is then updated by the postprocess() function
-// http://docs.electrum.org/en/latest/protocol.html
-function exec (properties) {
-  // decode our serialized properties
-  var processID = properties.processID;
-  // var source = properties.source;
-  var target = properties.target;
-  var command = properties.command;
-  if (typeof command[1] !== 'undefined') {
-    var symbol = command[1].toLowerCase();
-    var base = symbol.split('.')[0];
-  }
-  var subprocesses = [];
-  // set request to what command we are performing
+function assets (proc) {
+  proc.pass(global.hybrixd.source['deterministic'].assets);
+}
 
-  switch (command[0]) {
-    case 'assets':
-      subprocesses.push('stop(0,' + jstr(global.hybrixd.source['deterministic'].assets) + ')');
-      break;
-    case 'modes':
-      subprocesses.push('stop(0,' + jstr(global.hybrixd.source['deterministic'].modes) + ')');
-      break;
-    case 'hashes':
-      subprocesses.push('stop(0,' + jstr(global.hybrixd.source['deterministic'].hashes) + ')');
-      break;
-    case 'hash':
-      if (base) {
-        var modetype = base;
-        for (var entry in global.hybrixd.source['deterministic'].modes) {
-          if (global.hybrixd.source['deterministic'].modes[entry].indexOf(symbol) !== -1) {
-            modetype = entry;
-          }
-        }
-        var basemode = modetype.split('.')[0];
-        if (typeof global.hybrixd.source['deterministic'].hashes[basemode] !== 'undefined') {
-          subprocesses.push('stop(0,{deterministic:"' + modetype + '",hash:"' + global.hybrixd.source['deterministic'].hashes[basemode] + '"})');
-        } else {
-          subprocesses.push('stop(1,"Error: Mode or symbol does not exist!")');
-        }
-      } else {
-        subprocesses.push('stop(1,"Error: Please specify a mode or symbol!")');
-      }
-      break;
-    case 'code':
-      if (typeof command[1] !== 'undefined' && command[1]) {
-        var fileName = 'modules/deterministic/' + command[1] + '/deterministic.js.lzma';
-        if (fs.existsSync('../' + fileName)) {
-          subprocesses.push('type("file:data")');
-          subprocesses.push('stop(0,"' + fileName + '")');
-        } else {
-          subprocesses.push('stop(404,"Error: Mode does not exist!")');
-        }
-      } else {
-        subprocesses.push('stop(1,"Error: Please specify a mode! Example: /source/deterministic/code/altcoin")');
-      }
-      break;
-    default:
-      subprocesses.push('stop(1,"Source function not supported!")');
+function modes (proc) {
+  proc.pass(global.hybrixd.source['deterministic'].modes);
+}
+
+function hashes (proc) {
+  proc.pass(global.hybrixd.source['deterministic'].hashes);
+}
+
+function hash (proc) {
+  const command = proc.command;
+  const symbol = command[1].toLowerCase();
+  const base = symbol.split('.')[0];
+
+  let modetype = base;
+  for (let entry in global.hybrixd.source['deterministic'].modes) {
+    if (global.hybrixd.source['deterministic'].modes[entry].indexOf(symbol) !== -1) {
+      modetype = entry;
+    }
   }
-  // fire the Qrtz-language program into the subprocess queue
-  scheduler.fire(processID, subprocesses);
+  let basemode = modetype.split('.')[0];
+  if (typeof global.hybrixd.source['deterministic'].hashes[basemode] !== 'undefined') {
+    proc.pass({deterministic: modetype, hash: global.hybrixd.source['deterministic'].hashes[basemode]});
+  } else {
+    proc.fail('Error: Mode or symbol does not exist!');
+  }
 }

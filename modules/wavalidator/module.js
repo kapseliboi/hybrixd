@@ -14,7 +14,7 @@ function validate (proc, data) {
 
   let symbol = command[0].toUpperCase().split('.')[0];
   let address = command[1];
-
+  console.log(symbol);
   if (symbol === 'UBQ' || symbol === 'EXP') { symbol = 'ETH'; }
   if (symbol === 'XCP' || symbol === 'OMNI') { symbol = 'BTC'; }
 
