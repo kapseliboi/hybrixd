@@ -2,25 +2,41 @@
   "source":"deterministic",
   "name":"Deterministic",
   "module":"deterministic",
+  "quartz":{
+    "assets" : [
+      "func 'assets'"
+    ],
+    "code" : [
+      "type 'file:data'",
+      "done '../modules/deterministic/$1/deterministic.js.lzma'"
+    ],
+    "hash" : [
+      "func 'hash'"
+    ],
+    "hashes" : [
+      "func 'hashes'"
+    ],
+    "modes" : [
+      "func 'modes'"
+    ]
+  },
   "router" : {
-    "command" : {
-        "_this":"Execute a direct command.",
-        "_access":"root"
-      },
-      "assets":"List available assets.",
-      "code": {
-        "_ref":{
-          "_list" : "mode",
-          "_this" : "Returns the lzma compressed deterministic blobs (client side code) for a `$MODE` ."
-        }
-      },
-      "hash":  {
-        "_ref":{
-          "_list" : "mode",
-          "_this" : "Returns the DJB2 hash of the deterministic blobs (client side code) for `$MODE` ."
-        }
-      },
-      "hashes":"Returns the DJB2 hash of all deterministic blobs (client side code).",
-      "modes":"List available modes."
+    "assets":"List available assets.",
+    "code": {
+      "_ref":{
+        "_list" : "mode",
+        "_sample" : "dummycoin",
+        "_this" : "Returns the lzma compressed deterministic blobs (client side code) for a `$MODE` ."
+      }
+    },
+    "hash":  {
+      "_ref":{
+        "_list" : "mode",
+        "_sample" : "dummycoin",
+        "_this" : "Returns the DJB2 hash of the deterministic blobs (client side code) for `$MODE` ."
+      }
+    },
+    "hashes":"Returns the DJB2 hash of all deterministic blobs (client side code).",
+    "modes":"List available modes."
   }
 }

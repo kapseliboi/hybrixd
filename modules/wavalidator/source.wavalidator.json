@@ -2,6 +2,12 @@
   "source":"wavalidator",
   "name":"Wallet Address Validator",
   "module":"wavalidator",
+
+  "quartz":{
+    "_root" : [
+      "func 'validate'"
+    ]
+  },
   "router" : {
     "_help" : "Validate address formatting.",
     "_ref" : {
