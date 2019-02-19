@@ -1,6 +1,8 @@
 // (C) 2015 Internet of Coins / Metasync / Joachim de Koning
 // required libraries in this context
-let scheduler = require('../../lib/scheduler');
+const scheduler = require('../../lib/scheduler');
+// load validators
+const stellarValidator = require('./validators/validator.xlm.js');
 
 // exports
 exports.init = init;
@@ -116,6 +118,12 @@ function exec (properties) {
   } else if (symbol === 'TRX') { // MOVED TO RECIPE
     if (address.length === 34 && address.startsWith('T')) {
       // TODO should be improved
+      subprocesses.push("stop(0,'valid')");
+    } else {
+      subprocesses.push("stop(0,'invalid')");
+    }
+  } else if (symbol === 'XLM') {
+    if (stellarValidator.isValidPublicKey(address)) {
       subprocesses.push("stop(0,'valid')");
     } else {
       subprocesses.push("stop(0,'invalid')");
