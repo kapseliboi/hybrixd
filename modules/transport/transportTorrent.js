@@ -4,7 +4,7 @@ var functions = require('./functions.js');
 function open(processID,engine,channel,passwd,hashSalt) {
   var shaHash = require('js-sha256').sha224
   var openTime = (new Date).getTime();
-  var nodeId = global.hybrixd.nodeId;
+  var nodeId = global.hybrixd.node.publicKey;
     // TODO: when wrong host or channel input, warn user and quit!!
   var handle = shaHash(nodeId+channel+passwd+hashSalt).substr(16,24);;
 
@@ -104,8 +104,10 @@ function open(processID,engine,channel,passwd,hashSalt) {
           }
         } else {
           var messageData = functions.readMessage(engine,handle,message);
-          // if target not in current channel, relay message!
-          if(messageData.nodeIdTarget!==nodeId) {
+          // if target is us, route (and respond) to message
+          if(messageData.nodeIdTarget===nodeId) {
+            functions.routeMessage(engine,handle,messageData.nodeIdTarget,messageData.messageId,messageData.messageContent);
+          } else { // else relay the message to other channels
             functions.relayMessage(engine,handle,messageData.nodeIdTarget,messageData.messageId,messageData.messageContent);
           }
         }

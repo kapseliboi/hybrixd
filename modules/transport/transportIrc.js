@@ -4,7 +4,7 @@ var functions = require('./functions.js');
 function open(processID,engine,host,chan,hashSalt) {
   var shaHash = require('js-sha256').sha224
   var openTime = (new Date).getTime();
-  var nodeId = global.hybrixd.nodeId;
+  var nodeId = global.hybrixd.node.publicKey;
     // TODO: when wrong host or channel input, warn user and quit!!
   var handle = shaHash(nodeId+host+chan+hashSalt).substr(16,24);;
 
@@ -51,24 +51,24 @@ function open(processID,engine,host,chan,hashSalt) {
       clearInterval(global.hybrixd.engine[engine][handle].announce);
       global.hybrixd.engine[engine][handle].announce = setInterval(function() {
         // announce self
-        global.hybrixd.engine[engine][handle].send(engine,handle,'@|'+nodeId+'|'+global.hybrixd.engine[engine].endpoints.join());
+        global.hybrixd.engine[this.engine][this.handle].send(this.engine,this.handle,'@|'+this.nodeId+'|'+global.hybrixd.engine[this.engine].endpoints.join());
         // perform housecleaning of peer list
-        var peersArray = Object.keys(global.hybrixd.engine[engine][handle].peers);
+        var peersArray = Object.keys(global.hybrixd.engine[this.engine][this.handle].peers);
         var timenow = (new Date).getTime();
         var relayPeers, relayHandles;
         for (var i=0;i<peersArray.length;i++) {
           // delete idle peers
-          if((Number(global.hybrixd.engine[engine][handle].peers[peersArray[i]].time)+240000)<timenow) {
-            if(global.hybrixd.engine[engine][handle].peers[peersArray[i]].peerId) {
+          if((Number(global.hybrixd.engine[this.engine][this.handle].peers[peersArray[i]].time)+240000)<timenow) {
+            if(global.hybrixd.engine[this.engine][this.handle].peers[peersArray[i]].peerId) {
               // only mention non-relayed peers going offline
-              console.log(' [.] transport irc: peer ['+global.hybrixd.engine[engine][handle].peers[peersArray[i]].peerId+'] offline');
+              console.log(' [.] transport irc: peer ['+global.hybrixd.engine[this.engine][this.handle].peers[peersArray[i]].peerId+'] offline');
             }
-            delete global.hybrixd.engine[engine][handle].peers[peersArray[i]];
+            delete global.hybrixd.engine[this.engine][this.handle].peers[peersArray[i]];
           }
           // deduplicate peer announce if not found on other channels
-          functions.relayPeers(engine,handle,peersArray[i]);
+          functions.relayPeers(this.engine,this.handle,peersArray[i]);
         }
-      },30000,engine,handle,chan,nodeId);
+      }.bind({engine:engine,handle:handle,chan:chan,nodeId:nodeId}),30000); //,engine,handle,chan,nodeId);
       scheduler.stop(processID, 0, handle);   
     });
     // event: incoming message on channel
@@ -81,27 +81,31 @@ function open(processID,engine,host,chan,hashSalt) {
         message = message.substr(2).split('|');
         var fromNodeId = message[0];
         if(fromNodeId !== nodeId) {
-          if(!relay) {
-            var fromPeerId = from;
-            if(!global.hybrixd.engine[engine][handle].peers.hasOwnProperty(fromNodeId)) {
-              console.log(' [.] transport irc: peer ['+fromPeerId+'] online');
-              global.hybrixd.engine[engine][handle].peers[fromNodeId]={peerId:fromPeerId,time:(new Date).getTime()};
+          if(global.hybrixd.engine[engine][handle] && global.hybrixd.engine[engine][handle].peers) {
+            if(!relay) {
+              var fromPeerId = from;
+              if(!global.hybrixd.engine[engine][handle].peers.hasOwnProperty(fromNodeId)) {
+                console.log(' [.] transport irc: peer ['+fromPeerId+'] online');
+                global.hybrixd.engine[engine][handle].peers[fromNodeId]={peerId:fromPeerId,time:(new Date).getTime()};
+              } else {
+                global.hybrixd.engine[engine][handle].peers[fromNodeId].time=(new Date).getTime();
+              }
             } else {
+              if(!global.hybrixd.engine[engine][handle].peers.hasOwnProperty(fromNodeId)) {
+                global.hybrixd.engine[engine][handle].peers[fromNodeId] = { peerId:null };
+              }
               global.hybrixd.engine[engine][handle].peers[fromNodeId].time=(new Date).getTime();
+              console.log(' [.] transport irc: relay peer information from node '+fromNodeId);
             }
-          } else {
-            if(!global.hybrixd.engine[engine][handle].peers.hasOwnProperty(fromNodeId)) {
-              global.hybrixd.engine[engine][handle].peers[fromNodeId] = { peerId:null };
-            }
-            global.hybrixd.engine[engine][handle].peers[fromNodeId].time=(new Date).getTime();
-            console.log(' [.] transport irc: relay peer information from node '+fromNodeId);
           }
           functions.managePeerURIs(engine,handle,relay||fromPeerId,fromNodeId,message[1]);
         }
       } else {
         var messageData = functions.readMessage(engine,handle,message);
-        // if target not in current channel, relay message!
-        if(messageData.nodeIdTarget!==nodeId) {
+        // if target is us, route (and respond) to message
+        if(messageData.nodeIdTarget===nodeId) {
+          functions.routeMessage(engine,handle,messageData.nodeIdTarget,messageData.messageId,messageData.messageContent);
+        } else { // else relay the message to other channels
           functions.relayMessage(engine,handle,messageData.nodeIdTarget,messageData.messageId,messageData.messageContent);
         }
       }
