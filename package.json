@@ -7,17 +7,19 @@
     "lib": "lib"
   },
   "dependencies": {
-    "cssmin": "^0.4.3",
     "progress": "^2.0.0",
     "stdio": "^0.2.7",
+    "base32.js": "0.1.0",
+    "crc": "3.5.0",
     "teletype": "^0.2.0",
-    "uglify-es": "^3.3.9",
     "wallet-address-validator": "^0.1.7",
     "ws": "^6.0.0",
     "xmldoc": "^1.1.2"
   },
   "devDependencies": {
-    "eslint": "^5.8.0"
+    "eslint": "^5.8.0",
+    "uglify-es": "^3.3.9",
+    "cssmin": "^0.4.3"
   },
   "scripts": {
     "start": "./hybrixd",
