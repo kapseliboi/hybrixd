@@ -1,5 +1,7 @@
 var router = require('../../lib/router');
 var shaHash = require('js-sha256').sha224;
+//let baseCode = require('../../common/basecode');
+var UrlBase64 = require('../../common/crypto/urlbase64');
 
 function simpleProgress(processID,count) {
   setTimeout( ()=>{
@@ -123,13 +125,19 @@ function relayMessage(engine,handle,nodeIdTarget,messageId,messageContent) {
 }
 
 function routeMessage(engine,handle,nodeIdTarget,messageId,messageContent) {
-  var sessionID = nodeIdTarget;
-  var messageResponseId = shaHash(nodeIdTarget+messageId).substr(16,24);   // response messageId
-  var nodeIdSource = messageContent.split('/')[0];
-  var xpath = '/'+messageContent.substr( messageContent.indexOf('/')+1 , messageContent.length );
-  if(xpath) {
-    var response = JSON.stringify( router.route({url: xpath, sessionID: sessionID}) );
-    global.hybrixd.engine[engine][handle].send(engine,handle,nodeIdSource+'|'+messageResponseId+'|'+response);
+  if(typeof messageContent==='string' && messageContent.substr(0,1) !== '#') {
+    var sessionID = nodeIdTarget;
+    var nodeIdSource = messageContent.split('/')[0];
+    var messageResponseId = shaHash(nodeIdSource+messageId).substr(16,24);   // response messageId
+    var xpath = '/'+messageContent.substr( messageContent.indexOf('/')+1 , messageContent.length );
+    if(xpath) {
+      //var response = baseCode.recode('utf-8','base58', '#'+JSON.stringify( router.route({url: xpath, sessionID: sessionID}) ) );
+      var routeResult = router.route({url: xpath, sessionID: sessionID});
+      console.log(' RESPONSE: '+JSON.stringify(routeResult) );
+      var response = UrlBase64.safeCompress( '#'+JSON.stringify( routeResult ) );
+      console.log(' RESPONSECRYPTED: '+response);
+      global.hybrixd.engine[engine][handle].send(engine,handle,nodeIdSource+'|'+messageResponseId+'|'+response);
+    }
   }
 }
 
@@ -142,16 +150,22 @@ function nthIndex(str, pat, n){
     return i;
 }
 
+
+
 function readMessage(engine,handle,message) {  
   var relay = message.substr(0,1)==='+'?true:false;
   if(relay) { message = message.substr(2); }
-  var messageContent = message.substr( nthIndex(message,'|',2)+1 ,message.length);
+  var messageBase = message.substr( nthIndex(message,'|',2)+1 ,message.length);
+  console.log(' INCOMING: '+messageBase);
+  //var messageContent = baseCode.recode('base58','utf-8', messageBase);
+  var messageContent = UrlBase64.safeDecompress(messageBase);
+  console.log(' DECODED: '+messageContent);
   message = message.split('|');
   var nodeIdTarget = message.shift();                 // get nodeIdTarget
   var messageId = message.shift();                    // get unique ID
   global.hybrixd.engine[engine][handle].idStack.push(messageId);  // make sure to register the message ID on stack  
   // determine if peer relay message
-  if(nodeIdTarget==='*' || nodeIdTarget===global.hybrixd.nodeId) {   // message addressed to us?
+  if(nodeIdTarget==='*' || nodeIdTarget===global.hybrixd.node.publicKey) {   // message addressed to us?
     var timenow = (new Date).getTime();               // add internal timestamp
     var transport = global.hybrixd.engine[engine][handle].protocol;
     // skip messages if buffer becomes too large!

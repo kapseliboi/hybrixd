@@ -4,7 +4,7 @@ var functions = require('./functions.js');
 function open(processID,engine,channel,passwd,hashSalt) {
   var shaHash = require('js-sha256').sha224
   var openTime = (new Date).getTime();
-  var nodeId = global.hybrixd.nodeId;
+  var nodeId = global.hybrixd.node.publicKey;
     // TODO: when wrong host or channel input, warn user and quit!!
   var handle = shaHash(nodeId+channel+passwd+hashSalt).substr(16,24);;
 

@@ -10,7 +10,16 @@
   "cron" : 300,
   "quartz" : {
     "call" : [
-      "done 'WOOOT!'"
+      "# get the node's public key/ID",
+      "with 'nodeId' 'node'",
+      "# create path out of arguments",
+      "data $@",
+      "pull",
+      "push '$nodeId' 1",
+      "join '/'",
+      "call 'send/*/$'",
+      "call 'read/*/$nodeId/$'",
+      "done"
     ]
   },
   "router" : {
