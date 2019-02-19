@@ -3,6 +3,39 @@
   "name":"Storage engine module",
   "module":"storage",
   "cron" : 300,
+  "quartz"  : {
+    "init":[
+      "func 'init'"
+    ],
+    "seek":[
+      "data {key:'$1'}",
+      "func 'seek'"
+    ],
+    "load":[
+      "data {key:'$1'}",
+      "func 'load'",
+      "type 'file:data'",
+      "file"
+    ],
+    "cron":[
+      "func 'cron'"
+    ],
+    "save":[
+      "data {key:'$1',value:'$2'}",
+      "func 'save'"
+    ],
+    "meta":[
+      "data {key:'$1'}",
+      "func 'meta'"
+    ],
+    "burn":[
+      "fail 'Deleting data from node storage is not supported!'"
+    ],
+    "work":[
+      "data {key:'$1', pow:'$2'}",
+      "func 'work'"
+    ]
+  },
   "router" : {
     "_help" : "Control the decentralized storage engine.",
     "seek":{
@@ -42,7 +75,7 @@
     },
     "del":{"_alias":"burn"},
     "work":{
-	  "_help" : "Provide proof-of-work for long term storage.",
+      "_help" : "Provide proof-of-work for long term storage.",
       "_ref" : {
         "_list" : "key",
         "_help" : "Specify the ID key to provide proof for.",
