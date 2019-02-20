@@ -13,3 +13,4 @@ var/*
 var/log/*
 var/recipes/*
 versions.json
+hybrixd.keys
