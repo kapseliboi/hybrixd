@@ -11,5 +11,10 @@
   "cache":15000,
   "timeout":30000,
   "throttle":1,
-  "cron":300
+  "cron":300,
+  "quartz" : {
+    "sample":[
+      "done {address:'0xfc9ab9b2833c4df13cea63da666906b565522f12',transaction:'0x59c8e36e6e4e9a8697419ad66f245dc21970b9e69efe3898ddd4435b821a43aa'}"
+    ]
+  }
 }

@@ -15,9 +15,7 @@ let jstr = function (data) { return JSON.stringify(data).replace(/[$]/g, () => '
 
 // exports
 exports.init = init;
-exports.tick = tick;
 exports.exec = exec;
-exports.stop = stop;
 exports.link = link;
 exports.post = post;
 
@@ -31,14 +29,6 @@ function init () {
   modules.initexec('ethereum', ['init']);
 }
 
-// stop function
-function stop () {
-}
-
-// scheduled ticker function
-function tick (properties) {
-}
-
 let ethDeterministic;
 // standard functions of an asset store results in a process superglobal -> global.hybrixd.process[processID]
 // child processes are waited on, and the parent process is then updated by the postprocess() function
@@ -48,9 +38,7 @@ function exec (properties) {
   let processID = properties.processID;
   let target = properties.target;
   let base = target.symbol.split('.')[0]; // in case of token fallback to base asset
-  let mode = target.mode;
   let factor = (typeof target.factor !== 'undefined' ? target.factor : null);
-  let tokenfeeMultiply = 16;
   let subprocesses = [];
   // set request to what command we are performing
   global.hybrixd.proc[processID].request = properties.command;
@@ -81,15 +69,6 @@ function exec (properties) {
       subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_gasPrice"]})');
       subprocesses.push('func("post",{target:' + jstr(target) + ',command:["updateFee"],data:data,data})');
       break;
-    case 'status':
-    // set up init probe command to check if Altcoin RPC is responding and connected
-      subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_protocolVersion"]})');
-      subprocesses.push('func("post",{target:' + jstr(target) + ',command:["status"],data:data})');
-      break;
-    case 'factor':
-    // directly return factor, post-processing not required!
-      subprocesses.push('done("' + factor + '")');
-      break;
     case 'fee':
     // directly return fee, post-processing not required!
       let fee;
@@ -107,8 +86,6 @@ function exec (properties) {
         if (!functions.isToken(target.symbol)) {
           subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_getBalance",["' + sourceaddr + '","latest"]]})'); // send balance query
         } else {
-          let symbol = target.symbol.split('.')[0];
-          // DEPRECATED: var encoded = '0x'+abi.simpleEncode('balanceOf(address):(uint256)',sourceaddr).toString('hex'); // returns the encoded binary (as a Buffer) data to be sent
           let encoded = ethDeterministic.encode({'func': 'balanceOf(address):(uint256)', 'vars': ['address'], 'address': sourceaddr}); // returns the encoded binary (as a Buffer) data to be sent
           subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_call",[{"to":"' + target.contract + '","data":"' + encoded + '"},"pending"]]})'); // send token balance ABI query
         }
@@ -170,11 +147,6 @@ function exec (properties) {
         subprocesses.push('stop(1,"Error: bad or missing source address!")');
       }
       break;
-    case 'contract':
-    // directly return factor, post-processing not required!
-      let contract = (typeof target.contract !== 'undefined' ? target.contract : null);
-      subprocesses.push('stop(0,"' + contract + '")');
-      break;
     case 'transaction' :
       subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_getTransactionByHash",["' + sourceaddr + '"]]})');
       subprocesses.push("tran({id:'.result.hash',fee:'.result.gas',attachment:'.result.input',timestamp:'unknown',symbol:'" + target.symbol + "','fee-symbol':'eth',ammount:'.result.value',source:'.result.from',target:'.result.to',data:'.result'},2,1)");//, data:'.'
@@ -185,34 +157,6 @@ function exec (properties) {
       subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_getLogs",[{"fromBlock":"earliest","address":["' + sourceaddr + '"]}]]})');
 
       // TODO formatting
-      break;
-    case 'details':
-      let symbol = target.symbol;
-      let name = target.name;
-      var feeX;
-      if (!functions.isToken(target.symbol)) {
-        feeX = (typeof target.fee !== 'undefined' ? target.fee : null);
-      } else {
-        feeX = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee * 2.465 : null);
-      }
-      var contractX = (typeof target.contract !== 'undefined' ? target.contract : null);
-      let feefactor = global.hybrixd.asset[base].factor;
-      feeX = feeX && feefactor ? functions.padFloat(feeX, feefactor) : feeX;
-      subprocesses.push("stop(0,{symbol:'" + symbol + "', name:'" + name + "',mode:'" + mode + "',fee:'" + feeX + "',contract:'" + contractX + "',factor:'" + factor + "','keygen-base':'" + base + "','fee-symbol':'" + base + "','fee-factor':'" + feefactor + "','generated':'never'})");
-
-      break;
-
-    case 'sample':
-      var address;
-      var transaction;
-
-      switch (base) {
-        case 'eth' : address = '0x896a0b2b259d62fd27aeab05c81bb1897ecf767b'; transaction = '0x3960bbb7a7697cd76917243cd760e465c7d5b6013f7b62b41f76de3f8901dad8'; break;
-        case 'etc' : address = '0xfc9ab9b2833c4df13cea63da666906b565522f12'; transaction = '0x59c8e36e6e4e9a8697419ad66f245dc21970b9e69efe3898ddd4435b821a43aa'; break;
-        case 'exp' : address = '0x6dbfe39370adc9e0f284ed4fd8025342e99d21d6'; transaction = '0x0806279052d792ef077bfa593af5f7e06fe5c4cf9810d82f83b53f38758fd9fe'; break;
-        case 'ubq' : address = '0xbb1e3c386a01826bbae330870b96870d2b571d12'; transaction = '0xa0cb3baf5105be78e4f52218f371592cd64cd154cdf75ac5eaeb114ff6da7a15'; break;
-      }
-      subprocesses.push('stop(0,{address:"' + address + '",transaction:"' + transaction + '"})');
       break;
     default:
       subprocesses.push('stop(1,"Asset function not supported!")');
@@ -228,7 +172,6 @@ function post (properties) {
   let target = properties.target;
   let postdata = properties.data;
   let base = target.symbol.split('.')[0]; // in case of token fallback to base asset
-  let factor = (typeof target.factor !== 'undefined' ? target.factor : null);
   let feefactor = (typeof global.hybrixd.asset[base].factor !== 'undefined' ? global.hybrixd.asset[base].factor : 18);
   // set data to what command we are performing
   global.hybrixd.proc[processID].data = properties.command;
