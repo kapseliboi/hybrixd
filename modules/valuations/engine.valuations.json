@@ -2,6 +2,8 @@
   "engine":"valuations",
   "name":"Querries the valuation of 1 currency in another.",
   "module":"valuations",
+  "cron":60,
+  "refreshTime":60,
   "sources" : {
     "EUCentralBank" : {
       "notes": "European central bank for fiat-exchange rates: https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml",
@@ -36,9 +38,21 @@
   },
   "quartz" : {
     "cron":[
+      "# check if prices were recently updated",
+      "with 'timeNow' 'date'",
+      "peek 'local::pricesTimestamp'",
+      "true '>0' 2 1",
+      "data 0",
+      "math '+$refreshTime'",
+      "true '<$timeNow' @refreshValuations",
+      "done 'valuations up-to-date'",
+      "# if not, download and refresh valuations",
+      "@refreshValuations",
       "each $sources 'download'",
       "func 'parse'",
       "poke 'local::prices'",
+      "date",
+      "poke 'local::pricesTimestamp'",
       "done 'valuations downloaded'"
     ],
 	"test":[

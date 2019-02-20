@@ -2,11 +2,26 @@
   "engine":"transport",
   "name":"Transport engine module",
   "module":"transport",
+  "readTimeout":15000,
   "hashSalt":"Th1s1sS0m3S4lty3ntr0pyf0rTh0s3H4sh1ngFunct10ns!",
   "defaultChannel":"hybrixAnnouncements",
   "defaultIrcHost":"irc.freenode.net",
   "defaultTorrentPasswd":"l3ts_b34t_th3_b4nks!",
   "cron" : 300,
+  "quartz" : {
+    "call" : [
+      "# get the node's public key/ID",
+      "with 'nodeId' 'node'",
+      "# create path out of arguments",
+      "data $@",
+      "pull",
+      "push '$nodeId' 1",
+      "join '/'",
+      "call 'send/*/$'",
+      "call 'read/*/$nodeId/$'",
+      "done"
+    ]
+  },
   "router" : {
     "_help" : "Control the announcement engine.",
     "open":{
@@ -41,14 +56,39 @@
     },
     "send":{
       "_help" : "Send a message over an active transport.",
+      "_ellipsis": true,
       "_ref" : {
         "_list" : "handle",
         "_ref" : {
-          "_list" : "target",
+          "_list" : "target_node_Id",
           "_ref" : {
             "_list" : "message",
             "_this" : "Message to send must be a string. A message ID is returned."
           }
+        }
+      }
+    },
+    "read":{
+      "_help" : "Read a message from an active transport, expecting the data from a certain source.",
+      "_ref" : {
+        "_list" : "handle",
+        "_ref" : {
+          "_list" : "source_node_Id",
+          "_ref" : {
+            "_list" : "message_Id",
+            "_this" : "Specify the message ID to which the remote node is responding."
+          }
+        }
+      }
+    },
+    "call":{
+      "_help" : "Send an API call to a target node over any active transports.",
+      "_ellipsis": true,
+      "_ref" : {
+        "_list" : "target_node_Id",
+        "_ref" : {
+          "_list" : "call",
+          "_this" : "API call must be a path. The response is returned."
         }
       }
     },

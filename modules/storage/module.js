@@ -2,6 +2,9 @@
 // hybrixd module - storage/module.js
 // Module to provide storage
 
+// IDEAS:
+//  -->>> return ipfs.files.add(Buffer.from(content), { onlyHash: true })
+
 // required libraries in this context
 let storage = require('./storage'); // key-value storage
 

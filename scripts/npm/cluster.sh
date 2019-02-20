@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 WHEREAMI=`pwd`
 
@@ -24,8 +24,6 @@ if [ "$NODES" -gt "1" ]; then
 
     RESTPORT=1111
     USERPORT=8080
-
-    NODELINE=$(grep "nodeId" "$NODE/hybrixd.conf" | grep -v \# )
 
     # Rouke: Disabled untill further notice
     # Bootscript : add other nodes as peers to first node (which will be captian)
@@ -54,19 +52,16 @@ if [ "$NODES" -gt "1" ]; then
 
         #force set encryption pubkeys TESTING!
         if [ "$i" -eq "1" ]; then
-            NEWNODELINE="nodeId = 6118abfd4fe4582d0fc7de7295975147c7aa53dd9982c2c962025e7f34b76b63"
+            KEYLINE="keysFile = hybrixd1.keys"
         elif [ "$i" -eq "2" ]; then
-            NEWNODELINE="nodeId = 13b2cc321cb565d7bc2f3e6959af295d7315e3137e70ea505ea79161d4502ccc"
+            KEYLINE="keysFile = hybrixd2.keys"
         fi
         if [ "$i" -eq "3" ]; then
-            NEWNODELINE="nodeId = ffb2cc321cb565d7bc2f3e6959af295d7315e4d7e9a0bc123459af295d7315e4"
+            KEYLINE="keysFile = hybrixd3.keys"
         fi
         # Replace or append line to define nodeID
-        if [ -z "$NODELINE" ]; then
-            echo "$NEWNODELINE" >> "$NODE$i/hybrixd.conf"
-        else
-            sed -i -e 's/'"$NODELINE"'/'"$NEWNODELINE"'/g' "$NODE$i/hybrixd.conf"
-        fi
+        echo "$KEYLINE" >> "$NODE$i/hybrixd.conf"
+            #sed -i -e 's/'"$NODELINE"'/'"$NEWNODELINE"'/g' "$NODE$i/hybrixd.conf"
 
         if [ "$i" -ne "1" ]; then
             cd "$NODE$i"
