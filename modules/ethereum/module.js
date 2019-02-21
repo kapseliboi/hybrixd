@@ -48,7 +48,7 @@ function exec (properties) {
   subprocesses.push('time(45000)');
   switch (properties.command[0]) {
     case 'init':
-      if (!functions.isToken(target.symbol)) {
+      if (typeof ethDeterministic === 'undefined') {
       // set up REST API connection
         if (typeof target.user !== 'undefined' && typeof target.pass !== 'undefined') {
           let options_auth = {user: target.user, password: target.pass};
@@ -97,8 +97,10 @@ function exec (properties) {
           subprocesses.push('atom()');
           subprocesses.push('done()');
         } else {
-          subprocesses.push('test((data.substr(0,2)==="0x"),1,2)');
-          subprocesses.push('done(functions.padFloat(functions.fromInt(functions.hex2dec.toDec(data),' + factor + '),' + factor + '))');
+          subprocesses.push('test((data.substr(0,2)==="0x"),1,4)');
+          subprocesses.push('data(functions.hex2dec.toDec(data))');
+          subprocesses.push('form');
+          subprocesses.push('done');
           subprocesses.push('logs(2,"module ethereum: bad RPC response, retrying request...")');
           subprocesses.push('wait(1500)');
           subprocesses.push('loop(@retryLoop,"retries","<9","1")');
