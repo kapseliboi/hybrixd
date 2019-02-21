@@ -94,12 +94,12 @@ function exec (properties) {
         subprocesses.push('tran(".result",1,3)');
         if (base === 'ubq') {
           subprocesses.push('test(!isNaN(data.substr(0,1)),1,2)');
-          subprocesses.push('atom()');
-          subprocesses.push('done()');
+          subprocesses.push('atom');
+          subprocesses.push('done');
         } else {
           subprocesses.push('test((data.substr(0,2)==="0x"),1,4)');
           subprocesses.push('data(functions.hex2dec.toDec(data))');
-          subprocesses.push('form');
+          subprocesses.push('atom');
           subprocesses.push('done');
           subprocesses.push('logs(2,"module ethereum: bad RPC response, retrying request...")');
           subprocesses.push('wait(1500)');
