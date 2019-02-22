@@ -2,7 +2,8 @@
   "engine":"transport",
   "name":"Transport engine module",
   "module":"transport",
-  "readTimeout":15000,
+  "readTimeout":32000,
+  "announceMaxBufferSize":5000,
   "hashSalt":"Th1s1sS0m3S4lty3ntr0pyf0rTh0s3H4sh1ngFunct10ns!",
   "defaultChannel":"hybrixAnnouncements",
   "defaultIrcHost":"irc.freenode.net",
@@ -10,6 +11,7 @@
   "cron" : 300,
   "quartz" : {
     "call" : [
+      "time 40000",
       "# get the node's public key/ID",
       "with 'nodeId' 'node'",
       "# create path out of arguments",

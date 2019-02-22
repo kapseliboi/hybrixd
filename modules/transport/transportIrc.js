@@ -7,7 +7,6 @@ function open (processID, engine, host, chan, hashSalt) {
   let nodeId = global.hybrixd.node.publicKey;
   // TODO: when wrong host or channel input, warn user and quit!!
   let handle = shaHash(nodeId + host + chan + hashSalt).substr(16, 24);
-
   if (typeof global.hybrixd.engine[engine][handle] === 'undefined') {
     let irc = require('irc');
     let port = 6667; // default IRC port
@@ -44,7 +43,7 @@ function open (processID, engine, host, chan, hashSalt) {
       // add handle and endpoint
       functions.addHandleAndEndpoint(engine, handle, global.hybrixd.engine[engine][handle].peerId, 'irc://' + host + '/' + chan + '/' + global.hybrixd.engine[engine][handle].peerId);
       // send message function
-      global.hybrixd.engine[engine][handle].send = function (engine, handle, message) {
+      global.hybrixd.engine[engine][handle].send = function (engine, handle, nodeIdTarget, message) {
         global.hybrixd.engine[engine][handle].socket.say('#' + global.hybrixd.engine[engine][handle].channel, message);
       };
       // peer maintenance interval
@@ -103,10 +102,14 @@ function open (processID, engine, host, chan, hashSalt) {
       } else {
         let messageData = functions.readMessage(engine, handle, message);
         // if target is us, route (and respond) to message
-        if (messageData.nodeIdTarget === nodeId) {
-          functions.routeMessage(engine, handle, messageData.nodeIdTarget, messageData.messageId, messageData.messageContent);
-        } else { // else relay the message to other channels
-          functions.relayMessage(engine, handle, messageData.nodeIdTarget, messageData.messageId, messageData.messageContent);
+        if (messageData) {
+          if (messageData.nodeIdTarget === nodeId) {
+            if(messageData.complete && !messageData.response) {
+              functions.routeMessage(engine, handle, messageData.nodeIdTarget, messageData.messageId, messageData.messageContent);
+            }
+          } else { // else relay the message to other channels
+            functions.relayMessage(engine, handle, messageData.nodeIdTarget, messageData.messageId, messageData.messageContent);
+          }
         }
       }
     });

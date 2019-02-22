@@ -6,6 +6,7 @@
 // var execSync = require('child_process').execSync;
 let scheduler = require('../../lib/scheduler');
 let modules = require('../../lib/modules');
+let functions = require('./functions.js');
 let transportIrc = require('./transportIrc.js');
 let transportTorrent = require('./transportTorrent.js');
 let shaHash = require('js-sha256').sha224;
@@ -103,7 +104,9 @@ function exec (properties) {
       }
       break;
     case 'send':
+    try {
       send(properties);
+    } catch(e) { console.log(e); }
       break;
     case 'read':
       read(properties);
@@ -145,15 +148,6 @@ function exec (properties) {
   }
 }
 
-function sendMessage (engine, handle, nodeIdTarget, messageId, message) {
-  console.log(' ORIGINL: ' + message);
-  // var messageContent = nodeIdTarget+'|'+messageId+'|'+baseCode.recode('utf-8','base58',message);
-  let messageContent = nodeIdTarget + '|' + messageId + '|' + UrlBase64.safeCompress(message);
-  console.log(' CRYPTED: ' + messageContent);
-  global.hybrixd.engine[engine][handle].send(engine, handle, messageContent);
-  return messageId;
-}
-
 function send (properties) {
   let processID = properties.processID;
   let engine = properties.target.id;
@@ -165,14 +159,14 @@ function send (properties) {
   let message = command.join('/'); // unencrypted message
   // create unique message ID
   let openTime = (new Date()).getTime();
-  let messageId = shaHash(nodeId + engine.hashSalt + openTime).substr(16, 24);
+  let messageId = shaHash(nodeId + engine.hashSalt + openTime).substr(16, 8);
   if (handle && nodeIdTarget && message) {
     if (handle === '*') {
       // loop through all handles and broadcast
       for (let i = 0; i < global.hybrixd.engine[engine].handles.length; i++) {
         handle = global.hybrixd.engine[engine].handles[i];
         if (global.hybrixd.engine[engine].hasOwnProperty(handle) && global.hybrixd.engine[engine][handle].hasOwnProperty('protocol')) {
-          messageId = sendMessage(engine,
+          messageId = functions.sendMessage(engine,
             handle,
             nodeIdTarget,
             messageId,
@@ -206,7 +200,7 @@ function read (properties) {
   let handle = command[1];
   let nodeIdTarget = command[2]; // if is *, reads messages from all targets
   if (command[3]) {
-    let messageResponseId = shaHash(nodeIdTarget + command[3]).substr(16, 24); // if specified, read message response to previous messageId
+    let messageResponseId = shaHash(nodeIdTarget + command[3]).substr(16, 8); // if specified, read message response to previous messageId
     let loopHandles;
     if (handle === '*') {
       loopHandles = global.hybrixd.engine[engine].handles;
@@ -219,15 +213,20 @@ function read (properties) {
         for (let i = 0; i < loopHandles.length; i++) {
           curHandle = loopHandles[i];
           if (global.hybrixd.engine[engine].hasOwnProperty(curHandle) && global.hybrixd.engine[engine][curHandle].hasOwnProperty('buffer')) {
-            idx = global.hybrixd.engine[engine][curHandle].buffer.id.indexOf(messageResponseId);
-            if (idx > -1 && global.hybrixd.engine[engine][curHandle].buffer.data[idx]) {
+            let idx = -1;
+            for(let i=0; i<global.hybrixd.engine[engine][curHandle].buffer.length; i++) {
+              if(global.hybrixd.engine[engine][curHandle].buffer[i] && global.hybrixd.engine[engine][curHandle].buffer[i].id===messageResponseId) {
+                idx = i;
+              }
+            }
+            if (idx > -1 && global.hybrixd.engine[engine][curHandle].buffer[idx].data!==null) {
               try {
-                let messageData = JSON.parse(global.hybrixd.engine[engine][curHandle].buffer.data[idx].substr(1));
+                let messageData = JSON.parse(global.hybrixd.engine[engine][curHandle].buffer[idx].data);
                 scheduler.stop(processID, 0, messageData);
               } catch (e) {
                 scheduler.stop(processID, 1, 'Cannot decode response message!');
               }
-              global.hybrixd.engine[engine][curHandle].buffer.data.splice(idx, 1);
+              global.hybrixd.engine[engine][curHandle].buffer.splice(idx, 1);
             }
           }
         }
@@ -235,7 +234,7 @@ function read (properties) {
       setTimeout(function () {
         clearInterval(readInterval);
         scheduler.stop(processID, 1, 'Transport message read timeout!');
-      }, engine.readTimeout ? engine.readTimeout : 15000, processID, readInterval);
+      }, properties.target.readTimeout || 15000, processID, readInterval);
     } else {
       scheduler.stop(processID, 1, 'There are no active transport handles!');
     }
