@@ -55,13 +55,6 @@
       "poke 'local::pricesTimestamp'",
       "done 'valuations downloaded'"
     ],
-	"test":[
-      "with 'timeNow' 'date'",
-      "peek 'local::pricesTimestamp'",
-      "date",
-      "done",
-      "true '<$timeNow'"
-	],
     "download":[
       "poke 'key' ($.key)",
       "poke 'site' ($.value.site)",
@@ -81,7 +74,6 @@
   "router" : {
     "cron" : "Download new price data.",
     "list" : "List available symbols.",
-    "test" : "TEST SOMETHING",
     "rate": {
       "_ref" : {
         "_list" : "Source_Symbol",
