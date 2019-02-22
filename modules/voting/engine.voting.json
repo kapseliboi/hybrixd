@@ -1,0 +1,244 @@
+{
+  "engine":"voting",
+  "name":"Voting engine",
+  "module":"quartz",
+  "cache":100,
+  "throttle":10,
+  "hashSalt":"Th3S4lt0fTh3H4shMustN0tB3F0rg0t!Th4t1sf0rsur3!",
+  "quartz":{
+    "listAddresses" : [
+      "call 'coreList/eligibility/$1'",
+      "each data 'readAddress'",
+      "excl ''",
+      "done"
+    ],
+    "readAddress" : [
+      "data 'address '+data.value+' $hashSalt'",
+      "hash 'sha256'",
+      "load 1 @filenotfound",
+      "jpar",
+      "done",
+      "@filenotfound",
+      "done ''"
+    ],
+    "addAddressRedirect" : [
+      "#rout 'engine/voting/addAddress/$1/$2'",
+      "type 'file:text/html'",
+      "data 'modules/$engine/redirect.html'",
+      "file @loadSuccess",
+      "fail 'File redirect.html does not exist!'",
+      "@loadSuccess",
+      "repl '%TARGET%' 'someWebsite'",
+      "poke 'redirectPage'",
+      "type 'text/html'",
+      "peek 'redirectPage'",
+      "done"
+    ],
+    "addAddress" : [
+      "data '$2'",
+      "splt ':'",
+      "poke 'userdata'",
+    "# does request contain two parts? (userhash:useraddr)",
+      "size",
+      "true '<2' @badinputfmt",
+    "# check if userhash is on eligibility list",
+      "poke 'userhash' $userdata[0]",
+      "poke 'useraddr' $userdata[1]",
+      "call 'coreList/eligibility/$1'",
+      "excl '$userhash' 1 @notelligible",
+    "# reinsert hash at beginning of array",
+      "fuse '$userhash' 0",
+    "# check if address is not already added",
+      "each data 'readAddress'",
+      "find '$useraddr' @alreadyadd 1",
+    "# set file index to write to",
+      "data 'address $userhash $hashSalt'",
+      "hash 'sha256'",
+      "poke 'idx'",
+    "# check if Eligibility already taken",
+      "load '$idx' 1 @addAddress",
+      "flow '' 1 @keyused",
+      "fail 1 'Storage key exists but is empty!'",
+    "# add address under Eligibility key",
+      "@addAddress",
+      "peek 'useraddr'",
+      "save '$idx'",
+      "done 'User added to elligible voters'",
+    "# error messages on fail",
+      "@notelligible",
+      "fail 1 'User not elligible!'",
+      "@alreadyadd",
+      "fail 1 'User already on list!'",
+      "@badinputfmt",
+      "fail 1 'Bad input format! Expecting: /userhash:useraddr'",
+      "@keyused",
+      "fail 1 'Eligibility key is already in use!'"
+    ],
+    "listEligibility" : [
+      "call 'coreList/eligibility/$1'",
+      "excl '.EOF'",
+      "done"
+    ],
+    "addEligibility" : [
+      "call 'coreList/eligibility/$1'",
+      "excl '.EOF' @immutable 1",
+      "find '$2' @alreadyadd",
+      "call 'coreAdd/eligibility/$1/$2'",
+      "done",
+      "@alreadyadd",
+      "done 'Elligibility already added!'",
+      "@immutable",
+      "fail 1 'Elligibility list is immutable!'"
+    ],
+    "closeEligibility" : [
+      "poke '::coreData' '.EOF'",
+      "poke '::coreMode' 'elegibility'",
+      "call 'coreList'",
+      "find '.EOF' @immutable",
+      "call 'coreAdd'",
+      "@immutable",
+      "call 'coreList'",
+      "excl '.EOF'",
+      "hash",
+      "done data"
+    ],
+    "coreList" : [
+      "data '$1 $2 $hashSalt'",
+      "hash 'sha256'",
+      "load 1 @notFoundOrEmpty",
+      "jpar 1 @notFoundOrEmpty",
+      "done",
+      "@notFoundOrEmpty",
+      "done []"
+    ],
+    "coreAdd" : [
+      "data '$1 $2 $hashSalt'",
+      "hash 'sha256'",
+      "poke 'idx'",
+      "data '$3'",
+      "splt ','",
+      "excl '.EOF'",
+      "poke 'inputdata'",
+      "size",
+      "true '=0' @badinput",
+      "hook @emptylist",
+      "load '$idx'",
+      "# TODO - file",
+      "jpar @savelist",
+      "@emptylist",
+      "data []",
+      "@savelist",
+      "fuse $inputdata",
+      "save '$idx'",
+      "done 'Added $1 to list $2'",
+      "@badinput",
+      "fail 1 'Bad input, or no data to add to list!'"
+    ],
+    "coreReset" : [
+      "data '$1 $2 $hashSalt'",
+      "hash 'sha256'",
+      "poke 'idx'",
+      "data []",
+      "save '$idx'",
+      "done 'Core list reset'"
+    ],
+    "testMe":[
+      "poke '::someVar' 'x1'",
+      "call 'callMe'",
+      "logs",
+      "poke '::someVar' 'x2'",
+      "call 'callMe'",
+      "logs",
+      "poke '::someVar' 'x3'",
+      "call 'callMe'",
+      "logs",
+      "poke '::someVar' 'x4'",
+      "call 'callMe'",
+      "logs",
+      "poke '::someVar' 'x5'",
+      "call 'callMe'",
+      "logs",
+      "poke '::someVar' 'x6'",
+      "call 'callMe'",
+      "done"
+    ],
+    "callMe":[
+      "data 'SomeRandomHash4298430983204'",
+      "poke 'userhash'",    
+      "data 'address $userhash $hashSalt'",
+      "hash 'sha256'",
+      "poke 'tmpA'",
+      "data 'address $userhash $hashSalt'",
+      "hash 'sha256'",
+      "poke 'tmpB'",
+      "done '$tmpA $tmpB'"
+    ],
+    "callMeMore":[
+      "data '$::someVar $hashSalt'",
+      "hash 'sha256'",
+      "done"
+    ]    
+  },
+  "router" : {
+    "_help" : "(experimental!) Voting engine utilizing decentralized consensus and storage.",
+    "testMe" : {
+      "_help": "TEST",
+      "_ref" : {
+        "_list" : "session_id",
+        "_this" : "An array is returned listing all eligibility addresses."
+      }
+    },
+    "listAddresses" : {
+      "_help": "List all eligibility addresses",
+      "_ref" : {
+        "_list" : "session_id",
+        "_this" : "An array is returned listing all eligibility addresses."
+      }
+    },
+    "listAddress" : {"_alias":"listAddresses"},
+    "addAddressRedirect" : {
+      "_help": "Add eligibility adresses to voting session (redirecting page)",
+      "_ref" : {
+        "_list" : "session_id",
+          "_ref" : {
+              "_list" : "eligibility_address",
+              "_this" : "Adds an eligibility address or addresses under the specified voting session ID. [format: hash:address]"
+          }
+      }
+    },
+    "addAddress" : {
+      "_help": "Add eligibility adresses to voting session",
+      "_ref" : {
+        "_list" : "session_id",
+          "_ref" : {
+              "_list" : "eligibility_address",
+              "_this" : "Adds an eligibility address or addresses under the specified voting session ID. [format: hash:address]"
+          }
+      }
+    },
+    "listEligibility" : {
+      "_help": "List all eligibility codes",
+      "_ref" : {
+        "_list" : "session_id",
+        "_this" : "An array is returned listing all eligibility codes."
+      }
+    },
+    "closeEligibility" : {
+      "_help": "Close an eligibility list, making it immutable",
+      "_ref" : {
+        "_list" : "session_id",
+        "_this" : "A hash is returned of the eligibility code list."
+      }
+    },
+    "addEligibility" : {
+      "_help": "Add eligibility codes to voting session",
+      "_ref" : {
+        "_list" : "session_id",
+          "_ref" : {
+              "_list" : "eligibility_code",
+              "_this" : "Adds an eligibility code or codes under the specified voting session ID."
+          }
+      }
+    }
+  }
+}
