@@ -10,8 +10,6 @@ let functions = require('./functions.js');
 let transportIrc = require('./transportIrc.js');
 let transportTorrent = require('./transportTorrent.js');
 let shaHash = require('js-sha256').sha224;
-// let baseCode = require('../../common/basecode');
-let UrlBase64 = require('../../common/crypto/urlbase64');
 
 // initialization function
 function init () {
@@ -104,9 +102,9 @@ function exec (properties) {
       }
       break;
     case 'send':
-    try {
-      send(properties);
-    } catch(e) { console.log(e); }
+      try {
+        send(properties);
+      } catch (e) { console.log(e); }
       break;
     case 'read':
       read(properties);
@@ -177,7 +175,7 @@ function send (properties) {
     } else {
       if (global.hybrixd.engine[engine].handles.indexOf(handle) > -1) {
         if (global.hybrixd.engine[engine].hasOwnProperty(handle) && global.hybrixd.engine[engine][handle].hasOwnProperty('protocol')) {
-          messageId = sendMessage(engine,
+          messageId = functions.sendMessage(engine,
             handle,
             nodeIdTarget,
             messageId,
@@ -209,17 +207,17 @@ function read (properties) {
     }
     if (loopHandles.length > 0) {
       let readInterval = setInterval(function () {
-        let curHandle, idx;
+        let curHandle;
         for (let i = 0; i < loopHandles.length; i++) {
           curHandle = loopHandles[i];
           if (global.hybrixd.engine[engine].hasOwnProperty(curHandle) && global.hybrixd.engine[engine][curHandle].hasOwnProperty('buffer')) {
             let idx = -1;
-            for(let i=0; i<global.hybrixd.engine[engine][curHandle].buffer.length; i++) {
-              if(global.hybrixd.engine[engine][curHandle].buffer[i] && global.hybrixd.engine[engine][curHandle].buffer[i].id===messageResponseId) {
+            for (let i = 0; i < global.hybrixd.engine[engine][curHandle].buffer.length; i++) {
+              if (global.hybrixd.engine[engine][curHandle].buffer[i] && global.hybrixd.engine[engine][curHandle].buffer[i].id === messageResponseId) {
                 idx = i;
               }
             }
-            if (idx > -1 && global.hybrixd.engine[engine][curHandle].buffer[idx].data!==null) {
+            if (idx > -1 && global.hybrixd.engine[engine][curHandle].buffer[idx].data !== null) {
               try {
                 let messageData = JSON.parse(global.hybrixd.engine[engine][curHandle].buffer[idx].data);
                 scheduler.stop(processID, 0, messageData);

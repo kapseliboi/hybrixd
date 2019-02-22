@@ -22,14 +22,14 @@ function simpleProgress (processID, count) {
   }, (100 * count), processID);
 }
 
-function stringChunks(str,divisor) {
+function stringChunks (str, divisor) {
   // split message into equal parts
   let messageChunks = [];
   let nextChunk;
-  if(typeof str==='string')  {
-    while(str.length > 0) {
-      nextChunk = str.substring(0,divisor);
-      str = str.substring(divisor,str.length);
+  if (typeof str === 'string') {
+    while (str.length > 0) {
+      nextChunk = str.substring(0, divisor);
+      str = str.substring(divisor, str.length);
       messageChunks.push(nextChunk);
     }
   }
@@ -144,28 +144,28 @@ function routeMessage (engine, handle, nodeIdTarget, messageId, messageContent) 
     let nodeIdSource = messageContent.split('/')[0];
     let messageResponseId = shaHash(nodeIdSource + messageId).substr(16, 8); // response messageId
     let xpath = '/' + messageContent.substr(messageContent.indexOf('/') + 1, messageContent.length);
-    if (xpath && xpath!=='/') {
+    if (xpath && xpath !== '/') {
       let routeResult = router.route({url: xpath, sessionID: sessionID});
-      let response = '#|'+JSON.stringify(routeResult);
-      let messageId = sendMessage(engine,
-                                  handle,
-                                  nodeIdSource,
-                                  messageResponseId,
-                                  response);
+      let response = '#|' + JSON.stringify(routeResult);
+      sendMessage(engine,
+        handle,
+        nodeIdSource,
+        messageResponseId,
+        response);
     }
   }
 }
 
 function sendMessage (engine, handle, nodeIdTarget, messageId, message) {
-  let messageChunks = stringChunks(message,256);
+  let messageChunks = stringChunks(message, 256);
   let messageContent;
   let chunkNr;
   let chunk;
-  for (let i = messageChunks.length-1; i > -1 ; i--) {
-    chunkNr = i?i:'^'+messageChunks.length;
+  for (let i = messageChunks.length - 1; i > -1; i--) {
+    chunkNr = i || '^' + messageChunks.length;
     chunk = chunkNr + '|' + messageChunks[i];
     // console.log(' ORIGINL ' + i + ' : ' + chunk );
-    messageContent = (i===messageChunks.length-1?nodeIdTarget:'') + '|' + messageId + '|' + UrlBase64.safeCompress(chunk);
+    messageContent = (i === messageChunks.length - 1 ? nodeIdTarget : '') + '|' + messageId + '|' + UrlBase64.safeCompress(chunk);
     // console.log(' CRYPTED ' + i + ' : ' + messageContent);
     global.hybrixd.engine[engine][handle].send(engine, handle, nodeIdTarget, messageContent);
   }
@@ -181,23 +181,23 @@ function nthIndex (str, pat, n) {
   return i;
 }
 
-function messageIndex (engine,handle,messageId,nodeIdTarget) {
+function messageIndex (engine, handle, messageId, nodeIdTarget) {
   let idx = -1;
-  if(global.hybrixd.engine[engine][handle]) {
-    for(let i=0; i<global.hybrixd.engine[engine][handle].buffer.length; i++) {
-      if(global.hybrixd.engine[engine][handle].buffer[i] && global.hybrixd.engine[engine][handle].buffer[i].id===messageId) {
+  if (global.hybrixd.engine[engine][handle]) {
+    for (let i = 0; i < global.hybrixd.engine[engine][handle].buffer.length; i++) {
+      if (global.hybrixd.engine[engine][handle].buffer[i] && global.hybrixd.engine[engine][handle].buffer[i].id === messageId) {
         idx = i;
       }
     }
-    if (idx===-1) {
+    if (idx === -1) {
       // register new message on stack
       idx = global.hybrixd.engine[engine][handle].buffer.push({
-              id:messageId,
-              from:nodeIdTarget,
-              time:new Date().getTime(),
-              data:null,
-              part:{'N':0},
-            })-1;
+        id: messageId,
+        from: nodeIdTarget,
+        time: new Date().getTime(),
+        data: null,
+        part: {'N': 0}
+      }) - 1;
     }
   }
   return idx;
@@ -212,10 +212,10 @@ function readMessage (engine, handle, message) {
     let messageBase = message.substr(nthIndex(message, '|', 2) + 1);
     message = message.split('|');
     let nodeIdTarget = message.shift(); // get nodeIdTarget
-    let messageId = message.shift();    // get unique ID
+    let messageId = message.shift(); // get unique ID
     // in case of multipart message, recover nodeIdTarget, from message buffer
-    if(nodeIdTarget === '') {
-      let idx = messageIndex(engine,handle,messageId);
+    if (nodeIdTarget === '') {
+      let idx = messageIndex(engine, handle, messageId);
       nodeIdTarget = global.hybrixd.engine[engine][handle].buffer[idx].from;
     }
     // store id on stack
@@ -227,38 +227,38 @@ function readMessage (engine, handle, message) {
       let messageContent = UrlBase64.safeDecompress(messageBase);
       let partsComplete = false;
       let response = false;
-      if(messageContent) {
+      if (messageContent) {
         let chunks = 0;
-        let chunkNr = messageContent.substr(0,messageContent.indexOf('|'));
-        if(chunkNr.substr(0,1)==='^') { chunks = chunkNr.substr(1); chunkNr = '0'; } // cut off length definition
-        messageContent = messageContent.substr(messageContent.indexOf('|')+1);
-        let idx = messageIndex(engine,handle,messageId,nodeIdTarget);
+        let chunkNr = messageContent.substr(0, messageContent.indexOf('|'));
+        if (chunkNr.substr(0, 1) === '^') { chunks = chunkNr.substr(1); chunkNr = '0'; } // cut off length definition
+        messageContent = messageContent.substr(messageContent.indexOf('|') + 1);
+        let idx = messageIndex(engine, handle, messageId, nodeIdTarget);
         // if id already on stack, piece together message chunks
-        if(idx>-1) {
+        if (idx > -1) {
           global.hybrixd.engine[engine][handle].buffer[idx].part[chunkNr] = messageContent;
           // make sure total count of chunks is available
-          if(chunkNr==='0') {
+          if (chunkNr === '0') {
             global.hybrixd.engine[engine][handle].buffer[idx].part['N'] = Number(chunks);
           }
           // check if message is complete
-          if(global.hybrixd.engine[engine][handle].buffer[idx].part['N']>0) {
+          if (global.hybrixd.engine[engine][handle].buffer[idx].part['N'] > 0) {
             partsComplete = true;
-            for(let i=0; i<global.hybrixd.engine[engine][handle].buffer[idx].part['N']; i++) {
-              if(!global.hybrixd.engine[engine][handle].buffer[idx].part[i]) {
+            for (let i = 0; i < global.hybrixd.engine[engine][handle].buffer[idx].part['N']; i++) {
+              if (!global.hybrixd.engine[engine][handle].buffer[idx].part[i]) {
                 partsComplete = false;
               }
             }
           }
-          if(partsComplete) {
+          if (partsComplete) {
             // reconstruct entire message
             let dataArray = [];
-            for(let i=0; i<global.hybrixd.engine[engine][handle].buffer[idx].part['N']; i++) {
+            for (let i = 0; i < global.hybrixd.engine[engine][handle].buffer[idx].part['N']; i++) {
               dataArray.push(global.hybrixd.engine[engine][handle].buffer[idx].part[i]);
               delete global.hybrixd.engine[engine][handle].buffer[idx].part[i];
             }
             global.hybrixd.engine[engine][handle].buffer[idx].data = dataArray.join('');
             delete global.hybrixd.engine[engine][handle].buffer[idx].part;
-            if(global.hybrixd.engine[engine][handle].buffer[idx].data.substr(0,2)==='#|') {
+            if (global.hybrixd.engine[engine][handle].buffer[idx].data.substr(0, 2) === '#|') {
               global.hybrixd.engine[engine][handle].buffer[idx].data = global.hybrixd.engine[engine][handle].buffer[idx].data.substr(2);
               response = true;
             }
@@ -269,18 +269,19 @@ function readMessage (engine, handle, message) {
             complete: partsComplete,
             nodeIdTarget: nodeIdTarget,
             messageId: messageId,
-            messageContent: partsComplete?global.hybrixd.engine[engine][handle].buffer[idx].data:null
-          }
+            messageContent: partsComplete ? global.hybrixd.engine[engine][handle].buffer[idx].data : null
+          };
         } else {
           return null;
         }
       } else {
+        console.log(' [!] transport ' + transport + ': mangled message [' + messageId + ']!');
         return null;
-        console.log(' [!] transport ' + transport + ': mangled message ['+messageId+']!');
       }
     }
   } else {
     console.log(' [!] transport ' + transport + ': buffer overflow, discarding messages!');
+    return null;
   }
 }
 

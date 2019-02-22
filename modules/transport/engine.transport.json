@@ -10,7 +10,7 @@
   "defaultTorrentPasswd":"l3ts_b34t_th3_b4nks!",
   "cron" : 300,
   "quartz" : {
-    "call" : [
+    "rout" : [
       "time 40000",
       "# get the node's public key/ID",
       "with 'nodeId' 'node'",
@@ -83,8 +83,8 @@
         }
       }
     },
-    "call":{
-      "_help" : "Send an API call to a target node over any active transports.",
+    "rout":{
+      "_help" : "Request an API route from a target node over any active transports.",
       "_ellipsis": true,
       "_ref" : {
         "_list" : "target_node_Id",

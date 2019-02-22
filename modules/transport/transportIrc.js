@@ -104,7 +104,7 @@ function open (processID, engine, host, chan, hashSalt) {
         // if target is us, route (and respond) to message
         if (messageData) {
           if (messageData.nodeIdTarget === nodeId) {
-            if(messageData.complete && !messageData.response) {
+            if (messageData.complete && !messageData.response) {
               functions.routeMessage(engine, handle, messageData.nodeIdTarget, messageData.messageId, messageData.messageContent);
             }
           } else { // else relay the message to other channels
