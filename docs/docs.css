@@ -16,7 +16,6 @@ body > dl > dt, body > dt {
   padding-top: 20px;
   margin-top: 40px;
 }
-
 a {
   color: #F5A104;
   text-decoration: none;
@@ -25,7 +24,6 @@ a {
 a:hover {
     text-decoration: underline;
 }
-
 input {
   margin: 2px;
 }
@@ -33,21 +31,18 @@ input {
 ul {
   list-style: none; /* Remove default bullets */
 }
-
 ul li::before {
-  content: "-";  /* Add content: \2022 is the CSS Code/unicode for a bullet */
-  color: black; /* Change the color */
-  font-weight: bold; /* If you want it to be bold */
-  display: inline-block; /* Needed to add space between the bullet and the text */
-  width: 0.5em; /* Also needed for space (tweak if needed) */
+  content: "-";
+  color: black;
+  font-weight: bold;
+  display: inline-block;
+  width: 0.5em;
   margin-left: -2em;
-  margin-right: 0.5em /* Also needed for space (tweak if needed) */
+  margin-right: 0.5em
 }
-
 li {
   list-style-type: none;
 }
-
 code,pre {
   background-color: #EDEDED;
   padding: 5px 10px 6px;
@@ -61,7 +56,6 @@ pre {
   padding: 20px;
   border-radius: 8px;
 }
-
 h1 {
   font-size: 36px;
   font-weight: 200;
@@ -71,11 +65,10 @@ h1 {
 }
 @media screen and (min-width: 64em) {
   h1 {
-    margin-bottom: 75px;
-    margin-top: -64px;
+    margin-bottom: 86px;
+    margin-top: -75px;
   }
 }
-
 h2 {
   font-size: 26px;
   font-weight: 400;
@@ -112,12 +105,9 @@ hr {
   color: #fff;
   background-color: #fff;
 }
-
 .pure-g [class*=pure-u] {
   font-family: 'Palanquin', sans-serif;
 }
-
-
 input {
   border: 1px solid #dedede;
   background: white;
@@ -150,7 +140,6 @@ input[type="submit"] {
 input[type="submit"]:hover {
   text-decoration: underline;
 }
-
 input[type="submit"]:disabled,
 input[type="submit"][disabled], input[type="submit"][disabled]:hover {
   color: #bbb;
@@ -168,32 +157,26 @@ select {
   background: white;
   margin: 0.25rem;
 }
-
-
 .header,
 .main {
-  max-width: 1100px;
-  width: 80%;
+  max-width: 1200px;
+  width: 90%;
   margin: 0 auto;
 }
-
 .header {
   border-bottom: 1px solid #ededed;
   padding-bottom: 8px;
   padding-top: 20px;
 }
-
 .logo {
   height: 85px;
   width: 170px;
   margin-left: 3px;
 }
-
 #navigation {
   background: white;
   padding-top: 40px;
 }
-
 .menuItem {
   font-size: 18px;
   color: #5DBEC8;
@@ -203,7 +186,10 @@ select {
   margin-top: 14px;
   margin-bottom: 10px;
   margin-right: 20px;
-  transition: 0.2s all ease-in;
+  -webkit-transition: 0.2s all ease-in-out;
+     -moz-transition: 0.2s all ease-in-out;
+       -o-transition: 0.2s all ease-in-out;
+          transition: 0.2s all ease-in-out;
   border-bottom: 1px solid #ededed;
   padding-bottom: 18px;
 }
@@ -218,6 +204,8 @@ select {
 .current:hover {
   color:#5DBEC8;
   background: transparent;
+  opacity: 1;
+  cursor: default;
 }
 .menuItem#toggle-search {
   background-image:url('search.svg');
@@ -237,8 +225,11 @@ select {
   padding: 6px 18px;
   font-size:16px;
   visibility: hidden;
-  border-radius: 2px;
-  transition: 0.2s all ease-in;
+  border-radius: 0 0 4px 4px;
+  -webkit-transition: 0.2s all ease-in-out;
+     -moz-transition: 0.2s all ease-in-out;
+       -o-transition: 0.2s all ease-in-out;
+          transition: 0.2s all ease-in-out;
   -webkit-box-shadow: 1px 1px 5px 0px rgba(160,160,160,.3);
   -moz-box-shadow: 1px 1px 5px 0px rgba(160,160,160,.3);
   box-shadow: 1px 1px 5px 0px rgba(160,160,160,.3);
@@ -246,6 +237,8 @@ select {
   top: 0px;
   right: 10px;
   z-index:99999999;
+  width: 163px;
+  text-align: center;
 }
 #collapseAll:hover {
   opacity: 0.8 !important;
@@ -268,13 +261,12 @@ select {
   cursor: pointer;
   margin-top: 20px;
   border-radius: 0 8px 8px 0;
-  -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome and Opera */
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
 }
 .command-header b {
   font-family: monospace;
@@ -295,13 +287,13 @@ select {
 .command-body .command-header,
 .command-body .command-body {
   border-left: 4px solid #BCE0DE;
+  margin-right: 4%;
 }
-
 .command-body .command-body .command-header,
 .command-body .command-body .command-body {
   border-left: 4px solid #E4F3F2;
+  margin-right: 4%;
 }
-
 .command-body p {
   font-size: 15px;
   margin: 12px 4px;
@@ -349,7 +341,7 @@ select {
   font-style: italic;
   text-decoration: none;
 }
-.quickDescription{
+.command-header span.quickDescription{
   font-size: 90%;
   white-space: nowrap;
   overflow: hidden;
@@ -360,7 +352,7 @@ select {
   margin-left: 8px;
   text-align: right;
   width: calc(100% - 260px);
-  opacity: 0.4;
+  color: #888;
 }
 #console-wrapper{
   padding:0;
@@ -406,7 +398,6 @@ div.result {
   width:95%;
   padding: 4px 8px;
 }
-
 div.error {
   padding-left:5px;
   background-color:#ffdddd;
@@ -415,30 +406,29 @@ div.error {
   border-top-width:1px ;
   border-top-color: #ffbbbb;
 }
-
 span.result {
  color: #73C4BF;
 }
-
 .close {
  float:right;
  padding-right:10px;
 }
-
 div.prompt{
   border-top-style: solid;
   border-top-width:1px ;
   border-top-color: #dddddd;
   padding: 4px 8px;
 }
-
 .download {
   border-radius: 6px;
   background: #F5A104;
   padding: 14px 20px;
   display: inline-block;
   margin: 5px 5px 5px 0;
-  transition: 0.3s all ease;
+  -webkit-transition: 0.3s all ease-in-out;
+     -moz-transition: 0.3s all ease-in-out;
+       -o-transition: 0.3s all ease-in-out;
+          transition: 0.3s all ease-in-out;
   color: white;
 }
 .download .download-text {
@@ -464,31 +454,25 @@ div.prompt{
 .download svg g g {
   fill: white;
 }
-
 textarea{
   width:100%;
  font-family: monospace, monospace;
 }
-
 #try{
   padding:0;
   margin:0;
   height:120px;
 }
-
 #progressContainer {
   border-radius: 40px;
   background: #ededed;
   border: 1px solid #ccc;
   height: 20px;
 }
-
 #result {
   background-color:#dddddd;
   font-family: monospace, monospace;
-
 }
-
 #progress {
   text-align: center;
   color: white;
@@ -501,13 +485,11 @@ textarea{
   line-height: 20px;
   font-size: 14px;
 }
-
 .CodeMirror {
   font-size: 14px;
   line-height: 19px;
   border: 1px solid #ccc;
 }
-
 div.try {
   line-height: 15px;
   border-radius: 8px;
@@ -547,59 +529,65 @@ div.try {
   background: white;
   border: 1px solid #ccc;
 }
-
 table.parameters {
   margin:5px;
 }
-
 code.example {
   display:block;
   white-space: pre;
 }
-
-
 code.prompt:before{
   color:darkgrey;
     content: '$ ';
 }
-
 code.ref{
   margin:0;
   padding:0;
   background-color:rgba(0,0,0,0);
 }
-
 #filterBox {
-  height: 30px;
- float:right;
- position:relative;
- top:-35px;
+  width: 200px;
+  height: 40px;
+  float:right;
+  position:relative;
+  top:-75px;
   border-radius: 2px;
-  transition: 0.2s all ease-in;
-  -webkit-box-shadow: 0px 0px 20px 0px rgba(160,160,160,.5);
-  -moz-box-shadow: 0px 0px 20px 0px rgba(160,160,160,.5);
-  box-shadow: 0px 0px 20px 0px rgba(160,160,160,.5);
+  -webkit-transition: 0.2s all ease-in-out;
+     -moz-transition: 0.2s all ease-in-out;
+       -o-transition: 0.2s all ease-in-out;
+          transition: 0.2s all ease-in-out;
   background: #73C4BF;
   color: white;
-  width:169px;
   z-index:1000;
+  border-radius: 4px;
 }
-
 #filterBox.active{
-  position:fixed;
-  right:5px;
-  top:5px;
+  position: fixed;
+  right: 10px;
+  top: 50px;
 }
-
 #filterBox input#search {
-  width: 90px;
-  border-radius: 0;
+  width: 145px;
+  padding: 2px 8px 3px;
+  border-radius: 4px;
+  border: none;
+  margin: 3px;
+  color: black;
 }
-
+#filterBox input[type="submit"] {
+  color: white;
+  font-weight: 700;
+  margin-left: -2px;
+  font-size: 24px;
+  line-height: 20px;
+  padding: 3px 10px 11px;
+}
+#filterBox input[type="submit"]:hover {
+  text-decoration: none;
+}
 #noResults {
   display:none;
 }
-
 .diagram-img {
   margin: 40px 0 20px;
   width: 100%;
