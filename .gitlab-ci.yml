@@ -118,10 +118,13 @@ hybrixd:
     #- "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/api/v4/projects/${PROJECT_REF_SLUG}/jobs/${BUILD_JOB_ID}/artifacts\" -o artifacts-${PROJECT_REF_NAME}.zip"
 
     # unzip the downloaded artifact to the directory 
-    - unzip -o artifacts-web-wallet.zip -d artifacts-web-wallet/
     - rm -rf ./dist/modules/web-wallet
+    - mkdir -p ./dist/modules/web-wallet
+    - chmod 755 ./dist/modules/web-wallet
+    - unzip -o artifacts-web-wallet.zip -d ./dist/modules/web-wallet/
     
-    - cp -rf artifacts-web-wallet/ ./dist/modules/web-wallet/
+    #- mkdir -p ./dist/modules/web-wallet
+    #- cp -rf artifacts-web-wallet/ ./dist/modules/web-wallet/
     
     - ls ./dist/modules/web-wallet
     - ls ./dist/modules/web-wallet/files
