@@ -234,11 +234,24 @@
             <li>Encrypted channels</li>
           </ul>
 
+          <pre id="exampleHelloWorld" style="display: none;">
+hybrix.sequential([
+  'init',                                                        // Initialize hybrix
+  {host: 'http://localhost:1111/'}, 'addHost',                   // Add and initialize the host
+  {query: '/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'}, 'rout'  // Query for asset balance
+],
+ onSuccess,                                                      // Define action to execute on successfull completion
+ onError,                                                        // Define action to execute when an error is encountered
+ onProgress                                                      // Define action to execute whenever there is a progress update
+);</pre>
+
           <div class="try">
-            <select id="selectExample" onchange="var s = document.getElementById('selectExample');document.getElementById('try').innerHTML=document.getElementById(s[s.selectedIndex].value).innerHTML.replace('http://localhost:1111',window.location.origin+'/api');">
+            <select id="selectExample" onchange="var s = document.getElementById('selectExample');codeMirrorEditor.setValue(document.getElementById(s[s.selectedIndex].value).innerHTML.replace('http://localhost:1111',window.location.origin+'/api'));">
               <option value="exampleHelloWorld">Hello World</option>
             </select>
+
             <script>
+             var codeMirrorEditor;
              setTimeout(function(){
                var examples = document.getElementsByClassName('example');
                var selectExample = document.getElementById('selectExample');
@@ -249,26 +262,29 @@
                  selectExample.appendChild(option);
                  var button = document.createElement('input');
                  button.type='submit';
-                 button.value="Try it";
+                 button.value="Try it!";
+
                  button.onclick = function(body,id){
                    return event => {
-                     document.getElementById('try').innerHTML= body.replace('http://localhost:1111',window.location.origin+'/api');
+
+                     console.log(body);
+                     codeMirrorEditor.setValue(body.replace('http://localhost:1111',window.location.origin+'/api'))
+
                      for(let option of document.getElementById('selectExample').options){
                        if(option.value===id){
                          option.selected='selected';
                        }
                      }
-                     var tr = document.getElementById('try');
+                     var tr = document.getElementById('try').parentNode;
                      tr.scrollIntoView();
                      runExample(event);
                    }
                  }(example.innerHTML,example.id);
                  example.parentNode.insertBefore(button, example.nextSibling);
                }
+               document.getElementById('try').innerHTML=document.getElementById('exampleHelloWorld').innerHTML.replace('http://localhost:1111',window.location.origin+'/api');
 
-               document.getElementById('try').innerHTML=document.getElementById('try').innerHTML.replace('http://localhost:1111',window.location.origin+'/api');
-
-               var editor = CodeMirror.fromTextArea(document.getElementById("try"), {
+               codeMirrorEditor = CodeMirror.fromTextArea(document.getElementById("try"), {
                  lineNumbers: true,
                  mode: "application/javascript",
                  matchBrackets: true
@@ -277,16 +293,7 @@
              },250);
             </script>
 
-            <textarea id="try">
-hybrix.sequential([
-    'init',                                                        // Initialize hybrix
-    {host: 'http://localhost:1111/'}, 'addHost',                   // Add and initialize the host
-    {query: '/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'}, 'rout'  // Query for asset balance
-  ],
-  onSuccess,                                                      // Define action to execute on successfull completion
-  onError,                                                        // Define action to execute when an error is encountered
-  onProgress                                                      // Define action to execute whenever there is a progress update
-);</textarea>
+            <textarea id="try" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
 
             <p>Progress:</p>
             <div id="progressContainer">
@@ -296,7 +303,7 @@ hybrix.sequential([
             <p>Result:</p>
             <div id="result">...</div>
 
-            <input type="submit" value="Try it" onclick="runExample(event)">
+            <input type="submit" value="Try it!" onclick="runExample(event)">
           </div>
 
           <p><a href="/api/help/hybrix-lib.js">Continue reading...</a></p>

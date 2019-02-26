@@ -550,7 +550,7 @@ code.ref{
   height: 40px;
   float:right;
   position:relative;
-  top:-75px;
+  margin-top:-75px;
   border-radius: 2px;
   -webkit-transition: 0.2s all ease-in-out;
      -moz-transition: 0.2s all ease-in-out;
@@ -565,6 +565,7 @@ code.ref{
   position: fixed;
   right: 10px;
   top: 50px;
+  margin-top: 0px;
 }
 #filterBox input#search {
   width: 145px;
