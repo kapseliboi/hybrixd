@@ -200,7 +200,8 @@ var menuItems = {
   'Introduction': '/api/help/HelloWorld',
   'REST API': '/api/help',
   'hybrix Javascript Library': '/api/help/hybrix-lib.js',
-  'hybrixd daemon': '/api/help/hybrixd'
+  'hybrixd daemon': '/api/help/hybrixd',
+  'Featured products': '/api/help/FeaturedProducts'
 //  'cli': '/api/help/cli',
 //  'qrtz': '/api/help/qrtz'
 };

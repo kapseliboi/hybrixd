@@ -6,7 +6,7 @@ body {
   line-height: 29px;
   font-size: 16px;
   word-break: break-word;
-  padding: 0 0 200px 0;
+  padding: 0;
   width: 100%;
   height: 100%;
   margin: 0 auto;
@@ -592,4 +592,65 @@ code.ref{
 .diagram-img {
   margin: 40px 0 20px;
   width: 100%;
+}
+
+.footer-wrapper {
+  background-image: linear-gradient(195deg, rgba(255,102,164,1) 0%, #693FBC 98%);
+  padding-bottom: 40px;
+  position: relative;
+  z-index: -100;
+}
+.footer-wrapper #waves_2 {
+  width: 120%;
+  margin-left: -10%;
+  margin-top: -50px;
+}
+@media screen and (min-width: 64em) {
+  .footer-wrapper #waves_2 {
+    margin-top: -200px;
+  }
+}
+@media screen and (min-width: 80em) {
+  .footer-wrapper #waves_2 {
+    margin-top: -250px;
+  }
+}
+.footer {
+  color: white;
+  text-align: center;
+  font-weight: 300;
+  margin: 0 auto 0;
+  position: relative;
+  z-index: 10;
+}
+.footer #stats {
+  margin-bottom: 50px;
+  font-weight: 400;
+}
+
+.footer .social-icons {
+  margin-bottom: 10px;
+}
+
+.footer span.copyright,
+.footer a.social-link,
+.footer a.footer-link {
+  display: inline-block;
+  border: none;
+  color: white;
+  opacity: 0.6;
+  margin: 0 15px 0;
+  padding-bottom: 10px;
+  font-size: 14px;
+  transition: 0.1s all ease-in;
+}
+.footer a.social-link {
+  font-size: 18px;
+  opacity: 1;
+}
+.footer a.social-link:hover {
+  transform: scale(1.2);
+}
+.footer a.footer-link:hover {
+  opacity: 1;
 }
