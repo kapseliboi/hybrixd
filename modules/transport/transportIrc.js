@@ -50,7 +50,7 @@ function open (processID, engine, host, chan, hashSalt) {
       clearInterval(global.hybrixd.engine[engine][handle].announce);
       global.hybrixd.engine[engine][handle].announce = setInterval(function () {
         // announce self
-        global.hybrixd.engine[this.engine][this.handle].send(this.engine, this.handle, '@|' + this.nodeId + '|' + global.hybrixd.engine[this.engine].endpoints.join());
+        global.hybrixd.engine[this.engine][this.handle].send(this.engine, this.handle, '*', '@|' + this.nodeId + '|' + global.hybrixd.engine[this.engine].endpoints.join());
         // perform housecleaning of peer list
         let peersArray = Object.keys(global.hybrixd.engine[this.engine][this.handle].peers);
         let timenow = (new Date()).getTime();

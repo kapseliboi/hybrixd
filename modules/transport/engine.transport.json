@@ -98,8 +98,7 @@
       "_help" : "List active transports, endpoints or peers.",
       "endpoints" : "Current node endpoints are listed.",
       "handles" : "Active transport handles are listed.",
-      "peers" : "Peers across all networks are listed.",
-      "peersURIs" : "Peers enpoint URIs across all networks are listed."
+      "peers" : "Peers across all networks are listed."
     }
   }
 }

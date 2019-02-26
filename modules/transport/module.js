@@ -91,7 +91,8 @@ function exec (properties) {
             opened: global.hybrixd.engine[target.id][handle].opened,
             protocol: global.hybrixd.engine[target.id][handle].protocol,
             channel: global.hybrixd.engine[target.id][handle].channel,
-            peerId: global.hybrixd.engine[target.id][handle].peerId
+            peerId: global.hybrixd.engine[target.id][handle].peerId,
+            nodeId: global.hybrixd.node.publicKey
           };
           scheduler.stop(processID, 0, information);
         } else {
@@ -134,11 +135,13 @@ function exec (properties) {
             }
           }
           break;
+        /* DEPRECATED:
         case 'peersURIs':
           result = global.hybrixd.engine[target.id].peersURIs;
           break;
+        */
         default:
-          result = ['endpoints', 'handles', 'peers', 'peersURIs'];
+          result = ['endpoints', 'handles', 'peers'];
           break;
       }
       scheduler.stop(processID, err, result);
