@@ -109,7 +109,7 @@
 
           <p><i>hybrix</i> is a highly inclusive distributed platform environment to network and manage digital forms of value transfer, interlinking other decentralized networks. It solves the problem of a currently fragmented ecosystem of solutions in digital ledger technologies and alternative economies. The <i>hybrix</i> network runs through a collection of decentralized nodes and puts a lot of power at your fingertips.</p>
 
-          <svg class="diagram-img" width="748px" height="160px" viewBox="0 0 748 160" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <svg class="diagram-img" viewBox="0 0 748 160" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <title>hybrix-gradient</title>
             <desc>Created with Sketch.</desc>
             <defs>
@@ -278,15 +278,15 @@
             </script>
 
             <textarea id="try">
-            hybrix.sequential([
-                'init',                                                        // Initialize hybrix
-                {host: 'http://localhost:1111/'}, 'addHost',                   // Add and initialize the host
-                {query: '/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'}, 'rout'  // Query for asset balance
-              ],
-              onSuccess,                                                      // Define action to execute on successfull completion
-              onError,                                                        // Define action to execute when an error is encountered
-              onProgress                                                      // Define action to execute whenever there is a progress update
-            );</textarea>
+hybrix.sequential([
+    'init',                                                        // Initialize hybrix
+    {host: 'http://localhost:1111/'}, 'addHost',                   // Add and initialize the host
+    {query: '/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'}, 'rout'  // Query for asset balance
+  ],
+  onSuccess,                                                      // Define action to execute on successfull completion
+  onError,                                                        // Define action to execute when an error is encountered
+  onProgress                                                      // Define action to execute whenever there is a progress update
+);</textarea>
 
             <p>Progress:</p>
             <div id="progressContainer">

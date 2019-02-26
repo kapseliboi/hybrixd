@@ -395,7 +395,7 @@ div.result {
   border-top-style: solid;
   border-top-width:1px ;
   border-top-color: #dddddd;
-  width:95%;
+  width:100%;
   padding: 4px 8px;
 }
 div.error {
