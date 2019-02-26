@@ -23,7 +23,7 @@
     "cssmin": "^0.4.3"
   },
   "scripts": {
-    "start": "./hybrixd start",
+    "start": "./hybrixd",
     "setup": "sh scripts/npm/setup.sh",
     "build": "sh scripts/npm/setup.sh",
     "compile": "sh scripts/npm/compile.sh",
