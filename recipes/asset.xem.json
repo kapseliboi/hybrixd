@@ -14,7 +14,8 @@
   "throttle":5,
   "quartz":{
     "init" : [
-      "#test('$contract'==='undefined',1,3)",
+      "#data '$contract'",
+      "#flow('undefined',1,3)",
       "#curl('asset://$symbol','/heartbeat','GET')",
       "#logs(1,'module $symbol: '+(data && typeof data.message!=='undefined' && data.message==='ok'?'connected':'failed connection')+' to host [$host]')",
       "done"
@@ -24,7 +25,8 @@
       "stop(0,{module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:null,version:null})"
     ],
     "unspent" : [
-      "test('$contract'==='undefined',1,2)",
+      "data '$contract'",
+      "flow('undefined',1,2)",
       "stop(0,'Unspent returns mosaic data only in NEM tokens.')",
       "poke('proc::namespace','$contract'.split(':')[0])",
       "curl('asset://$symbol','/account/mosaic/definition/page?address=$originator&parent=$proc::namespace','GET')",
@@ -36,7 +38,8 @@
     ],
      "balance" : [
       "time(32000)",
-      "test('$contract'==='undefined',1,6)",
+      "data '$contract'",
+      "flow('undefined',1,6)",
       "curl('asset://$symbol','/account/get?address=$1'.replace(/-/g,''),'GET')",
       "tran('.account.balance',2,1)",
       "stop(1,null)",
@@ -114,12 +117,14 @@
       "done null"
     ],
     "contract" : [
-      "test('$contract'==='undefined',1,2)",
+      "data '$contract'",
+      "flow('undefined',1,2)",
       "stop(0,'Unspent returns data only for NEM mosiac tokens.')",
       "pass('$originator:$contract')"
     ],
     "fee" : [
-      "test('$contract'==='undefined',1,3)",
+      "data '$contract'",
+      "flow('undefined',1,3)",
       "data('$fee')",
       "jump(2)",
       "data('$fee-mosaic')",

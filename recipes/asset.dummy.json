@@ -17,12 +17,14 @@
       "stop(0,{module:'$symbol',synced:1,blocks:0,fee:$fee,supply:0,difficulty:0,testmode:0,version:0})"
     ],
     "unspent" : [
-      "test('$1'==='_dummyaddress_',2,1)",
+      "data '$1'",
+      "flow('_dummyaddress_',2,1)",
       "stop(1,'Error: invalid address!')",
       "pass([{amount:'$3',txid:'TXIDTXIDTXIDTXIDTXIDTXIDTXID',txn:1}])"
     ],
     "balance" : [
-      "test('$1'==='_dummyaddress_',2,1)",
+      "data '$1'",
+      "flow('_dummyaddress_',2,1)",
       "stop(1,'Error: invalid address!')",
       "pass('10000.00000000')"
     ],
@@ -37,12 +39,14 @@
       "stop(0,{address:'_dummyaddress_',transaction:'TXIDTXIDTXIDTXIDTXIDTXIDTXID'})"
     ],
     "transaction" : [
-      "test('$1'==='TXIDTXIDTXIDTXIDTXIDTXIDTXID',1,2)",
+      "data '$1'",
+      "flow('TXIDTXIDTXIDTXIDTXIDTXIDTXID',1,2)",
       "stop(0,{id:'TXIDTXIDTXIDTXIDTXIDTXIDTXID',symbol:'$symbol','fee-symbol':'$symbol'})",
       "stop(1,'Illegal transaction id.')"
     ],
     "history" : [
-      "test('$1'==='_dummyaddress_',2,1)",
+      "data '$1'",
+      "flow('_dummyaddress_',2,1)",
       "stop(1,'Error: invalid address!')",
       "stop(0,[])"
     ],

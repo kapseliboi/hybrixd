@@ -33,7 +33,7 @@
       "curl('asset://$symbol','','',{},{'timeout':$longtimeout})",
       "tran('.result',2,1)",
       "fail('Bad input unspents from Electrum!')",
-      "each(data,'unspent_tran')",
+      "each($,'unspent_tran')",
       "sort('.amount')",
       "scan('cnt<($inputval+val.amount)','+val.amount')",
       "poke('selected')",
@@ -41,13 +41,13 @@
       "data([])",
       "math('+')",
       "math('-$inputval')",
-      "test(data<0,1,2)",
+      "ship(2,2,1)",
       "data('0')",
       "form()",
-      "done({unspents:$selected,change:data})"
+      "done({unspents:$selected,change:$data})"
     ],
     "unspent_tran" : [
-      "data(data.value)",
+      "data(${.value})",
       "poke('unspent')",
       "tran('.value',2,1)",
       "data(0)",
@@ -65,7 +65,7 @@
       "tran({confirmed:'.result.confirmed',unconfirmed:'.result.unconfirmed'},3,1)",
       "data(0)",
       "jump(3)",
-      "time($cache,data)",
+      "time($cache)",
       "math('${.confirmed}+${.unconfirmed}')",
       "atom()",
       "pass()"
@@ -76,7 +76,7 @@
       "curl('asset://$symbol')",
       "tran('.result',4,1)",
       "tran('.error',1,2)",
-      "fail(data.message)",
+      "fail(${.message})",
       "fail('Bad transaction result!')",
       "done()"
     ],
@@ -89,7 +89,7 @@
       "curl('asset://$symbol')",
       "tran('.result',2,1)",
       "stop(1,'No result')",
-      "pass(data)"
+      "pass"
     ],
     "sample" : [
       "stop(0,{address:'1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX',transaction:'2c0832c153cf33327dae0e95a3bc39f4b02ae887725a32c07b1be47a2faffc55'})"
@@ -106,11 +106,13 @@
       "done()"
     ],
     "init" : [
-      "test('$symbol'==='undefined',2)",
+      "data $symbol",
+      "flow('undefined',2)",
       "call('getFee')"
     ],
     "cron" : [
-      "test('$symbol'==='undefined',2)",
+      "data $symbol",
+      "flow('undefined',2)",
       "call('getFee')"
     ],
     "getFee" : [
@@ -118,7 +120,7 @@
       "data {'jsonrpc':'2.0','id': 1, 'method': 'blockchain.estimatefee', 'params': ['$confirmsRequired'] }",
       "curl('asset://$symbol')",
       "tran('.result',1,4)",
-      "test(data>0,1,3)",
+      "ship(1,3,3)",
       "poke('local::fee')",
       "done()"
     ]

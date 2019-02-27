@@ -18,7 +18,7 @@
     ],
     "status" : [
       "curl('asset://$symbol','/utils/seed/2','GET')",
-      "test(data,1,2)",
+      "test($,1,2)",
       "done({module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:null,version:null})",
       "fail('No result!')"
     ],
@@ -26,7 +26,8 @@
       "pass('$factor')"
     ],
     "balance" : [
-      "test('$contract'==='',1,3)",
+      "data '$contract'",
+      "flow('',1,3)",
       "curl('asset://$symbol','/addresses/balance/details/$1','GET')",
       "tran('.regular',4,3)",
       "curl('asset://$symbol','/assets/balance/$1/$contract','GET')",
@@ -44,8 +45,8 @@
       "data('$1')",
       "jpar()",
       "curl('asset://$symbol','/transactions/broadcast','POST',{'Accept':'application/json','content-type':'application/json'})",
-      "test(data.error,1,2)",
-      "fail(data.message)",
+      "tran('.error',1,2)",
+      "fail('${.message}')",
       "tran('.id',2,1)",
       "fail('Transaction Failed! $')",
       "pass(data)"

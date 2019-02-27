@@ -13,7 +13,8 @@
   "generated":"once",
   "quartz":{
     "init" : [
-      "#test('$contract'==='1.3.0',1,3)",
+      "#data '$contract'",
+      "#flow('1.3.0',1,3)",
       "#data {'method': 'call', 'params': [1, 'login', ['', '']], 'id': Math.floor(Math.random()*10000)}",
       "#curl('asset://$symbol')",
       "done"
@@ -21,14 +22,14 @@
     "status" : [
       "data {'method':'call', 'params':[0,'get_dynamic_global_properties',[]], id: Math.floor(Math.random()*10000)}",
       "curl('asset://$symbol')",
-      "test(data,1,2)",
+      "test($,1,2)",
       "stop(0,{module:'$symbol',synced:null,blocks:data.result.head_block_number,fee:null,supply:null,difficulty:null,testmode:null,version:null})",
       "stop(1,'No result')"
     ],
     "unspent" : [
       "data {'method': 'call', 'params': [1, 'login', ['', '']], 'id': Math.floor(Math.random()*10000)}",
       "curl('asset://$symbol')",
-      "test(data.result,2,1)",
+      "test(${.result},2,1)",
       "stop(1,'Log in for validation unsuccesfull.')",
       "data {'method':'call', 'params':[0,'get_account_by_name',['$1']], id: Math.floor(Math.random()*10000)}",
       "curl('asset://$symbol')",
@@ -53,7 +54,7 @@
     "push" : [
       "{'method':'call', 'params':['broadcast_transaction',['$1']], id: Math.floor(Math.random()*10000)}",
       "curl('asset://$symbol')",
-      "test(data,2,1)",
+      "test($,2,1)",
       "stop(1,'Broadcast failed!')",
       "tran('.result',2,1)",
       "stop(1,'No result!')",
@@ -62,11 +63,11 @@
     "validate" : [
       "{'method': 'call', 'params': [1, 'login', ['', '']], 'id': Math.floor(Math.random()*10000)}",
       "curl('asset://$symbol')",
-      "test(data.result,2,1)",
+      "test(${.result},2,1)",
       "stop(1,'Log in for validation unsuccesfull.')",
       "data {'method':'call', 'params':[0,'get_account_by_name',['$1']], id: Math.floor(Math.random()*10000)}",
       "curl('asset://$symbol')",
-      "test(data.result,2,1)",
+      "test({$.result},2,1)",
       "stop(0,'unregistered')",
       "stop(0,'valid')"
     ],
