@@ -22,13 +22,27 @@ function simpleProgress (processID, count) {
   }, (100 * count), processID);
 }
 
+function stringChunks (str, divisor) {
+  // split message into equal parts
+  let messageChunks = [];
+  let nextChunk;
+  if (typeof str === 'string') {
+    while (str.length > 0) {
+      nextChunk = str.substring(0, divisor);
+      str = str.substring(divisor, str.length);
+      messageChunks.push(nextChunk);
+    }
+  }
+  return messageChunks;
+}
+
 function addHandleAndEndpoint (engine, handle, peerId, endpoint) {
   if (global.hybrixd.engine[engine].endpoints.indexOf(endpoint) === -1) {
     global.hybrixd.engine[engine].endpoints.push(endpoint);
     global.hybrixd.engine[engine].handles.push(handle);
     global.hybrixd.engine[engine][handle].peerId = peerId;
     global.hybrixd.engine[engine][handle].idStack = [];
-    global.hybrixd.engine[engine][handle].buffer = { id: [], time: [], data: [] };
+    global.hybrixd.engine[engine][handle].buffer = [];
   }
 }
 
@@ -96,7 +110,7 @@ function relayPeers (engine, handle, peer) {
       if (!peerFound || (Number(global.hybrixd.engine[engine][loophandle].peers[ peersArray[h] ].time) + 60000) < (new Date()).getTime()) {
         // duplicate announce latest 8 peers of remote nodes that cannot connect to specific channels
         if (global.hybrixd.engine[engine].peersURIs[ peer ]) {
-          global.hybrixd.engine[engine][loophandle].send(engine, loophandle, '~|' + peer + '|' + global.hybrixd.engine[engine].peersURIs[ peer ].slice(0, 8).join());
+          global.hybrixd.engine[engine][loophandle].send(engine, loophandle, '~', '~|' + peer + '|' + global.hybrixd.engine[engine].peersURIs[ peer ].slice(0, 8).join());
         }
       }
     }
@@ -112,8 +126,8 @@ function relayMessage (engine, handle, nodeIdTarget, messageId, messageContent) 
         loophandle = global.hybrixd.engine[engine].handles[h];
         // ignore self handle, and already relayed messages
         if (loophandle !== handle &&
-           global.hybrixd.engine[engine][loophandle].idStack.indexOf(messageId) === -1) {
-          global.hybrixd.engine[engine][loophandle].send(engine, loophandle, '+|' + nodeIdTarget + '|' + messageId + '|' + messageContent);
+          global.hybrixd.engine[engine][loophandle].idStack.indexOf(messageId) === -1) {
+          global.hybrixd.engine[engine][loophandle].send(engine, loophandle, '*', '+|' + nodeIdTarget + '|' + messageId + '|' + messageContent);
           global.hybrixd.engine[engine][loophandle].idStack.push(messageId);
           if (global.hybrixd.engine[engine][loophandle].idStack.length > 1000) {
             global.hybrixd.engine[engine][loophandle].idStack.shift();
@@ -125,20 +139,37 @@ function relayMessage (engine, handle, nodeIdTarget, messageId, messageContent) 
 }
 
 function routeMessage (engine, handle, nodeIdTarget, messageId, messageContent) {
-  if (typeof messageContent === 'string' && messageContent.substr(0, 1) !== '#') {
+  if (typeof messageContent === 'string') {
     let sessionID = nodeIdTarget;
     let nodeIdSource = messageContent.split('/')[0];
-    let messageResponseId = shaHash(nodeIdSource + messageId).substr(16, 24); // response messageId
+    let messageResponseId = shaHash(nodeIdSource + messageId).substr(16, 8); // response messageId
     let xpath = '/' + messageContent.substr(messageContent.indexOf('/') + 1, messageContent.length);
-    if (xpath) {
-      // var response = baseCode.recode('utf-8','base58', '#'+JSON.stringify( router.route({url: xpath, sessionID: sessionID}) ) );
+    if (xpath && xpath !== '/') {
       let routeResult = router.route({url: xpath, sessionID: sessionID});
-      console.log(' RESPONSE: ' + JSON.stringify(routeResult));
-      let response = UrlBase64.safeCompress('#' + JSON.stringify(routeResult));
-      console.log(' RESPONSECRYPTED: ' + response);
-      global.hybrixd.engine[engine][handle].send(engine, handle, nodeIdSource + '|' + messageResponseId + '|' + response);
+      let response = '#|' + JSON.stringify(routeResult);
+      sendMessage(engine,
+        handle,
+        nodeIdSource,
+        messageResponseId,
+        response);
     }
   }
+}
+
+function sendMessage (engine, handle, nodeIdTarget, messageId, message) {
+  let messageChunks = stringChunks(message, 256);
+  let messageContent;
+  let chunkNr;
+  let chunk;
+  for (let i = messageChunks.length - 1; i > -1; i--) {
+    chunkNr = i || '^' + messageChunks.length;
+    chunk = chunkNr + '|' + messageChunks[i];
+    // console.log(' ORIGINL ' + i + ' : ' + chunk );
+    messageContent = (i === messageChunks.length - 1 ? nodeIdTarget : '') + '|' + messageId + '|' + UrlBase64.safeCompress(chunk);
+    // console.log(' CRYPTED ' + i + ' : ' + messageContent);
+    global.hybrixd.engine[engine][handle].send(engine, handle, nodeIdTarget, messageContent);
+  }
+  return messageId;
 }
 
 function nthIndex (str, pat, n) {
@@ -150,38 +181,108 @@ function nthIndex (str, pat, n) {
   return i;
 }
 
-function readMessage (engine, handle, message) {
-  let relay = message.substr(0, 1) === '+';
-  if (relay) { message = message.substr(2); }
-  let messageBase = message.substr(nthIndex(message, '|', 2) + 1, message.length);
-  console.log(' INCOMING: ' + messageBase);
-  // var messageContent = baseCode.recode('base58','utf-8', messageBase);
-  let messageContent = UrlBase64.safeDecompress(messageBase);
-  console.log(' DECODED: ' + messageContent);
-  message = message.split('|');
-  let nodeIdTarget = message.shift(); // get nodeIdTarget
-  let messageId = message.shift(); // get unique ID
-  global.hybrixd.engine[engine][handle].idStack.push(messageId); // make sure to register the message ID on stack
-  // determine if peer relay message
-  if (nodeIdTarget === '*' || nodeIdTarget === global.hybrixd.node.publicKey) { // message addressed to us?
-    let timenow = (new Date()).getTime(); // add internal timestamp
-    let transport = global.hybrixd.engine[engine][handle].protocol;
-    // skip messages if buffer becomes too large!
-    if (global.hybrixd.engine[engine][handle].buffer.id.length < global.hybrixd.engine[engine].announceMaxBufferSize) {
-      global.hybrixd.engine[engine][handle].buffer.id.push(messageId);
-      global.hybrixd.engine[engine][handle].buffer.time.push(timenow);
-      global.hybrixd.engine[engine][handle].buffer.data.push(messageContent);
-      // DEBUG: console.log(' [.] transport '+transport+': message arrived for ['+nodeIdTarget+'] | '+messageId+' | '+messageContent);
-    } else {
-      console.log(' [!] transport ' + transport + ': buffer overflow, discarding messages!');
+function messageIndex (engine, handle, messageId, nodeIdTarget) {
+  let idx = -1;
+  if (global.hybrixd.engine[engine][handle]) {
+    for (let i = 0; i < global.hybrixd.engine[engine][handle].buffer.length; i++) {
+      if (global.hybrixd.engine[engine][handle].buffer[i] && global.hybrixd.engine[engine][handle].buffer[i].id === messageId) {
+        idx = i;
+      }
+    }
+    if (idx === -1) {
+      // register new message on stack
+      idx = global.hybrixd.engine[engine][handle].buffer.push({
+        id: messageId,
+        from: nodeIdTarget,
+        time: new Date().getTime(),
+        data: null,
+        part: {'N': 0}
+      }) - 1;
     }
   }
-  return {
-    relay: relay,
-    nodeIdTarget: nodeIdTarget,
-    messageId: messageId,
-    messageContent: messageContent
-  };
+  return idx;
+}
+
+function readMessage (engine, handle, message) {
+  // skip messages if buffer becomes too large!
+  let transport = global.hybrixd.engine[engine][handle].protocol;
+  if (global.hybrixd.engine[engine][handle].buffer.length < global.hybrixd.engine[engine].announceMaxBufferSize) {
+    let relay = message.substr(0, 1) === '+';
+    if (relay) { message = message.substr(2); }
+    let messageBase = message.substr(nthIndex(message, '|', 2) + 1);
+    message = message.split('|');
+    let nodeIdTarget = message.shift(); // get nodeIdTarget
+    let messageId = message.shift(); // get unique ID
+    // in case of multipart message, recover nodeIdTarget, from message buffer
+    if (nodeIdTarget === '') {
+      let idx = messageIndex(engine, handle, messageId);
+      nodeIdTarget = global.hybrixd.engine[engine][handle].buffer[idx].from;
+    }
+    // store id on stack
+    global.hybrixd.engine[engine][handle].idStack.push(messageId);
+    if (global.hybrixd.engine[engine][handle].idStack.length > 1000) {
+      global.hybrixd.engine[engine][handle].idStack.shift();
+    }
+    if (nodeIdTarget === '*' || nodeIdTarget === global.hybrixd.node.publicKey) { // message addressed to us?
+      let messageContent = UrlBase64.safeDecompress(messageBase);
+      let partsComplete = false;
+      let response = false;
+      if (messageContent) {
+        let chunks = 0;
+        let chunkNr = messageContent.substr(0, messageContent.indexOf('|'));
+        if (chunkNr.substr(0, 1) === '^') { chunks = chunkNr.substr(1); chunkNr = '0'; } // cut off length definition
+        messageContent = messageContent.substr(messageContent.indexOf('|') + 1);
+        let idx = messageIndex(engine, handle, messageId, nodeIdTarget);
+        // if id already on stack, piece together message chunks
+        if (idx > -1) {
+          global.hybrixd.engine[engine][handle].buffer[idx].part[chunkNr] = messageContent;
+          // make sure total count of chunks is available
+          if (chunkNr === '0') {
+            global.hybrixd.engine[engine][handle].buffer[idx].part['N'] = Number(chunks);
+          }
+          // check if message is complete
+          if (global.hybrixd.engine[engine][handle].buffer[idx].part['N'] > 0) {
+            partsComplete = true;
+            for (let i = 0; i < global.hybrixd.engine[engine][handle].buffer[idx].part['N']; i++) {
+              if (!global.hybrixd.engine[engine][handle].buffer[idx].part[i]) {
+                partsComplete = false;
+              }
+            }
+          }
+          if (partsComplete) {
+            // reconstruct entire message
+            let dataArray = [];
+            for (let i = 0; i < global.hybrixd.engine[engine][handle].buffer[idx].part['N']; i++) {
+              dataArray.push(global.hybrixd.engine[engine][handle].buffer[idx].part[i]);
+              delete global.hybrixd.engine[engine][handle].buffer[idx].part[i];
+            }
+            global.hybrixd.engine[engine][handle].buffer[idx].data = dataArray.join('');
+            delete global.hybrixd.engine[engine][handle].buffer[idx].part;
+            if (global.hybrixd.engine[engine][handle].buffer[idx].data.substr(0, 2) === '#|') {
+              global.hybrixd.engine[engine][handle].buffer[idx].data = global.hybrixd.engine[engine][handle].buffer[idx].data.substr(2);
+              response = true;
+            }
+          }
+          return {
+            relay: relay,
+            response: response,
+            complete: partsComplete,
+            nodeIdTarget: nodeIdTarget,
+            messageId: messageId,
+            messageContent: partsComplete ? global.hybrixd.engine[engine][handle].buffer[idx].data : null
+          };
+        } else {
+          return null;
+        }
+      } else {
+        console.log(' [!] transport ' + transport + ': mangled message [' + messageId + ']!');
+        return null;
+      }
+    }
+  } else {
+    console.log(' [!] transport ' + transport + ': buffer overflow, discarding messages!');
+    return null;
+  }
 }
 
 exports.progress = simpleProgress;
@@ -193,3 +294,6 @@ exports.relayMessage = relayMessage;
 exports.addHandleAndEndpoint = addHandleAndEndpoint;
 exports.readMessage = readMessage;
 exports.routeMessage = routeMessage;
+exports.sendMessage = sendMessage;
+exports.stringChunks = stringChunks;
+exports.messageIndex = messageIndex;

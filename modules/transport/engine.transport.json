@@ -2,14 +2,16 @@
   "engine":"transport",
   "name":"Transport engine module",
   "module":"transport",
-  "readTimeout":15000,
+  "readTimeout":32000,
+  "announceMaxBufferSize":5000,
   "hashSalt":"Th1s1sS0m3S4lty3ntr0pyf0rTh0s3H4sh1ngFunct10ns!",
   "defaultChannel":"hybrixAnnouncements",
   "defaultIrcHost":"irc.freenode.net",
   "defaultTorrentPasswd":"l3ts_b34t_th3_b4nks!",
   "cron" : 300,
   "quartz" : {
-    "call" : [
+    "rout" : [
+      "time 40000",
       "# get the node's public key/ID",
       "with 'nodeId' 'node'",
       "# create path out of arguments",
@@ -81,8 +83,8 @@
         }
       }
     },
-    "call":{
-      "_help" : "Send an API call to a target node over any active transports.",
+    "rout":{
+      "_help" : "Request an API route from a target node over any active transports.",
       "_ellipsis": true,
       "_ref" : {
         "_list" : "target_node_Id",
@@ -96,8 +98,7 @@
       "_help" : "List active transports, endpoints or peers.",
       "endpoints" : "Current node endpoints are listed.",
       "handles" : "Active transport handles are listed.",
-      "peers" : "Peers across all networks are listed.",
-      "peersURIs" : "Peers enpoint URIs across all networks are listed."
+      "peers" : "Peers across all networks are listed."
     }
   }
 }

@@ -22,7 +22,17 @@
       "done ''"
     ],
     "addAddressRedirect" : [
-      "rout 'engine/voting/addAddress/$1/$2'"      
+      "#rout 'engine/voting/addAddress/$1/$2'",
+      "type 'file:text/html'",
+      "data 'modules/$engine/redirect.html'",
+      "file @loadSuccess",
+      "fail 'File redirect.html does not exist!'",
+      "@loadSuccess",
+      "repl '%TARGET%' 'someWebsite'",
+      "poke 'redirectPage'",
+      "type 'text/html'",
+      "peek 'redirectPage'",
+      "done"
     ],
     "addAddress" : [
       "data '$2'",

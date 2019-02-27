@@ -24,10 +24,9 @@ function open (processID, engine, channel, passwd, hashSalt) {
         // add handle and endpoint
         functions.addHandleAndEndpoint(engine, handle, peerId, 'torrent://' + channel + '/' + peerId);
         // send message function
-        global.hybrixd.engine[engine][handle].send = function (engine, handle, message) {
+        global.hybrixd.engine[engine][handle].send = function (engine, handle, nodeIdTarget, message) {
           // send message to every peer, or specified peer
           if (global.hybrixd.engine[engine][handle].hasOwnProperty('peers')) {
-            let nodeIdTarget = message.split('|')[0];
             let peerId; let broadcast = false;
             if (nodeIdTarget === '*' || nodeIdTarget === '@' || nodeIdTarget === '~' ||
                !global.hybrixd.engine[engine][handle].peers.hasOwnProperty(nodeIdTarget)) {
@@ -104,10 +103,14 @@ function open (processID, engine, channel, passwd, hashSalt) {
         } else {
           let messageData = functions.readMessage(engine, handle, message);
           // if target is us, route (and respond) to message
-          if (messageData.nodeIdTarget === nodeId) {
-            functions.routeMessage(engine, handle, messageData.nodeIdTarget, messageData.messageId, messageData.messageContent);
-          } else { // else relay the message to other channels
-            functions.relayMessage(engine, handle, messageData.nodeIdTarget, messageData.messageId, messageData.messageContent);
+          if (messageData) {
+            if (messageData.nodeIdTarget === nodeId) {
+              if (messageData.complete && !messageData.response) {
+                functions.routeMessage(engine, handle, messageData.nodeIdTarget, messageData.messageId, messageData.messageContent);
+              }
+            } else { // else relay the message to other channels
+              functions.relayMessage(engine, handle, messageData.nodeIdTarget, messageData.messageId, messageData.messageContent);
+            }
           }
         }
       }

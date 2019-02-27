@@ -35,7 +35,7 @@ if [ "$NODES" -gt "1" ]; then
     #echo "\"stop(0,'Done')\"" >> "$NODE/boot.json"
     #echo "]}}" >> "$NODE/boot.json"
 
-    for (( i=1; i<=$NODES; i++ ))
+    for (( i=2; i<=$NODES; i++ ))
     do
         echo " [i] cluster: preparing node $i..."
 
