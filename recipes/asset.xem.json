@@ -36,17 +36,20 @@
       "tran('.0')",
       "pass(data)"
     ],
-     "balance" : [
+    "balance" : [
+      "data '$1'",
+      "excl '-'",
+      "poke 'address'",
       "time(32000)",
       "data '$contract'",
       "flow('undefined',1,6)",
-      "curl('asset://$symbol','/account/get?address=$1'.replace(/-/g,''),'GET')",
+      "curl('asset://$symbol','/account/get?address=$address','GET')",
       "tran('.account.balance',2,1)",
       "stop(1,null)",
       "atom()",
       "done()",
       "poke('proc::namespace','$contract'.split(':')[0])",
-      "curl('asset://$symbol','/account/mosaic/owned?address=$1'.replace(/-/g,''),'GET')",
+      "curl('asset://$symbol','/account/mosaic/owned?address=$address','GET')",
       "tran('.data',2,1)",
       "stop(1,null)",
       "find({'namespaceId':'$proc::namespace'},1,2)",

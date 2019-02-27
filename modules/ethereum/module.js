@@ -11,7 +11,7 @@ let scheduler = require('../../lib/scheduler');
 let modules = require('../../lib/modules');
 let LZString = require('../../common/crypto/lz-string');
 
-let jstr = function (target) { return JSON.stringify(target).replace(/[$]/g, () => '$$'); };
+let jstr = function (target) { return JSON.stringify({symbol: target.symbol}); };
 
 // exports
 exports.init = init;
@@ -93,7 +93,7 @@ function exec (properties) {
         // UBQ {"jsonrpc":"2.0","id":8123,"address":"0xa8201e4dacbe1f098791a0f11ab6271570277bb8","result":"0"}
         if (base === 'ubq') {
           subprocesses.push('tran(".result",1,3)');
-          subprocesses.push("regx('^\\d',2,1)");
+          subprocesses.push("regx('^\\d',1,2)");
           subprocesses.push('atom');
           subprocesses.push('done');
           subprocesses.push('fail("Error: Ethereum network not responding. Cannot get balance!")');
@@ -113,23 +113,19 @@ function exec (properties) {
       }
       break;
     case 'push':
-      var deterministic_script = (typeof properties.command[1] !== 'undefined' ? properties.command[1] : false);
-      if (deterministic_script) {
-        subprocesses.push('@retryLoop');
-        subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_sendRawTransaction",["' + deterministic_script + '"]]})');
-        // returns: { "id":1, "jsonrpc": "2.0", "result": "0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331" }
-        subprocesses.push('tran(".result",1,3)');
-        subprocesses.push("regx('^0x',1,2)");
-        subprocesses.push('done()');
-        subprocesses.push('tran(".error",1,2)');
-        subprocesses.push('fail()');
-        subprocesses.push('logs(2,"module ethereum: bad RPC response, retrying request...")');
-        subprocesses.push('wait(1500)');
-        subprocesses.push('loop(@retryLoop,"retries","<9","1")');
-        subprocesses.push('fail("Error: Ethereum network not responding. Cannot push transaction!")');
-      } else {
-        subprocesses.push('fail("Missing or badly formed deterministic transaction!")');
-      }
+      subprocesses.push('@retryLoop');
+      subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_sendRawTransaction",["$1"]]})');
+      // returns: { "id":1, "jsonrpc": "2.0", "result": "0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331" }
+      subprocesses.push('tran(".result",1,3)');
+      subprocesses.push("regx('^0x',1,2)");
+      subprocesses.push('done()');
+      subprocesses.push('tran(".error",1,2)');
+      subprocesses.push('fail()');
+      subprocesses.push('logs(2,"module ethereum: bad RPC response, retrying request...")');
+      subprocesses.push('wait(1500)');
+      subprocesses.push('loop(@retryLoop,"retries","<9","1")');
+      subprocesses.push('fail("Error: Ethereum network not responding. Cannot push transaction!")');
+
       break;
     case 'unspent':
 
@@ -209,7 +205,7 @@ function post (properties) {
 
 // data returned by this connector is stored in a process superglobal -> global.hybrixd.process[processID]
 function link (properties) {
-  let target = properties.target;
+  let target = global.hybrixd.asset[properties.target.symbol];
   let base = target.symbol.split('.')[0]; // in case of token fallback to base asset
   // decode our serialized properties
   let processID = properties.processID;
