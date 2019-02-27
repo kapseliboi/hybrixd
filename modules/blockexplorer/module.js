@@ -8,13 +8,13 @@
 //  ABE (open source):  http://explorer.litecoin.net/q
 
 // required libraries in this context
-var Client = require('../../lib/rest').Client;
-var APIqueue = require('../../lib/APIqueue');
-var scheduler = require('../../lib/scheduler');
-var modules = require('../../lib/modules');
-var functions = require('../../lib/functions');
+let Client = require('../../lib/rest').Client;
+let APIqueue = require('../../lib/APIqueue');
+let scheduler = require('../../lib/scheduler');
+let modules = require('../../lib/modules');
+let functions = require('../../lib/functions');
 
-var jstr = function (data) { return JSON.stringify(data); };
+let jstr = function (data) { return JSON.stringify(data); };
 
 // exports
 exports.init = init;
@@ -52,9 +52,9 @@ function exec (properties) {
 
   */
   var command = properties.command;
-  var processID = properties.processID;
+  let processID = properties.processID;
 
-  var subprocesses = [];
+  let subprocesses = [];
 
   if (command[0] === 'init') {
     // set up REST API connection
@@ -62,27 +62,27 @@ function exec (properties) {
     var target = properties.target;
 
     if (typeof target.user !== 'undefined' && typeof target.pass !== 'undefined') {
-      var options_auth = {user: target.user, password: target.pass};
+      let options_auth = {user: target.user, password: target.pass};
       global.hybrixd.source[target.id].link = new Client(options_auth);
     } else {
       global.hybrixd.source[target.id].link = new Client();
     }
     subprocesses.push('logs(1,"module blockexplorer: initialized ' + target.id + '")');
   } else {
-    var symbol = command[0];
-    var symbolCommand = command[1];
-    var address = command[2];
+    let symbol = command[0];
+    let symbolCommand = command[1];
+    let address = command[2];
     var target = {};
 
-    var candidates = []; // List of block explorer sources that can handle $SYMBOL
-    for (var id in global.hybrixd.source) { // find the block explorer sources that can handle $SYMBOL
+    let candidates = []; // List of block explorer sources that can handle $SYMBOL
+    for (let id in global.hybrixd.source) { // find the block explorer sources that can handle $SYMBOL
       if (id.split('.')[1] === symbol) { // the blockexplorer id === $BLOCKEXPLORER.$SYMBOL
         if (global.hybrixd.source[id].hasOwnProperty('module') && global.hybrixd.source[id].module === 'blockexplorer') { // check if source is blockexplorer
           candidates.push(global.hybrixd.source[id]);
         }
       }
     }
-    var blockexplorer;
+    let blockexplorer;
     if (candidates.length) {
       target = candidates[Math.floor((Math.random() * candidates.length))]; // Choose random candidate TODO sort based on a scoring
       blockexplorer = target.source.split('.')[0];
@@ -90,7 +90,7 @@ function exec (properties) {
       blockexplorer = '';
     }
 
-    var factor = (typeof target.factor !== 'undefined' ? target.factor : 8);
+    let factor = (typeof target.factor !== 'undefined' ? target.factor : 8);
     var command = properties.command;
 
     // handle standard cases here, and construct the sequential process list
@@ -100,9 +100,10 @@ function exec (properties) {
           case 'balance':
             if (typeof address !== 'undefined') {
               subprocesses.push('func("link",{target:' + jstr(target) + ',command:["/address/balance/' + address + '?confirmations=0"]})');
-              subprocesses.push('test((typeof data.data!=="undefined" && typeof data.data.balance!=="undefined" && !isNaN(data.data.balance)),2,1,data)');
-              subprocesses.push('stop(1,null)');
-              subprocesses.push('stop(0, functions.padFloat(data.data.balance,' + factor + ') )');
+              subprocesses.push("tran('.data.balance',2,1)");
+              subprocesses.push('fail');
+              subprocesses.push('form');
+              subprocesses.push('done');
             } else {
               subprocesses.push('stop(1,"Please specify an address!")');
             }
@@ -111,7 +112,7 @@ function exec (properties) {
             // example: http://btc.blockr.io/api/v1/address/unspent/
             if (typeof command[1] !== 'undefined') {
               subprocesses.push('func("link",{target:' + jstr(target) + ',command:["/address/unspent/' + address + '"]})');
-              subprocesses.push('func("post",{target:' + jstr(target) + ',command:' + jstr(command) + ',data:data})');
+              subprocesses.push('func("post",{target:' + jstr(target) + ',command:' + jstr(command) + ',data:$})');
             } else {
               subprocesses.push('stop(1,"Please specify an address!")');
             }
@@ -227,17 +228,17 @@ function exec (properties) {
 // standard function for postprocessing the data of a sequential set of instructions
 function post (properties) {
   // decode our serialized properties
-  var processID = properties.processID;
-  var target = properties.target;
-  var mode = target.mode;
-  var factor = (typeof target.factor !== 'undefined' ? target.factor : 8);
+  let processID = properties.processID;
+  let target = properties.target;
+  let mode = target.mode;
+  let factor = (typeof target.factor !== 'undefined' ? target.factor : 8);
   // first do a rough validation of the data
-  var postdata = properties.data;
+  let postdata = properties.data;
   // set data to what command we are performing
   global.hybrixd.proc[processID].data = properties.command;
   // handle the command
-  var result = null;
-  var success = true;
+  let result = null;
+  let success = true;
   switch (mode.split('.')[1]) {
     case 'blockr': // NB blockr has been depreciated, left here for reference
       switch (properties.command[1]) {
@@ -292,13 +293,13 @@ function post (properties) {
   switch (properties.command[1]) {
     case 'unspent':
       if (typeof properties.command[3] !== 'undefined') {
-        var amount = functions.toInt(properties.command[3], factor);
+        let amount = functions.toInt(properties.command[3], factor);
         if (amount.greaterThan(0)) {
           result = functions.sortArrayByObjKey(result, 'amount', false);
           global.hybrixd.proc[processID].progress = 0.75;
           unspentscnt = functions.toInt(0, factor);
-          var usedinputs = [];
-          var unspents = [];
+          let usedinputs = [];
+          let unspents = [];
           // pull together the smaller amounts
           for (var i in result) {
             entry = functions.toInt(result[i].amount, factor);
@@ -319,7 +320,7 @@ function post (properties) {
               }
             }
           }
-          var unspentsout = unspentscnt.minus(amount);
+          let unspentsout = unspentscnt.minus(amount);
           result = {unspents: unspents, change: functions.fromInt((unspentsout > 0 ? unspentsout : 0), factor)};
         }
       }
@@ -330,16 +331,16 @@ function post (properties) {
 }
 
 function link (properties) {
-  var processID = properties.processID;
-  var target = properties.target;
-  var mode = target.mode;
-  var type = 'GET'; // for now everything is GET
+  let processID = properties.processID;
+  let target = properties.target;
+  let mode = target.mode;
+  let type = 'GET'; // for now everything is GET
   // var nopath = (properties.nopath!=='undefined' && properties.nopath?true:false);
-  var command = properties.command;
+  let command = properties.command;
   console.log(' [.] module blockexplorer: sending query [' + target.id + '] -> ' + command.join(' '));
 
-  var upath = command.shift();
-  var params = command.shift();
+  let upath = command.shift();
+  let params = command.shift();
   var args = {};
 
   if (DEBUG) { console.log(' [D] query to: ' + queryurl); }

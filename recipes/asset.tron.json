@@ -19,7 +19,7 @@
       "code 'base58' 'hex'",
       "case 'lower'",
       "drop -8",
-      "test('$contract'==='', @tronBalance, @tokenBalance)",
+      "test('$contract', @tokenBalance, @tronBalance)",
       "@tronBalance",
       "data '{address: \"$data\"}'",
       "curl 'asset://$symbol' '/walletsolidity/getaccount' 'POST'",
