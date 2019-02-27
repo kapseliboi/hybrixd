@@ -38,7 +38,7 @@
     ],
     "fee" : [
       "data('$fee')",
-      "form($waves::factor)",
+      "form('$waves::factor')",
       "done()"
     ],
     "push" : [
