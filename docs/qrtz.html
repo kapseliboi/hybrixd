@@ -236,7 +236,7 @@
     data 'hello'
     func 'myFunction'
     done               // returns 'hello world'
-   
+
     module.js:
     function myFunction(proc,data){
       proc.pass(data+' world');
@@ -278,7 +278,7 @@
     load("myObject",@success,@notFound)
     load(@success,@notFound)
     jpar()                   // convert loaded value to object
-   
+
   // TODO: split load() -> seek()
   // make sure rout is used in</code></div></div><div class="command-header" onclick="toggleCommand('meta')"><b>meta</b><span class="quickDescription"> <i>key</i>Retrieve the meta data based on a key.</span></div><div style="display:none;" class="command-body" id="meta">
     Retrieve the meta data based on a key.
@@ -333,7 +333,7 @@
     - proxy:
     - host:
     - rejectUnauthorized Whether to reject TLS unauthorized errors. (Defaults to true)
-   
+
   // TODO: rewrite curl to be able to handle a GET string or properties
   //       e.g.:</td></tr></table></div></div><div class="command-header" onclick="toggleCommand('file')"><b>file</b><span class="quickDescription">File reads the data of a filekey into process memory</span></div><div style="display:none;" class="command-body" id="file">
     File reads the data of a filekey into process memory
@@ -354,7 +354,7 @@
      math([2,3,4,5,6],'')  // multiplies all the numbers in the array
      math('+')              // adds all the numbers in the data array
      math('10/3 .round')    // divide 10 by 3, and round the result: 3
-   
+
   // TODO split into math and redu</code></div></div><div class="command-header" onclick="toggleCommand('prog')"><b>prog</b><span class="quickDescription"> <i>step</i> <i>steps</i>Set progress of parent process.</span></div><div style="display:none;" class="command-body" id="prog">
     Set progress of parent process.
    <table class="parameters"><tr><td>step</td><td>- Current step in the progress. (Value -1 restores automatic progress reporting.)</td></tr><tr><td>steps</td><td>- Total amount of steps.</td></tr></table><code class="example" title="prog" id="example67">prog(20,40)  // progress is set to 0.5 (which means 50%)
