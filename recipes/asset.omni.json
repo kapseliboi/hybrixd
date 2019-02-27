@@ -38,7 +38,7 @@
       "find({'id':'$contract'},1,2)",
       "tran({value:'[0].value',in:'[0].pendingpos',out:'[0].pendingneg'},2,1)",
       "data({value:'0',in:'0',out:'0'})",
-      "math(data.value+'+'+data.in+'+'+data.out)",
+      "math('${.value}+${.in}+${.out}')",
       "atom()"
     ],
     "push" : [

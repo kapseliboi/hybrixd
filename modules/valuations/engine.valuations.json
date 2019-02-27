@@ -56,9 +56,9 @@
       "done 'valuations downloaded'"
     ],
     "download":[
-      "poke 'key' ($.key)",
-      "poke 'site' ($.value.site)",
-      "poke 'type' ($.value.type)",
+      "poke 'key' ${.key}",
+      "poke 'site' ${.value.site}",
+      "poke 'type' ${.value.type}",
       "curl '$site' '' 'GET' {} {parsing:'$type'}",
       "done"
     ],

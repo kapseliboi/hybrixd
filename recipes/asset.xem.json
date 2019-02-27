@@ -16,7 +16,8 @@
     "init" : [
       "#test('$contract'==='undefined',1,3)",
       "#curl('asset://$symbol','/heartbeat','GET')",
-      "#logs(1,'module $symbol: '+(data && typeof data.message!=='undefined' && data.message==='ok'?'connected':'failed connection')+' to host [$host]')"
+      "#logs(1,'module $symbol: '+(data && typeof data.message!=='undefined' && data.message==='ok'?'connected':'failed connection')+' to host [$host]')",
+      "done"
     ],
     "status" : [
       "curl('asset://$symbol','/heartbeat','GET')",
@@ -26,7 +27,7 @@
       "test('$contract'==='undefined',1,2)",
       "stop(0,'Unspent returns mosaic data only in NEM tokens.')",
       "poke('proc::namespace','$contract'.split(':')[0])",
-      "curl('asset://$symbol','/account/mosaic/definition/page?address=$originator'+'&parent=$proc::namespace','GET')",
+      "curl('asset://$symbol','/account/mosaic/definition/page?address=$originator&parent=$proc::namespace','GET')",
       "tran('.data',1,2)",
       "find({'namespaceId':'$proc::namespace'},2,1)",
       "stop(1,'Contract address invalid or no mosaics found!')",
@@ -36,13 +37,13 @@
      "balance" : [
       "time(32000)",
       "test('$contract'==='undefined',1,6)",
-      "curl('asset://$symbol','/account/get?address='+'$1'.replace(/-/g,''),'GET')",
+      "curl('asset://$symbol','/account/get?address=$1'.replace(/-/g,''),'GET')",
       "tran('.account.balance',2,1)",
       "stop(1,null)",
       "atom()",
       "done()",
       "poke('proc::namespace','$contract'.split(':')[0])",
-      "curl('asset://$symbol','/account/mosaic/owned?address='+'$1'.replace(/-/g,''),'GET')",
+      "curl('asset://$symbol','/account/mosaic/owned?address=$1'.replace(/-/g,''),'GET')",
       "tran('.data',2,1)",
       "stop(1,null)",
       "find({'namespaceId':'$proc::namespace'},1,2)",
@@ -56,7 +57,7 @@
       "jpar()",
       "curl('asset://$symbol','/transaction/announce','POST',{'content-type':'application/json'})",
       "tran('.transactionHash.data',2,1)",
-      "fail(data.error+' : '+data.message)",
+      "fail('${.error} : ${.message}')",
       "pass(data)"
     ],
     "factor" : [
@@ -76,8 +77,8 @@
       "poke 'pages'",
       "poke 'loopVar' 0",
       "@countLoop",
-      "data '$address'+'$hash'",
-      "curl 'asset://$symbol','/account/transfers/all?address='+data,'GET',{'content-type':'application/json'}",
+      "data '$address$hash'",
+      "curl 'asset://$symbol','/account/transfers/all?address=$','GET',{'content-type':'application/json'}",
       "tran '.data' 1 @badResponse",
       "each data 'format_tran'",
       "poke 'tempResultArray'",
@@ -90,7 +91,7 @@
       "@noNewData",
       "peek 'resultArray'",
       "sort ['.timestamp','num','desc']",
-      "pick $offset,$offset+$count",
+      "take $offset $count",
       "done",
       "@badResponse",
       "fail 'Bad response from XEM node!'"
