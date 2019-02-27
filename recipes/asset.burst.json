@@ -46,7 +46,6 @@
       "data 'recipient=$3&publicKey=$4&amountNQT=$txAmount&feeNQT=$txFee&deadline=300&broadcast=false'",
       "curl 'asset://$symbol' '?requestType=sendMoney' 'POST' {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}",
       "poke 'result'",
-      "logs",
       "tran '.errorDescription' 1 2",
       "fail",
       "done $result"

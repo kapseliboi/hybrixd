@@ -236,7 +236,7 @@
       "_help" : "Resume a paused process and all child processes.",
       "_ref" : {
         "_access":"root",
-        "_list" : "proc",
+        "_list" : "paused_proc",
         "_this" : "Specify the process ID to resume."
       }
     },
