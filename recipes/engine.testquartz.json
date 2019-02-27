@@ -31,14 +31,14 @@
       "poke 'testVarB'",
       "with 'testVarA' 'hash'",
       "with 'testVarB' ['math','+100'] ['math','+50']",
-      "done data+' $testVarA $testVarB'"
+      "done '$ $testVarA $testVarB'"
     ],
     "each" : [
       "each [0,1,2,3,4] 'each_test'",
       "done"
     ],
     "each_test" : [
-      "done data.key+':'+data.value+':$OK'"
+      "done '${.key}:${.value}:$OK'"
     ],
     "true" : [
       "data 1",
@@ -118,7 +118,7 @@
       "keys",
       "done"
     ],
-    
+
     "X" : [
       "data 'placeholder'"
     ]

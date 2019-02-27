@@ -46,7 +46,7 @@
     ],
     "waitalittle" : [
       "time 4000 'stopped!' 0",
-      "math data.key+'*1000'",
+      "math '${.key}*1000'",
       "wait data",
       "done 'OK'"
     ]

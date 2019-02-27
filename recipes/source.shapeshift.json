@@ -12,21 +12,21 @@
       "curl('source://$source','/rate/$1_$2','GET')",
       "tran('.rate',1,2)",
       "stop(0,data)",
-      "stop(1,'Error: '+data.error)"
+      "stop(1,'Error: ${.error}')"
     ],
     "limit" :
     [
       "curl('source://$source','/limit/$1_$2','GET')",
       "tran('.limit',1,2)",
       "stop(0,data)",
-      "stop(1,'Error: '+data.error)"
+      "stop(1,'Error: ${.error}')"
     ],
     "marketinfo" :
     [
       "curl('source://$source','/marketinfo/$1_$2','GET')",
       "tran({rate:''.rate',limit:''.limit',min:''.min',minerFee:''.minerFee',},1,2)",
       "stop(0,data)",
-      "stop(1,'Error: '+data.error)"
+      "stop(1,'Error: ${.error}')"
     ],
     "recenttx" :
     [
@@ -43,7 +43,7 @@
       "curl('source://$source','/timeremaining/$1','GET')",
       "tran('.seconds_remaining',1,2)",
       "stop(0,data)",
-      "stop(1,'Error: '+data.error)"
+      "stop(1,'Error: ${.error}')"
     ],
     "getcoins" :
     [
@@ -81,7 +81,7 @@
       "curl('source://$source','/mail','POST')",
       "tran('.status',1,2)",
       "stop(0,'Success. Email receipt sent.')",
-      "stop(1,'Error: '+data.error)"
+      "stop(1,'Error: ${.error}')"
     ],
      "sendamount" :
     [
@@ -94,7 +94,7 @@
       "curl('source://$source','/cancelpending','POST')",
       "tran('.success',1,2)",
       "stop(0,'Success. Pending Transaction cancelled')",
-      "stop(1,'Error: '+data.error)"
+      "stop(1,'Error: ${.error}')"
     ]
   },
   "router":{

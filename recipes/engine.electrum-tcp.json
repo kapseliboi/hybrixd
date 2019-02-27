@@ -27,7 +27,7 @@
       "data('$1')",
       "code('base58','hex')",
       "drop($trimAddrHexL,$trimAddrHexR)",
-      "poke('script','$utxo_unspent_prefix'+data+'$utxo_unspent_suffix')",
+      "poke('script','$utxo_unspent_prefix$data$utxo_unspent_suffix')",
       "time($longtimeout)",
       "data {'jsonrpc':'2.0','id':0,'method':'blockchain.address.listunspent','params':['$1']}",
       "curl('asset://$symbol','','',{},{'timeout':$longtimeout})",
@@ -66,7 +66,7 @@
       "data(0)",
       "jump(3)",
       "time($cache,data)",
-      "math(data.confirmed+'+'+data.unconfirmed)",
+      "math('${.confirmed}+${.unconfirmed}')",
       "atom()",
       "pass()"
     ],

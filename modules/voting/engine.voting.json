@@ -13,7 +13,7 @@
       "done"
     ],
     "readAddress" : [
-      "data 'address '+data.value+' $hashSalt'",
+      "data 'address ${.value} $hashSalt'",
       "hash 'sha256'",
       "load 1 @filenotfound",
       "jpar",
@@ -164,7 +164,7 @@
     ],
     "callMe":[
       "data 'SomeRandomHash4298430983204'",
-      "poke 'userhash'",    
+      "poke 'userhash'",
       "data 'address $userhash $hashSalt'",
       "hash 'sha256'",
       "poke 'tmpA'",
@@ -177,7 +177,7 @@
       "data '$::someVar $hashSalt'",
       "hash 'sha256'",
       "done"
-    ]    
+    ]
   },
   "router" : {
     "_help" : "(experimental!) Voting engine utilizing decentralized consensus and storage.",

@@ -29,7 +29,7 @@
     ],
     "fee-factor" : [
       "call 'fee-symbol'",
-      "peek data+'::factor'",
+      "peek '${data}::factor'",
       "done"
     ],
     "fee-symbol" : [
