@@ -398,7 +398,7 @@ production:
   <<: *production_template
   only:
     refs:
-      - master
+      - tags
     kubernetes: active
   except:
     variables:
@@ -413,7 +413,7 @@ production_manual:
   allow_failure: false
   only:
     refs:
-      - master
+      - tags
     kubernetes: active
     variables:
       - $STAGING_ENABLED
