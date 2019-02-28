@@ -351,7 +351,6 @@ staging:
   image: alpine:latest
   stage: staging
   script:
-    # doesn't work: - sed -i -e "s:./hybrixd:sed -i -e 's/userbind = 127.0.0.1/userbind = '$POD_IP'/g' hybrixd.conf && sed -i -e 's/userport = 8080/userport = 5000/g' hybrixd.conf && ./hybrixd:g" package.json
     - check_kube_domain
     - install_dependencies
     - download_chart
@@ -817,7 +816,7 @@ dist:
       docker create --expose 5000 --env PORT=5000 --name="$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" /bin/herokuish procfile start web
       
       #workaround: edit the package.json, with an on start config-edit (replace 127.0.0.1 with POD's IP, replace 8080 with 5000)
-      sed -i -e "s:./hybrixd:sed -i -e 's/127.0.0.1/'\$POD_IP'/g' hybrixd.conf \&\& sed -i -e 's/8080/5000/g' hybrixd.conf \&\& ./hybrixd:g" package.json
+      sed -i -e "s:./hybrixd:sed -i -e 's/127.0.0.1/'\$POD_IP'/g' hybrixd.conf \&\& sed -i -e 's/8080/5000/g' hybrixd.conf \&\& sed -i -e 's#/source/web-wallet#/#g' hybrixd.conf \&\& ./hybrixd:g" package.json
       docker cp package.json "$CI_CONTAINER_NAME":/app/package.json
       
       docker commit "$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
