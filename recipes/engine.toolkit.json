@@ -52,6 +52,7 @@
     ]
   },
   "router":{
+    "_hidden":true,
     "_help" : "(experimental!) Toolkit engine to stage new functional dependencies.",
         "test"  : {
                 "_help" : "This is just a test.",

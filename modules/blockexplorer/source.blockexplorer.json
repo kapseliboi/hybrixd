@@ -4,6 +4,7 @@
   "module":"blockexplorer",
   "mode":"blockexplorer",
   "router" : {
+    "_hidden":true,
     "_ref":{
       "_list":"symbol",
       "balance" : {

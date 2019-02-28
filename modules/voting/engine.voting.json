@@ -180,6 +180,7 @@
     ]
   },
   "router" : {
+    "_hidden":true,
     "_help" : "(experimental!) Voting engine utilizing decentralized consensus and storage.",
     "testMe" : {
       "_help": "TEST",
