@@ -22,7 +22,7 @@ stages:
   - review
   #- dast
   - staging
-  #- production
+  - production
   - release
   - cleanup
 
@@ -353,7 +353,50 @@ staging:
     kubernetes: active
     variables:
       - $STAGING_ENABLED
-      
+
+.production: &production_template
+  stage: production
+  script:
+    - check_kube_domain
+    - install_dependencies
+    - download_chart
+    - ensure_namespace
+    - install_tiller
+    - create_secret
+    - deploy
+    - delete canary
+    - delete rollout
+    - persist_environment_url
+  environment:
+    name: production
+    url: http://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
+  artifacts:
+    paths: [environment_url.txt]
+
+production:
+  <<: *production_template
+  only:
+    refs:
+      - master
+    kubernetes: active
+  except:
+    variables:
+      - $STAGING_ENABLED
+
+production_manual:
+  <<: *production_template
+  environment: 
+    name: production
+    url: http://api.hybrix.io
+  when: manual
+  allow_failure: false
+  only:
+    refs:
+      - master
+    kubernetes: active
+    variables:
+      - $STAGING_ENABLED
+
 dist: 
   dependencies: 
     - hybrixd
