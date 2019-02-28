@@ -3,8 +3,8 @@ OLDPATH="$PATH"
 WHEREAMI="`pwd`"
 export PATH="$WHEREAMI/node_binaries/bin:$PATH"
 NODEINST="`which node`"
-UGLIFY=node_modules/uglify-es/bin/uglifyjs
-CSSMIN=node_modules/cssmin/bin/cssmin
+UGLIFY="node_modules/uglify-es/bin/uglifyjs"
+CSSMIN="node_modules/cssmin/bin/cssmin"
 
 # $HYBRIXD/node/scripts/npm  => $HYBRIXD
 SCRIPTDIR="`dirname \"$0\"`"
@@ -44,44 +44,40 @@ cp "$NODE/package.json" "$DIST/"
 cp "$NODE/hybrixd.conf" "$DIST/"
 
 # Copy node_modules
-cp -r "$NODE/node_modules" "$DIST/"
+rsync -avq "$NODE/node_modules" "$DIST/"
 
+# Copy modules
+rsync -avq "$NODE/modules" "$DIST/"
+
+# Copy interface
+rsync -avq "$NODE/interface" "$DIST/"
+
+# Copy common
+rsync -avq "$NODE/common/crypto" "$DIST/common/"
+rsync -avq "$NODE/common/node_modules" "$DIST/common/"
+cp $NODE/common/*.js "$DIST/common/"
+cp $NODE/common/*.json "$DIST/common/"
 #TODO node runtime
 #TODO default dummy conf??
 
+FOLDERS="lib docs recipes recipes.EXTRA"
 
 # Only copy files certain with certain exenstions
-for FILE in $(find -L . -name '*.js' -or -name '*.js.map' -or -name '*.css' -or -name '*.json' -or -name '*.html' -or -name '*.ico' -or -name '*.png' -or -name '*.svg' -or -name '*.lzma' -or -name '*.ttf' -or -name '*.woff' -or -name '*.woff2' -or -name '*.eot'); do
-    # Skip files in ./common/node and ./common/node_modules
-    if [ "$(echo $FILE | cut -d'/' -f1-3)" = "./common/node" ]; then
-
-        # FILE=BASEFOLDER/SUBFOLDER/.../FILE
-        OLD_IFS="$IFS"
-        IFS=/     # configure the split part to use / as the delimiter
-        set -f    # disable the glob part
-        set -- $FILE # $1 is split on : and parts are stored in $1, $2...
-        BASEFOLDER="$2"
-        IFS="$OLD_IFS"
-        # Only handle files in the following folders
-        if [ "$BASEFOLDER" = "lib" ] || [ "$BASEFOLDER" = "docs" ] || [ "$BASEFOLDER" = "modules" ] || [ "$BASEFOLDER" = "recipes" ] || [ "$BASEFOLDER" = "recipes.EXTRA" ] || [ "$BASEFOLDER" = "common" ] || [ "$BASEFOLDER" = "interface" ]; then
-
-            EXT="${FILE##*.}"
-            FOLDER=$(dirname "${FILE}")
-            mkdir -p "$DIST/$FOLDER"
-            case "$EXT" in
-                js)
-                    $UGLIFY "$FILE" --compress --mangle > "$DIST/$FILE"
-                    ;;
-                css)
-                    $CSSMIN "$FILE" > "$DIST/$FILE"
-                    ;;
-                *)
-                    cp "$FILE" "$DIST/$FOLDER"
-                    ;;
-            esac
-        fi
-
-   fi
+for FILE in $(find $FOLDERS -name '*.js' -or -name '*.js.map' -or -name '*.css' -or -name '*.json' -or -name '*.html' -or -name '*.ico' -or -name '*.png' -or -name '*.svg' -or -name '*.lzma' -or -name '*.ttf' -or -name '*.woff' -or -name '*.woff2' -or -name '*.eot'); do
+    EXT="${FILE##*.}"
+    FOLDER=$(dirname "${FILE}")
+    mkdir -p "$DIST/$FOLDER"
+  #  case "$EXT" in
+   #     js)
+    #        $UGLIFY "$FILE" --compress --mangle > "$DIST/$FILE"
+     #       ;;
+      #  css)
+       #     $CSSMIN "$FILE" > "$DIST/$FILE"
+        #    ;;
+        #*)
+            cp "$FILE" "$DIST/$FOLDER"
+         #   ;;
+#    esac
 done
 
 echo "[.] Release created in node/dist"
