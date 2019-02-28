@@ -40,16 +40,21 @@ hybrixd:
     # install unzip
     - apk update
     - apk add npm
+    - apk add python
     
     # trying to get past error: could not get uid/gid [ 'nobody', 0 ]
     - npm config set unsafe-perm true
     
     - npm install -g jsdoc
+    
+    - ls ~
+    
     - npm install xmldoc
     - npm install node@8.12.0
     - apk add unzip
     - apk add curl
     - apk add jq
+    
     
     - WORKING_DIR=$PWD
     - echo $PWD
@@ -62,7 +67,7 @@ hybrixd:
     
     # remove link to common and unzip the downloaded artifact to the directory (|| true --> on error, no problem)
     - rm -rf  common || true
-    - unzip -o artifacts-common.zip -d common/
+    - unzip -q -o artifacts-common.zip -d common/
     
     # remove the zip-file (|| true --> on error, no problem)
     - rm -rf  artifacts-common.zip || true
@@ -70,9 +75,20 @@ hybrixd:
     # download [interface] artifact
     - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Finterface/jobs/artifacts/master/download?job=interface${DEBUG}\" -o artifacts-interface.zip"
     
-    # remove link to interface and unzip the downloaded artifact to the directory (|| true --> on error, no problem)
+    # remove link to interface 
     - rm -rf  interface || true
-    - unzip -o artifacts-interface.zip -d ./interface/
+    
+    # get content of interface/lib for generation of documentation
+    - cd ..
+    - git clone -n https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/hybrix/hybrixd/interface.git --depth 1
+    - cd interface
+    - git checkout origin/master -- lib/hybrixdNode.js
+    - git checkout origin/master -- lib/interface.js
+    - cd ..
+    - cd node
+    
+    # unzip the downloaded artifact to the directory (|| true --> on error, no problem)
+    - unzip -q -o artifacts-interface.zip -d ./interface/
     
     # remove the zip-file (|| true --> on error, no problem)
     - rm -rf  artifacts-interface.zip || true
@@ -81,7 +97,7 @@ hybrixd:
     - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fmodules%2Fdeterministic/jobs/artifacts/master/download?job=deterministic\" -o artifacts-deterministic.zip"
     
     # unzip the downloaded artifact to the directory (|| true --> on error, no problem) (consider the artifact is packed as /modules/name/filename.lzma)
-    - unzip -o artifacts-deterministic.zip -d artifacts-deterministic/
+    - unzip -q -o artifacts-deterministic.zip -d artifacts-deterministic/
     #- rm -rf ./dist/modules/deterministic
     - rm -rf ./modules/deterministic
     #- cp -rf artifacts-deterministic/ ./dist/modules/deterministic/
@@ -98,6 +114,8 @@ hybrixd:
     
     # run the build-script of the hybrixd-node
     - ./scripts/npm/compile.sh
+    
+    - ls ./dist
     
     # workaround to get the latest artifact
     #- PROJECT_REF_SLUG=hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fweb-wallet
@@ -121,7 +139,7 @@ hybrixd:
     - rm -rf ./dist/modules/web-wallet
     - mkdir -p ./dist/modules/web-wallet
     - chmod 755 ./dist/modules/web-wallet
-    - unzip -o artifacts-web-wallet.zip -d ./dist/modules/web-wallet/
+    - unzip -q -o artifacts-web-wallet.zip -d ./dist/modules/web-wallet/
     
     #- mkdir -p ./dist/modules/web-wallet
     #- cp -rf artifacts-web-wallet/ ./dist/modules/web-wallet/
@@ -139,7 +157,7 @@ hybrixd:
     
     - cd $WORKING_DIR
     - ls -l
-    - ls ./
+    - ls ./dist
     
     # create a .version file
     - timestamp=$(date -u '+%Y-%m-%dT%H:%M:%S+00:00')
