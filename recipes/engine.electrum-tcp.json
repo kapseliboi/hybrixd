@@ -108,12 +108,12 @@
       "done()"
     ],
     "init" : [
-      "data $symbol",
+      "data '$symbol'",
       "flow('undefined',2)",
       "call('getFee')"
     ],
     "cron" : [
-      "data $symbol",
+      "data '$symbol'",
       "flow('undefined',2)",
       "call('getFee')"
     ],
