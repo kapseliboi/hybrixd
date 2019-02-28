@@ -41,6 +41,7 @@ hybrixd:
     - apk update
     - apk add npm
     - apk add python
+    - apk add rsync
     
     # trying to get past error: could not get uid/gid [ 'nobody', 0 ]
     - npm config set unsafe-perm true
