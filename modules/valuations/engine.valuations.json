@@ -41,12 +41,12 @@
       "# check if prices were recently updated",
       "with 'timeNow' 'date'",
       "peek 'local::pricesTimestamp'",
-      "true '>0' 2 1",
+      "ship 2 1 1",
       "data 0",
       "math '+$refreshTime'",
-      "true '<$timeNow' @refreshValuations",
+      "math '-$timeNow'",
+      "ship 1 1 @refreshValuations",
       "done 'valuations up-to-date'",
-      "# if not, download and refresh valuations",
       "@refreshValuations",
       "each $sources 'download'",
       "func 'parse'",
@@ -68,7 +68,7 @@
       "done"
     ],
     "list":[
-      "done Object.keys($local::prices)"
+      "done 'NOT IMPLEMENTED'"
     ]
   },
   "router" : {
