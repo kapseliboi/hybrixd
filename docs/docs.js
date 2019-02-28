@@ -197,11 +197,11 @@ const copyToClipboard = str => {
 };
 
 var menuItems = {
-  'Introduction': '/api/help/HelloWorld',
+  'Introduction': '/api/help/Introduction',
   'REST API': '/api/help',
-  'hybrix Javascript Library': '/api/help/hybrix-lib.js',
-  'hybrixd daemon': '/api/help/hybrixd',
-  'Featured products': '/api/help/FeaturedProducts'
+  'hybrix-lib.js': '/api/help/hybrix-lib.js',
+  'hybrixd': '/api/help/hybrixd',
+  'Featured products': '/api/help/featured-products'
 //  'cli': '/api/help/cli',
 //  'qrtz': '/api/help/qrtz'
 };
