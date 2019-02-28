@@ -78,7 +78,9 @@ function exec (properties) {
         fee = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee * 2.465 : null);
         factor = (typeof global.hybrixd.asset[base].factor !== 'undefined' ? global.hybrixd.asset[base].factor : 18);
       }
-      subprocesses.push('stop((' + jstr(fee) + '!==null && ' + jstr(factor) + '!==null?0:1),' + (fee != null && factor != null ? '"' + functions.padFloat(fee, factor) + '"' : null) + ')');
+      subprocesses.push("data '" + fee + "'");
+      subprocesses.push('form');
+      subprocesses.push('done');
       break;
     case 'balance':
       if (sourceaddr) {
