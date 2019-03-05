@@ -72,10 +72,12 @@
     ]
   },
   "router" : {
+    "_help" : "Valuation engine for calculating price conversion rates.",
     "_hidden":true,
     "cron" : "Download new price data.",
     "list" : "List available symbols.",
     "rate": {
+      "_help" : "Calculate a valuation using a multi-currency rate table.",
       "_ref" : {
         "_list" : "Source_Symbol",
         "_ref" : {
