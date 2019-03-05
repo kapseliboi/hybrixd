@@ -269,6 +269,7 @@ test:
    refs:
      #- /^v.*release$/
      - /^Issue.*$/
+     - /^issue.*$/
      - tags
   only:
     variables:
