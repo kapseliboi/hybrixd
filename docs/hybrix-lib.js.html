@@ -237,7 +237,7 @@ hybrix.sequential([
           <h3>Live example</h3>
 
           <div class="try">
-            <select id="selectExample" onchange="var s = document.getElementById('selectExample');codeMirrorEditor.setValue(document.getElementById(s[s.selectedIndex].value).innerHTML.replace('http://localhost:1111',window.location.origin+'/api'));">
+            <select id="selectExample" onchange="var s = document.getElementById('selectExample');codeMirrorEditor.setValue(document.getElementById(s[s.selectedIndex].value).innerHTML.replace('http://localhost:1111',window.location.href.split(`/help`)[0]));">
               <option value="exampleHelloWorld">Hello World</option>
             </select>
 
@@ -259,7 +259,7 @@ hybrix.sequential([
                    return event => {
 
                      console.log(body);
-                     codeMirrorEditor.setValue(body.replace('http://localhost:1111',window.location.origin+'/api'))
+                     codeMirrorEditor.setValue(body.replace('http://localhost:1111',window.location.href.split(`/help`)[0]))
 
                      for(let option of document.getElementById('selectExample').options){
                        if(option.value===id){
@@ -273,7 +273,7 @@ hybrix.sequential([
                  }(example.innerHTML,example.id);
                  example.parentNode.insertBefore(button, example.nextSibling);
                }
-               document.getElementById('try').innerHTML=document.getElementById('exampleHelloWorld').innerHTML.replace('http://localhost:1111',window.location.origin+'/api');
+               document.getElementById('try').innerHTML=document.getElementById('exampleHelloWorld').innerHTML.replace('http://localhost:1111',window.location.href.split(`/help`)[0]);
 
                codeMirrorEditor = CodeMirror.fromTextArea(document.getElementById("try"), {
                  lineNumbers: true,
@@ -297,7 +297,8 @@ hybrix.sequential([
             <input type="submit" value="Try it!" onclick="runExample(event)">
           </div>
 
-          <h3>Reference</h3><div id="filterBox"></div><script>initNavigation("hybrix-lib.js")</script><div class="category">AssetManagement</div><div class="command-header" onclick="toggleCommand('addAsset')"><b>addAsset</b><span class="quickDescription">{<i>symbol</i>, [<i>clientModuleCodeBlob</i>], [<i>host</i>], [<i>channel</i>]}Add an asset (crypto currency or token) to the session.</span></div><div style="display:none;" class="command-body" id="addAsset">
+          <h3>Reference</h3>
+<div id="filterBox"></div><script>initNavigation("hybrix-lib.js")</script><div class="category">AssetManagement</div><div class="command-header" onclick="toggleCommand('addAsset')"><b>addAsset</b><span class="quickDescription">{<i>symbol</i>, [<i>clientModuleCodeBlob</i>], [<i>host</i>], [<i>channel</i>]}Add an asset (crypto currency or token) to the session.</span></div><div style="display:none;" class="command-body" id="addAsset">
  Add an asset (crypto currency or token) to the session.
 <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.symbol</td><td>- The symbol of the asset</td></tr><tr><td>data.clientModuleCodeBlob</td><td>- A string containing the client module code blob.</td></tr><tr><td>data.host</td><td>- The host used for the calls.</td></tr><tr><td>data.channel</td><td>- The channel used for the calls. 'y' for encryped, 'z' for encryped and compresses;</td></tr></table><code class="example" title="addAsset" id="example76">hybrix.sequential([
     'init',
