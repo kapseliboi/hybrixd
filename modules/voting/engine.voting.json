@@ -1,7 +1,7 @@
 {
   "engine":"voting",
   "name":"Voting engine",
-  "module":"quartz",
+  "module":"voting",
   "cache":100,
   "throttle":10,
   "hashSalt":"Th3S4lt0fTh3H4shMustN0tB3F0rg0t!Th4t1sf0rsur3!",
@@ -21,7 +21,7 @@
       "@filenotfound",
       "done ''"
     ],
-    "addAddressRedirect" : [
+    "addAddressRedirectBAK" : [
       "#rout 'engine/voting/addAddress/$1/$2'",
       "type 'file:text/html'",
       "data 'modules/$engine/redirect.html'",
