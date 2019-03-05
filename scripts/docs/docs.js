@@ -5,7 +5,8 @@ let files = {
   'hybrix-lib.js': '../../../interface/lib/interface.js',
   'hybrixd': '../../docs/source/hybrixd.html',
   'Introduction': '../../docs/source/Introduction.html',
-  'cli': '../../docs/source/cli.html'
+  'cli': '../../docs/source/cli.html',
+  'featured-products': '../../docs/source/featured-products.html'
 };
 
 function getMatches (re, str) {
