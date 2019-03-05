@@ -80,6 +80,16 @@ for FILE in $(find $FOLDERS -name '*.js' -or -name '*.js.map' -or -name '*.css' 
 #    esac
 done
 
+
+echo "[.] Prune node npm dev dependencies "
+cd "$DIST"
+"$NODE/node_binaries/bin/npm" prune --production
+
+echo "[.] Prune common npm dev dependencies "
+cd "$DIST/common"
+"$NODE/node_binaries/bin/npm" prune --production
+
+
 echo "[.] Release created in node/dist"
 echo "[.] Make sure you have a proper hybrixd.conf and node binaries."
 export PATH="$OLDPATH"
