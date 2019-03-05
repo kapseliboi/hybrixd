@@ -1,8 +1,7 @@
 #!/bin/sh
 OLDPATH="$PATH"
 WHEREAMI="`pwd`"
-export PATH="$WHEREAMI/node_binaries/bin:$PATH"
-NODEINST="`which node`"
+
 UGLIFY="node_modules/uglify-es/bin/uglifyjs"
 CSSMIN="node_modules/cssmin/bin/cssmin"
 
@@ -12,6 +11,11 @@ HYBRIXD="`cd \"$SCRIPTDIR/../../..\" && pwd`"
 
 NODE="$HYBRIXD/node"
 DIST="$NODE/dist"
+
+export PATH="$NODE/node_binaries/bin:$PATH"
+NODEINST="`which node`"
+NPMINST="`which npm`"
+
 
 # QUARTZ
 echo "[.] Generate Quartz documentation."
@@ -83,11 +87,11 @@ done
 
 echo "[.] Prune node npm dev dependencies "
 cd "$DIST"
-"$NODE/node_binaries/bin/npm" prune --production
+"$NPMINST" prune --production
 
 echo "[.] Prune common npm dev dependencies "
 cd "$DIST/common"
-"$NODE/node_binaries/bin/npm" prune --production
+"$NPMINST" prune --production
 
 
 echo "[.] Release created in node/dist"
