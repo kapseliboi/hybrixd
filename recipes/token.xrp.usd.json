@@ -1,0 +1,7 @@
+{
+  "symbol":"xrp.usd",
+  "name":"USD (Ripple)",
+  "module":"quartz",
+  "mode":"xrp.token",
+  "import":"xrp"
+}
