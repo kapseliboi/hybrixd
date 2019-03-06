@@ -6,7 +6,7 @@
   "addressRegex":"^T\\d{33}$",
   "factor":6,
   "fee":0,
-  "contract": "",
+  "contract": "TRX",
   "host":["https://api.trongrid.io"],
   "cache":10000,
   "throttle":10,
