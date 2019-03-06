@@ -1,0 +1,53 @@
+<html>
+  <head>
+    <script>
+      function rout (path, callback) {
+        // make call to hybrixd
+        let url = window.location.protocol + '//' + window.location.host + (window.location.pathname.startsWith('/api') ? '/api' : '') + path;
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.onreadystatechange = e => {
+          if (xhr.readyState === 4) {
+            if (xhr.status >= 200 && xhr.status <= 299) {
+              let header = xhr.getResponseHeader('Content-Type');
+              if (header === 'application/json') {
+                let result;
+                try {
+                  result = JSON.parse(xhr.responseText);
+                } catch (e) {
+                  result = {data: 'Unknown Error', error: 1};
+                }
+                if (result.error === 0 && result.hasOwnProperty('progress') && result.progress !== 1) {
+                  // option to add progress bar
+                  setTimeout(() => {
+                    rout(path, callback);
+                  }, 500);
+                } else {
+                  callback(result);
+                }
+              } else {
+                document.write(xhr.responseText);
+              }
+            }
+          }
+        };
+        xhr.send();
+      }
+      
+      window.onload = function(e){ 
+        rout('%PATH%', (id) => {
+          rout('/proc/'+id.data, (result) => {
+            if(result.error) {
+              alert('ERROR: %FAILURE% '+JSON.stringify(result.data));
+            } else {
+              alert('NICE!: %SUCCESS% '+JSON.stringify(result.data));
+            }
+          });
+        });
+      }      
+    </script>
+  </head>
+  <body>
+    <div>THIS IS A COOL PAGE BODY!</div>
+  </body>
+</html>
