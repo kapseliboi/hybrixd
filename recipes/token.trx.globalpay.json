@@ -1,0 +1,6 @@
+{
+  "symbol":"trx.gameglobalpay",
+  "name":"TronGameGlobalPay",
+  "import":"trx",
+  "contract": "TronGameGlobalPay"
+}
