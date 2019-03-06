@@ -269,6 +269,7 @@
   },
   "w":{"_alias":"wchan"},
   "wchan":{
+    "_hidden":true,
     "hash" : {
       "_this" : "Retrieve the hash for a flat file result.",
       "_ellipsis": true
