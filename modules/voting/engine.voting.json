@@ -42,8 +42,8 @@
       "size",
       "true '<2' @badinputfmt",
     "# check if userhash is on eligibility list",
-      "poke 'userhash' $userdata[0]",
-      "poke 'useraddr' $userdata[1]",
+      "poke 'userhash' ${userdata[0]}",
+      "poke 'useraddr' ${userdata[1]}",
       "call 'coreList/eligibility/$1'",
       "excl '$userhash' 1 @notelligible",
     "# reinsert hash at beginning of array",
@@ -197,16 +197,6 @@
       }
     },
     "listAddress" : {"_alias":"listAddresses"},
-    "addAddressRedirect" : {
-      "_help": "Add eligibility adresses to voting session (redirecting page)",
-      "_ref" : {
-        "_list" : "session_id",
-          "_ref" : {
-              "_list" : "eligibility_address",
-              "_this" : "Adds an eligibility address or addresses under the specified voting session ID. [format: hash:address]"
-          }
-      }
-    },
     "addAddress" : {
       "_help": "Add eligibility adresses to voting session",
       "_ref" : {
