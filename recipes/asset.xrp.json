@@ -83,6 +83,9 @@
       "pass '$contract'"
     ],
     "cron" : [
+      "data $symbol",
+      "flow 'xrp' 2 1",
+      "done",
       "data {'id': 1,'command': 'server_info'}",
       "curl 'asset://$symbol' '' 'POST'",
       "tran '.status' @status @fail",
