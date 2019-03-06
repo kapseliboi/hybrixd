@@ -5,7 +5,7 @@
   "fee-symbol":"drops",
   "fee":"0.00001",
   "fee-factor":0,
-  "cron":60,
+  "cron":300,
   "mode":"xrp",
   "contract":"",
   "factor":6,
