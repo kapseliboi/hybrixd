@@ -117,7 +117,7 @@ const x = window.location.href.split('/help');
 
           <p>This library can be used to connect software to leverage the capabilities of the hybrix platform. It serves two purposes: first to facilitate the logistics of interfacing with the hybrixd REST API, secondly to handle all client side operations securely and privately. This ensures that keys required for transaction never leave the users device and communication over an encrypted channel.</p>
 
-          <a href="https://gitlab.com/hybrix/dist/raw/master/interface/v0.5.0/hybrix-lib.web.js" target="_blank">
+          <a href="https://www.hybrix.io/downloads/interface/v0.5.0/hybrix-lib.web.js" target="_blank" download>
             <div class="download">
               <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                   <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -133,7 +133,7 @@ const x = window.location.href.split('/help');
               <span class="usage">&lt;script src="./hybrix-lib.web.js"&gt;&lt;/script&gt;</span>
             </div>
           </a>
-          <a href="https://gitlab.com/hybrix/dist/raw/master/interface/v0.5.0/hybrix-lib.nodejs.js" target="_blank">
+          <a href="https://www.hybrix.io/downloads/interface/v0.5.0/hybrix-lib.nodejs.js" target="_blank" download>
             <div class="download">
               <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                   <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -422,7 +422,7 @@ hybrix.sequential([
       , onProgress
     );</code></div><div class="command-header" onclick="toggleCommand('import')"><b>import</b><span class="quickDescription">{<i>id</i>, <i>blob</i>, [<i>check=true</i>], [<i>channel</i>], [<i>host</i>]}Import a client module code blob.</span></div><div style="display:none;" class="command-body" id="import">
     Import a client module code blob.
-   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.id</td><td>- id of the client code blob.</td></tr><tr><td>data.blob</td><td>- the client code blob</td></tr><tr><td>data.check</td><td>- check if there's a different version of the blob available at the host</td></tr><tr><td>data.channel</td><td>- The channel used for the calls. 'y' for encryped, 'z' for encryped and compresses;</td></tr><tr><td>data.host</td><td>-  The hostname for the hybrixd node</td></tr></table></div><div class="command-header" onclick="toggleCommand('modules')"><b>modules</b><span class="quickDescription">{}List locally available client modules.</span></div><div style="display:none;" class="command-body" id="modules">
+   <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.id</td><td>- id of the client code blob.</td></tr><tr><td>data.blob</td><td>- the client code blob</td></tr><tr><td>data.check</td><td>- check if there's a different version of the blob available at the host</td></tr><tr><td>data.channel</td><td>- TODO</td></tr><tr><td>data.host</td><td>- TODO</td></tr></table></div><div class="command-header" onclick="toggleCommand('modules')"><b>modules</b><span class="quickDescription">{}List locally available client modules.</span></div><div style="display:none;" class="command-body" id="modules">
     List locally available client modules.
    <table class="parameters"><tr><td>data</td><td>- ignored</td></tr></table><code class="example" title="modules" id="example86">hybrix.sequential([
     'init',
@@ -530,7 +530,7 @@ hybrix.sequential([
    , onProgress
  );</code></div><div class="category">Host</div><div class="command-header" onclick="toggleCommand('addHost')"><b>addHost</b><span class="quickDescription">{<i>host</i>}Add a hybrixd node as host.</span></div><div style="display:none;" class="command-body" id="addHost">
  Add a hybrixd node as host.
-<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.host</td><td>- The hostname for the hybrixd node</td></tr></table><code class="example" title="addHost" id="example96">hybrix.sequential([
+<table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.host</td><td>- The hostname TODO  multiple in array?</td></tr></table><code class="example" title="addHost" id="example96">hybrix.sequential([
     'init',
     {host: 'http://localhost:1111/'}, 'addHost'
     ]
@@ -588,8 +588,8 @@ hybrix.sequential([
       , onSuccess
       , onError
       , onProgress
-    );</code></div><div class="category">Storage</div><div class="command-header" onclick="toggleCommand('load')"><b>load</b><span class="quickDescription">{<i>key</i>, [<i>encrypted=true</i>], [<i>legacy=false</i>], [<i>host</i>], [<i>channel=''</i>]}Retrieve value associated with key from the hybrixd node storage</span></div><div style="display:none;" class="command-body" id="load">
-    Retrieve value associated with key from the hybrixd node storage
+    );</code></div><div class="category">Storage</div><div class="command-header" onclick="toggleCommand('load')"><b>load</b><span class="quickDescription">{<i>key</i>, [<i>encrypted=true</i>], [<i>legacy=false</i>], [<i>host</i>], [<i>channel=''</i>]}TODO Stringify and encrypt data with user keys.</span></div><div style="display:none;" class="command-body" id="load">
+    TODO Stringify and encrypt data with user keys.
    <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.encrypted</td><td>- whether to encrypt the data with the user key, true by default.</td></tr><tr><td>data.legacy</td><td>- A toggle to use a legacy storage method.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr></table><code class="example" title="load" id="example102">hybrix.sequential([
     'init',
     {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
@@ -600,8 +600,8 @@ hybrix.sequential([
       , onSuccess
       , onError
       , onProgress
-    );</code></div><div class="command-header" onclick="toggleCommand('meta')"><b>meta</b><span class="quickDescription">{<i>key</i>, [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}Retrieve the meta data for a storage key in the hybrixd node storage</span></div><div style="display:none;" class="command-body" id="meta">
-    Retrieve the meta data for a storage key in the hybrixd node storage
+    );</code></div><div class="command-header" onclick="toggleCommand('meta')"><b>meta</b><span class="quickDescription">{<i>key</i>, [<i>host</i>], [<i>channel</i>], [<i>meta=false</i>]}Retrieve the meta data for a storage key</span></div><div style="display:none;" class="command-body" id="meta">
+    Retrieve the meta data for a storage key
    <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr><tr><td>data.meta</td><td>- Indicate whether to include meta data (process information).</td></tr></table><code class="example" title="meta" id="example103">hybrix.sequential([
     'init',
     {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
@@ -624,8 +624,8 @@ hybrix.sequential([
       , onSuccess
       , onError
       , onProgress
-    );</code></div><div class="command-header" onclick="toggleCommand('seek')"><b>seek</b><span class="quickDescription">{<i>key</i>, [<i>legacy=false</i>], [<i>host</i>], [<i>channel=''</i>]}Check if a value is associated with key in the hybrixd node storage</span></div><div style="display:none;" class="command-body" id="seek">
-    Check if a value is associated with key in the hybrixd node storage
+    );</code></div><div class="command-header" onclick="toggleCommand('seek')"><b>seek</b><span class="quickDescription">{<i>key</i>, [<i>legacy=false</i>], [<i>host</i>], [<i>channel=''</i>]}Check if data is associated to key</span></div><div style="display:none;" class="command-body" id="seek">
+    Check if data is associated to key
    <table class="parameters"><tr><td>data</td><td></td></tr><tr><td>data.key</td><td>- The key identifier for the data.</td></tr><tr><td>data.legacy</td><td>- A toggle to use a legacy storage method.</td></tr><tr><td>data.host</td><td>- The host to store the data on.</td></tr><tr><td>data.channel</td><td>- Indicate the channel 'y' for encryption, 'z' for both encryption and compression.</td></tr></table><code class="example" title="seek" id="example105">hybrix.sequential([
     'init',
     {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
