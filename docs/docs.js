@@ -6,8 +6,8 @@ let menuItems = {
   'REST API': './api',
   'hybrix-lib.js': './hybrix-lib.js',
   'hybrixd': './hybrixd',
+  'cli': '/api/help/cli',
   'Featured products': './featured-products'
-//  'cli': '/api/help/cli',
 //  'qrtz': '/api/help/qrtz'
 };
 
