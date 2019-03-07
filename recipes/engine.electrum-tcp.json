@@ -86,25 +86,41 @@
       "pass('$factor')"
     ],
     "transaction" : [
-      "time($timeout)",
-      "data {'jsonrpc':'2.0','id': 1, 'method': 'blockchain.transaction.get', 'params': ['$1'] }",
-      "curl('asset://$symbol')",
-      "tran('.result',2,1)",
-      "stop(1,'No result')",
-      "pass"
+      "time $timeout",
+      "data {jsonrpc:'2.0',id:1,method:'blockchain.transaction.get',params:['$1',true]}",
+      "curl 'asset://$symbol' POST {timeout:$longtimeout}",
+      "tran .result 2 1",
+      "fail 'Cannot get transaction data!'",
+      "tran {id:'.txid', timestamp:'.time', amount:'.vout[0].value', symbol:'$symbol', fee:'$local::fee', 'fee-symbol':'$symbol', source:'.vout[0].scriptPubKey.addresses[0]', target:'.vout[0].scriptPubKey.addresses[0]', data:'NA' } 2 1",
+      "fail 'Cannot interpret transaction data!'"
     ],
     "sample" : [
-      "stop(0,{address:'1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX',transaction:'2c0832c153cf33327dae0e95a3bc39f4b02ae887725a32c07b1be47a2faffc55'})"
+      "done {address:'1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX',transaction:'2c0832c153cf33327dae0e95a3bc39f4b02ae887725a32c07b1be47a2faffc55'}"
     ],
     "history" : [
-      "rout('/source/blockexplorer/$symbol/history/$1')"
+      "time $longtimeout",
+      "data {jsonrpc:'2.0',id:6,method:'blockchain.address.get_history',params:['$1']}",
+      "curl 'asset://$symbol' 'POST' {timeout:$timeout}",
+      "tran '.result' 2 1",
+      "fail 'No result!'",
+      "each $ 'sub_history'"
+    ],
+    "sub_history" : [
+      "time $longtimeout",
+      "data ${.value}",
+      "tran .tx_hash @hashFound",
+      "done null",
+      "@hashFound",
+      "poke itemvalue",
+      "call 'transaction/$'",
+      "done"
     ],
     "contract" : [
-      "done('$contract')"
+      "done $contract"
     ],
     "fee" : [
       "hook('$fee',0)",
-          "peek('local::fee')",
+      "peek('local::fee')",
       "done()"
     ],
     "init" : [
