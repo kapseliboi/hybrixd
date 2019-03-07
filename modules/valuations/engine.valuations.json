@@ -63,6 +63,9 @@
       "done"
     ],
     "rate":[
+      "data '$3'",
+      "ship 2 2 1 1",
+      "fail 'Bad input!'",
       "data {source: '$1', target:'$2', amount:'$3', mode: '$4',  prices: $local::prices}",
       "func 'valuate'",
       "done"
