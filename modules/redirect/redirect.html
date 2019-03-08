@@ -38,9 +38,9 @@
         rout('%PATH%', (id) => {
           rout('/proc/'+id.data, (result) => {
             if(result.error) {
-              alert('ERROR: %FAILURE% '+JSON.stringify(result.data));
+              window.location = '%PROTOCOL%://%FAILURE%';
             } else {
-              alert('NICE!: %SUCCESS% '+JSON.stringify(result.data));
+              window.location = '%PROTOCOL%://%SUCCESS%';
             }
           });
         });

@@ -5,6 +5,7 @@
 // required libraries in this context
 var route = require('../../lib/router');
 let scheduler = require('../../lib/scheduler');
+let functions = require('../../lib/functions');
 let fs = require('fs');
 
 // initialization function
@@ -18,13 +19,32 @@ function exec (properties) {
 
   switch (command[0]) {
     case 'http':
-      if(command[3]) {
+    case 'https':
+      if(command[1] && command[2]) {
+        let protocol = command[0];
+        let redirectJSON = command[1];
+        // adjust for forward slashes in the command path
+        let commandSlice;
+        for(let i=1;i<command.length-2;i++) {
+          if(command[i].substr(-1,1)==='}') {
+            commandSlice = i+1;
+            i=command.length;
+          } else {
+            redirectJSON = redirectJSON+'/'+command[i+1];
+          }
+        }
+        let commandPath = '/'+command.slice(commandSlice).join('/');
+        let redirectObj = JSON.parse( functions.JSONfix(redirectJSON) );
+        if(!(redirectObj.success && redirectObj.failure)) {
+          return {error: 1, data: 'Redirection JSON object must contain success and failure keys!', command: command, path: ['engine', target].concat(command)};
+        }
         let filePath = 'modules/'+target+'/redirect.html';
         if (fs.existsSync('../'+filePath)) {
           let data = fs.readFileSync('../'+filePath).toString('utf8')
-              .replace('%PATH%','/engine/'+target+'/addAddress/'+command[1]+'/'+command[2])
-              .replace('%SUCCESS%',command[2])
-              .replace('%FAILURE%',command[3]);
+              .replace(/%PATH%/g,commandPath)
+              .replace(/%PROTOCOL%/g,protocol)            // replace two occurrences of protocol
+              .replace(/%SUCCESS%/g,redirectObj.success)
+              .replace(/%FAILURE%/g,redirectObj.failure);
           return {error: 0, data: data, type: 'blob'};
         } else {
           return {error: 1, data: 'File redirect.html not found!', command: command, path: ['engine', target].concat(command)};

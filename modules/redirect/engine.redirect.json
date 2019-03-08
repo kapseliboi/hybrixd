@@ -11,15 +11,11 @@
       "_help": "Redirect to an http(s) page.",
       "_list": "protocol",
       "_ref" : {
-        "_help" : "On success redirect to a URI target.",
-        "_list" : "success_redirect",
+        "_help" : "On success or failure redirect to a URI target specified in a JSON object.",
+        "_list" : "conditional_redirect",
         "_ref" : {
-          "_help" : "Alternatively on failure redirect to another URI target.",
-          "_list" : "failure_redirect",
-          "_ref" : {
-            "_list" : "path",
-            "_this" : "Specify a path to query for its result."
-          }              
+          "_list" : "path",
+          "_this" : "Specify a path to query for its result."
         }              
       }              
     },
