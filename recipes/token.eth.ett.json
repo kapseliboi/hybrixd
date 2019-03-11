@@ -2,6 +2,7 @@
     "symbol":"eth.ett",
     "name":"EncryptoTel [ETH]",
     "module":"ethereum",
+    "import":"eth",
     "mode":"ethereum.token",
     "contract":"0xE0C72452740414d861606a44cCd5eA7f96488278",
     "originator":"0xBA091db085EAC2055400C934c8dc989B500113a2",

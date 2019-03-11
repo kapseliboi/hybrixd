@@ -31,13 +31,10 @@
       "done(data)"
     ],
     "test" : [
-      "data ['A','B','C']",
-      "hook @thisfails",
-      "load 'doesntexist'",
-      "done 'You will not see this.'",
-      "@thisfails",
-      "data 'Do not stop here!'",
-      "done 'Hook works properly.'"
+      "data '{some:\"yolo\",real:\"dirty\",JSON:\"works?\"}'",
+      "jpar 1 2",
+      "done",
+      "fail 'bad JSON!'"
     ],
     "testeach" : [
       "time 60000",

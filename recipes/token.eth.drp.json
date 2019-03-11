@@ -2,6 +2,7 @@
     "symbol":"eth.drp",
     "name":"DCORP token (ETH)",
     "module":"ethereum",
+    "import":"eth",
     "mode":"ethereum.token",
     "contract":"0x621d78f2EF2fd937BFca696CabaF9A779F59B3Ed",
     "originator":"0x3cAf983aCCccc2551195e0809B7824DA6FDe4EC8",
