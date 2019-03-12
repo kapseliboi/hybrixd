@@ -15,9 +15,9 @@
   "api-documentation":"https://counterparty.io/docs/counterblock_api/",
   "quartz":{
     "status" : [
-      "data {'jsonrpc':'2.0','id':0,'method':'is_ready','params':{}},{'content-type':'text/plain'}",
-      "curl('asset://$symbol','/_api','POST')",
-      "test(data,1,2)",
+      "data {'jsonrpc':'2.0','id':0,'method':'is_ready','params':{}}",
+      "curl('asset://$symbol','/_api','POST',{'content-type':'text/plain'})",
+      "test($,1,2)",
       "done({module:'$symbol',synced:data.result.caught_up,blocks:data.result.block_height,fee:null,supply:null,difficulty:null,testmode:data.result.testnet,version:null})",
       "fail('No result')"
     ],
@@ -29,8 +29,8 @@
     ],
     "balance" : [
       "time(32000)",
-      "data {'jsonrpc':'2.0','id':0,'method':'get_normalized_balances','params':{'addresses':['$1']}},{'content-type':'text/plain'}",
-      "curl('asset://$symbol','/_api','POST')",
+      "data {'jsonrpc':'2.0','id':0,'method':'get_normalized_balances','params':{'addresses':['$1']}}",
+      "curl('asset://$symbol','/_api','POST',{'content-type':'text/plain'})",
       "tran('.result',2,1)",
       "stop(1,'No result!')",
       "find({'asset':'$contract'},3,1)",
@@ -45,9 +45,9 @@
       "done"
     ],
     "pushAPI" : [
-      "data {'jsonrpc':'2.0','id':0,'method':'broadcast_tx','params':{'signed_tx_hex':'$1'}},{'content-type':'text/plain'}",
-      "curl('asset://$symbol','/_api','POST')",
-      "test(data,2,1)",
+      "data {'jsonrpc':'2.0','id':0,'method':'broadcast_tx','params':{'signed_tx_hex':'$1'}}",
+      "curl('asset://$symbol','/_api','POST',{'content-type':'text/plain'})",
+      "test($,2,1)",
       "stop(1,'Broadcast failed!')",
       "tran('.result',2,1)",
       "stop(1,'No result!')",

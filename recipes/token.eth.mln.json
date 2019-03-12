@@ -2,6 +2,7 @@
     "symbol":"eth.mln",
     "name":"Melon",
     "module":"ethereum",
+    "import":"eth",
     "mode":"ethereum.token",
     "contract":"0xBEB9eF514a379B997e0798FDcC901Ee474B6D9A1",
     "originator":"0x3BF541f87056D134E0109BE1Be92978b26Cb09e0",

@@ -22,7 +22,7 @@ stages:
   - review
   #- dast
   - staging
-  #- production
+  - production
   - release
   - cleanup
 
@@ -40,16 +40,22 @@ hybrixd:
     # install unzip
     - apk update
     - apk add npm
+    - apk add python
+    - apk add rsync
     
     # trying to get past error: could not get uid/gid [ 'nobody', 0 ]
     - npm config set unsafe-perm true
     
     - npm install -g jsdoc
+    
+    - ls ~
+    
     - npm install xmldoc
     - npm install node@8.12.0
     - apk add unzip
     - apk add curl
     - apk add jq
+    
     
     - WORKING_DIR=$PWD
     - echo $PWD
@@ -62,7 +68,7 @@ hybrixd:
     
     # remove link to common and unzip the downloaded artifact to the directory (|| true --> on error, no problem)
     - rm -rf  common || true
-    - unzip -o artifacts-common.zip -d common/
+    - unzip -q -o artifacts-common.zip -d common/
     
     # remove the zip-file (|| true --> on error, no problem)
     - rm -rf  artifacts-common.zip || true
@@ -70,18 +76,31 @@ hybrixd:
     # download [interface] artifact
     - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Finterface/jobs/artifacts/master/download?job=interface${DEBUG}\" -o artifacts-interface.zip"
     
-    # remove link to interface and unzip the downloaded artifact to the directory (|| true --> on error, no problem)
+    # remove link to interface 
     - rm -rf  interface || true
-    - unzip -o artifacts-interface.zip -d ./interface/
+    
+    # get content of interface/lib for generation of documentation
+    - cd ..
+    - git clone -n https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/hybrix/hybrixd/interface.git --depth 1
+    - cd interface
+    - git checkout origin/master -- lib/hybrixdNode.js
+    - git checkout origin/master -- lib/interface.js
+    - cd ..
+    - cd node
+    
+    # unzip the downloaded artifact to the directory (|| true --> on error, no problem)
+    - unzip -q -o artifacts-interface.zip -d ./interface/
     
     # remove the zip-file (|| true --> on error, no problem)
     - rm -rf  artifacts-interface.zip || true
     
     # download [deterministic] artifact
-    - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fmodules%2Fdeterministic/jobs/artifacts/master/download?job=deterministic\" -o artifacts-deterministic.zip"
+    # TODO: REMOVE LINE BELOW, UNCOMMENT THIS ONE:- "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fmodules%2Fdeterministic/jobs/artifacts/master/download?job=deterministic\" -o artifacts-deterministic.zip"
+    - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fmodules%2Fdeterministic/jobs/169447811/artifacts\" -o artifacts-deterministic.zip"
+    
     
     # unzip the downloaded artifact to the directory (|| true --> on error, no problem) (consider the artifact is packed as /modules/name/filename.lzma)
-    - unzip -o artifacts-deterministic.zip -d artifacts-deterministic/
+    - unzip -q -o artifacts-deterministic.zip -d artifacts-deterministic/
     #- rm -rf ./dist/modules/deterministic
     - rm -rf ./modules/deterministic
     #- cp -rf artifacts-deterministic/ ./dist/modules/deterministic/
@@ -98,6 +117,8 @@ hybrixd:
     
     # run the build-script of the hybrixd-node
     - ./scripts/npm/compile.sh
+    
+    - ls ./dist
     
     # workaround to get the latest artifact
     #- PROJECT_REF_SLUG=hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fweb-wallet
@@ -121,7 +142,7 @@ hybrixd:
     - rm -rf ./dist/modules/web-wallet
     - mkdir -p ./dist/modules/web-wallet
     - chmod 755 ./dist/modules/web-wallet
-    - unzip -o artifacts-web-wallet.zip -d ./dist/modules/web-wallet/
+    - unzip -q -o artifacts-web-wallet.zip -d ./dist/modules/web-wallet/
     
     #- mkdir -p ./dist/modules/web-wallet
     #- cp -rf artifacts-web-wallet/ ./dist/modules/web-wallet/
@@ -139,7 +160,7 @@ hybrixd:
     
     - cd $WORKING_DIR
     - ls -l
-    - ls ./
+    - ls ./dist
     
     # create a .version file
     - timestamp=$(date -u '+%Y-%m-%dT%H:%M:%S+00:00')
@@ -250,6 +271,7 @@ test:
    refs:
      #- /^v.*release$/
      - /^Issue.*$/
+     - /^issue.*$/
      - tags
   only:
     variables:
@@ -332,7 +354,6 @@ staging:
   image: alpine:latest
   stage: staging
   script:
-    # doesn't work: - sed -i -e "s:./hybrixd:sed -i -e 's/userbind = 127.0.0.1/userbind = '$POD_IP'/g' hybrixd.conf && sed -i -e 's/userport = 8080/userport = 5000/g' hybrixd.conf && ./hybrixd:g" package.json
     - check_kube_domain
     - install_dependencies
     - download_chart
@@ -353,7 +374,52 @@ staging:
     kubernetes: active
     variables:
       - $STAGING_ENABLED
-      
+
+.production: &production_template
+  cache: {}
+  image: alpine:latest
+  stage: production
+  script:
+    - check_kube_domain
+    - install_dependencies
+    - download_chart
+    - ensure_namespace
+    - install_tiller
+    - create_secret
+    - deploy
+    - delete canary
+    - delete rollout
+    - persist_environment_url
+  environment:
+    name: production
+    url: http://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
+  artifacts:
+    paths: [environment_url.txt]
+
+production:
+  <<: *production_template
+  only:
+    refs:
+      - tags
+    kubernetes: active
+  except:
+    variables:
+      - $STAGING_ENABLED
+
+production_manual:
+  <<: *production_template
+  environment: 
+    name: production
+    url: http://api.hybrix.io
+  when: manual
+  allow_failure: false
+  only:
+    refs:
+      - tags
+    kubernetes: active
+    variables:
+      - $STAGING_ENABLED
+
 dist: 
   dependencies: 
     - hybrixd
@@ -753,7 +819,7 @@ dist:
       docker create --expose 5000 --env PORT=5000 --name="$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" /bin/herokuish procfile start web
       
       #workaround: edit the package.json, with an on start config-edit (replace 127.0.0.1 with POD's IP, replace 8080 with 5000)
-      sed -i -e "s:./hybrixd:sed -i -e 's/127.0.0.1/'\$POD_IP'/g' hybrixd.conf \&\& sed -i -e 's/8080/5000/g' hybrixd.conf \&\& ./hybrixd:g" package.json
+      sed -i -e "s:./hybrixd:sed -i -e 's/127.0.0.1/'\$POD_IP'/g' hybrixd.conf \&\& sed -i -e 's/8080/5000/g' hybrixd.conf \&\& sed -i -e 's#/source/web-wallet##g' hybrixd.conf \&\& ./hybrixd:g" package.json
       docker cp package.json "$CI_CONTAINER_NAME":/app/package.json
       
       docker commit "$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"

@@ -3,6 +3,7 @@
   "name":"sign",
   "module":"quartz",
   "router" : {
+    "_hidden":true,
     "verify":{
       "_ref": {
         "_list": "message",

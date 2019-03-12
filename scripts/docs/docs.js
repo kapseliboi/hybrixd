@@ -1,17 +1,18 @@
-var fs = require('fs');
+let fs = require('fs');
 
-var files = {
+let files = {
   qrtz: '../../lib/scheduler/quartz.js',
   'hybrix-lib.js': '../../../interface/lib/interface.js',
   'hybrixd': '../../docs/source/hybrixd.html',
-  'HelloWorld': '../../docs/source/HelloWorld.html',
-  'cli': '../../docs/source/cli.html'
+  'Introduction': '../../docs/source/Introduction.html',
+  'cli': '../../docs/source/cli.html',
+  'featured-products': '../../docs/source/featured-products.html'
 };
 
 function getMatches (re, str) {
   re.lastIndex = 0;
-  var m;
-  var array = [];
+  let m;
+  let array = [];
   do {
     m = re.exec(body);
     if (m) {
@@ -21,48 +22,38 @@ function getMatches (re, str) {
   return array;
 }
 
-var exampleId = 0;
+let exampleId = 0;
 
-for (var id in files) {
+for (let id in files) {
   var body = fs.readFileSync(files[id]).toString();
 
-  var data = `<!DOCTYPE html><html lang="en"><head><title>hybrixd : Help</title><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.5, maximum-scale=2.0"><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"><link href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAABS1JREFUWAntVn2IVFUUP+feNx+7M7trqa3Grru6O2pBVmCZICImYUFkCEGJfwRmf2iazu64psnTBdfdHT/CUgJLqahQMYKKQDLCJCEpiaLacdfVLTet1dz52Jn3cU/nzvimkV1RkOifPX/Mve/cc8/5nd8757wBGJVRBkYZ+J8ZwNuJb5pkZDKJiCoXA3Gz8dLNfBERslCp3W0BeDnWtUUoWgGCfiGUy6E62DM9VOP094Nrmqi8QKvXdU9C116GKGVVyGg1zclZ7+ymADhLfyp00RdvnpD2Luk1FvuzwoErH5JSTxT0eBoR/uD8XAWU5UyHQGAaCHJKwQMIaq62E8Joirc37PCYEIXLI/82m2cnXE117XMuXf0ouqF7TqlVR8f4JID6HgFTgHBKSrWJpHwJDGOzEvIdlOIrcKGPAZFgFEUhVVvc8+aGDHDmgoMfAKCl+gIbfuuT8nnOIemWUdZvGXLIyn3KWX4QlOVvt7XVDGg700xUptOi2ueTqa1b6/u1LhrtqVPCOYBEDwrwzY3Hp/yg9VqKAEzz7JiCqn4wlTpXpyD7HCAuIoL7GYRPgPgGBHzNWVdwZn4+m8pUzxGIRwnhMoIYIOVqEDMAxTwi1W9gcElnZ/132m/+ldHAYUB5bEdHpL0Q6xqAaCyxRBEtY6WDQL0E6jEB8jj4jQ2YU7NBuONAyYPxeOMlzUwKuse5KToiUGU4+JdM8xSucE3tdCa7rugcxd7KUGSlV5DRdYlN5KoFPmk82d7ecFXbGdENPXVk2a1ANFkrCHBQoIhWhMLvm+bdGQ7Y5zngvZFMdzVx0Me54GaTpBekG/hMoX0fX31K+0ABFilmSPsiZevVEyH8Xzgq+4pSzgzWHdd6ISzXYNRjPSNu0/MC/J/o4FrnBdf7wfSZF7mmWknRXM5YoAvLXLKOMXuHmcy7yDBWC4UrucI/Rom7q8Ly1dL7ZDtlzNaQC7hm/frEeO1ThEKhfq7kI+yAceRVv0opcoX99b8K3UauCcPTMlv3chGdwqCYV1+LS3dua/w8HJ76Fk0sf7aybOpa04wMerbNzd0Rhc6bnMAYZubpnOMe0gUrdKaVofAKCbCYQezhw8W2k9vX1NQ7eU3LmYVr1nVrevMipTzBZVuklRGfdUWgbfuWxtOrVkXyoHlmlPkvWpxdb/jgQWK3BXHIeohZm+I98zpTd0uxC/SB7oRk0tqvkBZxoAwXRDnT+RdPuc1V5Q172EQk04kWDjwLSP1OSI/rOuYO2B0wyvcD5MZajrOXAzVwe/ax/jUDxVFb0UKeT8u5KObrOAURCQyIR68DoA9isd9qHEqdYKonXbPkGOK8NOAZ2zX+FkK5fqJAfh4gNbqu+zo7vofb8iS/RIspzk88fZedpxTgT7w+zA8/st0p3s/nL8IVYYgd29si7xbfpxfM9qVJWDjEjjwVl7Oa5Npwkgtct4llE2YJVY73TDsVfBA9UnIjf5efwzxqZ3LQ93zSvykYrL8waHdXl5HheENqGACffeegA5d/Zg/TPATsoIv7JQkKqjjgeAZXVYrPs7vB2orVVfFt/35L+krt2PdwiW3smebkrDc4SC0HPgMB3Oi3/b2uqwJSQpB8qkJlnVqFWOMqmsjTsJq9jOMpOav01fGsuKAwuGBXR71OaEQZEYC21C2SyUClPSE4sHNt7dCIt0uUekImhxJzlEMmSpjGw6iXC3BXZ2fkUInZsO0NAQyzvEVFS8u5OxxjaAx/FdO38iflFt2Omo0yMMrAf8fAP8fXR9N4is8VAAAAAElFTkSuQmCC" rel="icon" type="image/x-icon" />
+  let data = fs.readFileSync('../../docs/source/header.html').toString();
 
-<link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,700italic,400,600,700" rel="stylesheet" type="text/css">
-<link rel="stylesheet" type="text/css" href="./docs.css">
-<script src="./docs.js"></script>
-    <link rel=stylesheet href="codemirror.css">
-    <script src="codemirror.js"></script>
-    <script src="javascript.js"></script>
-</head><body>`;
-
-  data += '<div id="navigation"></div>';
-
-  var intro = fs.readFileSync('../../docs/source/' + id + '.html').toString();
+  let intro = fs.readFileSync('../../docs/source/' + id + '.html').toString();
   data += intro;
   if (files[id].substr(-5) !== '.html') {
-    data += '<div id="filterBox">Filter</div>';
+    data += '<div id="filterBox"></div>';
   }
 
   data += '<script>initNavigation("' + id + '")</script>';
 
   if (files[id].substr(-5) !== '.html') {
-    var re = /\/\*\*([\s\S]+?)this\.(\w*)/g; // match jsdoc templates
+    let re = /\/\*\*([\s\S]+?)this\.(\w*)/g; // match jsdoc templates
 
-    var f = getMatches(re, body);
+    let f = getMatches(re, body);
 
-    var funcs = [];
+    let funcs = [];
     for (var i = 0; i < f.length; ++i) {
-      var m = f[i];
+      let m = f[i];
       var name = m[2];
-      var content = m[1].replace(/\*\//g, '').replace(/\n \*/g, '\n');
-      var lines = content.split(' @');
-      var description = lines[0].replace(/\*/g, '');
-      var parameters = [];
-      var examples = [];
-      var category = 'Misc';
+      let content = m[1].replace(/\*\//g, '').replace(/\n \*/g, '\n');
+      let lines = content.split(' @');
+      let description = lines[0].replace(/\*/g, '');
+      let parameters = [];
+      let examples = [];
+      let category = 'Misc';
       for (var j = 0; j < lines.length; ++j) {
-        var line = lines[j];
+        let line = lines[j];
         if (line.startsWith('param')) {
           parameters.push(line.substr(6));
         } else if (line.startsWith('category')) {
@@ -73,11 +64,11 @@ for (var id in files) {
       }
       for (var j = 0; j < parameters.length; ++j) {
         var parameter = parameters[j].substr(1);
-        var elements = parameter.split(' '); // "{Integer} offset - the offset" -> ["{Integer}", "offset", ...]
-        var type = elements[0].substr(0, elements[0].length - 1);
-        var pname = elements[1];
-        var pDescription = elements.slice(2).join(' ').replace(/\*/g, '');
-        var optional = false;
+        let elements = parameter.split(' '); // "{Integer} offset - the offset" -> ["{Integer}", "offset", ...]
+        let type = elements[0].substr(0, elements[0].length - 1);
+        let pname = elements[1];
+        let pDescription = elements.slice(2).join(' ').replace(/\*/g, '');
+        let optional = false;
         if (pname.startsWith('[')) {
           optional = true;
           pname = pname.substr(1, pname.length - 2);
@@ -93,8 +84,8 @@ for (var id in files) {
       if (a.category === b.category) {
         return a.name.localeCompare(b.name);
       } else {
-        var ac = a.category;
-        var bc = b.category;
+        let ac = a.category;
+        let bc = b.category;
         if (ac === 'Misc' || ac === 'Depreciated') { ac = 'ZZZZZZ' + ac.slice(-1); }
         if (bc === 'Misc' || bc === 'Depreciated') { bc = 'ZZZZZZ' + bc.slice(-1); }
         return ac.localeCompare(bc);
@@ -102,7 +93,7 @@ for (var id in files) {
     });
 
     for (var i = 0; i < funcs.length; ++i) {
-      var func = funcs[i];
+      let func = funcs[i];
       if (i === 0 || funcs[i - 1].category !== func.category) {
         data += '<div class="category">' + func.category.trim() + '</div>';
       }
@@ -144,9 +135,11 @@ for (var id in files) {
         data += '<code class="example" title="' + func.name + '" id="example' + exampleId + '">' + func.examples[j].trim() + '</code>';
         exampleId++;
       }
-      data += '</div></div>';
+      data += '</div>';
     }
   }
-  data += '<div id="noResults">No results.</div></body></html>';
+  data += '</div></div></div><div id="noResults">No results.</div>';
+  data += fs.readFileSync('../../docs/source/footer.html').toString();
+
   fs.writeFileSync('../../docs/' + id + '.html', data);
 }

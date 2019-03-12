@@ -32,6 +32,7 @@ body {
   width: 100%;
   height: 100%;
   margin: 0 auto;
+  overflow-y: none;
 }
 body > dl > dt, body > dt {
   border-top: 1px solid #eee;
@@ -184,6 +185,10 @@ select {
   max-width: 1200px;
   width: 90%;
   margin: 0 auto;
+}
+.main {
+  position: relative;
+  z-index: 0;
 }
 .header {
   border-bottom: 1px solid #ededed;
@@ -620,7 +625,8 @@ code.ref{
   background-image: linear-gradient(195deg, rgba(255,102,164,1) 0%, #693FBC 98%);
   padding-bottom: 40px;
   position: relative;
-  z-index: -100;
+  z-index: -10;
+  overflow: hidden;
 }
 .footer-wrapper #waves_2 {
   width: 120%;

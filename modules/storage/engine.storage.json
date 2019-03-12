@@ -14,11 +14,27 @@
     "load":[
       "data {key:'$1'}",
       "func 'load'",
+      "logs",
       "type 'file:data'",
-      "file"
+      "logs",
+      "file",
+      "done"
+    ],
+     "get":[
+      "data {key:'$1'}",
+      "func 'load'",
+      "logs",
+      "type 'file:data'",
+      "logs",
+      "file",
+      "done"
     ],
     "cron":[
       "func 'cron'"
+    ],
+    "set":[
+      "data {key:'$1',value:'$2'}",
+      "func 'save'"
     ],
     "save":[
       "data {key:'$1',value:'$2'}",
@@ -27,6 +43,9 @@
     "meta":[
       "data {key:'$1'}",
       "func 'meta'"
+    ],
+    "del":[
+      "fail 'Deleting data from node storage is not supported!'"
     ],
     "burn":[
       "fail 'Deleting data from node storage is not supported!'"

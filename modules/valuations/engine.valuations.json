@@ -41,12 +41,12 @@
       "# check if prices were recently updated",
       "with 'timeNow' 'date'",
       "peek 'local::pricesTimestamp'",
-      "true '>0' 2 1",
+      "ship 2 1 1",
       "data 0",
       "math '+$refreshTime'",
-      "true '<$timeNow' @refreshValuations",
+      "math '-$timeNow'",
+      "ship 1 1 @refreshValuations",
       "done 'valuations up-to-date'",
-      "# if not, download and refresh valuations",
       "@refreshValuations",
       "each $sources 'download'",
       "func 'parse'",
@@ -63,18 +63,24 @@
       "done"
     ],
     "rate":[
+      "data '$3'",
+      "ship 2 2 1 1",
+      "fail 'Bad input!'",
       "data {source: '$1', target:'$2', amount:'$3', mode: '$4',  prices: $local::prices}",
       "func 'valuate'",
       "done"
     ],
     "list":[
-      "done Object.keys($local::prices)"
+      "done 'NOT IMPLEMENTED'"
     ]
   },
   "router" : {
+    "_help" : "Valuation engine for calculating price conversion rates.",
+    "_hidden":true,
     "cron" : "Download new price data.",
     "list" : "List available symbols.",
     "rate": {
+      "_help" : "Calculate a valuation using a multi-currency rate table.",
       "_ref" : {
         "_list" : "Source_Symbol",
         "_ref" : {

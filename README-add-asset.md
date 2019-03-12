@@ -1,17 +1,18 @@
 ** Introduction **
 
-To add a new crypto currency as asset you will need a Client side
-module and a Node side module.
-
-If the asset a token based on an existing base asset only a simplified Node side
+If the asset is a token based on an existing base asset only a simplified Node side
 module needs to be defined. (Without qrtz / API endpoints definition
 as those will already be defined in the base asset recipe.)
 
-The Client side module will handle key generation and transaction
-signing on the client side and is explained in the deterministic repo
-README.md
+To add a new crypto currency as asset you will need a Client side
+module for deterministic cryptography and a Node side module to handle information requests.
 
-The Node side module will create API endpoints in hybrixd that relay
+The Client side module will handle key generation and transaction
+signing on the client side and is explained in the deterministic repository's
+README.md .
+
+The Node side module creates API endpoints in hybrixd that enables users and wallets to interact with
+other blockchains by translating and relaying calls
 to API endpoints from RPC's and block explorers for the given crypto
 currency. Please see below for instructions.
 
@@ -26,7 +27,7 @@ Client side module.
 
 ** Node side module **
 
-The node side module serves as a relay between API's.
+The node side module serves as a relay between APIs.
 
 Example:
 
@@ -50,9 +51,11 @@ it will retrieve the result, reformat that and return it.
 You will need the following information:
 
 - Asset Details
-- - Symbol name : The symbol associated with the asset (Bitcoin has btc much like the US dollar has usd)
+- - Symbol : The symbol associated with the asset (Bitcoin has btc much like the US dollar has usd)
 - - Factor : The factor determines the nr of digits after the dot. (The precision of the currency)
 - - Fee : The transaction fee that is required as overhead payment for a transaction.
+- - Fee-Symbol : The symbol that is used to pay fees. This is usually the same value as Symbol name.
+- - Fee-Factor : The factor of the fee. This is usually the same value as Factor.
 
 - API endpoints
 - - Hosts : The url's of API endpoints. Searching for '$ASSETNAME

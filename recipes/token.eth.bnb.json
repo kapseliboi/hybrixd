@@ -2,6 +2,7 @@
     "symbol":"eth.bnb",
     "name":"Binance Coin",
     "module":"ethereum",
+    "import":"eth",
     "mode":"ethereum.token",
     "contract":"0xB8c77482e45F1F44dE1745F52C74426C631bDD52",
     "originator":"0x00C5E04176d95A286fccE0E68c683Ca0bfec8454",
