@@ -25,8 +25,6 @@ else
     exit 1;
 fi
 
-
-
 # NODE_BINARIES
 if [ ! -e "$NODE/node_binaries" ];then
 
