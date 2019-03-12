@@ -26,10 +26,7 @@
       "curl 'asset://$symbol' '' 'POST' {'Content-Type': 'application/json'}",
       "done"
     ],
-
-
-
-     "fee-factor" : [
+    "fee-factor" : [
       "call 'fee-symbol'",
       "peek '${data}::factor'",
       "done"
