@@ -1,3 +1,16 @@
+let commands = [];
+let commandIndex = -1;
+
+let menuItems = {
+  'Introduction': './Introduction',
+  'REST API': './api',
+  'hybrix-lib.js': './hybrix-lib.js',
+  'hybrixd': './hybrixd',
+  'cli': '/api/help/cli',
+  'Featured products': './featured-products'
+//  'qrtz': '/api/help/qrtz'
+};
+
 function display (result) {
   document.getElementById('console-results').style.height = '150px';
   document.getElementById('console-close').innerHTML = 'Hide';
@@ -5,7 +18,7 @@ function display (result) {
   if (result.error === 0) {
     if (result.id === 'id') {
       r += '<div class="result">[.] Waiting for result ' + result.data + '...';
-      rout('/p/' + result.data);
+      rout('/proc/' + result.data);
     } else {
       r += '<div class="result">[i] <span class="result">' + result.path + '</span> - <code>' + JSON.stringify(result.data) + '</code>';
     }
@@ -14,7 +27,7 @@ function display (result) {
     if (result.hasOwnProperty('help')) {
       r += result.help.replace(/\`([^\`])*\`/g, (a, x) => {
         let url = a.substr(1, a.length - 2);
-        return '<a href="/api/help' + url + '">' + url + '</a>';
+        return '<a href="./' + url + '">' + url + '</a>';
       }
       );
     }
@@ -184,8 +197,6 @@ function toggleConsole () {
     e.style.height = '150px';
   }
 }
-var commands = [];
-let lastCommand = -1;
 
 const copyToClipboard = str => {
   const el = document.createElement('textarea');
@@ -194,16 +205,6 @@ const copyToClipboard = str => {
   el.select();
   document.execCommand('copy');
   document.body.removeChild(el);
-};
-
-let menuItems = {
-  'Introduction': '../help/Introduction',
-  'REST API': '../help/',
-  'hybrix-lib.js': '../help/hybrix-lib.js',
-  'hybrixd': '../help/hybrixd',
-  'Featured products': '../help/featured-products'
-//  'cli': '/api/help/cli',
-//  'qrtz': '/api/help/qrtz'
 };
 
 function initAPIConsole () {
