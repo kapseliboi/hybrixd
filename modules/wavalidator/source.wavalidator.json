@@ -9,6 +9,7 @@
     ]
   },
   "router" : {
+    "_hidden":true,
     "_help" : "Validate address formatting.",
     "_ref" : {
       "_list" : "symbol",

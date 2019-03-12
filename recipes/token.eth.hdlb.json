@@ -2,6 +2,7 @@
     "symbol":"eth.hdlb",
     "name":"HODL Bucks",
     "module":"ethereum",
+    "import":"eth",
     "mode":"ethereum.token",
     "contract":"0xaD6714bd97CBBd29788f8838Bc865ee71b843Eb8",
     "originator":"0xf64EB728bc4b1BFf9fB4C3935069F01943Ce14E9",

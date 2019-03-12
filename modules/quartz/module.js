@@ -26,9 +26,25 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
   }
   // Postprocess: Append formating of result for specific commands
   let command = xpath[0];
-  if (command === 'balance' || command === 'fee') { // Append formatting of returned numbers
-    subprocesses.push('form()');
-    subprocesses.push('done()');
+  if (command === 'balance' || command === 'fee') { // append formatting of returned numbers
+    subprocesses.push('form');
+    subprocesses.push('done');
+  }
+  if (command === 'transaction') { // append formatting of returned numbers
+    subprocesses.push('poke formAmount ${.amount}');
+    subprocesses.push('with formAmount form');
+    subprocesses.push('poke formFee ${.fee}');
+    subprocesses.push('with formFee form');
+    subprocesses.push('data {id:"${.id}",timestamp:${.timestamp},amount:"$formAmount",symbol:"${.symbol}",fee:"$formFee",fee-symbol:"${.fee-symbol}",source:"${.source}",target:"${.target}",data:"${.data}"}');
+    subprocesses.push('done');
+  }
+  if (command === 'history') { // always sort history values in reverse order
+    subprocesses.unshift('vars {"count":"12","offset":"0"}');
+    subprocesses.unshift('poke "offset" "$3"');
+    subprocesses.unshift('poke "count" "$2"');
+    subprocesses.push('sort [".timestamp","num","desc"]');
+    subprocesses.push('take $offset $count');
+    subprocesses.push('done');
   }
 }
 

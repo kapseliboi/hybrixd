@@ -1,5 +1,3 @@
-<div id="console-wrapper" style="display:none;"></div>
-
           <h1>Documentation</h1>
 
           <h2>Introduction</h2>
@@ -93,10 +91,10 @@
 
           <h4>Beginners start here</h4>
 
-          <p>If you are just a beginner, it is best to try and learn about blockchain by experimenting with the <a href="#RESTAPI">REST-API</a>. Without difficulty, you will be able to get balance values for any cryptocurrency, or retrieve the fee needed for sending a transaction to a blockchain system. You may also experiment with decentralized storage, validate addresses or read data directly from processes. The blockchain world is your oyster, go wild and experiment, and above all... have fun!</p>
+          <p>If you are just a beginner, it is best to try and learn about blockchain by experimenting with the <a href="./Introduction#RESTAPI">REST-API</a>. Without difficulty, you will be able to get balance values for any cryptocurrency, or retrieve the fee needed for sending a transaction to a blockchain system. You may also experiment with decentralized storage, validate addresses or read data directly from processes. The blockchain world is your oyster, go wild and experiment, and above all... have fun!</p>
 
           <h4>Seasoned developers</h4>
-          More advanced developers will most likely want to use the <a href="#lib">Javascript library</a> to enable their application to talk to <i>hybrix</i>. This makes it possible to build powerful client-side applications. The library also talks to the REST-API when necessary over an encrypted channel, and it offers useful functions to construct and sign your transactions client side.</p>
+          More advanced developers will most likely want to use the <a href="./Introduction#lib">Javascript library</a> to enable their application to talk to <i>hybrix</i>. This makes it possible to build powerful client-side applications. The library also talks to the REST-API when necessary over an encrypted channel, and it offers useful functions to construct and sign your transactions client side.</p>
 
           <h3><a name="RESTAPI"></a>REST API</h3>
 
@@ -117,7 +115,7 @@
             <li>Retrieve client side code</li>
           </ul>
 
-          <p><a href="/api/help">Continue reading...</a></p>
+          <p><a href=".">More about this subject...</a></p>
 
           <h3><a name="lib"></a>hybrix Javascript Library</h3>
 
@@ -143,7 +141,7 @@ hybrix.sequential([
 );</pre>
 
           <div class="try">
-            <select id="selectExample" onchange="var s = document.getElementById('selectExample');codeMirrorEditor.setValue(document.getElementById(s[s.selectedIndex].value).innerHTML.replace('http://localhost:1111',window.location.origin+'/api'));">
+            <select id="selectExample" onchange="var s = document.getElementById('selectExample');codeMirrorEditor.setValue(document.getElementById(s[s.selectedIndex].value).innerHTML.replace('http://localhost:1111',window.location.href.split(`/help`)[0]));">
               <option value="exampleHelloWorld">Hello World</option>
             </select>
 
@@ -164,8 +162,7 @@ hybrix.sequential([
                  button.onclick = function(body,id){
                    return event => {
 
-                     console.log(body);
-                     codeMirrorEditor.setValue(body.replace('http://localhost:1111',window.location.origin+'/api'))
+                     codeMirrorEditor.setValue(body.replace('http://localhost:1111',window.location.href.split(`/help`)[0]))
 
                      for(let option of document.getElementById('selectExample').options){
                        if(option.value===id){
@@ -179,7 +176,7 @@ hybrix.sequential([
                  }(example.innerHTML,example.id);
                  example.parentNode.insertBefore(button, example.nextSibling);
                }
-               document.getElementById('try').innerHTML=document.getElementById('exampleHelloWorld').innerHTML.replace('http://localhost:1111',window.location.origin+'/api');
+               document.getElementById('try').innerHTML=document.getElementById('exampleHelloWorld').innerHTML.replace('http://localhost:1111',window.location.href.split(`/help`)[0]);
 
                codeMirrorEditor = CodeMirror.fromTextArea(document.getElementById("try"), {
                  lineNumbers: true,
@@ -203,7 +200,7 @@ hybrix.sequential([
             <input type="submit" value="Try it!" onclick="runExample(event)">
           </div>
 
-          <p><a href="/api/help/hybrix-lib.js">Continue reading...</a></p>
+          <p><a href="./hybrix-lib.js">More about this subject...</a></p>
 
           <h3>hybrixd daemon</h3>
 
@@ -220,10 +217,7 @@ hybrix.sequential([
             <li>Execute Qrtz script applications</li>
           </ul>
 
-          <p><a href="/api/help/hybrixd">Continue reading...</a></p>
+          <p><a href="./hybrixd">More about this subject...</a></p>
         </div>
       </div>
     </div>
-
-    <script>initNavigation("Introduction")</script>
-    <div id="noResults">No results.</div>

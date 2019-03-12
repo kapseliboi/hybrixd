@@ -95,7 +95,9 @@ hybrixd:
     - rm -rf  artifacts-interface.zip || true
     
     # download [deterministic] artifact
-    - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fmodules%2Fdeterministic/jobs/artifacts/master/download?job=deterministic\" -o artifacts-deterministic.zip"
+    # TODO: REMOVE LINE BELOW, UNCOMMENT THIS ONE:- "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fmodules%2Fdeterministic/jobs/artifacts/master/download?job=deterministic\" -o artifacts-deterministic.zip"
+    - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fmodules%2Fdeterministic/jobs/169447811/artifacts\" -o artifacts-deterministic.zip"
+    
     
     # unzip the downloaded artifact to the directory (|| true --> on error, no problem) (consider the artifact is packed as /modules/name/filename.lzma)
     - unzip -q -o artifacts-deterministic.zip -d artifacts-deterministic/
@@ -269,6 +271,7 @@ test:
    refs:
      #- /^v.*release$/
      - /^Issue.*$/
+     - /^issue.*$/
      - tags
   only:
     variables:
@@ -816,7 +819,7 @@ dist:
       docker create --expose 5000 --env PORT=5000 --name="$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" /bin/herokuish procfile start web
       
       #workaround: edit the package.json, with an on start config-edit (replace 127.0.0.1 with POD's IP, replace 8080 with 5000)
-      sed -i -e "s:./hybrixd:sed -i -e 's/127.0.0.1/'\$POD_IP'/g' hybrixd.conf \&\& sed -i -e 's/8080/5000/g' hybrixd.conf \&\& sed -i -e 's#/source/web-wallet#/#g' hybrixd.conf \&\& ./hybrixd:g" package.json
+      sed -i -e "s:./hybrixd:sed -i -e 's/127.0.0.1/'\$POD_IP'/g' hybrixd.conf \&\& sed -i -e 's/8080/5000/g' hybrixd.conf \&\& sed -i -e 's#/source/web-wallet##g' hybrixd.conf \&\& ./hybrixd:g" package.json
       docker cp package.json "$CI_CONTAINER_NAME":/app/package.json
       
       docker commit "$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"

@@ -1,0 +1,88 @@
+{
+  "symbol":"trx",
+  "name":"Tron",
+  "module":"quartz",
+  "mode":"tron",
+  "addressRegex":"^T\\d{33}$",
+  "factor":6,
+  "fee":0,
+  "contract": "TRX",
+  "host":["https://api.trongrid.io"],
+  "cache":10000,
+  "throttle":10,
+  "quartz":{
+    "init" : [
+      "logs(1,'module $symbol: initialized')"
+    ],
+    "balance" : [
+      "flow('TRX',@tronBalance,@tokenBalance)",
+      "@tronBalance",
+      "data '$1'",
+      "code 'base58' 'hex'",
+      "case 'lower'",
+      "drop -8",
+      "data '{address: \"$data\"}'",
+      "curl 'asset://$symbol' '/walletsolidity/getaccount' 'POST'",
+      "tran '.balance' @end @fail",
+      "@tokenBalance",
+      "curl 'https://apilist.tronscan.org' '/api/account?address=$1' 'GET'",
+      "poke 'result'",
+      "tran '.trc20token_balances' 1 1",
+      "find {symbol:$contract} 1 @trc10tokens",
+      "poke result",
+      "data '${result[0].balance}'",
+      "atom false '${result[0].decimals}'",
+      "done",
+      "@trc10tokens",
+      "peek 'result'",
+      "logs",
+      "tran '.balances' 1 1",
+      "find {name:'$contract'} 1 @fail",
+      "tran '[0].balance' 1 @ fail",
+      "atom",
+      "done",
+      "@fail",
+      "fail 'Not found'",
+      "@end",
+      "atom"
+    ],
+    "push" : [
+      "data '$1'",
+      "code 'hex' 'utf-8'",
+      "poke 'txData'",
+      "curl 'asset://$symbol' '/wallet/broadcasttransaction' 'POST'",
+      "tran '.result' @end @fail",
+      "@end",
+      "flow 'true' 1 @fail",
+      "peek 'txData'",
+      "jpar",
+      "tran '.txID' 1 @failDetails",
+      "done",
+      "@fail",
+      "pass \"Couldn't make transaction\"",
+      "done",
+      "@failDetails",
+      "pass \"Couldn't retrieve transaction ID\"",
+      "done"
+    ],
+    "factor" : [
+      "pass('$factor')"
+    ],
+    "contract" : [
+      "pass('')"
+    ],
+    "fee" : [
+      "pass('$fee')"
+    ],
+    "unspent" : [
+      "pass({})"
+    ],
+    "history" : [
+      "done",
+      "curl 'asset://$symbol' '/walletextension/gettransactionstothis' 'POST'",
+      "poke 'txTo'",
+      "curl 'asset://$symbol' '/walletextension/gettransactionsfromthis' 'POST'",
+      "fuse 'txTo'"
+    ]
+  }
+}

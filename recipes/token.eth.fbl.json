@@ -2,6 +2,7 @@
     "symbol":"eth.fbl",
     "name":"Faceblock",
     "module":"ethereum",
+    "import":"eth",
     "mode":"ethereum.token",
     "contract":"0xC0C2EE1CE1fed8f6E2764363a36dB3Dd4CF10022",
     "originator":"0x3A1F12A15f3159903f2EEbe1a2949A780911f695",

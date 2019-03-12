@@ -25,6 +25,7 @@
     ]
   },
   "router" : {
+    "_hidden":true,
     "_help" : "Control the announcement engine.",
     "open":{
       "_help" : "Connect to a transport network. When initialized the transport returns a handle.",

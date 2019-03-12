@@ -2,6 +2,7 @@
     "symbol":"eth.xuc",
     "name":"Exchange Union",
     "module":"ethereum",
+    "import":"eth",
     "mode":"ethereum.token",
     "contract":"0xc324a2f6b05880503444451B8b27e6f9e63287Cb",
     "originator":"0x06D192F59ac8c757Ce1bc880c0B19216EcbFD075",

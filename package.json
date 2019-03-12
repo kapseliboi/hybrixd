@@ -7,22 +7,20 @@
     "lib": "lib"
   },
   "dependencies": {
-    "base32.js": "0.1.0",
-    "crc": "3.5.0",
-    "irc": "github:matrix-org/node-irc",
-    "js-sha256": "^0.9.0",
     "progress": "^2.0.0",
     "stdio": "^0.2.7",
     "teletype": "^0.2.0",
-    "wallet-address-validator": "^0.1.7",
-    "ws": "^6.0.0",
-    "xmldoc": "^1.1.2"
+    "ws": "^6.0.0"
   },
   "devDependencies": {
     "eslint": "^5.8.0",
     "uglify-es": "^3.3.9",
     "cssmin": "^0.4.3"
   },
+  "engines" : { 
+    "node" : ">=8.12.0 <9.0.0" 
+  },
+
   "scripts": {
     "start": "./hybrixd",
     "setup": "sh scripts/npm/setup.sh",
