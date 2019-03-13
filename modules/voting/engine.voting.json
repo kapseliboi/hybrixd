@@ -1,7 +1,7 @@
 {
   "engine":"voting",
   "name":"Voting engine",
-  "module":"quartz",
+  "module":"voting",
   "cache":100,
   "throttle":10,
   "hashSalt":"Th3S4lt0fTh3H4shMustN0tB3F0rg0t!Th4t1sf0rsur3!",
@@ -21,7 +21,7 @@
       "@filenotfound",
       "done ''"
     ],
-    "addAddressRedirect" : [
+    "addAddressRedirectBAK" : [
       "#rout 'engine/voting/addAddress/$1/$2'",
       "type 'file:text/html'",
       "data 'modules/$engine/redirect.html'",
@@ -42,8 +42,8 @@
       "size",
       "true '<2' @badinputfmt",
     "# check if userhash is on eligibility list",
-      "poke 'userhash' $userdata[0]",
-      "poke 'useraddr' $userdata[1]",
+      "poke 'userhash' ${userdata[0]}",
+      "poke 'useraddr' ${userdata[1]}",
       "call 'coreList/eligibility/$1'",
       "excl '$userhash' 1 @notelligible",
     "# reinsert hash at beginning of array",
@@ -197,16 +197,6 @@
       }
     },
     "listAddress" : {"_alias":"listAddresses"},
-    "addAddressRedirect" : {
-      "_help": "Add eligibility adresses to voting session (redirecting page)",
-      "_ref" : {
-        "_list" : "session_id",
-          "_ref" : {
-              "_list" : "eligibility_address",
-              "_this" : "Adds an eligibility address or addresses under the specified voting session ID. [format: hash:address]"
-          }
-      }
-    },
     "addAddress" : {
       "_help": "Add eligibility adresses to voting session",
       "_ref" : {

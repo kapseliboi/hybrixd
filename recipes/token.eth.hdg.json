@@ -2,6 +2,7 @@
     "symbol":"eth.hdg",
     "name":"Hedge",
     "module":"ethereum",
+    "import":"eth",
     "mode":"ethereum.token",
     "contract":"0xfFe8196bc259E8dEDc544d935786Aa4709eC3E64",
     "originator":"0x13A8B6434Bd5CEf0924814f7414482529b51Df2A",

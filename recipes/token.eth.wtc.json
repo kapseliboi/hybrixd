@@ -2,6 +2,7 @@
     "symbol":"eth.wtc",
     "name":"Walton",
     "module":"ethereum",
+    "import":"eth",
     "mode":"ethereum.token",
     "contract":"0xb7cB1C96dB6B22b0D3d9536E0108d062BD488F74",
     "originator":"0x309a272885bdeA62d99c4E32E40bEe93A3cCef6a",
