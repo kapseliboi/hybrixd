@@ -24,7 +24,7 @@
   "scripts": {
     "start": "./hybrixd",
     "setup": "sh scripts/npm/setup.sh",
-    "build": "sh scripts/npm/setup.sh",
+    "build": "",
     "compile": "sh scripts/npm/compile.sh",
     "docs": "sh scripts/docs/docs.sh",
     "diag": "sh scripts/npm/diag.sh",

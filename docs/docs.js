@@ -7,7 +7,7 @@ let menuItems = {
   'hybrix-lib.js': './hybrix-lib.js',
   'hybrixd': './hybrixd',
   'cli': '/api/help/cli',
-  'Featured products': './featured-products'
+  'featured-products': './featured-products'
 //  'qrtz': '/api/help/qrtz'
 };
 
@@ -218,9 +218,17 @@ function initNavigation (currentMenuItem) {
   let data = '';
   for (let menuItem in menuItems) {
     if (currentMenuItem === menuItem) {
-      data += '<a class="menuItem current">' + menuItem + '</a> ';
+      if (menuItem == 'featured-products') {
+        data += '<a class="menuItem current">Featured products</a> ';
+      } else {
+        data += '<a class="menuItem current">' + menuItem + '</a> ';
+      }
     } else {
-      data += '<a href="' + menuItems[menuItem] + '" class="menuItem">' + menuItem + '</a> ';
+      if (menuItem == 'featured-products') {
+        data += '<a href="' + menuItems[menuItem] + '" class="menuItem">Featured products</a> ';
+      } else {
+        data += '<a href="' + menuItems[menuItem] + '" class="menuItem">' + menuItem + '</a> ';
+      }
     }
   }
 
