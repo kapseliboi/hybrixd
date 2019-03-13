@@ -36,49 +36,49 @@ hybrixd:
     # prepare variable for DEBUG purposes
     - if [[ "$DEBUG_ENABLED" == "1"  ]]; then DEBUG="-debug"; else DEBUG=""; fi
     - "if [[ \"$DEBUG_ENABLED\" == \"1\"  ]]; then echo \"DEBUG_ENABLED is 1: debug-mode\"; else echo \"release-mode\"; fi"
-    
+
     # install unzip
     - apk update
     - apk add npm
     - apk add python
     - apk add rsync
-    
+
     # trying to get past error: could not get uid/gid [ 'nobody', 0 ]
     - npm config set unsafe-perm true
-    
+
     - npm install -g jsdoc
-    
+
     - ls ~
-    
+
     - npm install xmldoc
     - npm install node@8.12.0
     - apk add unzip
     - apk add curl
     - apk add jq
-    
-    
+
+
     - WORKING_DIR=$PWD
     - echo $PWD
 
     # trigger pipeline common
     # - "curl --request POST --form \"token=$CI_JOB_TOKEN\" --form ref=master https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fcommon/trigger/pipeline"
-    
+
     # download [common] artifact
     - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fcommon/jobs/artifacts/master/download?job=common\" -o artifacts-common.zip"
-    
+
     # remove link to common and unzip the downloaded artifact to the directory (|| true --> on error, no problem)
     - rm -rf  common || true
     - unzip -q -o artifacts-common.zip -d common/
-    
+
     # remove the zip-file (|| true --> on error, no problem)
     - rm -rf  artifacts-common.zip || true
-    
+
     # download [interface] artifact
     - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Finterface/jobs/artifacts/master/download?job=interface${DEBUG}\" -o artifacts-interface.zip"
-    
-    # remove link to interface 
+
+    # remove link to interface
     - rm -rf  interface || true
-    
+
     # get content of interface/lib for generation of documentation
     - cd ..
     - git clone -n https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/hybrix/hybrixd/interface.git --depth 1
@@ -87,107 +87,107 @@ hybrixd:
     - git checkout origin/master -- lib/interface.js
     - cd ..
     - cd node
-    
+
     # unzip the downloaded artifact to the directory (|| true --> on error, no problem)
     - unzip -q -o artifacts-interface.zip -d ./interface/
-    
+
     # remove the zip-file (|| true --> on error, no problem)
     - rm -rf  artifacts-interface.zip || true
-    
+
     # download [deterministic] artifact
     # TODO: REMOVE LINE BELOW, UNCOMMENT THIS ONE:- "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fmodules%2Fdeterministic/jobs/artifacts/master/download?job=deterministic\" -o artifacts-deterministic.zip"
     - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fmodules%2Fdeterministic/jobs/169447811/artifacts\" -o artifacts-deterministic.zip"
-    
-    
+
+
     # unzip the downloaded artifact to the directory (|| true --> on error, no problem) (consider the artifact is packed as /modules/name/filename.lzma)
     - unzip -q -o artifacts-deterministic.zip -d artifacts-deterministic/
     #- rm -rf ./dist/modules/deterministic
     - rm -rf ./modules/deterministic
     #- cp -rf artifacts-deterministic/ ./dist/modules/deterministic/
     - cp -rf artifacts-deterministic/ ./modules/deterministic/
-    
+
     # remove the unzipped-files and the zip-file (|| true --> on error, no problem)
     - rm -rf  artifacts-deterministic || true
     - rm -rf  artifacts-deterministic.zip || true
-    
+
     # download [web-wallet] (not the latest) artifact
     #- "echo \"Download the artifact for the web-wallet from branch: BRANCH_WEB_WALLET = $BRANCH_WEB_WALLET\""
     - BRANCH_WEB_WALLET=master
     - "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fweb-wallet/jobs/artifacts/$BRANCH_WEB_WALLET/download?job=web-wallet\" -o artifacts-web-wallet.zip"
-    
+
     # run the build-script of the hybrixd-node
     - ./scripts/npm/compile.sh
-    
+
     - ls ./dist
-    
+
     # workaround to get the latest artifact
     #- PROJECT_REF_SLUG=hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fweb-wallet
     #- PROJECT_REF_PATH=hybrix/hybrixd/client/implementations/web-wallet
     #- PROJECT_REF_NAME=web-wallet
     #- PROJECT_REF_BRANCH=master
-    
+
     # view the first 2 pages
     #- "RESPONSE1=$(curl --header \"Private-Token: $PRIVATE_TOKEN\" --silent \"https://gitlab.com/api/v4/projects/${PROJECT_REF_SLUG}/jobs?scope=success&page=1\")"
     #- "RESPONSE2=$(curl --header \"Private-Token: $PRIVATE_TOKEN\" --silent \"https://gitlab.com/api/v4/projects/${PROJECT_REF_SLUG}/jobs?scope=success&page=2\")"
-    #- "BUILD_JOB_ID1=$(echo \"${RESPONSE1}\" | jq -r 'first(.[] | select(.name == \"web-wallet\" and .ref == \"master\")) | .id')" 
-    #- "BUILD_JOB_ID2=$(echo \"${RESPONSE2}\" | jq -r 'first(.[] | select(.name == \"web-wallet\" and .ref == \"master\")) | .id')" 
-    #- if [[ "$BUILD_JOB_ID1" == ""  ]]; then BUILD_JOB_ID=$BUILD_JOB_ID2; else BUILD_JOB_ID=$BUILD_JOB_ID1; fi 
-    
+    #- "BUILD_JOB_ID1=$(echo \"${RESPONSE1}\" | jq -r 'first(.[] | select(.name == \"web-wallet\" and .ref == \"master\")) | .id')"
+    #- "BUILD_JOB_ID2=$(echo \"${RESPONSE2}\" | jq -r 'first(.[] | select(.name == \"web-wallet\" and .ref == \"master\")) | .id')"
+    #- if [[ "$BUILD_JOB_ID1" == ""  ]]; then BUILD_JOB_ID=$BUILD_JOB_ID2; else BUILD_JOB_ID=$BUILD_JOB_ID1; fi
+
     #- "echo \"Downloading the artifact from: https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\""
-    
+
     #- "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\" -o artifacts-${PROJECT_REF_NAME}.zip"
     #- "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/api/v4/projects/${PROJECT_REF_SLUG}/jobs/${BUILD_JOB_ID}/artifacts\" -o artifacts-${PROJECT_REF_NAME}.zip"
 
-    # unzip the downloaded artifact to the directory 
+    # unzip the downloaded artifact to the directory
     - rm -rf ./dist/modules/web-wallet
     - mkdir -p ./dist/modules/web-wallet
     - chmod 755 ./dist/modules/web-wallet
     - unzip -q -o artifacts-web-wallet.zip -d ./dist/modules/web-wallet/
-    
+
     #- mkdir -p ./dist/modules/web-wallet
     #- cp -rf artifacts-web-wallet/ ./dist/modules/web-wallet/
-    
+
     - ls ./dist/modules/web-wallet
     - ls ./dist/modules/web-wallet/files
     - ls ./dist/modules/web-wallet/files/doc
-    
+
     # remove the unzipped-files and the zip-file (|| true --> on error, no problem)
     - rm -rf  artifacts-web-wallet || true
     - rm -rf  artifacts-web-wallet.zip || true
-    
+
     # remove .git files from artifact
     - rm -rf ./.git* || true
-    
+
     - cd $WORKING_DIR
     - ls -l
     - ls ./dist
-    
+
     # create a .version file
     - timestamp=$(date -u '+%Y-%m-%dT%H:%M:%S+00:00')
-    - if [[ "$DEBUG_ENABLED" == "1"  ]]; then mode=debug; else mode=release; fi 
+    - if [[ "$DEBUG_ENABLED" == "1"  ]]; then mode=debug; else mode=release; fi
     - npmlist=$(npm list --only=prod --depth=0 -json)
-    
+
     #- set +e
     #- npmaudit=$(npm audit -json)
     #- set -e #, \"npm-audit\":${npmaudit}
-    
+
     - echo "{\"${CI_PROJECT_PATH_SLUG}\":{\"mode\":\"${mode}\", \"project_path\":\"${CI_PROJECT_PATH}\", \"commit_ref_name\":\"${CI_COMMIT_REF_NAME}\", \"commit_ref_slug\":\"${CI_COMMIT_REF_SLUG}\", \"commit_sha\":\"${CI_COMMIT_SHA}\", \"pipeline_url\":\"${CI_PIPELINE_URL}\", \"packaged\":\"${timestamp}\", \"npm-list\":${npmlist}}}" > .version
 
     # concatenate all .version files in the package
     - "find . -name \".version\" -print | xargs cat | tr '\n' ' ' | sed 's:} {:,:g' > dist/versions.json"
-    
+
     # prettify json in .versions
     - echo "const util = require('util'); const fs = require('fs'); var obj = JSON.parse(fs.readFileSync('dist/versions.json', 'utf8')); const fs_writeFile = util.promisify(fs.writeFile); const fs_readFile = util.promisify(fs.readFile); fs_writeFile('dist/versions.json', JSON.stringify(obj, null, 4));" > .prettify.js
     - node .prettify.js
-    
+
     # don't remove .version-files
     - rm -rf .version
-    
-    # clean up and prepare the artifacts (instead of having a dist) 
+
+    # clean up and prepare the artifacts (instead of having a dist)
     - mv ./dist /tmp
     - rm -rf ./*
     - mv /tmp/dist/* ./
-    
+
     # remove all files starting with a .
     - find -name ".*" -type f -delete
     - setup_docker
@@ -206,41 +206,41 @@ test:
   image: gliderlabs/herokuish:latest
   script:
     - setup_test_db
-    
+
     # download chromedriver
     - "curl --location \"https://chromedriver.storage.googleapis.com/2.43/chromedriver_linux64.zip\" -o chromedriver_linux64.zip"
-    
+
     # sample JUnit test-result xml-file
     #- "echo \"<?xml version=\"1.0\" encoding=\"UTF-8\" ?><testsuites id=\"20181025_140519\" name=\"Sample (25/10/18 14:05:19)\" tests=\"225\" failures=\"1262\" time=\"0.001\"><testsuite id=\"testsuite.example\" name=\"COBOL Code Review\" tests=\"45\" failures=\"17\" time=\"0.001\">   <testcase id=\"testcase.example\" name=\"Use a program name that matches the source file name\" time=\"0.001\">            <failure message=\"PROGRAM:2 Use a program name that matches the source file name\" type=\"WARNING\">WARNING: Use a program name that matches the source file name blablabla</failure></testcase></testsuite></testsuites>\" > test-sample.xml"
     - "echo \"<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\" ?><testsuites id=\\\"20181025_140519\\\" name=\\\"Sample (25/10/18 14:05:19)\\\" tests=\\\"225\\\" failures=\\\"1262\\\" time=\\\"0.001\\\"><testsuite id=\\\"testsuite.example\\\" name=\\\"COBOL Code Review\\\" tests=\\\"45\\\" failures=\\\"17\\\" time=\\\"0.001\\\">   <testcase id=\\\"testcase.example\\\" name=\\\"Use a program name that matches the source file name\\\" time=\\\"0.001\\\">            <failure message=\\\"PROGRAM:2 Use a program name that matches the source file name\\\" type=\\\"WARNING\\\">WARNING: Use a program name that matches the source file name blablabla</failure></testcase></testsuite></testsuites>\" > test-sample.xml"
-    
+
     # unzip chromedriver
     - unzip -o chromedriver_linux64.zip -d /usr/bin/google-chrome/
     - cp -R . /tmp/app
     - /bin/herokuish buildpack test
-    
+
     # install unzip
     - apt-get update
     - apt-get -y install git
     - apt-get -y install tar
     - apt-get -y install npm
-    - npm install n -g 
-    - n 8.12.0 
+    - npm install n -g
+    - n 8.12.0
 
     # trying to get past error: could not get uid/gid [ 'nobody', 0 ]
     #- npm config set unsafe-perm true
-    
+
     #- npm install -g jsdoc
     #- npm install xmldoc
     #- apk add unzip
     #- apk add curl
     #- apk add nodejs=8.11.4-r0
-    
+
     #- git clone -n https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/hybrix/hybrixd/dependencies/nodejs.git --depth 1
     #- cd nodejs
     #- git checkout origin/master -- x86_64
-    #- cd .. 
-    
+    #- cd ..
+
     # retrieve test.js from hybrix/hybrixd/interface
     # https://gitlab.com/gitlab-org/gitlab-ce/issues/29566
     # https://docs.gitlab.com/ee/user/project/new_ci_build_permissions_model.html
@@ -255,17 +255,17 @@ test:
     - git checkout origin/master -- test/test.js
     - mv test/test.js ../../test/test.js
     - cd ../../
-    
+
     # script is written for dist, so search and replace
     - sed -i -e s:../dist/:../interface/:g ./test/test.js
     - ./hybrixd > /dev/null 2>&1 &
     - sleep 20s
     #- ./hybrixd /version/details
     - cd test
-    
+
     #- node ./test.js --debug
     - node ./test.js
-    
+
   coverage: /SUCCESS RATE[^|]*\:[^|]*\s+([\d\.]+)/
   except:
    refs:
@@ -408,7 +408,7 @@ production:
 
 production_manual:
   <<: *production_template
-  environment: 
+  environment:
     name: production
     url: http://api.hybrix.io
   when: manual
@@ -420,8 +420,8 @@ production_manual:
     variables:
       - $STAGING_ENABLED
 
-dist: 
-  dependencies: 
+dist:
+  dependencies:
     - hybrixd
   image: alpine:latest
   stage: release
@@ -434,7 +434,7 @@ dist:
   - apk add xz
   - apk add zip
   - apk add jq
-   
+
   # set variables
   # version -> branchname without '-release'
   #- version=${CI_COMMIT_REF_NAME/-release/}
@@ -442,26 +442,26 @@ dist:
   - component=node
   - file=hybrixd.${component}.${version}
   - path=${component}/${version}/
-  
+
   - ls
-  
+
   #- cp -r ./dist/. /tmp/${component}/
   #- cp -r . /tmp/${component}/
   #- cp .version . /tmp/${component}/
-    
+
   - cd /tmp
   - git clone --depth=1 https://oauth2:${PRIVATE_TOKEN}@gitlab.com/hybrix/dist
   - mkdir -p ./dist/${component}/${version}/
-  
+
   # download [interface] artifact
   #- "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Finterface/jobs/artifacts/${CI_COMMIT_REF_NAME}/download?job=interface\" -o ${path}${file}.zip"
-  
+
   # go to folder
   #- ls ./dist/${path}
-  
+
   #- cp ${path}${file}.zip ./../${file}.zip
   #- unzip ${file}.zip -d ${component}
-  
+
   # workaround to get the latest artifact
   - PROJECT_REF_SLUG=hybrix%2Fhybrixd%2Fnode
   - PROJECT_REF_PATH=hybrix/hybrixd/node
@@ -478,29 +478,29 @@ dist:
 
   - ls
   - ls ${component}
-  
+
   # archive to zip
   - mv artifacts-hybrixd.zip ${file}.zip
-  
+
   # archive to tar.gz
   - tar -zcvf ${file}.tar.gz ${component}
-  
+
   # create a xz-archive as well
   - gunzip < ${file}.tar.gz | xz > ${file}.tar.xz
-  #- tar cfJ ${file}.tar.xz ${component} 
+  #- tar cfJ ${file}.tar.xz ${component}
 
   - cp ${file}.zip ./dist/${component}/${version}/${file}.zip
   - cp ${file}.tar.gz ./dist/${component}/${version}/${file}.tar.gz
   - cp ${file}.tar.xz ./dist/${component}/${version}/${file}.tar.xz
-  
+
   # for interface we like to distribute the js files directly as well
   #- cp -r ./${component}/*.js ./dist/${path}
   - cd ./dist/
-  
+
   # configure git-user
   - "git config --global user.name \"${GITLAB_USER_NAME}\""
   - "git config --global user.email \"${GITLAB_USER_EMAIL}\""
-  
+
   # add, commit and push
   - "git add ."
   - "git commit -m \"release ${version} ${component}\" || true"
@@ -721,7 +721,7 @@ dist:
     curl "https://kubernetes-helm.storage.googleapis.com/helm-v${HELM_VERSION}-linux-amd64.tar.gz" | tar zx
     mv linux-amd64/helm /usr/bin/
     helm version --client
-    
+
     curl -L -o /usr/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBERNETES_VERSION}/bin/linux/amd64/kubectl"
     chmod +x /usr/bin/kubectl
     kubectl version --client
@@ -817,11 +817,11 @@ dist:
 
       echo "Configuring $CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG docker image..."
       docker create --expose 5000 --env PORT=5000 --name="$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" /bin/herokuish procfile start web
-      
+
       #workaround: edit the package.json, with an on start config-edit (replace 127.0.0.1 with POD's IP, replace 8080 with 5000)
       sed -i -e "s:./hybrixd:sed -i -e 's/127.0.0.1/'\$POD_IP'/g' hybrixd.conf \&\& sed -i -e 's/8080/5000/g' hybrixd.conf \&\& sed -i -e 's#/source/web-wallet##g' hybrixd.conf \&\& ./hybrixd:g" package.json
       docker cp package.json "$CI_CONTAINER_NAME":/app/package.json
-      
+
       docker commit "$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
       docker rm "$CI_CONTAINER_NAME" >/dev/null
       echo ""
