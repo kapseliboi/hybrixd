@@ -5,147 +5,192 @@
   "cache":1000,
   "throttle":10,
   "OK":"OK",
+  "NOT_OK":"NOT_OK",
   "quartz":{
-    "done" : [
-      "done '$OK'"
+    "case" : [
+      "data abc123",
+      "case upper",
+      "flow ABC123 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
     ],
+    "code" : [
+      "data woot",
+      "code utf-8 bin",
+      "flow '1110111011011110110111101110100' 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+    "date" : [
+      "date",
+      "data '$'",
+      "head 2",
+      "flow '15' 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+    "drop" : [
+      "data 'abc'",
+      "drop 1",
+      "flow 'bc' 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+    "excl" : [
+      "data gloves",
+      "excl [g,s]",
+      "flow 'love' 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+     "excl2" : [
+      "data [g,l,o,v,e,s]",
+       "excl [g,s]",
+       "jstr",
+      "flow '[\"l\",\"o\",\"v\",\"e\"]' 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+    "filt" : [
+      "data helloworld",
+      "filt [o,d]",
+      "flow 'ood' 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+    "find" : [
+      "data [{id:1,test:2},{id:3,test:4},{id:5,test:6}]",
+      "find {id:5}",
+      "data ${[0].test}",
+      "flow 6 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+    "fuse" : [
+      "data appel!",
+      "fuse taart 5",
+      "flow 'appeltaart!' 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+    "head" : [
+      "data appeltaart",
+      "head 5",
+      "flow 'appel' 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+
+    "jpar" : [
+      "data '{\"key\":\"value\"}'",
+      "jpar 1 4",
+      "data ${.key}",
+      "flow value 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+     "jpar2" : [
+      "data 'broken JSON key:value}'",
+      "jpar 2 1",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+     ],
+     "jstr" : [
+      "data {key:value,array:[1,2,3]}",
+      "jstr",
+      "flow '{\"key\":\"value\",\"array\":[1,2,3]}' 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+     ],
+    "many" : [
+      "data abcdefaba",
+      "many 2",
+      "flow 'aaa' 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+    "pick" : [
+      "data abcdef",
+      "pick 2",
+      "flow c 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+    "pick2" : [
+      "data abcdef",
+      "pick -1",
+      "flow f 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+    "pick3" : [
+      "data abcdef",
+      "pick 1 3",
+      "flow bc 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+    "pick4" : [
+      "data abcdef",
+      "pick [1,3]",
+      "flow bd 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+    "pull" : [
+      "data abc",
+      "push def",
+      "flow abcdef 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+    "repl" : [
+      "data 'Many apples for you.'",
+      "repl [apples,you] [pears,me]",
+      "flow 'Many pears for me.' 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+     "size" : [
+      "data '1234'",
+      "size",
+      "flow 4 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+     ],
+
+
     "fail" : [
-      "fail '$OK'"
+      "hook @hook",
+      "fail '$NOT_OK:$0:$'",
+      "@hook",
+      "done '$OK'"
     ],
     "data" : [
       "data '$OK'",
       "done"
     ],
-    "size" : [
-      "data '$OK'",
-      "size",
-      "done"
-    ],
-    "call" : [
-      "call 'done'",
-      "done"
-    ],
-    "with" : [
-      "data '100'",
-      "poke 'testVarA'",
-      "poke 'testVarB'",
-      "with 'testVarA' 'hash'",
-      "with 'testVarB' ['math','+100'] ['math','+50']",
-      "done '$ $testVarA $testVarB'"
-    ],
-    "each" : [
-      "each [0,1,2,3,4] 'each_test'",
-      "done"
-    ],
-    "each_test" : [
-      "done '${.key}:${.value}:$OK'"
-    ],
-    "true" : [
-      "data 1",
-      "true '=1' @okay",
-      "done 'FAIL'",
-      "@okay",
-      "done 'OK'"
-    ],
-    "flow" : [
-      "data 'OK'",
-      "flow {'no':1,'OK':2,'neither':1} 3",
-      "done 'FAIL'",
-      "done 'OK'",
-      "done 'FAIL'"
-    ],
-    "jump" : [
-    ],
-    "have" : [
-    ],
-    "save" : [
-      "data 'OK'",
-      "save 'testfile'",
-      "have",
-      "true '=48' @okay",
-      "done 'FAIL'",
-      "@okay",
-      "done 'OK'"
-    ],
-    "load" : [
-      "data 'OK'",
-      "save 'testfile'",
-      "load 'testfile'",
-      "done"
-    ],
-    "push" : [
-      "data ['A','B','C','D','E','F']",
-      "#push '*',[-1,1,3]",
-      "#push 'Yolo',[0,3,-2]",
-      "push '*' 0",
-      "done"
-    ],
-    "fuse" : [
-      "data ['A','B']",
-      "fuse ['C','D']",
-      "done"
-    ],
-    "drop" : [
-      "data 'testmenow'",
-      "drop -1,-1",
-      "done"
-    ],
-    "excl" : [
-      "data ['a','b','c','d','c','e','f']",
-      "excl ['c','b','a']",
-      "done"
-    ],
-    "filt" : [
-      "data ['a','b','c','d','c','e','f']",
-      "filt ['c','b']",
-      "done"
-    ],
-    "uniq" : [
-      "data ['a','b','c','c','d','d','c','e','f','g','g','g','g','h']",
-      "uniq",
-      "done"
-    ],
-    "many" : [
-      "data ['a','b','c','d','c','e','f']",
-      "many",
-      "done"
-    ],
-    "peek" : [
-      "peek 'proc::1'",
-      "done"
-    ],
-    "keys" : [
-      "keys",
+
+    "test" : [
+      "qrtz",
+      "excl [test,subtest]",
+      "each $ subtest",
       "done"
     ],
 
-    "X" : [
-      "data 'placeholder'"
+    "subtest":[
+      "hook @fail",
+      "#logs '${.value}'",
+      "call '${.value}'",
+      "done $OK",
+      "@fail",
+      "done $NOT_OK::$0:$"
     ]
+
+
   },
   "router":{
     "_hidden" : true,
-    "done"  : "Test done()",
-    "fail"  : "Test fail()",
-    "data"  : "Test data()",
-    "size"  : "Test size()",
-    "call"  : "Test call()",
-    "with"  : "Test with()",
-    "each"  : "Test each()",
-    "true"  : "Test true()",
-    "flow"  : "Test flow()",
-    "save"  : "Test save()",
-    "load"  : "Test load()",
-    "push"  : "Test push()",
-    "fuse"  : "Test fuse()",
-    "drop"  : "Test drop()",
-    "excl"  : "Test excl()",
-    "filt"  : "Test filt()",
-    "uniq"  : "Test uniq()",
-    "many"  : "Test many()",
-    "peek"  : "Test peek()",
-    "keys"  : "Test keys()",
-    "Y" : "Test ",
-    "X" : "Test "
+    "_ellipsis":true
   }
 }
