@@ -6,9 +6,9 @@ let menuItems = {
   'REST API': './api',
   'hybrix-lib.js': './hybrix-lib.js',
   'hybrixd': './hybrixd',
-  'cli': '/api/help/cli',
+  'cli': './cli',
   'featured-products': './featured-products'
-//  'qrtz': '/api/help/qrtz'
+//  'qrtz': './qrtz'
 };
 
 function display (result) {
