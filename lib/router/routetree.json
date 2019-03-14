@@ -78,6 +78,30 @@
           "_this": "Retrieve the details belonging to a transaction ID."
         }
       },
+      "attachment":{
+        "_help" : "Get transaction attachment data.",
+        "_ref" : {
+          "_list" : "transaction_id",
+          "_sample" : "$TRANSACTION_ID",
+          "_this": "Retrieve the attachment data belonging to a transaction ID."
+        }
+      },
+      "message":{
+        "_help" : "Get transaction attachment data, and decode its message.",
+        "_ref" : {
+          "_list" : "transaction_id",
+          "_sample" : "$TRANSACTION_ID",
+          "_this": "The message belonging to a transaction ID is decoded."
+        }
+      },
+      "status":{
+        "_help" : "Get status hash of an address. When the hash changes, a transaction has gone in or out.",
+        "_ref" : {
+          "_list" : "address",
+          "_sample" : "$ADDRESS",
+          "_this": "Retrieve the status hash belonging to the history of an address."
+        }
+      },
       "peers":{
         "_this": "Get a list of asset protocol connectivity peers",
         "_response": {"error":0,"info":"Process data.","id":"1519830189432904","progress":1,"started":1519830189432,"stopped":1519830189437,"data":["001.peer","002.peer","003.peer"]}

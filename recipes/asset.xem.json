@@ -8,8 +8,8 @@
   "fee":0.05,
   "fee-mosaic":0.9,
   "fee-symbol":"xem",
-  "Zhost":["http://bigalice3.nem.ninja:7890","http://199.217.118.114:7890","http://62.109.20.138:7890","http://plum.supernode.me:7890","http://103.27.76.170:7890","http://supernode.host:7890","http://supernode.nem-cloud.info:7890","http://nano.innermedia.net:7890","http://ninja2016.dynu.com:7890","http://shibuya.supernode.me:7890","http://supernode.nem-blockchain.solutions:7890","http://pattaya1node.ddns.net:7890","http://nsm.supernode.me:7890","http://esposium.de:7890","http://nem.homeip.net:7890","http://go.nem.ninja:7890"],
-  "host":["http://bigalice3.nem.ninja:7890"],
+  "host":["http://bigalice3.nem.ninja:7890","http://104.251.212.131:7890","http://45.124.65.125:7890","http://185.53.131.101:7890"],
+  "hostOLD":["http://bigalice3.nem.ninja:7890","http://199.217.118.114:7890","http://62.109.20.138:7890","http://plum.supernode.me:7890","http://103.27.76.170:7890","http://supernode.host:7890","http://supernode.nem-cloud.info:7890","http://nano.innermedia.net:7890","http://ninja2016.dynu.com:7890","http://shibuya.supernode.me:7890","http://supernode.nem-blockchain.solutions:7890","http://pattaya1node.ddns.net:7890","http://nsm.supernode.me:7890","http://esposium.de:7890","http://nem.homeip.net:7890","http://go.nem.ninja:7890"],
   "cache":1000,
   "throttle":5,
   "quartz":{
@@ -19,10 +19,6 @@
       "#curl('asset://$symbol','/heartbeat','GET')",
       "#logs(1,'module $symbol: '+(data && typeof data.message!=='undefined' && data.message==='ok'?'connected':'failed connection')+' to host [$host]')",
       "done"
-    ],
-    "status" : [
-      "curl('asset://$symbol','/heartbeat','GET')",
-      "stop(0,{module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:null,version:null})"
     ],
     "unspent" : [
       "data '$contract'",
@@ -69,7 +65,38 @@
     "factor" : [
       "pass('$factor')"
     ],
-    "history": [
+    "transaction" : [
+      "curl asset://$symbol /transaction/get?hash=$1 GET {'content-type':'application/json'}",
+      "poke 'unformattedDataArray'",
+      "tran {id:'.meta.hash.data',amount:'.transaction.amount',fee:'.transaction.fee',target:'.transaction.recipient',source:'.transaction.signer',data:'.transaction.message'} 1 @badObject",
+      "poke 'reformatObj'",
+      "with 'reformatFee' ['data',$reformatObj] ['tran','.fee'] ['atom']",
+      "with 'reformatAmount' ['data',$reformatObj] ['tran','.amount'] ['atom']",
+      "with 'reformatId' ['data',$reformatObj] ['tran','.id']",
+      "with 'reformatTarget' ['data',$reformatObj] ['tran','.target'] ['case','upper'] ['push','-',[6,12,18,24,30,36]]",
+      "with 'reformatSource' ['data','FIXME!']",
+      "peek 'unformattedDataArray'",
+      "tran {id:'$reformatId', timestamp:'.transaction.timeStamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'$fee-symbol', source:'$reformatSource', target:'$reformatTarget'} 1 @badObject",
+      "done",
+      "@badObject",
+      "done null"
+    ],
+    "attachment" : [
+      "curl asset://$symbol /transaction/get?hash=$1 GET {'content-type':'application/json'}",
+      "poke 'unformattedDataArray'",
+      "tran {id:'.meta.hash.data',amount:'.transaction.amount',fee:'.transaction.fee',target:'.transaction.recipient',source:'.transaction.signer',data:'.transaction.message'} 1 @badObject",
+      "poke 'reformatObj'",
+      "with 'reformatData' ['data',$reformatObj] ['tran','.data',1,3] ['jstr'] ['flow','{}',1,2] ['data',''] ['done']",
+      "done $reformatData"
+    ],
+    "message" : [
+      "call attachment/$1",
+      "tran .payload 2 1",
+      "done ''",
+      "code hex utf8",
+      "done"
+    ],
+    "history" : [
       "data []",
       "poke 'resultArray'",
       "data '$1'",
@@ -81,41 +108,40 @@
       "poke 'loopVar' 0",
       "@countLoop",
       "data '$address$hash'",
-      "curl asset://$symbol /account/transfers/all?address=$address GET {'content-type':'application/json'}",
+      "curl asset://$symbol /account/transfers/all?address=$address$hash GET {'content-type':'application/json'}",
       "tran '.data' 1 @badResponse",
-      "each $ 'format_tran'",
+      "each $ 'extract_hash_and_time'",
+      "excl null",
       "poke 'tempResultArray'",
-      "done",
       "pick -1",
-      "tran '.id' 1 @badResponse",
+      "tran '.hash' 1 @badResponse",
       "push '&hash=' 0",
       "poke 'hash'",
       "with 'resultArray' ['fuse',$tempResultArray]",
       "loop @countLoop 'loopVar' '<$pages'",
       "@noNewData",
       "peek 'resultArray'",
-      "sort ['.timestamp','num','desc']",
-      "take $offset $count",
-      "done",
+      "sort ['.time','num','desc']",
+      "tran '[].hash'",
+      "jump @allDone",
       "@badResponse",
-      "fail 'Bad response from XEM node!'"
+      "fail 'Could not query history! Bad response from XEM node!'",
+      "@allDone"
     ],
-    "format_tran": [
+    "extract_hash_and_time" : [
       "data ${.value}",
-      "poke 'unformattedDataArray'",
-      "tran {id:'.meta.hash.data',amount:'.transaction.amount',fee:'.transaction.fee',target:'.transaction.recipient',data:'.transaction.message'} 1 @badObject",
-      "poke 'reformatObj'",
-      "with 'reformatFee' ['data',$reformatObj] ['tran','.fee'] ['atom']",
-      "with 'reformatAmount' ['data',$reformatObj] ['tran','.amount'] ['atom']",
-      "with 'reformatId' ['data',$reformatObj] ['tran','.id']",
-      "with 'reformatData' ['data',$reformatObj] ['tran','.data',1,3] ['jstr'] ['flow','{}',1,2] ['data',''] ['done']",
-      "with 'reformatTarget' ['data',$reformatObj] ['tran','.target'] ['case','upper'] ['push','-',[6,12,18,24,30,36]]",
-      "with 'reformatSource' ['data','$parent::address'] ['case','upper'] ['push','-',[6,12,18,24,30,36]] ['repl','--','-']",
-      "peek 'unformattedDataArray'",
-      "tran {id:'$reformatId', timestamp:'.transaction.timeStamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'$fee-symbol', source:'$reformatSource', target:'$reformatTarget', data:'$reformatData'} 1 @badObject",
+      "tran {hash:'.meta.hash.data', time:'.transaction.timeStamp'} 1 @badObject",
       "done",
       "@badObject",
       "done null"
+    ],
+    "status" : [
+      "call history/$1/3/0",
+      "join",
+      "hash sha256",
+      "done",
+      "@badResponse",
+      "fail 'Could not query status! Bad response from XEM node!'"
     ],
     "contract" : [
       "data '$contract'",
@@ -132,7 +158,7 @@
       "pass()"
     ],
     "sample" : [
-      "stop(0,{address:'NCKZD7-JGDLND-IVVPH6-U2PG2Q-KD3PX3-FX4CPZ-MF2A',transaction:'f857080798efa465f2453caface0c9338d3ced0d09c58a0d9035075f034ea460'})"
+      "stop(0,{address:'NCKZD7-JGDLND-IVVPH6-U2PG2Q-KD3PX3-FX4CPZ-MF2A',transaction:'215b900475b13f724acc9fbe249bb9ffd31451c2352ed51b9637143cde4c260a'})"
     ]
   }
 }
