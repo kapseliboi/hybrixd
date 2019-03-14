@@ -175,7 +175,11 @@
       "qrtz",
       "excl [test,subtest]",
       "each $ subtest",
-      "done"
+      "excl $OK",
+      "size",
+      "flow 0 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
     ],
 
     "subtest":[
