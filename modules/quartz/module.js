@@ -38,11 +38,10 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
     subprocesses.push('data {id:"${.id}",timestamp:${.timestamp},amount:"$formAmount",symbol:"${.symbol}",fee:"$formFee",fee-symbol:"${.fee-symbol}",source:"${.source}",target:"${.target}",data:"${.data}"}');
     subprocesses.push('done');
   }
-  if (command === 'history') { // always sort history values in reverse order
+  if (command === 'history') { // take into account the offset and record count
     subprocesses.unshift('vars {"count":"12","offset":"0"}');
     subprocesses.unshift('poke "offset" "$3"');
     subprocesses.unshift('poke "count" "$2"');
-    subprocesses.push('sort [".timestamp","num","desc"]');
     subprocesses.push('take $offset $count');
     subprocesses.push('done');
   }

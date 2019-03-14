@@ -3,7 +3,7 @@
   "name":"Electrum TCP connector",
   "module":"quartz",
   "cache":1000,
-  "throttle":10,
+  "throttle":0.5,
   "timeout":24000,
   "longtimeout":60000,
   "confirmsRequired":6,
@@ -61,19 +61,19 @@
       "done()"
     ],
     "balance" : [
-      "time($timeout)",
+      "time $timeout",
       "data {'jsonrpc':'2.0','id':0,'method':'blockchain.address.get_balance','params':['$1']}",
-      "curl('asset://$symbol')",
-      "tran({confirmed:'.result.confirmed',unconfirmed:'.result.unconfirmed'},3,1)",
-      "data(0)",
-      "jump(3)",
-      "time($cache)",
-      "math('${.confirmed}+${.unconfirmed}')",
-      "atom()",
-      "pass()"
+      "curl 'asset://$symbol'",
+      "tran {confirmed:'.result.confirmed',unconfirmed:'.result.unconfirmed'} 3 1",
+      "data 0",
+      "jump 3",
+      "time $cache",
+      "math '${.confirmed}+${.unconfirmed}'",
+      "atom",
+      "pass"
     ],
     "push" : [
-      "time($timeout)",
+      "time $timeout",
       "data {'jsonrpc':'2.0','id':0,'method':'blockchain.transaction.broadcast','params':['$1']}",
       "curl('asset://$symbol')",
       "tran('.result',4,1)",
@@ -85,35 +85,66 @@
     "factor" : [
       "pass('$factor')"
     ],
-    "transaction" : [
-      "time $timeout",
+    "transactionData" : [
+      "time $longtimeout",
       "data {jsonrpc:'2.0',id:1,method:'blockchain.transaction.get',params:['$1',true]}",
-      "curl 'asset://$symbol' POST {timeout:$longtimeout}",
-      "tran .result 2 1",
-      "fail 'Cannot get transaction data!'",
-      "tran {id:'.txid', timestamp:'.time', amount:'.vout[0].value', symbol:'$symbol', fee:'$local::fee', 'fee-symbol':'$symbol', source:'.vout[0].scriptPubKey.addresses[0]', target:'.vout[0].scriptPubKey.addresses[0]', data:'NA' } 2 1",
-      "fail 'Cannot interpret transaction data!'"
+      "curl 'asset://$symbol' 'POST'  {} {retry:15,timeout:$timeout}",
+      "tran .result",
+      "done"
     ],
-    "sample" : [
-      "done {address:'1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX',transaction:'2c0832c153cf33327dae0e95a3bc39f4b02ae887725a32c07b1be47a2faffc55'}"
+    "transaction" : [
+      "time $longtimeout",
+      "call transactionData/$1",
+      "tran { id:'.txid', timestamp:'.time', amount:'.vout[0].value', symbol:'$symbol', fee:'$local::fee', 'fee-symbol':'$symbol', source:'.vout[0].scriptPubKey.addresses[0]', target:'.vout[0].scriptPubKey.addresses[0]' } 1 2",
+      "done",
+      "fail 'Cannot get transaction data!'"
+    ],
+    "attachment" : [
+      "time $longtimeout",
+      "call transactionData/$1",
+      "tran .vout 1 @empty",
+      "jstr",
+      "splt 'OP_RETURN '",
+      "pick 1",
+      "splt '\"'",
+      "tran '[0]' 2 @empty",
+      "@empty",
+      "data ''",
+      "done"
     ],
     "history" : [
       "time $longtimeout",
       "data {jsonrpc:'2.0',id:6,method:'blockchain.address.get_history',params:['$1']}",
-      "curl 'asset://$symbol' 'POST' {timeout:$timeout}",
+      "curl 'asset://$symbol' 'POST' {} {retry:15,timeout:$timeout,cache:5000}",
       "tran '.result' 2 1",
-      "fail 'No result!'",
-      "each $ 'sub_history'"
+      "fail 'Could not query history!'",
+      "sort ['.height','num','desc']",
+      "tran '[].tx_hash'"
     ],
-    "sub_history" : [
-      "time $longtimeout",
-      "data ${.value}",
-      "tran .tx_hash @hashFound",
-      "done null",
-      "@hashFound",
-      "poke itemvalue",
-      "call 'transaction/$'",
-      "done"
+    "status" : [
+      "time $timeout",
+      "data {jsonrpc:'2.0',id:6,method:'blockchain.address.subscribe',params:['$1']}",
+      "curl 'asset://$symbol' 'POST' {} {retry:15,timeout:$timeout,cache:1000}",
+      "tran '.result' 2 @failStatus",
+      "data null",
+      "poke firstHash",
+      "wait 2000",
+      "data {jsonrpc:'2.0',id:6,method:'blockchain.address.subscribe',params:['$1']}",
+      "curl 'asset://$symbol' 'POST' {} {retry:15,timeout:$timeout,cache:1000}",
+      "tran '.result' 2 @failStatus",
+      "poke secondHash",
+      "excl $firstHash 3 1",
+      "data ['$secondHash']",
+      "jump 2",
+      "data ['$firstHash','$secondHash']",
+      "join",
+      "hash sha256",
+      "done",
+      "@failStatus",
+      "fail 'Cannot get status information!'"
+    ],
+    "sample" : [
+      "done {address:'1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX',transaction:'2c0832c153cf33327dae0e95a3bc39f4b02ae887725a32c07b1be47a2faffc55'}"
     ],
     "contract" : [
       "done $contract"

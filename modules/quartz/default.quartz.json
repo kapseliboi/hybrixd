@@ -21,11 +21,22 @@
     "transaction" : [
       "fail 'Not yet implemented!'"
     ],
+    "attachment" : [
+      "fail 'Not yet implemented!'"
+    ],
+    "message" : [
+      "call attachment/$1",
+      "code hex utf8",
+      "done"
+    ],
     "contract" : [
       "done '$contract'"
     ],
     "fee" : [
       "data '$fee'"
+    ],
+    "status" : [
+      "fail 'Not yet implemented!'"
     ],
     "fee-factor" : [
       "call 'fee-symbol'",
