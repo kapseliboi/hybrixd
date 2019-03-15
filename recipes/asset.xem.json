@@ -13,13 +13,6 @@
   "cache":1000,
   "throttle":5,
   "quartz":{
-    "init" : [
-      "#data '$contract'",
-      "#flow('undefined',1,3)",
-      "#curl('asset://$symbol','/heartbeat','GET')",
-      "#logs(1,'module $symbol: '+(data && typeof data.message!=='undefined' && data.message==='ok'?'connected':'failed connection')+' to host [$host]')",
-      "done"
-    ],
     "unspent" : [
       "data '$contract'",
       "flow('undefined',1,2)",
@@ -76,7 +69,7 @@
       "with 'reformatTarget' ['data',$reformatObj] ['tran','.target'] ['case','upper'] ['push','-',[6,12,18,24,30,36]]",
       "with 'reformatSource' ['data','FIXME!']",
       "peek 'unformattedDataArray'",
-      "tran {id:'$reformatId', timestamp:'.transaction.timeStamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'$fee-symbol', source:'$reformatSource', target:'$reformatTarget'} 1 @badObject",
+      "tran {id:'$reformatId', timestamp:'.transaction.timeStamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'$fee-symbol', source:'$reformatSource', target:'$reformatTarget', confirmed:true} 1 @badObject",
       "done",
       "@badObject",
       "done null"
@@ -86,7 +79,7 @@
       "poke 'unformattedDataArray'",
       "tran {id:'.meta.hash.data',amount:'.transaction.amount',fee:'.transaction.fee',target:'.transaction.recipient',source:'.transaction.signer',data:'.transaction.message'} 1 @badObject",
       "poke 'reformatObj'",
-      "with 'reformatData' ['data',$reformatObj] ['tran','.data',1,3] ['jstr'] ['flow','{}',1,2] ['data',''] ['done']",
+      "with 'reformatData' ['data',$reformatObj] ['tran','.data',1,3] ['jstr'] ['flow','{}',1,2] ['data',null] ['done']",
       "done $reformatData"
     ],
     "message" : [
@@ -134,14 +127,6 @@
       "done",
       "@badObject",
       "done null"
-    ],
-    "status" : [
-      "call history/$1/3/0",
-      "join",
-      "hash sha256",
-      "done",
-      "@badResponse",
-      "fail 'Could not query status! Bad response from XEM node!'"
     ],
     "contract" : [
       "data '$contract'",

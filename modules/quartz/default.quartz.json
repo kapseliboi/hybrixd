@@ -3,9 +3,6 @@
     "peers" : [
       "fail 'Not yet implemented!'"
     ],
-    "unspent" : [
-      "fail 'Not yet implemented!'"
-    ],
     "balance" : [
       "fail 'Not yet implemented!'"
     ],
@@ -24,6 +21,12 @@
     "attachment" : [
       "fail 'Not yet implemented!'"
     ],
+    "init" : [
+      "done"
+    ],
+    "unspent" : [
+      "done {'unspents':[],'change':'0.00000000'}"
+    ],
     "message" : [
       "call attachment/$1",
       "code hex utf8",
@@ -36,7 +39,9 @@
       "data '$fee'"
     ],
     "status" : [
-      "fail 'Not yet implemented!'"
+      "call history/$1/3/0",
+      "join",
+      "hash sha256"
     ],
     "fee-factor" : [
       "call 'fee-symbol'",
