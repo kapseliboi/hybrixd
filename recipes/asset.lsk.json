@@ -6,49 +6,59 @@
   "addressRegex":"^\\d{19}L$",
   "factor":8,
   "fee":"0.10000000",
+  "fee-symbol":"lsk",
+  "contract":null,
   "host":["https://hub21.lisk.io","https://hub22.lisk.io","https://hub23.lisk.io","https://hub24.lisk.io","https://hub25.lisk.io","https://hub26.lisk.io","https://hub27.lisk.io","https://hub28.lisk.io","https://hub31.lisk.io","https://hub32.lisk.io","https://hub33.lisk.io","https://hub34.lisk.io","https://hub35.lisk.io","https://hub36.lisk.io","https://hub37.lisk.io","https://hub38.lisk.io"],
   "cache":15000,
   "throttle":5,
   "quartz":{
-    "status" : [
-      "curl('asset://$symbol','/api/node/status','GET',{Accept:'application/json','Content-Type':'application/json'})",
-      "test($,1,2)",
-      "stop(0,{module:'$symbol',synced:!data.data.syncing,blocks:data.data.height,fee:$fee,supply:null,difficulty:null,testmode:null,version:null})",
-      "stop(1,'No result!')"
-    ],
-    "unspent" : [
-      "pass({'unspents':[],'change':'0.00000000'})"
-    ],
     "balance" : [
-      "curl('asset://$symbol','/api/accounts?address=$1&limit=1&offset=0&sort=balance:asc','GET',{Accept:'application/json','Content-Type':'application/json'})",
-      "tran('[0].unconfirmedBalance',2,1)",
-      "stop(0,'0.00000000')",
-      "time($cache)",
-      "form",
-      "pass"
+      "curl asset://$symbol /api/accounts?address=$1&limit=1&offset=0&sort=balance:asc GET {Accept:'application/json','Content-Type':'application/json'}",
+      "tran '[0].unconfirmedBalance' 2 1",
+      "data 0"
     ],
-
     "push" : [
       "data '$1'",
-      "curl('asset://$symbol','/api/transactions','POST', {Accept:'application/json','Content-Type':'application/json', Accept: 'application/json'})"
-    ],
-    "factor" : [
-      "pass('$factor')"
-    ],
-    "transaction" : [
-      "curl('asset://$symbol','/api/transactions?id=$1&limit=1&offset=0','GET',{Accept:'application/json','Content-Type':'application/json'})"
-    ],
-    "sample" : [
-      "done {address:'5920921428156130553L',transaction:'12391912764023208573'}"
+      "curl asset://$symbol /api/transactions POST {Accept:'application/json','Content-Type':'application/json', Accept: 'application/json'}",
+      "done"
     ],
     "history" : [
-      "curl('asset://$symbol','/api/transactions?recipientId=$1','GET',{Accept:'application/json','Content-Type':'application/json'})"
+      "curl asset://$symbol /api/transactions?recipientId=$1 GET {Accept:'application/json','Content-Type':'application/json'}",
+      "tran .data 2 1",
+      "fail 'Cannot get transaction history!'",
+      "sort ['.height',num,desc]",
+      "tran '[].id'"
     ],
-    "contract" : [
-      "pass('undefined')"
+    "transactionData" : [
+      "curl asset://$symbol /api/transactions?id=$1&limit=1&offset=0 GET {Accept:'application/json','Content-Type':'application/json'}",
+      "tran .data 2 1",
+      "fail 'Cannot get transaction data!'",
+      "pick",
+      "done"
     ],
-    "fee" : [
-      "pass('$fee')"
+    "transaction" : [
+      "call transactionData/$1",
+      "poke reformatObj",
+      "with reformatFee [data,$reformatObj] [tran,'.fee'] [atom]",
+      "with reformatAmount [data,$reformatObj] [tran,'.amount'] [atom]",
+      "tran { id:'.id', timestamp:'.timestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.senderId', target:'.recipientId', confirmed:'.confirmations' } 2 1",
+      "fail 'Cannot get transaction data!'",
+      "done"
+    ],
+    "attachment" : [
+      "call transactionData/$1",
+      "tran .asset 2 1",
+      "data null",
+      "done"
+    ],
+    "message" : [
+      "call attachment/$1",
+      "tran .data 2 1",
+      "done ''",
+      "done"
+    ],
+    "sample" : [
+      "done {address:'5920921428156130553L',transaction:'7756785777154630495'}"
     ]
   }
 }

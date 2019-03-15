@@ -45,6 +45,10 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
     subprocesses.push('take $offset $count');
     subprocesses.push('done');
   }
+  if (command === 'status') { // significantly shorten the status hash to save bandwidth
+    subprocesses.push('take 24 16');    
+    subprocesses.push('done');
+  }
 }
 
 // standard functions of an asset store results in a process superglobal -> global.hybrixd.process[processID]
