@@ -11,7 +11,7 @@ exports.push = push;
 exports.history = history;
 exports.transaction = transaction;
 
-const filePath = '../../test.mockchain.json';
+const filePath = './test.mockchain.json';
 
 function mine (proc, data) {
   let mockchain;
