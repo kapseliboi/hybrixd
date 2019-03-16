@@ -21,7 +21,6 @@
     "transaction" : ["func 'transaction'"]
   },
   "router" : {
-    "_hidden":true,
     "balance" : {
       "_ref" : {
         "_list" : "contract",
