@@ -15,50 +15,49 @@
   "quartz":{
     "peers" : [
       "data {'jsonrpc':'2.0','id':0,'method':'server.peers.subscribe','params':[]}",
-      "curl 'asset://$symbol','','',{},{'timeout':$longtimeout}",
+      "curl asset://$symbol POST {} {'timeout':$longtimeout}",
       "tran '.result' 2 1",
       "data []",
       "done"
     ],
     "unspent" : [
-      "poke('inputval','99999999999999999999')",
-      "test($2,1,2)",
-      "poke('inputval','$2')",
-      "data('$1')",
-      "code('base58','hex')",
-      "drop($trimAddrHexL,$trimAddrHexR)",
+      "poke inputval '$2'",
+      "vars { inputval:'99999999999999999999' }",
+      "data '$1'",
+      "code base58 hex",
+      "drop $trimAddrHexL $trimAddrHexR",
       "data '$utxo_unspent_prefix.${data}.$utxo_unspent_suffix'",
       "excl '.'",
-      "poke('script')",
-      "time($longtimeout)",
+      "poke script",
+      "time $longtimeout",
       "data {'jsonrpc':'2.0','id':0,'method':'blockchain.address.listunspent','params':['$1']}",
-      "curl('asset://$symbol','','',{},{'timeout':$longtimeout})",
-      "tran('.result',2,1)",
-      "fail('Bad input unspents from Electrum!')",
-      "each($,'unspent_tran')",
-      "sort('.amount')",
-      "scan('cnt<($inputval+val.amount)','+val.amount')",
-      "poke('selected')",
-      "tran('[].amount',2,1)",
-      "data([])",
-      "math('+')",
-      "math('-$inputval')",
-      "ship(2,2,1)",
-      "data('0')",
-      "form()",
-      "done({unspents:$selected,change:$data})"
+      "curl asset://$symbol POST {} {'timeout':$longtimeout}",
+      "tran '.result' 2 1",
+      "fail 'Bad input unspents from Electrum!'",
+      "each $ 'unspent_tran'",
+      "sort '.amount'",
+      "scan 'cnt<($inputval+val.amount)' '+val.amount'",
+      "poke 'selected'",
+      "tran '[].amount' 2 1",
+      "data []",
+      "math '+'",
+      "math '-$inputval'",
+      "ship 2 2 1",
+      "data 0",
+      "form",
+      "done {unspents:$selected,change:$}"
     ],
     "unspent_tran" : [
-      "data(${.value})",
-      "poke('unspent')",
-      "tran('.value',2,1)",
-      "data(0)",
-      "atom()",
-      "poke('amount')",
-      "peek('unspent')",
-      "tran({script:'$parent::script',amount:'$amount',txid:'.tx_hash',txn:'.tx_pos'},2,1)",
-      "fail('Bad input unspents from Electrum!')",
-      "done()"
+      "data ${.value}",
+      "poke unspent",
+      "tran '.value' 2 1",
+      "data 0",
+      "atom",
+      "poke amount",
+      "peek unspent",
+      "tran {script:'$parent::script',amount:'$amount',txid:'.tx_hash',txn:'.tx_pos'} 2 1",
+      "fail 'Bad input unspents from Electrum!'",
+      "done"
     ],
     "balance" : [
       "time $timeout",
@@ -69,35 +68,32 @@
       "jump 3",
       "time $cache",
       "math '${.confirmed}+${.unconfirmed}'",
-      "atom",
-      "pass"
+      "atom"
     ],
     "push" : [
       "time $timeout",
       "data {'jsonrpc':'2.0','id':0,'method':'blockchain.transaction.broadcast','params':['$1']}",
-      "curl('asset://$symbol')",
-      "tran('.result',4,1)",
+      "curl asset://$symbol",
+      "tran '.result' 4 1",
       "tran('.error',1,2)",
-      "fail(${.message})",
-      "fail('Bad transaction result!')",
-      "done()"
-    ],
-    "factor" : [
-      "pass('$factor')"
+      "fail ${.message}",
+      "fail 'Bad transaction result!'",
+      "done"
     ],
     "transactionData" : [
       "time $longtimeout",
       "data {jsonrpc:'2.0',id:1,method:'blockchain.transaction.get',params:['$1',true]}",
       "curl 'asset://$symbol' 'POST'  {} {retry:15,timeout:$timeout}",
-      "tran .result",
+      "tran .result 2 1",
+      "fail 'Could not get transaction data!'",
       "done"
     ],
     "transaction" : [
       "time $longtimeout",
       "call transactionData/$1",
-      "tran { id:'.txid', timestamp:'.time', amount:'.vout[0].value', symbol:'$symbol', fee:'$local::fee', 'fee-symbol':'$symbol', source:'.vout[0].scriptPubKey.addresses[0]', target:'.vout[0].scriptPubKey.addresses[0]' } 1 2",
-      "done",
-      "fail 'Cannot get transaction data!'"
+      "tran { id:'.txid', timestamp:'.time', amount:'.vout[0].value', symbol:'$symbol', fee:'$local::fee', 'fee-symbol':'$symbol', source:'.vout[0].scriptPubKey.addresses[0]', target:'.vout[0].scriptPubKey.addresses[0]', confirmed:'.confirmations' } 2 1",
+      "fail 'Cannot read transaction data!'",
+      "done"
     ],
     "attachment" : [
       "time $longtimeout",
@@ -109,9 +105,15 @@
       "splt '\"'",
       "tran '[0]' 2 @empty",
       "@empty",
-      "data ''",
+      "data null",
       "done"
     ],
+    "message" : [
+      "time $longtimeout",
+      "call attachment/$1",
+      "code hex utf8",
+      "done"
+    ],    
     "history" : [
       "time $longtimeout",
       "data {jsonrpc:'2.0',id:6,method:'blockchain.address.get_history',params:['$1']}",
@@ -139,39 +141,36 @@
       "data ['$firstHash','$secondHash']",
       "join",
       "hash sha256",
-      "done",
+      "jump @done",
       "@failStatus",
-      "fail 'Cannot get status information!'"
+      "fail 'Cannot get status information!'",
+      "@done"
     ],
     "sample" : [
       "done {address:'1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX',transaction:'2c0832c153cf33327dae0e95a3bc39f4b02ae887725a32c07b1be47a2faffc55'}"
     ],
-    "contract" : [
-      "done $contract"
-    ],
     "fee" : [
-      "hook('$fee',0)",
-      "peek('local::fee')",
-      "done()"
+      "hook '$fee' 0",
+      "peek local::fee"
     ],
     "init" : [
       "data '$symbol'",
-      "flow('undefined',2)",
-      "call('getFee')"
+      "flow 'undefined' 2",
+      "call 'getFee'"
     ],
     "cron" : [
       "data '$symbol'",
-      "flow('undefined',2)",
-      "call('getFee')"
+      "flow 'undefined' 2",
+      "call 'getFee'"
     ],
     "getFee" : [
-      "time($timeout)",
+      "time $timeout",
       "data {'jsonrpc':'2.0','id': 1, 'method': 'blockchain.estimatefee', 'params': ['$confirmsRequired'] }",
-      "curl('asset://$symbol')",
-      "tran('.result',1,4)",
-      "ship(1,3,3)",
-      "poke('local::fee')",
-      "done()"
+      "curl asset://$symbol",
+      "tran '.result' 1 4",
+      "ship 1 3 3",
+      "poke local::fee",
+      "done"
     ]
   }
 }
