@@ -49,6 +49,7 @@
             <li>Handle all client side operations securely</li>
             <li>Encrypted channels</li>
           </ul>
+          <b>Live example</b>
 
           <pre id="exampleHelloWorld" style="display: none;">
 hybrix.sequential([
@@ -62,7 +63,7 @@ hybrix.sequential([
 );</pre>
 
           <div class="try">
-            <select id="selectExample" onchange="var s = document.getElementById('selectExample');codeMirrorEditor.setValue(document.getElementById(s[s.selectedIndex].value).innerHTML.replace('http://localhost:1111',window.location.href.split(`/help`)[0]));">
+            <select style="display:none;" id="selectExample" onchange="var s = document.getElementById('selectExample');codeMirrorEditor.setValue(document.getElementById(s[s.selectedIndex].value).innerHTML.replace('http://localhost:1111',window.location.href.split(`/help`)[0]));">
               <option value="exampleHelloWorld">Hello World</option>
             </select>
 
