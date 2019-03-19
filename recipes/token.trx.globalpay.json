@@ -2,5 +2,6 @@
   "symbol":"trx.gameglobalpay",
   "name":"TronGameGlobalPay",
   "import":"trx",
-  "contract": "TronGameGlobalPay"
+  "contract":"1001761",
+  "originator":"TUdojgj5hychXjPQp339N2NBQPFnymDG36"
 }
