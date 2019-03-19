@@ -21,11 +21,10 @@
     "transaction" : ["func 'transaction'"]
   },
   "router" : {
-    "_hidden":true,
     "balance" : {
       "_ref" : {
         "_list" : "contract",
-        "_sample": "dummy",
+        "_sample": "btc",
         "_ref" : {
           "_list" : "address",
           "_sample": "123",
@@ -49,7 +48,7 @@
     "history" : {
       "_ref" : {
         "_list" : "symbol",
-        "_sample": "dummy",
+        "_sample": "btc",
         "_ref" : {
           "_list" : "address",
           "_sample": "123",
@@ -60,7 +59,7 @@
     "mine" : {
       "_ref" : {
         "_list" : "contract",
-        "_sample": "dummy",
+        "_sample": "btc",
         "_ref" : {
           "_list" : "address",
           "_sample": "123",

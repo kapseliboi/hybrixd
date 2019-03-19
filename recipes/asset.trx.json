@@ -6,7 +6,7 @@
   "addressRegex":"^T\\d{33}$",
   "factor":6,
   "fee":0,
-  "contract": "TRX",
+  "contract": null,
   "host":["https://api.trongrid.io"],
   "cache":10000,
   "throttle":10,
@@ -23,7 +23,7 @@
       "drop -8",
       "data '{address: \"$data\"}'",
       "curl 'asset://$symbol' '/walletsolidity/getaccount' 'POST'",
-      "tran '.balance' @end @fail",
+      "tran '.balance' @done @empty",
       "@tokenBalance",
       "curl 'https://apilist.tronscan.org' '/api/account?address=$1' 'GET'",
       "poke 'result'",
@@ -35,16 +35,12 @@
       "done",
       "@trc10tokens",
       "peek 'result'",
-      "logs",
       "tran '.balances' 1 1",
-      "find {name:'$contract'} 1 @fail",
-      "tran '[0].balance' 1 @ fail",
-      "atom",
-      "done",
-      "@fail",
-      "fail 'Not found'",
-      "@end",
-      "atom"
+      "find {name:'$contract'} 1 @empty",
+      "tran '[0].balance' @done @empty",
+      "@empty",
+      "data 0",
+      "@done"
     ],
     "push" : [
       "data '$1'",
@@ -64,18 +60,6 @@
       "@failDetails",
       "pass \"Couldn't retrieve transaction ID\"",
       "done"
-    ],
-    "factor" : [
-      "pass('$factor')"
-    ],
-    "contract" : [
-      "pass('')"
-    ],
-    "fee" : [
-      "pass('$fee')"
-    ],
-    "unspent" : [
-      "pass({})"
     ],
     "history" : [
       "done",
