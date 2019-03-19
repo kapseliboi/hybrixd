@@ -54,11 +54,9 @@
       "tran '.txID' 1 @failDetails",
       "done",
       "@fail",
-      "pass \"Couldn't make transaction\"",
-      "done",
+      "fail 'Could not push transaction!'",
       "@failDetails",
-      "pass \"Couldn't retrieve transaction ID\"",
-      "done"
+      "fail 'Could not retrieve transaction ID!'"
     ],
     "history" : [
       "done",

@@ -15,7 +15,7 @@
   "quartz":{
     "balance" : [
       "data '$contract'",
-      "flow null 1 3",
+      "flow 'null' 1 3",
       "curl asset://$symbol /addresses/balance/details/$1 GET",
       "tran '.regular' 4 3",
       "curl asset://$symbol /assets/balance/$1/$contract GET",
