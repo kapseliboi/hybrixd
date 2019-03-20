@@ -227,8 +227,6 @@ test:
     - apt install curl
     - curl -sL https://deb.nodesource.com/setup_10.x | bash -
     - apt-get install -y nodejs
-    - curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-    - apt-get update && sudo apt-get install yarn
 
     - npm -version
     - nodejs -v
