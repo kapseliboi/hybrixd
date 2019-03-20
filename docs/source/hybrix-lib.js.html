@@ -82,23 +82,23 @@
 
             <h3>Callbacks</h3>
 
-            <p>Each command is implemented as a member function of the Hybrix.Interface class. Adding a host be done as follows:</p>
+            <p>Each command is implemented as a member function of the Hybrix.Interface class. Adding a host can be done as follows:</p>
 
             <code>hybrix.addHost({host:'https://www.example.com'});</code>
 
-            <p>Here only on parameter is passed but each member function has four parameters: data, onSuccess, onError and onProgress.</p>
+            <p>Here only one parameter is passed but each member function has four parameters: data, onSuccess, onError and onProgress.</p>
 
             <p>The first is used to pass parameter data to the function, the last three are callback functions. onSuccess is called once when the method has finished successfully. onError is called once when an error is encountred. onProgress is called whenever an progress update is available, passing a number between 0 and 1, and 1 upon completion.</p>
 
-            <p>To first initialize the interface, then add a host and then rout query for asset balance to the host one could try the following:</p>
+            <p>To first initialize the interface, add a host and then rout query for asset balance to the host one could try the following:</p>
 
 
             <pre>
 hybrix.init();                                   // This is an asynchronious function. It can take some time to complete.
 hybrix.addHost({host:'https://www.example.com'});  <font color="red">// Problem! This will try to add the host before the initialization is done.</font>
-hybrix.rout({query: 'Query for asset balance'});      <font color="red">// Problem! This will try to add the host before the initialization and/or addition of the host is done.</font></pre>
+hybrix.rout({query: 'Query for asset balance'});      <font color="red">// Problem! This will try to request routing before the initialization and/or addition of the host is done.</font></pre>
 
-            <p>But that result in serious problems due to asynchronicity. One could use the callbacks to ensure execute order.</p>
+            <p>This results in serious problems due to asynchronicity. One could use the callbacks to ensure execute order.</p>
 
             <pre>
 hybrix.init(null,
@@ -111,7 +111,7 @@ function(){
 }
 );</pre>
 
-            <p>But adding more steps or error handling will end up with code that is both very hard to read and maintain. (This is sometimes dubbed as <i>callback hell</i>.) To mitigate this the library comes equiped with a sequential and a parallel command to handle these asynchronious call flows. With an added bonus of handling the progress for combined commands as well.</p>
+            <p>But adding more steps or error handling will end up with code that is both very hard to read and maintain. (This is sometimes dubbed <i>callback hell</i>.) To mitigate this the library comes equiped with a sequential and a parallel command to handle these asynchronious call flows. With an added bonus of handling the progress for combined commands as well.</p>
 
             <pre id="exampleHelloWorld">
 hybrix.sequential([
