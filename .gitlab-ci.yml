@@ -219,7 +219,6 @@ test:
     - cp -R . /tmp/app
     - /bin/herokuish buildpack test
 
-    - apt remove --purge nodejs npm
     - apt clean
     - apt autoclean
     - apt install -f
