@@ -9,7 +9,7 @@ let files = {
   'featured-products': '../../docs/source/featured-products.html'
 };
 
-function getMatches (re, str) {
+function getMatches (re, body) {
   re.lastIndex = 0;
   let m;
   let array = [];
@@ -24,8 +24,17 @@ function getMatches (re, str) {
 
 let exampleId = 0;
 
+function typeConverter (type) {
+  if (/Array./g.test(type)) {
+    return 'Array';
+  } else {
+    let res = type.replace(/\|/g, ' | ');
+    return res;
+  }
+}
+
 for (let id in files) {
-  var body = fs.readFileSync(files[id]).toString();
+  let body = fs.readFileSync(files[id]).toString();
 
   let data = fs.readFileSync('../../docs/source/header.html').toString();
 
@@ -43,16 +52,16 @@ for (let id in files) {
     let f = getMatches(re, body);
 
     let funcs = [];
-    for (var i = 0; i < f.length; ++i) {
+    for (let i = 0; i < f.length; ++i) {
       let m = f[i];
-      var name = m[2];
+      let name = m[2];
       let content = m[1].replace(/\*\//g, '').replace(/\n \*/g, '\n');
       let lines = content.split(' @');
       let description = lines[0].replace(/\*/g, '');
       let parameters = [];
       let examples = [];
       let category = 'Misc';
-      for (var j = 0; j < lines.length; ++j) {
+      for (let j = 0; j < lines.length; ++j) {
         let line = lines[j];
         if (line.startsWith('param')) {
           parameters.push(line.substr(6));
@@ -62,8 +71,8 @@ for (let id in files) {
           examples.push(line.substr(8).replace(/\*/g, ''));
         }
       }
-      for (var j = 0; j < parameters.length; ++j) {
-        var parameter = parameters[j].substr(1);
+      for (let j = 0; j < parameters.length; ++j) {
+        let parameter = parameters[j].substr(1);
         let elements = parameter.split(' '); // "{Integer} offset - the offset" -> ["{Integer}", "offset", ...]
         let type = elements[0].substr(0, elements[0].length - 1);
         let pname = elements[1];
@@ -92,7 +101,7 @@ for (let id in files) {
       }
     });
 
-    for (var i = 0; i < funcs.length; ++i) {
+    for (let i = 0; i < funcs.length; ++i) {
       let func = funcs[i];
       if (i === 0 || funcs[i - 1].category !== func.category) {
         data += '<div class="category">' + func.category.trim() + '</div>';
@@ -103,10 +112,10 @@ for (let id in files) {
 
       if (id === 'hybrix-lib.js') { data += '{'; }
 
-      for (var j = 0; j < func.parameters.length; ++j) {
-        var parameter = func.parameters[j];
+      for (let j = 0; j < func.parameters.length; ++j) {
+        let parameter = func.parameters[j];
         if (parameter.name.indexOf('.') !== -1 || id === 'qrtz') {
-          var name;
+          let name;
           if (id === 'hybrix-lib.js' && j > 1) { data += ', '; }
 
           if (id === 'qrtz') {
@@ -126,12 +135,21 @@ for (let id in files) {
       data += '' + func.description.trim() + '</span></div><div style="display:none;" class="command-body" id="' + func.name.trim() + '">';
       data += func.description;
       data += '<table class="parameters">';
-      for (var j = 0; j < func.parameters.length; ++j) {
-        var parameter = func.parameters[j];
-        data += '<tr><td>' + parameter.name.trim() + '</td><td>' + parameter.description.trim() + '</td></tr>';
+      data += '<tr><td><strong>Name</strong></td><td><strong>Type<strong></td><td><strong>Description</strong></td></tr>';
+      for (let j = 0; j < func.parameters.length; ++j) {
+        let parameter = func.parameters[j];
+        let type = typeConverter(parameter.type);
+        let dataTest = /data./.test(parameter.name);
+        if (parameter.optional && dataTest) {
+          data += '<tr><td>' + parameter.name + '</td><td>' + type + '</td><td><span style="color:grey;">[Optional]</span>' + parameter.description.trim().replace(/-/g, '') + '</td></tr>';
+        } else if (dataTest) {
+          data += '<tr><td>' + parameter.name + '</td><td>' + type + '</td><td>' + parameter.description.trim().replace(/-/g, '') + '</td></tr>';
+        } else {
+          data += '<tr><td>' + parameter.name.trim() + '</td><td>' + type + '</td><td>' + parameter.description.trim().replace(/-/g, '') + '</td></tr>';
+        }
       }
       data += '</table>';
-      for (var j = 0; j < func.examples.length; ++j) {
+      for (let j = 0; j < func.examples.length; ++j) {
         data += '<code class="example" title="' + func.name + '" id="example' + exampleId + '">' + func.examples[j].trim() + '</code>';
         exampleId++;
       }
