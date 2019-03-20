@@ -11,6 +11,7 @@
   "timeout":30000,
   "throttle":1,
   "cron":300,
+  "histPage":25,
   "quartz":{
     "validate" : [
       "rout '/source/wavalidator/$symbol/$1'",
@@ -43,9 +44,6 @@
       "data 'never'",
       "done"
     ],
-    "mode" : [
-      "done '$mode'"
-    ],
     "keygen-base" : [
       "data '$keygen-base'",
       "flow 'undefined' 1 2",
@@ -60,18 +58,42 @@
       "data null",
       "done"
     ],
-    "factor" : [
-      "done '$factor'"
-    ],
-    "contract" : [
-      "done '$contract'"
-    ],
     "details" : [
       "each {'contract':null,'factor':null,'fee':null,'fee-factor':null,'fee-symbol':null,'generated':null,'mode':null,'keygen-base':null,'unified-symbols':null} 'subdetails'",
       "done {symbol:'$symbol',name:'$name',fee:'${.fee}',factor:'${.factor}',contract:'${.contract}',mode:'${.mode}','unified-symbols':'${.unified-symbols}','fee-symbol':'${.fee-symbol}','fee-factor':'${.fee-factor}','keygen-base':'${.keygen-base}', generated:'${.generated}'}"
     ],
     "subdetails" : [
       "call '${.key}'"
-    ]
+    ],
+    "history" : [
+      "time $timeout",
+      "rand",
+      "math '*10000.round'",
+      "poke 'randomId'",
+      "with 'pages' [data,'$offset'] [math,'/$histPage .floor']",
+      "@countLoop",
+      "curl http://api.etherscan.io/api ?module=account&action=txlist&address=$1&page=$page&offset=25&sort=desc&startblock=0&endblock=99999999&apikey=YourApiKeyToken GET {'Content-Type': 'application/json'}",
+      "tran '.result' 2 1",
+      "fail 'Ethereum node returning unexpected result!'",
+      "poke 'tempResultArray'",
+      "with 'resultArray' ['fuse',$tempResultArray]",
+      "loop @countLoop 'page' '<=$pages'",
+      "data $resultArray",
+      "sort ['.timeStamp',num,desc]",
+      "tran '[].hash' 2 1",
+      "fail 'Cannot interpret history data!'",
+      "with 'offset' [data,'$offset'] [math,'-($histPage*$pages)']"
+    ],
+    "transaction" : [
+      "rand",
+      "math '*10000.round'",
+      "poke 'randomId'",
+      "data {jsonrpc: '2.0', method: 'eth_getTransactionByHash', params: ['$1'], id: $randomId}",
+      "curl asset://$symbol POST {'Content-Type': 'application/json'}",
+      "data ${.result}",
+      "tran {id:'.hash', timestamp:'.blockNumber', amount:'.value', symbol:'$symbol', fee:'.gas', 'fee-symbol':'$symbol', source:'.from', target:'.to', data:'NA' } 2 1",
+      "fail 'Cannot interpret transaction data!'",
+      "done"
+    ]    
   }
 }
