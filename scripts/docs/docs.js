@@ -40,9 +40,6 @@ for (let id in files) {
 
   let intro = fs.readFileSync('../../docs/source/' + id + '.html').toString();
   data += intro;
-  if (files[id].substr(-5) !== '.html') {
-    data += '<div id="filterBox"></div>';
-  }
 
   data += '<script>initNavigation("' + id + '")</script>';
 
@@ -156,7 +153,6 @@ for (let id in files) {
       data += '</div>';
     }
   }
-  data += '</div></div></div><div id="noResults">No results.</div>';
   data += fs.readFileSync('../../docs/source/footer.html').toString();
 
   fs.writeFileSync('../../docs/' + id + '.html', data);

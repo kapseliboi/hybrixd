@@ -237,9 +237,7 @@ function initNavigation (currentMenuItem) {
   document.getElementById('navigation').innerHTML = data;
 
   let filterBox = document.getElementById('filterBox');
-  if (filterBox) {
-    filterBox.innerHTML = '<input id="search" onkeyup="search(event)" placeholder="Filter" onclick="search"><input type="submit" value="&#215;" onclick="clearSearch()"/>';
-  }
+
   setTimeout(initAPIConsole, 100);
 }
 
