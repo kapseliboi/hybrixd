@@ -1,4 +1,4 @@
-image: node:8.12.0-stretch
+image: node:8.15.0-stretch
 
 variables:
   # AUTO_DEVOPS_DOMAIN is the application deployment domain and should be set as a variable at the group or project level.
@@ -225,7 +225,7 @@ test:
     - apt-get -y install tar
     - apt-get -y install npm
     - npm install n -g
-    - n 8.12.0
+    - n 8.15.0
 
     # trying to get past error: could not get uid/gid [ 'nobody', 0 ]
     #- npm config set unsafe-perm true

@@ -102,10 +102,6 @@
           "_this": "Retrieve the status hash belonging to the history of an address."
         }
       },
-      "peers":{
-        "_this": "Get a list of asset protocol connectivity peers",
-        "_response": {"error":0,"info":"Process data.","id":"1519830189432904","progress":1,"started":1519830189432,"stopped":1519830189437,"data":["001.peer","002.peer","003.peer"]}
-      },
       "push":{
         "_help":"Push a signed transaction to a blockchain, DAG or other ledger system.",
         "_ref" : {
