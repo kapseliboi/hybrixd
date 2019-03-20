@@ -1,16 +1,10 @@
 {
   "quartz" : {
-    "peers" : [
-      "fail 'Not yet implemented!'"
-    ],
     "balance" : [
       "fail 'Not yet implemented!'"
     ],
     "push" : [
       "fail 'Not yet implemented!'"
-    ],
-    "factor" : [
-      "data '$factor'"
     ],
     "history" : [
       "fail 'Not yet implemented!'"
@@ -27,13 +21,14 @@
     "unspent" : [
       "done {'unspents':[],'change':'0.00000000'}"
     ],
-    "message" : [
-      "call attachment/$1",
-      "code hex utf8",
-      "done"
+    "mode" : [
+      "done '$mode'"
     ],
     "contract" : [
       "done '$contract'"
+    ],
+    "factor" : [
+      "data '$factor'"
     ],
     "fee" : [
       "data '$fee'"
@@ -60,8 +55,10 @@
       "data 'never'",
       "done"
     ],
-    "mode" : [
-      "done '$mode'"
+    "message" : [
+      "call attachment/$1",
+      "code hex utf8",
+      "done"
     ],
     "keygen-base" : [
       "data '$keygen-base'",
