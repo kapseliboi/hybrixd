@@ -13,13 +13,6 @@
   "trimAddrHexR":"8",
   "cron":600,
   "quartz":{
-    "peers" : [
-      "data {'jsonrpc':'2.0','id':0,'method':'server.peers.subscribe','params':[]}",
-      "curl asset://$symbol POST {} {'timeout':$longtimeout}",
-      "tran '.result' 2 1",
-      "data []",
-      "done"
-    ],
     "unspent" : [
       "poke inputval '$2'",
       "vars { inputval:'99999999999999999999' }",
@@ -91,7 +84,8 @@
     "transaction" : [
       "time $longtimeout",
       "call transactionData/$1",
-      "tran { id:'.txid', timestamp:'.time', amount:'.vout[0].value', symbol:'$symbol', fee:'$local::fee', 'fee-symbol':'$symbol', source:'.vout[0].scriptPubKey.addresses[0]', target:'.vout[0].scriptPubKey.addresses[0]', confirmed:'.confirmations' } 2 1",
+      "# TODO: the source address cannot be gotten from vin, must query twice to get the input(s)",
+      "tran { id:'.txid', timestamp:'.time', amount:'.vout[0].value', symbol:'$symbol', fee:'$local::fee', 'fee-symbol':'$symbol', source:'FIXME!', target:'.vout[0].scriptPubKey.addresses[0]', confirmed:'.confirmations' } 2 1",
       "fail 'Cannot read transaction data!'",
       "done"
     ],
