@@ -107,7 +107,7 @@
       "call attachment/$1",
       "code hex utf8",
       "done"
-    ],    
+    ],
     "history" : [
       "time $longtimeout",
       "data {jsonrpc:'2.0',id:6,method:'blockchain.address.get_history',params:['$1']}",
@@ -144,25 +144,22 @@
       "done {address:'1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX',transaction:'2c0832c153cf33327dae0e95a3bc39f4b02ae887725a32c07b1be47a2faffc55'}"
     ],
     "fee" : [
-      "hook '$fee' 0",
-      "peek local::fee"
-    ],
-    "init" : [
-      "data '$symbol'",
-      "flow 'undefined' 2",
-      "call 'getFee'"
+      "peek local::fee",
+      "flow null 1 2",
+      "data '$fee'"
     ],
     "cron" : [
       "data '$symbol'",
-      "flow 'undefined' 2",
-      "call 'getFee'"
+      "flow 'undefined' 2 1",
+      "call 'getFee'",
+      "done"
     ],
     "getFee" : [
       "time $timeout",
       "data {'jsonrpc':'2.0','id': 1, 'method': 'blockchain.estimatefee', 'params': ['$confirmsRequired'] }",
       "curl asset://$symbol",
-      "tran '.result' 1 4",
-      "ship 1 3 3",
+      "tran '.result' 1 3",
+      "ship 1 2 2",
       "poke local::fee",
       "done"
     ]
