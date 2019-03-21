@@ -2,18 +2,18 @@
   "symbol":"zec",
   "name":"ZCash",
   "module":"quartz",
+  "import":"electrum-tcp",
   "mode":"zcash.livenet",
   "factor":8,
   "fee":0.0004,
   "host":["tcp://electrum3.cipig.net:10058","tcp://electrum2.cipig.net:10058","tcp://electrum1.cipig.net:10058"],
   "cache":15000,
   "throttle":5,
-  "import":"electrum-tcp",
   "trimAddrHexL":"4",
   "trimAddrHexR":"-8",
   "quartz":{
     "sample" : [
-      "stop(0,{address:'t1KvZrdebWzQjtfJMhuGMVzhTG9VpBXzVf3',transaction:'cdea6a548efa88b30fbd110472a1ea4c0e5dee4cc768141dcb09a8c0f9ba4211'})"
+      "done {address:'t1KvZrdebWzQjtfJMhuGMVzhTG9VpBXzVf3',transaction:'cdea6a548efa88b30fbd110472a1ea4c0e5dee4cc768141dcb09a8c0f9ba4211'}"
     ]
   }
 }

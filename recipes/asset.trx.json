@@ -6,16 +6,14 @@
   "addressRegex":"^T\\d{33}$",
   "factor":6,
   "fee":0,
-  "contract": null,
+  "contract":null,
   "host":["https://api.trongrid.io"],
   "cache":10000,
   "throttle":10,
   "quartz":{
-    "init" : [
-      "logs(1,'module $symbol: initialized')"
-    ],
     "balance" : [
-      "flow('TRX',@tronBalance,@tokenBalance)",
+      "data '$contract'",
+      "flow 'null' @tronBalance @tokenBalance",
       "@tronBalance",
       "data '$1'",
       "code 'base58' 'hex'",
@@ -28,7 +26,7 @@
       "curl 'https://apilist.tronscan.org' '/api/account?address=$1' 'GET'",
       "poke 'result'",
       "tran '.trc20token_balances' 1 1",
-      "find {symbol:$contract} 1 @trc10tokens",
+      "find {contract_address:'$contract'} 1 @trc10tokens",
       "poke result",
       "data '${result[0].balance}'",
       "atom false '${result[0].decimals}'",
@@ -40,7 +38,8 @@
       "tran '[0].balance' @done @empty",
       "@empty",
       "data 0",
-      "@done"
+      "@done",
+      "atom"
     ],
     "push" : [
       "data '$1'",
@@ -55,11 +54,9 @@
       "tran '.txID' 1 @failDetails",
       "done",
       "@fail",
-      "pass \"Couldn't make transaction\"",
-      "done",
+      "fail 'Could not push transaction!'",
       "@failDetails",
-      "pass \"Couldn't retrieve transaction ID\"",
-      "done"
+      "fail 'Could not retrieve transaction ID!'"
     ],
     "history" : [
       "done",
