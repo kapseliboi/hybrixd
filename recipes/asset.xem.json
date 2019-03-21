@@ -34,7 +34,7 @@
       "data '$contract'",
       "flow 'null' @normalBalance @tokenBalance",
       "@normalBalance",
-      "curl asset://$symbol','/account/get?address=$address GET",
+      "curl asset://$symbol /account/get?address=$address GET",
       "tran '.account.balance' 2 1",
       "fail 'Could not get account balance!'",
       "atom",

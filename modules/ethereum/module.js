@@ -165,7 +165,7 @@ function exec (properties) {
       // TODO formatting
       break;
     default:
-      subprocesses.push('stop(1,"Asset function not supported!")');
+      subprocesses.push('stop(1,"Asset function not supported!' + properties.command[0] + '")');
   }
   // fire the Qrtz-language program into the subprocess queue
   scheduler.fire(processID, subprocesses);
