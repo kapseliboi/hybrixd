@@ -145,7 +145,8 @@
     ],
     "fee" : [
       "peek local::fee",
-      "flow null 1 2",
+      "data '$'",
+      "flow 'null' 1 2",
       "data '$fee'"
     ],
     "cron" : [
