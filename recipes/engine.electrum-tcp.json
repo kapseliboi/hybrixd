@@ -38,7 +38,7 @@
       "ship 2 2 1",
       "data 0",
       "form",
-      "done {unspents:$selected,change:$}"
+      "done {unspents:$selected,change:'$'}"
     ],
     "unspent_tran" : [
       "data ${.value}",
