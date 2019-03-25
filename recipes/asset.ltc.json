@@ -6,12 +6,12 @@
   "mode":"bitcoinjslib.litecoin",
   "factor":8,
   "fee":0.0001,
-  "host":["tcp://electrum3.cipig.net:10065","tcp://electrum2.cipig.net:10065","tcp://electrum1.cipig.net:10065"],
+  "host":["tcp://ltc-cce-1.coinomi.net:5002","tcp://ltc-cce-2.coinomi.net:5002"],
   "cache":45000,
   "throttle":10,
   "quartz":{
     "sample" : [
-      "stop(0,{address:'LSwwP4cWwRjrxq2s8VuEUTdiVukUYp9qxo',transaction:'ac0e30b1fcddcd4853f16a1a3530acb49b7fb26e7a54df62c51a8da4261de88f'})"
+      "done {address:'LSwwP4cWwRjrxq2s8VuEUTdiVukUYp9qxo',transaction:'ac0e30b1fcddcd4853f16a1a3530acb49b7fb26e7a54df62c51a8da4261de88f'}"
     ]
   }
 }

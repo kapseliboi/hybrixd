@@ -21,11 +21,18 @@ function init () {
 }
 
 function addSubprocesses (subprocesses, commands, recipe, xpath) {
+  let command = xpath[0];
+  // Prepend address validation
+  if (command === 'balance' || command === 'history' || command === 'unspent') {
+    subprocesses.push('call validate/$1');
+    subprocesses.push('flow valid 2  1');
+    subprocesses.push('fail "Invalid address"');
+  }
+
   for (let i = 0, len = commands.length; i < len; ++i) {
     subprocesses.push(commands[i]);
   }
   // Postprocess: Append formating of result for specific commands
-  let command = xpath[0];
   if (command === 'balance' || command === 'fee') { // append formatting of returned numbers
     subprocesses.push('form');
     subprocesses.push('done');
@@ -46,7 +53,7 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
     subprocesses.push('done');
   }
   if (command === 'status') { // significantly shorten the status hash to save bandwidth
-    subprocesses.push('take 24 16');    
+    subprocesses.push('take 24 16');
     subprocesses.push('done');
   }
 }

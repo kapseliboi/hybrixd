@@ -56,9 +56,9 @@
       "data '$symbol'",
       "find '.' 1 3",
       "call 'tokenUnspent/$1/$2/$3/$4'",
-      "done",
+      "jump @done",
       "call 'mainUnspent/$1/$2/$3/$4'",
-      "done"
+      "@done"
     ],
     "mainUnspent":[
       "call 'fee'",

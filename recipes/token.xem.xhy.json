@@ -4,7 +4,7 @@
   "module":"quartz",
   "mode":"nem.mosaic",
   "import": "xem",
-  "contract":"internetofcoins:hybrix",
+  "contract":"internetofcoins:hybrid",
   "originator":"NB6TCTRBT7KUN5T5337LBSBIAYHL375VHCFZNOAU",
   "factor":6
 }

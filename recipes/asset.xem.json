@@ -8,55 +8,55 @@
   "fee":0.05,
   "fee-mosaic":0.9,
   "fee-symbol":"xem",
+  "contract":null,
   "host":["http://bigalice3.nem.ninja:7890","http://104.251.212.131:7890","http://45.124.65.125:7890","http://185.53.131.101:7890"],
-  "hostOLD":["http://bigalice3.nem.ninja:7890","http://199.217.118.114:7890","http://62.109.20.138:7890","http://plum.supernode.me:7890","http://103.27.76.170:7890","http://supernode.host:7890","http://supernode.nem-cloud.info:7890","http://nano.innermedia.net:7890","http://ninja2016.dynu.com:7890","http://shibuya.supernode.me:7890","http://supernode.nem-blockchain.solutions:7890","http://pattaya1node.ddns.net:7890","http://nsm.supernode.me:7890","http://esposium.de:7890","http://nem.homeip.net:7890","http://go.nem.ninja:7890"],
+  "timeout":32000,
   "cache":1000,
   "throttle":5,
   "quartz":{
     "unspent" : [
       "data '$contract'",
-      "flow('undefined',1,2)",
-      "stop(0,'Unspent returns mosaic data only in NEM tokens.')",
-      "poke('proc::namespace','$contract'.split(':')[0])",
-      "curl('asset://$symbol','/account/mosaic/definition/page?address=$originator&parent=$proc::namespace','GET')",
-      "tran('.data',1,2)",
-      "find({'namespaceId':'$proc::namespace'},2,1)",
-      "stop(1,'Contract address invalid or no mosaics found!')",
-      "tran('.0')",
-      "pass(data)"
+      "flow 'null' 1 2",
+      "done 'Unspent returns mosaic data only in NEM tokens.'",
+      "with 'namespace' [data,'$contract'] [splt,':'] [pick]",
+      "curl asset://$symbol /account/mosaic/definition/page?address=$originator&parent=$namespace GET'",
+      "tran '.data' 1 2",
+      "find {'namespaceId':'$namespace'} 2 1",
+      "fail 'Contract address invalid or no mosaics found!'",
+      "tran '.0'",
+      "done"
     ],
     "balance" : [
       "data '$1'",
       "excl '-'",
       "poke 'address'",
-      "time(32000)",
+      "time $timeout",
       "data '$contract'",
-      "flow('undefined',1,6)",
-      "curl('asset://$symbol','/account/get?address=$address','GET')",
-      "tran('.account.balance',2,1)",
-      "stop(1,null)",
-      "atom()",
-      "done()",
-      "poke('proc::namespace','$contract'.split(':')[0])",
-      "curl('asset://$symbol','/account/mosaic/owned?address=$address','GET')",
-      "tran('.data',2,1)",
-      "stop(1,null)",
-      "find({'namespaceId':'$proc::namespace'},1,2)",
-      "tran('[0].quantity',2,1)",
-      "pass(0)",
-      "time($cache,data)",
-      "atom()"
+      "flow 'null' @normalBalance @tokenBalance",
+      "@normalBalance",
+      "curl asset://$symbol /account/get?address=$address GET",
+      "tran '.account.balance' 2 1",
+      "fail 'Could not get account balance!'",
+      "atom",
+      "jump @done",
+      "@tokenBalance",
+      "with 'namespace' [data,'$contract'] [splt,':'] [pick]",
+      "curl asset://$symbol /account/mosaic/owned?address=$address GET",
+      "tran '.data' 2 1",
+      "fail 'Could not get account token balance!'",
+      "find {'namespaceId':'$namespace'} 1 2",
+      "tran '[0].quantity' 2 1",
+      "data 0",
+      "atom",
+      "@done"
     ],
     "push" : [
-      "data('$1')",
-      "jpar()",
-      "curl('asset://$symbol','/transaction/announce','POST',{'content-type':'application/json'})",
-      "tran('.transactionHash.data',2,1)",
-      "fail('${.error} : ${.message}')",
-      "pass(data)"
-    ],
-    "factor" : [
-      "pass('$factor')"
+      "data '$1'",
+      "jpar",
+      "curl asset://$symbol /transaction/announce POST {'content-type':'application/json'}",
+      "tran '.transactionHash.data' 2 1",
+      "fail '${.error} : ${.message}'",
+      "done"
     ],
     "transaction" : [
       "curl asset://$symbol /transaction/get?hash=$1 GET {'content-type':'application/json'}",
@@ -72,7 +72,7 @@
       "tran {id:'$reformatId', timestamp:'.transaction.timeStamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'$fee-symbol', source:'$reformatSource', target:'$reformatTarget', confirmed:true} 1 @badObject",
       "done",
       "@badObject",
-      "done null"
+      "fail 'Could not get transaction data!'"
     ],
     "attachment" : [
       "curl asset://$symbol /transaction/get?hash=$1 GET {'content-type':'application/json'}",
@@ -130,20 +130,19 @@
     ],
     "contract" : [
       "data '$contract'",
-      "flow('undefined',1,2)",
-      "stop(0,'Unspent returns data only for NEM mosiac tokens.')",
-      "pass('$originator:$contract')"
+      "flow 'null' 1 2",
+      "done null",
+      "done '$originator:$contract'"
     ],
     "fee" : [
       "data '$contract'",
-      "flow('undefined',1,3)",
-      "data('$fee')",
-      "jump(2)",
-      "data('$fee-mosaic')",
-      "pass()"
+      "flow 'null' 1 3",
+      "data '$fee'",
+      "jump 2",
+      "data '$fee-mosaic'"
     ],
     "sample" : [
-      "stop(0,{address:'NCKZD7-JGDLND-IVVPH6-U2PG2Q-KD3PX3-FX4CPZ-MF2A',transaction:'215b900475b13f724acc9fbe249bb9ffd31451c2352ed51b9637143cde4c260a'})"
+      "done {address:'NCKZD7-JGDLND-IVVPH6-U2PG2Q-KD3PX3-FX4CPZ-MF2A',transaction:'215b900475b13f724acc9fbe249bb9ffd31451c2352ed51b9637143cde4c260a'}"
     ]
   }
 }

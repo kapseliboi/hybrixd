@@ -4,7 +4,7 @@
   "module":"quartz",
   "mode":"bitcoinjslib.counterparty",
   "import":"xcp",
-  "contract":"HYBRIX",
+  "contract":"HYBRID",
   "originator":"1KWsPEb3bp7nQuodUtZYHQsXmBCDZ9dtPz",
   "factor":8
 }

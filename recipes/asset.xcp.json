@@ -9,73 +9,58 @@
   "keygen-base":"btc",
   "contract":"XCP",
   "host":["https://counterwallet.coindaddy.io","https://wallet.counterwallet.io"],
-  "host_unspent":["http://rpc:1234@public.coindaddy.io:4000"],
-  "cache":120000,
+  "timeout":32000,
+  "cache":60000,
   "throttle":5,
   "api-documentation":"https://counterparty.io/docs/counterblock_api/",
   "quartz":{
-    "status" : [
-      "data {'jsonrpc':'2.0','id':0,'method':'is_ready','params':{}}",
-      "curl('asset://$symbol','/_api','POST',{'content-type':'text/plain'})",
-      "test($,1,2)",
-      "done({module:'$symbol',synced:data.result.caught_up,blocks:data.result.block_height,fee:null,supply:null,difficulty:null,testmode:data.result.testnet,version:null})",
-      "fail('No result')"
-    ],
     "unspent" : [
-      "rout('/asset/$keygen-base/fee')",
-      "math('+$feeCounterpartyTX')",
-      "rout('/asset/$keygen-base/unspent/$1/$data')",
+      "rout '/asset/$keygen-base/fee'",
+      "math '+$feeCounterpartyTX'",
+      "rout '/asset/$keygen-base/unspent/$1/$data'",
       "done"
     ],
     "balance" : [
-      "time(32000)",
+      "time $timeout",
       "data {'jsonrpc':'2.0','id':0,'method':'get_normalized_balances','params':{'addresses':['$1']}}",
-      "curl('asset://$symbol','/_api','POST',{'content-type':'text/plain'})",
-      "tran('.result',2,1)",
-      "stop(1,'No result!')",
-      "find({'asset':'$contract'},3,1)",
-      "data('0.00000000')",
-      "jump(3)",
-      "tran('[0].quantity')",
-      "atom()",
-      "time($cache)"
+      "curl asset://$symbol /_api POST {'content-type':'text/plain'}",
+      "tran '.result' 2 1",
+      "fail 'No result!'",
+      "find {'asset':'$contract'} 3 1",
+      "data '0.00000000'",
+      "jump 3",
+      "tran '[0].quantity'",
+      "atom"
     ],
     "push" : [
-      "rout('/asset/$keygen-base/push/$1')",
+      "rout '/asset/$keygen-base/push/$1'",
       "done"
     ],
     "pushAPI" : [
       "data {'jsonrpc':'2.0','id':0,'method':'broadcast_tx','params':{'signed_tx_hex':'$1'}}",
-      "curl('asset://$symbol','/_api','POST',{'content-type':'text/plain'})",
-      "test($,2,1)",
-      "stop(1,'Broadcast failed!')",
-      "tran('.result',2,1)",
-      "stop(1,'No result!')",
-      "done"
-    ],
-    "factor" : [
-      "data('$factor')",
+      "curl asset://$symbol /_api POST {'content-type':'text/plain'}",
+      "test $ 2 1",
+      "fail 'Broadcast failed!'",
+      "tran '.result' 2 1",
+      "fail 'No result!'",
       "done"
     ],
     "transaction" : [
       "rout('/source/blockexplorer/$fee-symbol/transaction/$1')",
-      "done()",
-      "fail('This used btc network, not xcp.')"
+      "done",
+      "fail 'This used btc network, not xcp.'"
     ],
     "history" : [
-      "stop(1,'No yet implemented.')",
-      "fail('Counterparty API get_tx_info does not work!')"
-    ],
-    "contract" : [
-      "done('$contract')"
+      "fail 'Not yet implemented.'",
+      "fail 'Counterparty API get_tx_info does not work!'"
     ],
     "fee" : [
-      "rout('/asset/btc/fee')",
-      "math('+$feeCounterpartyTX')",
+      "rout '/asset/btc/fee'",
+      "math '+$feeCounterpartyTX'",
       "done"
     ],
     "sample" : [
-      "done({address:'1AeqgtHedfA2yVXH6GiKLS2JGkfWfgyTC6',transaction:'8162e98734c94b5b32682ce43041c2fdd5a6bf957c0684e42092284a4478bd0b'})"
+      "done {address:'1AeqgtHedfA2yVXH6GiKLS2JGkfWfgyTC6',transaction:'8162e98734c94b5b32682ce43041c2fdd5a6bf957c0684e42092284a4478bd0b'}"
     ]
   }
 }
