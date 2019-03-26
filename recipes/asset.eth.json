@@ -32,8 +32,7 @@
       "peek '${data}::factor'",
       "done"
     ],
-
-     "contract" : [
+    "contract" : [
       "done '$contract'"
     ],
     "factor" : [
@@ -114,6 +113,11 @@
       "@failData",
       "fail 'Cannot interpret transaction data!'",
       "@okayData"
+    ],
+    "status" : [
+      "call history/$1/3/0",
+      "join",
+      "hash sha256"
     ],
     "blockRaw" : [
       "rand",
