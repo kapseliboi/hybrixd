@@ -79,8 +79,10 @@
       "time $timeout",
       "rand",
       "math '*10000.round'",
-      "poke 'randomId'",
-      "with 'pages' [data,'$offset'] [math,'/$histPage .floor']",
+      "poke randomId",
+      "with pageOffset [data,'$offset'] [math,'/$histPage .floor']",
+      "with pages [data,'$count'] [math,'/$histPage .floor']",
+      "poke page '$pageOffset'",
       "@countLoop",
       "curl http://api.etherscan.io/api ?module=account&action=txlist&address=$1&page=$page&offset=25&sort=desc&startblock=0&endblock=99999999&apikey=YourApiKeyToken GET {'Content-Type': 'application/json'}",
       "tran '.result' 2 1",
@@ -92,7 +94,7 @@
       "sort ['.timeStamp',num,desc]",
       "tran '[].hash' 2 1",
       "fail 'Cannot interpret history data!'",
-      "with 'offset' [data,'$offset'] [math,'-($histPage*$pages)']"
+      "with offset [math,'$offset - ($histPage*$pageOffset)']"
     ],
     "transaction" : [
       "rand",
