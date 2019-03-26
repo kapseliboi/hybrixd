@@ -60,6 +60,9 @@
     ],
     "message" : [
       "call attachment/$1",
+      "data '$'",
+      "flow 'null' 1 2",
+      "done ''",
       "code hex utf8",
       "done"
     ],
