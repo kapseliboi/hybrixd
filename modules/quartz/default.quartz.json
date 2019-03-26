@@ -25,7 +25,10 @@
       "done '$mode'"
     ],
     "contract" : [
-      "done '$contract'"
+      "data '$contract'",
+      "flow 'undefined' 1 2",
+      "data null",
+      "done"
     ],
     "factor" : [
       "data '$factor'"
