@@ -95,14 +95,21 @@
       "fail 'Cannot interpret history data!'",
       "with offset [math,'$offset - ($histPage*$pageOffset)']"
     ],
-    "transaction" : [
+    "transactionData" : [
       "time $timeout",
       "rand",
       "math '*10000.round'",
       "poke 'randomId'",
       "data {jsonrpc: '2.0', method: 'eth_getTransactionByHash', params: ['$1'], id: $randomId}",
       "curl asset://$symbol '' POST {'Content-Type': 'application/json'}",
-      "tran .result 1 @failData",
+      "tran .result 2 1",
+      "fail 'Cannot interpret transaction data!'",
+      "done"
+    ],
+    "transaction" : [
+      "time $timeout",
+      "call 'transactionData/$1'",
+      "done $",
       "with .value [code,'hex','dec'] [atom]",
       "with txGas [data,'${.gas}'] [code,'hex','dec']",
       "with txGasPrice [data,'${.gasPrice}'] [code,'hex','dec']",
@@ -113,6 +120,19 @@
       "@failData",
       "fail 'Cannot interpret transaction data!'",
       "@okayData"
+    ],
+    "attachment" : [
+      "time $timeout",
+      "call 'transactionData/$1'",
+      "tran '.input' 2 1",
+      "done null",
+      "done"
+    ],
+    "message" : [
+      "time $timeout",
+      "call 'attachment/$1'",
+      "code hex utf8",
+      "done"
     ],
     "status" : [
       "call history/$1/3/0",
