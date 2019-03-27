@@ -15,8 +15,7 @@
       "curl 'asset://$symbol' '/api/accounts/getBalance?address=$1' 'GET' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': ''}",
       "tran('.unconfirmedBalance',2,1)",
       "fail 'Balance could not be retrieved'",
-      "atom",
-      "done"
+      "atom"
     ],
     "unspent" :[
       "done {unspents:[],change:'0'}"
