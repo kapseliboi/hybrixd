@@ -108,7 +108,12 @@
       "stop(0,data)"
     ],
     "history" : [
-      "fail 'Not Implemented Yet.'"
+      "with until [math,'$offset+$count']",
+      "curl asset://$symbol ?requestType=getBlockchainTransactions&account=$1&firstIndex=$offset&lastIndex=$until GET {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}",
+      "tran '.transactions' 2 1",
+      "fail 'Bad response from NXT node!'",
+      "sort ['.timestamp',num,desc]",
+      "tran '[].transaction'"
     ],
     "sample" : [
       "done({address:'NXT-4RU9-TNCT-F3MU-8952K',transaction:'13821793329980543744',publicKey:'32f5fa059b39fae92e41fee6606c5afa4db80d426532fa94f50415c062794c4b'})"
