@@ -25,7 +25,10 @@
       "done '$mode'"
     ],
     "contract" : [
-      "done '$contract'"
+      "data '$contract'",
+      "flow 'undefined' 1 2",
+      "data null",
+      "done"
     ],
     "factor" : [
       "data '$factor'"
@@ -57,6 +60,9 @@
     ],
     "message" : [
       "call attachment/$1",
+      "data '$'",
+      "flow 'null' 1 2",
+      "done ''",
       "code hex utf8",
       "done"
     ],

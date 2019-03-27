@@ -12,7 +12,7 @@
   "throttle":0.1,
   "quartz":{
     "sample" : [
-      "stop(0,{address:'D9fHTGCgQK2oC3d7fQRzjhiacEFf12WbgK',transaction:'573242f214021eb54c5335b178f09508ea2f349b3ebbc2c42346f093e83f4aa6'})"
+      "done {address:'DPNzy1GqPpoAspPkTbg65QUUxuEcBfN2MK',transaction:'0e345b1e94806150be838a7f0ce14e26702cedfc17871831391b8a89ed601f29'}"
     ]
   }
 }
