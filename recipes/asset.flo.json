@@ -1,0 +1,18 @@
+{
+  "symbol":"flo",
+  "name":"Florincoin",
+  "module":"quartz",
+  "mode":"bitcoinjslib.florincoin",
+  "addressRegex":"^\\F[a-zA-Z0-9]{33}$",
+  "factor":8,
+  "fee":0.000025,
+  "host":["https://livenet.flocha.in/api"],
+  "cache":15000,
+  "throttle":10,
+  "import":"insight",
+  "quartz":{
+    "sample" : [
+      "done {address:'FEYWiz5brGLZQ5Wg9FS845dqb94mB1hHxe',transaction:null}"
+    ]
+  }
+}

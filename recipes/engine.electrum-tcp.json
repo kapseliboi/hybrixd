@@ -1,6 +1,6 @@
 {
   "engine":"electrum-tcp",
-  "name":"Electrum TCP connector",
+  "name":"Electrum TCP engine",
   "module":"quartz",
   "cache":1000,
   "throttle":0.5,

@@ -1,0 +1,104 @@
+{
+  "engine":"insight",
+  "name":"Insight HTTP(S) engine",
+  "module":"quartz",
+  "cache":1000,
+  "throttle":0.5,
+  "timeout":24000,
+  "longtimeout":60000,
+  "confirmsRequired":6,
+  "utxo_unspent_prefix":"76a914",
+  "utxo_unspent_suffix":"88ac",
+  "trimAddrHexL":"2",
+  "trimAddrHexR":"8",
+  "cron":600,
+  "quartz":{
+    "balance" : [
+      "time $timeout",
+      "curl asset://$symbol /addr/$1/balance GET {'Content-Type': 'application/json'}",
+      "tran {confirmed:'.result.confirmed_balance',unconfirmed:'.result.mempool_balance'} 3 1",
+      "data 0",
+      "jump 2",
+      "math '${.confirmed}+${.unconfirmed}'"
+    ],
+    "unspent" : [
+      "poke inputval '$2'",
+      "vars { inputval:'99999999999999999999' }",
+      "time $timeout",
+      "curl asset://$symbol /addr/$1/utxo GET {'Content-Type': 'application/json'}",
+      "each $ 'unspent_tran'",
+      "sort '.amount'",
+      "scan 'cnt<($inputval+val.amount)' '+val.amount'",
+      "poke 'selected'",
+      "tran '[].amount' 2 1",
+      "data []",
+      "math '+'",
+      "math '-$inputval'",
+      "ship 2 2 1",
+      "data 0",
+      "form",
+      "done {unspents:$selected,change:'$'}"
+    ],
+    "unspent_tran" : [
+      "data ${.value}",
+      "poke unspent",
+      "tran '.amount' 4 1",
+      "tran '.satoshis' 2 1",
+      "data 0",
+      "atom",
+      "poke amount",
+      "peek unspent",
+      "tran {script:'.scriptPubKey',amount:'$amount',txid:'.txid',txn:'.vout'} 2 1",
+      "fail 'Bad input unspents from Electrum!'",
+      "done"
+    ],
+    "push" : [
+      "time $timeout",
+      "data {'jsonrpc':'2.0','id':0,'method':'blockchain.transaction.broadcast','params':['$1']}",
+      "curl 'asset://$symbol'",
+      "tran '.result' 4 1",
+      "tran '.error' 1 2",
+      "fail ${.message}",
+      "fail 'Bad transaction result!'",
+      "done"
+    ],
+    "transaction" : [
+      "time $timeout",
+      "data 'https://livenet.flocha.in/api/tx/$1'",
+      "curl '$' '' 'GET' {'Content-Type': 'application/json'}",
+      "tran .result 2 1",
+      "fail 'Cannot get transaction data!'",
+      "tran {id:'.txid', timestamp:'.time', amount:'.vout[0].value', symbol:'$symbol', fee:'$local::fee', 'fee-symbol':'$symbol', source:'.vout[0].scriptPubKey.addresses[0]', target:'.vout[0].scriptPubKey.addresses[0]', data:'NA' } 2 1",
+      "fail 'Cannot interpret transaction data!'"
+    ],
+    "history" : [
+      "time $longtimeout",
+      "data 'https://livenet.flocha.in/api/txs/?address=$1'",
+      "curl 'asset://$symbol' 'GET' {timeout:$timeout}",
+      "tran '.result' 2 1",
+      "fail 'No result!'",
+      "each $ 'sub_history'"
+    ],
+    "sub_history" : [
+      "time $longtimeout",
+      "data ${.value}",
+      "tran .tx_hash @hashFound",
+      "done null",
+      "@hashFound",
+      "poke itemvalue",
+      "call 'transaction/$'",
+      "done"
+    ],
+    "fee" : [
+      "peek local::fee",
+      "data '$'",
+      "flow 'null' 1 2",
+      "data '$fee'"
+    ],
+    "getFee" : [
+    ],
+    "sample" : [
+      "done {address:'1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX',transaction:'2c0832c153cf33327dae0e95a3bc39f4b02ae887725a32c07b1be47a2faffc55'}"
+    ]
+  }
+}
