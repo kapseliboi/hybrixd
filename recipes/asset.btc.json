@@ -11,7 +11,7 @@
   "import":"electrum-tcp",
   "quartz":{
     "sample" : [
-      "done {address:'1FeexV6bAHb8ybZjqQMjJrcCrHGW9sb6uF',transaction:'0941fc69d0fefd26e7f1137e7737827470356f046e4c32fcbd776c6d4bbc97ec'}"
+      "done {address:'13JQwoSLLR3ffXwswe2HCTK9oq4i8MWK3q',transaction:'0941fc69d0fefd26e7f1137e7737827470356f046e4c32fcbd776c6d4bbc97ec'}"
     ]
   }
 }

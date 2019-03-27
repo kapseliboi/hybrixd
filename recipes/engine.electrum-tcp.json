@@ -38,7 +38,7 @@
       "ship 2 2 1",
       "data 0",
       "form",
-      "done {unspents:$selected,change:$}"
+      "done {unspents:$selected,change:'$'}"
     ],
     "unspent_tran" : [
       "data ${.value}",
@@ -105,6 +105,9 @@
     "message" : [
       "time $longtimeout",
       "call attachment/$1",
+      "data '$'",
+      "flow 'null' 1 2",
+      "done ''",
       "code hex utf8",
       "done"
     ],
