@@ -5,7 +5,7 @@
   "mode":"lisk.lisk",
   "addressRegex":"^\\d{19}L$",
   "factor":8,
-  "fee":"0.10000000",
+  "fee":0.1,
   "fee-symbol":"lsk",
   "contract":null,
   "host":["https://hub21.lisk.io","https://hub22.lisk.io","https://hub23.lisk.io","https://hub24.lisk.io","https://hub25.lisk.io","https://hub26.lisk.io","https://hub27.lisk.io","https://hub28.lisk.io","https://hub31.lisk.io","https://hub32.lisk.io","https://hub33.lisk.io","https://hub34.lisk.io","https://hub35.lisk.io","https://hub36.lisk.io","https://hub37.lisk.io","https://hub38.lisk.io"],
@@ -38,9 +38,8 @@
     ],
     "transaction" : [
       "call transactionData/$1",
-      "poke reformatObj",
-      "with reformatFee [data,$reformatObj] [tran,'.fee'] [atom]",
-      "with reformatAmount [data,$reformatObj] [tran,'.amount'] [atom]",
+      "with reformatFee [data,'${.fee}'] [atom]",
+      "with reformatAmount [data,'${.amount}'] [atom]",
       "tran { id:'.id', timestamp:'.timestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.senderId', target:'.recipientId', confirmed:'.confirmations' } 2 1",
       "fail 'Cannot get transaction data!'",
       "done"

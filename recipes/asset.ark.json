@@ -7,6 +7,8 @@
   "addressRegex":"^A\\w{33}$",
   "factor":8,
   "fee":0.1,
+  "fee-symbol":"ark",
+  "contract":null,
   "host":["https://node1.arknet.cloud"],
   "cache":15000,
   "throttle":5,

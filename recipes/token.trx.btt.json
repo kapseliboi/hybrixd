@@ -1,0 +1,8 @@
+{
+  "symbol":"trx.btt",
+  "name":"BitTorrent (BTT)",
+  "import":"trx",
+  "contract":"1002000",
+  "originator":"TF5Bn4cJCT6GVeUgyCN4rBhDg42KBrpAjg",
+  "factor":6
+}
