@@ -21,8 +21,7 @@
       "curl asset://$symbol /assets/balance/$1/$contract GET",
       "tran '.balance' 2 1",
       "fail 'No result!'",
-      "atom",
-      "done"
+      "atom"
     ],
     "push" : [
       "data '$1'",
