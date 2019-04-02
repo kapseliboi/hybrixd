@@ -1,9 +1,9 @@
 // storage.js :: higher level storage functions
 // depends on localforage.nopromises.min.js
-var fs = require('fs');
-var DJB2 = require('../../common/crypto/hashDJB2');
-var proofOfWork = require('../../common/crypto/proof');
-var storagePath = require('path').normalize(process.cwd() + '/../storage/'); // TODO define in conf file
+let fs = require('fs');
+let DJB2 = require('../../common/crypto/hashDJB2');
+let proofOfWork = require('../../common/crypto/proof');
+let storagePath = require('path').normalize(process.cwd() + '/../storage/'); // TODO define in conf file
 
 function makeDir (dirname) {
   if (!fs.existsSync(dirname)) {
@@ -11,9 +11,9 @@ function makeDir (dirname) {
   }
 }
 
-var seek = function (key, dataCallback, errorCallback) {
-  var fold = key.substr(0, 2) + '/';
-  var filePath = storagePath + fold + key;
+let seek = function (key, dataCallback, errorCallback) {
+  let fold = key.substr(0, 2) + '/';
+  let filePath = storagePath + fold + key;
   if (fs.existsSync(filePath)) {
     dataCallback(true);
   } else {
@@ -21,30 +21,30 @@ var seek = function (key, dataCallback, errorCallback) {
   }
 };
 
-var get = function (key, dataCallback, errorCallback) {
-  var fold = key.substr(0, 2) + '/';
-  var filePath = storagePath + fold + key;
+let get = function (key, dataCallback, errorCallback) {
+  let fold = key.substr(0, 2) + '/';
+  let filePath = storagePath + fold + key;
 
   if (fs.existsSync(filePath)) {
     // update meta data with last time read
-    var meta = JSON.parse(String(fs.readFileSync(filePath + '.meta')));
+    let meta = JSON.parse(String(fs.readFileSync(filePath + '.meta')));
     meta.read = Date.now();
     fs.writeFileSync(filePath + '.meta', JSON.stringify(meta));
 
-    var fileKey = 'storage/' + fold + key;
+    let fileKey = 'storage/' + fold + key;
     dataCallback(fileKey);
   } else {
     errorCallback('File not found');
   }
 };
 
-var qrtzLoad = function (key, dataCallback, errorCallback) {
-  var fold = key.substr(0, 2) + '/';
-  var filePath = storagePath + fold + key;
+let qrtzLoad = function (key, dataCallback, errorCallback) {
+  let fold = key.substr(0, 2) + '/';
+  let filePath = storagePath + fold + key;
 
   if (fs.existsSync(filePath)) {
     // update meta data with last time read
-    var meta = JSON.parse(String(fs.readFileSync(filePath + '.meta')));
+    let meta = JSON.parse(String(fs.readFileSync(filePath + '.meta')));
     meta.read = Date.now();
     fs.writeFileSync(filePath + '.meta', JSON.stringify(meta));
 
@@ -54,59 +54,61 @@ var qrtzLoad = function (key, dataCallback, errorCallback) {
   }
 };
 
-var setMeta = function (data, dataCallback, errorCallback) {
-  var fold = data.key.substr(0, 2) + '/';
+let setMeta = function (data, dataCallback, errorCallback) {
+  let fold = data.key.substr(0, 2) + '/';
   makeDir(storagePath + fold);
-  var filePath = storagePath + fold + data.key;
+  let filePath = storagePath + fold + data.key;
   fs.writeFileSync(filePath + '.meta', JSON.stringify(data.meta));
   dataCallback();
 };
 
-var set = function (data, dataCallback, errorCallback) {
+let set = function (data, dataCallback, errorCallback) {
   if (data.value.length > 4096) { // TODO value to conf
     errorCallback('Storage limit is 4096 bytes.');
   } else {
-    var fold = data.key.substr(0, 2) + '/';
+    let fold = data.key.substr(0, 2) + '/';
     makeDir(storagePath + fold);
-    var filePath = storagePath + fold + data.key;
+    let filePath = storagePath + fold + data.key;
     fs.writeFileSync(filePath, data.value); // TODO ASYNC when web wallet is able to do autoproc calls
 
     // create proof of work
-    var size = data.value.length;
-    var difficulty = (size * 64 > 5000 ? size * 64 : 5000); // the more bytes to store, the bigger the POW challenge
-    var pow = proofOfWork.create(difficulty);
+    let size = data.value.length;
+    let difficulty = (size * 64 > 5000 ? size * 64 : 5000); // the more bytes to store, the bigger the POW challenge
+    let pow = proofOfWork.create(difficulty);
 
-    var meta = {time: Date.now(), hash: DJB2.hash(data.value), size: size, pow: pow.proof, res: pow.hash, n: 0, read: null};
+    let meta = {time: Date.now(), hash: DJB2.hash(data.value), size: size, pow: pow.proof, res: pow.hash, difficulty: difficulty, n: 0, read: null};
 
     if (fs.existsSync(filePath + '.meta')) {
-      var oldmeta = JSON.parse(String(fs.readFileSync(filePath + '.meta')));
+      let oldmeta = JSON.parse(String(fs.readFileSync(filePath + '.meta')));
       if (typeof oldmeta.n !== 'undefined') { meta.n = oldmeta.n; } // overwrite n (not sure that that does though??)
     }
     setMeta({key: data.key, meta}, () => {
-      dataCallback(pow.hash);
+      dataCallback({hint: pow.hash, difficulty: difficulty});
     }, errorCallback);
   }
 };
 
-var del = function (key, dataCallback, errorCallback) {
-  var fold = key.substr(0, 2) + '/';
-  var filePath = storagePath + fold + key;
+let del = function (key, dataCallback, errorCallback) {
+  let fold = key.substr(0, 2) + '/';
+  let filePath = storagePath + fold + key;
   // TODO check if path exists
   fs.unlinkSync(filePath);
   fs.unlinkSync(filePath + '.meta');
   dataCallback();
 };
 
-var provideProof = function (data, dataCallback, errorCallback) {
-  var key = data.key;
-  var pow = data.pow;
+let provideProof = function (data, dataCallback, errorCallback) {
+  let key = data.key;
+  let pow = data.pow;
   getMeta(key, (meta) => {
     if (meta.pow === pow) {
       if (meta.res !== 1) {
         meta.n += 1;
         meta.res = 1;
+        console.log('>>>>>>>> Proof accepted');
         setMeta({key, meta}, dataCallback, errorCallback);
       } else {
+        console.log('>>>>>>>>  Proof ignored');
         dataCallback('Ignored');
       }
     } else {
@@ -115,18 +117,18 @@ var provideProof = function (data, dataCallback, errorCallback) {
   }, errorCallback);
 };
 
-var getMeta = function (key, dataCallback, errorCallback) {
-  var fold = key.substr(0, 2) + '/';
-  var filePath = storagePath + fold + key;
+const getMeta = function (key, dataCallback, errorCallback) {
+  let fold = key.substr(0, 2) + '/';
+  let filePath = storagePath + fold + key;
   if (fs.existsSync(filePath + '.meta')) {
-    var meta = JSON.parse(String(fs.readFileSync(filePath + '.meta')));
+    let meta = JSON.parse(String(fs.readFileSync(filePath + '.meta')));
     dataCallback(meta);
   } else {
     errorCallback('File not found');
   }
 };
 
-var autoClean = function () {
+let autoClean = function () {
   console.log(' [.] module storage: storage auto-clean scan');
   if (!fs.statSync(storagePath).isDirectory()) {
     fs.mkdirSync(storagePath);
@@ -140,15 +142,15 @@ var autoClean = function () {
         fs.readdir(storagePath + fold, (err, files) => {
           files.sort().forEach((storekey, fileindex, filearray) => {
             if (storekey.substr(-5) === '.meta') {
-              var fileelement = storagePath + fold + '/' + storekey;
+              let fileelement = storagePath + fold + '/' + storekey;
               // DEBUG: console.log(" [i] module storage: test on storage " + fileelement);
               if (fs.existsSync(fileelement)) {
-                var meta = JSON.parse(String(fs.readFileSync(fileelement)));
+                let meta = JSON.parse(String(fs.readFileSync(fileelement)));
                 // DEPRECATED: var mindeadline = Date.now() - (global.hybrixd.maxstoragetime * 86400) - global.hybrixd.maxstoragetime * (864 * meta.n);
-                var mindeadline = Date.now() - ((typeof global.hybrixd.minstoragetime !== 'undefined' && global.hybrixd.minstoragetime >= 1 ? global.hybrixd.minstoragetime : 1) * 86400);
-                var maxdeadline = Date.now() - ((typeof global.hybrixd.maxstoragetime !== 'undefined' && global.hybrixd.maxstoragetime >= 1 ? global.hybrixd.maxstoragetime : 365) * 86400);
+                let mindeadline = Date.now() - ((typeof global.hybrixd.minstoragetime !== 'undefined' && global.hybrixd.minstoragetime >= 1 ? global.hybrixd.minstoragetime : 1) * 86400);
+                let maxdeadline = Date.now() - ((typeof global.hybrixd.maxstoragetime !== 'undefined' && global.hybrixd.maxstoragetime >= 1 ? global.hybrixd.maxstoragetime : 365) * 86400);
                 if ((meta.res !== 1 && meta.time < mindeadline) || (meta.res === 1 && meta.time < maxdeadline)) {
-                  var dataelement = fileelement.substr(0, fileelement.length - 5);
+                  let dataelement = fileelement.substr(0, fileelement.length - 5);
                   try {
                     fs.unlinkSync(dataelement);
                     fs.unlinkSync(fileelement);
