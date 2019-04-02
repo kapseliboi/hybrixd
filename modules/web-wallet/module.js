@@ -3,33 +3,24 @@
 // Module to provide the web wallet
 
 // required libraries in this context
-var route = require('../../lib/router');
+let route = require('../../lib/router');
 
 // initialization function
 function init () {}
 
 // exec
 function exec (properties) {
-  var source = properties.target.module;
-  var command = properties.command;
+  let source = properties.target.module;
+  let command = properties.command;
+  let fileName = command.length === 0
+    ? 'modules/' + source + '/files/index.html'
+    : 'modules/' + source + '/files/' + command.join('/');
 
-  var request = {sessionID: global.hybrixd.proc[properties.processID.split('.')[0]].sid};
-  if (command.length >= 2 && command[0] === 'api' && command[1] === 'v1') {
-    request.url = '/' + command.slice(2).join('/');
-    return route.route(request);
-  } else if (command.length >= 1 && (command[0] === 'api' || command[0] === 'v1')) {
-    request.url = '/' + command.slice(1).join('/');
-    return route.route(request);
-  }
+  let request = {
+    sessionID: global.hybrixd.proc[properties.processID.split('.')[0]].sid
+  };
 
-  var fileName;
-  if (command.length === 0) {
-    fileName = 'modules/' + source + '/files/index.html';
-  } else {
-    fileName = 'modules/' + source + '/files/' + command.join('/');
-  }
-
-  var mimeTypes = {
+  let mimeTypes = {
     css: 'text/css',
     ico: 'image/x-icon',
     js: 'text/javascript',
@@ -41,11 +32,25 @@ function exec (properties) {
     eot: 'application/vnd.ms-fontobject'
   };
 
-  var fileNameSplitByDot = fileName.split('.');
-  var extension = fileNameSplitByDot[fileNameSplitByDot.length - 1];
-  var mimeType = mimeTypes.hasOwnProperty(extension) ? mimeTypes[extension] : 'text/html';
+  let fileNameSplitByDot = fileName.split('.');
+  let extension = fileNameSplitByDot[fileNameSplitByDot.length - 1];
+  let mimeType = mimeTypes.hasOwnProperty(extension) ? mimeTypes[extension] : 'text/html';
 
-  return {error: 0, data: fileName, type: 'file:' + mimeType, command: command, path: ['source', source].concat(command)};
+  if (command.length >= 2 && command[0] === 'api' && command[1] === 'v1') {
+    request.url = '/' + command.slice(2).join('/');
+    return route.route(request);
+  } else if (command.length >= 1 && (command[0] === 'api' || command[0] === 'v1')) {
+    request.url = '/' + command.slice(1).join('/');
+    return route.route(request);
+  }
+
+  return {
+    error: 0,
+    data: fileName,
+    type: 'file:' + mimeType,
+    command: command,
+    path: ['source', source].concat(command)
+  };
 }
 
 // exports
