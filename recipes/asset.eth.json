@@ -95,6 +95,9 @@
       "fail 'Cannot interpret history data!'",
       "with offset [math,'$offset - ($histPage*$pageOffset)']"
     ],
+    "test" : [
+      "done {}"
+    ],
     "transaction" : [
       "time $timeout",
       "rand",

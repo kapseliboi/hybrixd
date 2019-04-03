@@ -66,6 +66,9 @@
           }
         }
       },
+      "test" : {
+        "_this": "Retrieve test data."
+      },
       "sample" : {
         "_this": "Retrieve a sample address and transaction id for test purposes.",
         "_response": {"address":"1J3St3rp3hVsuLGhegbLWicyPL3NRD3YJ7","transaction":"2c0832c153cf33327dae0e95a3bc39f4b02ae887725a32c07b1be47a2faffc55"}

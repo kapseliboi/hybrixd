@@ -50,6 +50,9 @@
     "history": [
       "done []"
     ],
+    "test":[
+      "done {unspent:'998719879287873'}"
+    ],
     "transaction": [
       "done {a:1}"
     ],
