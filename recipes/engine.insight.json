@@ -5,7 +5,8 @@
   "cache":1000,
   "throttle":1,
   "timeout":24000,
-  "longtimeout":60000,
+  "longTimeout":60000,
+  "shortTimeout":7000,
   "confirmsRequired":6,
   "utxo_unspent_prefix":"76a914",
   "utxo_unspent_suffix":"88ac",
@@ -15,8 +16,8 @@
   "quartz":{
     "balance" : [
       "time $timeout",
-      "curl asset://$symbol /addr/$1/balance GET {'Content-Type':'application/json'}",
-      "tran {confirmed:'.result.confirmed_balance',unconfirmed:'.result.mempool_balance'} 3 1",
+      "curl asset://$symbol /addr/$1?noTxList=1 GET {'Content-Type':'application/json'} {timeout:$shortTimeout}",
+      "tran {confirmed:'.balance',unconfirmed:'.unconfirmedBalance'} 3 1",
       "data 0",
       "jump 2",
       "math '${.confirmed}+${.unconfirmed}'"
@@ -49,54 +50,97 @@
       "poke amount",
       "peek unspent",
       "tran {script:'.scriptPubKey',amount:'$amount',txid:'.txid',txn:'.vout'} 2 1",
-      "fail 'Bad input unspents from Electrum!'",
+      "fail 'Bad input unspents from Insight!'",
       "done"
     ],
     "push" : [
       "time $timeout",
       "data {'rawtx':'$1'}",
-      "curl asset://$symbol /tx/send POST {Host:'livenet.flocha.in',Accept:'application/json, text/plain, */*',Accept-Encoding:'gzip, deflate, br',Referer:'https://livenet.flocha.in/tx/send',Content-Type:'application/json;charset=utf-8',DNT:1,Connection:'keep-alive'}",
-      "done",
-      "tran '.result' 4 1",
-      "tran '.error' 1 2",
-      "fail ${.message}",
+      "curl asset://$symbol /tx/send POST {Accept:'application/json, text/plain, */*',Content-Type:'application/json;charset=utf-8',DNT:1,Connection:'keep-alive'} {timeout:$shortTimeout}",
+      "tran '.txid' 1 3",
+      "tran '.result' 3 1",
+      "fail ${.error}",
       "fail 'Bad transaction result!'",
+      "done"
+    ],
+    "transactionData" : [
+      "time $timeout",
+      "curl asset://$symbol /tx/$1 GET {'Content-Type': 'application/json'} # get main transaction body",
       "done"
     ],
     "transaction" : [
       "time $timeout",
-      "data 'https://livenet.flocha.in/api/tx/$1'",
-      "curl '$' '' 'GET' {'Content-Type': 'application/json'}",
-      "tran .result 2 1",
-      "fail 'Cannot get transaction data!'",
-      "tran {id:'.txid', timestamp:'.time', amount:'.vout[0].value', symbol:'$symbol', fee:'$local::fee', 'fee-symbol':'$symbol', source:'.vout[0].scriptPubKey.addresses[0]', target:'.vout[0].scriptPubKey.addresses[0]', data:'NA' } 2 1",
+      "call transactionData/$1",
+      "poke txSource",
+      "with txSource [tran,'.vout[1].scriptPubKey.addresses[0]',2,1] [data,null] [done]",
+      "tran { id:'.txid', timestamp:'.time', amount:'.vout[0].value', symbol:'$symbol', fee:'.fees', 'fee-symbol':'$symbol', source:'$txSource', target:'.vout[0].scriptPubKey.addresses[0]', confirmed:'.confirmations' } 2 @badTx",
+      "@badTx",
       "fail 'Cannot interpret transaction data!'"
     ],
-    "history" : [
-      "time $longtimeout",
-      "data 'https://livenet.flocha.in/api/txs/?address=$1'",
-      "curl 'asset://$symbol' 'GET' {timeout:$timeout}",
-      "tran '.result' 2 1",
-      "fail 'No result!'",
-      "each $ 'sub_history'"
+    "attachment" : [
+      "time $timeout",
+      "call transactionData/$1",
+      "tran .vout 1 @empty",
+      "jstr",
+      "splt 'OP_RETURN '",
+      "pick 1",
+      "splt '\"'",
+      "tran '[0]' 2 @empty",
+      "@empty",
+      "data null",
+      "done"
     ],
-    "sub_history" : [
-      "time $longtimeout",
-      "data ${.value}",
-      "tran .tx_hash @hashFound",
-      "done null",
-      "@hashFound",
-      "poke itemvalue",
-      "call 'transaction/$'",
+    "message" : [
+      "time $timeout",
+      "call attachment/$1",
+      "data '$'",
+      "flow 'null' 1 2",
+      "done ''",
+      "code hex utf8",
+      "done"
+    ],    
+    "history" : [
+      "time $longTimeout",
+      "with countTo [data,'$count'] [math,'+$offset']",
+      "curl asset://$symbol /addrs/$1/txs?from=$offset&to=$countTo GET {timeout:$timeout}",
+      "tran '.items' 2 1",
+      "fail 'No result!'",
+      "tran '[].txid' 1 -2",
       "done"
     ],
     "fee" : [
+      "data '$1'",
+      "flow 'undefined' 1 3",
+      "data $fee",
+      "jump @allDone",
+      "math '$fee+($byteFee*$1)'",
+      "@allDone"
+    ],
+    "experimental_A" : [
+      "# get latest block hash",
+      "curl asset://$symbol /blocks?limit=3 GET {timeout:$timeout}",
+      "tran .blocks[].hash 2 1",
+      "fail 'Cannot get fee!'",
+      "# get at least 10 tx hashes",
+      "each $ experimental_getBlock",
+      "jstr",
+      "repl '],[' ','",
+      "drop 1 1",
+      "jpar",
+      "done",
+      "# for every tx get fee",
+      "# calculate median fee",
+      "# DIVIDER",
       "peek local::fee",
       "data '$'",
       "flow 'null' 1 2",
       "data '$fee'"
     ],
-    "getFee" : [
+    "experimental_getBlock" : [
+      "data ${.value}",
+      "curl asset://$symbol /txs/?block=$ GET {timeout:$timeout}",
+      "tran .txs[].txid",
+      "done"
     ],
     "sample" : [
       "done {address:'1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX',transaction:'2c0832c153cf33327dae0e95a3bc39f4b02ae887725a32c07b1be47a2faffc55'}"
