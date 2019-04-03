@@ -30,7 +30,12 @@
       },
       "fee":{
         "_this": "Retrieve the average transaction fee for sending an asset.",
-        "_response": {"error":0,"info":"Process data.","id":"1519830189432904","progress":1,"started":1519830189432,"stopped":1519830189437,"data":"0.000420000000000000"}
+        "_response": {"error":0,"info":"Process data.","id":"1519830189432904","progress":1,"started":1519830189432,"stopped":1519830189437,"data":"0.000420000000000000"},
+        "_ref": {
+          "_list": "bytes",
+          "_sample" : 32,
+          "_this": "You may specify the amount of data bytes you intend to attach to the transaction. This may adjust the fee."
+        }
       },
       "fee-factor":{
         "_this": "Retrieve the factor belonging to an asset's fee.",
