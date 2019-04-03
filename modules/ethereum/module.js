@@ -97,17 +97,21 @@ function exec (properties) {
         // when bad result returned: {"status":"0","message":"NOTOK","result":"Error! Missing Or invalid Module name"
         // UBQ {"jsonrpc":"2.0","id":8123,"address":"0xa8201e4dacbe1f098791a0f11ab6271570277bb8","result":"0"}
         if (base === 'ubq') {
-          subprocesses.push('tran(".result",1,3)');
-          subprocesses.push("regx('^\\d',1,2)");
+          subprocesses.push('tran(".result",1,@failure)');
+          subprocesses.push("regx('^\\d',1,@failure)");
           subprocesses.push('atom');
+          subprocesses.push('form');
           subprocesses.push('done');
+          subprocesses.push('@failure');
           subprocesses.push('fail("Error: Ethereum network not responding. Cannot get balance!")');
         } else {
-          subprocesses.push('tran(".result",1,3)');
-          subprocesses.push("regx('^0x',1,4)");
+          subprocesses.push('tran(".result",1,@failure)');
+          subprocesses.push("regx('^0x',1,@failure)");
           subprocesses.push("code 'hex' 'dec'");
           subprocesses.push('atom');
+          subprocesses.push('form');
           subprocesses.push('done');
+          subprocesses.push('@failure');
           subprocesses.push('logs(2,"module ethereum: bad RPC response, retrying request...")');
           subprocesses.push('wait(1500)');
           subprocesses.push('loop(@retryLoop,"retries","<9","1")');
