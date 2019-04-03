@@ -5,7 +5,8 @@
   "mode":"bitcoinjslib.florincoin",
   "addressRegex":"^\\F[a-zA-Z0-9]{33}$",
   "factor":8,
-  "fee":0.000025,
+  "fee":0.001,
+  "byteFee":0.00001024,
   "host":["https://livenet.flocha.in/api"],
   "cache":15000,
   "throttle":10,
@@ -13,6 +14,17 @@
   "quartz":{
     "sample" : [
       "done {address:'FEYWiz5brGLZQ5Wg9FS845dqb94mB1hHxe',transaction:null}"
+    ],
+    "attachment" : [
+      "time $timeout",
+      "call transactionData/$1",
+      "tran .floData 2 1",
+      "data null",
+      "done"
+    ],
+    "message" : [
+      "call attachment/$1",
+      "done"
     ]
   }
 }
