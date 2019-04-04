@@ -1,0 +1,10 @@
+{
+    "symbol":"eth.pep",
+    "name":"PEP Token",
+    "module":"ethereum",
+    "import":"eth",
+    "mode":"ethereum.token",
+    "contract":"0xbb0ef9e617faddf54b8d16e29046f72b4d3ec77f",
+    "originator":"0x1e17a75616cd74f5846b1b71622aa8e10ea26cc0",
+    "factor":18
+}
