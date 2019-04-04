@@ -47,11 +47,15 @@
     "transaction" : [
       "call transactionData/$1",
       "poke reformatObj",
+      "tran '.id' 2 1",
+      "fail 'No transaction data found!'",
+      "with reformatTimestamp [data,$reformatObj] [tran,'.timestamp'] [math,'/1000 .round']",
       "with reformatFee [data,$reformatObj] [tran,'.fee'] [atom]",
-      "with reformatAmount [data,$reformatObj] [tran,'.transfers[].amount'] [math,'+'] [atom]",
+      "with reformatAmount [data,$reformatObj] [tran,'.transfers[].amount',2,1] [done,0] [math,'+'] [atom]",
       "with reformatSymbol [data,$reformatObj] [tran,'.assetId',2,1] [data,'$symbol'] [done]",
-      "with reformatFeeSymbol [data,$reformatObj] [data,'$symbol'] [done]",
-      "tran { id:'.id', timestamp:'.timestamp', amount:'$reformatAmount', symbol:'$reformatSymbol', fee:'$reformatFee', 'fee-symbol':'$reformatFeeSymbol', source:'.sender', target:'.transfers[0].recipient', confirmed:true } 2 1",
+      "with reformatRecipient [data,$reformatObj] [tran,'.recipient',3,1] [tran,'.transfers[0].recipient',2,1] [done,'undefined'] [done]", 
+      "peek reformatObj",
+      "tran { id:'.id', timestamp:'$reformatTimestamp', amount:'$reformatAmount', symbol:'$reformatSymbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.sender', target:'$reformatRecipient', confirmed:true } 2 1",
       "fail 'Cannot get transaction data!'",
       "done"
     ],
