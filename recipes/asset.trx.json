@@ -3,7 +3,7 @@
   "name":"Tron",
   "module":"quartz",
   "mode":"tron",
-  "addressRegex":"^T\\d{33}$",
+  "addressRegex":"^\\T[a-zA-Z0-9]{33}$",
   "factor":6,
   "fee":0,
   "contract":null,
@@ -59,11 +59,13 @@
       "fail 'Could not retrieve transaction ID!'"
     ],
     "history" : [
-      "done",
       "curl asset://$symbol /walletextension/gettransactionstothis POST",
       "poke txTo",
       "curl asset://$symbol /walletextension/gettransactionsfromthis POST",
       "fuse txTo"
+    ],
+    "sample" : [
+      "done {address:'TFKTfUocjxpR3JphaytSXvd9t4aLbYR996',transaction:'a4b578576f685ffe0acaa112b5de8a3ba015f00068e750a3987866ad87f0dc1f'}"
     ]
   }
 }
