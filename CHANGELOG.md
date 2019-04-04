@@ -1,3 +1,12 @@
+# v0.5.5
+## Happy Maroon Ogre
+## 04-04-2019
+
+* Implement qrtz flat
+* ETH balance formatting
+* ETC Token  fix
+
+
 # v0.5.4
 ## Fluffy Turqoise Griffin
 ## 03-04-2019
