@@ -507,6 +507,7 @@ dist:
   - cp ${file}.tar.gz ./dist/${component}/${version}/${file}.tar.gz
   - cp ${file}.tar.xz ./dist/${component}/${version}/${file}.tar.xz
 
+  - mkdir -p ./dist/${component}/latest
   - cp ${file}.zip ./dist/${component}/latest/${fileLatest}.zip
   - cp ${file}.tar.gz ./dist/${component}/latest/${fileLatest}.tar.gz
   - cp ${file}.tar.xz ./dist/${component}/latest/${fileLatest}.tar.xz
