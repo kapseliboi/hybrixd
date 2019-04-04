@@ -1,3 +1,20 @@
+# v0.5.6
+## Furry Maroon Kobold
+## 04-04-2019
+
+* New Insight engine for adding more obscure coins
+* Added FLO coin recipe
+* Moved XEL recipe to recipes.EXTRA
+* History added for many coins
+* Status added for many coins
+* Transaction added for many coins
+* Attachment/OP_RETURN reading added for many coins
+* Message reading added for many coins
+* Added Code of Conduct
+* Update to CI/CD process
+* Merge pull request #2 from MickdeGraaf: PEP token
+
+
 # v0.5.5
 ## Happy Maroon Ogre
 ## 04-04-2019
