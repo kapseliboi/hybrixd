@@ -71,9 +71,9 @@
 
           <p>This Application Programming Interface can be used to retrieve information from hybrixd.</p>
 
-          <p><code>https://api.hybrix.io<span style="color:#4782bc;">/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</span></code>
-          <br/>
-          returns the balance of the Bitcoin address 32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ.<input type="submit" value="Try it!" onclick="rout('/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ');"></p>
+          <p><code>https://api.hybrix.io<span style="color:#4782bc;">/asset/btc/balance/13JQwoSLLR3ffXwswe2HCTK9oq4i8MWK3q</span></code>
+            <br/>
+            returns the balance of the Bitcoin address 13JQwoSLLR3ffXwswe2HCTK9oq4i8MWK3q.<input type="submit" value="Try it!" onclick="rout('/asset/btc/balance/13JQwoSLLR3ffXwswe2HCTK9oq4i8MWK3q');"></p>
 
           <b>Features</b>
 
@@ -105,7 +105,7 @@
 hybrix.sequential([
   'init',                                                        // Initialize hybrix
   {host: 'http://localhost:1111/'}, 'addHost',                   // Add and initialize the host
-  {query: '/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'}, 'rout'  // Query for asset balance
+  {query: '/asset/btc/balance/13JQwoSLLR3ffXwswe2HCTK9oq4i8MWK3q'}, 'rout'  // Query for asset balance
 ],
  onSuccess,                                                      // Define action to execute on successfull completion
  onError,                                                        // Define action to execute when an error is encountered
