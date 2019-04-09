@@ -66,7 +66,8 @@
     ],
     "transaction" : [
       "call 'transactionData/$1'",
-      "with txFee [data,'$fee'] [done]",
+      "# TODO: fee can be TRX and/or 'bandwidth' or 'energy', depending on contract or normal tx!",
+      "with txFee [data,$] [tran,'.costs.net_fee',2,1] [data,0] [atom] [done]",
       "with txAmount [data,$] [tran,'.contractData.amount',2,1] [data,0] [atom] [done]",
       "with txSymbol [data,$] [tran,'.contractData.asset_name',2,1] [data,'$symbol'] [done]",
       "tran {id:'.hash',height:'.block',timestamp:'.timestamp',amount:'$txAmount',symbol:'$txSymbol',fee:'$txFee','fee-symbol':'${fee-symbol}',source:'.ownerAddress',target:'.toAddress',confirmed:'.confirmed'} @okayData @failData",
@@ -90,6 +91,7 @@
       "done"
     ],
     "sample" : [
+      "# contract transaction example: dfc96136312abc9071f92759e41dc3a3d07905f1a12e8c03a558f09917f1c25c",
       "done {address:'TFKTfUocjxpR3JphaytSXvd9t4aLbYR996',transaction:'a4b578576f685ffe0acaa112b5de8a3ba015f00068e750a3987866ad87f0dc1f'}"
     ]
   }
