@@ -80,6 +80,9 @@
       "data null",
       "done"
     ],
+   "test" : [
+      "done {}"
+    ],
     "validate" : [
       "data '$addressRegex'",
       "flow 'undefined' 1 3",

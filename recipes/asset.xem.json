@@ -13,6 +13,7 @@
   "timeout":32000,
   "cache":1000,
   "throttle":5,
+  "genesisBlockTime":1427583985,
   "quartz":{
     "unspent" : [
       "data '$contract'",
@@ -60,19 +61,21 @@
     ],
     "transaction" : [
       "curl asset://$symbol /transaction/get?hash=$1 GET {'content-type':'application/json'}",
-      "poke 'unformattedDataArray'",
-      "tran {id:'.meta.hash.data',amount:'.transaction.amount',fee:'.transaction.fee',target:'.transaction.recipient',source:'.transaction.signer',data:'.transaction.message'} 1 @badObject",
-      "poke 'reformatObj'",
-      "with 'reformatFee' ['data',$reformatObj] ['tran','.fee'] ['atom']",
-      "with 'reformatAmount' ['data',$reformatObj] ['tran','.amount'] ['atom']",
-      "with 'reformatId' ['data',$reformatObj] ['tran','.id']",
-      "with 'reformatTarget' ['data',$reformatObj] ['tran','.target'] ['case','upper'] ['push','-',[6,12,18,24,30,36]]",
-      "with 'reformatSource' ['data','FIXME!']",
-      "peek 'unformattedDataArray'",
-      "tran {id:'$reformatId', timestamp:'.transaction.timeStamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'$fee-symbol', source:'$reformatSource', target:'$reformatTarget', confirmed:true} 1 @badObject",
-      "done",
+      "poke unformattedDataArray",
+      "tran {id:'.meta.hash.data',amount:'.transaction.amount',fee:'.transaction.fee',target:'.transaction.recipient',source:'.transaction.signer',timestamp:'.transaction.timeStamp'} 1 @badObject",
+      "poke reformatObj",
+      "with reformatTimestamp [data,$reformatObj] [tran,'.timestamp'] [math,'+$genesisBlockTime']",
+      "with reformatFee [data,$reformatObj] [tran,'.fee'] ['atom']",
+      "with reformatAmount [data,$reformatObj] [tran,'.amount'] ['atom']",
+      "with reformatId [data,$reformatObj] [tran,'.id']",
+      "with reformatTarget [data,$reformatObj] [tran,'.target'] [case,'upper'] [push,'-',[6,12,18,24,30,36]]",
+      "with reformatSource [data,'FIXME!']",
+      "peek unformattedDataArray",
+      "tran {id:'$reformatId', timestamp:'$reformatTimestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'$fee-symbol', source:'$reformatSource', target:'$reformatTarget', confirmed:true} 1 @badObject",
+      "jump @done",
       "@badObject",
-      "fail 'Could not get transaction data!'"
+      "fail 'Could not get transaction data!'",
+      "@done"
     ],
     "attachment" : [
       "curl asset://$symbol /transaction/get?hash=$1 GET {'content-type':'application/json'}",

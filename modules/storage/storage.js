@@ -76,14 +76,14 @@ let set = function (data, dataCallback, errorCallback) {
     let difficulty = (size * 64 > 5000 ? size * 64 : 5000); // the more bytes to store, the bigger the POW challenge
     let pow = proofOfWork.create(difficulty);
 
-    let meta = {time: Date.now(), hash: DJB2.hash(data.value), size: size, pow: pow.proof, res: pow.hash, n: 0, read: null};
+    let meta = {time: Date.now(), hash: DJB2.hash(data.value), size: size, pow: pow.proof, res: pow.hash, difficulty: difficulty, n: 0, read: null};
 
     if (fs.existsSync(filePath + '.meta')) {
       let oldmeta = JSON.parse(String(fs.readFileSync(filePath + '.meta')));
       if (typeof oldmeta.n !== 'undefined') { meta.n = oldmeta.n; } // overwrite n (not sure that that does though??)
     }
     setMeta({key: data.key, meta}, () => {
-      dataCallback(pow.hash);
+      dataCallback({hint: pow.hash, difficulty: difficulty});
     }, errorCallback);
   }
 };
@@ -105,8 +105,10 @@ let provideProof = function (data, dataCallback, errorCallback) {
       if (meta.res !== 1) {
         meta.n += 1;
         meta.res = 1;
+        console.log('>>>>>>>> Proof accepted');
         setMeta({key, meta}, dataCallback, errorCallback);
       } else {
+        console.log('>>>>>>>>  Proof ignored');
         dataCallback('Ignored');
       }
     } else {
@@ -115,7 +117,7 @@ let provideProof = function (data, dataCallback, errorCallback) {
   }, errorCallback);
 };
 
-let getMeta = function (key, dataCallback, errorCallback) {
+const getMeta = function (key, dataCallback, errorCallback) {
   let fold = key.substr(0, 2) + '/';
   let filePath = storagePath + fold + key;
   if (fs.existsSync(filePath + '.meta')) {

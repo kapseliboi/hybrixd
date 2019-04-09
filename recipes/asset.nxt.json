@@ -112,7 +112,8 @@
     ],
     "transactionData" : [
       "curl asset://$symbol ?requestType=getTransaction&transaction=$1 GET {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}",
-      "done"    
+      "done",
+      "# withMessage is true to retrieve only only transactions having a message attachment, either non-encrypted or decryptable by the account (optional)"
     ],
     "transaction" : [
       "call 'transactionData/$1'",
