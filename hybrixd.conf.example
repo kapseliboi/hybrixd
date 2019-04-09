@@ -8,7 +8,10 @@ restbind = 127.0.0.1
 userbind = 127.0.0.1
 userport = 8080
 
-# minimum and maximum node storage time in days
+# maximum node storage size in bytes (1000000000 = 1GB)
+maxstoragesize = 1000000000
+
+# minimum and maximum node storage time in days, applies if max storage is breached
 minstoragetime = 60
 maxstoragetime = 365
 

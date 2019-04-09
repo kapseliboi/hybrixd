@@ -128,44 +128,65 @@ const getMeta = function (key, dataCallback, errorCallback) {
   }
 };
 
+let getFilesizeInBytes = function(filename) {
+    const stats = fs.statSync(filename)
+    const fileSizeInBytes = stats.size
+    return fileSizeInBytes
+}
+    
 let autoClean = function () {
-  console.log(' [.] module storage: storage auto-clean scan');
   if (!fs.statSync(storagePath).isDirectory()) {
+    console.log(' [.] module storage: creating storage directory');
     fs.mkdirSync(storagePath);
     return; // if path did not exists it's already cleaned
   }
-  fs.readdir(storagePath, (err, directories) => {
-    // scan storage directories
-    directories.sort().forEach((fold, dirindex, dirarray) => {
-      if (fs.statSync(storagePath + fold).isDirectory()) {
-        // DEBUG: console.log(" [i] module storage: found directory " + storepath + fold);
-        fs.readdir(storagePath + fold, (err, files) => {
-          files.sort().forEach((storekey, fileindex, filearray) => {
-            if (storekey.substr(-5) === '.meta') {
-              let fileelement = storagePath + fold + '/' + storekey;
-              // DEBUG: console.log(" [i] module storage: test on storage " + fileelement);
-              if (fs.existsSync(fileelement)) {
-                let meta = JSON.parse(String(fs.readFileSync(fileelement)));
-                // DEPRECATED: var mindeadline = Date.now() - (global.hybrixd.maxstoragetime * 86400) - global.hybrixd.maxstoragetime * (864 * meta.n);
-                let mindeadline = Date.now() - ((typeof global.hybrixd.minstoragetime !== 'undefined' && global.hybrixd.minstoragetime >= 1 ? global.hybrixd.minstoragetime : 1) * 86400);
-                let maxdeadline = Date.now() - ((typeof global.hybrixd.maxstoragetime !== 'undefined' && global.hybrixd.maxstoragetime >= 1 ? global.hybrixd.maxstoragetime : 365) * 86400);
-                if ((meta.res !== 1 && meta.time < mindeadline) || (meta.res === 1 && meta.time < maxdeadline)) {
-                  let dataelement = fileelement.substr(0, fileelement.length - 5);
-                  try {
-                    fs.unlinkSync(dataelement);
-                    fs.unlinkSync(fileelement);
-                    console.log(' [i] module storage: purged stale storage element' + dataelement);
-                    // DEBUG: console.log(' [i] module storage: STORETIME ' + meta.time + ' MINDEADLINE ' + mindeadline + ' MAXDEADLINE ' + maxdeadline);
-                  } catch (e) {
-                    console.log(' [!] module storage: failed to purge stale storage ' + dataelement);
+  console.log(' [.] module storage: auto-clean scan');
+  let du = require('du')
+  du(storagePath, function (err, maxstoragesize) {
+    console.log(' [i] module storage: size is '+maxstoragesize+' bytes');
+    if(maxstoragesize > global.hybrixd.maxstoragesize) {
+      console.log(' [.] module storage: size maximum reached, cleaning...');
+      fs.readdir(storagePath, (err, directories) => {
+        // scan storage directories
+        directories.sort().forEach((fold, dirindex, dirarray) => {
+          if (fs.statSync(storagePath + fold).isDirectory()) {
+            // DEBUG: console.log(" [i] module storage: found directory " + storepath + fold);
+            fs.readdir(storagePath + fold, (err, files) => {
+              files.sort().forEach((storekey, fileindex, filearray) => {
+                if (storekey.substr(-5) === '.meta') {
+                  let fileelement = storagePath + fold + '/' + storekey;
+                  // DEBUG: console.log(" [i] module storage: test on storage " + fileelement);
+                  if (fs.existsSync(fileelement)) {
+                    let meta = JSON.parse(String(fs.readFileSync(fileelement)));
+                    // DEPRECATED: let mindeadline = Date.now() - (global.hybrixd.maxstoragetime * 86400) - global.hybrixd.maxstoragetime * (864 * meta.n);
+                    let mindeadline = Date.now() - ((typeof global.hybrixd.minstoragetime !== 'undefined' && global.hybrixd.minstoragetime >= 1 ? global.hybrixd.minstoragetime : 1) * 86400);
+                    let maxdeadline = Date.now() - ((typeof global.hybrixd.maxstoragetime !== 'undefined' && global.hybrixd.maxstoragetime >= 1 ? global.hybrixd.maxstoragetime : 365) * 86400);
+                    let criteria_min = (String(meta.res) !== '1' && meta.time < mindeadline); // not past min deadline, unresolved PoW
+                    let criteria_max = (String(meta.res) === '1' && meta.time < maxdeadline); // not past max deadline, resolved PoW
+                    if (maxstoragesize > global.hybrixd.maxstoragesize && (criteria_min || criteria_max)) {
+                      let dataelement = fileelement.substr(0, fileelement.length - 5);
+                      try {
+                        // get filesize and subtract that from maxstoragesize
+                        let deleteSize = getFilesizeInBytes(fileelement)+getFilesizeInBytes(dataelement);
+                        maxstoragesize = maxstoragesize - deleteSize;
+                        // delete the file and metadata
+                        fs.unlinkSync(dataelement);
+                        fs.unlinkSync(fileelement);
+                        console.log(' [i] module storage: purged stale storage element' + dataelement);
+                      } catch (e) {
+                        console.log(' [!] module storage: failed to purge stale storage ' + dataelement);
+                      }
+                    }
                   }
                 }
-              }
-            }
-          });
+              });
+            });
+          }
         });
-      }
-    });
+      });      
+    } else {
+      console.log(' [i] module storage: no cleaning necessary');
+    }
   });
 };
 
