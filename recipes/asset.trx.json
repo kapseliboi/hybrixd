@@ -6,8 +6,10 @@
   "addressRegex":"^\\T[a-zA-Z0-9]{33}$",
   "factor":6,
   "fee":0,
+  "fee-symbol":"trx",
   "contract":null,
   "host":["https://api.trongrid.io"],
+  "hostTronScan":"https://api.tronscan.org/api",
   "cache":10000,
   "throttle":10,
   "quartz":{
@@ -19,11 +21,11 @@
       "code base58 hex",
       "case lower",
       "drop -8",
-      "data '{address: \"$data\"}'",
+      "data {address:'$'}",
       "curl asset://$symbol /walletsolidity/getaccount POST",
       "tran .balance @done @empty",
       "@tokenBalance",
-      "curl https://apilist.tronscan.org /api/account?address=$1 GET",
+      "curl $hostTronScan /api/account?address=$1 GET",
       "poke result",
       "tran .trc20token_balances 1 1",
       "find {contract_address:'$contract'} 1 @trc10tokens",
@@ -58,13 +60,38 @@
       "@failDetails",
       "fail 'Could not retrieve transaction ID!'"
     ],
+    "transactionData" : [
+      "curl $hostTronScan /transaction-info?hash=$1",
+      "done"
+    ],
+    "transaction" : [
+      "call 'transactionData/$1'",
+      "# TODO: fee can be TRX and/or 'bandwidth' or 'energy', depending on contract or normal tx!",
+      "with txFee [data,$] [tran,'.costs.net_fee',2,1] [data,0] [atom] [done]",
+      "with txAmount [data,$] [tran,'.contractData.amount',2,1] [data,0] [atom] [done]",
+      "with txSymbol [data,$] [tran,'.contractData.asset_name',2,1] [data,'$symbol'] [done]",
+      "tran {id:'.hash',height:'.block',timestamp:'.timestamp',amount:'$txAmount',symbol:'$txSymbol',fee:'$txFee','fee-symbol':'${fee-symbol}',source:'.ownerAddress',target:'.toAddress',confirmed:'.confirmed'} @okayData @failData",
+      "@failData",
+      "done",
+      "fail 'Cannot get transaction data!'",
+      "@okayData"
+    ],
+    "attachment" : [
+      "call 'transactionData/$1'",
+      "tran '.contractData.data' 2 1",
+      "data null",
+      "done"
+    ],
     "history" : [
-      "curl asset://$symbol /walletextension/gettransactionstothis POST",
-      "poke txTo",
-      "curl asset://$symbol /walletextension/gettransactionsfromthis POST",
-      "fuse txTo"
+      "curl $hostTronScan /transfer?sort=-timestamp&count=true&limit=$count&start=$offset&address=$1 GET",
+      "tran '.data' 2 1",
+      "fail 'Could not get transaction history!'",
+      "tran '[].transactionHash' 1 -1",
+      "# done is needed here, since API already correctly defines offset and limit",
+      "done"
     ],
     "sample" : [
+      "# contract transaction example: dfc96136312abc9071f92759e41dc3a3d07905f1a12e8c03a558f09917f1c25c",
       "done {address:'TFKTfUocjxpR3JphaytSXvd9t4aLbYR996',transaction:'a4b578576f685ffe0acaa112b5de8a3ba015f00068e750a3987866ad87f0dc1f'}"
     ]
   }
