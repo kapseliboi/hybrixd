@@ -7,6 +7,9 @@
     "init":[
       "func 'init'"
     ],
+    "size":[
+      "func 'size'"
+    ],
     "seek":[
       "data {key:'$1'}",
       "func 'seek'"
@@ -20,7 +23,7 @@
       "file",
       "done"
     ],
-     "get":[
+    "get":[
       "data {key:'$1'}",
       "func 'load'",
       "logs",
@@ -33,10 +36,20 @@
       "func 'cron'"
     ],
     "set":[
+      "test $ @dataPost @dataGet",
+      "@dataPost",
+      "data {key:'$1',value:'$'}",
+      "jump 2",
+      "@dataGet",
       "data {key:'$1',value:'$2'}",
       "func 'save'"
     ],
     "save":[
+      "test $ @dataPost @dataGet",
+      "@dataPost",
+      "data {key:'$1',value:'$'}",
+      "jump 2",
+      "@dataGet",
       "data {key:'$1',value:'$2'}",
       "func 'save'"
     ],
@@ -57,6 +70,9 @@
   },
   "router" : {
     "_help" : "Control the decentralized storage engine.",
+    "size":{
+      "_this" : "Return total size of local storage."
+    },
     "seek":{
       "_help" : "Check if a storage key exists.",
       "_ref" : {
@@ -76,7 +92,7 @@
       "_help" : "Save data to storage.",
       "_ref" : {
         "_list" : "storage_id",
-        "_help" : "Specify the ID key to save storage to.",
+        "_this" : "Specify the ID key to save storage to.",
         "_ref" : {
           "_list" : "data",
           "_this" : "Specify the data string value to be saved."
