@@ -11,6 +11,14 @@ function makeDir (dirname) {
   }
 }
 
+let size = function (dataCallback, errorCallback) {
+  let storageSize = 0;
+  if (fs.existsSync(storagePath+'/size')) {
+    storageSize = fs.readFileSync(storagePath+'/size').toString();
+  }
+  dataCallback(storageSize);
+}
+
 let seek = function (key, dataCallback, errorCallback) {
   let fold = key.substr(0, 2) + '/';
   let filePath = storagePath + fold + key;
@@ -69,7 +77,7 @@ let set = function (data, dataCallback, errorCallback) {
     let fold = data.key.substr(0, 2) + '/';
     makeDir(storagePath + fold);
     let filePath = storagePath + fold + data.key;
-    fs.writeFileSync(filePath, data.value); // TODO ASYNC when web wallet is able to do autoproc calls
+    fs.writeFileSync(filePath, data.value);       // TODO ASYNC when web wallet is able to do autoproc calls
 
     // create proof of work
     let size = data.value.length;
@@ -82,6 +90,10 @@ let set = function (data, dataCallback, errorCallback) {
       let oldmeta = JSON.parse(String(fs.readFileSync(filePath + '.meta')));
       if (typeof oldmeta.n !== 'undefined') { meta.n = oldmeta.n; } // overwrite n (not sure that that does though??)
     }
+
+    // save entry to the mutation list
+    // TODO!!!
+    
     setMeta({key: data.key, meta}, () => {
       dataCallback({hint: pow.hash, difficulty: difficulty});
     }, errorCallback);
@@ -105,10 +117,8 @@ let provideProof = function (data, dataCallback, errorCallback) {
       if (meta.res !== 1) {
         meta.n += 1;
         meta.res = 1;
-        console.log('>>>>>>>> Proof accepted');
         setMeta({key, meta}, dataCallback, errorCallback);
       } else {
-        console.log('>>>>>>>>  Proof ignored');
         dataCallback('Ignored');
       }
     } else {
@@ -144,6 +154,7 @@ let autoClean = function () {
   let du = require('du')
   du(storagePath, function (err, maxstoragesize) {
     console.log(' [i] module storage: size is '+maxstoragesize+' bytes');
+    fs.writeFileSync(storagePath+'/size',maxstoragesize); // store size for /size call
     if(maxstoragesize > global.hybrixd.maxstoragesize) {
       console.log(' [.] module storage: size maximum reached, cleaning...');
       fs.readdir(storagePath, (err, directories) => {
@@ -152,13 +163,12 @@ let autoClean = function () {
           if (fs.statSync(storagePath + fold).isDirectory()) {
             // DEBUG: console.log(" [i] module storage: found directory " + storepath + fold);
             fs.readdir(storagePath + fold, (err, files) => {
-              files.sort().forEach((storekey, fileindex, filearray) => {
+              files.forEach((storekey, fileindex, filearray) => {
                 if (storekey.substr(-5) === '.meta') {
                   let fileelement = storagePath + fold + '/' + storekey;
                   // DEBUG: console.log(" [i] module storage: test on storage " + fileelement);
                   if (fs.existsSync(fileelement)) {
                     let meta = JSON.parse(String(fs.readFileSync(fileelement)));
-                    // DEPRECATED: let mindeadline = Date.now() - (global.hybrixd.maxstoragetime * 86400) - global.hybrixd.maxstoragetime * (864 * meta.n);
                     let mindeadline = Date.now() - ((typeof global.hybrixd.minstoragetime !== 'undefined' && global.hybrixd.minstoragetime >= 1 ? global.hybrixd.minstoragetime : 1) * 86400);
                     let maxdeadline = Date.now() - ((typeof global.hybrixd.maxstoragetime !== 'undefined' && global.hybrixd.maxstoragetime >= 1 ? global.hybrixd.maxstoragetime : 365) * 86400);
                     let criteria_min = (String(meta.res) !== '1' && meta.time < mindeadline); // not past min deadline, unresolved PoW
@@ -190,6 +200,7 @@ let autoClean = function () {
   });
 };
 
+exports.size = size;
 exports.seek = seek;
 exports.get = get;
 exports.set = set;

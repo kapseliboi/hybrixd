@@ -13,6 +13,10 @@ function cron (proc) {
   proc.pass('Autoclean');
 }
 
+function size (proc, data) {
+  storage.size(proc.pass, proc.fail);
+}
+
 function seek (proc, data) {
   storage.seek(data.key, proc.pass, proc.fail);
 }
@@ -38,5 +42,6 @@ exports.save = save;
 exports.load = load;
 exports.work = work;
 exports.seek = seek;
+exports.size = size;
 exports.cron = cron;
 exports.meta = meta;
