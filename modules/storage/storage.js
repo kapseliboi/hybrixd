@@ -138,12 +138,12 @@ const getMeta = function (key, dataCallback, errorCallback) {
   }
 };
 
-let getFilesizeInBytes = function(filename) {
-    const stats = fs.statSync(filename)
-    const fileSizeInBytes = stats.size
-    return fileSizeInBytes
-}
-    
+let getFilesizeInBytes = function (filename) {
+  const stats = fs.statSync(filename);
+  const fileSizeInBytes = stats.size;
+  return fileSizeInBytes;
+};
+
 let autoClean = function () {
   if (!fs.statSync(storagePath).isDirectory()) {
     console.log(' [.] module storage: creating storage directory');
@@ -151,11 +151,11 @@ let autoClean = function () {
     return; // if path did not exists it's already cleaned
   }
   console.log(' [.] module storage: auto-clean scan');
-  let du = require('du')
+  let du = require('du');
   du(storagePath, function (err, maxstoragesize) {
     console.log(' [i] module storage: size is '+maxstoragesize+' bytes');
     fs.writeFileSync(storagePath+'/size',maxstoragesize); // store size for /size call
-    if(maxstoragesize > global.hybrixd.maxstoragesize) {
+    if (maxstoragesize > global.hybrixd.maxstoragesize) {
       console.log(' [.] module storage: size maximum reached, cleaning...');
       fs.readdir(storagePath, (err, directories) => {
         // scan storage directories
@@ -177,7 +177,7 @@ let autoClean = function () {
                       let dataelement = fileelement.substr(0, fileelement.length - 5);
                       try {
                         // get filesize and subtract that from maxstoragesize
-                        let deleteSize = getFilesizeInBytes(fileelement)+getFilesizeInBytes(dataelement);
+                        let deleteSize = getFilesizeInBytes(fileelement) + getFilesizeInBytes(dataelement);
                         maxstoragesize = maxstoragesize - deleteSize;
                         // delete the file and metadata
                         fs.unlinkSync(dataelement);
@@ -193,7 +193,7 @@ let autoClean = function () {
             });
           }
         });
-      });      
+      });
     } else {
       console.log(' [i] module storage: no cleaning necessary');
     }
