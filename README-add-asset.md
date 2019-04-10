@@ -65,6 +65,8 @@ You will need the following information:
 - - - balance : The balance a given address. For example `/addresses/balance/$YOUR_ADDRESS`
 - - - unspents : The unspents (pre-transactional data) for a given address.
 - - - push : To submit a signed transaction to the blockchain.
+- - - message/attachement : Retrieve the message, attachement or 'op_return'
+  attached to an transaction.
 - - - transaction : To retrieve details about a transaction
 - - - history : To retrieve history for a given address.
 
