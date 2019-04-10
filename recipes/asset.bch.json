@@ -1,0 +1,22 @@
+{
+  "symbol":"bch",
+  "name":"Bitcoin Cash",
+  "module":"quartz",
+  "mode":"bitcoin_cash",
+  "factor":8,
+  "fee":0.00001,
+  "host": "https://bitcoincash.blockexplorer.com/api",
+  "cache":60000,
+  "throttle":10,
+  "import":"insight",
+  "quartz":{
+    "validate" : [
+      "data '$1'",
+      "regx '^bitcoincash:|1' @success @fail",
+      "@success",
+      "done 'valid'",
+      "@fail",
+      "done 'invalid'"
+    ]
+  }
+}
