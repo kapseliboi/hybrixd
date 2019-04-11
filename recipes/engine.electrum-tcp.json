@@ -165,7 +165,7 @@
       "data {'jsonrpc':'2.0','id': 1, 'method': 'blockchain.estimatefee', 'params': ['$confirmsRequired'] }",
       "curl asset://$symbol",
       "tran '.result' 1 3",
-      "ship 1 2 2",
+      "ship 1 2 2 2",
       "poke local::fee",
       "done"
     ]

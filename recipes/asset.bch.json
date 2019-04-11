@@ -5,9 +5,9 @@
   "mode":"bitcoin_cash",
   "factor":8,
   "fee":0.00001,
-  "host": "https://bitcoincash.blockexplorer.com/api",
+  "host": ["https://bch.blockdozer.com/api","https://bitcoincash.blockexplorer.com/api"],
   "cache":60000,
-  "throttle":10,
+  "throttle":1,
   "import":"insight",
   "quartz":{
     "validate" : [
