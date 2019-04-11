@@ -1,3 +1,22 @@
+# v0.5.7
+## Little Maroon Sphinx
+## 11-04-2019
+
+* Implement pow queue
+* Recipe for BCH using the insight engine
+* Update interface for pow queueing
+* Unspents for BCH now working
+* Upgrade storage
+* Download latest versions of packages straight from GitHub
+* Update lzma's
+* Added du and async
+* hybrixd configuration and example updated for maxstorage size
+* Storage to retain all data until maxstorage size is breached
+* Added du module + fix of NPM vulnerabilities
+* Proper fee calculation in tx history for TRX
+* Tron transaction,history,status,attachment,message
+* Add nonzero example
+
 # v0.5.6
 ## Furry Maroon Kobold
 ## 04-04-2019
