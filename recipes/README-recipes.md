@@ -54,7 +54,7 @@ name
 Discription: A string containing the display name (for pretty printing).
 Example: "Bitcoin"
 
-mode (TODO TO BE RENAMED!)
+mode
 Discription: A string containing the deterministic mode.
 Format: "$DeterministicModule.$modus"
 Example: "bitjoinjslib.bitcoin"

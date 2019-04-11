@@ -1,9 +1,18 @@
 // storage.js :: higher level storage functions
 // depends on localforage.nopromises.min.js
+const SECONDS_IN_A_DAY = 86400;
+
 let fs = require('fs');
 let DJB2 = require('../../common/crypto/hashDJB2');
 let proofOfWork = require('../../common/crypto/proof');
 let storagePath = require('path').normalize(process.cwd() + '/../storage/'); // TODO define in conf file
+let du = require('du');
+
+const getFilesizeInBytes = function (filename) {
+  const stats = fs.statSync(filename);
+  const fileSizeInBytes = stats.size;
+  return fileSizeInBytes;
+};
 
 function makeDir (dirname) {
   if (!fs.existsSync(dirname)) {
@@ -13,11 +22,11 @@ function makeDir (dirname) {
 
 let size = function (dataCallback, errorCallback) {
   let storageSize = 0;
-  if (fs.existsSync(storagePath+'/size')) {
-    storageSize = fs.readFileSync(storagePath+'/size').toString();
+  if (fs.existsSync(storagePath + '/size')) {
+    storageSize = fs.readFileSync(storagePath + '/size').toString();
   }
   dataCallback(storageSize);
-}
+};
 
 let seek = function (key, dataCallback, errorCallback) {
   let fold = key.substr(0, 2) + '/';
@@ -29,7 +38,7 @@ let seek = function (key, dataCallback, errorCallback) {
   }
 };
 
-let get = function (key, dataCallback, errorCallback) {
+let load = function (key, dataCallback, errorCallback) {
   let fold = key.substr(0, 2) + '/';
   let filePath = storagePath + fold + key;
 
@@ -62,41 +71,77 @@ let qrtzLoad = function (key, dataCallback, errorCallback) {
   }
 };
 
-let setMeta = function (data, dataCallback, errorCallback) {
-  let fold = data.key.substr(0, 2) + '/';
-  makeDir(storagePath + fold);
-  let filePath = storagePath + fold + data.key;
-  fs.writeFileSync(filePath + '.meta', JSON.stringify(data.meta));
-  dataCallback();
+const createFile = (key, value, dataCallback, errorCallback) => {
+  const fold = key.substr(0, 2) + '/';
+  const filePath = storagePath + fold + key;
+  const hash = DJB2.hash(value);
+
+  const size = value.length;
+  const difficulty = (size * 64 > 5000 ? size * 64 : 5000); // the more bytes to store, the bigger the POW challenge TODO conf setting
+  const pow = proofOfWork.create(difficulty);
+
+  const meta = {
+    time: Date.now(), // Creation time
+    mod: Date.now(), // Modification time
+    read: null, // Read time
+    expire: null, // Expiration time : null means ephimiral it could be removed at any moment
+
+    hash, // Content Hash
+
+    pow: pow.proof, // proof of work solution
+    challenge: pow.hash, // proof of work challenge
+    difficulty: difficulty // proof of work difficulty
+  };
+
+  fs.writeFileSync(filePath, value); // TODO ASYNC when web wallet is able to do autoproc calls
+  fs.writeFileSync(filePath + '.meta', JSON.stringify(meta));
+
+  // TODO save entry to the mutation list
+  dataCallback({action: 'create', hash, expire: null, challenge: meta.challenge, difficulty: meta.difficulty});
 };
 
-let set = function (data, dataCallback, errorCallback) {
+const updateFile = (key, value, dataCallback, errorCallback) => {
+  const fold = key.substr(0, 2) + '/';
+  const filePath = storagePath + fold + key;
+  const meta = JSON.parse(String(fs.readFileSync(filePath + '.meta')));
+  const hash = DJB2.hash(value);
+  if (hash === meta.hash) { // value has not changed
+    dataCallback({action: 'none', hash, expire: meta.expire, challenge: meta.challenge, difficulty: meta.difficulty});
+  } else {
+    const currentSize = getFilesizeInBytes(filePath);
+    const newSize = value.length;
+
+    if (meta.expire !== null) { // If proof of work has been done then this might need modificaion
+      if (newSize > currentSize) { // Size is larger, so it will expire sooner
+        meta.expire = meta.time + (meta.expire - meta.time) / newSize * currentSize;
+      }
+    }
+
+    meta.hash = hash;
+
+    fs.writeFileSync(filePath, value);
+    fs.writeFileSync(filePath + '.meta', JSON.stringify(meta));
+
+    // TODO save entry to the mutation list
+
+    dataCallback({action: 'update', hash, expire: meta.expire, challenge: meta.challenge, difficulty: meta.difficulty});
+  }
+};
+
+let save = function (data, dataCallback, errorCallback) {
   if (data.value.length > 4096) { // TODO value to conf
     errorCallback('Storage limit is 4096 bytes.');
   } else {
     let fold = data.key.substr(0, 2) + '/';
+
     makeDir(storagePath + fold);
+
     let filePath = storagePath + fold + data.key;
-    fs.writeFileSync(filePath, data.value);       // TODO ASYNC when web wallet is able to do autoproc calls
-
-    // create proof of work
-    let size = data.value.length;
-    let difficulty = (size * 64 > 5000 ? size * 64 : 5000); // the more bytes to store, the bigger the POW challenge
-    let pow = proofOfWork.create(difficulty);
-
-    let meta = {time: Date.now(), hash: DJB2.hash(data.value), size: size, pow: pow.proof, res: pow.hash, difficulty: difficulty, n: 0, read: null};
-
     if (fs.existsSync(filePath + '.meta')) {
-      let oldmeta = JSON.parse(String(fs.readFileSync(filePath + '.meta')));
-      if (typeof oldmeta.n !== 'undefined') { meta.n = oldmeta.n; } // overwrite n (not sure that that does though??)
+      updateFile(data.key, data.value, dataCallback, errorCallback);
+    } else {
+      createFile(data.key, data.value, dataCallback, errorCallback);
     }
-
-    // save entry to the mutation list
-    // TODO!!!
-    
-    setMeta({key: data.key, meta}, () => {
-      dataCallback({hint: pow.hash, difficulty: difficulty});
-    }, errorCallback);
   }
 };
 
@@ -110,38 +155,53 @@ let del = function (key, dataCallback, errorCallback) {
 };
 
 let provideProof = function (data, dataCallback, errorCallback) {
-  let key = data.key;
-  let pow = data.pow;
+  const key = data.key;
+  const pow = data.pow;
   getMeta(key, (meta) => {
-    if (meta.pow === pow) {
-      if (meta.res !== 1) {
-        meta.n += 1;
-        meta.res = 1;
-        setMeta({key, meta}, dataCallback, errorCallback);
+    if (meta.hasOwnProperty('pow')) {
+      if (meta.pow === pow) {
+        const fold = key.substr(0, 2) + '/';
+        const filePath = storagePath + fold + key;
+
+        delete meta.pow;
+        delete meta.challenge;
+        delete meta.difficulty;
+
+        if (meta.expire === null) {
+          meta.expire = Date.now() + global.hybrixd.maxstoragetime * SECONDS_IN_A_DAY;
+        } else {
+          meta.expire += global.hybrixd.maxstoragetime * SECONDS_IN_A_DAY;
+        }
+
+        fs.writeFileSync(filePath + '.meta', JSON.stringify(meta));
+
+        dataCallback({expire: meta.expire});
       } else {
-        dataCallback('Ignored');
+        errorCallback('Invalid proof.');
       }
     } else {
-      errorCallback('Invalid proof.');
+      errorCallback('No proof requested.');
     }
   }, errorCallback);
 };
 
 const getMeta = function (key, dataCallback, errorCallback) {
-  let fold = key.substr(0, 2) + '/';
-  let filePath = storagePath + fold + key;
+  const fold = key.substr(0, 2) + '/';
+  const filePath = storagePath + fold + key;
   if (fs.existsSync(filePath + '.meta')) {
-    let meta = JSON.parse(String(fs.readFileSync(filePath + '.meta')));
+    const meta = JSON.parse(String(fs.readFileSync(filePath + '.meta')));
     dataCallback(meta);
   } else {
     errorCallback('File not found');
   }
 };
 
-let getFilesizeInBytes = function (filename) {
-  const stats = fs.statSync(filename);
-  const fileSizeInBytes = stats.size;
-  return fileSizeInBytes;
+const getMetaExt = function (key, dataCallback, errorCallback) {
+  getMeta(key, m => {
+    delete m.pow; // Remove meta to not expose
+    dataCallback(m);
+  }, errorCallback
+  );
 };
 
 let autoClean = function () {
@@ -151,29 +211,31 @@ let autoClean = function () {
     return; // if path did not exists it's already cleaned
   }
   console.log(' [.] module storage: auto-clean scan');
-  let du = require('du');
-  du(storagePath, function (err, maxstoragesize) {
-    console.log(' [i] module storage: size is '+maxstoragesize+' bytes');
-    fs.writeFileSync(storagePath+'/size',maxstoragesize); // store size for /size call
+
+  const now = Date.now();
+  du(storagePath, function (e, maxstoragesize) {
+    console.log(' [i] module storage: size is ' + maxstoragesize + ' bytes');
+    fs.writeFileSync(storagePath + '/size', maxstoragesize); // store size for /size call
+
     if (maxstoragesize > global.hybrixd.maxstoragesize) {
       console.log(' [.] module storage: size maximum reached, cleaning...');
-      fs.readdir(storagePath, (err, directories) => {
+
+      fs.readdir(storagePath, (e, directories) => {
         // scan storage directories
-        directories.sort().forEach((fold, dirindex, dirarray) => {
+        directories.forEach((fold, dirindex, dirarray) => {
           if (fs.statSync(storagePath + fold).isDirectory()) {
             // DEBUG: console.log(" [i] module storage: found directory " + storepath + fold);
-            fs.readdir(storagePath + fold, (err, files) => {
+            fs.readdir(storagePath + fold, (e, files) => {
               files.forEach((storekey, fileindex, filearray) => {
                 if (storekey.substr(-5) === '.meta') {
                   let fileelement = storagePath + fold + '/' + storekey;
                   // DEBUG: console.log(" [i] module storage: test on storage " + fileelement);
                   if (fs.existsSync(fileelement)) {
                     let meta = JSON.parse(String(fs.readFileSync(fileelement)));
-                    let mindeadline = Date.now() - ((typeof global.hybrixd.minstoragetime !== 'undefined' && global.hybrixd.minstoragetime >= 1 ? global.hybrixd.minstoragetime : 1) * 86400);
-                    let maxdeadline = Date.now() - ((typeof global.hybrixd.maxstoragetime !== 'undefined' && global.hybrixd.maxstoragetime >= 1 ? global.hybrixd.maxstoragetime : 365) * 86400);
-                    let criteria_min = (String(meta.res) !== '1' && meta.time < mindeadline); // not past min deadline, unresolved PoW
-                    let criteria_max = (String(meta.res) === '1' && meta.time < maxdeadline); // not past max deadline, resolved PoW
-                    if (maxstoragesize > global.hybrixd.maxstoragesize && (criteria_min || criteria_max)) {
+
+                    const expire = meta.expire === null ? meta.time + global.hybrixd.minstoragetime * SECONDS_IN_A_DAY : meta.expire;
+
+                    if (maxstoragesize > global.hybrixd.maxstoragesize && expire < now) {
                       let dataelement = fileelement.substr(0, fileelement.length - 5);
                       try {
                         // get filesize and subtract that from maxstoragesize
@@ -202,10 +264,10 @@ let autoClean = function () {
 
 exports.size = size;
 exports.seek = seek;
-exports.get = get;
-exports.set = set;
+exports.get = load;
+exports.set = save;
 exports.del = del;
-exports.getMeta = getMeta;
+exports.getMeta = getMetaExt;
 exports.provideProof = provideProof;
 exports.autoClean = autoClean;
 exports.qrtzLoad = qrtzLoad;
