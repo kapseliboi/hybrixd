@@ -36,6 +36,24 @@
       "done",
       "fail 'bad JSON!'"
     ],
+    "proberen" : [
+      "rout /asset/eth/status/0x4d3244b0677b86d06b12cdbaa3ac4f15baaa6d5b",
+      "poke currentStatus",
+      "flow '$local::previousStatus' @nietsGebeurd @doeIets",
+      "@nietsGebeurd",
+      "done 'Er is niets gebeurd!'",
+      "@doeIets",
+      "data '$local::previousStatus'",
+      "flow 'undefined' @eersteKeer @gaDoor",
+      "@eersteKeer",
+      "peek currentStatus",
+      "poke local::previousStatus",
+      "done 'Dit is de eerste aanroep van dit script. Status opgeslagen...'",
+      "@gaDoor",
+      "peek currentStatus",
+      "poke local::previousStatus",
+      "done 'We doen iets!!!'"
+    ],
     "testeach" : [
       "time 60000",
       "each [1,2,3,4,5] 'waitalittle'",
@@ -59,6 +77,7 @@
                 }
         },
         "testeach"  : "Break Qrtz!",
+        "proberen"  : "Iets proberen...",
         "checkpeer"  : "Checks a peer and returns if active. TEST STUFF",
         "checkpeers" : "Checks an array of peers and returns if active. TEST STUFF"
   }
