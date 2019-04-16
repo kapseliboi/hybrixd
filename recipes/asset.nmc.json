@@ -40,7 +40,7 @@
       "@empty",
       "data null",
       "@ok",
-      "done '$ WHUT?'"
+      "done"
     ],
     "message" : [
       "time $longtimeout",
