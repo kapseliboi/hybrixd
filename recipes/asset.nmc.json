@@ -47,7 +47,7 @@
       "call attachment/$1",
       "data '$'",
       "flow 'null' 1 2",
-      "done {namespace:null,records:null}",
+      "done ''",
       "splt ' '",
       "poke namecoinKey ${[0]}",
       "poke namecoinRec ${[1]}",
@@ -63,7 +63,7 @@
       "done '$namecoinKey'"
     ],
     "sample" : [
-      "done {address:'N1AqEtPAZTAYBzw1BjsY84iYgEacxSoTBJ',transaction:'0dfe195fedfd5fac8b210179ada115b4445ea3b13bca464e0a1eb2e59d70847e'}"
+      "done {address:'N1AqEtPAZTAYBzw1BjsY84iYgEacxSoTBJ',transaction:'ae104fa3afe01c130e59526bfb2fac35a74bd0db9c8784233711e06d859d5762'}"
     ]
   }
 }
