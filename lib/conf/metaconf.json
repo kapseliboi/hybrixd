@@ -1,0 +1,75 @@
+{
+
+  "host" : {
+    "hostname" : {
+      "default" : ["localhost"],
+      "type" : "array"
+    },
+    "servers" : {
+      "default" : { "http://127.0.0.1:1111" : "/root", "http://127.0.0.1:8080" : "/source/web-wallet"},
+      "type" : "object"
+    },
+    "ignoretlserror" : {
+      "default" : true,
+      "type" : "boolean"
+    },
+    "defaultmaxlisteners" : {
+      "default" : 25,
+      "type" : "int",
+      "unit" : "amount"
+    }
+  },
+  "scheduler" : {
+    "procpurgetime" : {
+      "default" : 120,
+      "type" : "int",
+      "unit" : "seconds"
+    },
+    "maxparallelprocesses" :{},
+    "tick" : {
+      "default" : 50,
+      "type" : "int",
+      "unit" : "milliseconds"
+    },
+    "maxusage" : {
+      "default" : 80,
+      "type" : "int",
+      "unit" : "%"
+    }
+  },
+  "cache" : {
+    "maxentries" : {
+      "default" : 1000,
+      "type" : "int",
+      "unit" : "objects"
+    },
+    "cleanupinterval" : {
+      "default" : 1000,
+      "type" : "int",
+      "unit" : "milliseconds"
+    },
+
+    "freshthreshold" : {
+      "default" : 1000,
+      "type" : "int",
+      "unit" : "milliseconds"
+    }
+  },
+  "storage" : {
+    "maxstoragesize" : {
+      "default" : 1000000000,
+      "type" : "int",
+      "unit" : "bytes"
+    },
+    "minstoragetime" : {
+      "default" : 30,
+      "type" : "int",
+      "unit" : "days"    	
+    },
+    "maxstoragetime" : {
+      "default" : 365,
+      "type" : "int",
+      "unit" : "days"    	
+    }
+  }
+}

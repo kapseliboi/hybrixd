@@ -174,11 +174,36 @@
       "_help" : "Commands to control and check the cache.",
       "clear" : "Clear the cache."
     },
+    "conf" :{
+      "_help" : "Commands to control and check hybrixd configuration.",
+      "get" : {
+        "_ref" : {
+          "_list" : "key",
+          "_this":"Retrieve a configuration value"
+        }
+      },
+      "list" : {
+        "_this":"List all configuration details",
+        "_ref" : {
+          "_list" : "key",
+          "_this":"List configuration details"
+        }
+      },
+      "set" : {
+        "_ref" : {
+          "_list" : "key",
+          "_ref" : {
+            "_list" : "value",
+            "_this":"Set configuration details"
+          }
+        }
+      }
+    },
     "exec" :{
       "_help" : "Execute a Qrtz script.",
       "_ref" : {
-        "_ellipsis" : true,
-        "_list" : "file",
+          "_ellipsis" : true,
+          "_list" : "file",
         "_this" : "Specify the file containing the code to execute."
       }
     },
