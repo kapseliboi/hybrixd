@@ -3,6 +3,7 @@
 const SECONDS_IN_A_DAY = 86400;
 
 let fs = require('fs');
+let conf = require('../../lib/conf/conf');
 let DJB2 = require('../../common/crypto/hashDJB2');
 let proofOfWork = require('../../common/crypto/proof');
 let storagePath = require('path').normalize(process.cwd() + '/../storage/'); // TODO define in conf file
@@ -168,9 +169,9 @@ let provideProof = function (data, dataCallback, errorCallback) {
         delete meta.difficulty;
 
         if (meta.expire === null) {
-          meta.expire = Date.now() + global.hybrixd.maxstoragetime * SECONDS_IN_A_DAY;
+          meta.expire = Date.now() + conf.get('storage.maxstoragetime') * SECONDS_IN_A_DAY;
         } else {
-          meta.expire += global.hybrixd.maxstoragetime * SECONDS_IN_A_DAY;
+          meta.expire += conf.get('storage.maxstoragetime') * SECONDS_IN_A_DAY;
         }
 
         fs.writeFileSync(filePath + '.meta', JSON.stringify(meta));
@@ -217,7 +218,7 @@ let autoClean = function () {
     console.log(' [i] module storage: size is ' + maxstoragesize + ' bytes');
     fs.writeFileSync(storagePath + '/size', maxstoragesize); // store size for /size call
 
-    if (maxstoragesize > global.hybrixd.maxstoragesize) {
+    if (maxstoragesize > conf.get('storage.maxstoragesize')) {
       console.log(' [.] module storage: size maximum reached, cleaning...');
 
       fs.readdir(storagePath, (e, directories) => {
@@ -233,9 +234,9 @@ let autoClean = function () {
                   if (fs.existsSync(fileelement)) {
                     let meta = JSON.parse(String(fs.readFileSync(fileelement)));
 
-                    const expire = meta.expire === null ? meta.time + global.hybrixd.minstoragetime * SECONDS_IN_A_DAY : meta.expire;
+                    const expire = meta.expire === null ? meta.time + conf.get('storage.maxstoragetime') * SECONDS_IN_A_DAY : meta.expire;
 
-                    if (maxstoragesize > global.hybrixd.maxstoragesize && expire < now) {
+                    if (maxstoragesize > conf.get('storage.maxstoragesize') && expire < now) {
                       let dataelement = fileelement.substr(0, fileelement.length - 5);
                       try {
                         // get filesize and subtract that from maxstoragesize
