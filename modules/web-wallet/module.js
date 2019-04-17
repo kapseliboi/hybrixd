@@ -5,9 +5,6 @@
 // required libraries in this context
 let route = require('../../lib/router/router');
 
-// initialization function
-function init () {}
-
 // exec
 function exec (properties) {
   let source = properties.target.module;
@@ -54,5 +51,4 @@ function exec (properties) {
 }
 
 // exports
-exports.init = init;
 exports.exec = exec;
