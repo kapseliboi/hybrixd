@@ -3,12 +3,7 @@
 // Module to connect to zcash or any of its derivatives
 
 // required libraries in this context
-let fs = require('fs');
-let Client = require('../../lib/rest').Client;
-let functions = require('../../lib/functions');
-let WebSocket = require('ws');
-let Teletype = require('teletype');
-let scheduler = require('../../lib/scheduler');
+let scheduler = require('../../lib/scheduler/scheduler');
 let modules = require('../../lib/modules');
 
 // exports

@@ -1,4 +1,4 @@
-let router = require('../../lib/router');
+let router = require('../../lib/router/router');
 let shaHash = require('js-sha256').sha224;
 // let baseCode = require('../../common/basecode');
 let UrlBase64 = require('../../common/crypto/urlbase64');

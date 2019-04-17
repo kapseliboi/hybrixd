@@ -4,7 +4,7 @@
 
 // required libraries in this context
 // var execSync = require('child_process').execSync;
-let scheduler = require('../../lib/scheduler');
+let scheduler = require('../../lib/scheduler/scheduler');
 let modules = require('../../lib/modules');
 let functions = require('./functions.js');
 let transportIrc = require('./transportIrc.js');

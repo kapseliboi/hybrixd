@@ -1,4 +1,4 @@
-let scheduler = require('../../lib/scheduler');
+let scheduler = require('../../lib/scheduler/scheduler');
 let functions = require('./functions.js');
 
 function open (processID, engine, host, chan, hashSalt) {
