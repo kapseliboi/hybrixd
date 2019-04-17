@@ -3,7 +3,7 @@
 // Module to provide the web wallet
 
 // required libraries in this context
-let route = require('../../lib/router');
+let route = require('../../lib/router/router');
 
 // initialization function
 function init () {}

@@ -7,7 +7,7 @@ let fs = require('fs');
 let Client = require('../../lib/rest').Client;
 let functions = require('../../lib/functions');
 let APIqueue = require('../../lib/APIqueue');
-let scheduler = require('../../lib/scheduler');
+let scheduler = require('../../lib/scheduler/scheduler');
 let modules = require('../../lib/modules');
 let LZString = require('../../common/crypto/lz-string');
 
@@ -38,7 +38,6 @@ function exec (properties) {
   let processID = properties.processID;
   let target = properties.target;
   let base = target.symbol.split('.')[0]; // in case of token fallback to base asset
-  let factor = (typeof target.factor !== 'undefined' ? target.factor : null);
   let subprocesses = [];
   // set request to what command we are performing
   global.hybrixd.proc[processID].request = properties.command;
@@ -79,7 +78,6 @@ function exec (properties) {
         fee = (typeof target.fee !== 'undefined' ? target.fee : null);
       } else {
         fee = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee * 2.465 : null);
-        factor = (typeof global.hybrixd.asset[base].factor !== 'undefined' ? global.hybrixd.asset[base].factor : 18);
       }
       subprocesses.push("data '" + fee + "'");
       subprocesses.push('form');
