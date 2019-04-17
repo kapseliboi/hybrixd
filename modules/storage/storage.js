@@ -1,6 +1,6 @@
 // storage.js :: higher level storage functions
 // depends on localforage.nopromises.min.js
-const SECONDS_IN_A_DAY = 86400;
+const SECONDS_IN_A_DAY = 5184000;
 
 let fs = require('fs');
 let conf = require('../../lib/conf/conf');
@@ -114,7 +114,7 @@ const updateFile = (key, value, dataCallback, errorCallback) => {
 
     if (meta.expire !== null) { // If proof of work has been done then this might need modificaion
       if (newSize > currentSize) { // Size is larger, so it will expire sooner
-        meta.expire = meta.time + (meta.expire - meta.time) / newSize * currentSize;
+        meta.expire = Math.round(meta.time + (meta.expire - meta.time) / newSize * currentSize);
       }
     }
 
@@ -233,8 +233,11 @@ let autoClean = function () {
                   // DEBUG: console.log(" [i] module storage: test on storage " + fileelement);
                   if (fs.existsSync(fileelement)) {
                     let meta = JSON.parse(String(fs.readFileSync(fileelement)));
-
-                    const expire = meta.expire === null ? meta.time + conf.get('storage.maxstoragetime') * SECONDS_IN_A_DAY : meta.expire;
+                    
+                    let minstoragetime = meta.time + conf.get('storage.minstoragetime') * SECONDS_IN_A_DAY;
+                    let maxstoragetime = meta.time + conf.get('storage.maxstoragetime') * SECONDS_IN_A_DAY;
+                    let powstoragetime = meta.expire;
+                    const expire = meta.expire === null ? minstoragetime : (maxstoragetime>powstoragetime?maxstoragetime:powstoragetime) ;
 
                     if (maxstoragesize > conf.get('storage.maxstoragesize') && expire < now) {
                       let dataelement = fileelement.substr(0, fileelement.length - 5);
