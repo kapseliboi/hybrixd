@@ -7,14 +7,16 @@ let fs = require('fs');
 // exports
 exports.redirect = redirect;
 function redirect (proc) {
+  proc.sync();
   const command = proc.command;
-  const protocol = command[1];
+  const protocol = command[0];
 
   switch (protocol) {
     case 'http':
     case 'https':
-      const id = command[0];
-      const redirectJSON = command[2];
+      const id = 'redirect';
+
+      const redirectJSON = command[1];
       const path = command.slice(2);
 
       let commandPath = '/' + path.join('/');
@@ -37,5 +39,7 @@ function redirect (proc) {
         }
       }
       break;
+    default:
+      proc.fail('Unknown protocol!');
   }
 }
