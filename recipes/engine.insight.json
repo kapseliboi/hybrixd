@@ -65,7 +65,7 @@
     ],
     "transactionData" : [
       "time $timeout",
-      "curl asset://$symbol /tx/$1 GET {'Content-Type': 'application/json'} # get main transaction body",
+      "curl asset://$symbol /tx/$1 GET {'Content-Type': 'application/json'}",
       "done"
     ],
     "transaction" : [
@@ -73,7 +73,7 @@
       "call transactionData/$1",
       "poke txSource",
       "with txSource [tran,'.vout[1].scriptPubKey.addresses[0]',2,1] [data,null] [done]",
-      "tran { id:'.txid', timestamp:'.time', amount:'.vout[0].value', symbol:'$symbol', fee:'.fees', 'fee-symbol':'$symbol', source:'$txSource', target:'.vout[0].scriptPubKey.addresses[0]', confirmed:'.confirmations' } 2 @badTx",
+      "tran { id:'.txid', timestamp:'.time', amount:'.vout[0].value', symbol:'$symbol', fee:'=.fees|0', 'fee-symbol':'$symbol', source:'$txSource', target:'.vout[0].scriptPubKey.addresses[0]', confirmed:'.confirmations' } 2 @badTx",
       "@badTx",
       "fail 'Cannot interpret transaction data!'"
     ],
@@ -98,7 +98,7 @@
       "done ''",
       "code hex utf8",
       "done"
-    ],    
+    ],
     "history" : [
       "time $longTimeout",
       "with countTo [data,'$count'] [math,'+$offset']",
@@ -148,7 +148,7 @@
       "flow 'undefined' 2 1",
       "call 'getFee'",
       "done"
-    ],    
+    ],
     "getFee" : [
       "time $timeout",
       "curl asset://$symbol /utils/estimatefee GET {timeout:$timeout}",

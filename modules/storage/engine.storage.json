@@ -18,7 +18,7 @@
       "data {key:'$1'}",
       "func 'load'",
       "logs",
-      "type 'file:data'",
+      "mime 'file:data'",
       "logs",
       "file",
       "done"
@@ -27,7 +27,7 @@
       "data {key:'$1'}",
       "func 'load'",
       "logs",
-      "type 'file:data'",
+      "mime 'file:data'",
       "logs",
       "file",
       "done"

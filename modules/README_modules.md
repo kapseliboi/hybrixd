@@ -28,6 +28,8 @@ To define the behaviour for the command can be defined in two ways.
 
 By using quartz the logic can be defined directly in the recipe. This is preferred for basic modules. A quartz recipe json file can be saved in the `$HYBRIXD/recipes` folder.
 
+
+`$HYBRIXD/recipes/engine.myengine.json`:
 ```
 {
   "engine":"myengine",
@@ -35,12 +37,10 @@ By using quartz the logic can be defined directly in the recipe. This is preferr
   "module" : "quartz",
   },
   "quartz" : {
-  "mycommand" : [
-       "done 'Hello World!'"
-  ]
-
-  }
-
+    "mycommand" : [
+      "done 'Hello World!'"
+    ]
+  },
   "router" : {
     "mycommand":"This will execute my command",
   }
@@ -51,6 +51,26 @@ By using quartz the logic can be defined directly in the recipe. This is preferr
 
 To use a javascript module create a folder `$HYBRIXD/modules/mymodule`. The recipe json file should be moved to this folder. Create a `module.js` file as well.
 
+
+`$HYBRIXD/modules/mymodule/engine.myengine.json`:
+```
+{
+  "engine":"myengine",
+  "name":"My Engine",
+  "module" : "mymodule",
+  },
+  "quartz" : {
+    "mycommand" : [
+      "func mycommand"
+    ]
+  },
+  "router" : {
+    "mycommand":"This will execute my command",
+  }
+}
+```
+
+`$HYBRIXD/modules/mymodule/module.js`:
 ```
 export mycommand;
 
