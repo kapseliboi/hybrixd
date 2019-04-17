@@ -9,15 +9,14 @@
     "_help" : "(experimental!) Redirect engine to query hybrix and redirect based on result.",
     "http" : {
       "_help": "Redirect to an http(s) page.",
-      "_list": "protocol",
       "_ref" : {
         "_help" : "On success or failure redirect to a URI target specified in a JSON object.",
         "_list" : "conditional_redirect",
         "_ref" : {
           "_list" : "path",
           "_this" : "Specify a path to query for its result."
-        }              
-      }              
+        }
+      }
     },
     "https" : {"_alias":"http"}
   }

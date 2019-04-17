@@ -7,7 +7,7 @@
       "func 'assets'"
     ],
     "code" : [
-      "type 'file:data'",
+      "mime 'file:data'",
       "done 'modules/deterministic/$1/deterministic.js.lzma'"
     ],
     "hash" : [
