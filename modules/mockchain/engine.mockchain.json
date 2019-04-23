@@ -18,8 +18,7 @@
     "history" : ["func 'history'"],
     "push" : ["func 'push'"],
     "transaction" : ["func 'transaction'"],
-    "message" : ["func 'message'"],
-    "attachment" : ["func 'attachment'"]
+    "message" : ["func 'message'"]
   },
   "router" : {
     "balance" : {
@@ -39,18 +38,11 @@
         "_this" : "Push a transaction to the mockchain."
       }
     },
-     "message" : {
+    "message" : {
       "_ref" : {
         "_list" : "transactionid",
         "_sample": "0",
         "_this" : "Retrieve a transaction message message/attachment."
-      }
-     },
-     "attachement" : {
-      "_ref" : {
-        "_list" : "transactionid",
-        "_sample": "0",
-        "_this" : "Retrieve a transaction message/attachment."
       }
     },
     "transaction" : {
