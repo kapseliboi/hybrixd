@@ -1,7 +1,7 @@
 // (C) 2019 Internet of Coins / hybrix / Joachim de Koning
 
 // required libraries in this context
-let functions = require('../../lib/functions');
+let JSONfix = require('../../lib/util/jsonfix').parse;
 let fs = require('fs');
 
 // exports
@@ -21,7 +21,7 @@ function redirect (proc) {
 
       let commandPath = '/' + path.join('/');
 
-      let redirectObj = JSON.parse(functions.JSONfix(redirectJSON));
+      let redirectObj = JSON.parse(JSONfix(redirectJSON));
       if (!(redirectObj.success && redirectObj.failure)) {
         proc.fail('Redirection JSON object must contain success and failure keys!');
       } else {

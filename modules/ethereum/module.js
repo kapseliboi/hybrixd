@@ -4,12 +4,25 @@
 
 // required libraries in this context
 let fs = require('fs');
-let Client = require('../../lib/rest').Client;
-let functions = require('../../lib/functions');
+let Client = require('../../lib/util/rest').Client;
 let APIqueue = require('../../lib/APIqueue');
 let scheduler = require('../../lib/scheduler/scheduler');
 let modules = require('../../lib/modules');
 let LZString = require('../../common/crypto/lz-string');
+let hex2dec = require('../../common/crypto/hex2dec'); // convert long HEX to decimal still being used by ethereum quartz code
+
+let Decimal = require('../../common/crypto/decimal-light.js');
+Decimal.set({precision: 64}); // cryptocurrencies (like for example Ethereum) require extremely high precision!
+
+function fromInt (input, factor) {
+  let f = Number(factor);
+  let x = new Decimal(String(input));
+  return x.times((f > 1 ? '0.' + new Array(f).join('0') : '') + '1');
+}
+
+function isToken (symbol) {
+  return (symbol.indexOf('.') !== -1 ? 1 : 0);
+}
 
 let jstr = function (target) { return JSON.stringify({symbol: target.symbol}); };
 
@@ -22,6 +35,23 @@ exports.post = post;
 // Checks if the given string is a plausible ETH address
 function isEthAddress (address) {
   return (/^(0x){1}[0-9a-fA-F]{40}$/i.test(address));
+}
+
+// activate (deterministic) code from a string
+function activate (code) {
+  if (typeof code === 'string') {
+    // interpret deterministic library in a virtual DOM environment
+    //    const {JSDOM} = jsdom;
+  //  var dom = (new JSDOM('', {runScripts: 'outside-only'})).window;
+    //    dom.window.nacl = nacl; // inject NACL into virtual DOM
+  //  dom.window.crypto = crypto; // inject nodeJS crypto to supersede crypto-browserify
+    //    dom.window.logger = logger; // inject the logger function into virtual DOM
+    // var window = dom.window;
+    eval('window.deterministic = (function(){})(); ' + code); // init deterministic code
+    return window.deterministic;
+  }
+  console.log(' [!] error: cannot activate deterministic code!');
+  return function () {};
 }
 
 // initialization function
@@ -55,7 +85,7 @@ function exec (properties) {
         } else { global.hybrixd.asset[target.symbol].link = new Client(); }
         // initialize deterministic code for smart contract calls
         let dcode = String(fs.readFileSync('../modules/deterministic/ethereum/deterministic.js.lzma'));
-        ethDeterministic = functions.activate(LZString.decompressFromEncodedURIComponent(dcode));
+        ethDeterministic = activate(LZString.decompressFromEncodedURIComponent(dcode));
 
         // set up init probe command to check if RPC and block explorer are responding and connected
         subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_gasPrice"]})');
@@ -74,7 +104,7 @@ function exec (properties) {
     case 'fee':
     // directly return fee, post-processing not required!
       let fee;
-      if (!functions.isToken(target.symbol)) {
+      if (!isToken(target.symbol)) {
         fee = (typeof target.fee !== 'undefined' ? target.fee : null);
       } else {
         fee = (typeof global.hybrixd.asset[base].fee !== 'undefined' ? global.hybrixd.asset[base].fee * 2.465 : null);
@@ -86,7 +116,7 @@ function exec (properties) {
     case 'balance':
       if (sourceaddr) {
         subprocesses.push('@retryLoop');
-        if (!functions.isToken(target.symbol)) {
+        if (!isToken(target.symbol)) {
           subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_getBalance",["' + sourceaddr + '","latest"]]})'); // send balance query
         } else {
           let encoded = ethDeterministic.encode({'func': 'balanceOf(address):(uint256)', 'vars': ['address'], 'address': sourceaddr}); // returns the encoded binary (as a Buffer) data to be sent
@@ -192,14 +222,14 @@ function post (properties) {
     switch (properties.command[0]) {
       case 'init':
         if (typeof postdata.result !== 'undefined' && postdata.result > 0) {
-          global.hybrixd.asset[target.symbol].fee = functions.fromInt(functions.hex2dec.toDec(String(postdata.result)).times((21000 * 2)), feefactor);
+          global.hybrixd.asset[target.symbol].fee = fromInt(hex2dec.toDec(String(postdata.result)).times((21000 * 2)), feefactor);
         } else {
           global.hybrixd.asset[target.symbol].fee = global.hybrixd.asset[base].fee;
         }
         break;
       case 'updateFee':
         if (typeof postdata.result !== 'undefined' && postdata.result > 0) {
-          global.hybrixd.asset[target.symbol].fee = functions.fromInt(functions.hex2dec.toDec(String(postdata.result)).times((21000 * 2)), feefactor);
+          global.hybrixd.asset[target.symbol].fee = fromInt(hex2dec.toDec(String(postdata.result)).times((21000 * 2)), feefactor);
         }
         break;
       default:
