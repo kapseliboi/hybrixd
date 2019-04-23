@@ -17,39 +17,45 @@ function init () {
 
 function addSubprocesses (subprocesses, commands, recipe, xpath) {
   let command = xpath[0];
-  // Prepend address validation
-  if (command === 'balance' || command === 'history' || command === 'unspent') {
-    subprocesses.push('call validate/$1');
-    subprocesses.push('flow valid 2  1');
-    subprocesses.push('fail "Invalid address"');
+  if (recipe.hasOwnProperty('symbol')) { // only for assets
+    if (command === 'balance' || command === 'history' || command === 'unspent') {
+      subprocesses.push('call validate/$1');
+      subprocesses.push('flow valid 2  1');
+      subprocesses.push('fail "Invalid address"');
+    }
   }
 
   for (let i = 0, len = commands.length; i < len; ++i) {
     subprocesses.push(commands[i]);
   }
-  // Postprocess: Append formating of result for specific commands
-  if (command === 'balance' || command === 'fee') { // append formatting of returned numbers
-    subprocesses.push('form');
-    subprocesses.push('done');
-  }
-  if (command === 'transaction') { // append formatting of returned numbers
-    subprocesses.push('poke formAmount ${.amount}');
-    subprocesses.push('with formAmount form');
-    subprocesses.push('poke formFee ${.fee}');
-    subprocesses.push('with formFee form');
-    subprocesses.push('data {id:"${.id}",timestamp:${.timestamp},amount:"$formAmount",symbol:"${.symbol}",fee:"$formFee",fee-symbol:"${.fee-symbol}",source:"${.source}",target:"${.target}"}');
-    subprocesses.push('done');
-  }
-  if (command === 'history') { // take into account the offset and record count
-    subprocesses.unshift('vars {"count":"12","offset":"0"}');
-    subprocesses.unshift('poke "offset" "$3"');
-    subprocesses.unshift('poke "count" "$2"');
-    subprocesses.push('take $offset $count');
-    subprocesses.push('done');
-  }
-  if (command === 'status') { // significantly shorten the status hash to save bandwidth
-    subprocesses.push('take 24 16');
-    subprocesses.push('done');
+
+  if (recipe.hasOwnProperty('symbol')) { // only for assets
+    // Prepend address validation
+
+    // Postprocess: Append formating of result for specific commands
+    if (command === 'balance' || command === 'fee') { // append formatting of returned numbers
+      subprocesses.push('form');
+      subprocesses.push('done');
+    }
+    if (command === 'transaction') { // append formatting of returned numbers
+      subprocesses.push('poke formAmount ${.amount}');
+      subprocesses.push('with formAmount form');
+      subprocesses.push('poke formFee ${.fee}');
+      subprocesses.push('with formFee form');
+      subprocesses.push('data {id:"${.id}",timestamp:${.timestamp},amount:"$formAmount",symbol:"${.symbol}",fee:"$formFee",fee-symbol:"${.fee-symbol}",source:"${.source}",target:"${.target}"}');
+      subprocesses.push('done');
+    }
+    if (command === 'history') { // take into account the offset and record count
+      subprocesses.unshift('vars {"count":"12","offset":"0"}');
+      subprocesses.unshift('poke "offset" "$3"');
+      subprocesses.unshift('poke "count" "$2"');
+      subprocesses.push('take $offset $count');
+      subprocesses.push('done');
+    }
+    if (command === 'status') { // significantly shorten the status hash to save bandwidth
+      subprocesses.push('take 24 16');
+      subprocesses.push('done');
+    }
   }
 }
 

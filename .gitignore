@@ -14,3 +14,4 @@ var/log/*
 var/recipes/*
 versions.json
 hybrixd.keys
+modules/mockchain/test.mockchain.json

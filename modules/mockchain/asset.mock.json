@@ -19,7 +19,8 @@
     ],
     "balance" : [
       "rout('/engine/mockchain/balance/$contract/$1')",
-      "form()"
+      "form",
+      "done"
     ],
     "push" : [
       "rout('/engine/mockchain/push/$1')",
