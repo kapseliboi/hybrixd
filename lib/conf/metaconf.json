@@ -7,6 +7,7 @@
     },
     "servers" : {
       "default" : { "http://127.0.0.1:1111" : "/root", "http://127.0.0.1:8080" : "/source/web-wallet"},
+      "info":"Define the server endpoints.",
       "type" : "object"
     },
     "ignoretlserror" : {
@@ -15,24 +16,27 @@
     },
     "defaultmaxlisteners" : {
       "default" : 25,
-      "type" : "int",
-      "unit" : "amount"
+      "info":"Set the amount of listners for the http server socket.",
+      "type" : "int"
     }
   },
   "scheduler" : {
     "procpurgetime" : {
       "default" : 120,
       "type" : "int",
+      "info": "Amount of time before a stale process gets cleaned up.",
       "unit" : "seconds"
     },
     "maxparallelprocesses" :{},
     "tick" : {
       "default" : 50,
+      "info":"Tick frequency for process steps",
       "type" : "int",
       "unit" : "milliseconds"
     },
     "maxusage" : {
       "default" : 80,
+      "info":"Maximum thread usage",
       "type" : "int",
       "unit" : "%"
     }
@@ -64,12 +68,12 @@
     "minstoragetime" : {
       "default" : 30,
       "type" : "int",
-      "unit" : "days"    	
+      "unit" : "days"
     },
     "maxstoragetime" : {
       "default" : 365,
       "type" : "int",
-      "unit" : "days"    	
+      "unit" : "days"
     }
   }
 }
