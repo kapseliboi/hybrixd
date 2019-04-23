@@ -48,12 +48,12 @@
       "flow 'actNotFound' @actNotFound @endFail",
       "@actNotFound",
       "data '0'",
-      "form",
+      "atom",
       "done",
       "@endFail",
       "fail 'No result!'",
       "@end",
-      "form",
+      "atom",
       "done",
       "@tokenBalance",
       "data '$symbol'",
@@ -72,7 +72,7 @@
       "@currency",
       "each data 'balance_currency'",
       "math",
-      "form",
+      "atom",
       "done"
     ],
     "balance_currency" : [
