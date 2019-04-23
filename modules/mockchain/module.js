@@ -10,10 +10,11 @@ exports.balance = balance;
 exports.push = push;
 exports.history = history;
 exports.transaction = transaction;
+exports.message = message;
 
-const filePath = './test.mockchain.json';
+const filePath = '../modules/mockchain/test.mockchain.json';
 
-function mine (proc, data) {
+function mine (proc) {
   let mockchain;
   try {
     if (fs.existsSync(filePath)) {
@@ -35,7 +36,7 @@ function mine (proc, data) {
   proc.pass(newTransaction);
 }
 
-function balance (proc, data) {
+function balance (proc) {
   let mockchain;
   try {
     if (fs.existsSync(filePath)) {
@@ -50,15 +51,15 @@ function balance (proc, data) {
   let contract = proc.command[1];
   let address = Number(proc.command[2]);
   let balance = 0;
-  for (let i = 0; i < mockchain.length; ++i) {
-    let transaction = mockchain[i];
+  for (let transactionId = 0; transactionId < mockchain.length; ++transactionId) {
+    let transaction = mockchain[transactionId];
     if (transaction.target === address && transaction.contract === contract) { balance += transaction.amount; }
     if (transaction.source === address && transaction.contract === contract) { balance -= transaction.amount + transaction.fee; }
   }
   proc.pass('' + balance);
 }
 
-function push (proc, data) {
+function push (proc) {
   let mockchain;
   try {
     if (fs.existsSync(filePath)) {
@@ -82,8 +83,8 @@ function push (proc, data) {
     proc.fail('illegal signature');
   } else {
     let balance = 0;
-    for (let i = 0; i < mockchain.length; ++i) {
-      let transaction = mockchain[i];
+    for (let transactionId = 0; transactionId < mockchain.length; ++transactionId) {
+      let transaction = mockchain[transactionId];
       if (transaction.target === source && transaction.contract === contract) { balance += transaction.amount; }
       if (transaction.source === source && transaction.contract === contract) { balance -= transaction.amount + transaction.fee; }
     }
@@ -100,7 +101,7 @@ function push (proc, data) {
   }
 }
 
-function history (proc, data) {
+function history (proc) {
   let mockchain;
   try {
     if (fs.existsSync(filePath)) {
@@ -115,27 +116,16 @@ function history (proc, data) {
   let contract = proc.command[1];
   let address = Number(proc.command[2]);
   let history = [];
-  for (let i = 0; i < mockchain.length; ++i) {
-    let transaction = mockchain[i];
+  for (let transactionId = 0; transactionId < mockchain.length; ++transactionId) {
+    let transaction = mockchain[transactionId];
     if ((transaction.target === address || transaction.source === address) && transaction.contract === contract) {
-      let normalizedTransaction = {
-        id: transaction.id,
-        timestamp: transaction.id,
-        amount: transaction.amount,
-        symbol: transaction.contract === 'main' ? 'mock' : 'mock.' + transaction.contract,
-        fee: transaction.fee,
-        'fee-symbol': transaction.contract === 'main' ? 'mock' : 'mock.' + transaction.contract,
-        source: transaction.source,
-        target: transaction.target,
-        data: transaction.message
-      };
-      history.push(normalizedTransaction);
+      history.push(transactionId);
     }
   }
   proc.pass(history);
 }
 
-function transaction (proc, data) {
+function transaction (proc) {
   let mockchain;
   try {
     if (fs.existsSync(filePath)) {
@@ -159,10 +149,31 @@ function transaction (proc, data) {
       'fee-symbol': transaction.contract === 'main' ? 'mock' : 'mock.' + transaction.contract,
       source: transaction.source,
       target: transaction.target,
-      data: transaction.message,
-      details: {type: transaction.type}
+      confirmed: 1
     };
     proc.pass(normalizedTransaction);
+  } else {
+    proc.fail('unknown transaction');
+  }
+}
+
+// message/attachment
+function message (proc) {
+  let mockchain;
+  try {
+    if (fs.existsSync(filePath)) {
+      mockchain = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    } else {
+      mockchain = [];
+    }
+  } catch (e) {
+    proc.fail('This node does not support mockchain.');
+  }
+
+  let transactionId = Number(proc.command[1]);
+  if (transactionId < mockchain.length) {
+    let transaction = mockchain[transactionId];
+    proc.pass(transaction.message);
   } else {
     proc.fail('unknown transaction');
   }

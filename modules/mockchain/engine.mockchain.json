@@ -6,7 +6,6 @@
     "mine" : ["func 'mine'"],
     "balance" : [
       "data '$1'",
-      "logs",
       "flow {'main':1} 3",
       "rout '/asset/mock/factor'",
       "jump 2",
@@ -18,7 +17,9 @@
     ],
     "history" : ["func 'history'"],
     "push" : ["func 'push'"],
-    "transaction" : ["func 'transaction'"]
+    "transaction" : ["func 'transaction'"],
+    "message" : ["func 'message'"],
+    "attachment" : ["func 'attachment'"]
   },
   "router" : {
     "balance" : {
@@ -38,11 +39,25 @@
         "_this" : "Push a transaction to the mockchain."
       }
     },
+     "message" : {
+      "_ref" : {
+        "_list" : "transactionid",
+        "_sample": "0",
+        "_this" : "Retrieve a transaction message message/attachment."
+      }
+     },
+     "attachement" : {
+      "_ref" : {
+        "_list" : "transactionid",
+        "_sample": "0",
+        "_this" : "Retrieve a transaction message/attachment."
+      }
+    },
     "transaction" : {
       "_ref" : {
         "_list" : "transactionid",
         "_sample": "0",
-        "_this" : "Retrieve a transaction."
+        "_this" : "Retrieve transaction details"
       }
     },
     "history" : {
