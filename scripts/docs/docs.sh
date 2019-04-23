@@ -16,5 +16,8 @@ WEB_WALLET="$HYBRIXD/web-wallet"
 cd "$NODE/scripts/docs"
 node "$NODE/scripts/docs/docs.js"
 
+node "$NODE/scripts/docs/conf.js"
+
+
 cd "$WHEREAMI"
 export PATH="$OLDPATH"
