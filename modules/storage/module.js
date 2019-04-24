@@ -14,27 +14,27 @@ function cron (proc) {
 }
 
 function size (proc, data) {
-  storage.size(proc.pass, proc.fail);
+  storage.size(proc.done, proc.fail);
 }
 
 function seek (proc, data) {
-  storage.seek(data.key, proc.pass, proc.fail);
+  storage.seek(data.key, proc.done, proc.fail);
 }
 
 function meta (proc, data) {
-  storage.getMeta(data.key, proc.pass, proc.fail);
+  storage.getMeta(data.key, proc.done, proc.fail);
 }
 
 function load (proc, data) {
-  storage.get(data.key, proc.pass, proc.fail);
+  storage.get(data.key, proc.done, proc.fail);
 }
 
 function save (proc, data) {
-  storage.set({key: data.key, value: data.value}, proc.pass, proc.fail);
+  storage.set({key: data.key, value: data.value}, proc.done, proc.fail);
 }
 
 function work (proc, data) {
-  storage.provideProof({key: data.key, pow: data.pow}, proc.pass, proc.fail);
+  storage.provideProof({key: data.key, pow: data.pow}, proc.done, proc.fail);
 }
 
 // exports
