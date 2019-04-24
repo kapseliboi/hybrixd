@@ -5,6 +5,7 @@
 // required libraries in this context
 let scheduler = require('../../lib/scheduler/scheduler');
 let modules = require('../../lib/modules');
+let fs = require('fs');
 
 // exports
 exports.init = init;
@@ -12,6 +13,8 @@ exports.exec = exec;
 
 // initialization function
 function init () {
+  global.hybrixd.defaultQuartz = JSON.parse(fs.readFileSync('../modules/quartz/default.quartz.json', 'utf8'));
+
   modules.initexec('quartz', ['init']);
 }
 
