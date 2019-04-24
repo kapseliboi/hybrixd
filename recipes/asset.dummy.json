@@ -44,7 +44,7 @@
     "transaction" : [
       "data '$1'",
       "flow('TXIDTXIDTXIDTXIDTXIDTXIDTXID',1,2)",
-      "stop(0,{id:'TXIDTXIDTXIDTXIDTXIDTXIDTXID',symbol:'$symbol','fee-symbol':'$symbol'})",
+      "stop(0,{id:'TXIDTXIDTXIDTXIDTXIDTXIDTXID',timestamp:123456789,amount:10, fee:10, source:'_dummyaddress_',target:'_dummyaddress_', symbol:'$symbol','fee-symbol':'$symbol',confirmed:1})",
       "stop(1,'Illegal transaction id.')"
     ],
     "history" : [
