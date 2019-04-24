@@ -11,6 +11,12 @@
   "defaultIrcHost":"irc.freenode.net",
   "defaultTorrentPasswd":"l3ts_b34t_th3_b4nks!",
   "cron" : 300,
+  "conf" :{
+    "test" :{
+      "default":10,
+      "info":"test"
+    }
+  },
   "quartz" : {
     "open" :["func open"],
     "close" :["func close"],
