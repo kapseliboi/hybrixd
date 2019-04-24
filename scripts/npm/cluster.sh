@@ -40,7 +40,7 @@ if [ "$NODES" -gt "1" ]; then
         echo " [i] cluster: preparing node $i..."
 
         if [ "$i" -ne "1" ]; then
-            rsync -aK "$NODE/" "$NODE$i/"
+            rsync -aK "$NODE/" "$NODE$i/" --exclude 'hybrixd.keys'
 
             #increment restport and userport
             #       NEWSERVERLINE="{ \"http:\/\/127.0.0.1:"$((RESTPORT+$i-1))"\" : \"\/root\", \"http:\/\/127.0.0.1:"$((USERPORT+$i-1))"\" : \"\/source\/web-wallet\"}"
@@ -50,18 +50,6 @@ if [ "$NODES" -gt "1" ]; then
             sed -i -e 's/':"$USERPORT"'/':"$((USERPORT+$i-1))"'/g' "$NODE$i/hybrixd.conf"
         fi
 
-        #force set encryption pubkeys TESTING!
-        if [ "$i" -eq "1" ]; then
-            KEYLINE="keysFile = hybrixd1.keys"
-        elif [ "$i" -eq "2" ]; then
-            KEYLINE="keysFile = hybrixd2.keys"
-        fi
-        if [ "$i" -eq "3" ]; then
-            KEYLINE="keysFile = hybrixd3.keys"
-        fi
-        # Replace or append line to define nodeID
-        echo "$KEYLINE" >> "$NODE$i/hybrixd.conf"
-            #sed -i -e 's/'"$NODELINE"'/'"$NEWNODELINE"'/g' "$NODE$i/hybrixd.conf"
 
         if [ "$i" -ne "1" ]; then
             cd "$NODE$i"

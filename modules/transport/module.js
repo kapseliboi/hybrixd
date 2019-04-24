@@ -4,248 +4,234 @@
 
 // required libraries in this context
 // var execSync = require('child_process').execSync;
-let scheduler = require('../../lib/scheduler/scheduler');
-let modules = require('../../lib/modules');
+let conf = require('../../lib/conf/conf');
 let functions = require('./functions.js');
 let transportIrc = require('./transportIrc.js');
 let transportTorrent = require('./transportTorrent.js');
 let shaHash = require('js-sha256').sha224;
 
-// initialization function
-function init () {
-  modules.initexec('transport', ['init']);
+let data = require('./data');
+
+function open (proc) {
+  const command = proc.command;
+
+  if (typeof command[1] === 'undefined') {
+    proc.done(['irc', 'torrent']);
+  } else {
+    let protocol = proc.command[1];
+    let channel;
+    switch (protocol) {
+      case 'irc':
+        channel = (command[3] || proc.peek('defaultChannel')).toLowerCase();
+        let host = command[2] || proc.peek('defaultIrcHost');
+        transportIrc.open(proc, host, channel, proc.peek('hashSalt'));
+        break;
+      case 'torrent':
+        channel = command[2] || proc.peek('defaultChannel');
+        let passwd = command[3] || proc.peek('defaultIrcHost');
+        transportTorrent.open(proc, channel, passwd, proc.peek('hashSalt'));
+        break;
+    }
+  }
 }
 
-// exec
-function exec (properties) {
-  // decode our serialized properties
-  let processID = properties.processID;
-  let target = properties.target;
-  let command = properties.command;
-  let result = null;
-  let handle;
-  // set request to what command we are performing
-  global.hybrixd.proc[processID].request = properties.command;
-  global.hybrixd.proc[processID].timeout = 30000;
-  // handle standard cases here, and construct the sequential process list
-  switch (command[0]) {
-    case 'init' :
-      console.log(' [.] transport module initialization ');
-      global.hybrixd.engine[target.id].handles = []; // transport handles
-      global.hybrixd.engine[target.id].endpoints = []; // own endpoints
-      global.hybrixd.engine[target.id].peersURIs = {}; // other peers URI endpoints
-      // global.hybrixd.engine[target.id].peers = { irc:[], torrent:[] };
-      global.hybrixd.engine[target.id].announceMaxBufferSize = 10000;
-      scheduler.stop(processID, 0, null);
-      break;
-    //  /engine/transport/open/irc/$HOST_OR_IP/$CHANNEL  ->  connect to host/channel
-    case 'open' :
-      if (typeof command[1] === 'undefined') {
-        result = ['irc', 'torrent'];
-        scheduler.stop(processID, 0, result);
-      } else {
-        let protocol = command[1];
-        let channel;
-        switch (protocol) {
-          case 'irc':
-            channel = (command[3] || target.defaultChannel).toLowerCase();
-            let host = command[2] || target.defaultIrcHost;
-            transportIrc.open(processID, target.id, host, channel, target.hashSalt);
-            break;
-          case 'torrent':
-            channel = command[2] || target.defaultChannel;
-            let passwd = command[3] || target.defaultTorrentPasswd;
-            transportTorrent.open(processID, target.id, channel, passwd, target.hashSalt);
-            break;
-        }
-      }
-      break;
-    case 'stop':
-      handle = command[1];
-      if (global.hybrixd.engine[target.id].handles.indexOf(handle) > -1) {
-        if (global.hybrixd.engine[target.id].hasOwnProperty(handle) && global.hybrixd.engine[target.id][handle].hasOwnProperty('protocol')) {
-          switch (global.hybrixd.engine[target.id][handle].protocol) {
-            case 'irc':
-              transportIrc.stop(processID, target.id, handle);
-              break;
-            case 'torrent':
-              transportTorrent.stop(processID, target.id, handle);
-              break;
-            default:
-              scheduler.stop(processID, 1, 'Cannot close socket! Protocol not recognized!');
-              break;
-          }
-        } else {
-          scheduler.stop(processID, 500, 'Transport not yet fully bootstrapped. Please try again later!');
-        }
-      } else {
-        scheduler.stop(processID, 404, 'Transport handle does not exist!');
-      }
-      break;
-    case 'info' :
-      handle = command[1];
-      if (global.hybrixd.engine[target.id].handles.indexOf(handle) > -1) {
-        if (global.hybrixd.engine[target.id].hasOwnProperty(handle) && global.hybrixd.engine[target.id][handle].hasOwnProperty('protocol')) {
-          let information = {
-            handle: handle,
-            opened: global.hybrixd.engine[target.id][handle].opened,
-            protocol: global.hybrixd.engine[target.id][handle].protocol,
-            channel: global.hybrixd.engine[target.id][handle].channel,
-            peerId: global.hybrixd.engine[target.id][handle].peerId,
-            nodeId: global.hybrixd.node.publicKey
-          };
-          scheduler.stop(processID, 0, information);
-        } else {
-          scheduler.stop(processID, 500, 'Transport not yet fully initialized. Please try again later!');
-        }
-      } else {
-        scheduler.stop(processID, 404, 'Transport handle does not exist!');
-      }
-      break;
-    case 'send':
-      try {
-        send(properties);
-      } catch (e) { console.log(e); }
-      break;
-    case 'read':
-      read(properties);
-      break;
-    case 'list':
-      let err = 0;
-      switch (command[1]) {
-        case 'endpoints':
-          result = global.hybrixd.engine[target.id].endpoints;
+function stop (proc) {
+  const handleId = proc.command[1];
+  if (data.handleIds.indexOf(handleId) > -1) {
+    if (data.handles.hasOwnProperty(handleId) && data.handles[handleId].hasOwnProperty('protocol')) {
+      switch (data.handles[handleId].protocol) {
+        case 'irc':
+          transportIrc.stop(proc, handleId);
           break;
-        case 'handles':
-          result = global.hybrixd.engine[target.id].handles;
+        case 'torrent':
+          transportTorrent.stop(proc, handleId);
           break;
-        case 'peers':
-          if (command[2]) {
-            handle = command[2];
-            if (global.hybrixd.engine[target.id].handles.indexOf(handle) > -1) {
-              result = global.hybrixd.engine[target.id][handle].peers;
-            } else {
-              scheduler.stop(processID, 404, 'Handle does not exist!');
-            }
-          } else {
-            result = {};
-            for (let i = 0; i < global.hybrixd.engine[target.id].handles.length; i++) {
-              handle = global.hybrixd.engine[target.id].handles[i];
-              result[handle] = global.hybrixd.engine[target.id][handle].peers;
-            }
-          }
-          break;
-        /* DEPRECATED:
-        case 'peersURIs':
-          result = global.hybrixd.engine[target.id].peersURIs;
-          break;
-        */
         default:
-          result = ['endpoints', 'handles', 'peers'];
+          proc.fail(1, 'Cannot close socket! Protocol not recognized!');
           break;
       }
-      scheduler.stop(processID, err, result);
+    } else {
+      proc.fail(500, 'Transport not yet fully bootstrapped. Please try again later!');
+    }
+  } else {
+    proc.fail(404, 'Transport handle does not exist!');
+  }
+}
+
+function info (proc) {
+  const handleId = proc.command[1];
+  if (data.handleIds.indexOf(handleId) > -1) {
+    if (data.handles.hasOwnProperty(handleId) && data.handles[handleId].hasOwnProperty('protocol')) {
+      const handle = data.handles[handleId];
+      proc.done({
+        handle: handleId,
+        opened: handle.opened,
+        protocol: handle.protocol,
+        channel: handle.channel,
+        peerId: handle.peerId,
+        nodeId: global.hybrixd.node.publicKey // TODO
+      });
+    } else {
+      proc.fail(500, 'Transport not yet fully initialized. Please try again later!');
+    }
+  } else {
+    proc.fail(404, 'Transport handle does not exist!');
+  }
+}
+
+function list (proc) {
+  switch (proc.command[1]) {
+    case 'endpoints':
+      // list external peerURIs/endpoints or own
+      let endpoints = {};
+      if (proc.command[2]) {
+        fromNodeId = proc.command[2];
+        if (data.peersURIs[fromNodeId]) {
+          //endpoints = data.peersURIs[fromNodeId].slice(0);
+        }
+        endpoints = JSON.stringify(data.peersURIs);
+      } else {
+        let fromNodeId = global.hybrixd.node.publicKey;
+        let httpEndpoints = conf.get('host.endpoints');
+        endpoints[fromNodeId] = data.endpoints.slice(0); // clone the array
+        if(httpEndpoints instanceof Array) {
+          for(let i=0;i<httpEndpoints.length;i++) {
+            endpoints[fromNodeId].unshift(httpEndpoints[i]);
+          }
+        }
+      }
+      proc.done(endpoints);
+      break;
+    case 'handles':
+      proc.done(data.handleIds);
+      break;
+    case 'peers':
+      if (proc.command[2]) {
+        const handleId = proc.command[2];
+        if (data.handleIds.indexOf(handleId) > -1) {
+          if (data.handles.hasOwnProperty(handleId) && data.handles[handleId].hasOwnProperty('protocol')) {
+            proc.done(data.handles[handleId].peers);
+          } else {
+            proc.fail(500, 'Transport not yet fully initialized. Please try again later!');
+          }
+        } else {
+          proc.fail(404, 'Handle does not exist!');
+        }
+      } else {
+        const peers = {};
+        for (let i = 0; i < data.handleIds.length; i++) {
+          const handleId = data.handleIds[i];
+          peers[handleId] = data.handles[handleId].peers;
+        }
+        proc.done(peers);
+      }
       break;
   }
 }
 
-function send (properties) {
-  let processID = properties.processID;
-  let engine = properties.target.id;
+function send (proc) {
+  const id = 'transport';
   let nodeId = global.hybrixd.node.publicKey;
-  let command = properties.command;
+
+  let command = proc.command;
+
   command.shift(); // remove 'send' portion
-  let handle = command.shift(); // get handle
+  let handleId = command.shift(); // get handle
   let nodeIdTarget = command.shift(); // if is *, sends broadcast to all targets
   let message = command.join('/'); // unencrypted message
+
   // create unique message ID
   let openTime = (new Date()).getTime();
-  let messageId = shaHash(nodeId + engine.hashSalt + openTime).substr(16, 8);
-  if (handle && nodeIdTarget && message) {
-    if (handle === '*') {
+  let messageId = shaHash(nodeId + proc.peek('hashSalt') + openTime).substr(16, 8);
+  if (handleId && nodeIdTarget && message) {
+    if (handleId === '*') {
       // loop through all handles and broadcast
-      for (let i = 0; i < global.hybrixd.engine[engine].handles.length; i++) {
-        handle = global.hybrixd.engine[engine].handles[i];
-        if (global.hybrixd.engine[engine].hasOwnProperty(handle) && global.hybrixd.engine[engine][handle].hasOwnProperty('protocol')) {
-          messageId = functions.sendMessage(engine,
-            handle,
+      for (let i = 0; i < data.handleIds.length; i++) {
+        const handleId = data.handleIds[i];
+        if (data.handles.hasOwnProperty(handleId) && data.handles[handleId].hasOwnProperty('protocol')) {
+          messageId = functions.sendMessage(
+            data.handles[handleId],
             nodeIdTarget,
             messageId,
             message);
         }
       }
-      scheduler.stop(processID, 0, messageId);
+      proc.done(messageId);
     } else {
-      if (global.hybrixd.engine[engine].handles.indexOf(handle) > -1) {
-        if (global.hybrixd.engine[engine].hasOwnProperty(handle) && global.hybrixd.engine[engine][handle].hasOwnProperty('protocol')) {
-          messageId = functions.sendMessage(engine,
-            handle,
+      if (data.handleIds.indexOf(handleId) > -1) {
+        if (data.handles.hasOwnProperty(handleId) && data.handles[handleId].hasOwnProperty('protocol')) {
+          messageId = functions.sendMessage(
+            data.handles[handleId],
             nodeIdTarget,
             messageId,
             message);
         }
-        scheduler.stop(processID, 0, messageId);
+        proc.done(messageId);
       } else {
-        scheduler.stop(processID, 1, 'Specified handle does not exist!');
+        proc.fail(404, 'Specified handle does not exist!');
       }
     }
   } else {
-    scheduler.stop(processID, 1, 'Please specify $HANDLE/$TARGET/$MESSAGE!');
+    proc.fail(400, 'Please specify $HANDLE/$TARGET/$MESSAGE!');
   }
 }
 
-function read (properties) {
-  let processID = properties.processID;
-  let engine = properties.target.id;
-  let command = properties.command;
-  let handle = command[1];
-  let nodeIdTarget = command[2]; // if is *, reads messages from all targets
-  if (command[3]) {
-    let messageResponseId = shaHash(nodeIdTarget + command[3]).substr(16, 8); // if specified, read message response to previous messageId
+function read (proc) {
+  let command = proc.command;
+
+  command.shift(); // remove 'read' portion
+  let handleId = command.shift(); // get handle
+  let nodeIdTarget = command.shift(); // if is *, reads messages from all targets
+  let messageId = command.shift();
+
+  if (messageId) {
+    let messageResponseId = shaHash(nodeIdTarget + messageId).substr(16, 8); // if specified, read message response to previous messageId
     let loopHandles;
-    if (handle === '*') {
-      loopHandles = global.hybrixd.engine[engine].handles;
+    if (handleId === '*') {
+      loopHandles = data.handleIds;
     } else {
-      loopHandles = [ handle ];
+      loopHandles = [ handleId ];
     }
     if (loopHandles.length > 0) {
-      let readInterval = setInterval(function () {
-        let curHandle;
+      let readInterval = setInterval(function (loopHandles, messageResponseId) {
         for (let i = 0; i < loopHandles.length; i++) {
-          curHandle = loopHandles[i];
-          if (global.hybrixd.engine[engine].hasOwnProperty(curHandle) && global.hybrixd.engine[engine][curHandle].hasOwnProperty('buffer')) {
+          const curHandleId = loopHandles[i];
+          if (data.handles.hasOwnProperty(curHandleId) && data.handles[curHandleId].hasOwnProperty('buffer')) {
+            const curHandle = data.handles[curHandleId];
             let idx = -1;
-            for (let i = 0; i < global.hybrixd.engine[engine][curHandle].buffer.length; i++) {
-              if (global.hybrixd.engine[engine][curHandle].buffer[i] && global.hybrixd.engine[engine][curHandle].buffer[i].id === messageResponseId) {
+            for (let i = 0; i < curHandle.buffer.length; i++) {
+              if (curHandle.buffer[i] && curHandle.buffer[i].id === messageResponseId) {
                 idx = i;
               }
             }
-            if (idx > -1 && global.hybrixd.engine[engine][curHandle].buffer[idx].data !== null) {
+            if (idx > -1 && curHandle.buffer[idx].data !== null) {
               try {
-                let messageData = JSON.parse(global.hybrixd.engine[engine][curHandle].buffer[idx].data);
-                scheduler.stop(processID, 0, messageData);
+                let messageData = JSON.parse(curHandle.buffer[idx].data);
+                curHandle.buffer.splice(idx, 1);
+                proc.done(messageData);
               } catch (e) {
-                scheduler.stop(processID, 1, 'Cannot decode response message!');
+                proc.fail(1, 'Cannot decode response message!');
               }
-              global.hybrixd.engine[engine][curHandle].buffer.splice(idx, 1);
             }
           }
         }
-      }, 250, processID, loopHandles, messageResponseId);
-      setTimeout(function () {
+      }, 250, loopHandles, messageResponseId);
+      setTimeout(function (readInterval) {
         clearInterval(readInterval);
-        scheduler.stop(processID, 1, 'Transport message read timeout!');
-      }, properties.target.readTimeout || 15000, processID, readInterval);
+        proc.fail('Transport message read timeout!');
+      }, proc.peek('readTimeout') || 32000, readInterval);
     } else {
-      scheduler.stop(processID, 1, 'There are no active transport handles!');
+      proc.fail(1, 'There are no active transport handles!');
     }
   } else {
-    scheduler.stop(processID, 1, 'Please specify a message ID!');
+    proc.fail(1, 'Please specify a message ID!');
   }
 }
 
 // exports
-exports.init = init;
-exports.exec = exec;
+exports.stop = stop;
+exports.list = list;
+exports.open = open;
+exports.info = info;
 exports.send = send;
 exports.read = read;

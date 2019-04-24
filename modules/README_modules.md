@@ -75,6 +75,6 @@ To use a javascript module create a folder `$HYBRIXD/modules/mymodule`. The reci
 export mycommand;
 
 function mycommand (proc) {
-  proc.pass('Hello World!');
+  proc.done('Hello World!');
 }
 ```

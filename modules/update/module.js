@@ -26,6 +26,6 @@ function update (proc, data) {
     execSync('rm -f archive.tar.gz');
     execSync('rm -rf ../update/*');
 
-    proc.pass('Update succesfull');
+    proc.done('Update succesfull');
   }
 }

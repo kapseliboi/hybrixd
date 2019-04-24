@@ -33,7 +33,7 @@ function redirect (proc) {
             .replace(/%SUCCESS%/g, redirectObj.success)
             .replace(/%FAILURE%/g, redirectObj.failure);
           proc.mime('blob');
-          proc.pass(data);
+          proc.done(data);
         } else {
           proc.fail('File redirect.html not found!');
         }

@@ -38,6 +38,9 @@
       "tran('.transactionId',2,1)",
       "fail",
       "done"
+    ],
+    "test":[
+      "done {hash:dynamic}"
     ]
   }
 }

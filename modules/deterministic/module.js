@@ -40,15 +40,15 @@ function init () {
 }
 
 function assets (proc) {
-  proc.pass(global.hybrixd.source['deterministic'].assets);
+  proc.done(global.hybrixd.source['deterministic'].assets);
 }
 
 function modes (proc) {
-  proc.pass(global.hybrixd.source['deterministic'].modes);
+  proc.done(global.hybrixd.source['deterministic'].modes);
 }
 
 function hashes (proc) {
-  proc.pass(global.hybrixd.source['deterministic'].hashes);
+  proc.done(global.hybrixd.source['deterministic'].hashes);
 }
 
 function hash (proc) {
@@ -64,7 +64,7 @@ function hash (proc) {
   }
   let basemode = modetype.split('.')[0];
   if (typeof global.hybrixd.source['deterministic'].hashes[basemode] !== 'undefined') {
-    proc.pass({deterministic: modetype, hash: global.hybrixd.source['deterministic'].hashes[basemode]});
+    proc.done({deterministic: modetype, hash: global.hybrixd.source['deterministic'].hashes[basemode]});
   } else {
     proc.fail('Error: Mode or symbol does not exist!');
   }

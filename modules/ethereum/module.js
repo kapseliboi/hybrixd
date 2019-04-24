@@ -98,7 +98,10 @@ function exec (properties) {
       subprocesses.push("flow 'eth' 2 1");
       subprocesses.push('done');
       subprocesses.push('logs(1,"module ethereum: updating fee")');
-      subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_gasPrice"]})');
+
+      subprocesses.push('rand 10000');
+      subprocesses.push("data {jsonrpc: '2.0', method: 'eth_gasPrice', params: [], id: $}");
+      subprocesses.push("curl asset://$symbol '' POST {'Content-Type': 'application/json'}");
       subprocesses.push('func("post",{target:' + jstr(target) + ',command:["updateFee"],data:$})');
       break;
     case 'fee':
@@ -149,53 +152,7 @@ function exec (properties) {
         subprocesses.push('stop(1,"Error: missing address!")');
       }
       break;
-    case 'push':
-      subprocesses.push('@retryLoop');
-      subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_sendRawTransaction",["$1"]]})');
-      // returns: { "id":1, "jsonrpc": "2.0", "result": "0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331" }
-      subprocesses.push('tran(".result",1,3)');
-      subprocesses.push("regx('^0x',1,2)");
-      subprocesses.push('done()');
-      subprocesses.push('tran(".error",1,2)');
-      subprocesses.push('fail()');
-      subprocesses.push('logs(2,"module ethereum: bad RPC response, retrying request...")');
-      subprocesses.push('wait(1500)');
-      subprocesses.push('loop(@retryLoop,"retries","<9","1")');
-      subprocesses.push('fail("Error: Ethereum network not responding. Cannot push transaction!")');
 
-      break;
-    case 'unspent':
-
-      if (isEthAddress(sourceaddr)) {
-        let targetaddr = (typeof properties.command[3] !== 'undefined' ? properties.command[3] : false);
-        if (isEthAddress(targetaddr)) {
-          subprocesses.push('@retryLoop');
-          subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_getTransactionCount",["' + sourceaddr + '","pending"]]})');
-          subprocesses.push('tran(".result",1,2)');
-          subprocesses.push("code 'hex' 'dec'");
-          subprocesses.push('done({"nonce":"$data"})');
-          subprocesses.push('logs(2,"module ethereum: bad RPC response, retrying request...")');
-          subprocesses.push('wait(1500)');
-          subprocesses.push('loop(@retryLoop,"retries","<9","1")');
-          subprocesses.push('fail("Error: Ethereum network not responding. Cannot get nonce!")');
-        } else {
-          subprocesses.push('stop(1,"Error: bad or missing target address!")');
-        }
-      } else {
-        subprocesses.push('stop(1,"Error: bad or missing source address!")');
-      }
-      break;
-    case 'transaction' :
-      subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_getTransactionByHash",["' + sourceaddr + '"]]})');
-      subprocesses.push("tran({id:'.result.hash',fee:'.result.gas',attachment:'.result.input',timestamp:'unknown',symbol:'" + target.symbol + "','fee-symbol':'eth',ammount:'.result.value',source:'.result.from',target:'.result.to',data:'.result'},2,1)");//, data:'.'
-      subprocesses.push('fail');
-      subprocesses.push('done');
-      break;
-    case 'history':
-      subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_getLogs",[{"fromBlock":"earliest","address":["' + sourceaddr + '"]}]]})');
-
-      // TODO formatting
-      break;
     default:
       subprocesses.push('stop(1,"Asset function not supported!' + properties.command[0] + '")');
   }

@@ -21,8 +21,7 @@
       "done {address:'0x896a0b2b259d62fd27aeab05c81bb1897ecf767b',transaction:'0x5496d381d8b2c6ae028c69f90a643f1c453bbfd0381df9d0af0e20b09a04dadd'}"
     ],
     "_balance":[
-      "rand",
-      "math '*10000.round'",
+      "rand 10000",
       "data {jsonrpc: '2.0', method: 'eth_getBalance', params: ['$1','latest'], id: $}",
       "curl asset://$symbol '' POST {'Content-Type': 'application/json'}",
       "done"
@@ -74,10 +73,22 @@
     "subdetails" : [
       "call '${.key}'"
     ],
+    "unspent" : [
+      "@retryLoop",
+      "rand 1000",
+      "data {'jsonrpc': '2.0', 'method': 'eth_getTransactionCount', 'params': ['$1','pending'], 'id': $}",
+      "curl asset://$symbol '' POST {'Content-Type': 'application/json'}",
+      "tran '.result' 1 2",
+      "code 'hex' 'dec'",
+      "done {'nonce':'$'}",
+      "logs 2 'module ethereum: bad RPC response, retrying request...'",
+      "wait 1500",
+      "loop @retryLoop 'retries' '<9' '1'",
+      "fail 'Error: Ethereum network not responding. Cannot get nonce!'"
+    ],
     "history" : [
       "time $timeout",
-      "rand",
-      "math '*10000.round'",
+      "rand 10000",
       "poke randomId",
       "with pageOffset [data,'$offset'] [math,'/$histPage .floor']",
       "with pages [data,'$count'] [math,'/$histPage .floor']",
@@ -96,12 +107,25 @@
       "with offset [math,'$offset - ($histPage*$pageOffset)']"
     ],
     "test" : [
-      "done {}"
+      "done {hash:dynamic}"
+    ],
+    "push":[
+      "rand 1000",
+      "data {'jsonrpc': '2.0', 'method': 'eth_sendRawTransaction', 'params': ['$1'], 'id': $}",
+      "curl asset://$symbol '' POST {'Content-Type': 'application/json'}",
+      "tran('.result',1,3)",
+      "regx('^0x',1,2)",
+      "done",
+      "tran('.error',1,2)",
+      "fail",
+      "logs(2,'module ethereum: bad RPC response, retrying request...')",
+      "wait 1500",
+      "loop @retryLoop 'retries' '<9' '1'",
+      "fail 'Error: Ethereum network not responding. Cannot push transaction!'"
     ],
     "transactionData" : [
       "time $timeout",
-      "rand",
-      "math '*10000.round'",
+      "rand 10000",
       "poke 'randomId'",
       "data {jsonrpc: '2.0', method: 'eth_getTransactionByHash', params: ['$1'], id: $randomId}",
       "curl asset://$symbol '' POST {'Content-Type': 'application/json'}",
@@ -143,8 +167,7 @@
       "hash sha256"
     ],
     "blockRaw" : [
-      "rand",
-      "math '*10000.round'",
+      "rand 10000",
       "poke 'randomId'",
       "data {jsonrpc: '2.0', method: 'eth_getBlockByNumber', params: ['$1',false], id: $randomId}",
       "curl asset://$symbol '' POST {'Content-Type': 'application/json'}",

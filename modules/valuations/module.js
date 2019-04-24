@@ -1,4 +1,4 @@
-var xmldoc = require('xmldoc');
+let xmldoc = require('xmldoc');
 
 function addQuote (accumulator, quote_currency, base_currency, price) {
   // Don't add quote if the input fails these requirements
@@ -14,19 +14,19 @@ function addQuote (accumulator, quote_currency, base_currency, price) {
 }
 
 function parseEUCentralBank (xmlString) {
-  var name = 'EUCentralBank';
+  let name = 'EUCentralBank';
 
-  var xmlElements;
+  let xmlElements;
   try {
-    var document = new xmldoc.XmlDocument(xmlString);
+    let document = new xmldoc.XmlDocument(xmlString);
     xmlElements = document.children[5].children[1].children.filter(node => node.constructor.name === 'XmlElement');
   } catch (e) {
     return {name: name, quotes: {}};
   }
-  var quote_accumulator = {};
+  let quote_accumulator = {};
   xmlElements.map(function (key, index) {
-    var price = key.attr.rate;
-    var quote_currency = key.attr.currency;
+    let price = key.attr.rate;
+    let quote_currency = key.attr.currency;
 
     quote_accumulator = addQuote(quote_accumulator, 'EUR', quote_currency, price);
     quote_accumulator = addQuote(quote_accumulator, quote_currency, 'EUR', 1 / price);
@@ -35,14 +35,14 @@ function parseEUCentralBank (xmlString) {
 }
 
 function parseCoinmarketcap (obj) {
-  var name = 'coinmarketcap';
-  var quote_accumulator = {};
+  let name = 'coinmarketcap';
+  let quote_accumulator = {};
   if (!obj) {
     return {name, quotes: quote_accumulator};
   }
   Object.keys(obj.data).map(function (key, index) {
-    var price = obj.data[key].quotes.USD.price;
-    var quote_currency = obj.data[key].symbol;
+    let price = obj.data[key].quotes.USD.price;
+    let quote_currency = obj.data[key].symbol;
 
     quote_accumulator = addQuote(quote_accumulator, 'USD', quote_currency, 1 / price);
     quote_accumulator = addQuote(quote_accumulator, quote_currency, 'USD', price);
@@ -51,14 +51,14 @@ function parseCoinmarketcap (obj) {
 }
 
 function parseCoinbase (obj) {
-  var name = 'coinbase';
-  var quote_accumulator = {};
+  let name = 'coinbase';
+  let quote_accumulator = {};
   if (!obj) {
     return {name, quotes: quote_accumulator};
   }
 
   Object.keys(obj.data.rates).map(function (key, index) {
-    var price = parseFloat(obj.data.rates[key]);
+    let price = parseFloat(obj.data.rates[key]);
 
     quote_accumulator = addQuote(quote_accumulator, 'USD', key, price);
     quote_accumulator = addQuote(quote_accumulator, key, 'USD', 1 / price);
@@ -67,19 +67,19 @@ function parseCoinbase (obj) {
 }
 
 function parseBinance (obj) {
-  var name = 'binance';
-  var baseCurrencies = ['BTC', 'ETH', 'USDT', 'BNB'];
-  var quote_accumulator = {};
+  let name = 'binance';
+  let baseCurrencies = ['BTC', 'ETH', 'USDT', 'BNB'];
+  let quote_accumulator = {};
   if (!obj) {
     return {name, quotes: quote_accumulator};
   }
   Object.keys(obj).map(function (key, index) {
-    var symbolPair = obj[key].symbol;
+    let symbolPair = obj[key].symbol;
 
-    var base_currency = baseCurrencies.find(function (currency) { return symbolPair.endsWith(currency); });
+    let base_currency = baseCurrencies.find(function (currency) { return symbolPair.endsWith(currency); });
     if (base_currency) {
-      var quote_currency = symbolPair.slice(0, symbolPair.length - base_currency.length);
-      var price = parseFloat(obj[key].price);
+      let quote_currency = symbolPair.slice(0, symbolPair.length - base_currency.length);
+      let price = parseFloat(obj[key].price);
 
       quote_accumulator = addQuote(quote_accumulator, quote_currency, base_currency, price);
       quote_accumulator = addQuote(quote_accumulator, base_currency, quote_currency, 1 / price);
@@ -89,23 +89,23 @@ function parseBinance (obj) {
 }
 
 function parseHitbtc (prices, symbols) {
-  var name = 'hitbtc';
-  var quote_accumulator = {};
+  let name = 'hitbtc';
+  let quote_accumulator = {};
   if (!prices || !symbols) {
     return {name, quotes: quote_accumulator};
   }
 
-  var symbols_obj = {};
+  let symbols_obj = {};
   symbols.map(function (key, index) {
     symbols_obj[key.id] = key;
   });
 
   prices.map(function (key, index) {
-    var exchange_symbol = symbols_obj[key['symbol']];
+    let exchange_symbol = symbols_obj[key['symbol']];
 
-    var base_currency = exchange_symbol['baseCurrency'];
-    var quote_currency = exchange_symbol['quoteCurrency'];
-    var price = parseFloat(key.last);
+    let base_currency = exchange_symbol['baseCurrency'];
+    let quote_currency = exchange_symbol['quoteCurrency'];
+    let price = parseFloat(key.last);
 
     quote_accumulator = addQuote(quote_accumulator, base_currency, quote_currency, price);
     quote_accumulator = addQuote(quote_accumulator, quote_currency, base_currency, 1 / price);
@@ -114,8 +114,8 @@ function parseHitbtc (prices, symbols) {
 }
 
 function combineQuoteSources (sources) {
-  var combinedQuotes = sources.reduce(function (accumulatedSources, newSource) {
-    var newQuotes = newSource['quotes'];
+  let combinedQuotes = sources.reduce(function (accumulatedSources, newSource) {
+    let newQuotes = newSource['quotes'];
     Object.keys(newQuotes).map(function (quoteCurrency, index) {
       if (!accumulatedSources.hasOwnProperty(quoteCurrency)) {
         accumulatedSources[quoteCurrency] = {quotes: {}};
@@ -135,20 +135,20 @@ function combineQuoteSources (sources) {
 
 function updateMinAndMedians (exchangeRates) {
   Object.keys(exchangeRates).map(function (sourceCurrency, _) {
-    var quotes = exchangeRates[sourceCurrency]['quotes'];
+    let quotes = exchangeRates[sourceCurrency]['quotes'];
     Object.keys(quotes).map(function (targetCurrency, _) {
-      var exchanges = quotes[targetCurrency]['sources'];
-      var sortedExchanges = Object.keys(exchanges).sort(function (exchange1, exchange2) {
+      let exchanges = quotes[targetCurrency]['sources'];
+      let sortedExchanges = Object.keys(exchanges).sort(function (exchange1, exchange2) {
         return exchanges[exchange2] - exchanges[exchange1];
       });
 
       exchangeRates[sourceCurrency]['quotes'][targetCurrency]['highest_rate'] = {'exchange': sortedExchanges[0], rate: exchanges[sortedExchanges[0]]};
-      var lowPoint = sortedExchanges.length - 1;
+      let lowPoint = sortedExchanges.length - 1;
       exchangeRates[sourceCurrency]['quotes'][targetCurrency]['lowest_rate'] = {'exchange': sortedExchanges[lowPoint], rate: exchanges[sortedExchanges[lowPoint]]};
-      var midPoint = (sortedExchanges.length - 1) / 2;
-      var floorExchange = sortedExchanges[Math.floor(midPoint)];
-      var ceilExchange = sortedExchanges[Math.ceil(midPoint)];
-      var exchange = floorExchange === ceilExchange ? ceilExchange : (floorExchange + '|' + ceilExchange);
+      let midPoint = (sortedExchanges.length - 1) / 2;
+      let floorExchange = sortedExchanges[Math.floor(midPoint)];
+      let ceilExchange = sortedExchanges[Math.ceil(midPoint)];
+      let exchange = floorExchange === ceilExchange ? ceilExchange : (floorExchange + '|' + ceilExchange);
       exchangeRates[sourceCurrency]['quotes'][targetCurrency]['median_rate'] = {exchange,
         rate: (exchanges[floorExchange] + exchanges[ceilExchange]) / 2};
     });
@@ -157,24 +157,24 @@ function updateMinAndMedians (exchangeRates) {
 }
 
 function parse (proc, data) {
-  var sourcesOut = combineQuoteSources([
+  let sourcesOut = combineQuoteSources([
     parseEUCentralBank(data.EUCentralBank),
     parseHitbtc(data.hitbtc_symbols, data.hitbtc_prices),
     parseBinance(data.binance),
     parseCoinmarketcap(data.coinmarketcap),
     parseCoinbase(data.coinbase)
   ]);
-  var result = updateMinAndMedians(sourcesOut);
+  let result = updateMinAndMedians(sourcesOut);
 
-  proc.pass(result);
+  proc.done(result);
 }
 
 function singleHop (exchangeRates, startSymbol, history, rate_mode) {
-  var accumulator = {};
+  let accumulator = {};
   if (exchangeRates.hasOwnProperty(startSymbol)) {
-    var quotes = exchangeRates[startSymbol]['quotes'];
+    let quotes = exchangeRates[startSymbol]['quotes'];
     Object.keys(quotes).map(function (intermediateCurrency, _) {
-      var rate = quotes[intermediateCurrency][rate_mode];
+      let rate = quotes[intermediateCurrency][rate_mode];
       accumulator[intermediateCurrency] = {rate: history.rate * rate['rate'],
         transactionPath: history['transactionPath'].concat([{exchange: rate['exchange'], to: intermediateCurrency}])};
     });
@@ -183,9 +183,9 @@ function singleHop (exchangeRates, startSymbol, history, rate_mode) {
 }
 
 function optimalTransaction (history1, history2) {
-  var currencies = [...new Set(Object.keys(history1).concat(Object.keys(history2)))];
+  let currencies = [...new Set(Object.keys(history1).concat(Object.keys(history2)))];
 
-  var accumulator = {};
+  let accumulator = {};
   currencies.map(function (currency, _) {
     if (!history1.hasOwnProperty(currency)) {
       accumulator[currency] = history2[currency];
@@ -202,21 +202,21 @@ function optimalTransaction (history1, history2) {
 }
 
 function bestTransactionChain (exchangeRates, startSymbol, targetSymbol, maxHops, shortestPath, rate_mode, whitelist, useWhitelist) {
-  var emptyHistory = {rate: 1, transactionPath: []};
+  let emptyHistory = {rate: 1, transactionPath: []};
 
   whitelist = new Set(whitelist.concat([startSymbol, targetSymbol]));
 
-  var transactionChains = {};
+  let transactionChains = {};
   transactionChains[startSymbol] = emptyHistory;
-  for (var i = 0; i < maxHops; i++) {
+  for (let i = 0; i < maxHops; i++) {
     if (shortestPath && transactionChains.hasOwnProperty(targetSymbol)) {
       break;
     }
-    var intermediarySymbols = Object.keys(transactionChains);
+    let intermediarySymbols = Object.keys(transactionChains);
     if (useWhitelist) {
       intermediarySymbols = Array.from(new Set([...intermediarySymbols].filter(i => whitelist.has(i))));
     }
-    var accumulator = intermediarySymbols.map(function (currency, _) {
+    let accumulator = intermediarySymbols.map(function (currency, _) {
       return singleHop(exchangeRates, currency, transactionChains[currency], rate_mode);
     }).concat(transactionChains);
     transactionChains = accumulator.reduce(function (history1, history2) { return optimalTransaction(history1, history2); });
@@ -224,7 +224,7 @@ function bestTransactionChain (exchangeRates, startSymbol, targetSymbol, maxHops
   if (transactionChains.hasOwnProperty(targetSymbol)) {
     return transactionChains[targetSymbol];
   } else {
-    var result = emptyHistory;
+    let result = emptyHistory;
     result.error = 1;
     result.rate = 0;
     return result;
@@ -232,10 +232,10 @@ function bestTransactionChain (exchangeRates, startSymbol, targetSymbol, maxHops
 }
 
 function valuate (proc, data) {
-  var source = data.source.toUpperCase();
-  var target = data.target.toUpperCase();
-  var amount = data.amount === 'undefined' || typeof data.amount === 'undefined' ? 1 : Number(data.amount);
-  var mode = 'median_rate';
+  let source = data.source.toUpperCase();
+  let target = data.target.toUpperCase();
+  let amount = data.amount === 'undefined' || typeof data.amount === 'undefined' ? 1 : Number(data.amount);
+  let mode = 'median_rate';
   if (data.mode === 'max') {
     mode = 'highest_rate';
   } else if (data.mode === 'min') {
@@ -244,12 +244,12 @@ function valuate (proc, data) {
     mode = 'meta';
   }
 
-  var whitelist = ['BTC', 'ETH', 'USD', 'EUR'];
-  var r;
+  let whitelist = ['BTC', 'ETH', 'USD', 'EUR'];
+  let r;
   if (mode === 'meta') {
-    var resultLow = bestTransactionChain(data.prices, source, target, 5, true, 'lowest_rate', whitelist, true);
-    var resultMedian = bestTransactionChain(data.prices, source, target, 5, true, 'median_rate', whitelist, true);
-    var resultHigh = bestTransactionChain(data.prices, source, target, 5, true, 'highest_rate', whitelist, true);
+    let resultLow = bestTransactionChain(data.prices, source, target, 5, true, 'lowest_rate', whitelist, true);
+    let resultMedian = bestTransactionChain(data.prices, source, target, 5, true, 'median_rate', whitelist, true);
+    let resultHigh = bestTransactionChain(data.prices, source, target, 5, true, 'highest_rate', whitelist, true);
 
     if (resultLow.error) {
       proc.fail(resultLow.error, 'Failed to compute rate');
@@ -261,7 +261,7 @@ function valuate (proc, data) {
       };
     }
   } else {
-    var result = bestTransactionChain(data.prices, source, target, 5, true, mode, whitelist, true);
+    let result = bestTransactionChain(data.prices, source, target, 5, true, mode, whitelist, true);
     if (result.error) {
       proc.fail(result.error, 'Failed to compute rate');
       return;
@@ -269,7 +269,7 @@ function valuate (proc, data) {
       r = result.rate * amount;
     }
   }
-  proc.pass(r);
+  proc.done(r);
 }
 
 exports.valuate = valuate;

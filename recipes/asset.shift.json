@@ -14,6 +14,9 @@
   "quartz":{
     "sample" : [
       "done {address:'16296503595969372386S',transaction:'6908341461331361507'}"
+    ],
+    "test":[
+      "done {hash:dynamic}"
     ]
   }
 }

@@ -33,7 +33,7 @@ function mine (proc) {
   mockchain.push(newTransaction);
   fs.writeFileSync(filePath, JSON.stringify(mockchain));
 
-  proc.pass(newTransaction);
+  proc.done(newTransaction);
 }
 
 function balance (proc) {
@@ -56,7 +56,7 @@ function balance (proc) {
     if (transaction.target === address && transaction.contract === contract) { balance += transaction.amount; }
     if (transaction.source === address && transaction.contract === contract) { balance -= transaction.amount + transaction.fee; }
   }
-  proc.pass('' + balance);
+  proc.done('' + balance);
 }
 
 function push (proc) {
@@ -94,7 +94,7 @@ function push (proc) {
       newTransaction.type = 'tran';
       mockchain.push(newTransaction);
       fs.writeFileSync(filePath, JSON.stringify(mockchain));
-      proc.pass(newTransaction.id);
+      proc.done(newTransaction.id);
     } else {
       proc.fail('insufficient balance');
     }
@@ -122,7 +122,7 @@ function history (proc) {
       history.push(transactionId);
     }
   }
-  proc.pass(history);
+  proc.done(history);
 }
 
 function transaction (proc) {
@@ -151,7 +151,7 @@ function transaction (proc) {
       target: transaction.target,
       confirmed: 1
     };
-    proc.pass(normalizedTransaction);
+    proc.done(normalizedTransaction);
   } else {
     proc.fail('unknown transaction');
   }
@@ -173,7 +173,7 @@ function message (proc) {
   let transactionId = Number(proc.command[1]);
   if (transactionId < mockchain.length) {
     let transaction = mockchain[transactionId];
-    proc.pass(transaction.message);
+    proc.done(transaction.message);
   } else {
     proc.fail('unknown transaction');
   }

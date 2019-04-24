@@ -32,6 +32,9 @@
       "wait(3000)",
       "stop(0,'TXIDTXIDTXIDTXIDTXIDTXIDTXID')"
     ],
+    "test": [
+      "done {hash:'2698591A'}"
+    ],
     "factor" : [
       "pass('$factor')"
     ],

@@ -192,7 +192,7 @@
       "pass"
     ],
     "test" :[
-      "done {unspent:{lastLedgerSequencePlus:46084264,sequence:759}}"
+      "done {hash:4E5C0B7F, unspent:{lastLedgerSequencePlus:46084264,sequence:759}}"
     ],
     "validate" : [
       "data '$1'",

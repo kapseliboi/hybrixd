@@ -2,20 +2,14 @@
 // hybrixd module - web-wallet/module.js
 // Module to provide the web wallet
 
-// required libraries in this context
-let route = require('../../lib/router/router');
-
 // exec
-function exec (properties) {
-  let source = properties.target.module;
-  let command = properties.command;
+function web_wallet (proc) {
+  let source = 'web-wallet';
+  let command = proc.command;
+  proc.sync();
   let fileName = command.length === 0
     ? 'modules/' + source + '/files/index.html'
     : 'modules/' + source + '/files/' + command.join('/');
-
-  let request = {
-    sessionID: global.hybrixd.proc[properties.processID.split('.')[0]].sid
-  };
 
   let mimeTypes = {
     css: 'text/css',
@@ -33,22 +27,9 @@ function exec (properties) {
   let extension = fileNameSplitByDot[fileNameSplitByDot.length - 1];
   let mimeType = mimeTypes.hasOwnProperty(extension) ? mimeTypes[extension] : 'text/html';
 
-  if (command.length >= 2 && command[0] === 'api' && command[1] === 'v1') {
-    request.url = '/' + command.slice(2).join('/');
-    return route.route(request);
-  } else if (command.length >= 1 && (command[0] === 'api' || command[0] === 'v1')) {
-    request.url = '/' + command.slice(1).join('/');
-    return route.route(request);
-  }
-
-  return {
-    error: 0,
-    data: fileName,
-    type: 'file:' + mimeType,
-    command: command,
-    path: ['source', source].concat(command)
-  };
+  proc.mime('file:' + mimeType);
+  proc.done(fileName);
 }
 
 // exports
-exports.exec = exec;
+exports.web_wallet = web_wallet;

@@ -1,13 +1,14 @@
 {
 
   "host" : {
-    "hostname" : {
-      "default" : ["localhost"],
+    "endpoints" : {
+      "default" : ["http://api.hybrix.io/api"],
+      "info" : "External facing API endpoints",
       "type" : "array"
     },
     "servers" : {
-      "default" : { "http://127.0.0.1:1111" : "/root", "http://127.0.0.1:8080" : "/source/web-wallet"},
-      "info":"Define the server endpoints.",
+      "default" : { "http://127.0.0.1:1111" : "/root", "http://127.0.0.1:8080" : "/source/web-wallet" },
+      "info" : "Define the servers",
       "type" : "object"
     },
     "ignoretlserror" : {
@@ -16,7 +17,7 @@
     },
     "defaultmaxlisteners" : {
       "default" : 25,
-      "info":"Set the amount of listners for the http server socket.",
+      "info" : "Set the amount of listners for the http server socket",
       "type" : "int"
     }
   },
@@ -24,7 +25,7 @@
     "procpurgetime" : {
       "default" : 120,
       "type" : "int",
-      "info": "Amount of time before a stale process gets cleaned up.",
+      "info" : "Amount of time before a stale process gets cleaned up",
       "unit" : "seconds"
     },
     "maxparallelprocesses" :{},
@@ -36,7 +37,7 @@
     },
     "maxusage" : {
       "default" : 80,
-      "info":"Maximum thread usage",
+      "info" : "Maximum thread usage",
       "type" : "int",
       "unit" : "%"
     }
