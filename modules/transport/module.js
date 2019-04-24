@@ -12,6 +12,15 @@ let shaHash = require('js-sha256').sha224;
 
 let data = require('./data');
 
+// add static endpoint entries from conf file
+data.endpoints = [];
+let httpEndpoints = conf.get('host.endpoints');
+if(httpEndpoints instanceof Array) {
+  for(let i=0;i<httpEndpoints.length;i++) {
+    data.endpoints.push(httpEndpoints[i]);
+  }
+}
+
 function open (proc) {
   const command = proc.command;
 
@@ -90,13 +99,7 @@ function list (proc) {
           endpoints = data.peersURIs[fromNodeId].slice(0);
         }
       } else {
-        let httpEndpoints = conf.get('host.endpoints');
         endpoints = data.endpoints.slice(0); // clone the array
-        if(httpEndpoints instanceof Array) {
-          for(let i=0;i<httpEndpoints.length;i++) {
-            endpoints.unshift(httpEndpoints[i]);
-          }
-        }
       }
       // filter the endpoints
       if (proc.command[3]) {

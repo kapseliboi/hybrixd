@@ -18,7 +18,7 @@ function stringChunks (str, divisor) {
 }
 
 function addHandleAndEndpoint (handleId, peerId, endpoint) {
-  if (data.endpoints.indexOf(endpoint) === -1) { // TODO
+  if (data.endpoints.indexOf(endpoint) === -1) {
     data.endpoints.push(endpoint);
     data.handleIds.push(handleId);
     if (!data.handles.hasOwnProperty(handleId)) {
