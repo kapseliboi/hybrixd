@@ -2,8 +2,23 @@
   "source":"web-wallet",
   "name":"Web Wallet",
   "module":"web-wallet",
+  "quartz" : {
+    "sapi":[
+      "data $@",
+      "logs",
+      "drop",
+      "logs",
+      "done a"
+    ],
+    "test":[
+      "done abc"
+    ]
+  },
   "router" : {
-    "_ellipsis": true,
+    "api":{
+      "_alias":"/"
+    },
+    "_ellipsis":true,
     "_this" : "Provides the necessary bindings to host the web wallet interface."
   }
 }

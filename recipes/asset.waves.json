@@ -53,7 +53,7 @@
       "with reformatFee [data,$reformatObj] [tran,'.fee'] [atom]",
       "with reformatAmount [data,$reformatObj] [tran,'.transfers[].amount',2,1] [done,0] [math,'+'] [atom]",
       "with reformatSymbol [data,$reformatObj] [tran,'.assetId',2,1] [data,'$symbol'] [done]",
-      "with reformatRecipient [data,$reformatObj] [tran,'.recipient',3,1] [tran,'.transfers[0].recipient',2,1] [done,'undefined'] [done]", 
+      "with reformatRecipient [data,$reformatObj] [tran,'.recipient',3,1] [tran,'.transfers[0].recipient',2,1] [done,'undefined'] [done]",
       "peek reformatObj",
       "tran { id:'.id', timestamp:'$reformatTimestamp', amount:'$reformatAmount', symbol:'$reformatSymbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.sender', target:'$reformatRecipient', confirmed:true } 2 1",
       "fail 'Cannot get transaction data!'",
@@ -71,6 +71,9 @@
     ],
     "sample" : [
       "done {address:'3PBUkL5rphESXxq1yJzW2erVzTTKAXXeCUo',transaction:'Du5uMXjTc4YA4C3bY7WcDLvq4UPgBwuVGGDWaQsfvpuU'}"
+    ],
+    "test":[
+      "done {hash:dynamic,time:1536917842558}"
     ]
   }
 }

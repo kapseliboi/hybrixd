@@ -146,6 +146,9 @@
     ],
     "sample" : [
       "done {address:'NCKZD7-JGDLND-IVVPH6-U2PG2Q-KD3PX3-FX4CPZ-MF2A',transaction:'215b900475b13f724acc9fbe249bb9ffd31451c2352ed51b9637143cde4c260a'}"
+    ],
+    "test":[
+      "done {hash:dynamic}"
     ]
   }
 }

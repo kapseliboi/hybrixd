@@ -58,6 +58,9 @@
     ],
     "sample" : [
       "done {address:'5920921428156130553L',transaction:'7756785777154630495'}"
+    ],
+    "test":[
+      "done {hash:dynamic,time:1556105965842}"
     ]
   }
 }

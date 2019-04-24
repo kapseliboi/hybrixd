@@ -298,7 +298,7 @@
    
     module.js:
     function myFunction(proc,data){
-      proc.pass(data+' world');
+      proc.done(data+' world');
     }</code></div><div class="command-header" onclick="toggleCommand('mime')"><b>mime</b><span class="quickDescription"> <i>data</i>Set the mime type field of a process.</span></div><div style="display:none;" class="command-body" id="mime">
     Set the mime type field of a process.
    <table class="parameters"><tr><td><strong>Name</strong></td><td><strong>Type<strong></td><td><strong>Description</strong></td></tr><tr><td>data</td><td>String</td><td> the data type. default: 'data': data as is;  'file':  for static file content retrieval.</td></tr></table><code class="example" title="mime" id="example51">mime data            // set the data type to 'data'

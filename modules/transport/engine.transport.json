@@ -2,36 +2,69 @@
   "engine":"transport",
   "name":"Transport engine module",
   "module":"transport",
-  "readTimeout":32000,
-  "announceMaxBufferSize":5000,
+  "readTimeout":120000,
+  "sendTimeout":120000,
+  "announceMaxBufferSize":10000,
+  "useHttpCalls":true,
   "hashSalt":"Th1s1sS0m3S4lty3ntr0pyf0rTh0s3H4sh1ngFunct10ns!",
   "defaultChannel":"hybrixAnnouncements",
   "defaultIrcHost":"irc.freenode.net",
   "defaultTorrentPasswd":"l3ts_b34t_th3_b4nks!",
   "cron" : 300,
   "quartz" : {
+    "open" :["func open"],
+    "close" :["func close"],
+    "info" :["func info"],
+    "stop" :["func stop"],
+    "read" :[
+      "time $readTimeout",
+      "func read",
+      "done"
+    ],
+    "send" :[
+      "time $sendTimeout",
+      "data $@",
+      "join '/'",
+      "func $",
+      "done"
+    ],
+    "list" :["func list"],
+    "node" : [
+      "node",
+      "done"
+    ],
     "rout" : [
-      "time 40000",
-      "# get the node's public key/ID",
-      "with 'nodeId' 'node'",
       "# create path out of arguments",
       "data $@",
       "pull",
+      "poke routpath",
+      "join '/'",
+      "poke curlpath",
+      "data '$useHttpCalls'",
+      "flow 'false' @transportCall",
+      "# get endpoint information",
+      "curl '$curlpath' GET {}",
+      "@transportCall",
+      "peek routpath",
       "push '$nodeId' 1",
       "join '/'",
-      "call 'send/*/$'",
-      "call 'read/*/$nodeId/$'",
+      "time $readTimeout",
+      "# get the node's public key/ID",
+      "with 'nodeId' node",
+      "call 'send/*/$routpath'",
+      "call 'read/*/$nodeId/$routpath'",
       "done"
     ]
   },
   "router" : {
-    "_hidden":true,
     "_help" : "Control the announcement engine.",
+    "node" : "The public Node id",
     "open":{
       "_help" : "Connect to a transport network. When initialized the transport returns a handle.",
       "_this" : "When entering no other information, the possible protocols are listed.",
       "_ref" : {
         "_list" : "protocol",
+        "_sample":"irc",
         "_this" : "Protocol to use. (irc or bittorrent)",
         "_ref" : {
           "_list" : "target",
@@ -59,12 +92,12 @@
     },
     "send":{
       "_help" : "Send a message over an active transport.",
-      "_ellipsis": true,
       "_ref" : {
         "_list" : "handle",
         "_ref" : {
           "_list" : "target_node_Id",
           "_ref" : {
+            "_ellipsis" : true,
             "_list" : "message",
             "_this" : "Message to send must be a string. A message ID is returned."
           }
@@ -86,10 +119,10 @@
     },
     "rout":{
       "_help" : "Request an API route from a target node over any active transports.",
-      "_ellipsis": true,
       "_ref" : {
         "_list" : "target_node_Id",
         "_ref" : {
+          "_ellipsis" : true,
           "_list" : "call",
           "_this" : "API call must be a path. The response is returned."
         }
@@ -97,7 +130,17 @@
     },
     "list":{
       "_help" : "List active transports, endpoints or peers.",
-      "endpoints" : "Current node endpoints are listed.",
+      "endpoints" : {
+        "_this" : "List endpoints belonging to you or other nodeIds.",
+        "_ref" : {
+          "_list" : "target_node_Id",
+          "_this" : "Optionally specify a nodeId target.",
+          "_ref" : {
+            "_list" : "filter",
+            "_this" : "Filter by protocol(s). (For example: 'http,https')"
+          }
+        }
+      },
       "handles" : "Active transport handles are listed.",
       "peers" : "Peers across all networks are listed."
     }
