@@ -2,7 +2,7 @@
 
   "host" : {
     "endpoints" : {
-      "default" : ["http://api.hybrix.io/api"],
+      "default" : [],
       "info" : "External facing API endpoints",
       "type" : "array"
     },

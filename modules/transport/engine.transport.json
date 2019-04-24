@@ -38,21 +38,31 @@
       "data $@",
       "pull",
       "poke routpath",
+      "pull",
       "join '/'",
       "poke curlpath",
       "data '$useHttpCalls'",
       "flow 'false' @transportCall",
-      "# get endpoint information",
-      "curl '$curlpath' GET {}",
+      "# try direct calls",
+      "call 'list/endpoints/$1/http'",
+      "poke httpEndpoints",
+      "size",
+      "true =0 @transportCall",
+      "peek httpEndpoints",
+      "shuf",
+      "logs 'CURL call to ${[0]}/$curlpath ...'",
+      "# TODO: make sure non-responsive host is tried decentralized!",
+      "curl '${[0]}' '/$curlpath' GET {}",
+      "done",
       "@transportCall",
-      "peek routpath",
       "push '$nodeId' 1",
-      "join '/'",
       "time $readTimeout",
       "# get the node's public key/ID",
       "with 'nodeId' node",
-      "call 'send/*/$routpath'",
-      "call 'read/*/$nodeId/$routpath'",
+      "peek routpath",
+      "join '/'",
+      "call 'send/*/$'",
+      "call 'read/*/$nodeId/$'",
       "done"
     ]
   },
@@ -121,11 +131,8 @@
       "_help" : "Request an API route from a target node over any active transports.",
       "_ref" : {
         "_list" : "target_node_Id",
-        "_ref" : {
-          "_ellipsis" : true,
-          "_list" : "call",
-          "_this" : "API call must be a path. The response is returned."
-        }
+        "_ellipsis" : true,
+        "_this" : "Make sure to specify the node ID. The API call must be a path."
       }
     },
     "list":{
