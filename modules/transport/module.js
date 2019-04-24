@@ -82,21 +82,28 @@ function info (proc) {
 function list (proc) {
   switch (proc.command[1]) {
     case 'endpoints':
-      // list external peerURIs/endpoints or own
-      let endpoints = {};
+      // list specific external peerURIs/endpoints or your own
+      let endpoints = [];
       if (proc.command[2]) {
         fromNodeId = proc.command[2];
         if (data.peersURIs[fromNodeId]) {
-          //endpoints = data.peersURIs[fromNodeId].slice(0);
+          endpoints = data.peersURIs[fromNodeId].slice(0);
         }
-        endpoints = JSON.stringify(data.peersURIs);
       } else {
-        let fromNodeId = global.hybrixd.node.publicKey;
         let httpEndpoints = conf.get('host.endpoints');
-        endpoints[fromNodeId] = data.endpoints.slice(0); // clone the array
+        endpoints = data.endpoints.slice(0); // clone the array
         if(httpEndpoints instanceof Array) {
           for(let i=0;i<httpEndpoints.length;i++) {
-            endpoints[fromNodeId].unshift(httpEndpoints[i]);
+            endpoints.unshift(httpEndpoints[i]);
+          }
+        }
+      }
+      // filter the endpoints
+      if (proc.command[3]) {
+        let filter = proc.command[3];
+        for (let i=0;i<endpoints.length;i++) {
+          if (endpoints[i].substr(0,filter.length)!==filter) {
+            endpoints.splice(i,1);
           }
         }
       }

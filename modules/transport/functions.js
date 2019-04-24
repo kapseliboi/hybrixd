@@ -48,29 +48,26 @@ function removeEndpoint (endpoint) {
 }
 
 function managePeerURIs (handle, fromPeerId, fromNodeId, peerlist) {
-  if (peerlist.length > 1 && peerlist.indexOf('://') > -1) { // filter out erronous UDP signalling from DHT
+  if (peerlist && peerlist.length > 0 && peerlist.indexOf('://') > -1) { // filter out erronous UDP signalling from DHT
     if (handle.peers[fromNodeId] &&
        (fromPeerId === handle.peers[fromNodeId].peerId ||
        fromPeerId === true)) {
-      if (peerlist) {
-        let peers = peerlist.split(',');
-        for (let i = 0; i < peers.length; i++) {
-          if (peers[i] && peers.indexOf('://') > -1) { // filter out anything that isn't a URI
-            if (!data.peersURIs.hasOwnProperty(fromNodeId)) {
-              data.peersURIs[fromNodeId] = [];
-            }
-            if (data.peersURIs[fromNodeId].indexOf(peers[i]) === -1) {
-              // insert new peer URI information
-              data.peersURIs[fromNodeId].unshift(peers[i]);
-            } else {
-              // raise priority of URI information
-              let idx = data.peersURIs[fromNodeId].indexOf(peers[i]);
-              data.peersURIs[fromNodeId].splice(idx, 1);
-              data.peersURIs[fromNodeId].unshift(peers[i]);
-            }
-            if (data.peersURIs[fromNodeId].length > 24) {
-              data.peersURIs[fromNodeId].pop();
-            }
+      let peers = peerlist.split(',');
+      for (let i = 0; i < peers.length; i++) {
+        if (peers[i] && peers[i].indexOf('://') > -1) { // filter out anything that isn't a URI
+          if (!data.peersURIs.hasOwnProperty(fromNodeId)) {
+            data.peersURIs[fromNodeId] = [];
+          }
+          if (data.peersURIs[fromNodeId].indexOf(peers[i]) > -1) {
+            // raise priority of URI information
+            let idx = data.peersURIs[fromNodeId].indexOf(peers[i]);
+            data.peersURIs[fromNodeId].splice(idx, 1);
+          }
+          // insert new peer URI information
+          data.peersURIs[fromNodeId].unshift(peers[i]);
+          // trim maximum peers length to 12
+          if (data.peersURIs[fromNodeId].length > 12) {
+            data.peersURIs[fromNodeId].pop();
           }
         }
       }
