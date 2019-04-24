@@ -53,7 +53,7 @@
     "transaction" : [
       "data 'addr=$1'",
       "curl('asset://$symbol','/v1/transaction/tx/$1','GET',{'content-type':'application/x-www-form-urlencoded'})",
-      "tran({id:'.txid',fee:'.fee',attachment:'',timestamp:'.blocktime',symbol:'$symbol','fee-symbol':'$fee-symbol',ammount:'.amount',source:'=.sendingaddress|unknown',target:'=.referenceaddress|unknown'},2,1)",
+      "tran({id:'.txid',fee:'.fee',attachment:'',timestamp:'.blocktime',symbol:'$symbol','fee-symbol':'$fee-symbol',amount:'.amount',source:'=.sendingaddress|unknown',target:'=.referenceaddress|unknown',confirmed:'FIXME!'},2,1)",
       "fail('Error retrieving data!')",
       "done"
     ],
