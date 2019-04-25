@@ -21,6 +21,7 @@
     ]
   },
   "router" : {
+    "_hidden":true,
     "test":"test",
     "public":{
       "_ref" : {
