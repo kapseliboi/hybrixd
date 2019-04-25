@@ -5,14 +5,17 @@
   "cron" : 300,
   "quartz"  : {
     "init":[
-      "func 'init'"
+      "func 'init'",
+      "done"
     ],
     "size":[
-      "func 'size'"
+      "func 'size'",
+      "done"
     ],
     "seek":[
       "data {key:'$1'}",
-      "func 'seek'"
+      "func 'seek'",
+      "done"
     ],
     "load":[
       "data {key:'$1'}",
@@ -33,7 +36,8 @@
       "done"
     ],
     "cron":[
-      "func 'cron'"
+      "func 'cron'",
+      "done"
     ],
     "set":[
       "test $ @dataPost @dataGet",
@@ -42,7 +46,8 @@
       "jump 2",
       "@dataGet",
       "data {key:'$1',value:'$2'}",
-      "func 'save'"
+      "func 'save'",
+      "done"
     ],
     "save":[
       "test $ @dataPost @dataGet",
@@ -51,11 +56,13 @@
       "jump 2",
       "@dataGet",
       "data {key:'$1',value:'$2'}",
-      "func 'save'"
+      "func 'save'",
+      "done"
     ],
     "meta":[
       "data {key:'$1'}",
-      "func 'meta'"
+      "func 'meta'",
+      "done"
     ],
     "del":[
       "fail 'Deleting data from node storage is not supported!'"
@@ -65,7 +72,8 @@
     ],
     "work":[
       "data {key:'$1', pow:'$2'}",
-      "func 'work'"
+      "func 'work'",
+      "done"
     ]
   },
   "router" : {
