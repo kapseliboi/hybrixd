@@ -40,12 +40,25 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
       subprocesses.push('form');
       subprocesses.push('done');
     }
-    if (command === 'transaction') { // append formatting of returned numbers
+    if (command === 'transaction') { // cache data and append formatting of returned numbers
+      subprocesses.unshift('jpar @dataReady');
+      subprocesses.unshift('logs "getting data from storage for transaction $1"');      
+      subprocesses.unshift('code base64 utf8');
+      subprocesses.unshift('load "$storageHash" 1 4');
+      subprocesses.unshift('poke storageHash');
+      subprocesses.unshift('hash');
+      subprocesses.unshift('data "'+xpath[1]+'"');
       subprocesses.push('poke formAmount ${.amount}');
       subprocesses.push('with formAmount form');
       subprocesses.push('poke formFee ${.fee}');
       subprocesses.push('with formFee form');
       subprocesses.push('data {id:"${.id}",timestamp:${.timestamp},amount:"$formAmount",symbol:"${.symbol}",fee:"$formFee",fee-symbol:"${.fee-symbol}",source:"${.source}",target:"${.target}"}');
+      subprocesses.push('poke txCleaned');
+      subprocesses.push('data "$"');
+      subprocesses.push('code utf8 base64');
+      subprocesses.push('save "$storageHash"');
+      subprocesses.push('peek txCleaned');
+      subprocesses.push('@dataReady');
       subprocesses.push('done');
     }
     if (command === 'history') { // take into account the offset and record count
