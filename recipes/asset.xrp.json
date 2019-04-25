@@ -173,7 +173,7 @@
       "flow 'Payment' @next2 @fail",
       "@next2",
       "peek 'local::subhistoryData'",
-      "tran {id:'.tx.Sequence', timestamp:'.tx.date', amount:'tx.Amount', symbol:'$symbol', fee:'.tx.Fee', 'fee-symbol':'$fee-symbol', source:'.tx.Account', target:'.tx.Destination', data:'unknown'} @success @fail",
+      "tran '.tx.hash' @succes @fail",
       "@fail",
       "fail 'No result!'",
       "@success",
