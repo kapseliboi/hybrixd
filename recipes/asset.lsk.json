@@ -43,8 +43,7 @@
       "with reformatFee [data,'${.fee}'] [atom]",
       "with reformatAmount [data,'${.amount}'] [atom]",
       "tran { id:'.id', timestamp:'$reformatTimestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.senderId', target:'.recipientId', confirmed:'.confirmations' } 2 1",      
-      "fail 'Cannot get transaction data!'",
-      "done"
+      "fail 'Cannot get transaction data!'"
     ],
     "attachment" : [
       "call transactionData/$1",
