@@ -41,6 +41,21 @@
     ],
     "test":[
       "done {hash:dynamic}"
+    ],
+     "transactionData" : [
+       "curl asset://$symbol /api/transactions?id=$1&limit=1&offset=0 GET {Accept:'application/json','Content-Type':'application/json'}",
+       "tran .transactions 2 1",
+       "fail 'Cannot get transaction data1!'",
+       "pick",
+       "done"
+    ],
+     "transaction" : [
+      "call transactionData/$1",
+      "with reformatFee [data,'${.fee}'] [atom]",
+      "with reformatAmount [data,'${.amount}'] [atom]",
+      "tran { id:'.id', timestamp:'.timestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.senderId', target:'.recipientId', confirmed:'.confirmations' } 2 1",
+      "fail 'Cannot get transaction data2!'",
+      "done"
     ]
   }
 }

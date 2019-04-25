@@ -45,7 +45,7 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
       subprocesses.push('with formAmount form');
       subprocesses.push('poke formFee ${.fee}');
       subprocesses.push('with formFee form');
-      subprocesses.push('data {id:"${.id}",timestamp:${.timestamp},amount:"$formAmount",symbol:"${.symbol}",fee:"$formFee",fee-symbol:"${.fee-symbol}",source:"${.source}",target:"${.target}"}');
+      subprocesses.push('data {id:"${.id}",timestamp:${.timestamp},amount:"$formAmount",symbol:"${.symbol}",fee:"$formFee",fee-symbol:"${.fee-symbol}",source:"${.source}",target:"${.target}",confirmed:"${.confirmed}"}');
       subprocesses.push('done');
     }
     if (command === 'history') { // take into account the offset and record count
