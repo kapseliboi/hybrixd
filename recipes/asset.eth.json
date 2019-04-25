@@ -129,7 +129,8 @@
       "poke 'randomId'",
       "data {jsonrpc: '2.0', method: 'eth_getTransactionByHash', params: ['$1'], id: $randomId}",
       "curl asset://$symbol '' POST {'Content-Type': 'application/json'}",
-      "tran .result 2 1",
+      "tran .result 3 1",
+      "logs",
       "fail 'Cannot interpret transaction data!'",
       "done"
     ],
@@ -143,10 +144,11 @@
       "with txFee [math,'$txGas*$txGasPrice'] [atom]",
       "with fee-symbol [call,'fee-symbol']",
       "with timestamp [call,'blockRaw/${.blockNumber}'] [tran,'.result.timestamp',2,1] [data,0] [code,'hex','dec'] [done]",
-      "tran { id:'.hash', timestamp:'$timestamp', amount:'.value', symbol:'$symbol', fee:'$txFee', 'fee-symbol':'$fee-symbol', source:'.from', target:'.to', confirmed:true } @okayData @failData",
+      "tran { id:'.hash', timestamp:'$timestamp', amount:'.value', symbol:'$symbol', fee:'$txFee', 'fee-symbol':'$fee-symbol', source:'.from', target:'.to', confirmed:'FIXME' } @okayData @failData",
       "@failData",
       "fail 'Cannot interpret transaction data!'",
-      "@okayData"
+      "@okayData",
+      "done"
     ],
     "attachment" : [
       "time $timeout",

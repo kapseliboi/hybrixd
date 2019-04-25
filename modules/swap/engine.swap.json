@@ -1,0 +1,54 @@
+{
+  "engine":"swap",
+  "name":"Swap",
+  "module":"swap",
+  "quartz":{
+
+    "register" : [
+      "func register",
+      "poke 'myPublicKey'",
+      "logs",
+      "#rout /e/transport/rout/$2/e/swap/public/$1 get public symbol key from nodeID",
+      "data 123",
+      "math +$myPublicKey",
+      "logs",
+      "#todo check balance on resulting address",
+      "#if balance is there then mark as confirmed",
+      "done 'Registered swap address $4 for $2 deposit address:$'"
+    ],
+    "public" : [
+      "func public_"
+    ]
+  },
+  "router" : {
+    "test":"test",
+    "public":{
+      "_ref" : {
+        "_list":"symbol",
+        "_this":"The public key used for deposits"
+      }
+    },
+    "request":{
+      "_ref" : {
+        "_list":"symbol",
+        "_this":"Request a deposit key"
+      }
+    },
+    "list" : "List deposits",
+    "register":{
+      "_ref" : {
+        "_list":"symbol",
+        "_ref" : {
+          "_list":"nodeID",
+          "_ref" : {
+            "_list":"publicKey",
+            "_ref" : {
+              "_list":"tradingaddresses",
+              "_this":"Register trading addresses"
+            }
+          }
+        }
+      }
+    }
+  }
+}
