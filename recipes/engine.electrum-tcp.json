@@ -87,9 +87,8 @@
       "poke txSource",
       "with txSource [tran,'.vout[1].scriptPubKey.addresses[0]',2,1] [data,null] [done]",
       "# TODO: transaction fees = sum of previous outputs - sum of current outputs",
-      "tran { id:'.txid', timestamp:'.time', amount:'.vout[0].value', symbol:'$symbol', fee:'FIXME!', 'fee-symbol':'$symbol', source:'$txSource', target:'.vout[0].scriptPubKey.addresses[0]', confirmed:'.confirmations' } 2 1",
-      "fail 'Cannot read transaction data!'",
-      "done"
+      "tran { id:'.txid', timestamp:'.time', amount:'.vout[0].value', symbol:'$symbol', fee:'$fee', 'fee-symbol':'$symbol', source:'$txSource', target:'.vout[0].scriptPubKey.addresses[0]', confirmed:'.confirmations' } 2 1",
+      "fail 'Cannot read transaction data!'"
     ],
     "attachment" : [
       "time $longtimeout",
