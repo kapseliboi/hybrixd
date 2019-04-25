@@ -23,9 +23,9 @@
       "tran('.balances',2,1)",
       "fail",
       "find({'asset_type':'$contract'})",
-      "tran('[0].balance',2,1)",
+      "tran('[0].balance',@done,1)",
       "fail",
-      "pass"
+      "@done"
     ],
     "fee": [
       "data('$fee')"
@@ -39,7 +39,7 @@
       "done"
     ],
     "contract": [
-      "pass('$contract')"
+      "done '$contract'"
     ],
     "unspent": [
       "curl('$host','/accounts/$1','GET')",
@@ -54,7 +54,7 @@
       "done {unspent:'998719879287873'}"
     ],
     "transaction": [
-      "done {a:1}"
+      "fail 'Not yet implemented!'"
     ],
     "sample": [
       "pass({address:'GCUBGHIGXAJBPEBSX5IWUK2HNQPFXPNXEN6YJI7YNLTFU3VBYOEBLMT3',transaction:'',publicKey:'GCUBGHIGXAJBPEBSX5IWUK2HNQPFXPNXEN6YJI7YNLTFU3VBYOEBLMT3'})"

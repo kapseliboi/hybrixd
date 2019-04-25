@@ -71,7 +71,7 @@
       "done"
     ],
     "list":[
-      "done ['btc','eth','ltc','usd','eur','gbp','cad','nzd','jpy','cny','aud','krw','huf','pln','ron','sek','chf','isk','nok','hrk','rub','try','brl','hkd','idr','ils','inr','mxn','myr','php','sgd','thb','zar']"
+      "done ['usd','eur','gbp','cad','nzd','jpy','cny','aud','krw','huf','pln','ron','sek','chf','isk','nok','hrk','rub','try','brl','hkd','idr','ils','inr','mxn','myr','php','sgd','thb','zar']"
     ]
   },
   "router" : {

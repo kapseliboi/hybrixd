@@ -24,7 +24,7 @@
       "@end",
       "data {'id': 1,'command': 'server_info'}",
       "curl 'asset://$symbol' '' 'POST'",
-      "done()"
+      "done"
     ],
     "fee-factor" : [
       "pass '$fee-factor'"
@@ -72,8 +72,7 @@
       "@currency",
       "each data 'balance_currency'",
       "math",
-      "atom",
-      "done"
+      "atom"
     ],
     "balance_currency" : [
       "tran '.value.balance' 1 @fail",
@@ -117,8 +116,7 @@
       "pass '$xrp::fee'",
       "done()",
       "@localFee",
-      "pass '$local::fee'",
-      "done()"
+      "pass '$local::fee'"
     ],
     "push" : [
       "data '$1'",
@@ -130,16 +128,15 @@
       "@success",
       "tran '.result.tx_json.hash' @succes2 @fail",
       "@success2",
-      "pass"
+      "done"
     ],
     "transaction" : [
       "data {'id': 1,'command': 'tx','transaction': '$1','binary': false}",
       "curl 'asset://$symbol' '' 'POST'",
-      "tran {id:'=.result.Sequence|unknown',fee:'=.result.Fee|unknown',timestamp:'=.result.date|unknown',symbol:'XRP',amount:'=.result.Amount|unknown',source:'=.result.Account|unknown',target:'=.result.Destination|unknown',confirmed:'FIXME'} @succes @fail",
+      "tran {id:'=.result.Sequence|unknown',fee:'=.result.Fee|unknown',timestamp:'=.result.date|unknown',symbol:'XRP',amount:'=.result.Amount|unknown',source:'=.result.Account|unknown',target:'=.result.Destination|unknown',confirmed:'FIXME'} @success @fail",
       "@fail",
       "fail 'error'",
-      "@succes",
-      "pass"
+      "@success"
     ],
     "unspent" : [
       "data {'id': 2,'command': 'account_info','account': '$1','strict': true,'ledger_index': 'current','queue': true}",
@@ -179,8 +176,8 @@
       "tran '.tx.hash' @succes @fail",
       "@fail",
       "fail 'No result!'",
-      "@succes",
-      "pass"
+      "@success",
+      "done"
     ],
     "history" : [
       "data {'id': 2, 'command': 'account_tx', 'account': '$1', 'ledger_index_min': -1, 'ledger_index_max': -1, 'binary': false, 'limit': 10, 'forward': false}",
@@ -190,8 +187,7 @@
       "fail 'No result!'",
       "@next",
       "each $data 'subhistory'",
-      "sort(data,['obj:timestamp','num','desc'])",
-      "pass"
+      "sort(data,['obj:timestamp','num','desc'])"
     ],
     "test" :[
       "done {hash:4E5C0B7F, unspent:{lastLedgerSequencePlus:46084264,sequence:759}}"

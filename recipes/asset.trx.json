@@ -87,7 +87,7 @@
       "tran '.data' 2 1",
       "fail 'Could not get transaction history!'",
       "tran '[].transactionHash' 1 -1",
-      "# done is needed here, since API already correctly defines offset and limit",
+      "# done is needed only in this case, since API already correctly defines offset and limit",
       "done"
     ],
     "sample" : [

@@ -6,6 +6,7 @@
   "addressRegex":"3[A-Za-z0-9]{34}$",
   "factor":8,
   "fee":0.001,
+  "fee-symbol":"waves",
   "host": ["https://nodes.wavesplatform.com","https://nodes.wavesnodes.com"],
   "rejectUnauthorized":false,
   "cache":15000,
@@ -55,9 +56,8 @@
       "with reformatSymbol [data,$reformatObj] [tran,'.assetId',2,1] [data,'$symbol'] [done]",
       "with reformatRecipient [data,$reformatObj] [tran,'.recipient',3,1] [tran,'.transfers[0].recipient',2,1] [done,'undefined'] [done]",
       "peek reformatObj",
-      "tran { id:'.id', timestamp:'$reformatTimestamp', amount:'$reformatAmount', symbol:'$reformatSymbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.sender', target:'$reformatRecipient', confirmed:'FIXME' } 2 1",
-      "fail 'Cannot get transaction data!'",
-      "done"
+      "tran { id:'.id', timestamp:'$reformatTimestamp', amount:'$reformatAmount', symbol:'$reformatSymbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.sender', target:'$reformatRecipient', confirmed:true } 2 1",
+      "fail 'Cannot get transaction data!'"
     ],
     "attachment" : [
       "call transactionData/$1",

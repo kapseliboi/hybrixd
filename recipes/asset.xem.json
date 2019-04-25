@@ -24,8 +24,7 @@
       "tran '.data' 1 2",
       "find {'namespaceId':'$namespace'} 2 1",
       "fail 'Contract address invalid or no mosaics found!'",
-      "tran '.0'",
-      "done"
+      "tran '.0'"
     ],
     "balance" : [
       "data '$1'",
