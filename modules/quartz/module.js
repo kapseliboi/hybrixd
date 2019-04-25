@@ -54,7 +54,7 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
       subprocesses.push('with formAmount form');
       subprocesses.push('poke formFee ${.fee}');
       subprocesses.push('with formFee form');
-      subprocesses.push('data {id:"${.id}",timestamp:${.timestamp},amount:"$formAmount",symbol:"${.symbol}",fee:"$formFee",fee-symbol:"${.fee-symbol}",source:"${.source}",target:"${.target},confirmed:"${.confirmed}"}');
+      subprocesses.push('data {id:"${.id}",timestamp:${.timestamp},amount:"$formAmount",symbol:"${.symbol}",fee:"$formFee",fee-symbol:"${.fee-symbol}",source:"${.source}",target:"${.target}",confirmed:${.confirmed}}');
       subprocesses.push('poke txCleaned');
       subprocesses.push('data "$"');
       subprocesses.push('code utf8 base64');
