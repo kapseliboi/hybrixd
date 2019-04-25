@@ -23,8 +23,7 @@
     "_balance":[
       "rand 10000",
       "data {jsonrpc: '2.0', method: 'eth_getBalance', params: ['$1','latest'], id: $}",
-      "curl asset://$symbol '' POST {'Content-Type': 'application/json'}",
-      "done"
+      "curl asset://$symbol '' POST {'Content-Type': 'application/json'}"
     ],
     "fee-factor" : [
       "call 'fee-symbol'",

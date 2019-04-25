@@ -31,10 +31,11 @@
       "done(data)"
     ],
     "test" : [
-      "data '{some:\"yolo\",real:\"dirty\",JSON:\"works?\"}'",
-      "jpar 1 2",
-      "done",
-      "fail 'bad JSON!'"
+      "data {some:'yolo',real:'this',JSON:'works'}",
+      "pack",
+      "unpk 2 1",
+      "done FAIL",
+      "done"
     ],
     "proberen" : [
       "rout /asset/eth/status/0x4d3244b0677b86d06b12cdbaa3ac4f15baaa6d5b",

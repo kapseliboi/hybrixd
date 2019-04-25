@@ -26,8 +26,7 @@
     "unspent" : [
       "rout('/asset/$keygen-base/fee')",
       "math('+$feeOmniTX')",
-      "rout('/asset/$keygen-base/unspent/$1/$data')",
-      "done"
+      "rout('/asset/$keygen-base/unspent/$1/$data')"
     ],
     "balance" : [
       "time($cache)",
@@ -54,8 +53,7 @@
       "data 'addr=$1'",
       "curl('asset://$symbol','/v1/transaction/tx/$1','GET',{'content-type':'application/x-www-form-urlencoded'})",
       "tran({id:'.txid',fee:'.fee',attachment:'',timestamp:'.blocktime',symbol:'$symbol','fee-symbol':'$fee-symbol',amount:'.amount',source:'=.sendingaddress|unknown',target:'=.referenceaddress|unknown',confirmed:'FIXME!'},2,1)",
-      "fail('Error retrieving data!')",
-      "done"
+      "fail('Error retrieving data!')"
     ],
     "contract" : [
       "done('$contract')"
