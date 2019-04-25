@@ -2,18 +2,6 @@
   "source":"web-wallet",
   "name":"Web Wallet",
   "module":"web-wallet",
-  "quartz" : {
-    "sapi":[
-      "data $@",
-      "logs",
-      "drop",
-      "logs",
-      "done a"
-    ],
-    "test":[
-      "done abc"
-    ]
-  },
   "router" : {
     "api":{
       "_alias":"/"
