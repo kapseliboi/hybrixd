@@ -44,8 +44,7 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
       subprocesses.unshift('@requestData');
       subprocesses.unshift('done');
       subprocesses.unshift('logs "getting data from storage for transaction $1"');      
-      subprocesses.unshift('jpar 1 @requestData');
-      subprocesses.unshift('code base64 utf8');
+      subprocesses.unshift('unpk 1 @requestData');
       subprocesses.unshift('load "$storageHash" 1 @requestData');
       subprocesses.unshift('poke storageHash');
       subprocesses.unshift('hash');
@@ -56,8 +55,7 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
       subprocesses.push('with formFee form');
       subprocesses.push('data {id:"${.id}",timestamp:${.timestamp},amount:"$formAmount",symbol:"${.symbol}",fee:"$formFee",fee-symbol:"${.fee-symbol}",source:"${.source}",target:"${.target}",confirmed:${.confirmed}}');
       subprocesses.push('poke txCleaned');
-      subprocesses.push('data "$"');
-      subprocesses.push('code utf8 base64');
+      subprocesses.push('pack');
       subprocesses.push('save "$storageHash"');
       subprocesses.push('peek txCleaned');
       subprocesses.push('done');
