@@ -15,8 +15,12 @@
   "quartz":{
     "balance" : [
       "curl asset://$symbol /api/accounts?address=$1&limit=1&offset=0&sort=balance:asc GET {Accept:'application/json','Content-Type':'application/json'}",
-      "tran '[0].unconfirmedBalance' 2 1",
-      "data 0"
+      "tran '.data[0].unconfirmedBalance' @nonzero",
+      "data 0",
+      "jump @done",
+      "@nonzero",
+      "atom",
+      "@done"
     ],
     "push" : [
       "data '$1'",
