@@ -17,8 +17,7 @@
     "unspent" : [
       "rout '/asset/$keygen-base/fee'",
       "math '+$feeCounterpartyTX'",
-      "rout '/asset/$keygen-base/unspent/$1/$data'",
-      "done"
+      "rout '/asset/$keygen-base/unspent/$1/$data'"
     ],
     "balance" : [
       "time $timeout",
@@ -46,9 +45,7 @@
       "done"
     ],
     "transaction" : [
-      "rout('/source/blockexplorer/$fee-symbol/transaction/$1')",
-      "done",
-      "fail 'This used btc network, not xcp.'"
+      "fail 'Not yet implemented!'"
     ],
     "history" : [
       "fail 'Not yet implemented.'",
@@ -56,8 +53,7 @@
     ],
     "fee" : [
       "rout '/asset/btc/fee'",
-      "math '+$feeCounterpartyTX'",
-      "done"
+      "math '+$feeCounterpartyTX'"
     ],
     "sample" : [
       "done {address:'1AeqgtHedfA2yVXH6GiKLS2JGkfWfgyTC6',transaction:'8162e98734c94b5b32682ce43041c2fdd5a6bf957c0684e42092284a4478bd0b'}"

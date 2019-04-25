@@ -88,6 +88,7 @@
       },
       "attachment":{
         "_help" : "Get transaction attachment data.",
+        "_hidden" : true,
         "_ref" : {
           "_list" : "transaction_id",
           "_sample" : "$TRANSACTION_ID",
