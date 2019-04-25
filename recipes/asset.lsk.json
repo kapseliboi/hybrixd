@@ -11,6 +11,7 @@
   "host":["https://hub21.lisk.io","https://hub22.lisk.io","https://hub23.lisk.io","https://hub24.lisk.io","https://hub25.lisk.io","https://hub26.lisk.io","https://hub27.lisk.io","https://hub28.lisk.io","https://hub31.lisk.io","https://hub32.lisk.io","https://hub33.lisk.io","https://hub34.lisk.io","https://hub35.lisk.io","https://hub36.lisk.io","https://hub37.lisk.io","https://hub38.lisk.io"],
   "cache":15000,
   "throttle":5,
+  "genesisBlockTime":1464116400,
   "quartz":{
     "balance" : [
       "curl asset://$symbol /api/accounts?address=$1&limit=1&offset=0&sort=balance:asc GET {Accept:'application/json','Content-Type':'application/json'}",
@@ -38,11 +39,11 @@
     ],
     "transaction" : [
       "call transactionData/$1",
+      "with reformatTimestamp [data,${.timestamp}] [math,'+$genesisBlockTime']",
       "with reformatFee [data,'${.fee}'] [atom]",
       "with reformatAmount [data,'${.amount}'] [atom]",
-      "tran { id:'.id', timestamp:'.timestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.senderId', target:'.recipientId', confirmed:'.confirmations' } 2 1",
-      "fail 'Cannot get transaction data!'",
-      "done"
+      "tran { id:'.id', timestamp:'$reformatTimestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.senderId', target:'.recipientId', confirmed:'.confirmations' } 2 1",      
+      "fail 'Cannot get transaction data!'"
     ],
     "attachment" : [
       "call transactionData/$1",
