@@ -11,9 +11,11 @@ let fs = require('fs');
 exports.init = init;
 exports.exec = exec;
 
+let defaultQuartz = null; // the default quartz functions
+
 // initialization function
 function init () {
-  global.hybrixd.defaultQuartz = JSON.parse(fs.readFileSync('../modules/quartz/default.quartz.json', 'utf8'));
+  defaultQuartz = JSON.parse(fs.readFileSync('../modules/quartz/default.quartz.json', 'utf8'));
 
   modules.initexec('quartz', ['init']);
 }
@@ -103,8 +105,8 @@ function exec (properties) {
   } else if (recipe.hasOwnProperty('quartz') && recipe.quartz.hasOwnProperty('_root')) {
     addSubprocesses(subprocesses, recipe.quartz['_root'], recipe, properties.command);
   } else {
-    if (global.hybrixd.defaultQuartz.hasOwnProperty('quartz') && global.hybrixd.defaultQuartz.quartz.hasOwnProperty(recipecall)) {
-      addSubprocesses(subprocesses, global.hybrixd.defaultQuartz.quartz[recipecall], recipe, properties.command);
+    if (defaultQuartz.hasOwnProperty('quartz') && defaultQuartz.quartz.hasOwnProperty(recipecall)) {
+      addSubprocesses(subprocesses, defaultQuartz.quartz[recipecall], recipe, properties.command);
     } else {
       subprocesses.push('stop(1,"Recipe function \'' + recipecall + '\' not supported for \'' + id + '\'.")');
     }

@@ -4,8 +4,8 @@
 
 // required libraries in this context
 let fs = require('fs');
-let Client = require('../../lib/util/rest').Client;
-let APIqueue = require('../../lib/APIqueue');
+let Client = require('../../lib/APIqueue/rest').Client;
+let APIqueue = require('../../lib/APIqueue/APIqueue');
 let scheduler = require('../../lib/scheduler/scheduler');
 let modules = require('../../lib/modules');
 let LZString = require('../../common/crypto/lz-string');
@@ -31,11 +31,6 @@ exports.init = init;
 exports.exec = exec;
 exports.link = link;
 exports.post = post;
-
-// Checks if the given string is a plausible ETH address
-function isEthAddress (address) {
-  return (/^(0x){1}[0-9a-fA-F]{40}$/i.test(address));
-}
 
 // activate (deterministic) code from a string
 function activate (code) {
@@ -88,8 +83,8 @@ function exec (properties) {
         ethDeterministic = activate(LZString.decompressFromEncodedURIComponent(dcode));
 
         // set up init probe command to check if RPC and block explorer are responding and connected
-        subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_gasPrice"]})');
-        subprocesses.push('func("post",{target:' + jstr(target) + ',command:["init"],data:$})');
+        // subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_gasPrice"]})');
+        // subprocesses.push('func("post",{target:' + jstr(target) + ',command:["init"],data:$})');
         subprocesses.push('done');
       }
       break;
@@ -120,7 +115,9 @@ function exec (properties) {
       if (sourceaddr) {
         subprocesses.push('@retryLoop');
         if (!isToken(target.symbol)) {
-          subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_getBalance",["' + sourceaddr + '","latest"]]})'); // send balance query
+          subprocesses.push('rand 10000');
+          subprocesses.push("data {jsonrpc: '2.0', method: 'eth_getBalance', params: ['$1','latest'], id: $}");
+          subprocesses.push("curl asset://$symbol '' POST {'Content-Type': 'application/json'}");
         } else {
           let encoded = ethDeterministic.encode({'func': 'balanceOf(address):(uint256)', 'vars': ['address'], 'address': sourceaddr}); // returns the encoded binary (as a Buffer) data to be sent
           subprocesses.push('func("link",{target:' + jstr(target) + ',command:["eth_call",[{"to":"' + target.contract + '","data":"' + encoded + '"},"pending"]]})'); // send token balance ABI query

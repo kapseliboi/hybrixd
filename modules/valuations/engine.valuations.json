@@ -8,7 +8,7 @@
     "EUCentralBank" : {
       "notes": "European central bank for fiat-exchange rates: https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml",
       "type":"none",
-      "site": "http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
+      "site": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
     },
     "coinmarketcap": {
       "notes" :"coinmarketcap: https://coinmarketcap.com/api/",
