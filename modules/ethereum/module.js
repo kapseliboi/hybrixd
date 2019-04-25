@@ -4,8 +4,8 @@
 
 // required libraries in this context
 let fs = require('fs');
-let Client = require('../../lib/util/rest').Client;
-let APIqueue = require('../../lib/APIqueue');
+let Client = require('../../lib/APIqueue/rest').Client;
+let APIqueue = require('../../lib/APIqueue/APIqueue');
 let scheduler = require('../../lib/scheduler/scheduler');
 let modules = require('../../lib/modules');
 let LZString = require('../../common/crypto/lz-string');
