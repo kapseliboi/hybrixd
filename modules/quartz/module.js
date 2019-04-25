@@ -41,10 +41,12 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
       subprocesses.push('done');
     }
     if (command === 'transaction') { // cache data and append formatting of returned numbers
-      subprocesses.unshift('jpar @dataReady');
+      subprocesses.unshift('@requestData');
+      subprocesses.unshift('done');
       subprocesses.unshift('logs "getting data from storage for transaction $1"');      
+      subprocesses.unshift('jpar 1 @requestData');
       subprocesses.unshift('code base64 utf8');
-      subprocesses.unshift('load "$storageHash" 1 4');
+      subprocesses.unshift('load "$storageHash" 1 @requestData');
       subprocesses.unshift('poke storageHash');
       subprocesses.unshift('hash');
       subprocesses.unshift('data "'+xpath[1]+'"');
@@ -58,7 +60,6 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
       subprocesses.push('code utf8 base64');
       subprocesses.push('save "$storageHash"');
       subprocesses.push('peek txCleaned');
-      subprocesses.push('@dataReady');
       subprocesses.push('done');
     }
     if (command === 'history') { // take into account the offset and record count
