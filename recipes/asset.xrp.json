@@ -173,7 +173,7 @@
       "flow 'Payment' @next2 @fail",
       "@next2",
       "peek 'local::subhistoryData'",
-      "tran '.tx.hash' @succes @fail",
+      "tran '.tx.hash' @success @fail",
       "@fail",
       "fail 'No result!'",
       "@success",
