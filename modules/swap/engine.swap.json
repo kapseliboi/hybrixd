@@ -5,16 +5,14 @@
   "quartz":{
 
     "register" : [
-      "func register",
-      "poke 'myPublicKey'",
-      "logs",
-      "#rout /e/transport/rout/$2/e/swap/public/$1 get public symbol key from nodeID",
-      "data 123",
-      "math +$myPublicKey",
-      "logs",
-      "#todo check balance on resulting address",
-      "#if balance is there then mark as confirmed",
-      "done 'Registered swap address $4 for $2 deposit address:$'"
+      "func sum",
+      "poke sum",
+      "rout /asset/$1/balance/$sum",
+      "#ship 2",
+      "#fail 'No balance found on $sum'",
+      "poke balance",
+      "func register/$1/$2/$3/$4/$5/$sum",
+      "done 'Registered swap address $sum ( = $3 + $4) with a balance of $balance for node $2 deposit address: $5 '"
     ],
     "public" : [
       "func public_"
@@ -42,10 +40,13 @@
         "_ref" : {
           "_list":"nodeID",
           "_ref" : {
-            "_list":"publicKey",
+            "_list":"publicKey1",
             "_ref" : {
-              "_list":"tradingaddresses",
-              "_this":"Register trading addresses"
+              "_list":"publicKey2",
+              "_ref" : {
+                "_list":"tradingaddresses",
+                "_this":"Register trading addresses"
+              }
             }
           }
         }
