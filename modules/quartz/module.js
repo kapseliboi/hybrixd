@@ -26,7 +26,7 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
     if (command === 'balance' || command === 'history' || command === 'unspent') {
       subprocesses.push('call validate/$1');
       subprocesses.push('flow valid 2  1');
-      subprocesses.push('fail "Invalid address"');
+      subprocesses.push('fail "Invalid address $1"');
     }
   }
 
@@ -45,12 +45,12 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
     if (command === 'transaction') { // cache data and append formatting of returned numbers
       subprocesses.unshift('@requestData');
       subprocesses.unshift('done');
-      subprocesses.unshift('logs "getting data from storage for transaction $1"');      
+      subprocesses.unshift('logs "getting data from storage for transaction $1"');
       subprocesses.unshift('unpk 1 @requestData');
       subprocesses.unshift('load "$storageHash" 1 @requestData');
       subprocesses.unshift('poke storageHash');
       subprocesses.unshift('hash');
-      subprocesses.unshift('data "'+xpath[1]+'"');
+      subprocesses.unshift('data "' + xpath[1] + '"');
       subprocesses.push('poke formAmount ${.amount}');
       subprocesses.push('with formAmount form');
       subprocesses.push('poke formFee ${.fee}');
