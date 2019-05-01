@@ -15,7 +15,8 @@
   "quartz":{
     "unspent" : [
       "poke inputval '$2'",
-      "vars { inputval:'99999999999999999999' }",
+      "vars { inputval:'1000000000000' }",
+      "with inputval atom 1",
       "data '$1'",
       "code base58 hex",
       "drop $trimAddrHexL $trimAddrHexR",
@@ -34,10 +35,10 @@
       "tran '[].amount' 2 1",
       "data []",
       "math '+'",
+      "with inputval [flow,'100000000000000000000',1,2] [done,'$'] [done]",
       "math '-$inputval'",
       "ship 2 2 1",
       "data 0",
-      "atom 1",
       "done {unspents:$selected,change:'$'}"
     ],
     "unspent_tran" : [
