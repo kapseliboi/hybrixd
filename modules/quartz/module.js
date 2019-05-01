@@ -50,7 +50,8 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
       subprocesses.unshift('load "$storageHash" 1 @requestData');
       subprocesses.unshift('poke storageHash');
       subprocesses.unshift('hash');
-      subprocesses.unshift('data "' + xpath[1] + '"');
+      subprocesses.unshift('data "$1"');
+
       subprocesses.push('poke formAmount ${.amount}');
       subprocesses.push('with formAmount form');
       subprocesses.push('poke formFee ${.fee}');
