@@ -37,7 +37,7 @@
       "math '-$inputval'",
       "ship 2 2 1",
       "data 0",
-      "form",
+      "atom 1",
       "done {unspents:$selected,change:'$'}"
     ],
     "unspent_tran" : [
@@ -45,7 +45,6 @@
       "poke unspent",
       "tran '.value' 2 1",
       "data 0",
-      "atom",
       "poke amount",
       "peek unspent",
       "tran {script:'$parent::script',amount:'$amount',txid:'.tx_hash',txn:'.tx_pos'} 2 1",
