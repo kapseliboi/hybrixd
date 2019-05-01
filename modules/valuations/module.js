@@ -150,9 +150,13 @@ function updateMinAndMedians (exchangeRates) {
       let midPoint = (sortedExchanges.length - 1) / 2;
       let floorExchange = sortedExchanges[Math.floor(midPoint)];
       let ceilExchange = sortedExchanges[Math.ceil(midPoint)];
+
       let exchange = floorExchange === ceilExchange ? ceilExchange : (floorExchange + '|' + ceilExchange);
-      exchangeRates[sourceCurrency]['quotes'][targetCurrency]['median_rate'] = {exchange,
-        rate: (exchanges[floorExchange] + exchanges[ceilExchange]) / 2};
+
+      exchangeRates[sourceCurrency]['quotes'][targetCurrency]['median_rate'] = {
+        exchange,
+        rate: (Number(exchanges[floorExchange]) + Number(exchanges[ceilExchange])) / 2
+      };
     });
   });
   return exchangeRates;
