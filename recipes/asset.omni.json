@@ -9,64 +9,55 @@
   "keygen-base":"btc",
   "contract":"1",
   "host":"https://api.omniexplorer.info",
+  "timeout":60000,
   "cache":180000,
   "throttle":0.1,
   "quartz":{
-    "init" : [
-      "stop(1,'Not yet implemented!')"
-    ],
-    "status" : [
-      "time($cache)",
-      "data 'addr=1FoWyxwPXuj4C6abqwhjDWdz6D4PZgYRjA'",
-      "curl('asset://$symbol','/v1/address/addr?addr=1FoWyxwPXuj4C6abqwhjDWdz6D4PZgYRjA','POST',{'content-type':'application/x-www-form-urlencoded'})",
-      "test($,1,2)",
-      "done({module:'$symbol',synced:null,blocks:null,fee:null,supply:null,difficulty:null,testmode:null,version:null})",
-      "fail('No result')"
-    ],
     "unspent" : [
-      "rout('/asset/$keygen-base/fee')",
-      "math('+$feeOmniTX')",
-      "rout('/asset/$keygen-base/unspent/$1/$data')"
+      "rout '/asset/${keygen-base}/fee'",
+      "math '+$feeOmniTX'",
+      "rout '/asset/${keygen-base}/unspent/$1/$'",
+      "done"
     ],
     "balance" : [
-      "time($cache)",
+      "time $timeout",
       "data 'addr=$1'",
-      "curl('asset://$symbol','/v1/address/addr?addr=$1','POST',{'content-type':'application/x-www-form-urlencoded'})",
-      "tran('.balance',2,1)",
-      "stop(1,'No result!')",
-      "find({'id':'$contract'},1,2)",
-      "tran({value:'[0].value',in:'[0].pendingpos',out:'[0].pendingneg'},2,1)",
-      "data({value:'0',in:'0',out:'0'})",
-      "math('${.value}+${.in}+${.out}')",
-      "atom()"
+      "curl asset://$symbol /v2/address/addr POST {'content-type':'application/x-www-form-urlencoded'} {timeout:$timeout}",
+      "tran '.$1.balance' 2 1",
+      "fail 'No result!'",
+      "find {'id':'$contract'} 1 2",
+      "tran {value:'[0].value',in:'[0].pendingpos',out:'[0].pendingneg'} 2 1",
+      "data {value:'0',in:'0',out:'0'}",
+      "math '${.value}+${.in}+${.out}'",
+      "atom"
     ],
     "push" : [
-      "rout('/asset/$keygen-base/push/$1')"
+      "rout '/asset/$keygen-base/push/$1'"
     ],
     "factor" : [
-      "data('$factor')"
+      "data '$factor'"
     ],
     "history" : [
-      "fail('Not yet implemented!')"
+      "rout '/asset/$keygen-base/history/$1/$2/$3'"
     ],
     "transaction" : [
-      "data 'addr=$1'",
-      "curl('asset://$symbol','/v1/transaction/tx/$1','GET',{'content-type':'application/x-www-form-urlencoded'})",
-      "tran({id:'.txid',fee:'.fee',attachment:'',timestamp:'.blocktime',symbol:'$symbol','fee-symbol':'$fee-symbol',amount:'.amount',source:'=.sendingaddress|unknown',target:'=.referenceaddress|unknown',confirmed:'FIXME!'},2,1)",
-      "fail('Error retrieving data!')"
+      "data '$1'",
+      "curl 'asset://$symbol' '/v1/transaction/tx/$1' GET {'content-type':'application/x-www-form-urlencoded'} {timeout:$timeout}",
+      "tran {id:'.txid',fee:'.fee',attachment:'',timestamp:'.blocktime',symbol:'$symbol','fee-symbol':'$fee-symbol',amount:'.amount',source:'=.sendingaddress|unknown',target:'=.referenceaddress|unknown',confirmed:true} 2 1",
+      "fail 'Error retrieving data!'"
     ],
     "contract" : [
-      "done('$contract')"
+      "done '$contract'"
     ],
     "fee" : [
-      "rout('/asset/btc/fee')",
-      "math('+$feeOmniTX')"
+      "rout '/asset/btc/fee'",
+      "math '+$feeOmniTX'"
     ],
     "sample" : [
-      "done({address:'18XvhJmfciiE9khPisavJ2UdC5ybG94tYk',transaction:'1989dc575f94dcb45485b78b1b762e13a3a6d2eb59422b6217c93218a54ff80b'})"
+      "done {address:'18XvhJmfciiE9khPisavJ2UdC5ybG94tYk',transaction:'1989dc575f94dcb45485b78b1b762e13a3a6d2eb59422b6217c93218a54ff80b'}"
     ],
     "test":[
-      "done {hash:56B04220}"
+      "done {hash:56B04220,unspent:{'unspents':[{'script':'76a91493b4fa1cbfc9b379bee71ef2c9112d3bab6c9d688ac','amount':'1010','txid':'8169bee7dda515a24912023485497cb100ad4730b58d8be0bb963acd91b29c1f','txn':0}],'change':'0'}}"
     ]
   }
 }
