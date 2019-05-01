@@ -276,8 +276,8 @@ test:
     #- ./hybrixd /version/details
     - cd test
 
-    #- node ./test.js --debug
-    - node ./test.js
+    - node ./test.js --debug
+    #- node ./test.js 
 
   coverage: /SUCCESS RATE[^|]*\:[^|]*\s+([\d\.]+)/
   except:
