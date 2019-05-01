@@ -3,7 +3,7 @@
   "name":"Lisk",
   "module":"quartz",
   "mode":"lisk.lisk",
-  "addressRegex":"^\\d{19}L$",
+  "addressRegex":"^\\d{19,20}L$",
   "factor":8,
   "fee":0.1,
   "fee-symbol":"lsk",
