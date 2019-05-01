@@ -3,13 +3,12 @@
   "name":"Swap",
   "module":"swap",
   "quartz":{
-
     "register" : [
       "func sum",
       "poke sum",
       "rout /asset/$1/balance/$sum",
-      "#ship 2",
-      "#fail 'No balance found on $sum'",
+      "ship 2",
+      "fail 'No balance found on $sum'",
       "poke balance",
       "func register/$1/$2/$3/$4/$5/$sum",
       "done 'Registered swap address $sum ( = $3 + $4) with a balance of $balance for node $2 deposit address: $5 '"
@@ -34,6 +33,8 @@
       }
     },
     "list" : "List deposits",
+
+
     "register":{
       "_ref" : {
         "_list":"symbol",
