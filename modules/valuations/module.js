@@ -15,7 +15,7 @@ function addQuote (accumulator, quote_currency, base_currency, price) {
 
 function parseEUCentralBank (xmlString) {
   let name = 'EUCentralBank';
-
+  let baseCurrencies = ['EUR'];
   let xmlElements;
   try {
     let document = new xmldoc.XmlDocument(xmlString);
@@ -52,6 +52,7 @@ function parseCoinmarketcap (obj) {
 
 function parseCoinbase (obj) {
   let name = 'coinbase';
+  let baseCurrencies = ['USD'];
   let quote_accumulator = {};
   if (!obj) {
     return {name, quotes: quote_accumulator};
@@ -90,6 +91,7 @@ function parseBinance (obj) {
 
 function parseHitbtc (prices, symbols) {
   let name = 'hitbtc';
+  // baseCurrencies are included in the downloaded data
   let quote_accumulator = {};
   if (!prices || !symbols) {
     return {name, quotes: quote_accumulator};
