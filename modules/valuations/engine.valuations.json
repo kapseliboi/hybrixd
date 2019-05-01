@@ -6,38 +6,38 @@
   "refreshTime":60,
   "sources" : {
     "EUCentralBank" : {
-      "notes": "European central bank for fiat-exchange rates: https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml",
-      "type":"none",
-      "site": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
+      "notes" : "European central bank for fiat-exchange rates: https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml",
+      "type" : "none",
+      "site" : "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
     },
     "coinmarketcap": {
-      "notes" :"coinmarketcap: https://coinmarketcap.com/api/",
-      "type":"json",
-      "site": "https://api.coinmarketcap.com/v2/ticker/"
+      "notes" : "coinmarketcap: https://coinmarketcap.com/api/",
+      "type" : "json",
+      "site" : "https://api.coinmarketcap.com/v2/ticker/"
     },
     "coinbase" : {
-      "notes":"coinbase: https://developers.coinbase.com/api/v2#exchange-rates",
-      "type":"json",
-      "site": "https://api.coinbase.com/v2/exchange-rates"
+      "notes" : "coinbase: https://developers.coinbase.com/api/v2#exchange-rates",
+      "type" : "json",
+      "site" : "https://api.coinbase.com/v2/exchange-rates"
     },
-    "binance": {
-      "notes":"https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md",
-      "type":"json",
-      "site": "https://api.binance.com/api/v1/ticker/price"
+    "binance" : {
+      "notes" : "https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md",
+      "type" : "json",
+      "site" : "https://api.binance.com/api/v1/ticker/price"
     },
-    "hitbtc_symbols":{
-      "notes":"hitbtc: https://api.hitbtc.com/",
-      "type":"json",
-      "site": "https://api.hitbtc.com/api/2/public/symbol"
+    "hitbtc_symbols" : {
+      "notes" : "hitbtc: https://api.hitbtc.com/",
+      "type" : "json",
+      "site" : "https://api.hitbtc.com/api/2/public/symbol"
     },
-    "hitbtc_prices": {
-      "notes":"hitbtc: https://api.hitbtc.com/",
-      "type":"json",
-      "site": "https://api.hitbtc.com/api/2/public/ticker"
+    "hitbtc_prices" : {
+      "notes" : "hitbtc: https://api.hitbtc.com/",
+      "type" : "json",
+      "site" : "https://api.hitbtc.com/api/2/public/ticker"
     }
   },
   "quartz" : {
-    "cron":[
+    "cron" : [
       "# check if prices were recently updated",
       "with 'timeNow' 'date'",
       "peek 'local::pricesTimestamp'",
@@ -55,29 +55,28 @@
       "poke 'local::pricesTimestamp'",
       "done 'valuations downloaded'"
     ],
-    "download":[
+    "download" : [
       "poke 'key' ${.key}",
       "poke 'site' ${.value.site}",
       "poke 'type' ${.value.type}",
       "curl '$site' '' 'GET' {} {parsing:'$type'}",
       "done"
     ],
-    "rate":[
+    "rate" : [
       "data '$3'",
-      "ship 2 2 1 1",
-      "fail 'Bad input!'",
-      "data {source: '$1', target:'$2', amount:'$3', mode: '$4',  prices: $local::prices}",
+      "ship 2 2 2 1",
+      "data '1'",
+      "poke amount",
+      "data {source: '$1', target:'$2', amount:'$amount', mode: '$4',  prices: $local::prices}",
       "func 'valuate'",
       "done"
     ],
-    "list":[
+    "list" : [
       "done ['usd','eur','gbp','cad','nzd','jpy','cny','aud','krw','huf','pln','ron','sek','chf','isk','nok','hrk','rub','try','brl','hkd','idr','ils','inr','mxn','myr','php','sgd','thb','zar']"
     ]
   },
   "router" : {
     "_help" : "Valuation engine for calculating price conversion rates.",
-    "_hidden":true,
-    "cron" : "Download new price data.",
     "list" : "List available symbols.",
     "rate": {
       "_help" : "Calculate a valuation using a multi-currency rate table.",
