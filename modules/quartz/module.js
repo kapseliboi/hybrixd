@@ -28,6 +28,25 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
       subprocesses.push('flow valid 2  1');
       subprocesses.push('fail "Invalid address $1"');
     }
+    if (command === 'transactionData') { // cache data
+      // attempt reload of data
+      subprocesses.push('data "tx_$1_$symbol"');
+      subprocesses.push('hash');
+      subprocesses.push('poke storageHash');
+      subprocesses.push('load "$storageHash" 1 @requestData');
+      subprocesses.push('unpk 1 @requestData');
+      subprocesses.push('logs "getting transaction data from storage $1"');
+      subprocesses.push('done');
+      subprocesses.push('@requestData');
+    }
+    if (command === 'history') { // cache data
+      subprocesses.push('poke count "$2"');
+      subprocesses.push('poke offset "$3"');
+      subprocesses.push('vars {"count":"12","offset":"0"}');
+      subprocesses.push('data "hist_$1_$count_$offset_$symbol"');
+      subprocesses.push('hash');
+      subprocesses.push('poke storageHash');
+    }
   }
 
   for (let i = 0, len = commands.length; i < len; ++i) {
@@ -43,19 +62,10 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
       subprocesses.push('done');
     }
     if (command === 'transactionData') { // cache data
-      // attempt reload of data (unshift -> reversed order)
-      subprocesses.unshift('@requestData');
-      subprocesses.unshift('done');
-      subprocesses.unshift('logs "getting transaction data from storage $1"');
-      subprocesses.unshift('unpk 1 @requestData');
-      subprocesses.unshift('load "tx$storageHash" 1 @requestData');
-      subprocesses.unshift('poke storageHash');
-      subprocesses.unshift('hash');
-      subprocesses.unshift('data "$1_$symbol"');
       // save/cache rawtx data
       subprocesses.push('poke txData');
       subprocesses.push('pack');
-      subprocesses.push('save "tx$storageHash"');
+      subprocesses.push('save "$storageHash"');
       subprocesses.push('peek txData');
       subprocesses.push('done');
     }
@@ -68,11 +78,19 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
       subprocesses.push('done');
     }
     if (command === 'history') { // take into account the offset and record count
-      subprocesses.unshift('vars {"count":"12","offset":"0"}');
-      subprocesses.unshift('poke "offset" "$3"');
-      subprocesses.unshift('poke "count" "$2"');
       subprocesses.push('take $offset $count');
+      subprocesses.push('poke historyData');
+      subprocesses.push('pack');
+      subprocesses.push('save "$storageHash"');      
+      subprocesses.push('peek historyData');
       subprocesses.push('done');
+      subprocesses.push('@returnCached');
+      subprocesses.push('load "$storageHash" 1 @failCache');
+      subprocesses.push('unpk 1 @failCache');
+      subprocesses.push('logs "getting history data from storage $1"');
+      subprocesses.push('done');
+      subprocesses.push('@failCache');
+      subprocesses.push('fail "Cannot get history!"');
     }
     if (command === 'status') { // significantly shorten the status hash to save bandwidth
       subprocesses.push('take 24 16');
