@@ -14,7 +14,7 @@
       "done {address:'13JQwoSLLR3ffXwswe2HCTK9oq4i8MWK3q',transaction:'0941fc69d0fefd26e7f1137e7737827470356f046e4c32fcbd776c6d4bbc97ec'}"
     ],
     "test":[
-      "done {hash:2311DC09}"
+      "done {hash:'6BE4186F',unspent:{'unspents':[{'script':'76a91493b4fa1cbfc9b379bee71ef2c9112d3bab6c9d688ac','amount':'1010','txid':'8169bee7dda515a24912023485497cb100ad4730b58d8be0bb963acd91b29c1f','txn':0}],'change':'0'}}"
     ]
   }
 }

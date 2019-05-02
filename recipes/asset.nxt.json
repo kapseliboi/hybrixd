@@ -111,9 +111,11 @@
       "tran '[].transaction'"
     ],
     "transactionData" : [
-      "curl asset://$symbol ?requestType=getTransaction&transaction=$1 GET {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}",
-      "done",
-      "# withMessage is true to retrieve only only transactions having a message attachment, either non-encrypted or decryptable by the account (optional)"
+      "curl asset://$symbol ?requestType=getTransaction&transaction=$1 GET {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'} 2 1",
+      "fail 'Error retrieving data!'",
+      "have '.confirmations' 2 1",
+      "fail 'Transaction does not exist!'",
+      "# withMessage is true to retrieve only transactions having a message attachment, either non-encrypted or decryptable by the account (optional)"
     ],
     "transaction" : [
       "call 'transactionData/$1'",
@@ -122,7 +124,7 @@
       "with reformatFee [data,'${.feeNQT}'] [atom]",
       "with sender [data,'${.senderRS}'] [flow,'undefined',1,2] [data,'${.sender}'] [done]",
       "with recipient [data,'${.recipientRS}'] [flow,'undefined',1,2] [data,'${.recipient}'] [done]",
-      "tran { id:'.transaction', timestamp:'.timestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'$sender', target:'$recipient', confirmed:'.confirmations' } 2 1",
+      "tran { id:'.transaction', timestamp:'.timestamp', height:'.height', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'$sender', target:'$recipient', confirmed:'.confirmations' } 2 1",
       "fail 'Could not read transaction!'"
     ],
     "attachment" : [

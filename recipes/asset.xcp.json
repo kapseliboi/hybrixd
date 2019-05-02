@@ -15,9 +15,10 @@
   "api-documentation":"https://counterparty.io/docs/counterblock_api/",
   "quartz":{
     "unspent" : [
-      "rout '/asset/$keygen-base/fee'",
+      "rout '/asset/${keygen-base}/fee'",
       "math '+$feeCounterpartyTX'",
-      "rout '/asset/$keygen-base/unspent/$1/$data'"
+      "rout '/asset/${keygen-base}/unspent/$1/$'",
+      "done"
     ],
     "balance" : [
       "time $timeout",
@@ -48,8 +49,7 @@
       "fail 'Not yet implemented!'"
     ],
     "history" : [
-      "fail 'Not yet implemented.'",
-      "fail 'Counterparty API get_tx_info does not work!'"
+      "rout '/asset/$keygen-base/history/$1/$2/$3'"
     ],
     "fee" : [
       "rout '/asset/btc/fee'",
@@ -59,7 +59,7 @@
       "done {address:'1AeqgtHedfA2yVXH6GiKLS2JGkfWfgyTC6',transaction:'8162e98734c94b5b32682ce43041c2fdd5a6bf957c0684e42092284a4478bd0b'}"
     ],
     "test":[
-      "done {hash:0DA73680}"
+      "done {hash:0DA73680,unspent:{'unspents':[{'script':'76a91493b4fa1cbfc9b379bee71ef2c9112d3bab6c9d688ac','amount':'1010','txid':'8169bee7dda515a24912023485497cb100ad4730b58d8be0bb963acd91b29c1f','txn':0}],'change':'0'}}}"
     ]
   }
 }

@@ -206,7 +206,7 @@ const getMetaExt = function (key, dataCallback, errorCallback) {
 };
 
 let autoClean = function () {
-  if (!fs.statSync(storagePath).isDirectory()) {
+  if (!fs.existsSync(storagePath)) {
     console.log(' [.] module storage: creating storage directory');
     fs.mkdirSync(storagePath);
     return; // if path did not exists it's already cleaned
