@@ -32,7 +32,8 @@
       "atom"
     ],
     "push" : [
-      "rout '/asset/$keygen-base/push/$1'"
+      "rout '/asset/$keygen-base/push/$1'",
+      "done"
     ],
     "factor" : [
       "data '$factor'"
@@ -40,11 +41,17 @@
     "history" : [
       "rout '/asset/$keygen-base/history/$1/$2/$3'"
     ],
-    "transaction" : [
+    "transactionData" : [
       "data '$1'",
-      "curl 'asset://$symbol' '/v1/transaction/tx/$1' GET {'content-type':'application/x-www-form-urlencoded'} {timeout:$timeout}",
-      "tran {id:'.txid',fee:'.fee',attachment:'',timestamp:'.blocktime',symbol:'$symbol','fee-symbol':'$fee-symbol',amount:'.amount',source:'=.sendingaddress|unknown',target:'=.referenceaddress|unknown',confirmed:true} 2 1",
-      "fail 'Error retrieving data!'"
+      "curl 'asset://$symbol' '/v1/transaction/tx/$1' GET {'content-type':'application/x-www-form-urlencoded'} {timeout:$timeout} 2 1",
+      "fail 'Error retrieving data!'",
+      "have '.txid' 2 1",
+      "fail 'Transaction does not exist!'"
+    ],
+    "transaction" : [
+      "call 'transactionData/$1'",
+      "tran {id:'.txid',fee:'.fee',timestamp:'.blocktime',height:'.block',symbol:'$symbol','fee-symbol':'$fee-symbol',amount:'.amount',source:'=.sendingaddress|unknown',target:'=.referenceaddress|unknown',confirmed:true} 2 1",
+      "fail 'Cannot interpret transaction!'"
     ],
     "contract" : [
       "done '$contract'"
