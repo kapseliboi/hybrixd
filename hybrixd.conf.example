@@ -1,30 +1,30 @@
-hostname = ['localhost','127.0.0.1']
+[host]
 
-# Binding and port for REST API
-restport = 1111
-restbind = 127.0.0.1
+endpoints = [ ]
 
-# Binding and port for User Interface
-userbind = 127.0.0.1
-userport = 8080
-
-# maximum node storage size in bytes (1000000000 = 1GB)
-maxstoragesize = 1000000000
-
-# minimum and maximum node storage time in days, applies if max storage is breached
-minstoragetime = 60
-maxstoragetime = 365
-
-# size of the cache index for API requests
-cacheidx = 3000
+servers = { "http://127.0.0.1:1111" : "/root", "http://127.0.0.1:8080" : "/source/web-wallet"}
 
 # ignore TLS errors on RPC requests
 ignoreTLSerror = true
 
-defaultMaxListeners = 300;
+defaultMaxListeners = 300
 
+[storage]
+# maximum node storage size in bytes (1000000000 = 1GB)
+maxstoragesize = 2000000000
+
+# minimum and maximum node storage time in days, applies if max storage is breached
+minstoragetime = 30
+maxstoragetime = 365
+
+
+[cache]
+# size of the cache index for API requests
+maxentries = 3000
+
+[scheduler]
 # Scheduler parameters
-schedulerMaxParallelProcesses = 10000000
-schedulerTick = 50
-schedulerMaxUsage = 80
-schedulerProcPurgeTime = 120
+MaxParallelProcesses = 10000000
+Tick = 50
+MaxUsage = 80
+ProcPurgeTime = 300
