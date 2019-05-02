@@ -86,7 +86,7 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
       subprocesses.push('save "$storageHash"');      
       subprocesses.push('peek historyData');
       subprocesses.push('done');
-      subprocesses.push('@returnCached');
+      subprocesses.push('@returnCache');
       subprocesses.push('load "$storageHash" 1 @failCache');
       subprocesses.push('unpk 1 @failCache');
       subprocesses.push('logs "getting history data from storage $1"');
