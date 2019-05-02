@@ -86,6 +86,9 @@
       "fail 'Error: Ethereum network not responding. Cannot get nonce!'"
     ],
     "history" : [
+      "data $symbol",
+      "flow eth 2 1",
+      "fail 'History not yet available for tokens'",
       "time $timeout",
       "rand 10000",
       "poke randomId",
