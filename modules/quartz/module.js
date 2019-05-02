@@ -42,25 +42,29 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
       subprocesses.push('form');
       subprocesses.push('done');
     }
-    if (command === 'transaction') { // cache data and append formatting of returned numbers
+    if (command === 'transactionData') { // cache data
+      // attempt reload of data (unshift -> reversed order)
       subprocesses.unshift('@requestData');
       subprocesses.unshift('done');
-      subprocesses.unshift('logs "getting data from storage for transaction $1"');
+      subprocesses.unshift('logs "getting transaction data from storage $1"');
       subprocesses.unshift('unpk 1 @requestData');
-      subprocesses.unshift('load "$storageHash_$symbol" 1 @requestData');
+      subprocesses.unshift('load "tx$storageHash" 1 @requestData');
       subprocesses.unshift('poke storageHash');
       subprocesses.unshift('hash');
-      subprocesses.unshift('data "$1"');
-
+      subprocesses.unshift('data "$1_$symbol"');
+      // save/cache rawtx data
+      subprocesses.push('poke txData');
+      subprocesses.push('pack');
+      subprocesses.push('save "tx$storageHash"');
+      subprocesses.push('peek txData');
+      subprocesses.push('done');
+    }
+    if (command === 'transaction') { // append formatting of returned numbers
       subprocesses.push('poke formAmount ${.amount}');
       subprocesses.push('with formAmount form');
       subprocesses.push('poke formFee ${.fee}');
       subprocesses.push('with formFee form');
-      subprocesses.push('data {id:"${.id}",timestamp:${.timestamp},amount:"$formAmount",symbol:"${.symbol}",fee:"$formFee",fee-symbol:"${.fee-symbol}",source:"${.source}",target:"${.target}",confirmed:${.confirmed}}');
-      subprocesses.push('poke txCleaned');
-      subprocesses.push('pack');
-      subprocesses.push('save "$storageHash_$symbol"');
-      subprocesses.push('peek txCleaned');
+      subprocesses.push('data {id:"${.id}",timestamp:${.timestamp},height:${.height},amount:"$formAmount",symbol:"${.symbol}",fee:"$formFee",fee-symbol:"${.fee-symbol}",source:"${.source}",target:"${.target}",confirmed:${.confirmed}}');
       subprocesses.push('done');
     }
     if (command === 'history') { // take into account the offset and record count
