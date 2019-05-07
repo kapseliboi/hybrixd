@@ -8,7 +8,7 @@
   "quartz":{
     "listAddresses" : [
       "call 'coreList/eligibility/$1'",
-      "each data 'readAddress'",
+      "each 'readAddress'",
       "excl ''",
       "done"
     ],
@@ -49,7 +49,7 @@
     "# reinsert hash at beginning of array",
       "fuse '$userhash' 0",
     "# check if address is not already added",
-      "each data 'readAddress'",
+      "each 'readAddress'",
       "find '$useraddr' @alreadyadd 1",
     "# set file index to write to",
       "data 'address $userhash $hashSalt'",
@@ -100,7 +100,7 @@
       "call 'coreList'",
       "excl '.EOF'",
       "hash",
-      "done data"
+      "done"
     ],
     "coreList" : [
       "data '$1 $2 $hashSalt'",

@@ -28,7 +28,7 @@
       "curl asset://$symbol POST {} {'timeout':$longtimeout}",
       "tran '.result' 2 1",
       "fail 'Bad input unspents from Electrum!'",
-      "each $ 'unspent_tran'",
+      "each 'unspent_tran'",
       "sort '.amount'",
       "scan 'cnt<($inputval+val.amount)' '+val.amount'",
       "poke 'selected'",
