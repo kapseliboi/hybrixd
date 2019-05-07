@@ -26,10 +26,12 @@ function mine (proc) {
     proc.fail('This node does not support mockchain.');
   }
 
-  let contract = proc.command[1];
-  let target = Number(proc.command[2]);
-  let amount = Number(proc.command[3]);
-  let newTransaction = {type: 'mine', contract, target, amount, id: mockchain.length};
+  const contract = proc.command[1];
+  const target = Number(proc.command[2]);
+  const amount = Number(proc.command[3]);
+  const timestamp = Date.now();
+  const newTransaction = {type: 'mine', timestamp, contract, target, amount, id: mockchain.length};
+
   mockchain.push(newTransaction);
   fs.writeFileSync(filePath, JSON.stringify(mockchain));
 
@@ -48,11 +50,11 @@ function balance (proc) {
     proc.fail('This node does not support mockchain.');
   }
 
-  let contract = proc.command[1];
-  let address = Number(proc.command[2]);
+  const contract = proc.command[1];
+  const address = Number(proc.command[2]);
   let balance = 0;
   for (let transactionId = 0; transactionId < mockchain.length; ++transactionId) {
-    let transaction = mockchain[transactionId];
+    const transaction = mockchain[transactionId];
     if (transaction.target === address && transaction.contract === contract) { balance += transaction.amount; }
     if (transaction.source === address && transaction.contract === contract) { balance -= transaction.amount + transaction.fee; }
   }
@@ -71,20 +73,20 @@ function push (proc) {
     proc.fail('This node does not support mockchain.');
   }
 
-  let newTransaction = JSON.parse(proc.command[1]);
-  let source = newTransaction.source;
-  let target = newTransaction.target;
-  let contract = newTransaction.contract;
-  let amount = newTransaction.amount;
-  let fee = newTransaction.fee;
-  let message = typeof newTransaction.message === 'string' ? newTransaction.message : '';
-  let signature = newTransaction.signature;
+  const newTransaction = JSON.parse(proc.command[1]);
+  const source = newTransaction.source;
+  const target = newTransaction.target;
+  const contract = newTransaction.contract;
+  const amount = newTransaction.amount;
+  const fee = newTransaction.fee;
+  const message = typeof newTransaction.message === 'string' ? newTransaction.message : '';
+  const signature = newTransaction.signature;
   if (signature !== source * target + amount + fee * 3.14 + contract.length * 1001 + message.length * 123) {
     proc.fail('illegal signature');
   } else {
     let balance = 0;
     for (let transactionId = 0; transactionId < mockchain.length; ++transactionId) {
-      let transaction = mockchain[transactionId];
+      const transaction = mockchain[transactionId];
       if (transaction.target === source && transaction.contract === contract) { balance += transaction.amount; }
       if (transaction.source === source && transaction.contract === contract) { balance -= transaction.amount + transaction.fee; }
     }
@@ -113,11 +115,11 @@ function history (proc) {
     proc.fail('This node does not support mockchain.');
   }
 
-  let contract = proc.command[1];
-  let address = Number(proc.command[2]);
-  let history = [];
+  const contract = proc.command[1];
+  const address = Number(proc.command[2]);
+  const history = [];
   for (let transactionId = 0; transactionId < mockchain.length; ++transactionId) {
-    let transaction = mockchain[transactionId];
+    const transaction = mockchain[transactionId];
     if ((transaction.target === address || transaction.source === address) && transaction.contract === contract) {
       history.push(transactionId);
     }
@@ -137,12 +139,12 @@ function transaction (proc) {
     proc.fail('This node does not support mockchain.');
   }
 
-  let transactionId = Number(proc.command[1]);
+  const transactionId = Number(proc.command[1]);
   if (transactionId < mockchain.length) {
-    let transaction = mockchain[transactionId];
-    let normalizedTransaction = {
+    const transaction = mockchain[transactionId];
+    const normalizedTransaction = {
       id: transaction.id,
-      timestamp: transaction.id,
+      timestamp: transaction.timestamp,
       amount: transaction.amount,
       symbol: transaction.contract === 'main' ? 'mock' : 'mock.' + transaction.contract,
       fee: transaction.fee,
@@ -170,9 +172,9 @@ function message (proc) {
     proc.fail('This node does not support mockchain.');
   }
 
-  let transactionId = Number(proc.command[1]);
+  const transactionId = Number(proc.command[1]);
   if (transactionId < mockchain.length) {
-    let transaction = mockchain[transactionId];
+    const transaction = mockchain[transactionId];
     proc.done(transaction.message);
   } else {
     proc.fail('unknown transaction');

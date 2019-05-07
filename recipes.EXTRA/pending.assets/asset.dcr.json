@@ -17,7 +17,7 @@
       "curl 'asset://$symbol' '/addr/$1/utxo' 'GET' {'content-type':'application/json'}",
       "test (typeof data[0]==='undefined') 1 2",
       "fail 'Bad input unspents from Decred block explorer!'",
-      "each data 'unspent_tran'",
+      "each 'unspent_tran'",
       "sort '.amount'",
       "scan 'cnt<($inputval+val.amount)' '+val.amount'",
       "poke 'selected'",

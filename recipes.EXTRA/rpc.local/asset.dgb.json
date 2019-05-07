@@ -59,7 +59,7 @@
       "test('$1',2,1,'$1')",
       "stop(1,'No target address.')",
       "curl('$block-explorer-host','?key=$pass&q=lasttxs&a=$1', 'GET',{Accept:'application/json','Content-Type':'application/json'})",
-      "each(data,'subhistory')"
+      "each('subhistory')"
     ],
     "subhistory" : [
       "tran({id:'.value.hash',ammount:'.value.total',timestamp:'.value.time',symbol:'dgb',source:'unknown',target:'unknown'},2,1)",

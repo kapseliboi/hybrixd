@@ -70,7 +70,7 @@
       "@lines",
       "find {'currency':'$local::currency'} @currency @fail",
       "@currency",
-      "each data 'balance_currency'",
+      "each 'balance_currency'",
       "math",
       "atom"
     ],
@@ -186,8 +186,8 @@
       "@fail",
       "fail 'No result!'",
       "@next",
-      "each $data 'subhistory'",
-      "sort(data,['obj:timestamp','num','desc'])"
+      "each 'subhistory'",
+      "sort ['obj:timestamp','num','desc']"
     ],
     "test" :[
       "done {hash:4E5C0B7F, unspent:{lastLedgerSequencePlus:46084264,sequence:759}}"

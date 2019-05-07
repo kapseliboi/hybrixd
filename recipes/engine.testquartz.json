@@ -174,7 +174,7 @@
     "test" : [
       "qrtz",
       "excl [test,subtest]",
-      "each $ subtest",
+      "each subtest",
       "excl $OK",
       "size",
       "flow 0 1 2",

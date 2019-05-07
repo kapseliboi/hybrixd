@@ -94,7 +94,8 @@
       "done 'invalid'"
     ],
     "details" : [
-      "each {'contract':null,'factor':null,'fee':null,'fee-factor':null,'fee-symbol':null,'generated':null,'mode':null,'keygen-base':null,'unified-symbols':null} 'subdetails'",
+      "data {'contract':null,'factor':null,'fee':null,'fee-factor':null,'fee-symbol':null,'generated':null,'mode':null,'keygen-base':null,'unified-symbols':null}",
+      "each subdetails",
       "done {symbol:'$symbol',name:'$name',fee:'${.fee}',factor:'${.factor}',contract:'${.contract}',mode:'${.mode}','unified-symbols':'${.unified-symbols}','fee-symbol':'${.fee-symbol}','fee-factor':'${.fee-factor}','keygen-base':'${.keygen-base}', generated:'${.generated}'}"
     ],
     "subdetails" : [
