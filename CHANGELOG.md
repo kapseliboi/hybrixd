@@ -1,3 +1,81 @@
+# v0.5.8
+## Cosy Maroon Phoenix
+## 08-05-2019
+
+* integration with deterministic module 1.0.1
+* fix ubq balance
+* recipe fixes, clean each command, add type command
+* disable history for eth tokens
+* reorder start up for conf
+* rename label @returnCache
+* make sure asset cache is prefixed with tx (outside of hash)
+* cache history for electrum and insight
+* update web wallet, interface, remove bts tokens
+* merge branch 'agent725-recipeRepairs' into 'master'
+* better transaction error handling and caching
+* auto create storage directory if non-existant
+* added have()
+* changed transaction cache storage
+* avoid double route logging at console
+* include latest deterministic
+* store transaction data separated by symbol
+* implement new balance API, history, and transaction fixes
+* fixes to BTC recipe
+* transaction confirmations fix
+* LSK addresses allowed to be 20 digits long
+* unspent change now uses atomics
+* small adjustment to scan()
+* unspent: no reverse atom on change output
+* return txid proper with insight
+* fix valuations bug
+* converted Electrum and Insight engines to return unspents in atomic values
+* fix of valuations engine
+* update import keys, swap, fix qrtz func
+* upgrade ethereum module
+* fix lisk balance issue
+* fix xrp history.
+* clean cache globals
+* shorthand calls and non-repetitive logging
+* merge branch 'issue/xrp-history-hash-fix' into 'master'
+* merge branch 'master' into 'issue/xrp-history-hash-fix'
+* xrp hash in history fix
+* Merge branch 'agent725-moreFixes' into 'master'
+* hide /attachment, fix history/balance/status for many coins
+* fix math sum and e-notation handling
+* serialized and compressed transaction storage
+* cache electrum transaction information
+* better readability
+* transaction data is now stored long-term for fast retrieval
+* handle JSON parsing properly
+* make sure jsonfix does not misinterpret '-' in key values
+* update engine.storage.json
+* removed unnecessary done from end of transaction
+* fix nacl bug
+* corrected timestamp according to genesis block time
+* xrp tx hash visibility
+* update transaction for omni and dummy
+* enable conf per module
+* initialize qrtz modules
+* update module.js
+* prototype of curl call before alternative routing
+* shorthand calls produce a lot of data
+* initialize static endpoints when module is loaded
+* add slash to curl path
+* attempt to handle direct calls in transports
+* clean up global functions
+* update mock history
+* updated lib interface compilation for PoW
+* Fix ellipsis routing and sync module
+* Create sync modern modules, fix redirect module
+* changed retention time calculations
+* added list of currencies to valuations (hardcoded for now)
+* proof of Work seems to fail when used in web-wallet
+* upgrade mimetype handling
+* fix help output, remove blockexplorer module (replaced by insights engine) add module documentation
+* reading namespace entries support added to namecoin
+* added support for Namecoin
+* fee handling fixed for engine.insight, engine.electrum-tcp, bch, flo
+
 # v0.5.7
 ## Little Maroon Sphinx
 ## 11-04-2019
