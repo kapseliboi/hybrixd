@@ -32,7 +32,8 @@
       "call 'tokenUnspent/$1/$2/$target/$4'",
       "jump @done",
       "call 'mainUnspent/$1/$2/$target/$4'",
-      "@done"
+      "@done",
+      "done"
     ],
     "mainUnspent":[
       "call 'fee'",

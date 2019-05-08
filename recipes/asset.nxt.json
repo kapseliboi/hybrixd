@@ -59,7 +59,8 @@
       "call 'tokenUnspent/$1/$2/$3/$4'",
       "jump @done",
       "call 'mainUnspent/$1/$2/$3/$4'",
-      "@done"
+      "@done",
+      "done"
     ],
     "mainUnspent":[
       "call 'fee'",
@@ -75,7 +76,8 @@
       "poke 'result'",
       "tran '.errorDescription' 1 2",
       "fail",
-      "done $result"
+      "data $result",
+      "done"
     ],
     "tokenUnspent":[
       "call 'fee'",
