@@ -16,6 +16,8 @@ variables:
 
   DOCKER_DRIVER: overlay2
 
+  GIT_STRATEGY: none
+
 stages:
   - build
   - test
@@ -33,6 +35,19 @@ hybrixd:
   services:
   - docker:stable-dind
   script:
+
+    # Because of race conditions with merge squashes leaving broken references we circumvent the default git strategy  GIT_STRATEGY: none
+    - cd ..
+    - "git clone -n https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/hybrix/hybrixd/node.git --depth 10 --single-branch --branch $CI_COMMIT_REF_NAME"
+    - cd node
+    - if git log | grep $CI_COMMIT_SHA; then
+    -   echo "Commit $CI_COMMIT_SHA exists, retrieving it."
+    -   "git checkout $CI_COMMIT_SHA"
+    - else
+    -   echo "Commit $CI_COMMIT_SHA does not exist, retrieving latest in branch $CI_COMMIT_REF_NAME"
+    -   "git checkout"
+    - fi
+
     # prepare variable for DEBUG purposes
     - if [[ "$DEBUG_ENABLED" == "1"  ]]; then DEBUG="-debug"; else DEBUG=""; fi
     - "if [[ \"$DEBUG_ENABLED\" == \"1\"  ]]; then echo \"DEBUG_ENABLED is 1: debug-mode\"; else echo \"release-mode\"; fi"
@@ -201,7 +216,7 @@ test:
   services:
     - postgres:latest
   variables:
-    POSTGRES_DB: test
+    - POSTGRES_DB: test
   stage: test
   image: gliderlabs/herokuish:latest
   script:
@@ -277,7 +292,7 @@ test:
     - cd test
 
     #- node ./test.js --debug
-    - node ./test.js 
+    - node ./test.js
 
   coverage: /SUCCESS RATE[^|]*\:[^|]*\s+([\d\.]+)/
   except:
@@ -327,8 +342,6 @@ review:
 
 stop_review:
   stage: cleanup
-  variables:
-    GIT_STRATEGY: none
   script:
     - install_dependencies
     - delete
