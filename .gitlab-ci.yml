@@ -216,7 +216,7 @@ test:
   services:
     - postgres:latest
   variables:
-    - POSTGRES_DB: test
+    POSTGRES_DB: test
   stage: test
   image: gliderlabs/herokuish:latest
   script:
