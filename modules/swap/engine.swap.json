@@ -5,51 +5,159 @@
   "quartz":{
     "register" : [
       "func sum",
-      "poke sum",
-      "rout /asset/$1/balance/$sum",
+      "logs",
+      "poke summedAddress",
+      "rout /asset/$1/balance/$summedAddress",
+      "logs",
       "ship 2",
-      "fail 'No balance found on $sum'",
+      "fail 'No balance found on $summedAddress'",
       "poke balance",
-      "func register/$1/$2/$3/$4/$5/$sum",
-      "done 'Registered swap address $sum ( = $3 + $4) with a balance of $balance for node $2 deposit address: $5 '"
+      "func register/$1/$2/$3/$4/$5/$6/$summedAddress",
+      "with local::peers push $2",
+      "done 'Registered swap address $summedAddress ( = $3 + $4) with a balance of $balance for node $2 deposit address: $5 '"
     ],
-    "public" : [
-      "func public_"
-    ]
+    "peers":[
+      "data '$1'",
+      "flow {add:4, remove:6} 1",
+      "data $local::peers",
+      "type array",
+      "done",
+      "with local::peers push $2",
+      "done $local::peers",
+      "with local::peers excl $2",
+      "done $local::peers"
+    ],
+    "addresses":[
+      "data '$1'",
+      "flow {add:4, remove:6} 1",
+      "data $local::addresses",
+      "type array",
+      "done",
+      "with local::addresses push $2",
+      "done $local::addresses",
+      "with local::addresses excl $2",
+      "done $local::addresses"
+    ],
+    "deposits":[
+      "data '$1'",
+      "flow {register:4, describe:6,request:8,freeze:10} 1",
+      "func 'deposits'",
+      "type object",
+      "done",
+      "call register/$2/$3/$4/$5/$6/$7",
+      "done",
+      "func describe/$2",
+      "done",
+      "func request/$2",
+      "done",
+      "fail 'freeze not yet available'"
+    ],
+    "deals":[
+      "done [{takerSymbol:'mock.btc',takerAddress:'%1',takerAmount:'%2',makerSymbol:'mock.eth',makerAddress:'123',makerAmount:'%2',expiration:0}]"
+    ],
+
+    "check" :[
+      "rout /asset/mock.btc/transaction/${.value}",
+      "done"
+    ],
+
+    "test":[
+      "rout /asset/mock.btc/history/101",
+      "logs",
+      "each check",
+      "done"
+      ]
+
   },
+
+
   "router" : {
     "_hidden":true,
-    "test":"test",
-    "public":{
-      "_ref" : {
-        "_list":"symbol",
-        "_this":"The public key used for deposits"
-      }
+    "test" : {
+      "_ellipsis" : true,
+      "_this"  : "test"
     },
-    "request":{
-      "_ref" : {
-        "_list":"symbol",
-        "_this":"Request a deposit key"
-      }
-    },
-    "list" : "List deposits",
 
-
-    "register":{
-      "_ref" : {
-        "_list":"symbol",
+    "deposits" : {
+      "_this" : "List deposits.",
+      "describe" : {
         "_ref" : {
           "_list":"nodeID",
+          "_this":"List deposits for a given peer."
+        }
+      },
+      "request":{
+        "_ref" : {
+          "_list":"symbol",
+          "_this":"Request a deposit key."
+        }
+      },
+      "register":{
+        "_ref" : {
+          "_list":"symbol",
           "_ref" : {
-            "_list":"publicKey1",
+            "_list":"nodeID",
             "_ref" : {
-              "_list":"publicKey2",
+              "_list":"publicKey1",
+              "_help":"The key provided by the deposit holder.",
               "_ref" : {
-                "_list":"tradingaddresses",
-                "_this":"Register trading addresses"
+                "_list":"publicKey2",
+                "_help":"Your own public key.",
+                "_ref" : {
+                  "_list":"symbol",
+                  "_help":"The symbol of the address you want to register.",
+                  "_ref" : {
+                    "_list":"address",
+                    "_this":"Register a trading address."
+                  }
+                }
               }
             }
           }
+        }
+      },
+      "freeze" : {
+        "_access":"root",
+        "_ref" : {
+          "_list":"nodeID",
+          "_this":"Freeze the deposits for a peer WIP."
+        }
+      }
+    },
+    "deals" : {
+      "_this" : "List available deals"
+    },
+    "peers" : {
+      "_this" : "List my swap peers.",
+      "add" : {
+        "_access":"root",
+        "_ref" : {
+          "_list":"nodeID",
+          "_this":"Add a swap peer."
+        }
+      },
+      "remove" : {
+        "_access":"root",
+        "_ref" : {
+          "_list":"nodeID",
+          "_this":"Remove a swap peer."
+        }
+      }
+    },
+    "addresses" : {
+      "_this" : "List my trading addresses",
+      "add" : {
+        "_access":"root",
+        "_ref" : {
+          "_list":"nodeID",
+          "_this":"Add a trading address."
+        }
+      },
+      "remove" : {
+        "_access":"root",
+        "_ref" : {
+          "_list":"nodeID",
+          "_this":"Remove a trading address."
         }
       }
     }
