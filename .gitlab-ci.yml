@@ -292,8 +292,19 @@ test:
     - cd test
 
     #- node ./test.js --debug
-    - node ./test.js
+    #- node ./test.js
 
+    - "TEST_OUTPUT=$(node ./test.js)"
+    - "echo \"$TEST_OUTPUT\""
+    - "SUCCESS_RATE=$(echo \"$TEST_OUTPUT\" | grep \"SUCCESS RATE: \")"
+    - "PERCENTAGE=${SUCCESS_RATE//[a-zA-Z: %]/}"
+    - "if [[ \"$PERCENTAGE\" < 80 ]]; then"
+    - "echo \"Test failed with $PERCENTAGE%!\""
+    - "exit 1"
+    - "else"
+    - "echo \"$PERCENTAGE\""
+    - "fi"
+    
   coverage: /SUCCESS RATE[^|]*\:[^|]*\s+([\d\.]+)/
   except:
    refs:
