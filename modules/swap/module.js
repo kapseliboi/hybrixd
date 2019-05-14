@@ -1,22 +1,22 @@
 // (C) 2018 Internet of Coins / Rouke Pouw
 // swap module
 const router = require('../../lib/router/router');
-let Hybrix = require('../../interface/hybrix-lib.nodejs.js');
+const Hybrix = require('../../interface/hybrix-lib.nodejs.js');
 
-let rout = query => {
+const rout = query => {
   const request = {url: query, sessionID: 0};
   const result = JSON.stringify(router.route(request));
   return result;
 };
 
-let hybrix = new Hybrix.Interface({local: {rout}});
+const hybrix = new Hybrix.Interface({local: {rout}});
 
 // exports
 exports.init = init;
 exports.request = request;
 exports.register = register;
-exports.list = list;
-exports.public_ = public_;
+exports.deposits = deposits;
+exports.describe = describe;
 exports.sum = sum;
 
 // initialization function
@@ -35,18 +35,20 @@ function request (proc) {
       publicKey: {data: {symbol}, step: 'getPublicKey'},
       privateKey: {data: {symbol}, step: 'getPrivateKey'}
     }, 'parallel',
-    keyPair => { proc.poke('local::keyPairs[' + keyPair.publicKey + ']', {privateKey: keyPair.privateKey, time: Date.now()}); return keyPair.publicKey; }
+    //    keyPair => { proc.poke('local::keyPairs[' + keyPair.publicKey + ']', {privateKey: keyPair.privateKey, time: Date.now()}); return keyPair.publicKey; }
+
+    keyPair => { proc.poke('local::keyPairs[' + 100 + ']', {privateKey: 100, time: Date.now()}); return 100; }
   ],
   proc.done, proc.fail, proc.prog);
 }
 
-function public_ (proc) {
+/* function public_ (proc) {
   const symbol = proc.command[1];
   hybrix.sequential([{username: global.hybrixd.node.publicKey, password: global.hybrixd.node.privateKey}, 'session',
     {symbol}, 'getPublicKey'
   ],
   proc.done, proc.fail, proc.prog);
-}
+} */
 
 // sum provided public keys
 function sum (proc) {
@@ -85,42 +87,86 @@ function register (proc, balance) {
   const nodeID = proc.command[2];
   const publicKey1 = proc.command[3];
   const publicKey2 = proc.command[4];
-  const tradingAddresses = proc.command[5]; // TODO parse and validate trading addresses
-  const address = proc.command[6];
+  const tradingSymbol = proc.command[5];
+  const tradingAddress = proc.command[6]; // TODO validate trading addresses
+  const summedAddress = proc.command[7];
 
-  const peers = proc.peek('local::peers');
+  const address = {symbol: tradingSymbol, address: tradingAddress};
   const keyPairs = proc.peek('local::keyPairs');
 
+  const deposit = {
+    state: 'confirmed',
+
+    symbol,
+    publicKey1,
+    publicKey2,
+    address: summedAddress,
+
+    balance,
+    privateKey: keyPairs[publicKey1].privateKey,
+    time: Date.now()
+  };
+
   if (keyPairs.hasOwnProperty(publicKey1)) {
-    if (peers && peers.hasOwnProperty(nodeID)) {
-      // TODO update peers
-      proc.fail('Cannot update a peer yet');// TODO
+    const peerDeposits = proc.peek('local::peerDeposits');
+    if (peerDeposits && peerDeposits.hasOwnProperty(nodeID) && typeof peerDeposits[nodeID] === 'object' && peerDeposits[nodeID] !== null) {
+      peerDeposits[nodeID].tradingAddresses.push(address);
+      peerDeposits[nodeID].deposits.push(deposit);
+      proc.poke('local::peerDeposits[' + nodeID + ']', peerDeposits[nodeID]);
     } else {
-      proc.poke('local::peers[' + nodeID + ']', {
-        tradingAddresses: tradingAddresses,
-        deposits: {
-          [symbol]: {[publicKey1]: {state: 'confirmed', publicKey2, address, balance, privateKey: keyPairs[publicKey1].privateKey, time: Date.now()}}
-        }
+      proc.poke('local::peerDeposits[' + nodeID + ']', {
+        tradingAddresses: [address],
+        deposits: [deposit]
       });
-      proc.poke('local::keyPairs[' + publicKey1 + ']', undefined);
-      proc.done(publicKey1);
     }
+    proc.poke('local::keyPairs[' + publicKey1 + ']', undefined);
+    proc.done(publicKey1);
   } else {
     proc.fail('Public key ' + publicKey1 + ' is unknown.');
   }
 }
 
-function list (proc) {
+function describe (proc) {
+  const nodeID = proc.command[1];
+  const peerDeposits = proc.peek('local::peerDeposits');
+  if (peerDeposits && peerDeposits.hasOwnProperty(nodeID)) {
+    const peerDeposit = peerDeposits[nodeID];
+    const result = {tradingAddresses: peerDeposit.tradingAddresses, deposits: []};
+    result.deposits = [];
+    for (let i = 0; i < peerDeposit.deposits.length; ++i) {
+      const deposit = peerDeposit.deposits[i];
+      result.deposits.push({
+        state: deposit.state,
+        symbol: deposit.symbol,
+        address: deposit.address,
+        balance: deposit.balance,
+        time: deposit.time
+      });
+    }
+
+    proc.done(result);
+  } else {
+    proc.fail('Peer ' + nodeID + ' is unknown.');
+  }
+}
+
+function deposits (proc) {
   const result = {};
-  const peers = proc.peek('local::peers');
-  for (let nodeID in peers) {
-    const peer = peers[nodeID];
-    result[nodeID] = {tradingAddresses: peer.tradingAddresses, deposits: {}};
-    for (let symbol in peer.deposits) {
-      result[nodeID].deposits[symbol] = {};
-      for (let publicKey in peer.deposits[symbol]) {
-        const deposit = peer.deposits[symbol][publicKey];
-        result[nodeID].deposits[symbol][publicKey] = {state: deposit.state, address: deposit.address, balance: deposit.balance, time: deposit.time, publicKey2: deposit.publicKey2 };
+  const peerDeposits = proc.peek('local::peerDeposits');
+  if (peerDeposits) {
+    for (let nodeID in peerDeposits) {
+      const peerDeposit = peerDeposits[nodeID];
+      result[nodeID] = {tradingAddresses: peerDeposit.tradingAddresses, deposits: []};
+      result[nodeID].deposits = [];
+      for (let i = 0; i < peerDeposit.deposits.length; ++i) {
+        const deposit = peerDeposit.deposits[i];
+        result[nodeID].deposits.push({
+          state: deposit.state,
+          symbol: deposit.symbol,
+          address: deposit.address,
+          balance: deposit.balance,
+          time: deposit.time
+        });
       }
     }
   }
