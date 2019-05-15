@@ -1,3 +1,14 @@
+# v0.5.9
+## Fluffy Maroon Ogre
+## 15-05-2019
+
+* Update dist/release process
+* Fix burst and nxt unspents
+* Fix websocket calls
+* Gracefull stop hybrixd
+* Fix balance for nxt tokens
+* Fixes for xem and xcp
+
 # v0.5.8
 ## Cosy Maroon Phoenix
 ## 08-05-2019
