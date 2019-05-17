@@ -22,7 +22,7 @@ elif [ "`uname -m`" = "x86_64" ]; then
     SYSTEM="x86_64"
 else
     echo "[!] Unknown Architecture (or incomplete implementation)"
-    exit 1;
+#    exit 1;
 fi
 
 # NODE_BINARIES
@@ -45,7 +45,7 @@ export PATH="$NODE/node_binaries/bin:$PATH"
 # COMMON
 if [ ! -e "$NODE/common" ];then
 
-    echo " [!] interface/common not found."
+    echo " [!] node/common not found."
 
     if [ ! -e "$COMMON" ];then
         cd "$HYBRIXD"
