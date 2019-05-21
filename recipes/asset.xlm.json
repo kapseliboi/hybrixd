@@ -20,11 +20,16 @@
     ],
     "balance": [
       "curl('$host','/accounts/$1','GET')",
-      "tran('.balances',2,1)",
+      "tran('.balances',@getBalance,1)",
+      "tran .title 2 1",
       "fail",
+      "logs",
+      "flow 'Resource Missing' 1 -2",
+      "data 0",
+      "jump @done",
+      "@getBalance",
       "find({'asset_type':'$contract'})",
       "tran('[0].balance',@done,1)",
-      "fail",
       "@done"
     ],
     "fee": [
@@ -48,16 +53,21 @@
       "done"
     ],
     "history": [
-      "done []"
+      "#TODO offset and limit https://horizon.stellar.org/accounts/{account_id}/transactions{?cursor,limit",
+      "curl('$host','/accounts/$1/transactions','GET')",
+      "tran ._embedded.records[].id 1 2",
+      "done"
     ],
     "test":[
-      "done {unspent:'998719879287873'}"
+      "done {unspent:'998719879287873', hash:'0555065F'}"
     ],
     "transaction": [
-      "fail 'Not yet implemented!'"
+      "curl('$host','/transactions/$1','GET')",
+      "#TODO transform",
+      "done"
     ],
     "sample": [
-      "pass({address:'GCUBGHIGXAJBPEBSX5IWUK2HNQPFXPNXEN6YJI7YNLTFU3VBYOEBLMT3',transaction:'',publicKey:'GCUBGHIGXAJBPEBSX5IWUK2HNQPFXPNXEN6YJI7YNLTFU3VBYOEBLMT3'})"
+      "pass({address:'GCUBGHIGXAJBPEBSX5IWUK2HNQPFXPNXEN6YJI7YNLTFU3VBYOEBLMT3',transaction:'82887675c952e0c24f1cfa191e5b03fd624d89988466c38ff30ed138ffd49b0e',publicKey:'GCUBGHIGXAJBPEBSX5IWUK2HNQPFXPNXEN6YJI7YNLTFU3VBYOEBLMT3'})"
     ]
   }
 }
