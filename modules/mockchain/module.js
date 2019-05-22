@@ -117,12 +117,21 @@ function history (proc) {
 
   const contract = proc.command[1];
   const address = Number(proc.command[2]);
+  const length = (proc.command[3]);
+  const offset = (proc.command[4]);
+
   const history = [];
   for (let transactionId = 0; transactionId < mockchain.length; ++transactionId) {
     const transaction = mockchain[transactionId];
     if ((transaction.target === address || transaction.source === address) && transaction.contract === contract) {
       history.push(transactionId);
     }
+  }
+  if (!isNaN(offset)) {
+    history.splice(0, offset);
+  }
+  if (!isNaN(length)) {
+    history.length = length;
   }
   proc.done(history);
 }

@@ -246,7 +246,8 @@
     ],
     "fee":[
       "time(45000)",
-      "func getFee"
-      ]
+      "func getFee",
+      "done"
+    ]
   }
 }
