@@ -59,7 +59,13 @@
         "_ref" : {
           "_list" : "address",
           "_sample": "123",
-          "_this" : "Retrieve the history for a given address."
+          "_ref" : {
+            "_list" : "length",
+            "_ref" : {
+              "_list" : "offset",
+              "_this" : "Retrieve the history for a given address."
+            }
+          }
         }
       }
     },

@@ -47,7 +47,7 @@
       "data '$1'",
       "flow('_dummyaddress_',2,1)",
       "stop(1,'Error: invalid address!')",
-      "stop(0,[])"
+      "stop(0,['TXIDTXIDTXIDTXIDTXIDTXIDTXID'])"
     ],
     "contract" : [
       "pass('dummy_contract')"
