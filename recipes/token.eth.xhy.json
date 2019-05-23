@@ -1,6 +1,6 @@
 {
   "symbol":"eth.xhy",
-  "name":"Internet of Coins hybrix Asset (Ethereum)",
+  "name":"Internet of Coins hybrid Asset (Ethereum)",
   "module":"ethereum",
     "import":"eth",
   "mode":"ethereum.token",

@@ -1,0 +1,169 @@
+body {
+  font-family: 'Palanquin', sans-serif;
+  line-height: 29px;
+  font-size: 16px;
+  word-break: break-word;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  overflow-y: none;
+}
+
+#searchWrapper {
+  text-align:center;
+}
+
+.transactionId {
+  max-width: 50px;
+  width: 50px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#history {
+  width:100%;
+}
+
+table#transaction {
+  width:100%;
+}
+
+
+#balance {
+  text-align:right;
+}
+
+#searchWrapper.no-result{
+  margin-top:40vh;
+}
+
+.header {
+  background-color:black;
+  color:white;
+}
+
+.confirmed, .unconfirmed, .unknown {
+  display:block;
+  width:16px;
+  height:16px;
+  text-align:center;
+  border-radius:50%;
+  color:white;
+}
+
+.confirmed {
+  background-color:green;
+}
+
+.unconfirmed {
+  background-color:red;
+}
+
+.unknown {
+  background-color:orange;
+}
+
+.clipboard:hover{
+  background-color:lightgrey;
+}
+
+.clipboard {
+  background-image:url('./clipboard.png');
+  background-repeat:no-repeat;
+  background-color:grey;
+  background-size:80% 80%;
+
+  display:inline-block;
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  cursor:pointer;
+
+}
+
+.error {
+  background-color: #FFEEEE;
+  color:red;
+}
+
+#query {
+width:70vh;
+}
+
+#cancel {
+position: relative;
+left: -33px;
+}
+
+#poweredby{
+width: 110px;
+display: block;
+border: none;
+margin: 40px auto 50px;
+position: absolute;
+bottom:0;
+}
+
+#poweredby.no-result{
+ position:static;
+}
+
+#result {
+background-color:  #eeeeee;
+}
+#result.no-result{
+display:none;
+}
+
+
+
+
+
+input {
+  border: 1px solid #dedede;
+  background: white;
+  margin: 0.25rem;
+  border-radius: 4px;
+  padding: 2px 7px 1px 7px;
+}
+input.text {
+  width:90%;
+  border-style:none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  margin:0;
+}
+input[type="submit"] {
+  color: #F5A104;
+  text-decoration: none;
+  font-weight: 600;
+  border: 0;
+  background: transparent;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  margin-left: 10px;
+}
+input[type="submit"]:hover {
+  text-decoration: underline;
+}
+
+input[type="submit"]:disabled,
+input[type="submit"][disabled], input[type="submit"][disabled]:hover {
+  color: #bbb;
+  cursor:default;
+  font-style: italic;
+  text-decoration: none;
+}
+
+select {
+  border: 1px solid #dedede;
+  background: white;
+  margin: 0.25rem;
+}

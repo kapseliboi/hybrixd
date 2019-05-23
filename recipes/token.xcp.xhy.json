@@ -1,6 +1,6 @@
 {
   "symbol":"xcp.xhy",
-  "name":"Internet of Coins hybrix Asset",
+  "name":"Internet of Coins hybrid Asset (Counterparty)",
   "module":"quartz",
   "mode":"bitcoinjslib.counterparty",
   "import":"xcp",

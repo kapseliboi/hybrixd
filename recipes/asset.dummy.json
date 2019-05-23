@@ -43,6 +43,12 @@
       "fail 'Illegal transaction id.'",
       "@done"
     ],
+    "message" : [
+      "data '$1'",
+      "flow 'TXIDTXIDTXIDTXIDTXIDTXIDTXID' 1 2",
+      "done 'Hello World!'",
+      "fail 'Illegal transaction id.'"
+    ],
     "history" : [
       "data '$1'",
       "flow('_dummyaddress_',2,1)",
