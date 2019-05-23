@@ -1,6 +1,6 @@
 {
   "symbol":"nxt.xhy",
-  "name":"Internet of Coins hybrix Asset (NXT)",
+  "name":"Internet of Coins hybrid Asset (NXT)",
   "module":"quartz",
   "import":"nxt",
   "mode":"nxt.token",

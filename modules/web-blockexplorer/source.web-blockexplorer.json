@@ -1,0 +1,12 @@
+{
+  "source":"web-blockexplorer",
+  "name":"Web Block Explorer",
+  "module":"web-blockexplorer",
+  "router" : {
+    "api":{
+      "_alias":"/"
+    },
+    "_ellipsis":true,
+    "_this" : "Provides the necessary bindings to host the web block explorer interface."
+  }
+}

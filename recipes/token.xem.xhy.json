@@ -1,6 +1,6 @@
 {
   "symbol":"xem.xhy",
-  "name":"Internet of Coins hybrix Asset (NEM)",
+  "name":"Internet of Coins hybrid Asset (NEM)",
   "module":"quartz",
   "mode":"nem.mosaic",
   "import": "xem",
