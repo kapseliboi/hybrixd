@@ -31,8 +31,6 @@
     "fee-factor" : [
       "pass '$fee-factor'"
     ],
-
-
     "balance" : [
       "data '$symbol'",
       "flow 'xrp' @balance @tokenBalance",
@@ -53,8 +51,6 @@
       "@end",
       "atom",
       "done",
-
-
       "@tokenBalance",
       "data '$symbol'",
       "case 'upper'",
@@ -118,7 +114,7 @@
       "flow 'undefined' @xrpFee @localFee",
       "@xrpFee",
       "pass '$xrp::fee'",
-      "done()",
+      "done",
       "@localFee",
       "pass '$local::fee'"
     ],
