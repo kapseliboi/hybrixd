@@ -28,11 +28,15 @@
       "done"
     ],
     "history" : [
-      "curl asset://$symbol /api/transactions?recipientId=$1 GET {Accept:'application/json','Content-Type':'application/json'}",
+      "poke count $2 12",
+      "poke offset $3 0",
+      "curl asset://$symbol /api/transactions?recipientId=$1&offset=$offset&limit=$count GET {Accept:'application/json','Content-Type':'application/json'}",
+      "logs",
       "tran .data 2 1",
       "fail 'Cannot get transaction history!'",
       "sort ['.height',num,desc]",
-      "tran '[].id'"
+      "tran '[].id'",
+      "done"
     ],
     "transactionData" : [
       "curl asset://$symbol /api/transactions?id=$1&limit=1&offset=0 GET {Accept:'application/json','Content-Type':'application/json'}",
@@ -45,7 +49,7 @@
       "with reformatTimestamp [data,${.timestamp}] [math,'+$genesisBlockTime']",
       "with reformatFee [data,'${.fee}'] [atom]",
       "with reformatAmount [data,'${.amount}'] [atom]",
-      "tran { id:'.id', timestamp:'$reformatTimestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.senderId', target:'.recipientId', confirmed:'.confirmations' } 2 1",      
+      "tran { id:'.id', timestamp:'$reformatTimestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.senderId', target:'.recipientId', confirmed:'.confirmations' } 2 1",
       "fail 'Cannot get transaction data!'"
     ],
     "attachment" : [

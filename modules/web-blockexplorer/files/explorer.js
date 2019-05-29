@@ -1,17 +1,5 @@
 /*
 
-icon,qr
-
-implement copy buttons
-
-history: pagination
-
-choose currency
-
-history: smart time stamp (x minutes ago, yesterday, hide year etc)
-
-valid html
-
 
 Styling
 - tables
@@ -112,11 +100,11 @@ function prettyTime(timestamp){
 
 function confirmed(confirmations){
   if(isNaN(confirmations)){
-    return '<span title="Unknown" class="unknown">?</span>';
+    return '<span title="Unknown" class="unknown">unknown</span>';
   }else if(confirmations>0){
-    return '<span title="Confirmed ('+confirmations+ ')" class="confirmed">V</span>';
+    return '<span title="Confirmed ('+confirmations+ ')" class="confirmed">confirmed</span>';
   }else{
-    return '<span  title="Unconfirmed" class="unconfirmed">X</span>';
+    return '<span  title="Unconfirmed" class="unconfirmed">unconfirmed</span>';
   }
 }
 
@@ -129,41 +117,78 @@ const renderCurrency = (currency,id,type) => amount => {
     if(type==='currency'){
       e.innerHTML = amount+'&nbsp;'+currency;
     }else{
-      e.innerHTML = '('+amount+'&nbsp;'+currency+')';
+      e.innerHTML = '('+amount+'&nbsp;'+currencySelector(currency)+')';
     }
   }
 }
 
-const failCurrency = (currency,id,type) => amount => {
+const currencies = ['USD','EUR'];
+
+const handleCurrencies = currency=> list => {
+  currencies.splice.apply(currencies, [0,currencies.length].concat(list));
+  const currencySelectors = document.getElementsByClassName('currencySelector');
+  for (let i = 0; i < currencySelectors.length; i++) {
+    currencySelectors[i].innerHTML = currencySelector(currency)
+  }
+}
+
+function currencySelector(currency){
+  let r= '<select class="currencySelector" onchange="window.location = updateParameter(\'currency\',event.target.options[event.target.selectedIndex].value)">';
+  for(let i=0; i<currencies.length;++i){
+    if(currency===currencies[i]){
+      r+='<option SELECTED>'+currencies[i]+'</option>';
+    }else{
+      r+='<option>'+currencies[i]+'</option>';
+    }
+  }
+  return r+'</select>';
+}
+
+const failCurrency = (currency,id,type) => error => {
   const e = document.getElementById(id);
   if(e){
     e.classList.add('error');
     if(type==='currency'){
-      e.innerHTML = '(?&nbsp;'+currency+')';
+      e.innerHTML = '?&nbsp;'+currency;
     }else{
-      e.innerHTML = '?&nbsp;'+currency+'';
+      e.innerHTML = '(?&nbsp;'+currencySelector(currency)+')';
+    }
+  }
+}
+
+const progressCurrency = (currency,id,type) => amount => {
+  const e = document.getElementById(id);
+  if(e){
+    if(type==='currency'){
+      if(e.innerHTML==='(...&nbsp;'+currency+')'){  e.innerHTML='(.&nbsp;&nbsp;&nbsp;'+currency+')';}
+      else if(e.innerHTML==='(..&nbsp;&nbsp;'+currency+')'){  e.innerHTML='(...&nbsp;'+currency+')';}
+      else if(e.innerHTML==='(.&nbsp;&nbsp;&nbsp;'+currency+')'){  e.innerHTML='(..&nbsp;&nbsp;'+currency+')';}
+    }else{
+      if(e.innerHTML==='...&nbsp;'+currency+''){  e.innerHTML='.&nbsp;&nbsp;&nbsp;'+currency+'';}
+      else if(e.innerHTML==='..&nbsp;&nbsp;'+currency+''){  e.innerHTML='...&nbsp;'+currency+'';}
+      else if(e.innerHTML==='.&nbsp;&nbsp;&nbsp;'+currency+''){  e.innerHTML='..&nbsp;&nbsp;'+currency+'';}
     }
   }
 }
 
 const renderAmount = (amount,symbol,currency,type) => {
   currency=currency||'USD';
-  if(type==='undefined' || type === 'both'){
+  if(typeof type==='undefined' || type === 'both'){
     const id = Math.floor(Math.random()*100000)
-    request('/e/valuations/rate/'+symbol+'/'+currency+'/'+amount,renderCurrency(currency,id,type),failCurrency(currency,id,type));
+    request('/e/valuations/rate/'+symbol+'/'+currency+'/'+amount,renderCurrency(currency,id,type),failCurrency(currency,id,type),progressCurrency(currency,id,type));
     return amount+'&nbsp;'+symbol+'&nbsp;<span id="'+id+'">(...&nbsp;'+currency+')</span>';
   }else if (type==='amount'){
     return amount+'&nbsp;'+symbol;
   }else if (type==='currency'){
     const id = Math.floor(Math.random()*100000)
-    request('/e/valuations/rate/'+symbol+'/'+currency+'/'+amount,renderCurrency(currency,id,type),failCurrency(currency,id,type));
+    request('/e/valuations/rate/'+symbol+'/'+currency+'/'+amount,renderCurrency(currency,id,type),failCurrency(currency,id,type),progressCurrency(currency,id,type));
     return '&nbsp;<span id="'+id+'">...&nbsp;'+currency+'</span>';
   }
 };
 
 const renderBalance = (symbol,currency) => balance => {
   const e = document.getElementById('balance');
-  e.innerHTML=renderAmount(balance,symbol,currency);
+  e.innerHTML=renderAmount(balance,symbol,currency,'both');
 };
 
 const renderTransactionRow = (symbol,transactionId,address,currency) => transaction => {
@@ -230,7 +255,7 @@ const renderTransaction = (symbol,transactionId,currency) => transaction => {
   if(transaction.confirmed===1){
     e.rows[5].cells[1].innerHTML=`${confirmed(transaction.confirmed)}`+'&nbsp;'+transaction.confirmed+'&nbsp;confirmation'
   }else if(transaction.confirmed===true){
-    e.rows[5].cells[1].innerHTML=`${confirmed(transaction.confirmed)}`+'&nbsp;confirmed'
+    e.rows[5].cells[1].innerHTML=`${confirmed(transaction.confirmed)}`;
   }else if(!isNaN(transaction.confirmed)){
     e.rows[5].cells[1].innerHTML=`${confirmed(transaction.confirmed)}`+'&nbsp;'+transaction.confirmed+'&nbsp;confirmations'
   }else{
@@ -238,22 +263,23 @@ const renderTransaction = (symbol,transactionId,currency) => transaction => {
   }
 }
 
-const renderHistory = (symbol,address) => history => {
+const renderHistory = (symbol,address, page,currency) => history => {
   const e = document.getElementById('history');
   for(let i=0;i<history.length;++i){
     const transactionId = history[i];
     e.innerHTML+='<tr id="'+transactionId+'"><td class="transactionId"><a title="'+transactionId+'" href="?symbol='+symbol+'&transactionId='+transactionId+'">'+transactionId+'</a></td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><tr>';
-    request('/a/'+symbol+'/transaction/'+transactionId,renderTransactionRow(symbol,transactionId,address),failTransactionRow(symbol,transactionId,address),progressTransactionRow(symbol,transactionId,address));
+    request('/a/'+symbol+'/transaction/'+transactionId,renderTransactionRow(symbol,transactionId,address,currency),failTransactionRow(symbol,transactionId,address),progressTransactionRow(symbol,transactionId,address));
   }
 };
 
 function switchToResultMode(){
   document.getElementById('searchWrapper').classList.remove('no-result');
   document.getElementById('result').classList.remove('no-result');
-  document.getElementById('poweredby').classList.remove('no-result');
+  document.getElementById('logo').classList.remove('no-result');
+  document.getElementById('symbols').style.display='none';
 }
 
-const handleTransaction= (symbol,transactionId) => {
+const handleTransaction= (symbol,transactionId,currency) => {
   switchToResultMode();
   setParameter('transactionId',transactionId);
   const e = document.getElementById('result');
@@ -268,35 +294,49 @@ const handleTransaction= (symbol,transactionId) => {
 <tr><td>Message</td><td>...</td></tr>
 </table>
 `;
-  request('/a/'+symbol+'/transaction/'+transactionId,renderTransaction(symbol,transactionId),fail);
+  request('/a/'+symbol+'/transaction/'+transactionId,renderTransaction(symbol,transactionId,currency),fail);
   request('/a/'+symbol+'/message/'+transactionId,renderMessage(symbol,transactionId),fail);
 }
 
 const fail = err => {
   switchToResultMode();
   const e = document.getElementById('result');
-  e.innerHTML='<div class="error">'+err+'</div>'+e.innerHTML;
+  e.innerHTML=e.innerHTML+'<div class="error">'+err+'</div>';
 }
 
-const handleAddress = (symbol,address)=>{
+const handleAddress = (symbol,address,page,currency)=>{
+  if(isNaN(page) || page===0){
+    page=1;
+  }
   setParameter('symbol',symbol);
   setParameter('address',address);
+  setParameter('page',page);
   switchToResultMode();
   const e = document.getElementById('result');
   e.innerHTML = `
 <h2>Address: ${address}${clipboard(address)}</h2>
 <table id="history">
-<tr><td colspan="3">Balance:</td><td id="balance">...</td></tr>
-<tr class="header"><td class="transactionId">id</td><td>Time</td><td>From/To</td><td>Amount</td><td></td><td> </td><tr>
+<tr><td colspan="6">Balance&nbsp;<span id="balance">...</span></td></tr>
+
+<tr><td colspan="6"><br/>Transaction History</td></tr>
+
+<tr class="header"><td class="transactionId">id</td><td>Time</td><td>From/To</td><td>Amount</td><td>${currencySelector(currency)}</td><td></td><tr>
 </table>`;
-  request('/a/'+symbol+'/balance/'+address,renderBalance(symbol),fail);
-  request('/a/'+symbol+'/history/'+address,renderHistory(symbol,address),fail);
+  for(let p=1;p<=page+1;++p){
+    if(page===p){
+      e.innerHTML+='<span class="current page">'+p+'</span>';
+    }else{
+      e.innerHTML+='<span class="page"><a href="'+updateParameter('page',p)+'">'+p+'</a></span>';
+    }
+  }
+  request('/a/'+symbol+'/balance/'+address,renderBalance(symbol,currency),fail);
+  request('/a/'+symbol+'/history/'+address+'/10/'+(page-1)*10,renderHistory(symbol,address,page,currency),fail);
 }
 
-const handleQuery = (symbol,query) => data =>{
+const handleQuery = (symbol,query,currency) => data =>{
   query=query.trim();
   if(data==='valid'){
-    handleAddress(symbol,query);
+    handleAddress(symbol,query,1,currency);
   }else if(data === 'invalid'){
     handleTransaction(symbol,query);
   }else{
@@ -304,44 +344,61 @@ const handleQuery = (symbol,query) => data =>{
   }
 };
 
-function find(symbol,query){
+function progressFind(){
+  const e = document.getElementById('result');
+  if(e.innerHTML==='...'){
+    e.innerHTML='.';
+  }else   if(e.innerHTML==='.'){
+    e.innerHTML='..';
+  }else{
+    e.innerHTML='...';
+  }
+}
+
+function find(symbol,query,currency){
   query=query.trim();
   if(query==='transaction:sample'||query==='tx:sample'){
-    request('/a/'+symbol+'/sample/',sample=>handleTransaction(symbol,sample.transaction),fail);
+    request('/a/'+symbol+'/sample/',sample=>handleTransaction(symbol,sample.transaction,currency),fail,progressFind);
   }else if(query==='address:sample'){
-    request('/a/'+symbol+'/sample/',sample=>handleAddress(symbol,sample.address),fail);
+    request('/a/'+symbol+'/sample/',sample=>handleAddress(symbol,sample.address,1,currency),fail,progressFind);
   }else{
-    request('/a/'+symbol+'/validate/'+query,handleQuery(symbol,query),fail);
+    request('/a/'+symbol+'/validate/'+query,handleQuery(symbol,query,currency),fail);
   }
 }
 
 function go(){
+  switchToResultMode();
   const e = document.getElementById("symbol");
-  const symbol = e.options[e.selectedIndex].value;
+  const symbol = e.value;
   const query = document.getElementById('query').value;
-  find(symbol,query);
+  const currency = getParameter('currency')||'USD'; //TOOD cookie
+  find(symbol,query,currency);
+}
+
+function updateParameter(key,value){
+  key = encodeURI(key); value = encodeURI(value);
+
+  var kvp = document.location.search.substr(1).split('&');
+
+  var i=kvp.length; var x; while(i--)
+  {
+    x = kvp[i].split('=');
+
+    if (x[0]==key)
+    {
+      x[1] = value;
+      kvp[i] = x.join('=');
+      break;
+    }
+  }
+
+  if(i<0) {kvp[kvp.length] = [key,value].join('=');}
+  return window.location.protocol + "//" + window.location.host + window.location.pathname + '?'+kvp.join('&');
 }
 
 function setParameter(key, value)
 {
-    key = encodeURI(key); value = encodeURI(value);
-
-    var kvp = document.location.search.substr(1).split('&');
-
-    var i=kvp.length; var x; while(i--)
-    {
-        x = kvp[i].split('=');
-
-        if (x[0]==key)
-        {
-            x[1] = value;
-            kvp[i] = x.join('=');
-            break;
-        }
-    }
-
-  if(i<0) {kvp[kvp.length] = [key,value].join('=');}
-  var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?'+kvp.join('&');
+  const newurl = updateParameter(key,value)
   window.history.pushState({ path: newurl }, '', newurl);
 }
 
@@ -360,9 +417,8 @@ function getParameter(parameterName) {
 
 function validateQuery(){
   const e = document.getElementById("symbol");
-  const symbol = e.options[e.selectedIndex].value;
+  const symbol = e.value;
   const query = document.getElementById('query').value;
-  console.log(symbol,query);
   if(symbol!=='...' & query !==''){
     document.getElementById('go').disabled=false
   }else{
@@ -370,46 +426,73 @@ function validateQuery(){
   }
 }
 
-function handleAssets(assets){
+function validateSymbol(){
+  showSymbols()
+  validateQuery();
+}
 
-  const e = document.getElementById("symbol");
+const  handleAssets = currency => (assets) => {
+
+//  const e = document.getElementById("symbol");
+  const symbols = document.getElementById("symbols");
   for(let symbol in assets){
-    const option = document.createElement("option");
+  /*  const option = document.createElement("option");
     option.value = symbol;
     option.text = symbol+' ('+assets[symbol].split('(')[0]+')';
-    e.add(option);
+    e.add(option);*/
+    symbols.innerHTML+='<div class="symbol" onclick="selectSymbol(\''+symbol+'\')">'+assets[symbol].split('(')[0]+'&nbsp;('+symbol+')</div>'
   }
 
   const symbol = getParameter('symbol');
   const address = getParameter('address');
   const transactionId = getParameter('transactionId');
   const query = document.getElementById('query');
+  const page = Number(getParameter('page'));
 
-  if(symbol){
-    let flagFound=false;
-    for(let i=0;i<e.options.length;++i){
-      if(e.options[i].value===symbol){
-        e.options[i].selected=true;
-
-        flagFound=true;
-      }
-    }
-    if(!flagFound){
-      fail('Could not find symbol '+symbol);
-      return
-    }
+  if(symbol && !assets.hasOwnProperty(symbol)){
+    fail('Could not find symbol '+symbol);
+    return
   }
+
   if(symbol && address){
     query.value=address;
-    handleAddress(symbol,address);
+    handleAddress(symbol,address,page,currency);
   }else if(symbol && transactionId){
     query.value=transactionId;
-    handleTransaction(symbol,transactionId);
+    handleTransaction(symbol,transactionId,currency);
   }
 }
 
+function selectSymbol(selectedSymbol){
+  const symbols = document.getElementById("symbols");
+  const symbol = document.getElementById("symbol");
+  symbol.value=selectedSymbol;
+  symbols.style.display='none';
+}
+
+function showSymbols(){
+  const symbols = document.getElementById("symbols");
+  const symbol = document.getElementById("symbol");
+  const rect = symbol.getBoundingClientRect();
+  const filter = symbol.value;
+
+    const children = symbols.childNodes;
+    children.forEach(function(item){
+      if(filter!=='' && item.innerHTML.toLowerCase().indexOf(symbol.value.toLowerCase())===-1){
+        item.style.display='none';
+      }else{
+        item.style.display='block';
+      }
+    });
+
+  symbols.style.display='block';
+}
+
 function onLoad(){
-  request('/list/asset/names',handleAssets,fail)
+  const currency = getParameter('currency')||'USD'; //TODO or cookie
+
+  request('/list/asset/names',handleAssets(currency),fail)
+  request('/engine/valuations/list',handleCurrencies(currency),fail)
 }
 
 function onKeyUp(event){

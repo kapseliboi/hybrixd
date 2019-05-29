@@ -35,11 +35,15 @@
       "done"
     ],
     "history" : [
+      "poke count $2 12",
+      "poke offset $3 0",
       "with amount math $count+$offset",
       "curl asset://$symbol /transactions/address/$1/limit/$amount GET",
       "pick",
       "sort ['.height',num,desc]",
-      "tran '[].id'"
+      "tran '[].id'",
+      "take $offset $count",
+      "done"
     ],
     "transactionData" : [
       "curl asset://$symbol /transactions/info/$1 GET",

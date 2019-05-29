@@ -23,8 +23,7 @@
       "math '${.confirmed}+${.unconfirmed}'"
     ],
     "unspent" : [
-      "poke inputval '$2'",
-      "vars { inputval:'1000000000000' }",
+      "poke inputval '$2' '1000000000000'",
       "with inputval atom 1",
       "time $timeout",
       "curl asset://$symbol /addr/$1/utxo GET {'Content-Type':'application/json'}",
