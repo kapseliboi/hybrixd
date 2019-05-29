@@ -10,132 +10,73 @@ body {
   overflow-y: none;
 }
 
+
+
 #searchWrapper {
   text-align:center;
 }
 
-.transactionId {
-  max-width: 50px;
-  width: 50px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+#searchBar {
+  display:inline-block;
+  padding:5px;
+  font-size:100%;
+  border: 1px solid #dedede;
+  border-radius: 15px;
 }
 
-#history {
-  width:100%;
-}
-
-table#transaction {
-  width:100%;
-}
-
-
-#balance {
-  text-align:right;
-}
 
 #searchWrapper.no-result{
-  margin-top:40vh;
-}
-
-.header {
-  background-color:black;
-  color:white;
-}
-
-.confirmed, .unconfirmed, .unknown {
-  display:block;
-  width:16px;
-  height:16px;
-  text-align:center;
-  border-radius:50%;
-  color:white;
-}
-
-.confirmed {
-  background-color:green;
-}
-
-.unconfirmed {
-  background-color:red;
-}
-
-.unknown {
-  background-color:orange;
-}
-
-.clipboard:hover{
-  background-color:lightgrey;
-}
-
-.clipboard {
-  background-image:url('./clipboard.png');
-  background-repeat:no-repeat;
-  background-color:grey;
-  background-size:80% 80%;
-
-  display:inline-block;
-  width:16px;
-  height:16px;
-  border-radius:50%;
-  cursor:pointer;
-
-}
-
-.error {
-  background-color: #FFEEEE;
-  color:red;
+  margin-top:30vh;
 }
 
 #query {
-width:70vh;
+  font-size:100%;
+  border-style:none;
+  margin:0;
+  width:70vh;
+}
+
+#symbols {
+  display:none;
+  text-align:left;
+  max-height:30vh;
+  overflow-y:scroll;
+}
+
+#symbol {
+  font-size:100%;
+  border-style:none;
+  border-right-style:solid;
+  border-right-color:#dedede;
+  margin:0;
+}
+
+.symbol{
+  cursor:pointer;
+}
+
+.symbol:hover{
+  color:darkgrey;
+}
+
+#symbol:focus, #query:focus{
+  outline: none;
 }
 
 #cancel {
-position: relative;
-left: -33px;
-}
-
-#poweredby{
-width: 110px;
-display: block;
-border: none;
-margin: 40px auto 50px;
-position: absolute;
-bottom:0;
-}
-
-#poweredby.no-result{
- position:static;
-}
-
-#result {
-background-color:  #eeeeee;
-}
-#result.no-result{
-display:none;
+  position: relative;
+  left: -33px;
 }
 
 
-
-
-
-input {
+input[type="submit"] {
   border: 1px solid #dedede;
   background: white;
   margin: 0.25rem;
   border-radius: 4px;
   padding: 2px 7px 1px 7px;
 }
-input.text {
-  width:90%;
-  border-style:none;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  margin:0;
-}
+
 input[type="submit"] {
   color: #F5A104;
   text-decoration: none;
@@ -163,7 +104,101 @@ input[type="submit"][disabled], input[type="submit"][disabled]:hover {
 }
 
 select {
+  font-size:100%;
   border: 1px solid #dedede;
   background: white;
   margin: 0.25rem;
+}
+
+
+
+
+
+
+.transactionId {
+  max-width: 50px;
+  width: 50px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#history {
+  width:100%;
+}
+
+table#transaction {
+  width:100%;
+}
+
+
+#balance {
+  font-size:200%;
+  text-align:right;
+}
+
+
+.header {
+  background-color:black;
+  color:white;
+}
+
+.confirmed, .unconfirmed, .unknown {
+  color:white;
+}
+
+.confirmed {
+  color:green;
+}
+
+.unconfirmed {
+  color:red;
+}
+
+.unknown {
+  color:orange;
+}
+
+.clipboard:hover{
+  background-color:lightgrey;
+}
+
+.clipboard {
+  background-image:url('./clipboard.png');
+  background-repeat:no-repeat;
+  background-color:grey;
+  background-size:80% 80%;
+
+  display:inline-block;
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  cursor:pointer;
+
+}
+
+.error {
+  background-color: #FFEEEE;
+  color:red;
+}
+
+
+#logo{
+  width: 80px;
+  display: inline-block;
+  border: none;
+  vertical-align:middle;
+}
+
+#logo.no-result{
+  width: 300px;
+  margin: 40px auto 50px;
+  display: block;
+}
+
+#result {
+background-color:  #eeeeee;
+}
+#result.no-result{
+display:none;
 }

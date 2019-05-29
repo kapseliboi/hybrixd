@@ -107,12 +107,15 @@
       "fail('Error: $symbol network not responding. Cannot push transaction!')"
     ],
     "history" : [
+      "poke count $2 12",
+      "poke offset $3 0",
       "with until [math,'$offset+$count']",
       "curl asset://$symbol ?requestType=getBlockchainTransactions&account=$1&firstIndex=$offset&lastIndex=$until GET {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}",
       "tran '.transactions' 2 1",
       "fail 'Bad response from NXT node!'",
       "sort ['.timestamp',num,desc]",
-      "tran '[].transaction'"
+      "tran '[].transaction'",
+      "done"
     ],
     "transactionData" : [
       "curl asset://$symbol ?requestType=getTransaction&transaction=$1 GET {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'} 2 1",

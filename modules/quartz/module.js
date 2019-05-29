@@ -40,15 +40,16 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
       subprocesses.push('done');
       subprocesses.push('@requestData');
     }
-    if (command === 'history') { // cache data
-      subprocesses.push('poke count "$2"');
-      subprocesses.push('poke offset "$3"');
-      subprocesses.push('vars {"count":"12","offset":"0"}');
+    /* DISABLED BY ROUKE : CACHING BREAKS FUNCTIONALITY
+
+      if (command === 'history') { // cache data
+      subprocesses.push('poke count "$2" 12');
+      subprocesses.push('poke offset "$3" 0');
       subprocesses.push('data "$1_$count_$offset_$symbol"');
       subprocesses.push('hash');
       subprocesses.push('data tx$');
       subprocesses.push('poke storageHash');
-    }
+    } */
   }
 
   for (let i = 0, len = commands.length; i < len; ++i) {
@@ -79,11 +80,12 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
       subprocesses.push('data {id:"${.id}",timestamp:${.timestamp},height:${.height},amount:"$formAmount",symbol:"${.symbol}",fee:"$formFee",fee-symbol:"${.fee-symbol}",source:"${.source}",target:"${.target}",confirmed:${.confirmed}}');
       subprocesses.push('done');
     }
-    if (command === 'history') { // take into account the offset and record count
+    /*  DISABLED BY ROUKE : CACHING BREAKS FUNCTIONALITY
+        if (command === 'history') { // take into account the offset and record count
       subprocesses.push('take $offset $count');
       subprocesses.push('poke historyData');
       subprocesses.push('pack');
-      subprocesses.push('save "$storageHash"');      
+      subprocesses.push('save "$storageHash"');
       subprocesses.push('peek historyData');
       subprocesses.push('done');
       subprocesses.push('@returnCache');
@@ -93,7 +95,7 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
       subprocesses.push('done');
       subprocesses.push('@failCache');
       subprocesses.push('fail "Cannot get history!"');
-    }
+    } */
     if (command === 'status') { // significantly shorten the status hash to save bandwidth
       subprocesses.push('take 24 16');
       subprocesses.push('done');

@@ -87,12 +87,12 @@
       "fail 'Error: Ethereum network not responding. Cannot get nonce!'"
     ],
     "history" : [
+      "poke count $2 12",
+      "poke offset $3 0",
       "data $symbol",
       "flow eth 2 1",
       "fail 'History not yet available for tokens'",
       "time $timeout",
-      "rand 10000",
-      "poke randomId",
       "with pageOffset [data,'$offset'] [math,'/$histPage .floor']",
       "with pages [data,'$count'] [math,'/$histPage .floor']",
       "poke page '$pageOffset'",
@@ -107,7 +107,9 @@
       "sort ['.timeStamp',num,desc]",
       "tran '[].hash' 2 1",
       "fail 'Cannot interpret history data!'",
-      "with offset [math,'$offset - ($histPage*$pageOffset)']"
+      "with offset [math,'$offset - ($histPage*$pageOffset)']",
+      "take $offset $count",
+      "done"
     ],
     "test" : [
       "done {hash:dynamic}"
