@@ -183,15 +183,14 @@
       "done"
     ],
     "history" : [
+      "poke count $2 12",
+      "poke offset $3 0",
       "rand 10000",
-      "data {'id': $, 'command': 'account_tx', 'account': '$1', 'ledger_index_min': -1, 'ledger_index_max': -1, 'binary': false, 'limit': 10, 'forward': false}",
+      "data {'id': $, 'command': 'account_tx', 'account': '$1', 'ledger_index_min': -1, 'ledger_index_max': -1, 'binary': false, 'limit': $count, 'offset':$offset, 'forward': false}",
       "curl 'asset://$symbol' '' 'POST'",
-      "tran '.result.transactions' @next @fail",
-      "@fail",
-      "fail 'No result!'",
-      "@next",
-      "each 'subhistory'",
-      "sort ['obj:timestamp','num','desc']"
+      "tran '.result.transactions[].tx.hash' @next @fail",
+      "sort ['obj:timestamp','num','desc']",
+      "done"
     ],
     "test" :[
       "done {hash:4E5C0B7F, unspent:{lastLedgerSequencePlus:46084264,sequence:759}}"
