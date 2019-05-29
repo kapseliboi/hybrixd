@@ -42,10 +42,10 @@
     "test":[
       "done {hash:dynamic}"
     ],
-     "transactionData" : [
-       "curl asset://$symbol /api/transactions?id=$1&limit=1&offset=0 GET {Accept:'application/json','Content-Type':'application/json'}",
+    "transactionData" : [
+       "curl asset://$symbol /api/transactions?id=$1 GET {Accept:'application/json','Content-Type':'application/json'}",
        "tran .transactions 2 1",
-       "fail 'Cannot get transaction data1!'",
+       "fail 'Cannot get transaction data!'",
        "pick",
        "done"
     ],

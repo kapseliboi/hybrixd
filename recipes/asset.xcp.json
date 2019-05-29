@@ -45,8 +45,14 @@
       "fail 'No result!'",
       "done"
     ],
+
+
     "transaction" : [
-      "fail 'Not yet implemented!'"
+      "data {'jsonrpc':'2.0','id':0,'method':'get_chain_txns_status','params':{txn_hashes:['$1']}}",
+      "curl asset://$symbol /_api POST {'content-type':'text/plain'}",
+      "tran {id:.tx_hash,confirmed:.confirmations,time:.blocktime}",
+      "#TODO missing data for source,dest,amount, fee",
+      "done"
     ],
     "history" : [
       "rout '/asset/$keygen-base/history/$1/$2/$3'"

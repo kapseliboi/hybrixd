@@ -18,6 +18,10 @@
     ],
     "test":[
       "done {hash:1AE0522E}"
-    ]
+    ],
+    "transaction":[
+      "curl 'https://v3.ubiqscan.io' '/transaction/$1' GET",
+      "tran {amount:.value,time:.timestamp,id:'$1',source:.from,target:.to,fee:.gasUsed, symbol:'$symbol',fee-symbol:'$symbol'}"
+      ]
   }
 }
