@@ -54,6 +54,20 @@
     "sample" : [
       "done({address:'HKML-NRG6-VBRA-2F8PS',transaction:'11439896918258012006',publicKey:'25cc2bb30ee7665737c9721090313c85176e485cd9a15495a0f3abc359d8d632'})"
     ],
+    "history" : [
+      "data '$1'",
+      "regx '^BURST\\-' 2 1",
+      "push 'BURST-' 0",
+      "poke 'address'",
+      "poke count $2 12",
+      "poke offset $3 0",
+      "with until [math,'$offset+$count']",
+      "curl asset://$symbol '?requestType=getAccountTransactionIds&account=$address' GET {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}",
+      "tran '.transactionIds' 2 1",
+      "fail 'Bad response from Burst node!'",
+      "take $offset $count",
+      "done"
+    ],
     "test" :[
       "done {}"
     ]
