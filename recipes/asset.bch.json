@@ -21,11 +21,14 @@
     "sample" : [
       "done {address:'1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX',transaction:'1dbc4abe22519f003fe471ad5faf740a2ad99ce4b067ae4bd44f8ffc761dab20'}"
     ],
+    "cron" : [
+      "#blockdozer insight implementation is faulty: estimatefee with the nblocks argument is no longer supported Please call estimatefee with no arguments instead.",
+      "done"
+    ],
     "fee":[
       "data $fee",
       "form",
-      "done",
-      "#blockdozer insight implementation is faulty: estimatefee with the nblocks argument is no longer supported Please call estimatefee with no arguments instead."
+      "done"
      ]
   }
 }
