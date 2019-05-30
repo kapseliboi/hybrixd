@@ -12,6 +12,10 @@
   "host":"wss://s2.ripple.com:443",
   "cache":15000,
   "throttle":5,
+  "api-rate-info":{
+    "url": "https://www.xrpchat.com/topic/20759-ripple-data-api-v2-rate-limit/",
+    "rate-limit":"rumoured but no confirmation found"
+  },
   "quartz" : {
     "init" : [
       "rand 10000",

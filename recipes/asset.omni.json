@@ -12,6 +12,10 @@
   "timeout":60000,
   "cache":180000,
   "throttle":0.1,
+  "api-rate-info":{
+    "url": "https://api.omniexplorer.info",
+    "rate-limit":"wait time of 5-10 seconds between repeat calls"
+  },
   "quartz":{
     "unspent" : [
       "rout '/asset/${keygen-base}/fee'",
