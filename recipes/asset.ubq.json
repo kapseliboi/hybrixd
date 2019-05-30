@@ -21,7 +21,7 @@
     ],
     "transaction":[
       "curl 'https://v3.ubiqscan.io' '/transaction/$1' GET",
-      "tran {amount:.value,time:.timestamp,id:'$1',source:.from,target:.to,fee:.gasUsed, symbol:'$symbol',fee-symbol:'$symbol'}"
-      ]
+      "tran {amount:.value,timestamp:.timestamp,id:'$1',source:.from,target:.to,fee:.gasUsed, symbol:'$symbol',fee-symbol:'$symbol',confirmed:true}"
+    ]
   }
 }

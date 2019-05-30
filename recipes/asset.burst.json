@@ -53,6 +53,9 @@
     ],
     "sample" : [
       "done({address:'HKML-NRG6-VBRA-2F8PS',transaction:'11439896918258012006',publicKey:'25cc2bb30ee7665737c9721090313c85176e485cd9a15495a0f3abc359d8d632'})"
+    ],
+    "test" :[
+      "done {}"
     ]
   }
 }
