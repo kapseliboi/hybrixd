@@ -26,7 +26,12 @@
       "done {address:'13188395790866768123R',transaction:'11931543500510473853'}"
     ],
     "history":[
-      "curl 'asset://$symbol' '/api/transactions?recipientId=$1&limit=50&offset=0' 'GET' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': ''}"
+      "poke count $2 12",
+      "poke offset $3 0",
+      "curl 'asset://$symbol' '/api/transactions?recipientId=$1&limit=$count&offset=$offset' 'GET' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': ''}",
+      "tran .transactions[].id 1 2",
+      "done",
+      "fail 'Unable to retrieve history.'"
     ],
     "push":[
       "curl 'asset://$symbol' '/api/blocks/getNetHash' 'GET' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': ''}",

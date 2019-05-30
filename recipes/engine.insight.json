@@ -102,12 +102,15 @@
       "done"
     ],
     "history" : [
+      "poke count $2 12",
+      "poke offset $3 0",
       "time $longTimeout",
       "with countTo [data,'$count'] [math,'+$offset']",
       "curl asset://$symbol /addrs/$1/txs?from=$offset&to=$countTo GET {timeout:$timeout} 2 1",
       "jump @returnCache",
       "tran '.items' 1 @returnCache",
-      "tran '[].txid' 1 @returnCache"
+      "tran '[].txid' 1 @returnCache",
+      "done"
     ],
     "fee" : [
       "peek local::fee",
