@@ -11,6 +11,10 @@
   "cache": 15000,
   "throttle": 3,
   "contract": "native",
+  "api-rate-info":{
+    "url": "https://www.stellar.org/developers/horizon/reference/errors/rate-limit-exceeded.html",
+    "rate-limit":"3600 per hour"
+  },
   "quartz": {
     "init": [
       "done"
