@@ -50,9 +50,12 @@
     "transaction" : [
       "data {'jsonrpc':'2.0','id':0,'method':'get_chain_txns_status','params':{txn_hashes:['$1']}}",
       "curl asset://$symbol /_api POST {'content-type':'text/plain'}",
-      "tran {id:.tx_hash,confirmed:.confirmations,time:.blocktime}",
+      "tran .result[0] 1 @fail" ,
+      "tran {id:.tx_hash,confirmed:.confirmations,time:.blocktime}  1 @fail",
       "#TODO missing data for source,dest,amount, fee",
-      "done"
+      "done",
+      "@fail",
+      "fail 'Could not retrieve transaction'"
     ],
     "history" : [
       "rout '/asset/$keygen-base/history/$1/$2/$3'"
