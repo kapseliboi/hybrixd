@@ -37,7 +37,7 @@
     "history" : [
       "poke count $2 12",
       "poke offset $3 0",
-      "with amount math $count+$offset",
+      "with amount math $count+$offset+1",
       "curl asset://$symbol /transactions/address/$1/limit/$amount GET",
       "pick",
       "sort ['.height',num,desc]",
