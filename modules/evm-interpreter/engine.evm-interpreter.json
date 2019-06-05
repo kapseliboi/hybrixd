@@ -1,0 +1,77 @@
+{
+  "engine":"evm-interpreter",
+  "name":"Ethereum Virtual Machine (EVM) interpreter and decompiler",
+  "module":"evm-interpreter",
+  "cache":3,
+  "quartz" : {
+    "get" : [
+      "data {func:'$1',bytecode:'$2'}",
+      "func 'get'"
+    ],
+    "parse" : [
+      "data '$1'",
+      "func 'parse'"
+    ],
+    "decompile" : [
+      "data '$1'",
+      "func 'decompile'"
+    ]
+  },
+  "router" : {
+    "_help" : "An Ethereum Virtual Machine (EVM) interpreter and decompiler, along with several other utilities for programmatically extracting information from bytecode.",
+    "get": {
+      "_help" : "Extract information from bytecode.",
+      "opcodes": {
+        "_ref" : {
+          "_list" : "bytecode",
+          "_this" : "Returns opcodes including pc and pushData (if included)."
+        }
+      },
+      "functions": {
+        "_ref" : {
+          "_list" : "bytecode",
+          "_this" : "Parse functions from their signatures in bytecode."
+        }
+      },
+      "events": {
+        "_ref" : {
+          "_list" : "bytecode",
+          "_this" : "Parse events from their signatures in bytecode."
+        }
+      },
+      "destinations": {
+        "_ref" : {
+          "_list" : "bytecode",
+          "_this" : " Get array of program counters from JUMPDEST (jump destination) opcodes."
+        }
+      },
+      "swarmhash": {
+        "_ref" : {
+          "_list" : "bytecode",
+          "_this" : "Get the swarm hash (if any) for contract metadata."
+        }
+      },
+      "gas": {
+        "_ref" : {
+          "_list" : "bytecode",
+          "_this" : "Calculate the gas in units a bytecode contract will cost to execute."
+        }
+      },
+      "gastable": {
+        "_this" : "Calculate the gas in units a bytecode contract will cost to execute."
+      }
+    },
+    "parse": {
+      "_ref" : {
+        "_list" : "bytecode",
+        "_this" : "Interpret opcodes by looping over them, returns array of interpreted opcodes."
+      }
+    },
+    "decompile": {
+      "_ref" : {
+        "_list" : "bytecode",
+        "_this" : "Decompile bytecode into readable Solidity-like pseudocode."
+      }
+    }
+  }
+}
