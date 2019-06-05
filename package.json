@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "du": "^0.1.0",
+    "evm": "^0.2.0",
     "js-sha256": "^0.9.0",
     "node-gyp": "^3.8.0",
     "progress": "^2.0.0",
