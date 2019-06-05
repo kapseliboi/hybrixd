@@ -68,7 +68,9 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
       // save/cache rawtx data
       subprocesses.push('poke txData');
       subprocesses.push('pack');
+      subprocesses.push('hook @returnResult');
       subprocesses.push('save "$storageHash"');
+      subprocesses.push('@returnResult');
       subprocesses.push('peek txData');
       subprocesses.push('done');
     }
