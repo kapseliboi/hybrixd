@@ -1,6 +1,7 @@
 {
   "symbol":"eth",
   "name":"Ethereum",
+  "info":"<h2>Ripple (xrp)</h2><p>Ripple is a real-time gross settlement system, currency exchange and remittance network created by Ripple Labs Inc., a US-based technology company. Released in 2012, Ripple is built upon a distributed open sourceprotocol, and supports tokens representing fiat currency, cryptocurrency, commodities, or other units of value such as frequent flier miles or mobile minutes. Ripple purports to enable &quot;secure, instantly and nearly free global financial transactions of any size with no chargebacks.&quot;</p>  <p>https://en.wikipedia.org/wiki/Ripple_(payment_protocol)</p>",
   "module":"ethereum",
   "mode":"ethereum.main",
   "fee":0.00025,

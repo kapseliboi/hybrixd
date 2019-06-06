@@ -1,6 +1,7 @@
 {
   "symbol":"dash",
   "name":"Dash",
+  "info":"<h2>Dash/h2><p><p>Dash is an open source cryptocurrency and is a form of decentralized autonomous organization (DAO) run by a subset of users, called &quot;masternodes&quot;. It is an altcoin that was forked from the Bitcoin protocol. The currency permits fast transactions that can be untraceable. https://en.wikipedia.org/wiki/Dash_(cryptocurrency) </p>",
   "module":"quartz",
   "mode":"dash.livenet",
   "factor":8,
