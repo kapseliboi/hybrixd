@@ -56,6 +56,10 @@ rsync -avq "$NODE/modules" "$DIST/"
 # Copy interface
 rsync -avq "$NODE/interface" "$DIST/"
 
+# Copy interface
+rsync -avq "$NODE/files" "$DIST/"
+
+
 # Copy common
 rsync -avq "$NODE/common/crypto" "$DIST/common/"
 rsync -avq "$NODE/common/node_modules" "$DIST/common/"

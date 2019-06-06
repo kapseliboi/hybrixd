@@ -71,6 +71,12 @@
           }
         }
       },
+      "info" : {
+        "_this": "Retrieve info about the asset."
+      },
+      "icon" : {
+        "_this": "Retrieve the svg icon for this asset."
+      },
       "test" : {
         "_this": "Retrieve test data."
       },
