@@ -256,6 +256,7 @@
   "list":{
     "_help" : "Produce standard property lists of assets, sources or engines.",
     "asset" : {
+      "icons":"Retrieve a list of all basic asset icons.",
       "names":"Retrieve a list of all basic asset names.",
       "modes":"Retrieve a list of all basic asset modes.",
       "details":"Retrieve a list of all basic asset details [{symbol,name,mode}]."
