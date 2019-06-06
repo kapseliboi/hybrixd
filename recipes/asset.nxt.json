@@ -12,6 +12,7 @@
   "unresponsive-host":["https://nxt.utila.nl:7876/nxt","http://gtwins2.f3322.net:7876/nxt"],
   "cache":15000,
   "throttle":5,
+  "genesisBlockTime":1385294400,
   "quartz":{
     "balance":[
       "data '$symbol'",
@@ -131,6 +132,7 @@
       "with reformatFee [data,'${.feeNQT}'] [atom]",
       "with sender [data,'${.senderRS}'] [flow,'undefined',1,2] [data,'${.sender}'] [done]",
       "with recipient [data,'${.recipientRS}'] [flow,'undefined',1,2] [data,'${.recipient}'] [done]",
+      "with .timestamp math +$genesisBlockTime",
       "tran { id:'.transaction', timestamp:'.timestamp', height:'.height', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'$sender', target:'$recipient', confirmed:'.confirmations' } 2 1",
       "fail 'Could not read transaction!'"
     ],
