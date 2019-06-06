@@ -3,7 +3,7 @@
   "name":"digibyte",
   "module":"quartz",
   "import":"electrum-tcp",
-  "mode":"digibyte",
+  "mode":"digibyte.livenet",
   "factor":8,
   "fee":0.001,
   "host":["tcp://electrum3.cipig.net:10059","tcp://electrum2.cipig.net:10059","tcp://electrum1.cipig.net:10059"],

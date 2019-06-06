@@ -91,7 +91,7 @@
       "poke offset $3 0",
       "data $symbol",
       "flow eth 2 1",
-      "fail 'History not yet available for tokens'",
+      "fail 'History not yet available for Ethereum tokens'",
       "time $timeout",
       "with pageOffset [data,'$offset'] [math,'/$histPage .floor']",
       "with pages [data,'$count'] [math,'/$histPage .floor']",
