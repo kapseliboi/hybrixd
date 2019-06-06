@@ -23,6 +23,9 @@ mkdir -p "$NODE/docs"
 cd "$NODE/scripts/docs"
 sh "$NODE/scripts/docs/docs.sh"
 
+sh "$NODE/scripts/icons/icons.sh"
+
+
 echo "[.] Creating hybrixd release..."
 
 # Create path if required, clean otherwise
