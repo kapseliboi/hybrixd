@@ -1,6 +1,7 @@
 {
   "symbol":"zec",
   "name":"ZCash",
+  "info":"<p>Zcash is a cryptocurrency aimed at using cryptography to provide enhanced privacy for its users compared to other cryptocurrencies such as Bitcoin.</p>  <p>Like Bitcoin, Zcash has a fixed total supply of 21 million units.</p>  <p>Transactions can be &quot;transparent&quot; and similar to bitcoin transactions in which case they are controlled by a t-addr, or can be a type of zero-knowledge proof called zk-SNARKs; the transactions are then said to be &quot;shielded&quot; and are controlled by a z-addr. Zcash coins are either in a transparent pool or a shielded pool; as of December 2017 only around 4% of Zcash coins were in the shielded pool and at that time most wallet programs did not support z-addrs and no web-based wallets supported them.</p>  <p>Zcash affords private transactors the option of &quot;selective disclosure&quot;, allowing a user to prove payment for auditing purposes. One such reason is to allow private transactors the choice to comply with anti-money laundering or tax regulations. &quot;Transactions are auditable but disclosure is under the participant's control.&quot; The company has hosted virtual meetings with law enforcement agencies around the U.S. to explain these fundamentals and has gone on the record of saying that &quot;they did not develop the currency to facilitate illegal activity&quot;. <a href=\"https://en.wikipedia.org/wiki/Zcash\">https://en.wikipedia.org/wiki/Zcash</a></p>",
   "module":"quartz",
   "import":"electrum-tcp",
   "mode":"zcash.livenet",

@@ -1,6 +1,7 @@
 {
   "symbol":"doge",
   "name":"Dogecoin",
+  "info":"<p>Dogecoin (/&#712;do&#650;&#658;k&#596;&#618;n/ DOHZH-koyn, code: DOGE, symbol: &ETH; and D) is a cryptocurrency featuring a likeness of the Shiba Inu dog from the &quot;Doge&quot; Internet meme as its logo.Introduced as a &quot;joke currency&quot; on 6 December 2013, Dogecoin quickly developed its own online community and reached a capitalization of US$60 million in January 2014. Compared with other cryptocurrencies, Dogecoin had a fast initial coin production schedule: 100 billion coins were in circulation by mid-2015, with an additional 5.256 billion coins every year thereafter. As of 30 June 2015, the 100 billionth Dogecoin had been mined. While there are few mainstream commercial applications, the currency has gained traction as an Internet tippingsystem, in which social media users grant Dogecoin tips to other users for providing interesting or noteworthy content. Dogecoin is referred to as an altcoin.</p> <a href=\"https://en.wikipedia.org/wiki/Dogecoin\">https://en.wikipedia.org/wiki/Dogecoin</a>",
   "module":"quartz",
   "mode":"bitcoinjslib.dogecoin",
   "factor":8,

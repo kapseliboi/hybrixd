@@ -1,6 +1,7 @@
 {
   "symbol":"ltc",
   "name":"Litecoin",
+  "info":"<p>Litecoin (LTC or &#321;) is a peer-to-peer cryptocurrency and open-source software project released under the MIT/X11 license. Creation and transfer of coins is based on an open source cryptographic protocol and is not managed by any central authority.[citation needed] Litecoin was an early bitcoin spinoff or altcoin, starting in October 2011. In technical details, litecoin is nearly identical to Bitcoin.</p><p><a href=\"https://en.wikipedia.org/wiki/Litecoin\">https://en.wikipedia.org/wiki/Litecoin</a>https://en.wikipedia.org/wiki/Litecoin</p>", 
   "module":"quartz",
   "import":"electrum-tcp",
   "mode":"bitcoinjslib.litecoin",

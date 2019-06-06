@@ -1,6 +1,7 @@
 {
   "symbol":"xem",
-  "name":"New Economy Movement",
+  "name":"NEM New Economy Movement",
+  "info":"<p>NEM is a peer-to-peer cryptocurrency and blockchain platform launched on March 29, 2015. Written in Java, with a C++ version in the works, NEM has a stated goal of a wide distribution model. <a href=\"https://en.wikipedia.org/wiki/NEM_(cryptocurrency)\"> https://en.wikipedia.org/wiki/NEM_(cryptocurrency)</a></p>",
   "module":"quartz",
   "mode":"nem",
   "addressRegex":"^([a-zA-Z0-9]{6}-){6}[a-zA-Z0-9]{4}$",
