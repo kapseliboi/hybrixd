@@ -21,7 +21,36 @@
     ],
     "transaction":[
       "curl 'https://v3.ubiqscan.io' '/transaction/$1' GET",
-      "tran {amount:.value,timestamp:.timestamp,id:'$1',source:.from,target:.to,fee:.gasUsed, symbol:'$symbol',fee-symbol:'$symbol',confirmed:true}"
+      "with txMinusGas [math,'${.value}-${.gasUsed}'] [atom]",
+      "with txGasUsed [data,'${.gasUsed}'] [atom]",
+      "tran {amount:'$txMinusGas',timestamp:.timestamp,id:'$1',source:.from,target:.to,fee:'$txGasUsed', symbol:'$symbol',fee-symbol:'$symbol',confirmed:true} @success @fail",
+      "@fail",
+      "fail 'No result!'",
+      "@success",
+      "done"
+    ],
+    "subhistory" : [
+      "data ${.value}",
+      "tran '.hash' @success @fail",
+      "@fail",
+      "fail 'No result!'",
+      "@success",
+      "pass",
+      "done"
+    ],
+    "history" : [
+      "poke count $2 5",
+      "poke offset $3 0",
+      "data $1",
+      "curl 'https://v3.ubiqscan.io' '/latestaccounttxns/$1' GET",
+      "tran '.txns' @nxt @fail",
+      "@nxt",
+      "sort ['.timestamp','num','desc']",
+      "each 'subhistory'",
+      "take $offset $count",
+      "done",
+      "@fail",
+      "fail 'Could not retrieve history'"
     ]
   }
 }
