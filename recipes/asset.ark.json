@@ -13,13 +13,34 @@
   "cache":15000,
   "throttle":5,
   "version":"0.9.9",
-  "genesisBlockTime":1490122800,
+  "genesisBlockTime":1490101200,
   "quartz":{
     "sample" : [
       "done {address:'AQYZJ6Mkv4DhnXhrXdxXwNKRKGvgrkhnRF',transaction:'f70e8f32e8a16c1dd1a0e97fa4075f96d8e8e16065d1a4406851252832d8e608'}"
     ],
     "test":[
       "done {hash:dynamic}"
+    ],
+    "history":[
+      "poke count $2 12",
+      "poke offset $3 0",
+      "curl 'asset://$symbol' '/api/transactions?recipientId=$1&limit=$count&offset=$offset' 'GET' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': ''}",
+      "tran .transactions[].id 1 2",
+      "poke received $data []",
+      "curl 'asset://$symbol' '/api/transactions?senderId=$1&limit=$count&offset=$offset' 'GET' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': ''}",
+      "tran .transactions[].id 1 4",
+      "fuse $received",
+      "done",
+      "fail 'Unable to retrieve history.'"
+    ],
+    "transaction" : [
+      "call transactionData/$1",
+      "with reformatTimestamp [data,${.timestamp}] [math,'+$genesisBlockTime']",
+      "with reformatFee [data,'${.fee}'] [atom]",
+      "with reformatAmount [data,'${.amount}'] [atom]",
+      "tran { id:'.id', timestamp:'$reformatTimestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.senderId', target:'.recipientId', confirmed:'.confirmations' } 2 1",
+      "fail 'Cannot get transaction data!'",
+      "done"
     ]
   }
 }
