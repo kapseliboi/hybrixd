@@ -31,6 +31,7 @@
     "build": "",
     "compile": "sh scripts/npm/compile.sh",
     "docs": "sh scripts/docs/docs.sh",
+    "icons": "sh scripts/icons/icons.sh",
     "diag": "sh scripts/npm/diag.sh",
     "release": "sh scripts/npm/compile.sh",
     "release:start": "sh scripts/npm/compile.sh; sh ./dist/hybrixd",
