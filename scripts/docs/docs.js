@@ -35,6 +35,13 @@ function typeConverter (type) {
 
 for (let id in files) {
   let body = fs.readFileSync(files[id]).toString();
+  if (id === 'hybrix-lib.js') { // add all methods
+    const path = '../../../interface/lib/methods';
+    const files = fs.readdirSync(path);
+    files.forEach(function (file, index) {
+      body += '\n' + fs.readFileSync(path + '/' + file, 'utf8').toString();
+    });
+  }
 
   let data = fs.readFileSync('../../docs/source/header.html').toString();
 
@@ -44,7 +51,7 @@ for (let id in files) {
   data += '<script>initNavigation("' + id + '")</script>';
 
   if (files[id].substr(-5) !== '.html') {
-    let re = /\/\*\*([\s\S]+?)this\.(\w*)/g; // match jsdoc templates
+    let re = /\/\*\*([\s\S]+?)exports\.(\w*)/g; // match jsdoc templates
 
     let f = getMatches(re, body);
 
@@ -83,6 +90,7 @@ for (let id in files) {
         parameters[j] = {type, name: pname.split('=')[0], description: pDescription, default: pname.split('=')[1], optional};
         // TODO description
       }
+
       funcs.push({name, description, category, parameters, examples});
     }
 
