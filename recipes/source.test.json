@@ -9,7 +9,9 @@
   "quartz" : {
 
     "test" : [
-      "data $3",
+      "data [1,2,3]",
+      "poke [a,b,c]",
+      "peek [c,b,a]",
       "done"
     ]
   }

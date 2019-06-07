@@ -103,6 +103,14 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
       subprocesses.push('done');
     }
   }
+  if (subprocesses.length > 0) { // add a done if process does not end with stop,done or fail
+    const lastSubprocess = subprocesses[subprocesses.length - 1];
+    if (!lastSubprocess.startsWith('done') && !lastSubprocess.startsWith('fail') && !lastSubprocess.startsWith('stop')) {
+      subprocesses.push('done');
+    }
+  } else {
+    subprocesses.push('done');
+  }
 }
 
 // standard functions of an asset store results in a process superglobal -> global.hybrixd.process[processID]
