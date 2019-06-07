@@ -106,11 +106,12 @@
       "poke offset $3 0",
       "time $longTimeout",
       "with countTo [data,'$count'] [math,'+$offset']",
-      "curl asset://$symbol /addrs/$1/txs?from=$offset&to=$countTo GET {timeout:$timeout} 2 1",
-      "jump @returnCache",
-      "tran '.items' 1 @returnCache",
-      "tran '[].txid' 1 @returnCache",
-      "done"
+      "curl asset://$symbol /addrs/$1/txs?from=$offset&to=$countTo GET {timeout:$timeout} 1 @fail",
+      "tran '.items' 1 @fail",
+      "tran '[].txid' 1 @fail",
+      "done",
+      "@fail",
+      "fail "
     ],
     "fee" : [
       "peek local::fee",
