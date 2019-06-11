@@ -2,7 +2,7 @@
   "symbol":"xrp",
   "name":"Ripple",
   "module":"quartz",
-  "fee-symbol":"drops",
+  "fee-symbol":"xrp",
   "fee":"0.00001",
   "fee-factor":0,
   "cron":300,
@@ -16,6 +16,7 @@
     "url": "https://www.xrpchat.com/topic/20759-ripple-data-api-v2-rate-limit/",
     "rate-limit":"rumoured but no confirmation found"
   },
+  "genesisBlockTime":946684800 ,
   "quartz" : {
     "init" : [
       "rand 10000",
@@ -137,8 +138,9 @@
     "transaction" : [
       "rand 10000",
       "data {'id': $,'command': 'tx','transaction': '$1','binary': false}",
+      "with dropsFactor [math,'10^$factor']",
       "curl 'asset://$symbol' '' 'POST'",
-      "tran {id:'=.result.Sequence|unknown',fee:'=.result.Fee|unknown',timestamp:'=.result.date|unknown',symbol:'XRP',amount:'=.result.Amount|unknown',source:'=.result.Account|unknown',target:'=.result.Destination|unknown',confirmed:'FIXME'} @success @fail",
+      "tran {id:'=.result.Sequence|unknown',fee:'=.result.Fee / $dropsFactor|unknown',timestamp:'=.result.date+$genesisBlockTime |unknown',symbol:'XRP',amount:'=.result.Amount / $dropsFactor|unknown',source:'=.result.Account|unknown',target:'=.result.Destination|unknown',fee-symbol: $fee-symbol, confirmed:'FIXME'} @success @fail",
       "@fail",
       "fail 'error'",
       "@success"
