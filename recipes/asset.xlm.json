@@ -1,7 +1,7 @@
 {
   "symbol": "xlm",
   "name": "Stellar",
-  "info":"<p>Stellar is an open-source, decentralized protocol for digital currency to fiatcurrency transfers which allows cross-border transactions between any pair of currencies. The Stellar protocol is supported by a nonprofit, the Stellar Development Foundation. <a href=\"https://en.wikipedia.org/wiki/Stellar_(payment_network)\">https://en.wikipedia.org/wiki/Stellar_(payment_network)</a>https://en.wikipedia.org/wiki/Stellar_(payment_network)</p>",
+  "info":"<p>Stellar is an open-source, decentralized protocol for digital currency to fiatcurrency transfers which allows cross-border transactions between any pair of currencies. The Stellar protocol is supported by a nonprofit, the Stellar Development Foundation.</p><a href=\"https://en.wikipedia.org/wiki/Stellar_(payment_network)\">https://en.wikipedia.org/wiki/Stellar_(payment_network)</a>",
   "description": "The Stellar project, https://www.stellar.org/. Please note that in order to use an account properly, it has to be funded with 1 XLM or more. If this requirement is not met, a 404 Not Found error is returned by the API when operating the account.",
   "module": "quartz",
   "mode": "stellar",
