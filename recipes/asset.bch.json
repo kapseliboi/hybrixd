@@ -1,7 +1,7 @@
 {
   "symbol":"bch",
   "name":"Bitcoin Cash",
-  "info":"<p>In mid-2017, a group of developers wanting to increase bitcoin's block size limit prepared a code change. The change, called a hard fork, took effect on 1 August 2017. As a result, the bitcoin ledger called the blockchain and the cryptocurrency split in two.At the time of the fork anyone owning bitcoin was also in possession of the same number of Bitcoin Cash units. The technical difference between Bitcoin Cash and bitcoin is that Bitcoin Cash allows larger blocks in its blockchain than bitcoin, which in theory allows it to process more transactions per second. <a href=\"https://en.wikipedia.org/wiki/Bitcoin_Cash\">https://en.wikipedia.org/wiki/Bitcoin_Cash</a></p>",
+  "info":"<p>In mid-2017, a group of developers wanting to increase bitcoin's block size limit prepared a code change. The change, called a hard fork, took effect on 1 August 2017. As a result, the bitcoin ledger called the blockchain and the cryptocurrency split in two.At the time of the fork anyone owning bitcoin was also in possession of the same number of Bitcoin Cash units. The technical difference between Bitcoin Cash and bitcoin is that Bitcoin Cash allows larger blocks in its blockchain than bitcoin, which in theory allows it to process more transactions per second.</p><a href=\"https://en.wikipedia.org/wiki/Bitcoin_Cash\">https://en.wikipedia.org/wiki/Bitcoin_Cash</a>",
   "module":"quartz",
   "mode":"bitcoin_cash",
   "factor":8,
