@@ -1,6 +1,7 @@
 {
     "symbol":"eth.rep",
     "name":"Augur",
+    "info":"<p>Augur is an open-source, decentralized, peer-to-peer prediction market platform built on Ethereum. People trading on Augur are rewarded if they bet on the right outcomes. The idea is to use markets in order to predict outcomes. The feature of Augur is tradable tokens called "Reputation" Augur (REP). The total amount of reputation is fixed at 11 million coins when it was launched in August 2015.</p><a href=\"https://en.bitcoinwiki.org/wiki/Augur\">https://en.bitcoinwiki.org/wiki/Augur</a>",
     "module":"ethereum",
     "import":"eth",
     "mode":"ethereum.token",

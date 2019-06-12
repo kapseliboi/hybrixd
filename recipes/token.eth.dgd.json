@@ -1,6 +1,7 @@
 {
     "symbol":"eth.dgd",
     "name":"DigixDAO collatoral token (ETH)",
+    "info":"<p>DigixDAO is the Digix Decentralized Autonomous Organization, a decentralized group of participants making decisions about how to grow the Digix Global Ecosystem. Participants purchased DGD tokens in the “first ever ICO on the Ethereum Blockchain.</p><p>In order to distribute DGX tokens representing 1g of gold, Digix utilizes Proof of Asset (PoA). The process involves recording possession of an asset on the Ethereum blockchain and the creation of PoA Asset Cards. “The asset cards are certified using sequential digital signatures from the entities in the chain of custody, namely, the Vendor, Custodian, Auditor, which are further validated with proof of purchase and depository receipts provided and uploaded onto the InterPlanetary File System for permanent record.</p><a href=\"https://en.bitcoinwiki.org/wiki/DigixDAO\">https://en.bitcoinwiki.org/wiki/DigixDAO</a>",
     "module":"ethereum",
     "import":"eth",
     "mode":"ethereum.token",
