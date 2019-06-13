@@ -3,20 +3,6 @@
   "name":"Ethereum Virtual Machine (EVM) interpreter and decompiler",
   "module":"evm-interpreter",
   "cache":3,
-  "quartz" : {
-    "get" : [
-      "data {func:'$1',bytecode:'$2'}",
-      "func 'get'"
-    ],
-    "parse" : [
-      "data '$1'",
-      "func 'parse'"
-    ],
-    "decompile" : [
-      "data '$1'",
-      "func 'decompile'"
-    ]
-  },
   "router" : {
     "_help" : "An Ethereum Virtual Machine (EVM) interpreter and decompiler, along with several other utilities for programmatically extracting information from bytecode.",
     "get": {
