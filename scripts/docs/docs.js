@@ -51,7 +51,12 @@ for (let id in files) {
   data += '<script>initNavigation("' + id + '")</script>';
 
   if (files[id].substr(-5) !== '.html') {
-    let re = /\/\*\*([\s\S]+?)exports\.(\w*)/g; // match jsdoc templates
+    let re;
+    if (id === 'hybrix-lib.js') {
+      re = /\/\*\*([\s\S]+?)exports\.(\w*)/g; // match jsdoc templates
+    } else {
+      re = /\/\*\*([\s\S]+?)this\.(\w*)/g; // match jsdoc templates
+    }
 
     let f = getMatches(re, body);
 
