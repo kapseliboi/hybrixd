@@ -55,11 +55,9 @@
       "@done"
     ],
     "push" : [
-      "logs 'PUSHING IT!'",
       "data '$1'",
       "jpar",
       "curl asset://$symbol /transaction/announce POST {'content-type':'application/json'}",
-      "logs",
       "tran '.transactionHash.data' 2 1",
       "fail '${.error} : ${.message}'",
       "done"
