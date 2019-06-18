@@ -65,7 +65,7 @@
       "atom"
     ],
     "push" : [
-      "time $longtimeout",
+      "time $timeout",
       "rand 10000",
       "data {'jsonrpc':'2.0','id':$,'method':'blockchain.transaction.broadcast','params':['$1']}",
       "curl asset://$symbol",
@@ -92,9 +92,6 @@
       "poke txOutData",
       "tran '.vin[0].vout' 1 @failed",
       "poke txVoutN",
-      "#peek txOutData",
-      "#tran '.vout[$txVoutN].scriptPubKey.addresses[0]' 1 @failed",
-      "#poke txChangeAddress",
       "peek txOutData",
       "tran '.vin[0].txid' 1 @failed",
       "call transactionData/$",
@@ -145,7 +142,6 @@
       "@success"
     ],
     "transactionValueFilter" : [
-      "time 24000",
       "poke txValue 0",
       "with exclude [data,$1] [splt,',']",
       "poke txData ${.value}",
