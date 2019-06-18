@@ -1,3 +1,43 @@
+# v0.5.10
+## Happy Pink Kobold
+## 18-06-2019
+
+* enable-transactions-for-xem
+* fix qrtz documentation
+* major update to transaction information interpretation for proper spend value, fee value calculation and correct source, target addresses
+* fix-info-in-recipes
+* opdate information for DGD
+* added information for augur
+* end paragraph before wiki link
+* update-poke-and-peek-for-arrays
+* update-documentation-for-interface
+* fix-history-for-ark
+* Update error handling for insight engine
+* incorrect-timestamp-retrieved-for-transactions
+* fixed incorrect timestamp for nxt burst and ark
+* explorer fixes
+* ubq-hist-and-tx-warning
+* history now working for 5 txs
+* increase storage limit per key to 64kb
+* make storage limit non-breaking
+* EVM dependencies and audited security fixes
+* Ethereum Virtual Machine interpreter and decompiler module
+* fix waves history pagination
+* implement burst history
+* hide debug logging from lisk
+* rate limit info added to recipes, xrp, xlm and omni
+* Asset fixes for rise, xcp and electrum and insight engines
+* Fix history for xrp,xem, omni, Transaction for ubq, Fee for bch
+* History fixed for eth,lsk,nxt,waves,btc   Qrtz poke updated, vars removed
+* typos-in-ripple-recipe
+* Cannot-get-address-history
+* Modify teletype to retrieve cummulative data, disable broken electrum hosts
+* Fix-zcash-recipe
+* Fix routing for root, update xhy tokens, add block explorer
+* Router,-dummy,-mock-fixes
+* Fix-Some-nxt-servers-give-a-incorrect-Unknown-account-response
+* Update nxt hosts
+
 # v0.5.9
 ## Fluffy Maroon Ogre
 ## 15-05-2019
