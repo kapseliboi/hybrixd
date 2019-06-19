@@ -6,6 +6,7 @@
   "mode":"bitcoinjslib.bitcoin",
   "factor":8,
   "fee":0.000025,
+  "feePerByte":0.0000002,
   "host":["tcp://btc-cce-1.coinomi.net:5001","tcp://btc-cce-2.coinomi.net:5001","tcp://btc-2.indexer.coinomi.net:5001"],
   "broken_host_no_history":["tcp://electrum3.cipig.net:10000","tcp://electrum2.cipig.net:10000","tcp://electrum1.cipig.net:10000"],
   "cache":60000,

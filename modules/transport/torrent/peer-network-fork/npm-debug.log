@@ -1,0 +1,406 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/bin/nodejs', '/usr/bin/npm', 'install', 'sax' ]
+2 info using npm@3.5.2
+3 info using node@v4.2.6
+4 silly loadCurrentTree Starting
+5 silly install loadCurrentTree
+6 silly install readLocalPackageData
+7 silly fetchPackageMetaData sax
+8 silly fetchNamedPackageData sax
+9 silly mapToRegistry name sax
+10 silly mapToRegistry using default registry
+11 silly mapToRegistry registry https://registry.npmjs.org/
+12 silly mapToRegistry uri https://registry.npmjs.org/sax
+13 verbose request uri https://registry.npmjs.org/sax
+14 verbose request no auth needed
+15 info attempt registry request try #1 at 7:50:36 PM
+16 verbose request id df16bfd8bd61ba1e
+17 verbose etag W/"f768d5873192eb397c252e81fffa893c"
+18 verbose lastModified Sat, 05 Jan 2019 10:46:22 GMT
+19 http request GET https://registry.npmjs.org/sax
+20 http 304 https://registry.npmjs.org/sax
+21 verbose headers { date: 'Tue, 18 Jun 2019 17:50:37 GMT',
+21 verbose headers   connection: 'keep-alive',
+21 verbose headers   'set-cookie': [ '__cfduid=d28129d515ce1a7be22d1193cc43802e01560880237; expires=Wed, 17-Jun-20 17:50:37 GMT; path=/; domain=.npmjs.org; HttpOnly' ],
+21 verbose headers   'cf-cache-status': 'HIT',
+21 verbose headers   'cache-control': 'max-age=300',
+21 verbose headers   'cf-ray': '4e8f1b4a2defd8ed-AMS',
+21 verbose headers   etag: '"f768d5873192eb397c252e81fffa893c"',
+21 verbose headers   'expect-ct': 'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+21 verbose headers   'last-modified': 'Sat, 05 Jan 2019 10:46:22 GMT',
+21 verbose headers   vary: 'accept-encoding, accept',
+21 verbose headers   'x-amz-meta-rev': '144-0fd5fdc85cc522ea5f8aac5e53f5916f',
+21 verbose headers   server: 'cloudflare' }
+22 silly get cb [ 304,
+22 silly get   { date: 'Tue, 18 Jun 2019 17:50:37 GMT',
+22 silly get     connection: 'keep-alive',
+22 silly get     'set-cookie': [ '__cfduid=d28129d515ce1a7be22d1193cc43802e01560880237; expires=Wed, 17-Jun-20 17:50:37 GMT; path=/; domain=.npmjs.org; HttpOnly' ],
+22 silly get     'cf-cache-status': 'HIT',
+22 silly get     'cache-control': 'max-age=300',
+22 silly get     'cf-ray': '4e8f1b4a2defd8ed-AMS',
+22 silly get     etag: '"f768d5873192eb397c252e81fffa893c"',
+22 silly get     'expect-ct': 'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+22 silly get     'last-modified': 'Sat, 05 Jan 2019 10:46:22 GMT',
+22 silly get     vary: 'accept-encoding, accept',
+22 silly get     'x-amz-meta-rev': '144-0fd5fdc85cc522ea5f8aac5e53f5916f',
+22 silly get     server: 'cloudflare' } ]
+23 verbose etag https://registry.npmjs.org/sax from cache
+24 verbose get saving sax to /home/user/.npm/registry.npmjs.org/sax/.cache.json
+25 silly install normalizeTree
+26 silly loadCurrentTree Finishing
+27 silly loadIdealTree Starting
+28 silly install loadIdealTree
+29 silly cloneCurrentTree Starting
+30 silly install cloneCurrentTreeToIdealTree
+31 silly cloneCurrentTree Finishing
+32 silly loadShrinkwrap Starting
+33 silly install loadShrinkwrap
+34 silly loadShrinkwrap Finishing
+35 silly loadAllDepsIntoIdealTree Starting
+36 silly install loadAllDepsIntoIdealTree
+37 silly resolveWithNewModule sax@1.2.4 checking installable status
+38 silly cache add args [ 'sax', null ]
+39 verbose cache add spec sax
+40 silly cache add parsed spec Result {
+40 silly cache add   raw: 'sax',
+40 silly cache add   scope: null,
+40 silly cache add   name: 'sax',
+40 silly cache add   rawSpec: '',
+40 silly cache add   spec: 'latest',
+40 silly cache add   type: 'tag' }
+41 silly addNamed sax@latest
+42 verbose addNamed "latest" is being treated as a dist-tag for sax
+43 info addNameTag [ 'sax', 'latest' ]
+44 silly mapToRegistry name sax
+45 silly mapToRegistry using default registry
+46 silly mapToRegistry registry https://registry.npmjs.org/
+47 silly mapToRegistry uri https://registry.npmjs.org/sax
+48 verbose addNameTag registry:https://registry.npmjs.org/sax not in flight; fetching
+49 verbose get https://registry.npmjs.org/sax not expired, no request
+50 silly addNameTag next cb for sax with tag latest
+51 silly addNamed sax@1.2.4
+52 verbose addNamed "1.2.4" is a plain semver version for sax
+53 silly cache afterAdd sax@1.2.4
+54 verbose afterAdd /home/user/.npm/sax/1.2.4/package/package.json not in flight; writing
+55 verbose afterAdd /home/user/.npm/sax/1.2.4/package/package.json written
+56 silly fetchNamedPackageData safe-buffer
+57 silly mapToRegistry name safe-buffer
+58 silly mapToRegistry using default registry
+59 silly mapToRegistry registry https://registry.npmjs.org/
+60 silly mapToRegistry uri https://registry.npmjs.org/safe-buffer
+61 verbose request uri https://registry.npmjs.org/safe-buffer
+62 verbose request no auth needed
+63 info attempt registry request try #1 at 7:50:37 PM
+64 verbose etag W/"e1e9d2abb52b3a1e2908af37fb83169e"
+65 verbose lastModified Tue, 08 Jan 2019 10:10:29 GMT
+66 http request GET https://registry.npmjs.org/safe-buffer
+67 http 304 https://registry.npmjs.org/safe-buffer
+68 verbose headers { date: 'Tue, 18 Jun 2019 17:50:37 GMT',
+68 verbose headers   connection: 'keep-alive',
+68 verbose headers   'set-cookie': [ '__cfduid=dac926dee6a184416073fbba96143dac21560880237; expires=Wed, 17-Jun-20 17:50:37 GMT; path=/; domain=.npmjs.org; HttpOnly' ],
+68 verbose headers   'cf-cache-status': 'HIT',
+68 verbose headers   'cache-control': 'max-age=300',
+68 verbose headers   'cf-ray': '4e8f1b4b182ac83b-AMS',
+68 verbose headers   etag: '"e1e9d2abb52b3a1e2908af37fb83169e"',
+68 verbose headers   'expect-ct': 'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+68 verbose headers   'last-modified': 'Tue, 08 Jan 2019 10:10:29 GMT',
+68 verbose headers   vary: 'accept-encoding, accept',
+68 verbose headers   'x-amz-meta-rev': '18-fbb351e1bed50849939f908291ddcc32',
+68 verbose headers   server: 'cloudflare' }
+69 silly get cb [ 304,
+69 silly get   { date: 'Tue, 18 Jun 2019 17:50:37 GMT',
+69 silly get     connection: 'keep-alive',
+69 silly get     'set-cookie': [ '__cfduid=dac926dee6a184416073fbba96143dac21560880237; expires=Wed, 17-Jun-20 17:50:37 GMT; path=/; domain=.npmjs.org; HttpOnly' ],
+69 silly get     'cf-cache-status': 'HIT',
+69 silly get     'cache-control': 'max-age=300',
+69 silly get     'cf-ray': '4e8f1b4b182ac83b-AMS',
+69 silly get     etag: '"e1e9d2abb52b3a1e2908af37fb83169e"',
+69 silly get     'expect-ct': 'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+69 silly get     'last-modified': 'Tue, 08 Jan 2019 10:10:29 GMT',
+69 silly get     vary: 'accept-encoding, accept',
+69 silly get     'x-amz-meta-rev': '18-fbb351e1bed50849939f908291ddcc32',
+69 silly get     server: 'cloudflare' } ]
+70 verbose etag https://registry.npmjs.org/safe-buffer from cache
+71 verbose get saving safe-buffer to /home/user/.npm/registry.npmjs.org/safe-buffer/.cache.json
+72 silly resolveWithNewModule safe-buffer@5.1.2 checking installable status
+73 silly cache add args [ 'safe-buffer@^5.1.1', null ]
+74 verbose cache add spec safe-buffer@^5.1.1
+75 silly cache add parsed spec Result {
+75 silly cache add   raw: 'safe-buffer@^5.1.1',
+75 silly cache add   scope: null,
+75 silly cache add   name: 'safe-buffer',
+75 silly cache add   rawSpec: '^5.1.1',
+75 silly cache add   spec: '>=5.1.1 <6.0.0',
+75 silly cache add   type: 'range' }
+76 silly addNamed safe-buffer@>=5.1.1 <6.0.0
+77 verbose addNamed ">=5.1.1 <6.0.0" is a valid semver range for safe-buffer
+78 silly addNameRange { name: 'safe-buffer', range: '>=5.1.1 <6.0.0', hasData: false }
+79 silly mapToRegistry name safe-buffer
+80 silly mapToRegistry using default registry
+81 silly mapToRegistry registry https://registry.npmjs.org/
+82 silly mapToRegistry uri https://registry.npmjs.org/safe-buffer
+83 verbose addNameRange registry:https://registry.npmjs.org/safe-buffer not in flight; fetching
+84 verbose get https://registry.npmjs.org/safe-buffer not expired, no request
+85 silly addNameRange number 2 { name: 'safe-buffer', range: '>=5.1.1 <6.0.0', hasData: true }
+86 silly addNameRange versions [ 'safe-buffer',
+86 silly addNameRange   [ '1.0.0',
+86 silly addNameRange     '2.0.0',
+86 silly addNameRange     '3.0.0',
+86 silly addNameRange     '4.0.0',
+86 silly addNameRange     '5.0.0',
+86 silly addNameRange     '5.0.1',
+86 silly addNameRange     '5.1.0',
+86 silly addNameRange     '5.1.1',
+86 silly addNameRange     '5.1.2' ] ]
+87 silly addNamed safe-buffer@5.1.2
+88 verbose addNamed "5.1.2" is a plain semver version for safe-buffer
+89 silly cache afterAdd safe-buffer@5.1.2
+90 verbose afterAdd /home/user/.npm/safe-buffer/5.1.2/package/package.json not in flight; writing
+91 verbose afterAdd /home/user/.npm/safe-buffer/5.1.2/package/package.json written
+92 silly loadAllDepsIntoIdealTree Finishing
+93 silly idealTree:prePrune @agent725/peer-network-fork@0.0.2
+93 silly idealTree:prePrune ├── ajv@6.7.0
+93 silly idealTree:prePrune ├── asn1@0.2.4
+93 silly idealTree:prePrune ├── assert-plus@1.0.0
+93 silly idealTree:prePrune ├── async@2.6.1
+93 silly idealTree:prePrune ├── asynckit@0.4.0
+93 silly idealTree:prePrune ├── aws-sign2@0.7.0
+93 silly idealTree:prePrune ├── aws4@1.8.0
+93 silly idealTree:prePrune ├── bcrypt-pbkdf@1.0.2
+93 silly idealTree:prePrune ├── bencode@2.0.0
+93 silly idealTree:prePrune ├── bittorrent-dht@8.4.0
+93 silly idealTree:prePrune ├── buffer-equals@1.0.4
+93 silly idealTree:prePrune ├── caseless@0.12.0
+93 silly idealTree:prePrune ├── combined-stream@1.0.7
+93 silly idealTree:prePrune ├── core-util-is@1.0.2
+93 silly idealTree:prePrune ├── dashdash@1.14.1
+93 silly idealTree:prePrune ├── debug@3.2.6
+93 silly idealTree:prePrune ├── delayed-stream@1.0.0
+93 silly idealTree:prePrune ├── ecc-jsbn@0.1.2
+93 silly idealTree:prePrune ├── ed25519-supercop@1.2.0
+93 silly idealTree:prePrune ├── extend@3.0.2
+93 silly idealTree:prePrune ├── extsprintf@1.3.0
+93 silly idealTree:prePrune ├── fast-deep-equal@2.0.1
+93 silly idealTree:prePrune ├── fast-json-stable-stringify@2.0.0
+93 silly idealTree:prePrune ├── forever-agent@0.6.1
+93 silly idealTree:prePrune ├── form-data@2.3.3
+93 silly idealTree:prePrune ├── getpass@0.1.7
+93 silly idealTree:prePrune ├── har-schema@2.0.0
+93 silly idealTree:prePrune ├── har-validator@5.1.3
+93 silly idealTree:prePrune ├── http-signature@1.2.0
+93 silly idealTree:prePrune ├── inherits@2.0.3
+93 silly idealTree:prePrune ├── ip@1.1.5
+93 silly idealTree:prePrune ├── is-typedarray@1.0.0
+93 silly idealTree:prePrune ├── isstream@0.1.2
+93 silly idealTree:prePrune ├── jsbn@0.1.1
+93 silly idealTree:prePrune ├── json-schema-traverse@0.4.1
+93 silly idealTree:prePrune ├── json-schema@0.2.3
+93 silly idealTree:prePrune ├── json-stringify-safe@5.0.1
+93 silly idealTree:prePrune ├── jsprim@1.4.1
+93 silly idealTree:prePrune ├── k-bucket@4.0.1
+93 silly idealTree:prePrune ├── k-rpc-socket@1.8.0
+93 silly idealTree:prePrune ├── k-rpc@5.0.0
+93 silly idealTree:prePrune ├── last-one-wins@1.0.4
+93 silly idealTree:prePrune ├── lodash@4.17.11
+93 silly idealTree:prePrune ├── lru@3.1.0
+93 silly idealTree:prePrune ├── mime-db@1.37.0
+93 silly idealTree:prePrune ├── mime-types@2.1.21
+93 silly idealTree:prePrune ├── ms@2.1.1
+93 silly idealTree:prePrune ├── nan@2.12.1
+93 silly idealTree:prePrune ├── nat-upnp@1.1.1
+93 silly idealTree:prePrune ├── netmask@1.0.6
+93 silly idealTree:prePrune ├── network-address@1.1.2
+93 silly idealTree:prePrune ├── node-gyp-build@3.7.0
+93 silly idealTree:prePrune ├── oauth-sign@0.9.0
+93 silly idealTree:prePrune ├── performance-now@2.1.0
+93 silly idealTree:prePrune ├── psl@1.1.31
+93 silly idealTree:prePrune ├── punycode@2.1.1
+93 silly idealTree:prePrune ├── qs@6.5.2
+93 silly idealTree:prePrune ├── randombytes@2.0.6
+93 silly idealTree:prePrune ├── record-cache@1.1.0
+93 silly idealTree:prePrune ├── request@2.88.0
+93 silly idealTree:prePrune ├── rusha@0.8.13
+93 silly idealTree:prePrune ├── safe-buffer@5.1.2
+93 silly idealTree:prePrune ├── safer-buffer@2.1.2
+93 silly idealTree:prePrune ├── sax@1.2.4
+93 silly idealTree:prePrune ├── simple-sha1@2.1.1
+93 silly idealTree:prePrune ├── sshpk@1.16.0
+93 silly idealTree:prePrune ├─┬ tough-cookie@2.4.3
+93 silly idealTree:prePrune │ └── punycode@1.4.1
+93 silly idealTree:prePrune ├── tunnel-agent@0.6.0
+93 silly idealTree:prePrune ├── tweetnacl@0.14.5
+93 silly idealTree:prePrune ├── uri-js@4.2.2
+93 silly idealTree:prePrune ├── uuid@3.3.2
+93 silly idealTree:prePrune ├── verror@1.10.0
+93 silly idealTree:prePrune └── xml2js@0.1.14
+94 silly loadIdealTree Finishing
+95 silly currentTree @agent725/peer-network-fork@0.0.2
+95 silly currentTree ├── ajv@6.7.0
+95 silly currentTree ├── asn1@0.2.4
+95 silly currentTree ├── assert-plus@1.0.0
+95 silly currentTree ├── async@2.6.1
+95 silly currentTree ├── asynckit@0.4.0
+95 silly currentTree ├── aws-sign2@0.7.0
+95 silly currentTree ├── aws4@1.8.0
+95 silly currentTree ├── bcrypt-pbkdf@1.0.2
+95 silly currentTree ├── bencode@2.0.0
+95 silly currentTree ├── bittorrent-dht@8.4.0
+95 silly currentTree ├── buffer-equals@1.0.4
+95 silly currentTree ├── caseless@0.12.0
+95 silly currentTree ├── combined-stream@1.0.7
+95 silly currentTree ├── core-util-is@1.0.2
+95 silly currentTree ├── dashdash@1.14.1
+95 silly currentTree ├── debug@3.2.6
+95 silly currentTree ├── delayed-stream@1.0.0
+95 silly currentTree ├── ecc-jsbn@0.1.2
+95 silly currentTree ├── ed25519-supercop@1.2.0
+95 silly currentTree ├── extend@3.0.2
+95 silly currentTree ├── extsprintf@1.3.0
+95 silly currentTree ├── fast-deep-equal@2.0.1
+95 silly currentTree ├── fast-json-stable-stringify@2.0.0
+95 silly currentTree ├── forever-agent@0.6.1
+95 silly currentTree ├── form-data@2.3.3
+95 silly currentTree ├── getpass@0.1.7
+95 silly currentTree ├── har-schema@2.0.0
+95 silly currentTree ├── har-validator@5.1.3
+95 silly currentTree ├── http-signature@1.2.0
+95 silly currentTree ├── inherits@2.0.3
+95 silly currentTree ├── ip@1.1.5
+95 silly currentTree ├── is-typedarray@1.0.0
+95 silly currentTree ├── isstream@0.1.2
+95 silly currentTree ├── jsbn@0.1.1
+95 silly currentTree ├── json-schema-traverse@0.4.1
+95 silly currentTree ├── json-schema@0.2.3
+95 silly currentTree ├── json-stringify-safe@5.0.1
+95 silly currentTree ├── jsprim@1.4.1
+95 silly currentTree ├── k-bucket@4.0.1
+95 silly currentTree ├── k-rpc-socket@1.8.0
+95 silly currentTree ├── k-rpc@5.0.0
+95 silly currentTree ├── last-one-wins@1.0.4
+95 silly currentTree ├── lodash@4.17.11
+95 silly currentTree ├── lru@3.1.0
+95 silly currentTree ├── mime-db@1.37.0
+95 silly currentTree ├── mime-types@2.1.21
+95 silly currentTree ├── ms@2.1.1
+95 silly currentTree ├── nan@2.12.1
+95 silly currentTree ├── nat-upnp@1.1.1
+95 silly currentTree ├── netmask@1.0.6
+95 silly currentTree ├── network-address@1.1.2
+95 silly currentTree ├── node-gyp-build@3.7.0
+95 silly currentTree ├── oauth-sign@0.9.0
+95 silly currentTree ├── performance-now@2.1.0
+95 silly currentTree ├── psl@1.1.31
+95 silly currentTree ├── punycode@2.1.1
+95 silly currentTree ├── qs@6.5.2
+95 silly currentTree ├── randombytes@2.0.6
+95 silly currentTree ├── record-cache@1.1.0
+95 silly currentTree ├── request@2.88.0
+95 silly currentTree ├── rusha@0.8.13
+95 silly currentTree ├── safer-buffer@2.1.2
+95 silly currentTree ├── simple-sha1@2.1.1
+95 silly currentTree ├── sshpk@1.16.0
+95 silly currentTree ├─┬ tough-cookie@2.4.3
+95 silly currentTree │ └── punycode@1.4.1
+95 silly currentTree ├── tunnel-agent@0.6.0
+95 silly currentTree ├── tweetnacl@0.14.5
+95 silly currentTree ├── uri-js@4.2.2
+95 silly currentTree ├── uuid@3.3.2
+95 silly currentTree ├── verror@1.10.0
+95 silly currentTree └── xml2js@0.1.14
+96 silly idealTree @agent725/peer-network-fork@0.0.2
+96 silly idealTree ├── ajv@6.7.0
+96 silly idealTree ├── asn1@0.2.4
+96 silly idealTree ├── assert-plus@1.0.0
+96 silly idealTree ├── async@2.6.1
+96 silly idealTree ├── asynckit@0.4.0
+96 silly idealTree ├── aws-sign2@0.7.0
+96 silly idealTree ├── aws4@1.8.0
+96 silly idealTree ├── bcrypt-pbkdf@1.0.2
+96 silly idealTree ├── bencode@2.0.0
+96 silly idealTree ├── bittorrent-dht@8.4.0
+96 silly idealTree ├── buffer-equals@1.0.4
+96 silly idealTree ├── caseless@0.12.0
+96 silly idealTree ├── combined-stream@1.0.7
+96 silly idealTree ├── core-util-is@1.0.2
+96 silly idealTree ├── dashdash@1.14.1
+96 silly idealTree ├── debug@3.2.6
+96 silly idealTree ├── delayed-stream@1.0.0
+96 silly idealTree ├── ecc-jsbn@0.1.2
+96 silly idealTree ├── ed25519-supercop@1.2.0
+96 silly idealTree ├── extend@3.0.2
+96 silly idealTree ├── extsprintf@1.3.0
+96 silly idealTree ├── fast-deep-equal@2.0.1
+96 silly idealTree ├── fast-json-stable-stringify@2.0.0
+96 silly idealTree ├── forever-agent@0.6.1
+96 silly idealTree ├── form-data@2.3.3
+96 silly idealTree ├── getpass@0.1.7
+96 silly idealTree ├── har-schema@2.0.0
+96 silly idealTree ├── har-validator@5.1.3
+96 silly idealTree ├── http-signature@1.2.0
+96 silly idealTree ├── inherits@2.0.3
+96 silly idealTree ├── ip@1.1.5
+96 silly idealTree ├── is-typedarray@1.0.0
+96 silly idealTree ├── isstream@0.1.2
+96 silly idealTree ├── jsbn@0.1.1
+96 silly idealTree ├── json-schema-traverse@0.4.1
+96 silly idealTree ├── json-schema@0.2.3
+96 silly idealTree ├── json-stringify-safe@5.0.1
+96 silly idealTree ├── jsprim@1.4.1
+96 silly idealTree ├── k-bucket@4.0.1
+96 silly idealTree ├── k-rpc-socket@1.8.0
+96 silly idealTree ├── k-rpc@5.0.0
+96 silly idealTree ├── last-one-wins@1.0.4
+96 silly idealTree ├── lodash@4.17.11
+96 silly idealTree ├── lru@3.1.0
+96 silly idealTree ├── mime-db@1.37.0
+96 silly idealTree ├── mime-types@2.1.21
+96 silly idealTree ├── ms@2.1.1
+96 silly idealTree ├── nan@2.12.1
+96 silly idealTree ├── nat-upnp@1.1.1
+96 silly idealTree ├── netmask@1.0.6
+96 silly idealTree ├── network-address@1.1.2
+96 silly idealTree ├── node-gyp-build@3.7.0
+96 silly idealTree ├── oauth-sign@0.9.0
+96 silly idealTree ├── performance-now@2.1.0
+96 silly idealTree ├── psl@1.1.31
+96 silly idealTree ├── punycode@2.1.1
+96 silly idealTree ├── qs@6.5.2
+96 silly idealTree ├── randombytes@2.0.6
+96 silly idealTree ├── record-cache@1.1.0
+96 silly idealTree ├── request@2.88.0
+96 silly idealTree ├── rusha@0.8.13
+96 silly idealTree ├── safe-buffer@5.1.2
+96 silly idealTree ├── safer-buffer@2.1.2
+96 silly idealTree ├── sax@1.2.4
+96 silly idealTree ├── simple-sha1@2.1.1
+96 silly idealTree ├── sshpk@1.16.0
+96 silly idealTree ├─┬ tough-cookie@2.4.3
+96 silly idealTree │ └── punycode@1.4.1
+96 silly idealTree ├── tunnel-agent@0.6.0
+96 silly idealTree ├── tweetnacl@0.14.5
+96 silly idealTree ├── uri-js@4.2.2
+96 silly idealTree ├── uuid@3.3.2
+96 silly idealTree ├── verror@1.10.0
+96 silly idealTree └── xml2js@0.1.14
+97 silly generateActionsToTake Starting
+98 silly install generateActionsToTake
+99 verbose stack TypeError: Cannot read property 'target' of null
+99 verbose stack     at module.exports (/usr/share/npm/lib/install/filter-invalid-actions.js:24:35)
+99 verbose stack     at Array.<anonymous> (/usr/share/npm/node_modules/slide/lib/bind-actor.js:15:8)
+99 verbose stack     at LOOP (/usr/share/npm/node_modules/slide/lib/chain.js:15:14)
+99 verbose stack     at /usr/share/npm/node_modules/slide/lib/chain.js:18:7
+99 verbose stack     at Object.Installer.computeLinked (/usr/share/npm/lib/install.js:411:41)
+99 verbose stack     at Array.<anonymous> (/usr/share/npm/node_modules/slide/lib/bind-actor.js:15:8)
+99 verbose stack     at LOOP (/usr/share/npm/node_modules/slide/lib/chain.js:15:14)
+99 verbose stack     at /usr/share/npm/node_modules/slide/lib/chain.js:18:7
+99 verbose stack     at module.exports (/usr/share/npm/lib/install/diff-trees.js:50:3)
+99 verbose stack     at Array.<anonymous> (/usr/share/npm/node_modules/slide/lib/bind-actor.js:15:8)
+100 verbose cwd /home/user/Build/IoC/hybrixd/node/modules/transport/torrent/peer-network-fork
+101 error Linux 4.10.0-38-generic
+102 error argv "/usr/bin/nodejs" "/usr/bin/npm" "install" "sax"
+103 error node v4.2.6
+104 error npm  v3.5.2
+105 error Cannot read property 'target' of null
+106 error If you need help, you may report this error at:
+106 error     <https://github.com/npm/npm/issues>
+107 verbose exit [ 1, true ]

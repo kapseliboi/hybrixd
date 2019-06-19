@@ -1,0 +1,129 @@
+{
+  "engine":"synchronize",
+  "name":"Storage synchronization module",
+  "module":"quartz",
+  "readTimeout":120000,
+  "syncTimeout":300000,
+  "cron" : 60,
+  "quartz"  : {
+    "cron":[
+      "time $syncTimeout",
+      "call autosync"
+    ],
+    "selectGetPeerID":[
+      "data ${.value}",
+      "flat",
+      "tran '[0][0]' 2 1",
+      "done null",
+      "done"
+    ],
+    "selectPeer":[
+      "rout e/transport/list/peers",
+      "poke nodeList",
+      "with nodeList [flat] [tran,'[1]'] [each,selectGetPeerID] [excl,null]",
+      "data $nodeList",
+      "size",
+      "rand $",
+      "poke selected",
+      "peek nodeList",
+      "pick $selected",
+      "done"
+    ],
+    "list":[
+      "time $readTimeout",
+      "rout e/transport/rout/$1/e/storage/pull",
+      "# sort by last/first to pull newest stuff first!",
+      "sort",
+      "poke syncList",
+      "size",
+      "poke syncMax",
+      "# now we do the magic of dissecting data, and pulling what we want",
+      "poke needUpdate []",
+      "poke cnt 0",
+      "# we must compare hashes to see if data has changed",
+      "@syncLoop",
+      "peek syncList",
+      "tran '[$cnt]'",
+      "splt '/'",
+      "poke syncItem",
+      "with syncHash [data,$syncItem] [tran,'[2]']",
+      "with syncKey [data,$syncItem] [tran,'[1]']",
+      "with syncTime [data,$syncItem] [tran,'[0]']",
+      "meta $syncKey",
+      "poke metadata",
+      "tran '.mod' 1 @update",
+      "true '<$syncTime' 1 @skip",
+      "peek metadata",
+      "tran '.hash' 1 @update",
+      "flow '$syncHash' @skip",
+      "@update",
+      "with needUpdate [push,'$syncKey']",
+      "@skip",
+      "loop @syncLoop cnt <$syncMax",
+      "done $needUpdate"
+    ],
+    "sync":[
+      "time $syncTimeout",
+      "# first get a list of items that need synchronization",
+      "poke nodeID $1",
+      "call list/$nodeID",
+      "poke syncList",
+      "# foreach through the list and synchronize the items",
+      "each syncItem/$nodeID",
+      "poke syncResult",
+      "copy syncResult syncSuccess syncFailure",
+      "with syncSuccess [excl,0] [size]",
+      "with syncFailure [excl,1] [size]",
+      "done {synced:$syncSuccess,failed:$syncFailure}"
+    ],
+    "syncItem":[
+      "time $readTimeout",
+      "data ${.value}",
+      "void 'empty' 3 1",
+      "poke key",
+      "rout e/transport/rout/$1/e/storage/get/$key 2 1",
+      "done 0",
+      "jpar",
+      "save $key",
+      "done 1"
+    ],
+    "autosync":[
+      "time $syncTimeout",
+      "call selectPeer",
+      "poke nodeID",
+      "void @noPeers",
+      "call sync/$nodeID",
+      "logs 'module synchronize: synced ${.synced}, failed ${.failed}, with node $nodeID'",
+      "done {node:'$nodeID',synced:${.synced},failed:${.failed}}",
+      "@noPeers",
+      "fail 'There are currently no peers connected to this node!'"
+    ]
+  },
+  "router" : {
+    "_help" : "Control the storage synchronization engine.",
+    "list":{
+      "_help" : "Return a list of unsynchronized items.",
+      "_access" : "root",
+      "_ref" : {
+        "_list" : "peer_ID",
+        "_this" : "Specify the ID of the peer to create a list with."
+      }
+    },
+    "select":{
+      "_this" : "Select a random peer for synchronization.",
+      "_access" : "root"
+    },
+    "autosync":{
+      "_this" : "Automatically synchronize with a random peer.",
+      "_access" : "root"
+    },
+    "sync":{
+      "_help" : "Synchronize with a specific peer.",
+      "_access" : "root",
+      "_ref" : {
+        "_list" : "peer_ID",
+        "_this" : "Specify the ID of the peer to synchronize with."
+      }
+    }
+  }
+}

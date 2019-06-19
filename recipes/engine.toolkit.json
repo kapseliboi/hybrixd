@@ -33,11 +33,10 @@
       "done(data)"
     ],
     "test" : [
-      "data {some:'yolo',real:'this',JSON:'works'}",
-      "pack",
-      "unpk 2 1",
-      "done FAIL",
-      "done"
+      "poke variableA 'testme123'",
+      "poke variableB 'testme234'",
+      "copy variableA variableB variableC",
+      "done '$variableA $variableB $variableC'"
     ],
     "proberen" : [
       "rout /asset/eth/status/0x4d3244b0677b86d06b12cdbaa3ac4f15baaa6d5b",

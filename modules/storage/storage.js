@@ -29,9 +29,9 @@ let size = function (dataCallback, errorCallback) {
   dataCallback(storageSize);
 };
 
-let seek = function (key, dataCallback, errorCallback) {
-  let fold = key.substr(0, 2) + '/';
-  let filePath = storagePath + fold + key;
+let seek = function (data, dataCallback) {
+  const fold = data.key.substr(0, 2) + '/';
+  const filePath = storagePath + fold + data.key;
   if (fs.existsSync(filePath)) {
     dataCallback(true);
   } else {
@@ -39,9 +39,9 @@ let seek = function (key, dataCallback, errorCallback) {
   }
 };
 
-let load = function (key, dataCallback, errorCallback) {
-  let fold = key.substr(0, 2) + '/';
-  let filePath = storagePath + fold + key;
+let load = function (data, dataCallback, errorCallback) {
+  const fold = data.key.substr(0, 2) + '/';
+  const filePath = storagePath + fold + data.key;
 
   if (fs.existsSync(filePath)) {
     // update meta data with last time read
@@ -49,24 +49,12 @@ let load = function (key, dataCallback, errorCallback) {
     meta.read = Date.now();
     fs.writeFileSync(filePath + '.meta', JSON.stringify(meta));
 
-    let fileKey = 'storage/' + fold + key;
-    dataCallback(fileKey);
-  } else {
-    errorCallback('File not found');
-  }
-};
-
-let qrtzLoad = function (key, dataCallback, errorCallback) {
-  let fold = key.substr(0, 2) + '/';
-  let filePath = storagePath + fold + key;
-
-  if (fs.existsSync(filePath)) {
-    // update meta data with last time read
-    let meta = JSON.parse(String(fs.readFileSync(filePath + '.meta')));
-    meta.read = Date.now();
-    fs.writeFileSync(filePath + '.meta', JSON.stringify(meta));
-
-    dataCallback(fs.readFileSync(filePath).toString());
+    if (data.readFile) {
+      dataCallback(fs.readFileSync(filePath).toString());
+    } else {
+      let fileKey = 'storage/' + fold + data.key;
+      dataCallback(fileKey);
+    }
   } else {
     errorCallback('File not found');
   }
@@ -97,7 +85,6 @@ const createFile = (key, value, dataCallback, errorCallback) => {
   fs.writeFileSync(filePath, value); // TODO ASYNC when web wallet is able to do autoproc calls
   fs.writeFileSync(filePath + '.meta', JSON.stringify(meta));
 
-  // TODO save entry to the mutation list
   dataCallback({action: 'create', hash, expire: null, challenge: meta.challenge, difficulty: meta.difficulty});
 };
 
@@ -123,33 +110,76 @@ const updateFile = (key, value, dataCallback, errorCallback) => {
     fs.writeFileSync(filePath, value);
     fs.writeFileSync(filePath + '.meta', JSON.stringify(meta));
 
-    // TODO save entry to the mutation list
-
     dataCallback({action: 'update', hash, expire: meta.expire, challenge: meta.challenge, difficulty: meta.difficulty});
   }
 };
 
 let save = function (data, dataCallback, errorCallback) {
-  let storageLimit=65536
+  const storageLimit = 65536;
   if (data.value.length > 65536) { // TODO value to conf
-    errorCallback('Storage limit is '+storageLimit+' bytes!');
+    errorCallback('Storage limit is ' + storageLimit + ' bytes!');
   } else {
-    let fold = data.key.substr(0, 2) + '/';
+    const fold = data.key.substr(0, 2) + '/';
 
     makeDir(storagePath + fold);
 
-    let filePath = storagePath + fold + data.key;
+    const filePath = storagePath + fold + data.key;
     if (fs.existsSync(filePath + '.meta')) {
       updateFile(data.key, data.value, dataCallback, errorCallback);
     } else {
       createFile(data.key, data.value, dataCallback, errorCallback);
     }
+    if (!data.noSync) {
+      sync(data, dataCallback, errorCallback);
+    }
   }
 };
 
+let sync = function (data, dataCallback, errorCallback) {
+  const fold = data.key.substr(0, 2) + '/';
+  const filePath = storagePath + fold + data.key;
+  const range = 250;
+  const randomIdx = ('00' + Math.floor(Math.random() * range)).slice(-3);
+  if (pullList().indexOf(data.key) === -1 && fs.existsSync(filePath)) {
+    fs.writeFileSync(storagePath + '/sync' + randomIdx, data.key);
+    dataCallback();
+  } else {
+    errorCallback();
+  }
+};
+
+let pullList = function () {
+  const range = 250;
+  const list = [];
+  for (let i = 0; i < range; i++) {
+    const randomIdx = ('00' + i).slice(-3);
+    const filePath = storagePath + '/sync' + randomIdx;
+    if (fs.existsSync(filePath)) {
+      list.push(fs.readFileSync(filePath).toString());
+    }
+  }
+  return list;
+};
+
+let pull = function (dataCallback, errorCallback) {
+  const list = pullList();
+  const result = [];
+  for (let i = 0; i < list.length; i++) {
+    const fold = list[i].substr(0, 2) + '/';
+    const filePath = storagePath + fold + list[i];
+    if (fs.existsSync(filePath + '.meta')) {
+      try {
+        const meta = JSON.parse(String(fs.readFileSync(filePath + '.meta')));
+        result.push(meta.mod + '/' + list[i] + '/' + meta.hash);
+      } catch (e) {}
+    }
+  }
+  dataCallback(result);
+};
+
 let del = function (key, dataCallback, errorCallback) {
-  let fold = key.substr(0, 2) + '/';
-  let filePath = storagePath + fold + key;
+  const fold = key.substr(0, 2) + '/';
+  const filePath = storagePath + fold + key;
   // TODO check if path exists
   fs.unlinkSync(filePath);
   fs.unlinkSync(filePath + '.meta');
@@ -198,8 +228,8 @@ const getMeta = function (key, dataCallback, errorCallback) {
   }
 };
 
-const getMetaExt = function (key, dataCallback, errorCallback) {
-  getMeta(key, m => {
+const getMetaExt = function (data, dataCallback, errorCallback) {
+  getMeta(data.key, m => {
     delete m.pow; // Remove meta to not expose
     dataCallback(m);
   }, errorCallback
@@ -234,11 +264,11 @@ let autoClean = function () {
                   // DEBUG: console.log(" [i] module storage: test on storage " + fileelement);
                   if (fs.existsSync(fileelement)) {
                     let meta = JSON.parse(String(fs.readFileSync(fileelement)));
-                    
+
                     let minstoragetime = meta.time + conf.get('storage.minstoragetime') * SECONDS_IN_A_DAY;
                     let maxstoragetime = meta.time + conf.get('storage.maxstoragetime') * SECONDS_IN_A_DAY;
                     let powstoragetime = meta.expire;
-                    const expire = meta.expire === null ? minstoragetime : (maxstoragetime>powstoragetime?maxstoragetime:powstoragetime) ;
+                    const expire = meta.expire === null ? minstoragetime : (maxstoragetime > powstoragetime ? maxstoragetime : powstoragetime);
 
                     if (maxstoragesize > conf.get('storage.maxstoragesize') && expire < now) {
                       let dataelement = fileelement.substr(0, fileelement.length - 5);
@@ -269,10 +299,11 @@ let autoClean = function () {
 
 exports.size = size;
 exports.seek = seek;
+exports.sync = sync;
+exports.pull = pull;
 exports.get = load;
 exports.set = save;
 exports.del = del;
 exports.getMeta = getMetaExt;
 exports.provideProof = provideProof;
 exports.autoClean = autoClean;
-exports.qrtzLoad = qrtzLoad;

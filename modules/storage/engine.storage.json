@@ -4,39 +4,18 @@
   "module":"storage",
   "cron" : 300,
   "quartz"  : {
-    "init":[
-      "func 'init'",
-      "done"
-    ],
-    "size":[
-      "func 'size'",
-      "done"
-    ],
-    "seek":[
+    "get":[
       "data {key:'$1'}",
-      "func 'seek'",
+      "func 'load'",
+      "mime 'file:data'",
+      "file",
       "done"
     ],
     "load":[
       "data {key:'$1'}",
       "func 'load'",
-      "logs",
       "mime 'file:data'",
-      "logs",
       "file",
-      "done"
-    ],
-    "get":[
-      "data {key:'$1'}",
-      "func 'load'",
-      "logs",
-      "mime 'file:data'",
-      "logs",
-      "file",
-      "done"
-    ],
-    "cron":[
-      "func 'cron'",
       "done"
     ],
     "set":[
@@ -59,27 +38,35 @@
       "func 'save'",
       "done"
     ],
-    "meta":[
-      "data {key:'$1'}",
-      "func 'meta'",
-      "done"
-    ],
     "del":[
       "fail 'Deleting data from node storage is not supported!'"
     ],
     "burn":[
       "fail 'Deleting data from node storage is not supported!'"
-    ],
-    "work":[
-      "data {key:'$1', pow:'$2'}",
-      "func 'work'",
-      "done"
     ]
   },
   "router" : {
     "_help" : "Control the decentralized storage engine.",
     "size":{
       "_this" : "Return total size of local storage."
+    },
+    "seek":{
+      "_help" : "Check if a storage key exists.",
+      "_ref" : {
+        "_list" : "storage_id",
+        "_this" : "Specify the ID key to check if it exists."
+      }
+    },
+    "sync":{
+      "_help" : "Add storage key to sync list.",
+      "_ref" : {
+        "_list" : "storage_id",
+        "_this" : "Specify the ID key to add to the randomized synchronization list."
+      }
+    },
+    "pull":{
+      "_help" : "Retrieve the sync list.",
+      "_this" : "The list contains a randomized key list of recently created or updated storage items."
     },
     "seek":{
       "_help" : "Check if a storage key exists.",

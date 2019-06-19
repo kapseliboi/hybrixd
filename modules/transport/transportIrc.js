@@ -13,7 +13,7 @@ function open (proc, host, chan, hashSalt) {
     let port = 6667; // default IRC port
     // setup the irc socket
     let peerId = 'h' + shaHash(nodeId + openTime + hashSalt).substr(0, 15);
-    let handle = {q: 1, id: handleId, opened: openTime, protocol: 'irc', host: host, channel: chan, peerId: peerId, peers: {}, buffer: [] };
+    let handle = { q: 1, id: handleId, opened: openTime, protocol: 'irc', host: host, channel: chan, peerId: peerId, peers: {}, buffer: [] };
     data.handles[handleId] = handle;
     // start the irc socket
     handle.socket = new irc.Client(host, peerId, {
@@ -25,11 +25,11 @@ function open (proc, host, chan, hashSalt) {
       selfSigned: false,
       certExpired: false,
       floodProtection: true,
-      floodProtectionDelay: 1000,
+      floodProtectionDelay: 100,
       channels: ['#' + chan],
       sasl: false,
       retryCount: 9999,
-      retryDelay: 2000,
+      retryDelay: 1000,
       stripColors: false,
       channelPrefixes: '&#',
       messageSplit: 512,
@@ -115,7 +115,6 @@ function open (proc, host, chan, hashSalt) {
         }
       }
     }.bind({proc: proc, handle: handle}));
-
     // event: warnings and errors
     handle.socket.addListener('error', function (message) {
       console.log(' [!] transport irc: Error! ' + JSON.stringify(message));
@@ -128,14 +127,19 @@ function open (proc, host, chan, hashSalt) {
 }
 
 function stop (proc, handle, callback) {
-  clearInterval(handle.announce);
-  handle.socket.part('#' + handle.channel);
-  setTimeout(function () {
-    functions.removeEndpoint('irc://' + handle.host + '/' + handle.channel + '/' + handle.peerId);
-    functions.removeHandle(handle.id);
-    proc.done('irc socket closed');
-    console.log(' [i] transport irc: stopped and closed socket ' + handle.id);
-  }, 8000);
+  if (typeof handle.socket === 'undefined') {
+    proc.fail('could not close irc socket!');
+    console.log(' [!] transport irc: could not close irc socket!');
+  } else {
+    clearInterval(handle.announce);
+    handle.socket.part('#' + handle.channel);
+    setTimeout(function () {
+      functions.removeEndpoint('irc://' + handle.host + '/' + handle.channel + '/' + handle.peerId);
+      functions.removeHandle(handle.id);
+      proc.done('irc socket closed');
+      console.log(' [i] transport irc: stopped and closed socket ' + handle.id);
+    }, 8000);
+  }
 }
 
 exports.open = open;

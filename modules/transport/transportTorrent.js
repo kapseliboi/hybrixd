@@ -25,7 +25,7 @@ function open (proc, channel, passwd, hashSalt) {
         // add handle and endpoint
         functions.addHandleAndEndpoint(handle.id, peerId, 'torrent://' + channel + '/' + peerId);
         // send message function
-        handle.send = function (engine, handle, nodeIdTarget, message) {
+        handle.send = function (handle, nodeIdTarget, message) {
           // send message to every peer, or specified peer
           if (handle.hasOwnProperty('peers')) {
             let peerId; let broadcast = false;
@@ -66,12 +66,13 @@ function open (proc, channel, passwd, hashSalt) {
         console.log(' [!] transport torrent: failed to connect on port ' + port);
         proc.fail('failed to connect to torrent!');
       }
-    // event: incoming message on channel
     });
-    handle.socket.on('message', (msg, fromPeerId) => {
+    // event: incoming message on channel
+    handle.socket.on('message', function (msg, fromPeerId) {
       // ignore self
-      if (fromPeerId !== handle.peerId) {
-        let message = msg.toString(); // DEBUG: console.log(' [.] transport torrent: incoming message '+fromPeerId+' '+message);
+      if (fromPeerId !== this.handle.peerId) {
+        let message = msg.toString(); // DEBUG:
+        console.log(' [.] transport torrent: incoming message ' + fromPeerId + ' ' + message);
         // peer announcements: register new users in peer list (and return announce)
         if (message.substr(0, 2) === '@|' || message.substr(0, 2) === '~|') {
           // determine if peer relay message
@@ -81,41 +82,42 @@ function open (proc, channel, passwd, hashSalt) {
           let fromNodeId = message[0];
           if (fromNodeId !== nodeId) {
             if (!relay) {
-              if (!handle.peers.hasOwnProperty(fromNodeId)) {
+              if (!this.handle.peers.hasOwnProperty(fromNodeId)) {
                 console.log(' [.] transport torrent: peer [' + fromPeerId + '] online');
                 // announce self (return endpoint information)
                 let message = '@|' + nodeId + '|' + data.endpoints.join();
                 // init announce message must be directly through the socket to start filling remote empty peer list
-                handle.socket.send(Buffer.from(message), fromPeerId);
+                this.handle.socket.send(Buffer.from(message), fromPeerId);
                 console.log(' [.] transport torrent: returning endpoint information to peer [' + fromPeerId + ']');
-                handle.peers[fromNodeId] = {peerId: fromPeerId, time: (new Date()).getTime()};
+                this.handle.peers[fromNodeId] = {peerId: fromPeerId, time: (new Date()).getTime()};
               } else {
-                handle.peers[fromNodeId].time = (new Date()).getTime();
+                this.handle.peers[fromNodeId].time = (new Date()).getTime();
               }
             } else {
               if (!handle.peers.hasOwnProperty(fromNodeId)) {
-                handle.peers[fromNodeId] = { peerId: null };
+                this.handle.peers[fromNodeId] = { peerId: null };
               }
-              handle.peers[fromNodeId].time = (new Date()).getTime();
+              this.handle.peers[fromNodeId].time = (new Date()).getTime();
               console.log(' [.] transport torrent: relay peer information from node ' + fromNodeId);
             }
-            functions.managePeerURIs(handle, relay || fromPeerId, fromNodeId, message[1]);
+            functions.managePeerURIs(this.handle, relay || fromPeerId, fromNodeId, message[1]);
           }
         } else {
-          let messageData = functions.readMessage(handle, message);
+          let messageData = functions.readMessage(this.handle, message);
           // if target is us, route (and respond) to message
           if (messageData) {
             if (messageData.nodeIdTarget === nodeId) {
               if (messageData.complete && !messageData.response) {
-                functions.routeMessage(handle, messageData.nodeIdTarget, messageData.messageId, messageData.messageContent);
+                functions.routeMessage(this.handle, messageData.nodeIdTarget, messageData.messageId, messageData.messageContent);
               }
             } else { // else relay the message to other channels
-              functions.relayMessage(handle, messageData.nodeIdTarget, messageData.messageId, messageData.messageContent);
+              functions.relayMessage(this.handle, messageData.nodeIdTarget, messageData.messageId, messageData.messageContent);
             }
           }
         }
       }
-    });
+    }.bind({proc: proc, handle: handle}));
+
     handle.socket.on('peer', (fromPeerId) => {
       // announce self (to new peer)
       if (handle.hasOwnProperty('peers')) {
