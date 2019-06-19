@@ -151,7 +151,11 @@
                 "_list" : "public_key",
                 "_sample" : "_dummypublickey_",
                 "_this" : "Optional: specify the public key (needed for certain cryptocurrencies, like NXT for example).",
-                "_response" : {"error":0,"info":"Process data.","id":"1519830913478733","progress":1,"started":1519830913478,"stopped":1519830914923,"data":{"nonce":"1"}}
+                "_ref" : {
+                  "_list" : "message",
+                  "_sample" : "My transaction message",
+                  "_this" : "Optional: specify a message to be send with the transaction.",
+                  "_response" : {"error":0,"info":"Process data.","id":"1519830913478733","progress":1,"started":1519830913478,"stopped":1519830914923,"data":{"nonce":"1"}}
               }
             }
           }
