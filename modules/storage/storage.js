@@ -49,7 +49,7 @@ let load = function (data, dataCallback, errorCallback) {
     meta.read = Date.now();
     fs.writeFileSync(filePath + '.meta', JSON.stringify(meta));
 
-    if (typeof data.readFile!=='undefined' && data.readFile) {
+    if (typeof data.readFile !== 'undefined' && data.readFile) {
       dataCallback(fs.readFileSync(filePath).toString());
     } else {
       let fileKey = 'storage/' + fold + data.key;
