@@ -2,6 +2,7 @@
   "engine":"transport",
   "name":"Transport engine module",
   "module":"transport",
+  "curlTimeout":8000,
   "readTimeout":120000,
   "sendTimeout":120000,
   "announceMaxBufferSize":10000,
@@ -10,7 +11,7 @@
   "defaultChannel":"hybrixAnnouncements",
   "defaultIrcHost":"irc.freenode.net",
   "defaultTorrentPasswd":"l3ts_b34t_th3_b4nks!",
-  "cron" : 300,
+  "cron" : 60,
   "conf" :{
     "test" :{
       "default":10,
@@ -18,10 +19,20 @@
     }
   },
   "quartz" : {
-    "open" :["func open"],
-    "close" :["func close"],
+    "cron" :[
+      "# open transports IRC and Torrent, unless already open",
+      "func open/irc",
+      "func open/torrent"
+    ],
+    "open" :[
+      "prog 0 1 8000",
+      "func open"
+    ],
+    "stop" :[
+      "prog 0 1 8000",
+      "func stop"
+    ],
     "info" :["func info"],
-    "stop" :["func stop"],
     "read" :[
       "time $readTimeout",
       "func read",
@@ -39,11 +50,12 @@
       "node",
       "done"
     ],
-    "rout" : [
+    "path" : [
+      "time $readTimeout",
       "# create path out of arguments",
       "data $@",
       "pull",
-      "poke routpath",
+      "poke path",
       "pull",
       "join '/'",
       "poke curlpath",
@@ -53,22 +65,45 @@
       "call 'list/endpoints/$1/http'",
       "poke httpEndpoints",
       "size",
-      "true =0 @transportCall",
+      "void 'zero' @transportCall",
       "peek httpEndpoints",
       "shuf",
-      "logs 'CURL call to ${[0]}/$curlpath ...'",
-      "# TODO: make sure non-responsive host is tried decentralized!",
-      "curl '${[0]}' '/$curlpath' GET {}",
+      "logs 'module transport: direct call ${[0]}/$curlpath ...'",
+      "curl '${[0]}' '/$curlpath' GET {retry:1,timeout:$curlTimeout} 1 @transportCall",
       "done",
       "@transportCall",
-      "push '$nodeId' 1",
-      "time $readTimeout",
       "# get the node's public key/ID",
       "with 'nodeId' node",
-      "peek routpath",
+      "peek path",
+      "push '$nodeId' 1",
       "join '/'",
+      "logs 'module transport: decentralized call */$curlpath ...'",
       "call 'send/*/$'",
       "call 'read/*/$nodeId/$'",
+      "done"
+    ],
+    "rout" : [
+      "# complete resolving query",
+      "data $@",
+      "pull",
+      "poke path",
+      "pick",
+      "poke nodeId",
+      "with path [join,'/']",
+      "time $readTimeout",
+      "call 'path/$path'",
+      "poke result",
+      "tran '.id' 1 @return",
+      "flow 'id' 1 @return",
+      "peek result",
+      "tran '.data' 1 @return",
+      "call 'path/$nodeId/p/$'",
+      "poke result",
+      "@return",
+      "peek result",
+      "true '${.error}>0' 1 2",
+      "fail ${.error} ${.data}",
+      "tran '.data'",
       "done"
     ]
   },
@@ -77,6 +112,7 @@
     "node" : "The public Node id",
     "open":{
       "_help" : "Connect to a transport network. When initialized the transport returns a handle.",
+      "_access" : "root",
       "_this" : "When entering no other information, the possible protocols are listed.",
       "_ref" : {
         "_list" : "protocol",
@@ -94,6 +130,7 @@
     },
     "stop":{
       "_help" : "Close an active transport.",
+      "_access" : "root",
       "_ref" : {
         "_list" : "handle",
         "_this" : "Specify the handle of the transport to close."
@@ -108,6 +145,7 @@
     },
     "send":{
       "_help" : "Send a message over an active transport.",
+      "_hidden" : true,
       "_ref" : {
         "_list" : "handle",
         "_ref" : {
@@ -122,6 +160,7 @@
     },
     "read":{
       "_help" : "Read a message from an active transport, expecting the data from a certain source.",
+      "_hidden" : true,
       "_ref" : {
         "_list" : "handle",
         "_ref" : {
@@ -133,8 +172,18 @@
         }
       }
     },
+    "path":{
+      "_help" : "Query an API path on a target node over any active transports.",
+      "_hidden" : true,
+      "_ref" : {
+        "_list" : "target_node_Id",
+        "_ellipsis" : true,
+        "_this" : "Make sure to specify the node ID. The API call must be a path."
+      }
+    },
     "rout":{
-      "_help" : "Request an API route from a target node over any active transports.",
+      "_help" : "Route a call on a target node over any active transports.",
+      "_hidden" : true,
       "_ref" : {
         "_list" : "target_node_Id",
         "_ellipsis" : true,

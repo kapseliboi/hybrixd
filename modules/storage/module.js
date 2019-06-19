@@ -10,31 +10,35 @@ let storage = require('./storage'); // key-value storage
 
 function cron (proc) {
   storage.autoClean();
-  proc.pass('Autoclean');
+  proc.pass('autoclean in progress');
 }
 
 function size (proc, data) {
   storage.size(proc.done, proc.fail);
 }
 
+function pull (proc, data) {
+  storage.pull(proc.done, proc.fail);
+}
+
 function seek (proc, data) {
-  storage.seek(data.key, proc.done, proc.fail);
+  storage.seek({key: proc.command[1]}, proc.done);
 }
 
 function meta (proc, data) {
-  storage.getMeta(data.key, proc.done, proc.fail);
-}
-
-function load (proc, data) {
-  storage.get(data.key, proc.done, proc.fail);
-}
-
-function save (proc, data) {
-  storage.set({key: data.key, value: data.value}, proc.done, proc.fail);
+  storage.getMeta({key: proc.command[1]}, proc.done, proc.fail);
 }
 
 function work (proc, data) {
-  storage.provideProof({key: data.key, pow: data.pow}, proc.done, proc.fail);
+  storage.provideProof({key: proc.command[1], pow: proc.command[2]}, proc.done, proc.fail);
+}
+
+function load (proc, data) {
+  storage.get({key: data.key, readFile: data.readFile}, proc.done, proc.fail);
+}
+
+function save (proc, data) {
+  storage.set({key: data.key, value: data.value, noSync: data.noSync}, proc.done, proc.fail);
 }
 
 // exports
@@ -45,3 +49,4 @@ exports.seek = seek;
 exports.size = size;
 exports.cron = cron;
 exports.meta = meta;
+exports.pull = pull;

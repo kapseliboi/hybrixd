@@ -15,8 +15,8 @@ let data = require('./data');
 // add static endpoint entries from conf file
 data.endpoints = [];
 let httpEndpoints = conf.get('host.endpoints');
-if(httpEndpoints instanceof Array) {
-  for(let i=0;i<httpEndpoints.length;i++) {
+if (httpEndpoints instanceof Array) {
+  for (let i = 0; i < httpEndpoints.length; i++) {
     data.endpoints.push(httpEndpoints[i]);
   }
 }
@@ -50,10 +50,10 @@ function stop (proc) {
     if (data.handles.hasOwnProperty(handleId) && data.handles[handleId].hasOwnProperty('protocol')) {
       switch (data.handles[handleId].protocol) {
         case 'irc':
-          transportIrc.stop(proc, handleId);
+          transportIrc.stop(proc, data.handles[handleId]);
           break;
         case 'torrent':
-          transportTorrent.stop(proc, handleId);
+          transportTorrent.stop(proc, data.handles[handleId]);
           break;
         default:
           proc.fail(1, 'Cannot close socket! Protocol not recognized!');
@@ -102,15 +102,18 @@ function list (proc) {
         endpoints = data.endpoints.slice(0); // clone the array
       }
       // filter the endpoints
+      let result = [];
       if (proc.command[3]) {
         let filter = proc.command[3];
-        for (let i=0;i<endpoints.length;i++) {
-          if (endpoints[i].substr(0,filter.length)!==filter) {
-            endpoints.splice(i,1);
+        for (let i = 0; i < endpoints.length; i++) {
+          if (endpoints[i].substr(0, filter.length) === filter) {
+            result.push(endpoints[i]);
           }
         }
+      } else {
+        result = endpoints;
       }
-      proc.done(endpoints);
+      proc.done(result);
       break;
     case 'handles':
       proc.done(data.handleIds);
@@ -164,6 +167,8 @@ function send (proc) {
             nodeIdTarget,
             messageId,
             message);
+        } else {
+          proc.fail(404, 'Specified handle not initialized!');
         }
       }
       proc.done(messageId);
@@ -175,8 +180,10 @@ function send (proc) {
             nodeIdTarget,
             messageId,
             message);
+          proc.done(messageId);
+        } else {
+          proc.fail(404, 'Specified handle not initialized!');
         }
-        proc.done(messageId);
       } else {
         proc.fail(404, 'Specified handle does not exist!');
       }
