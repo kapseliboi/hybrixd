@@ -4,13 +4,14 @@
   "module":"quartz",
   "mode":"bitcoinjslib.counterparty",
   "factor":8,
+  "longtimeout":60000,
   "feeCounterpartyTX":0.00000546,
   "fee-symbol":"btc",
   "keygen-base":"btc",
   "contract":"XCP",
   "host":["https://counterwallet.coindaddy.io","https://wallet.counterwallet.io"],
   "timeout":32000,
-  "cache":60000,
+  "cache":7500,
   "throttle":5,
   "api-documentation":"https://counterparty.io/docs/counterblock_api/",
   "quartz":{
@@ -45,20 +46,45 @@
       "fail 'No result!'",
       "done"
     ],
-
-
     "transaction" : [
-      "data {'jsonrpc':'2.0','id':0,'method':'get_chain_txns_status','params':{txn_hashes:['$1']}}",
-      "curl asset://$symbol /_api POST {'content-type':'text/plain'}",
-      "tran .result[0] 1 @fail" ,
-      "tran {id:.tx_hash,confirmed:.confirmations,time:.blocktime}  1 @fail",
-      "#TODO missing data for source,dest,amount, fee",
+      "time $longtimeout",
+      "rout 'asset/btc/transaction/$1'",
+      "poke txFee",
+      "with txFee [tran,'.fee',2,1] [fail,'failed to get transaction'] [done]",
+      "curl 'https://xchain.io/api' '/tx/$1' GET",
+      "poke txConfirmed",
+      "with txConfirmed [tran,'.status',1,2] [flow,'valid',3,1] [data,'unknown'] [done] [data,'true']",
+      "tran {id:'.tx_hash', timestamp:'.timestamp', amount:'.quantity', symbol:'.asset', fee:'$txFee', 'fee-symbol':'$fee-symbol', source:'.source', target:'.destination', confirmed:'$txConfirmed'} @done @fail",
+      "@done",
       "done",
       "@fail",
       "fail 'Could not retrieve transaction'"
     ],
+    "sub_history" : [
+      "data ${.value}",
+      "poke historyData",
+      "tran '.asset' @success @fail",
+      "@success",
+      "flow 'XCP' @next @fail",
+      "@next",
+      "peek 'historyData'",
+      "tran '.tx_hash' @end @fail",
+      "@end",
+      "pass",
+      "done",
+      "@fail",
+      "data ''",
+      "done"
+    ],
     "history" : [
-      "rout '/asset/$keygen-base/history/$1/$2/$3'"
+      "curl 'https://xchain.io/api' '/history/$1' GET",
+      "tran '.data' @success @fail",
+      "@fail",
+      "fail 'Could not retrieve history'",
+      "@success",
+      "each 'sub_history'",
+      "excl ''",
+      "done"
     ],
     "fee" : [
       "rout '/asset/btc/fee'",

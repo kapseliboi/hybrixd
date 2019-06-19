@@ -82,7 +82,8 @@
       "curl 'asset://$symbol' 'POST'  {} {retry:15,timeout:$timeout} 2 1",
       "fail 'Could not get transaction data!'",
       "tran .result 2 1",
-      "fail 'Could not read transaction data!'"
+      "fail 'Could not read transaction data!'",
+      "done"
     ],
     "transaction" : [
       "time $longtimeout",
@@ -92,13 +93,12 @@
       "tran '.vin[0].vout' 1 @failed",
       "poke txVoutN",
       "peek txOutData",
-      "tran '.vout[$txVoutN].scriptPubKey.addresses[0]' 1 @failed",
-      "poke txChangeAddress",
-      "peek txOutData",
       "tran '.vin[0].txid' 1 @failed",
       "call transactionData/$",
-      "poke txInData",      
+      "poke txInData",
       "# determine input and output targets",
+      "tran '.vout[$txVoutN].scriptPubKey.addresses[0]' 1 @failed",
+      "poke txChangeAddress",
       "data {out:$txOutData,in:$txInData,excl:'$txChangeAddress'}",
       "call 'transactionTargets/$'",
       "poke txAddr",
@@ -155,11 +155,10 @@
       "done '$'",
       "@zero",
       "done '0'"
-    ],    
+    ],
     "transactionTargets" : [
-      "poke i 0",
       "poke txData",
-      "peek txData",
+      "poke i 0",
       "tran '.excl'",
       "poke exclude",
       "peek txData",
