@@ -1,6 +1,6 @@
-let functions = require('./functions.js');
-let irc = require('irc');
-let data = require('./data');
+const functions = require('./functions.js');
+const irc = require('irc');
+const data = require('./data');
 
 function open (proc, host, chan, hashSalt) {
   let shaHash = require('js-sha256').sha224;
