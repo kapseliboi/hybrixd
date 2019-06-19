@@ -1,6 +1,6 @@
-let functions = require('./functions.js');
-let irc = require('irc');
-let data = require('./data');
+const functions = require('./functions.js');
+const irc = require('irc');
+const data = require('./data');
 
 function open (proc, host, chan, hashSalt) {
   let shaHash = require('js-sha256').sha224;
@@ -9,7 +9,7 @@ function open (proc, host, chan, hashSalt) {
   // TODO: when wrong host or channel input, warn user and quit!!
   let handleId = shaHash(nodeId + host + chan + hashSalt).substr(16, 24);
 
-  if (!data.handles.hasOwnProperty(handleId)) {
+  if (!data.handleIds.hasOwnProperty(handleId)) {
     let port = 6667; // default IRC port
     // setup the irc socket
     let peerId = 'h' + shaHash(nodeId + openTime + hashSalt).substr(0, 15);
