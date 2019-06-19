@@ -100,6 +100,7 @@ hybrixd:
     - cd interface
     - git checkout origin/master -- lib/hybrixdNode.js
     - git checkout origin/master -- lib/interface.js
+    - git checkout origin/master -- lib/methods
     - cd ..
     - cd node
 
@@ -304,7 +305,7 @@ test:
     - "else"
     - "echo \"$PERCENTAGE\""
     - "fi"
-    
+
   coverage: /SUCCESS RATE[^|]*\:[^|]*\s+([\d\.]+)/
   except:
    refs:
@@ -525,7 +526,7 @@ dist:
 
   # create a xz-archive as well
   #- gunzip < ${file}.tar.gz | xz > ${file}.tar.xz
-  
+
   - zip -r ${file}.zip ${component}
   - tar -zcvf ${file}.tar.gz ${component}
   - tar cfJ ${file}.tar.xz ${component}
