@@ -196,7 +196,7 @@ function messageIndex (handle, messageId, nodeIdTarget) {
 }
 
 function readMessage (handle, message) {
-  if(handle) {
+  if (handle) {
     // skip messages if buffer becomes too large!
     let transport = handle.protocol;
     if (handle.buffer.length < 10000) { // TODO

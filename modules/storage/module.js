@@ -22,15 +22,19 @@ function pull (proc, data) {
 }
 
 function seek (proc, data) {
-  storage.seek({key: proc.command[1]}, proc.done);
+  let key = proc.command&&proc.command[1]?proc.command[1]:data.key;
+  storage.seek({key: key}, proc.done);
 }
 
 function meta (proc, data) {
-  storage.getMeta({key: proc.command[1]}, proc.done, proc.fail);
+  let key = proc.command&&proc.command[1]?proc.command[1]:data.key;
+  storage.getMeta({key: key}, proc.done, proc.fail);
 }
 
 function work (proc, data) {
-  storage.provideProof({key: proc.command[1], pow: proc.command[2]}, proc.done, proc.fail);
+  let key = proc.command&&proc.command[1]?proc.command[1]:data.key;
+  let pow = proc.command&&proc.command[2]?proc.command[2]:data.pow;
+  storage.provideProof({key: key, pow: pow}, proc.done, proc.fail);
 }
 
 function load (proc, data) {
