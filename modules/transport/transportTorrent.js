@@ -9,7 +9,7 @@ function open (proc, channel, passwd, hashSalt) {
   // TODO: when wrong host or channel input, warn user and quit!!
   let handleId = shaHash(nodeId + channel + passwd + hashSalt).substr(16, 24);
 
-  if (!data.handleIds.hasOwnProperty(handleId)) {
+  if (!data.handles.hasOwnProperty(handleId)) {
     let port = Math.floor(Math.random() * 10000) + 21201; // choose random port
     // setup the torrent socket
     data.handles[handleId] = { id: handleId, opened: openTime, protocol: 'torrent', host: 'DHT', channel: channel, peerId: null, peers: {}, buffer: [] };

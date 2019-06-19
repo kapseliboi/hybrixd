@@ -9,7 +9,7 @@ function open (proc, host, chan, hashSalt) {
   // TODO: when wrong host or channel input, warn user and quit!!
   let handleId = shaHash(nodeId + host + chan + hashSalt).substr(16, 24);
 
-  if (!data.handleIds.hasOwnProperty(handleId)) {
+  if (!data.handles.hasOwnProperty(handleId)) {
     let port = 6667; // default IRC port
     // setup the irc socket
     let peerId = 'h' + shaHash(nodeId + openTime + hashSalt).substr(0, 15);
