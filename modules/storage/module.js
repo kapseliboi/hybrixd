@@ -6,7 +6,7 @@
 //  -->>> return ipfs.files.add(Buffer.from(content), { onlyHash: true })
 
 // required libraries in this context
-let storage = require('./storage'); // key-value storage
+const storage = require('./storage'); // key-value storage
 
 function cron (proc) {
   storage.autoClean();
@@ -27,13 +27,13 @@ function seek (proc, data) {
 }
 
 function meta (proc, data) {
-  let key = proc.command && proc.command[1] ? proc.command[1] : data.key;
+  const key = proc.command && proc.command[1] ? proc.command[1] : data.key;
   storage.getMeta({key: key}, proc.done, proc.fail);
 }
 
 function work (proc, data) {
-  let key = proc.command && proc.command[1] ? proc.command[1] : data.key;
-  let pow = proc.command && proc.command[2] ? proc.command[2] : data.pow;
+  const key = proc.command && proc.command[1] ? proc.command[1] : data.key;
+  const pow = proc.command && proc.command[2] ? proc.command[2] : data.pow;
   storage.provideProof({key: key, pow: pow}, proc.done, proc.fail);
 }
 
