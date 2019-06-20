@@ -37,12 +37,6 @@
       "data {key:'$1',value:'$2'}",
       "func 'save'",
       "done"
-    ],
-    "del":[
-      "fail 'Deleting data from node storage is not supported!'"
-    ],
-    "burn":[
-      "fail 'Deleting data from node storage is not supported!'"
     ]
   },
   "router" : {
@@ -103,7 +97,6 @@
         "_this" : "Specify the ID key to delete the storage object."
       }
     },
-    "del":{"_alias":"burn"},
     "work":{
       "_help" : "Provide proof-of-work for long term storage.",
       "_ref" : {

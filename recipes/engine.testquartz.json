@@ -160,6 +160,37 @@
      ],
 
 
+    "burn" : [
+      "burn test",
+      "done $OK"
+    ],
+
+    "save" : [
+      "#wait for the burn to be done",
+      "wait 400",
+      "save test 123",
+      "done $OK"
+    ],
+
+    "load" : [
+      "#wait for the save to be done",
+      "wait 400",
+      "load test 1 3",
+      "flow '123' 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+     ],
+
+    "seek" : [
+      "#wait for the save to be done",
+      "wait 400",
+      "seek test 1 3",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+     ],
+
+
+
     "fail" : [
       "hook @hook",
       "fail '$NOT_OK:$0:$'",

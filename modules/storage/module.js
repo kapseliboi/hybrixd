@@ -22,8 +22,8 @@ function pull (proc, data) {
 }
 
 function seek (proc, data) {
-  let key = proc.command && proc.command[1] ? proc.command[1] : data.key;
-  storage.seek({key: key}, proc.done);
+  const key = proc.command && proc.command[1] ? proc.command[1] : data.key;
+  storage.seek({key: key}, proc.done, proc.fail);
 }
 
 function meta (proc, data) {
@@ -45,6 +45,11 @@ function save (proc, data) {
   storage.set({key: data.key, value: data.value, noSync: data.noSync}, proc.done, proc.fail);
 }
 
+function burn (proc, data) {
+  const key = proc.command && proc.command[1] ? proc.command[1] : data.key;
+  storage.burn(key, proc.done, proc.fail);
+}
+
 // exports
 exports.save = save;
 exports.load = load;
@@ -54,3 +59,4 @@ exports.size = size;
 exports.cron = cron;
 exports.meta = meta;
 exports.pull = pull;
+exports.burn = burn;
