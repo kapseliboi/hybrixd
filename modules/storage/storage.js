@@ -21,7 +21,7 @@ function makeDir (dirname) {
   }
 }
 
-let size = function (dataCallback, errorCallback) {
+const size = function (dataCallback, errorCallback) {
   let storageSize = 0;
   if (fs.existsSync(storagePath + '/size')) {
     storageSize = fs.readFileSync(storagePath + '/size').toString();
@@ -29,17 +29,17 @@ let size = function (dataCallback, errorCallback) {
   dataCallback(storageSize);
 };
 
-let seek = function (data, dataCallback) {
+const seek = function (data, dataCallback, errorCallback) { // TODO equip with dataCallback, errorCallback
   const fold = data.key.substr(0, 2) + '/';
   const filePath = storagePath + fold + data.key;
   if (fs.existsSync(filePath)) {
     dataCallback(true);
   } else {
-    dataCallback(false);
+    errorCallback('Not found');
   }
 };
 
-let load = function (data, dataCallback, errorCallback) {
+const load = function (data, dataCallback, errorCallback) {
   const fold = data.key.substr(0, 2) + '/';
   const filePath = storagePath + fold + data.key;
 
@@ -114,7 +114,7 @@ const updateFile = (key, value, dataCallback, errorCallback) => {
   }
 };
 
-let save = function (data, dataCallback, errorCallback) {
+const save = function (data, dataCallback, errorCallback) {
   const storageLimit = 65536;
   if (data.value.length > 65536) { // TODO value to conf
     errorCallback('Storage limit is ' + storageLimit + ' bytes!');
@@ -135,18 +135,7 @@ let save = function (data, dataCallback, errorCallback) {
   }
 };
 
-let sync = function (data, dataCallback, errorCallback) {
-  const fold = data.key.substr(0, 2) + '/';
-  const filePath = storagePath + fold + data.key;
-  const range = 250;
-  const randomIdx = ('00' + Math.floor(Math.random() * range)).slice(-3);
-  if (pullList().indexOf(data.key) === -1 && fs.existsSync(filePath)) {
-    fs.writeFileSync(storagePath + '/sync' + randomIdx, data.key);
-    dataCallback();
-  }
-};
-
-let pullList = function () {
+const pullList = function () {
   const range = 250;
   const list = [];
   for (let i = 0; i < range; i++) {
@@ -159,7 +148,7 @@ let pullList = function () {
   return list;
 };
 
-let pull = function (dataCallback, errorCallback) {
+const pull = function (dataCallback, errorCallback) {
   const list = pullList();
   const result = [];
   for (let i = 0; i < list.length; i++) {
@@ -175,16 +164,34 @@ let pull = function (dataCallback, errorCallback) {
   dataCallback(result);
 };
 
-let del = function (key, dataCallback, errorCallback) {
-  const fold = key.substr(0, 2) + '/';
-  const filePath = storagePath + fold + key;
-  // TODO check if path exists
-  fs.unlinkSync(filePath);
-  fs.unlinkSync(filePath + '.meta');
-  dataCallback();
+const sync = function (data, dataCallback, errorCallback) {
+  const fold = data.key.substr(0, 2) + '/';
+  const filePath = storagePath + fold + data.key;
+  const range = 250;
+  const randomIdx = ('00' + Math.floor(Math.random() * range)).slice(-3);
+  if (pullList().indexOf(data.key) === -1 && fs.existsSync(filePath)) {
+    try {
+      fs.writeFileSync(storagePath + '/sync' + randomIdx, data.key);
+      dataCallback();
+    } catch(e) {
+      errorCallback(e);
+    }
+  }
 };
 
-let provideProof = function (data, dataCallback, errorCallback) {
+const burn = function (key, dataCallback, errorCallback) {
+  const fold = key.substr(0, 2) + '/';
+  const filePath = storagePath + fold + key;
+  if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath);
+  }
+  if (fs.existsSync(filePath + '.meta')) {
+    fs.unlinkSync(filePath + '.meta');
+  }
+  dataCallback('Done');
+};
+
+const provideProof = function (data, dataCallback, errorCallback) {
   const key = data.key;
   const pow = data.pow;
   getMeta(key, (meta) => {
@@ -234,7 +241,7 @@ const getMetaExt = function (data, dataCallback, errorCallback) {
   );
 };
 
-let autoClean = function () {
+const autoClean = function () {
   if (!fs.existsSync(storagePath)) {
     console.log(' [.] module storage: creating storage directory');
     fs.mkdirSync(storagePath);
@@ -301,7 +308,7 @@ exports.sync = sync;
 exports.pull = pull;
 exports.get = load;
 exports.set = save;
-exports.del = del;
+exports.burn = burn;
 exports.getMeta = getMetaExt;
 exports.provideProof = provideProof;
 exports.autoClean = autoClean;
