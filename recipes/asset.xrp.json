@@ -131,7 +131,7 @@
       "@txFail",
       "fail '$local::errorMessage'",
       "@success",
-      "tran '.result.tx_json.hash' @succes2 @fail",
+      "tran '.result.tx_json.hash' @success2 @fail",
       "@success2",
       "done"
     ],
