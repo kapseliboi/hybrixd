@@ -163,7 +163,7 @@ function sendMessage (handle, nodeIdTarget, messageId, message) {
     } else {
       return null;
     }
-  } catch(e) {
+  } catch (e) {
     console.log(' [i] transport ' + transport + ': closed before message could be sent');
   }
 }
@@ -282,7 +282,7 @@ function readMessage (handle, message) {
         return null;
       }
     }
-  } catch(e) {
+  } catch (e) {
     console.log(' [i] transport ' + transport + ': closed before message could be read');
   }
 }
