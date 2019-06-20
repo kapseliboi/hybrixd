@@ -145,22 +145,26 @@ function routeMessage (handle, nodeIdTarget, messageId, messageContent) {
 }
 
 function sendMessage (handle, nodeIdTarget, messageId, message) {
-  if (handle) {
-    let messageChunks = stringChunks(message, 256);
-    let messageContent;
-    let chunkNr;
-    let chunk;
-    for (let i = messageChunks.length - 1; i > -1; i--) {
-      chunkNr = i || '^' + messageChunks.length;
-      chunk = chunkNr + '|' + messageChunks[i];
-      // console.log(' ORIGINL ' + i + ' : ' + chunk );
-      messageContent = (i === messageChunks.length - 1 ? nodeIdTarget : '') + '|' + messageId + '|' + UrlBase64.safeCompress(chunk);
-      // console.log(' CRYPTED ' + i + ' : ' + messageContent);
-      handle.send(handle, nodeIdTarget, messageContent);
+  try {
+    if (handle) {
+      let messageChunks = stringChunks(message, 256);
+      let messageContent;
+      let chunkNr;
+      let chunk;
+      for (let i = messageChunks.length - 1; i > -1; i--) {
+        chunkNr = i || '^' + messageChunks.length;
+        chunk = chunkNr + '|' + messageChunks[i];
+        // console.log(' ORIGINL ' + i + ' : ' + chunk );
+        messageContent = (i === messageChunks.length - 1 ? nodeIdTarget : '') + '|' + messageId + '|' + UrlBase64.safeCompress(chunk);
+        // console.log(' CRYPTED ' + i + ' : ' + messageContent);
+        handle.send(handle, nodeIdTarget, messageContent);
+      }
+      return messageId;
+    } else {
+      return null;
     }
-    return messageId;
-  } else {
-    return null;
+  } catch(e) {
+    console.log(' [i] transport ' + transport + ': closed before message could be sent');
   }
 }
 
@@ -196,86 +200,90 @@ function messageIndex (handle, messageId, nodeIdTarget) {
 }
 
 function readMessage (handle, message) {
-  if (handle) {
-    // skip messages if buffer becomes too large!
-    let transport = handle.protocol;
-    if (handle.buffer.length < 10000) { // TODO
-      let relay = message.substr(0, 1) === '+';
-      if (relay) { message = message.substr(2); }
-      let messageBase = message.substr(nthIndex(message, '|', 2) + 1);
-      message = message.split('|');
-      let nodeIdTarget = message.shift(); // get nodeIdTarget
-      let messageId = message.shift(); // get unique ID
-      // in case of multipart message, recover nodeIdTarget, from message buffer
-      if (nodeIdTarget === '') {
-        let idx = messageIndex(handle, messageId);
-        nodeIdTarget = handle.buffer[idx].from;
-      }
-      // store id on stack
-      handle.idStack.push(messageId);
-      if (handle.idStack.length > 1000) {
-        handle.idStack.shift();
-      }
-      if (nodeIdTarget === '*' || nodeIdTarget === global.hybrixd.node.publicKey) { // message addressed to us?
-        let messageContent = UrlBase64.safeDecompress(messageBase);
-        let partsComplete = false;
-        let response = false;
-        if (messageContent) {
-          let chunks = 0;
-          let chunkNr = messageContent.substr(0, messageContent.indexOf('|'));
-          if (chunkNr.substr(0, 1) === '^') { chunks = chunkNr.substr(1); chunkNr = '0'; } // cut off length definition
-          messageContent = messageContent.substr(messageContent.indexOf('|') + 1);
-          let idx = messageIndex(handle, messageId, nodeIdTarget);
-          // if id already on stack, piece together message chunks
-          if (idx > -1) {
-            handle.buffer[idx].part[chunkNr] = messageContent;
-            // make sure total count of chunks is available
-            if (chunkNr === '0') {
-              handle.buffer[idx].part['N'] = Number(chunks);
-            }
-            // check if message is complete
-            if (handle.buffer[idx].part['N'] > 0) {
-              partsComplete = true;
-              for (let i = 0; i < handle.buffer[idx].part['N']; i++) {
-                if (!handle.buffer[idx].part[i]) {
-                  partsComplete = false;
+  try {
+    if (handle) {
+      // skip messages if buffer becomes too large!
+      let transport = handle.protocol;
+      if (handle.buffer.length < 10000) { // TODO
+        let relay = message.substr(0, 1) === '+';
+        if (relay) { message = message.substr(2); }
+        let messageBase = message.substr(nthIndex(message, '|', 2) + 1);
+        message = message.split('|');
+        let nodeIdTarget = message.shift(); // get nodeIdTarget
+        let messageId = message.shift(); // get unique ID
+        // in case of multipart message, recover nodeIdTarget, from message buffer
+        if (nodeIdTarget === '') {
+          let idx = messageIndex(handle, messageId);
+          nodeIdTarget = handle.buffer[idx].from;
+        }
+        // store id on stack
+        handle.idStack.push(messageId);
+        if (handle.idStack.length > 1000) {
+          handle.idStack.shift();
+        }
+        if (nodeIdTarget === '*' || nodeIdTarget === global.hybrixd.node.publicKey) { // message addressed to us?
+          let messageContent = UrlBase64.safeDecompress(messageBase);
+          let partsComplete = false;
+          let response = false;
+          if (messageContent) {
+            let chunks = 0;
+            let chunkNr = messageContent.substr(0, messageContent.indexOf('|'));
+            if (chunkNr.substr(0, 1) === '^') { chunks = chunkNr.substr(1); chunkNr = '0'; } // cut off length definition
+            messageContent = messageContent.substr(messageContent.indexOf('|') + 1);
+            let idx = messageIndex(handle, messageId, nodeIdTarget);
+            // if id already on stack, piece together message chunks
+            if (idx > -1) {
+              handle.buffer[idx].part[chunkNr] = messageContent;
+              // make sure total count of chunks is available
+              if (chunkNr === '0') {
+                handle.buffer[idx].part['N'] = Number(chunks);
+              }
+              // check if message is complete
+              if (handle.buffer[idx].part['N'] > 0) {
+                partsComplete = true;
+                for (let i = 0; i < handle.buffer[idx].part['N']; i++) {
+                  if (!handle.buffer[idx].part[i]) {
+                    partsComplete = false;
+                  }
                 }
               }
-            }
-            if (partsComplete) {
-              // reconstruct entire message
-              let dataArray = [];
-              for (let i = 0; i < handle.buffer[idx].part['N']; i++) {
-                dataArray.push(handle.buffer[idx].part[i]);
-                delete handle.buffer[idx].part[i];
+              if (partsComplete) {
+                // reconstruct entire message
+                let dataArray = [];
+                for (let i = 0; i < handle.buffer[idx].part['N']; i++) {
+                  dataArray.push(handle.buffer[idx].part[i]);
+                  delete handle.buffer[idx].part[i];
+                }
+                handle.buffer[idx].data = dataArray.join('');
+                delete handle.buffer[idx].part;
+                if (handle.buffer[idx].data.substr(0, 2) === '#|') {
+                  handle.buffer[idx].data = handle.buffer[idx].data.substr(2);
+                  response = true;
+                }
               }
-              handle.buffer[idx].data = dataArray.join('');
-              delete handle.buffer[idx].part;
-              if (handle.buffer[idx].data.substr(0, 2) === '#|') {
-                handle.buffer[idx].data = handle.buffer[idx].data.substr(2);
-                response = true;
-              }
+              return {
+                relay: relay,
+                response: response,
+                complete: partsComplete,
+                nodeIdTarget: nodeIdTarget,
+                messageId: messageId,
+                messageContent: partsComplete ? handle.buffer[idx].data : null
+              };
+            } else {
+              return null;
             }
-            return {
-              relay: relay,
-              response: response,
-              complete: partsComplete,
-              nodeIdTarget: nodeIdTarget,
-              messageId: messageId,
-              messageContent: partsComplete ? handle.buffer[idx].data : null
-            };
           } else {
+            console.log(' [!] transport ' + transport + ': mangled message [' + messageId + ']!');
             return null;
           }
-        } else {
-          console.log(' [!] transport ' + transport + ': mangled message [' + messageId + ']!');
-          return null;
         }
+      } else {
+        console.log(' [!] transport ' + transport + ': buffer overflow, discarding messages!');
+        return null;
       }
-    } else {
-      console.log(' [!] transport ' + transport + ': buffer overflow, discarding messages!');
-      return null;
     }
+  } catch(e) {
+    console.log(' [i] transport ' + transport + ': closed before message could be read');
   }
 }
 
