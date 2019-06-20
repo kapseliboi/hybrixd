@@ -148,19 +148,6 @@ const pullList = function () {
   return list;
 };
 
-const sync = function (data, dataCallback, errorCallback) {
-  const fold = data.key.substr(0, 2) + '/';
-  const filePath = storagePath + fold + data.key;
-  const range = 250;
-  const randomIdx = ('00' + Math.floor(Math.random() * range)).slice(-3);
-  if (pullList().indexOf(data.key) === -1 && fs.existsSync(filePath)) {
-    fs.writeFileSync(storagePath + '/sync' + randomIdx, data.key);
-    dataCallback();
-  } else {
-    errorCallback();
-  }
-};
-
 const pull = function (dataCallback, errorCallback) {
   const list = pullList();
   const result = [];
@@ -175,6 +162,21 @@ const pull = function (dataCallback, errorCallback) {
     }
   }
   dataCallback(result);
+};
+
+const sync = function (data, dataCallback, errorCallback) {
+  const fold = data.key.substr(0, 2) + '/';
+  const filePath = storagePath + fold + data.key;
+  const range = 250;
+  const randomIdx = ('00' + Math.floor(Math.random() * range)).slice(-3);
+  if (pullList().indexOf(data.key) === -1 && fs.existsSync(filePath)) {
+    try {
+      fs.writeFileSync(storagePath + '/sync' + randomIdx, data.key);
+      dataCallback();
+    } catch(e) {
+      errorCallback(e);
+    }
+  }
 };
 
 const burn = function (key, dataCallback, errorCallback) {

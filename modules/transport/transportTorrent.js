@@ -71,8 +71,7 @@ function open (proc, channel, passwd, hashSalt) {
     handle.socket.on('message', function (msg, fromPeerId) {
       // ignore self
       if (fromPeerId !== this.handle.peerId) {
-        let message = msg.toString(); // DEBUG:
-        console.log(' [.] transport torrent: incoming message ' + fromPeerId + ' ' + message);
+        let message = msg.toString(); // DEBUG:  console.log(' [.] transport torrent: incoming message ' + fromPeerId + ' ' + message);
         // peer announcements: register new users in peer list (and return announce)
         if (message.substr(0, 2) === '@|' || message.substr(0, 2) === '~|') {
           // determine if peer relay message
