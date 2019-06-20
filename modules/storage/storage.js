@@ -143,8 +143,6 @@ let sync = function (data, dataCallback, errorCallback) {
   if (pullList().indexOf(data.key) === -1 && fs.existsSync(filePath)) {
     fs.writeFileSync(storagePath + '/sync' + randomIdx, data.key);
     dataCallback();
-  } else {
-    errorCallback();
   }
 };
 
