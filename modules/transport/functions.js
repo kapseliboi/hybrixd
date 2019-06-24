@@ -164,7 +164,7 @@ function sendMessage (handle, nodeIdTarget, messageId, message) {
       return null;
     }
   } catch (e) {
-    console.log(' [i] module transport: socket error on message send -> '+e);
+    console.log(' [i] module transport: socket error on message send -> ' + e);
   }
 }
 
@@ -282,7 +282,7 @@ function readMessage (handle, message) {
         return null;
       }
     } catch (e) {
-      console.log(' [i] module transport: socket error on message read -> '+e);
+      console.log(' [i] module transport: socket error on message read -> ' + e);
     }
   }
 }
