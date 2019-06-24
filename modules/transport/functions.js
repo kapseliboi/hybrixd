@@ -164,7 +164,7 @@ function sendMessage (handle, nodeIdTarget, messageId, message) {
       return null;
     }
   } catch (e) {
-    console.log(' [i] transport ' + transport + ': closed before message could be sent');
+    console.log(' [i] module transport: socket error on message send -> '+e);
   }
 }
 
@@ -200,10 +200,10 @@ function messageIndex (handle, messageId, nodeIdTarget) {
 }
 
 function readMessage (handle, message) {
-  try {
-    if (handle) {
+  if (handle) {
+    let transport = handle.protocol;
+    try {
       // skip messages if buffer becomes too large!
-      let transport = handle.protocol;
       if (handle.buffer.length < 10000) { // TODO
         let relay = message.substr(0, 1) === '+';
         if (relay) { message = message.substr(2); }
@@ -281,9 +281,9 @@ function readMessage (handle, message) {
         console.log(' [!] transport ' + transport + ': buffer overflow, discarding messages!');
         return null;
       }
+    } catch (e) {
+      console.log(' [i] module transport: socket error on message read -> '+e);
     }
-  } catch (e) {
-    console.log(' [i] transport ' + transport + ': closed before message could be read');
   }
 }
 
