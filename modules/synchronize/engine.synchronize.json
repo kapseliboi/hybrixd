@@ -5,23 +5,32 @@
   "readTimeout":120000,
   "syncTimeout":300000,
   "cron" : 60,
+  "cache" : 1000,
   "quartz"  : {
     "cron":[
       "time $syncTimeout",
       "call autosync"
     ],
-    "selectGetPeerID":[
+    "selectGetPeerIDs":[
       "data ${.value}",
+      "poke key",
+      "data $1",
+      "tran '.$key' 1 4",
       "flat",
-      "tran '[0][0]' 2 1",
-      "done null",
-      "done"
+      "tran '[0]'",
+      "done",
+      "done null"
     ],
-    "selectPeer":[
+    "select":[
       "rout e/transport/list/peers",
       "poke nodeList",
-      "with nodeList [flat] [tran,'[1]'] [each,selectGetPeerID] [excl,null]",
-      "data $nodeList",
+      "flat",
+      "tran '[0]'",
+      "each selectGetPeerIDs/$nodeList",
+      "flat",
+      "uniq",
+      "excl null",
+      "poke nodeList",
       "size",
       "rand $",
       "poke selected",
@@ -89,7 +98,7 @@
     ],
     "autosync":[
       "time $syncTimeout",
-      "call selectPeer",
+      "call select",
       "poke nodeID",
       "void @noPeers",
       "call sync/$nodeID",
