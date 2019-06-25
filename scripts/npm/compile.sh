@@ -62,6 +62,9 @@ rsync -avq "$NODE/interface" "$DIST/"
 # Copy interface
 rsync -avq "$NODE/files" "$DIST/"
 
+# Copy test scripts
+mkdir -p "$DIST/scripts/npm/"
+cp "$NODE/scripts/npm/test.sh" "$DIST/scripts/npm/test.sh"
 
 # Copy common
 rsync -avq "$NODE/common/crypto" "$DIST/common/"
@@ -90,6 +93,7 @@ for FILE in $(find $FOLDERS -name '*.js' -or -name '*.js.map' -or -name '*.css' 
          #   ;;
 #    esac
 done
+
 
 
 echo "[.] Prune node npm dev dependencies "
