@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<url>
+  <loc>https://explorer.hybrix.io/</loc>
+  <lastmod>2019-06-18T09:06:10+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://explorer.hybrix.io/bitcoin-transaction-history</loc>
+  <lastmod>2019-06-18T09:06:10+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://explorer.hybrix.io/Ethereum-transaction-history</loc>
+  <lastmod>2019-06-18T09:06:10+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://explorer.hybrix.io/Ripple-transaction-history</loc>
+  <lastmod>2019-06-18T09:06:10+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://explorer.hybrix.io/Bitcoin-Cash-transaction-history</loc>
+  <lastmod>2019-06-18T09:06:10+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://explorer.hybrix.io/Litecoin-transaction-history</loc>
+  <lastmod>2019-06-18T09:06:10+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://explorer.hybrix.io/Tether-transaction-history</loc>
+  <lastmod>2019-06-18T09:06:10+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://explorer.hybrix.io/Stellar-transaction-history</loc>
+  <lastmod>2019-06-18T09:06:10+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://explorer.hybrix.io/Tron-transaction-history</loc>
+  <lastmod>2019-06-18T09:06:10+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://explorer.hybrix.io/Dash-transaction-history</loc>
+  <lastmod>2019-06-18T09:06:10+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://explorer.hybrix.io/Ethereum-classic-transaction-history</loc>
+  <lastmod>2019-06-18T09:06:10+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://explorer.hybrix.io/NEM-transaction-history</loc>
+  <lastmod>2019-06-18T09:06:10+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://explorer.hybrix.io/ZCash-transaction-history</loc>
+  <lastmod>2019-06-18T09:06:10+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://explorer.hybrix.io/Dogecoin-transaction-history</loc>
+  <lastmod>2019-06-18T09:06:10+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://explorer.hybrix.io/Lisk-transaction-history</loc>
+  <lastmod>2019-06-18T09:06:10+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://explorer.hybrix.io/Waves-transaction-history</loc>
+  <lastmod>2019-06-18T09:06:10+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://explorer.hybrix.io/Augur-transaction-history</loc>
+  <lastmod>2019-06-18T09:06:10+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://explorer.hybrix.io/DigiByte-transaction-history</loc>
+  <lastmod>2019-06-18T09:06:10+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://explorer.hybrix.io/Status-transaction-history</loc>
+  <lastmod>2019-06-18T09:06:10+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://explorer.hybrix.io/Dai-transaction-history</loc>
+  <lastmod>2019-06-18T09:06:10+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://explorer.hybrix.io/DigixDAO-transaction-history</loc>
+  <lastmod>2019-06-18T09:06:10+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://explorer.hybrix.io/Ark-transaction-history</loc>
+  <lastmod>2019-06-18T09:06:10+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://explorer.hybrix.io/Nxt-transaction-history</loc>
+  <lastmod>2019-06-18T09:06:10+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+
+
+</urlset>

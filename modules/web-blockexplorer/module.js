@@ -2,6 +2,8 @@
 // hybrixd module - web-wallet/module.js
 // Module to provide the web wallet
 
+const fs = require('fs');
+
 // exec
 function web_blockexplorer (proc) {
   let source = 'web-blockexplorer';
@@ -21,10 +23,17 @@ function web_blockexplorer (proc) {
     html: 'text/html',
     ttf: 'application/x-font-ttf',
     woff2: 'application/x-font-woff',
-    eot: 'application/vnd.ms-fontobject'
+    eot: 'application/vnd.ms-fontobject',
+    txt: 'text/plain',
+    xml: 'application/xml'
   };
 
-  let fileNameSplitByDot = fileName.split('?')[0].split('.');
+  fileName = fileName.split('?')[0];
+  if (!fs.existsSync('../' + fileName)) { // as 404  redirect to main
+    fileName = 'modules/' + source + '/files/index.html';
+  }
+
+  let fileNameSplitByDot = fileName.split('.');
   let extension = fileNameSplitByDot[fileNameSplitByDot.length - 1];
   let mimeType = mimeTypes.hasOwnProperty(extension) ? mimeTypes[extension] : 'text/html';
 
