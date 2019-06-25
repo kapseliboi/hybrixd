@@ -5,9 +5,7 @@ NODEINST=`which node`
 
 # $HYBRIXD/interface/scripts/npm  => $HYBRIXD
 SCRIPTDIR="`dirname \"$0\"`"
-HYBRIXD="`cd \"$SCRIPTDIR/../../..\" && pwd`"
-
-NODE="$HYBRIXD/node"
+NODE="`cd \"$SCRIPTDIR/../..\" && pwd`"
 
 export PATH="$NODE/node_binaries/bin:$PATH"
 
