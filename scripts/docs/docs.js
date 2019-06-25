@@ -41,6 +41,12 @@ for (let id in files) {
     files.forEach(function (file, index) {
       body += '\n' + fs.readFileSync(path + '/' + file, 'utf8').toString();
     });
+  } else if (id === 'qrtz') { // add all methods
+    const path = '../../lib/scheduler/methods';
+    const files = fs.readdirSync(path);
+    files.forEach(function (file, index) {
+      body += '\n' + fs.readFileSync(path + '/' + file, 'utf8').toString();
+    });
   }
 
   let data = fs.readFileSync('../../docs/source/header.html').toString();
@@ -52,7 +58,7 @@ for (let id in files) {
 
   if (files[id].substr(-5) !== '.html') {
     let re;
-    if (id === 'hybrix-lib.js') {
+    if (id === 'hybrix-lib.js' || id === 'qrtz') {
       re = /\/\*\*([\s\S]+?)exports\.(\w*)/g; // match jsdoc templates
     } else {
       re = /\/\*\*([\s\S]+?)this\.(\w*)/g; // match jsdoc templates

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>hybrix | search all blockchains</title>
+    <link rel="stylesheet" type="text/css" href="./explorer.css"/>
+    <script src="./explorer.js"></script>
+  </head>
+
+  <body onLoad="onLoad()">
+
+    <div id="banner" class="no-result">
+      <div class="wrapper">
+        <span><b>Superheroes wanted!</b> Help us in our mission to unite the crypto sphere with your feedback. The explorer is in an experimental stage and we can use your opinion. <a href="https://github.com/hybrix-io" target="_BLANK">Contribute now</a></span>
+      </div>
+    </div>
+
+    <div id="header" class="wrapper no-result">
+        <a href="./" class="logo-small" >
+          <img id="logo-icon" alt="hybrix blockchain explorer" src="./img/search-logo.svg"/>
+        </a>
+
+        <label id="nav">
+
+          <div class="dd-button" onclick="toggleMenu();">
+            <img alt="menu" src="./img/hamburger.svg"/>
+          </div>
+
+          <div id="menu">
+          <ul class="dd-menu">
+            <li>
+              <a href="https://api.hybrix.io/">API documentation</a>
+            </li>
+            <li>
+              <a href="https://hybrix.io/">About hybrix</a>
+            </li>
+            <li class="divider"></li>
+            <li>
+              <a href="http://rane.io">Contribute now!</a>
+            </li>
+          </ul>
+          </div>
+
+        </label>
+
+    </div>
+
+    <div id="main" class="no-result">
+      <div class="wrapper">
+        <div id="searchWrapper" onKeyUp="onKeyUp(event)">
+          <img class="logo" id="logo-icon" alt="hybrix blockchain explorer" src="./img/search-symbol.svg"/>
+
+          <div id="searchBar">
+            <div class="first-part" style="vertical-align:top; display:inline-block;">
+              <input id="symbol" autocomplete="off" autocapitalize="off" spellcheck="false" type="text" oninput="validateSymbol()" onkeydown="validateSymbol()" onclick="showSymbols()" placeholder="token"/>
+              <div id="symbols"></div>
+            </div>
+
+            <div class="second-part">
+              <input id="query" autocomplete="off" autocapitalize="off" spellcheck="false" type="text" oninput="validateQuery()" onkeydown="validateQuery()" placeholder="search for address or transaction ID"/>
+              <input id="go" disabled type="submit" value="" onclick="go()"/>
+            </div>
+          </div>
+        </div>
+
+        <div id="result" class="no-result">...</div>
+
+        <div id="sample" class="no-result">
+          Not sure what you're searching for? Try an <a onclick="trySample('address')">address</a> or a <a  onclick="trySample('transaction')">transaction</a>.
+        </div>
+      </div>
+
+    </div>
+
+    <div id="footer" class="no-result">
+      <div id="stats"> hybrix currently supports 326 tokens on 26 chains </div>
+      &copy; 2019 <a href="https://hybrix.io/">hybrix</a>
+    </div>
+
+  </body>
+</html>

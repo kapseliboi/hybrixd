@@ -54,7 +54,7 @@
 
             <div id="searchBar">
               <div class="first-part" style="vertical-align:top; display:inline-block;">
-                <input id="symbol" autocomplete="off" autocapitalize="off" spellcheck="false" type="text" oninput="validateSymbol()" onkeydown="validateSymbol()" onclick="showSymbols()" placeholder="token"/>
+                <input id="symbol" value="eth.rep" autocomplete="off" autocapitalize="off" spellcheck="false" type="text" oninput="validateSymbol()" onkeydown="validateSymbol()" onclick="showSymbols()" placeholder="token"/>
                 <div id="symbols"></div>
               </div>
               <div class="second-part">

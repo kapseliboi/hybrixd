@@ -1,0 +1,22 @@
+btc bitcoin-transaction-history
+eth Ethereum-transaction-history
+xrp Ripple-transaction-history
+bch Bitcoin-Cash-transaction-history
+ltc Litecoin-transaction-history
+omni.usdt Tether-transaction-history
+xlm Stellar-transaction-history
+trx Tron-transaction-history
+dash Dash-transaction-history
+etc Ethereum-classic-transaction-history
+xem NEM-transaction-history
+zec ZCash-transaction-history
+doge Dogecoin-transaction-history
+lsk Lisk-transaction-history
+waves Waves-transaction-history
+eth.rep Augur-transaction-history
+dgb DigiByte-transaction-history
+eth.snt Status transaction history
+eth.dai Dai-transaction-history
+eth.dgd DigixDAO-transaction-history
+ark Ark-transaction-history
+nxt Nxt-transaction-history
