@@ -65,7 +65,7 @@
       "poke historyData",
       "tran '.asset' @success @fail",
       "@success",
-      "flow 'XCP' @next @fail",
+      "flow '$contract' @next @fail",
       "@next",
       "peek 'historyData'",
       "tran '.tx_hash' @end @fail",
