@@ -81,14 +81,15 @@
       "each syncItem/$nodeID",
       "poke syncResult",
       "copy syncResult syncSuccess syncFailure",
-      "with syncSuccess [excl,0] [size]",
-      "with syncFailure [excl,1] [size]",
+      "with syncSuccess [excl,[0,null]] [size]",
+      "with syncFailure [excl,[1,null]] [size]",
       "done {synced:$syncSuccess,failed:$syncFailure}"
     ],
     "syncItem":[
       "time $readTimeout",
       "data ${.value}",
-      "void 'empty' 3 1",
+      "void 'empty' 1 2",
+      "done null",
       "poke key",
       "rout e/transport/rout/$1/e/storage/get/$key 2 1",
       "done 0",
