@@ -1,3 +1,38 @@
+# v0.5.11
+## Furry Pink Sphinx
+## 26-06-2019
+
+* Point-Math-common-for-compiled-version
+* Update math.js
+* select peer fix
+* Update test paths
+* Add test.sh to compile
+* Fix qrtz documentation, update explorer
+* ESlinted changes
+* increased verbosity on send/read errors for transports
+* wallet-users-cannot-seen-NXT-token-balance
+* fix for retriving asset balance
+* refactor qrtz into methods
+* xrp-faulty-qrtz typo in jump rectified
+* ESlinted
+* Improve testing for interface and qaurtz
+* save and sync bug fixed: return no error on non-sync save
+* catch attempted reads and sends to closed handles
+* disabled debug message
+* ESlinted
+* fixStorage
+* fix possible issue with set/get
+* implement eth token history
+* Fix routetree
+* implement-messages-for-nxt
+* final fixes to storage
+* storage command interpretation fixed to allow arguments and data
+* check for handle before action
+* avoid duplicate handles (test)
+* announce bug due to linting
+* linting problem with()
+* Issue/709 xcp sample transaction
+
 # v0.5.10
 ## Happy Pink Kobold
 ## 18-06-2019
