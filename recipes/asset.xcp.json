@@ -65,7 +65,7 @@
       "poke historyData",
       "tran '.asset' @success @fail",
       "@success",
-      "flow 'XCP' @next @fail",
+      "flow '$contract' @next @fail",
       "@next",
       "peek 'historyData'",
       "tran '.tx_hash' @end @fail",
@@ -78,6 +78,7 @@
     ],
     "history" : [
       "curl 'https://xchain.io/api' '/history/$1' GET",
+      "logs",
       "tran '.data' @success @fail",
       "@fail",
       "fail 'Could not retrieve history'",
