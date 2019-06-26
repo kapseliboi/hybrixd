@@ -1,3 +1,9 @@
+# v0.5.12
+## Little Pink Phoenix
+## 26-06-2019
+
+* Upgraded helm and kubernetes versions for deployment improvements
+
 # v0.5.11
 ## Furry Pink Sphinx
 ## 26-06-2019
