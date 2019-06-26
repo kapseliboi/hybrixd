@@ -78,7 +78,6 @@
     ],
     "history" : [
       "curl 'https://xchain.io/api' '/history/$1' GET",
-      "logs",
       "tran '.data' @success @fail",
       "@fail",
       "fail 'Could not retrieve history'",
