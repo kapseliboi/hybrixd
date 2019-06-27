@@ -118,19 +118,19 @@
     ],
     "fee" : [
       "poke opreturnFee 0",
+      "data $1",
+      "void @finalize 1",
       "data '$1'",
-      "void 'empty' @finalize 1",
-      "ship 3 3 3 1",
-      "data '$1'",
+      "ship 2 2 2 1",
       "size",
       "math '$*$feePerByte'",
       "poke opreturnFee",
       "@finalize",
-      "peek local::fee",
+      "peek local::fee $fee",
       "math '$+$opreturnFee'",
       "flow 'null' 1 2",
       "data '$fee'",
-      "@feeDone" 
+      "@feeDone"
     ],
     "experimental_A" : [
       "# get latest block hash",
