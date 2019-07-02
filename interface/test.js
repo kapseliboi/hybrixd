@@ -402,6 +402,8 @@ let renderTableWeb = (unorderdedData) => {
   document.body.innerHTML = r;
 };
 
+let lastP;
+
 function go (mode) {
   // TODO retrieve all asset
   // TODO filter tokens
@@ -415,7 +417,25 @@ function go (mode) {
   if (mode === 'node') {
     ProgressBar = require('progress');
     makeProgressBar('test progress');
-    progressCallback = progress => { bar.update(progress); };
+    progressCallback = progress => {
+      if(!ops.quiet){
+        if(ops.verbose){
+          const s = String(progress*100).split('.')
+          let P;
+          if(s.length===1){
+            P=  s[0]+'.0';
+          }else{
+            P=  s[0]+'.'+s[1][0];
+          }
+          if(P!==lastP){
+            console.log(P+'%')
+            lastP=P;
+          }
+        }else{
+          bar.update(progress);
+        }
+      }
+    };
     // cli options
 
     const stdio = require('stdio');
@@ -425,8 +445,9 @@ function go (mode) {
       'symbol': {key: 's', args: 1, description: 'Select a symbol or comma separated symbols to run test'},
       'debug': {key: 'd', args: 0, description: 'Output debug messages.'},
       'host': {key: 'h', args: 1, description: 'Set host Defaults to :' + host},
-      'path': {key: 'p', args: 1, description: 'Set path for interface files Defaults to :' + path }
-      // TODO 'quiet': {key: 'q', args: 0, description: 'No extra output other than raw data'}
+      'path': {key: 'p', args: 1, description: 'Set path for interface files Defaults to :' + path },
+      'verbose': {key:'v', args: 0, description: 'Output verbose progress' },
+      'quiet': {key: 'q', args: 0, description: 'No extra output other than raw data'}
     });
     if (typeof ops.host !== 'undefined') { host = ops.host; }
     symbolsToTest = ops.symbol;
