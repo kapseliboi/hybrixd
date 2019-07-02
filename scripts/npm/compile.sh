@@ -31,7 +31,9 @@ echo "[.] Creating hybrixd release..."
 # Create path if required, clean otherwise
 mkdir -p "$DIST"
 echo "[.] Cleaning target path"
-rm -rfv "$DIST/*" >/dev/null
+rm -rfv "$DIST" >/dev/null
+
+mkdir -p "$DIST"
 
 echo "[.] Processing files"
 cd "$NODE"
@@ -78,17 +80,17 @@ cp $NODE/common/*.json "$DIST/common/"
 #TODO node runtime
 #TODO default dummy conf??
 
-FOLDERS="lib docs recipes recipes.EXTRA"
+
 mkdir -p "$DIST/recipes"
-rsync -avq --include="*.json" --exclude="*" "./recipes" "$DIST/recipes"
+rsync -aq --include="*.json" --include="*/" --exclude="*" "./recipes/" "$DIST/recipes/"
 mkdir -p "$DIST/recipes.EXTRA"
-rsync -avq --include="*.json" --exclude="*" "./recipes.EXTRA" "$DIST/recipes.EXTRA"
+rsync -aq --include="*.json" --include="*/" --exclude="*" "./recipes.EXTRA/" "$DIST/recipes.EXTRA/"
 
 mkdir -p "$DIST/lib"
-rsync -avq --include="*.js" --include="*.js.map" --include="*.css" --include="*.json" --include="*.html" --include="*.ico" --include="*.png" --include="*.svg" --include="*.lzma" --include="*.ttg" --include="*.woff" --include="*.woff2" --include="*.eot" --exclude="*" "./lib" "$DIST/lib"
+rsync -avq --include="*.js" --include="*.js.map" --include="*.css" --include="*.json" --include="*.html" --include="*.ico" --include="*.png" --include="*.svg" --include="*.lzma" --include="*.ttg" --include="*.woff" --include="*.woff2" --include="*.eot"  --include="*/" --exclude="*" "./lib/" "$DIST/lib/"
 
 mkdir -p "$DIST/docs"
-rsync -avq --include="*.js" --include="*.js.map" --include="*.css" --include="*.json" --include="*.html" --include="*.ico" --include="*.png" --include="*.svg" --include="*.lzma" --include="*.ttg" --include="*.woff" --include="*.woff2" --include="*.eot" --exclude="*" "./docs" "$DIST/docs"
+rsync -avq --include="*.js" --include="*.js.map" --include="*.css" --include="*.json" --include="*.html" --include="*.ico" --include="*.png" --include="*.svg" --include="*.lzma" --include="*.ttg" --include="*.woff" --include="*.woff2" --include="*.eot"  --include="*/" --exclude="*" "./docs/" "$DIST/docs/"
 
 echo "[.] Prune node npm dev dependencies "
 cd "$DIST"
