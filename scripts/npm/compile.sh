@@ -70,7 +70,6 @@ mkdir -p "$DIST/scripts/pipeline/"
 cp "$NODE/scripts/pipeline/build.sh" "$DIST/scripts/pipeline/build.sh"
 cp "$NODE/scripts/pipeline/test.sh" "$DIST/scripts/pipeline/test.sh"
 
-
 # Copy common
 rsync -avq "$NODE/common/crypto" "$DIST/common/"
 rsync -avq "$NODE/common/node_modules" "$DIST/common/"
@@ -80,30 +79,16 @@ cp $NODE/common/*.json "$DIST/common/"
 #TODO default dummy conf??
 
 FOLDERS="lib docs recipes recipes.EXTRA"
-#rsync -avq --include="recipes/*" --include="recipes.EXTRA/*" --include="*.json" --exclude="*" "." "$DIST"
+mkdir -p "$DIST/recipes"
+rsync -avq --include="*.json" --exclude="*" "./recipes" "$DIST/recipes"
+mkdir -p "$DIST/recipes.EXTRA"
+rsync -avq --include="*.json" --exclude="*" "./recipes.EXTRA" "$DIST/recipes.EXTRA"
 
-#rsync -avq --include="lib/*" --include="docs/*" --include="*.js" --include="*.js.map" --include="*.css" --include="*.json" --include="*.html" --include="*.ico" --include="*.png" --include="*.svg" --include="*.lzma" --include="*.ttg" --include="*.woff" --include="*.woff2" --include="*.eot" --exclude="*" "." "$DIST"
+mkdir -p "$DIST/lib"
+rsync -avq --include="*.js" --include="*.js.map" --include="*.css" --include="*.json" --include="*.html" --include="*.ico" --include="*.png" --include="*.svg" --include="*.lzma" --include="*.ttg" --include="*.woff" --include="*.woff2" --include="*.eot" --exclude="*" "./lib" "$DIST/lib"
 
-
-# Only copy files certain with certain exenstions
-for FILE in $(find $FOLDERS -name '*.js' -or -name '*.js.map' -or -name '*.css' -or -name '*.json' -or -name '*.html' -or -name '*.ico' -or -name '*.png' -or -name '*.svg' -or -name '*.lzma' -or -name '*.ttf' -or -name '*.woff' -or -name '*.woff2' -or -name '*.eot'); do
- #   EXT="${FILE##*.}"
-    FOLDER=$(dirname "${FILE}")
-    mkdir -p "$DIST/$FOLDER"
-  #  case "$EXT" in
-   #     js)
-    #        $UGLIFY "$FILE" --compress --mangle > "$DIST/$FILE"
-     #       ;;
-      #  css)
-       #     $CSSMIN "$FILE" > "$DIST/$FILE"
-        #    ;;
-        #*)
-            cp "$FILE" "$DIST/$FOLDER"
-         #   ;;
-#    esac
-done
-
-
+mkdir -p "$DIST/docs"
+rsync -avq --include="*.js" --include="*.js.map" --include="*.css" --include="*.json" --include="*.html" --include="*.ico" --include="*.png" --include="*.svg" --include="*.lzma" --include="*.ttg" --include="*.woff" --include="*.woff2" --include="*.eot" --exclude="*" "./docs" "$DIST/docs"
 
 echo "[.] Prune node npm dev dependencies "
 cd "$DIST"
@@ -112,7 +97,6 @@ cd "$DIST"
 echo "[.] Prune common npm dev dependencies "
 cd "$DIST/common"
 "$NPMINST" prune --production
-
 
 echo "[.] Release created in node/dist"
 echo "[.] Make sure you have a proper hybrixd.conf and node binaries."
