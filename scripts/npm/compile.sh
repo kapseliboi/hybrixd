@@ -66,6 +66,11 @@ rsync -avq "$NODE/files" "$DIST/"
 mkdir -p "$DIST/scripts/npm/"
 cp "$NODE/scripts/npm/test.sh" "$DIST/scripts/npm/test.sh"
 
+mkdir -p "$DIST/scripts/pipeline/"
+cp "$NODE/scripts/pipeline/build.sh" "$DIST/scripts/pipeline/build.sh"
+cp "$NODE/scripts/pipeline/test.sh" "$DIST/scripts/pipeline/test.sh"
+
+
 # Copy common
 rsync -avq "$NODE/common/crypto" "$DIST/common/"
 rsync -avq "$NODE/common/node_modules" "$DIST/common/"
@@ -75,10 +80,14 @@ cp $NODE/common/*.json "$DIST/common/"
 #TODO default dummy conf??
 
 FOLDERS="lib docs recipes recipes.EXTRA"
+#rsync -avq --include="recipes/*" --include="recipes.EXTRA/*" --include="*.json" --exclude="*" "." "$DIST"
+
+#rsync -avq --include="lib/*" --include="docs/*" --include="*.js" --include="*.js.map" --include="*.css" --include="*.json" --include="*.html" --include="*.ico" --include="*.png" --include="*.svg" --include="*.lzma" --include="*.ttg" --include="*.woff" --include="*.woff2" --include="*.eot" --exclude="*" "." "$DIST"
+
 
 # Only copy files certain with certain exenstions
 for FILE in $(find $FOLDERS -name '*.js' -or -name '*.js.map' -or -name '*.css' -or -name '*.json' -or -name '*.html' -or -name '*.ico' -or -name '*.png' -or -name '*.svg' -or -name '*.lzma' -or -name '*.ttf' -or -name '*.woff' -or -name '*.woff2' -or -name '*.eot'); do
-    EXT="${FILE##*.}"
+ #   EXT="${FILE##*.}"
     FOLDER=$(dirname "${FILE}")
     mkdir -p "$DIST/$FOLDER"
   #  case "$EXT" in
