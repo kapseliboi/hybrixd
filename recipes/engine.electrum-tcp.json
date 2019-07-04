@@ -75,8 +75,7 @@
       "tran '.result' 4 1",
       "tran('.error',1,2)",
       "fail ${.message}",
-      "fail 'Bad transaction result!'",
-      "done"
+      "fail 'Bad transaction result!'"
     ],
     "transactionData" : [
       "time $longtimeout",
@@ -85,8 +84,7 @@
       "curl 'asset://$symbol' 'POST'  {} {retry:15,timeout:$timeout} 2 1",
       "fail 'Could not get transaction data!'",
       "tran .result 2 1",
-      "fail 'Could not read transaction data!'",
-      "done"
+      "fail 'Could not read transaction data!'"
     ],
     "transaction" : [
       "time $longtimeout",
@@ -145,6 +143,7 @@
       "@success"
     ],
     "transactionValueFilter" : [
+      "time $timeout",
       "poke txValue 0",
       "with exclude [data,$1] [splt,',']",
       "poke txData ${.value}",
@@ -160,6 +159,7 @@
       "done '0'"
     ],
     "transactionTargets" : [
+      "time $timeout",
       "poke txData",
       "poke i 0",
       "tran '.excl'",

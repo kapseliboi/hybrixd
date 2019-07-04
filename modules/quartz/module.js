@@ -30,9 +30,10 @@ function addSubprocesses (subprocesses, commands, recipe, xpath) {
     }
     if (command === 'transactionData') { // cache data
       // attempt reload of data
+      subprocesses.push('time $timeout');
       subprocesses.push('data "$1_$symbol"');
       subprocesses.push('hash');
-      subprocesses.push('data tx$');
+      subprocesses.push('data "tx$"');
       subprocesses.push('poke storageHash');
       subprocesses.push('load "$storageHash" 1 @requestData');
       subprocesses.push('unpk 1 @requestData');
