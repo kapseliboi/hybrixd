@@ -179,7 +179,12 @@
       "_help" : "Commands to control and check the API Queue.",
       "pause":"Pause the API Queue",
       "resume":"Resume the API Queue when it is paused.",
-      "status":"Check the status of the API Queue."
+      "status":"Check the status of the API Queue.",
+      "test": {
+        "start": "Enable test mode using cached values.",
+        "stop": "Disable test mode using cached values.",
+        "status": "Check the status of the test mode."
+      }
     },
     "cache" :{
       "_help" : "Commands to control and check the cache.",
