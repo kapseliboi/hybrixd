@@ -147,7 +147,7 @@
       "# for every tx get fee",
       "# calculate median fee",
       "# DIVIDER",
-      "peek local::fee",
+      "peek local::fee $fee",
       "data '$'",
       "flow 'null' 1 2",
       "data '$fee'"

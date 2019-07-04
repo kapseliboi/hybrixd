@@ -259,11 +259,11 @@
       "math '$*$feePerByte'",
       "poke opreturnFee",
       "@finalize",
-      "peek local::fee",
+      "peek local::fee $fee",
       "math '$+$opreturnFee'",
       "flow 'null' 1 2",
       "data '$fee'",
-      "@feeDone" 
+      "@feeDone"
     ],
     "cron" : [
       "data '$symbol'",
