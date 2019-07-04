@@ -115,8 +115,8 @@ const updateFile = (key, value, dataCallback, errorCallback) => {
 };
 
 const save = function (data, dataCallback, errorCallback) {
-  const storageLimit = 65536;
-  if (data.value.length > 65536) { // TODO value to conf
+  const storageLimit = 131072;
+  if (data.value.length > 131072) { // TODO value to conf
     errorCallback('Storage limit is ' + storageLimit + ' bytes!');
   } else {
     const fold = data.key.substr(0, 2) + '/';
