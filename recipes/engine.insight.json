@@ -19,7 +19,7 @@
   "quartz":{
     "balance" : [
       "time $timeout",
-      "curl asset://$symbol /addr/$1?noTxList=1 GET {'Content-Type':'application/json'} {timeout:$shortTimeout}",
+      "curl asset://$symbol /addr/$1?noTxList=1 GET {} {timeout:$shortTimeout}",
       "tran {confirmed:'.balance',unconfirmed:'.unconfirmedBalance'} 3 1",
       "data 0",
       "jump 2",
@@ -29,7 +29,7 @@
       "poke inputval '$2' '1000000000000'",
       "with inputval atom 1",
       "time $timeout",
-      "curl asset://$symbol /addr/$1/utxo GET {'Content-Type':'application/json'}",
+      "curl asset://$symbol /addr/$1/utxo GET {}",
       "each 'unspent_tran'",
       "sort '.amount'",
       "scan 'cnt<($inputval+val.amount)' '+val.amount'",
@@ -68,7 +68,7 @@
     ],
     "transactionData" : [
       "time $timeout",
-      "curl asset://$symbol /tx/$1 GET {'Content-Type': 'application/json'} {} 2 1",
+      "curl asset://$symbol /tx/$1 GET {'Content-Type': 'application/json'} {timeout:$timeout} 2 1",
       "fail 'Could not get transaction data!'",
       "have .txid 2 1",
       "fail 'Could not read transaction data!'"
@@ -109,7 +109,7 @@
       "poke offset $3 0",
       "time $longTimeout",
       "with countTo [data,'$count'] [math,'+$offset']",
-      "curl asset://$symbol /addrs/$1/txs?from=$offset&to=$countTo GET {timeout:$timeout} 1 @fail",
+      "curl asset://$symbol /addrs/$1/txs?from=$offset&to=$countTo GET {} {timeout:$timeout} 1 @fail",
       "tran '.items' 1 @fail",
       "tran '[].txid' 1 @fail",
       "done",
@@ -134,7 +134,7 @@
     ],
     "experimental_A" : [
       "# get latest block hash",
-      "curl asset://$symbol /blocks?limit=3 GET {timeout:$timeout}",
+      "curl asset://$symbol /blocks?limit=3 GET {} {timeout:$timeout}",
       "tran .blocks[].hash 2 1",
       "fail 'Cannot get fee!'",
       "# get at least 10 tx hashes",
@@ -154,7 +154,7 @@
     ],
     "experimental_getBlock" : [
       "data ${.value}",
-      "curl asset://$symbol /txs/?block=$ GET {timeout:$timeout}",
+      "curl asset://$symbol /txs/?block=$ GET {} {timeout:$timeout}",
       "tran .txs[].txid",
       "done"
     ],
@@ -169,7 +169,7 @@
     ],
     "getFee" : [
       "time $timeout",
-      "curl asset://$symbol /utils/estimatefee GET {timeout:$timeout}",
+      "curl asset://$symbol /utils/estimatefee GET {} {timeout:$timeout}",
       "tran '.2' 1 3",
       "ship 1 2 2 2",
       "poke local::fee",
