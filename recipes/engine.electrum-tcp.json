@@ -246,7 +246,7 @@
     "test" : [
       "time $longtimeout",
       "data {jsonrpc:'2.0',id:$,method:'blockchain.transaction.get_merkle',params:['$1']}",
-      "curl 'asset://$symbol' 'POST'  {} {retry:15,timeout:$timeout}",
+      "curl 'asset://$symbol' 'POST' {} {retry:15,timeout:$timeout}",
       "done"
     ],
     "fee" : [
