@@ -12,7 +12,7 @@ export PATH="$NODE/node_binaries/bin:$PATH"
 echo " [i] Running Interface tests"
 
 if [ "$1" = "v" ]; then
-    node "$NODE/interface/test.js" --path="$NODE/interface" -v | tee output
+    node "$NODE/interface/test.js" --path="$NODE/interface" -v --xml="$NODE/test-hybrixd.xml" | tee output
 else
     node "$NODE/interface/test.js" --path="$NODE/interface" | tee output
 fi
