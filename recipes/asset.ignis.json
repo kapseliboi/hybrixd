@@ -12,7 +12,7 @@
   "import":"nxt",
   "throttle":5,
   "genesisBlockTime":1385294400,
-  "chain": 2,
+  "chain":2,
   "quartz":{
     "validate": [
       "done valid"
