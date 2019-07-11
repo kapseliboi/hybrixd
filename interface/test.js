@@ -18,7 +18,7 @@ const knownIssues = {
   'dgb_seedSignHash': {message:"Not yet functioning. Perhaps funds missing for test", link:""},
 
   etc_sampleHistory: {message:"Not yet functioning", link:"https://gitlab.com/hybrix/hybrixd/node/issues/699"},
-//  etc_sampleTransaction: {message:"Not yet functioning", link:""},
+  //  etc_sampleTransaction: {message:"Not yet functioning", link:""},
   'eth.xhy_sampleHistory':{message: "Eth token history not yet supported", link:"https://gitlab.com/hybrix/hybrixd/node/issues/701"},
   exp_sampleHistory: {message:"Not yet functioning", link:""},
 
@@ -101,7 +101,7 @@ function testAsset (symbol) {
         sampleValid: {data: {query: '/asset/' + symbol + '/validate/' + result.sample.address}, step: 'rout'},
         sampleBalance: {data: {query: '/asset/' + symbol + '/balance/' + result.sample.address}, step: 'rout'},
         sampleUnspent: {data: {query: '/asset/' + symbol + '/unspent/' + result.sample.address + '/' + (Number(DEFAULT_AMOUNT) + Number(result.details.fee)) + '/' + result.address + '/' + result.sample.publicKey}, step: 'rout'},
-         sampleHistory: {data: {query: '/asset/' + symbol + '/history/' + result.sample.address}, step: 'rout'},
+        sampleHistory: {data: {query: '/asset/' + symbol + '/history/' + result.sample.address}, step: 'rout'},
         sampleTransaction: {data: {query: '/asset/' + symbol + '/transaction/' + result.sample.transaction}, step: 'rout'},
 
         seedValid: {data: {query: '/asset/' + symbol + '/validate/' + result.address}, step: 'rout'},
@@ -130,7 +130,6 @@ function testAsset (symbol) {
       };
     },
     'parallel',
-
     result => {
       return {
         test: {data: result.test, step: 'id'},
@@ -150,33 +149,10 @@ function testAsset (symbol) {
         // seedHistory: {data: result.seedHistory, step: 'id'},
       };
     },
-    'parallel',
-
-    result => {
-      return {
-        test: {data: result.test, step: 'id'},
-        sample: {data: result.sample, step: 'id'},
-        details: {data: result.details, step: 'id'},
-        sampleValid:{data: result.sampleValid, step: 'id'},
-        sampleBalance: {data: result.sampleBalance, step: 'id'},
-        sampleUnspent: {data: result.sampleUnspent, step: 'id'},
-         sampleHistory: {data: result.sampleHistory, step: 'id'},
-         sampleTransaction: {data: result.sampleTransaction, step: 'id'},
-
-        seedValid: {data: result.seedValid, step: 'id'},
-        seedBalance: {data: result.seedBalance, step: 'id'},
-        seedUnspent: {data: result.seedUnspent, step: 'id'},
-        seedSign:  {data: result.seedSign, step: 'id'},
-        seedSignHash: {data: {data:result.seedSign}, step: 'hash'}
-        // seedHistory: {data: result.seedHistory, step: 'id'},
-      };
-    },
     'parallel'
-
-
   ],
-  step: 'sequential'
-  };
+           step: 'sequential'
+         };
 }
 
 let validDetails = details => typeof details === 'object' && details !== null && details.hasOwnProperty('symbol') && details.hasOwnProperty('name') && details.hasOwnProperty('fee') && details.hasOwnProperty('factor')&& details.hasOwnProperty('contract')&& details.hasOwnProperty('mode')&& details.hasOwnProperty('fee-symbol')&& details.hasOwnProperty('fee-factor')&& details.hasOwnProperty('keygen-base');
@@ -280,6 +256,71 @@ let renderCellWeb = (symbol,type,valid, data, counter, messages, newMessages) =>
 
 
 
+let renderCellXML = (symbol,type,valid, data, counter, messages,newMessages) => {
+  let title;
+  if (typeof data === 'object') {
+    title = JSON.stringify(data);
+  } else {
+    title = String(data);
+  }
+  title = title.replace(/"/g, '\\"');
+
+  let r =  `<testcase id="${symbol+'_'+type}" name="${symbol+' '+type}" time="0.001">`
+  if (valid) {
+    counter.total++;
+    counter.valid++;
+  }else{
+    counter.total++;
+    r+=`<failure message="${title}" type="ERROR"></failure>`
+  }
+
+  r+=`</testcase>`
+  return r;
+};
+
+
+let renderTableXML = (unorderdedData) => {
+  const data = {};
+  Object.keys(unorderdedData).sort().forEach(function(key) {
+    data[key] = unorderdedData[key];
+  });
+
+  let counter = {valid: 0, total: 0};
+  const messages = [];
+  const newMessages = [];
+
+  let r='';
+  for (let symbol in data) {
+
+    if (typeof data[symbol] !== 'undefined') {
+      r += renderCellXML(symbol,'details',validDetails(data[symbol].details), data[symbol].details, counter, messages,newMessages);
+      r += renderCellXML(symbol,'sample',validSample(data[symbol].sample), data[symbol].sample, counter, messages,newMessages);
+      r += renderCellXML(symbol,'sampleValid',validValid(data[symbol].sampleValid), data[symbol].sampleValid, counter, messages,newMessages);
+      r += renderCellXML(symbol,'sampleBalance',validBalance(data[symbol].sampleBalance, data[symbol].details.factor), data[symbol].sampleBalance, counter, messages,newMessages);
+      r += renderCellXML(symbol,'sampleUnspent',validUnspent(data[symbol].sampleUnspent), data[symbol].sampleUnspent, counter, messages,newMessages);
+      r += renderCellXML(symbol,'sampleHistory',validHistory(data[symbol].sampleHistory), data[symbol].sampleHistory, counter, messages,newMessages);
+      r += renderCellXML(symbol,'sampleTransaction',validTransaction(data[symbol].sampleTransaction), data[symbol].sampleTransaction, counter, messages,newMessages);
+      r += renderCellXML(symbol,'seedValid',validValid(data[symbol].seedValid), data[symbol].seedValid, counter, messages,newMessages);
+      r += renderCellXML(symbol,'seedBalance',validBalance(data[symbol].seedBalance, data[symbol].details.factor), data[symbol].seedBalance, counter, messages,newMessages);
+      r += renderCellXML(symbol,'seedUnspent',validUnspent(data[symbol].seedUnspent), data[symbol].seedUnspent, counter, messages,newMessages);
+      //      r += renderCellXML(symbol,validHistory(data[symbol].seedHistory), data[symbol].seedHistory, counter, messages,newMessages);
+      r += renderCellXML(symbol,'seedSign',validSign(data[symbol].seedSign), data[symbol].seedSign, counter, messages,newMessages);
+      r += renderCellXML(symbol,'seedSignHash',validSignHash(data[symbol].seedSignHash,data[symbol].test.hash), data[symbol].seedSignHash+"|"+data[symbol].test.hash, counter, messages,newMessages);
+    } else {
+
+      r+= `<testcase id="${symbol}" name="${symbol}" time="0.001">
+<failure message="Complete failure for ${symbol}" type="FATAL ERROR"></failure>
+</testcase>`
+      counter.total+=11;
+    }
+
+  }
+  r='<?xml version="1.0" encoding="UTF-8" ?><testsuites id="hybrix" name="hybrix" tests="'+counter.total+'" failures="'+(counter.total-counter.valid)+'" time="0.001"><testsuite id="testsuite.hybrix" name="hybrix" tests="'+counter.total+'" failures="'+(counter.total-counter.valid)+'" time="0.001">'+r;
+  r+='</testsuite></testsuites>';
+
+  return r;
+}
+
 
 let renderTableCLI = (unorderdedData) => {
   const data = {};
@@ -294,7 +335,7 @@ let renderTableCLI = (unorderdedData) => {
   r += '      ┌──────┬─────┬────┬──────┬──────┬────┬────┬────┬──────┬──────┬────┬────┐' + '\n';
   r += '      │Detail│Sampl│Vald│Balnce│Unspnt│Hist│Tran│Vald│Balnce│Unspnt│Sign│Hash│' + '\n';
   for (let symbol in data) {
-  r += '      ├──────┼─────┼────┼──────┼──────┼────┼────┼────┼──────┼──────┼────┼────┤' + '\n';
+    r += '      ├──────┼─────┼────┼──────┼──────┼────┼────┼────┼──────┼──────┼────┼────┤' + '\n';
     r += symbol.substr(0, 5) + '     '.substr(0, 5 - symbol.length) + ' │';
     if (typeof data[symbol] !== 'undefined') {
       r += ' ' + renderCellCLI(symbol,'details',validDetails(data[symbol].details), data[symbol].details, counter, messages,newMessages) + ' │';
@@ -330,10 +371,9 @@ let renderTableCLI = (unorderdedData) => {
     r+= ' - '+messages[i]+'\n';
   }
   r += '\n';
-  r += '      SUCCESS RATE: ' + (((counter.valid / counter.total) || 0) * 100) + '%' + '\n';
-  // console.log(data);
-  console.log(r);
-};
+  r += '      SUCCESS RATE: ' + Math.floor(((counter.valid / counter.total) || 0) * 100) + '%' + '\n';
+  return r;
+}
 
 let renderTableWeb = (unorderdedData) => {
   const data = {};
@@ -352,8 +392,8 @@ let renderTableWeb = (unorderdedData) => {
 </style>
 <table><tr><td>Symbol</td><td colspan="2"></td><td colspan="6" style="text-align:center;">Sample</td><td colspan="5"  style="text-align:center;">Generated</td></tr>`;
   r += '<tr><td></td><td>Details</td><td>Sample</td><td>Valid</td><td>Balance</td><td>Unspent</td>';
-   r+='<td>History</td>';
-   r+='<td>Transaction</td>';
+  r+='<td>History</td>';
+  r+='<td>Transaction</td>';
   r += '<td>Valid</td><td>Balance</td><td>Unspent</td>';
   // r+='<td>History</td>'
   r += '<td>Sign</td><td>Hash</td></tr>';
@@ -409,7 +449,7 @@ function go (mode) {
   // TODO filter tokens
 
   let host = 'http://localhost:1111/';
- let path = '../dist/'
+  let path = '../dist/'
   let hybrix;
   let renderTable;
   let progressCallback;
@@ -428,7 +468,7 @@ function go (mode) {
             P=  s[0]+'.'+s[1][0];
           }
           if(P!==lastP){
-            console.log(P+'%')
+            process.stdout.write(P+'%\r');
             lastP=P;
           }
         }else{
@@ -437,8 +477,8 @@ function go (mode) {
       }
     };
     // cli options
-
     const stdio = require('stdio');
+    const fs = require('fs');
 
     // command line options and init
     const ops = stdio.getopt({
@@ -447,7 +487,8 @@ function go (mode) {
       'host': {key: 'h', args: 1, description: 'Set host Defaults to :' + host},
       'path': {key: 'p', args: 1, description: 'Set path for interface files Defaults to :' + path },
       'verbose': {key:'v', args: 0, description: 'Output verbose progress' },
-      'quiet': {key: 'q', args: 0, description: 'No extra output other than raw data'}
+      'quiet': {key: 'q', args: 0, description: 'No extra output other than raw data'},
+      'xml': {key: 'x', args: 1, description: 'Write xml test results to file'}
     });
     if (typeof ops.host !== 'undefined') { host = ops.host; }
     symbolsToTest = ops.symbol;
@@ -456,7 +497,12 @@ function go (mode) {
     Hybrix = require(path+'/hybrix-lib.nodejs.js');
     hybrix = new Hybrix.Interface({http: require('http'),https: require('https')});
     DEBUG = ops.debug;
-    renderTable = renderTableCLI;
+    renderTable = data => {
+      if(ops.xml){
+        fs.writeFileSync(ops.xml,renderTableXML(data));
+      }
+      console.log(renderTableCLI(data));
+    }
   } else {
     symbolsToTest = getParameterByName('symbol');
 
