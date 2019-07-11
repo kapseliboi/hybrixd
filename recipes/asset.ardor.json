@@ -1,11 +1,11 @@
 {
-  "symbol":"ardor",
+  "symbol":"ardr",
   "name":"ARDOR",
   "module":"quartz",
   "mode":"ardor.main",
   "addressRegex":"^ARDOR(-[A-HJ-N-P-Z2-9]{4}){4}[A-HJ-N-P-Z2-9]$",
   "factor":8,
-  "fee":1,
+  "fee":2,
   "fee-symbol":"ardor",
   "host":["https://ardor.tools/ardor/nxt"],
   "cache":15000,
@@ -18,7 +18,7 @@
       "done valid"
     ],
     "sample" : [
-      "done {address:'NXT-4RU9-TNCT-F3MU-8952K',transaction:'13821793329980543744',publicKey:'32f5fa059b39fae92e41fee6606c5afa4db80d426532fa94f50415c062794c4b'}"
+      "done {address:'ARDOR-4ZYF-VT4W-9R9F-ED96T',transaction:'e19f122712cc0c7f86d5e227fc37996fb3dd3f332c9e9cd8be9a899b8baa57e7',publicKey:'bf9d64d9abf5b844e819aae24ef9290ae2ffa62ae322754b9c6ee21571a1474f'}"
     ],
     "test" :[
       "done {}"
