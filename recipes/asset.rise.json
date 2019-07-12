@@ -14,7 +14,7 @@
   "version" : "0.1.2",
   "quartz":{
     "balance" :[
-      "curl 'asset://$symbol' '/api/accounts/getBalance?address=$1' 'GET' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': ''}",
+      "curl 'asset://$symbol' '/api/accounts/getBalance?address=$1' 'GET' {}",
       "tran('.unconfirmedBalance',2,1)",
       "fail 'Balance could not be retrieved'",
       "atom"
@@ -28,13 +28,14 @@
     "history":[
       "poke count $2 12",
       "poke offset $3 0",
-      "curl 'asset://$symbol' '/api/transactions?recipientId=$1&limit=$count&offset=$offset' 'GET' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': ''}",
+      "#'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': ''",
+      "curl 'asset://$symbol' '/api/transactions?recipientId=$1&limit=$count&offset=$offset' 'GET' {}",
       "tran .transactions[].id 1 2",
       "done",
       "fail 'Unable to retrieve history.'"
     ],
     "push":[
-      "curl 'asset://$symbol' '/api/blocks/getNetHash' 'GET' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': ''}",
+      "curl 'asset://$symbol' '/api/blocks/getNetHash' 'GET'",
       "tran('.nethash',2,1)",
       "fail 'nethash could not be retrieved'",
       "poke 'nethash'",
@@ -48,7 +49,7 @@
       "done {hash:dynamic}"
     ],
     "transactionData" : [
-       "curl asset://$symbol /api/transactions?id=$1 GET {Accept:'application/json','Content-Type':'application/json'}",
+       "curl asset://$symbol /api/transactions?id=$1 GET",
        "tran .transactions 2 1",
        "fail 'Cannot get transaction data!'",
        "pick",

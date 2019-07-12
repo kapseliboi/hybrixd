@@ -3,6 +3,7 @@
   "name":"Ripple",
   "module":"quartz",
   "fee-symbol":"xrp",
+  "addressRegex":"^r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}$",
   "fee":"0.00001",
   "fee-factor":0,
   "cron":300,
@@ -150,7 +151,7 @@
       "data {'id': $,'command': 'tx','transaction': '$1','binary': false}",
       "with dropsFactor [math,'10^$factor']",
       "curl 'asset://$symbol' '' 'POST'",
-      "tran {id:'=.result.hash|unknown',fee:'=.result.Fee / $dropsFactor|unknown',timestamp:'=.result.date+$genesisBlockTime |unknown',symbol:'XRP',amount:'=.result.Amount / $dropsFactor|unknown',source:'=.result.Account|unknown',target:'=.result.Destination|unknown',fee-symbol: $fee-symbol} @success @fail",
+      "tran {id:'=.result.hash|unknown',fee:'=.result.Fee / $dropsFactor|unknown',timestamp:'=.result.date+$genesisBlockTime |unknown',symbol:'XRP',amount:'=.result.Amount / $dropsFactor|unknown',source:'=.result.Account|unknown',target:'=.result.Destination|unknown',fee-symbol: $fee-symbol, confirmed:.validated} @success @fail",
       "@fail",
       "fail 'error'",
       "@success"
@@ -185,19 +186,10 @@
       "pass({address:'rbwE6wsxzYat1YyGGxzAwq6wBSF5MdoAg',transaction:'699C005DEA8638B6FFEDB6039A82EB4190E0BAFAAA6E14307042FBA089E93EFE'})"
     ],
     "subhistory" : [
-      "tran '.value' 1 @fail",
-      "poke 'proc::subhistoryData'",
-      "tran '.tx.TransactionType' 1 @fail",
-      "flow 'Payment' 1 @fail",
-      "peek 'proc::subhistoryData'",
-      "tran '.validated' 1 @fail",
-      "jstr",
-      "flow 'true' 1 @fail",
-      "peek 'proc::subhistoryData'",
-      "tran '.tx.hash' 1 @fail",
+      "tran '.value.tx.hash' 1 @fail",
       "done",
       "@fail",
-      "fail 'No result!'"
+      "done 0"
     ],
     "history" : [
       "poke count $2 12",
@@ -215,13 +207,6 @@
     ],
     "test" :[
       "done {hash:4E5C0B7F, unspent:{lastLedgerSequencePlus:46084264,sequence:759}}"
-    ],
-    "validate" : [
-      "data '$1'",
-      "regx '^r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}$$' 1 @fail",
-      "done 'valid'",
-      "@fail",
-      "done 'invalid'"
     ]
   }
 }

@@ -31,7 +31,7 @@
     "history" : [
       "poke count $2 12",
       "poke offset $3 0",
-      "curl asset://$symbol /api/transactions?recipientId=$1&offset=$offset&limit=$count GET {Accept:'application/json','Content-Type':'application/json'}",
+      "curl asset://$symbol /api/transactions?recipientId=$1&offset=$offset&limit=$count GET {Accept:'application/json'}",
       "tran .data 2 1",
       "fail 'Cannot get transaction history!'",
       "sort ['.height',num,desc]",
@@ -39,7 +39,7 @@
       "done"
     ],
     "transactionData" : [
-      "curl asset://$symbol /api/transactions?id=$1&limit=1&offset=0 GET {Accept:'application/json','Content-Type':'application/json'}",
+      "curl asset://$symbol /api/transactions?id=$1&limit=1&offset=0 GET {Accept:'application/json'}",
       "tran .data 2 1",
       "fail 'Cannot get transaction data!'",
       "pick"

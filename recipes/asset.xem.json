@@ -107,7 +107,7 @@
       "poke 'address'",
       "poke 'hash' ''",
       "math '($count+$offset)/25'",
-      "math 'ceiling'",
+      "math 'ceil'",
       "poke 'pages'",
       "poke 'loopVar' 0",
       "@countLoop",
