@@ -5,7 +5,7 @@
   "mode":"ardor.ignis",
   "addressRegex":"^ARDOR(-[A-HJ-N-P-Z2-9]{4}){4}[A-HJ-N-P-Z2-9]$",
   "factor":8,
-  "fee":1,
+  "fee":0.019,
   "fee-symbol":"ignis",
   "host":["https://ardor.tools/ardor/nxt"],
   "cache":15000,
@@ -18,7 +18,7 @@
       "done valid"
     ],
     "sample" : [
-      "done {address:'NXT-4RU9-TNCT-F3MU-8952K',transaction:'13821793329980543744',publicKey:'32f5fa059b39fae92e41fee6606c5afa4db80d426532fa94f50415c062794c4b'}"
+      "done {address:'ARDOR-92XX-HZLX-WGHV-CCXZ5',transaction:'e1337ab1e625ba11c42e00eb5a0cd719286b460d8961d8ef57788603710c21ea',publicKey:'3a3244de13f602d6695e639b53eeca8e010ed157a6eb3c0f0d7858df78a9796f'}"
     ],
     "test" :[
       "done {}"
