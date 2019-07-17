@@ -288,7 +288,7 @@
       "form",
       "done",
       "@failure1",
-      "fail' Error: Ethereum network not responding. Cannot get balance!'",
+      "fail 'Error: Ethereum network not responding. Cannot get balance!'",
       "@other",
       "peek transaction",
       "tran .result 1 @failure",
