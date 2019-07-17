@@ -68,7 +68,7 @@
     ],
     "transactionData" : [
       "time $timeout",
-      "curl asset://$symbol /tx/$1 GET {'Content-Type': 'application/json'} {timeout:$timeout} 2 1",
+      "curl asset://$symbol /tx/$1 GET {'Content-Type': 'application/json'} {timeout:$shortTimeout} 2 1",
       "fail 'Could not get transaction data!'",
       "have .txid 2 1",
       "fail 'Could not read transaction data!'"
