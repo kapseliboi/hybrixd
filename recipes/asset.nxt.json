@@ -24,8 +24,8 @@
     ],
     "mainBalance":[
       "@retryLoop",
-      "data $name",
-      "flow NXT 1 3",
+      "data $symbol",
+      "flow {nxt:1,burst:1} 1 3",
       "data '?requestType=getBalance&account=$1'",
       "jump 2",
       "data '?requestType=getBalance&account=$1&chain=$chain'",
