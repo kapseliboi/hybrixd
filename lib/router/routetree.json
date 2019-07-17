@@ -181,7 +181,8 @@
       "resume":"Resume the API Queue when it is paused.",
       "status":"Check the status of the API Queue.",
       "test": {
-        "start": "Enable test mode using cached values.",
+        "start": "Enable test mode using cached values as fallback.",
+        "force": "Enable test mode using cached values as default.",
         "stop": "Disable test mode using cached values.",
         "status": "Check the status of the test mode."
       }
