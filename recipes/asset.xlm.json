@@ -28,7 +28,6 @@
       "tran('.balances',@getBalance,1)",
       "tran .title 2 1",
       "fail",
-      "logs",
       "flow 'Resource Missing' 1 -2",
       "data 0",
       "jump @done",
@@ -45,7 +44,6 @@
       "repl '*' '/'",
       "data encodeURIComponent('$')",
       "curl('$host','/transactions?tx=$','POST', {})",
-      "logs",
       "done"
     ],
     "contract": [

@@ -13,8 +13,8 @@ echo "[.] Starting hybrixd"
 
 sleep 20s
 
-echo "[.] Enable hybrixd api queue test mode"
-./hybrixd /c/apiqueue/test/start
+echo "[.] Enable hybrixd api queue forced test mode"
+./hybrixd /c/apiqueue/test/force
 
 # verbose output of percentages
 sh ./scripts/npm/test.sh v
