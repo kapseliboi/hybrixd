@@ -66,9 +66,6 @@ test:
   coverage: /SUCCESS RATE[^|]*\:[^|]*\s+([\d\.]+)/
   except:
    refs:
-     #- /^v.*release$/
-     - /^Issue.*$/
-     - /^issue.*$/
      - tags
   only:
     variables:
@@ -102,10 +99,7 @@ review:
     kubernetes: active
   except:
     refs:
-      - master
       - tags
-      - /^Issue.*$/
-      #- /^v.*release$/
     variables:
       - $REVIEW_DISABLED
 
@@ -125,10 +119,7 @@ stop_review:
     kubernetes: active
   except:
     refs:
-      - /^Issue.*$/
-      - master
       - tags
-      #- /^v.*release$/
     variables:
       - $REVIEW_DISABLED
 
@@ -163,9 +154,7 @@ staging:
     url: https://node-staging.$AUTO_DEVOPS_DOMAIN
   only:
     refs:
-      - master
       - tags
-      - /^Issue.*$/
     kubernetes: active
     variables:
       - $STAGING_ENABLED
