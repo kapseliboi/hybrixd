@@ -1,0 +1,10 @@
+{
+  "symbol":"ignis.xhy",
+  "name":"Internet of Coins hybrid Asset (Ignis)",
+  "module":"quartz",
+  "import":"ignis",
+  "mode":"ardor.ignis",
+  "contract":"7443852925494946898",
+  "originator":"ARDOR-XHNZ-47X4-57VT-GM3JV",
+  "factor":8
+}

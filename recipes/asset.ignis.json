@@ -9,7 +9,7 @@
   "fee-symbol":"ignis",
   "host":["https://ardor.tools/ardor/nxt"],
   "cache":15000,
-  "import":"nxt",
+  "import":"ardr",
   "throttle":5,
   "genesisBlockTime":1385294400,
   "chain":2,
@@ -21,7 +21,7 @@
       "done {address:'ARDOR-92XX-HZLX-WGHV-CCXZ5',transaction:'e1337ab1e625ba11c42e00eb5a0cd719286b460d8961d8ef57788603710c21ea',publicKey:'3a3244de13f602d6695e639b53eeca8e010ed157a6eb3c0f0d7858df78a9796f'}"
     ],
     "test" :[
-      "done {}"
+      "done {hash:dynamic}"
     ]
   }
 }
