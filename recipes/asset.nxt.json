@@ -153,8 +153,8 @@
     "history" : [
       "poke count $2 12",
       "poke offset $3 0",
-      "data $name",
-      "flow NXT 1 3",
+      "data $symbol",
+      "flow {nxt:1, burst:1} 3",
       "data '?requestType=getBlockchainTransactions&account=$1&firstIndex=$offset&lastIndex=$until'",
       "jump 2",
       "data '?requestType=getBlockchainTransactions&account=$1&chain=$chain&firstIndex=$offset&lastIndex=$until'",
@@ -164,8 +164,8 @@
       "fail 'Bad response from NXT node!'",
       "sort ['.timestamp',num,desc]",
       "poke txData",
-      "data $name",
-      "flow NXT 1 4",
+      "data $symbol",
+      "flow {nxt:1, burst:1} 1 4",
       "peek txData",
       "tran '[].transaction'",
       "jump 3",
@@ -174,8 +174,8 @@
       "done"
     ],
     "transactionData" : [
-      "data $name",
-      "flow NXT 1 3",
+      "data $symbol",
+      "flow {nxt:1, burst:1} 3",
       "data '?requestType=getTransaction&transaction=$1'",
       "jump 2",
       "data '?requestType=getTransaction&chain=$chain&fullHash=$1'",
