@@ -1,5 +1,6 @@
 {
   "symbol":"ignis",
+  "keygen-base":"ardr",
   "name":"Ignis",
   "module":"quartz",
   "mode":"ardor.ignis",
