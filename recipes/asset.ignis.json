@@ -2,7 +2,6 @@
   "symbol":"ignis",
   "keygen-base":"ardr",
   "name":"Ignis",
-  "module":"quartz",
   "mode":"ardor.ignis",
   "addressRegex":"^ARDOR(-[A-HJ-N-P-Z2-9]{4}){4}[A-HJ-N-P-Z2-9]$",
   "factor":8,

@@ -1,7 +1,6 @@
 {
   "engine":"nrs-api",
   "name":"NRS API engine",
-  "module":"quartz",
   "cache":15000,
   "throttle":5,
   "timeout":60000,
@@ -42,7 +41,6 @@
       "done"
     ],
     "tokenBalance":[
-      "@tokenRetryLoop",
       "poke address '$1'",
       "data '$symbol'",
       "find 'burst.' @burstToken @otherToken",
@@ -53,10 +51,6 @@
       "curl asset://$symbol ?requestType=getAccount&account=$address GET {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}",
       "@next",
       "tran '.unconfirmedAssetBalances' @returnTokenBalance 1",
-      "# retries are now handled by API queue, disabled retry loop below",
-      "#logs 2 'module nrs-api: bad RPC response, retrying request...'",
-      "#wait 1500",
-      "#loop @tokenRetryLoop 'retries' '<5' '1'",
       "data '0'",
       "@returnTokenBalance",
       "find {asset:'$contract'} @tokenBalance 1",
