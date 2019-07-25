@@ -1,3 +1,53 @@
+# v0.5.13
+## Cosy Pink Ogre
+## 25-07-2019
+* #782 Clean up unused npm modules
+* #781 Fix burst transaction and history
+* qrtz bank()
+* Fix-default-module
+* Set default module to quartz
+* Introduce force test mode, remove redundant debug logs
+* Update asset.eth.json (fix-typo-in-eth-recipe)
+* Update pipeline steps
+* #768 Improve timeout handling
+* Fix waves transaction
+* temporary fix to dysfunctional hcmd
+* #71-add-Ignis
+* disabled unhandled error variable for ESlint
+* properly working Ignis and NXT recipes
+* Fix waves transaction
+* Improve timout handling
+* fixes to NXT, Ardor, Ignis recipes
+* Ardor recipe amended: symbol and sample
+* return short hashes on status
+* Improve testing
+* Use test mode
+* Coin fixes
+* Update asset.dgb.json
+* Issue/765 headers and options not passed properly for electrum
+* #71-Add Ignis and Ardor recipes.
+* Fix scheduler timeout bug
+* Implement APIqueue test mode
+* #759-tx selected for validated
+* Eth (electrum/insight?) details not available
+* increased timeout for Electrum engine for miner transactions
+* fixed timeout issue qrtz with()
+* increased storage limit to 128k for large size transactions
+* fix to JSON splitting mechanism
+* Update tcp handling using a buffer and backlog to parse messages
+* Improve nem validation
+* Fix augur token
+* enable op returns for xrp
+* Improve compile speed using rsync
+* Refactor the pipeline scripts into separate shell scripts.
+* fix legacy math strings to use new simplified format
+* Add fallback parameter to peek, use for insight fee fallback
+* #137 fix failing nxt txs
+* make sure defaults are aligned
+* default to get on unknown method
+* ignore empty synchronization lists
+* #167-Update flow with contract.
+
 # v0.5.12
 ## Little Pink Phoenix
 ## 26-06-2019
