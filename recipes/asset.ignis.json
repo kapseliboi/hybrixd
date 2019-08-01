@@ -1,7 +1,7 @@
 {
   "symbol":"ignis",
+  "keygen-base":"ardr",
   "name":"Ignis",
-  "module":"quartz",
   "mode":"ardor.ignis",
   "addressRegex":"^ARDOR(-[A-HJ-N-P-Z2-9]{4}){4}[A-HJ-N-P-Z2-9]$",
   "factor":8,
@@ -9,7 +9,7 @@
   "fee-symbol":"ignis",
   "host":["https://ardor.tools/ardor/nxt"],
   "cache":15000,
-  "import":"nxt",
+  "import":"ardr",
   "throttle":5,
   "genesisBlockTime":1385294400,
   "chain":2,
@@ -18,10 +18,10 @@
       "done valid"
     ],
     "sample" : [
-      "done {address:'ARDOR-92XX-HZLX-WGHV-CCXZ5',transaction:'e1337ab1e625ba11c42e00eb5a0cd719286b460d8961d8ef57788603710c21ea',publicKey:'3a3244de13f602d6695e639b53eeca8e010ed157a6eb3c0f0d7858df78a9796f'}"
+      "done {address:'ARDOR-4ZYF-VT4W-9R9F-ED96T',transaction:'e1337ab1e625ba11c42e00eb5a0cd719286b460d8961d8ef57788603710c21ea',publicKey:'bf9d64d9abf5b844e819aae24ef9290ae2ffa62ae322754b9c6ee21571a1474f'}"
     ],
     "test" :[
-      "done {}"
+      "done {hash:dynamic}"
     ]
   }
 }
