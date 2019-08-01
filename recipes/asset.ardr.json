@@ -1,7 +1,6 @@
 {
   "symbol":"ardr",
   "name":"ARDOR",
-  "module":"quartz",
   "mode":"ardor.main",
   "addressRegex":"^ARDOR(-[A-HJ-N-P-Z2-9]{4}){4}[A-HJ-N-P-Z2-9]$",
   "factor":8,
