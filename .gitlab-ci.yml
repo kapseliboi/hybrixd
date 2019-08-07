@@ -434,7 +434,7 @@ dist:
     fi
   }
 
-function deploy() {
+  function deploy() {
     track="${1-stable}"
     percentage="${2:-100}"
     name="$CI_ENVIRONMENT_SLUG"
