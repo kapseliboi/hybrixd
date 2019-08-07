@@ -12,8 +12,8 @@ variables:
   POSTGRES_DB: $CI_ENVIRONMENT_SLUG
 
   KUBERNETES_VERSION: 1.13.7
-  #HELM_VERSION: 2.14.3
-  HELM_VERSION: 2.6.1
+  HELM_VERSION: 2.10
+  #HELM_VERSION: 2.6.1
 
   DOCKER_DRIVER: overlay2
 
@@ -434,7 +434,7 @@ dist:
     fi
   }
 
-  function deploy() {
+function deploy() {
     track="${1-stable}"
     percentage="${2:-100}"
     name="$CI_ENVIRONMENT_SLUG"
@@ -477,7 +477,6 @@ dist:
       --set postgresql.postgresPassword="$POSTGRES_PASSWORD" \
       --set postgresql.postgresDatabase="$POSTGRES_DB" \
       --namespace="$KUBE_NAMESPACE" \
-      --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
       "$name" \
       chart/
 
