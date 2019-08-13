@@ -19,7 +19,7 @@ function get (proc) {
   try {
     const func = proc.command[1];
     const bytecode = proc.command[2];
-    const evm = typeof bytecode === 'undefined' ? null : new EVM(bytecode);
+    const evm = typeof bytecode !== 'string' ? null : new EVM(bytecode);
     let output;
     switch (func) {
       case 'opcodes':
@@ -66,8 +66,9 @@ function get (proc) {
 }
 // other functions
 function parse (proc) {
-  const evm = new EVM(proc.command[1]);
+  const bytecode = proc.command[1];
   try {
+    const evm = typeof bytecode !== 'string' ? null : new EVM(bytecode);
     proc.done(evm.parse());
   } catch (e) {
     proc.fail(e);
@@ -75,8 +76,9 @@ function parse (proc) {
 }
 
 function decompile (proc) {
-  const evm = new EVM(proc.command[1]);
+  const bytecode = proc.command[1];
   try {
+    const evm = typeof bytecode !== 'string' ? null : new EVM(bytecode);
     proc.done(evm.decompile());
   } catch (e) {
     proc.fail(e);
