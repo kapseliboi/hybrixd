@@ -1,0 +1,98 @@
+{
+  "engine":"unified-asset",
+  "name":"Engine to unify assets",
+  "quartz":{
+
+    "getSubFee" :[
+      "poke {subSymbol:key,weight:value}",
+      "rout /a/$subSymbol/fee/$1",
+      "math *$weight"
+    ],
+
+    "fee" : [
+      "peek unified-symbols",
+      "each getSubFee/$1",
+      "type array",
+      "math max",
+      "with xfactor call factor",
+      "form $xfactor",
+      "done"
+    ],
+
+    "fee-factor" : [
+      "call factor"
+    ],
+
+     "getSubFactor" :[
+      "rout /a/${.key}/factor/"
+     ],
+
+    "factor" : [
+      "peek unified-symbols",
+      "each getSubFactor",
+      "type array",
+      "math min"
+    ],
+
+    "getSubBalance" :[
+      "data ${.value}",
+      "splt ':'",
+      "poke [subSymbol,subAddress]",
+      "peek 'unified-symbols[$subSymbol]'",
+      "poke weight",
+      "rout /a/$subSymbol/balance/$subAddress",
+      "math *$weight"
+    ],
+
+    "balance":[
+      "data $1",
+      "splt ','",
+      "each getSubBalance",
+      "math sum",
+      "with xfactor call factor",
+      "form $xfactor",
+      "done"
+    ],
+
+    "_unspents":[
+      "TODO"
+    ],
+
+    "getSubValidate" :[
+      "data ${.value}",
+      "splt ':'",
+      "poke [subSymbol,subAddress]",
+      "peek 'unified-symbols'",
+      "have '[$subSymbol]' 2 1",
+      "done 'invalid'",
+      "rout /a/$subSymbol/validate/$subAddress"
+    ],
+
+    "validate":[
+      "data $1",
+      "splt ','",
+      "each getSubValidate",
+      "find invalid 1 2",
+      "done 'invalid'",
+      "done valid"
+    ],
+
+    "_history":[
+      "TODO"
+    ],
+
+    "getSubSample" :[
+      "poke subSymbol ${.key}",
+      "rout /a/$subSymbol/sample",
+      "data '$subSymbol:${.address}'"
+    ],
+
+    "sample" :[
+      "peek unified-symbols",
+      "each getSubSample",
+      "type array",
+      "join ','",
+      "done {address: '$'}"
+    ]
+  }
+}

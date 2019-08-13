@@ -1,0 +1,6 @@
+{
+  "symbol":"xhy",
+  "name":"Internet of Coins hybrid Asset",
+  "import":"unified-asset",
+  "unified-symbols" : {"eth.xhy":1,"omni.xhy":1,"waves.xhy":1,"xcp.xhy":1,"xem.xhy":1,"nxt.xhy":1}
+}

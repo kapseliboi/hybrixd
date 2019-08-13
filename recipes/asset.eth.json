@@ -297,7 +297,7 @@
       "form",
       "done",
       "@failure",
-      "logs 2 'module ethereum: bad RPC response, retrying request...'",
+      "logs 2 'module ethereum: bad RPC response \"$\", retrying request...'",
       "wait 1500",
       "loop @retryLoop retries '<9' '1'",
       "fail 'Error: Ethereum network not responding. Cannot get balance!'"
