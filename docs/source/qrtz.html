@@ -1,11 +1,7 @@
 <div class="download">Download</div>
 
-<p>qrtz is the processing language for hybrixd. It is used to handle routing requests. Each routing request
-  spawns a process that follows qrtz steps to a result, or a failure.</p>
-
-
-<p>A qrtz command always consists of 4 characters. The parameters are
-  appended in either a space or a comma separated fashion:</p>
+<p><i>qrtz</i> is the processing language for hybrixd. It is used to handle routing requests. Each routing request spawns a process that follows <i>qrtz</i> steps to a result, or a failure.</p>
+<p>A <i>qrtz</i> command always consists of 4 characters. The parameters are appended in either a space or a comma separated fashion:</p>
 
 <p><code>head parameter1 parameter2 ...</code></p>
 
@@ -16,11 +12,21 @@
 
   <h3>Recipe</h3>
 
-  TODO
+  <p>Recipes are JSON files that contain parameters and <i>qrtz</i> methods for asset handling, data source queries or actionable engines. A recipe, depending on what it does, fits in one of three categories: asset, source, or engine.</p>
+  <p>A source-recipe in principle contains only methods to query read-only data sources.</p>
+  <p>An engine-recipe contains methods to perform actions based on incoming data, business logic and often interfaces with other programming languages.</p>
+  <p>An asset-recipe contains methods to query value-related ledger or cryptocurrency API's. It returns path options to the hybrixd routing engine for users or machines to perform actions like, for example, querying the balance of an address.</p>
+  <p>The categories above make it easier to instantly recognize the functionality of a recipe, and analyze it from the proper context. Source and engine recipes are interpreted identically by the scheduler, however, they are available through separate paths: <code>/source</code> and <code>/engine</code>. Asset recipes are specifically tailored to be used in the context of decentralized banking, and are available through the routing path: <code>/asset</code>.</p>
 
   <h3>Data flow</h3>
 
-  TODO
+  <p>Every step in a <i>qrtz</i> recipe has the potential to alter the data of the process in which the script is running. Process data is available by using the dollar sign <code>$</code>. It is also available as input to every new process step. It behaves like a variable in <i>qrtz</i> in that it can be read anywhere, however, the difference with a variable is that the data of the process can be changed by every step of the process. The design consideration is that this coaxes you to design your <i>qrtz</i> script with a concise data flow in mind.</p>
+  <p>Here is an example of some <i>qrtz</i> steps and the resulting data flow.</p>
+  <code>
+  data 'Hello dog!'       // data 'Hello dog!'    - set the data of the process
+  pull -4                 // data 'Hello '        - pulls the last 4 characters
+  repl ' ' 'world!'       // data 'Hello world!'  - replaces the ' ' (space) by 'world!'
+  </code>
 
   <h3>Variables and Scopes</h3>
 
