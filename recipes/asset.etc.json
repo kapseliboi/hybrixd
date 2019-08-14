@@ -3,7 +3,7 @@
   "name":"Ethereum Classic",
   "info":"<p>Ethereum Classic is an open-source, public, blockchain-based distributed computing platform featuring smart contract (scripting) functionality. It provides a decentralized Turing-complete virtual machine, the Ethereum Virtual Machine (EVM), which can execute scripts using an international network of public nodes. Ethereum Classic and Ethereum have a value token called &quot;ether&quot;, which can be transferred between participants, stored in a cryptocurrency wallet and is used to compensate participant nodes for computations performed in the Ethereum Platform. The classic ether token is traded on cryptocurrency exchanges under the ticker symbol ETC. Gas, an internal transaction pricing mechanism, is used to prevent spam on the network and allocate resources proportionally to the incentive offered by the request. <a href=\"https://en.wikipedia.org/wiki/Ethereum_Classic\">https://en.wikipedia.org/wiki/Ethereum_Classic</a></p>",
   "module":"ethereum",
-  "import":"eth",
+  "import":"eth-api",
   "mode":"ethereum.main",
   "fee":0.00005,
   "factor":18,
