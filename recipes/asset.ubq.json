@@ -2,7 +2,7 @@
   "symbol":"ubq",
   "name":"Ubiq",
   "module":"ethereum",
-  "import":"eth",
+  "import":"eth-api",
   "mode":"ethereum.main",
   "fee":0.00005,
   "factor":18,
