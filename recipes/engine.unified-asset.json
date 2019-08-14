@@ -76,7 +76,28 @@
       "done 'invalid'",
       "done valid"
     ],
-
+    "subPush":[
+      "data ${.value}",
+      "poke tx",
+      "splt :",
+      "pick 0",
+      "poke subSymbol",
+      "size",
+      "poke subSymbolSize",
+      "peek unified-symbols",
+      "have '[$subSymbol]' 2 1",
+      "fail 'Subsymbol $subSymbol not found for $symbol'",
+      "peek tx",
+      "drop $subSymbolSize",
+      "drop",
+      "unpk",
+      "rout /a/$subSymbol/push/$"
+    ],
+    "push" : [
+      "data $1",
+      "splt ,",
+      "each subPush"
+    ],
     "_history":[
       "TODO"
     ],
