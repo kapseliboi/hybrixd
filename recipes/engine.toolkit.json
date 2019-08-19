@@ -21,7 +21,7 @@
       "poke 'testhost',data.value",
       "time 60000,'timeout',0",
       "hook null,0",
-      "curl('http://$testhost:17876/nxt','','GET',{'content-type':'text/plain'})",
+      "curl http://$testhost:17876/nxt '' GET {'content-type':'text/plain'}",
       "poke('hostresponse')",
       "tran('.errorCode',1,2)",
       "done('error')",
@@ -33,10 +33,14 @@
       "done(data)"
     ],
     "test" : [
-      "poke variableA 'testme123'",
-      "poke variableB 'testme234'",
-      "copy variableA variableB variableC",
-      "done '$variableA $variableB $variableC'"
+      "data yolo",
+      "poke loginuser I4X4KG67OBET5TS5",
+      "poke loginpass HD6L5K4JEOM2PZNE",
+      "bank $loginuser $loginpass ['address','btc']",
+      "poke accountAddress",
+      "bank $loginuser $loginpass ['balance','btc']",
+      "poke accountBalance",
+      "done 'Address $accountAddress has a balance of $accountBalance'"
     ],
     "proberen" : [
       "rout /asset/eth/status/0x4d3244b0677b86d06b12cdbaa3ac4f15baaa6d5b",
