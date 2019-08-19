@@ -232,6 +232,14 @@
       "done"
     ],
     "transaction" : [
+      "data '$1_$symbol_calculated'",
+      "hash",
+      "poke storageHash",
+      "load 'txEl$storageHash' 1 @calculateData",
+      "unpk 1 @calculateData",
+      "logs 'getting transaction calculation from storage $1'",
+      "done",
+      "@calculateData",
       "time $timeout",
       "with fee-factor [call,'fee-factor']",
       "call 'transactionData/$1'",
@@ -248,10 +256,14 @@
       "with txHeight [data,'${.blockNumber}'] [code,'hex','dec']",
       "with fee-symbol [call,'fee-symbol']",
       "with timestamp [call,'blockRaw/${.blockNumber}'] [tran,'.result.timestamp',2,1] [data,0] [code,'hex','dec'] [done]",
-      "tran { id:'.hash', timestamp:'$timestamp', height:'$txHeight', amount:'.value', symbol:'$symbol', fee:'$txFee', 'fee-symbol':'$fee-symbol', source:'.from', target:'.to', confirmed:true } @okayData @failData",
+      "tran { id:'.hash', timestamp:'$timestamp', height:'$txHeight', amount:'=.amount|.value', symbol:'$symbol', fee:'$txFee', 'fee-symbol':'$fee-symbol', source:'.from', target:'.to', confirmed:true } @okayData @failData",
       "@failData",
       "fail 'Cannot interpret transaction data!'",
-      "@okayData"
+      "@okayData",
+      "poke txData",
+      "pack",
+      "save 'txEl$storageHash'",
+      "peek txData"
     ],
     "attachment" : [
       "time $timeout",

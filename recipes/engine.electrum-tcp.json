@@ -90,9 +90,9 @@
       "data '$1_$symbol_calculated'",
       "hash",
       "poke storageHash",
-      "load 'tx$storageHash' 1 @calculateData",
+      "load 'txEl$storageHash' 1 @calculateData",
       "unpk 1 @requestData",
-      "logs 'getting transaction data from storage $1'",
+      "logs 'getting transaction calculation from storage $1'",
       "done",
       "@calculateData",
       "time $longtimeout",
@@ -151,9 +151,8 @@
       "@success",
       "poke txData",
       "pack",
-      "save 'tx$storageHash'",
-      "peek txData",
-      "done"
+      "save 'txEl$storageHash'",
+      "peek txData"
     ],
     "transactionValueFilter" : [
       "time $timeout",
