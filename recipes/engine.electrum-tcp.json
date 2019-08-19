@@ -87,6 +87,14 @@
       "fail 'Could not read transaction data!'"
     ],
     "transaction" : [
+      "data '$1_$symbol_calculated'",
+      "hash",
+      "poke storageHash",
+      "load 'txEl$storageHash' 1 @calculateData",
+      "unpk 1 @requestData",
+      "logs 'getting transaction calculation from storage $1'",
+      "done",
+      "@calculateData",
       "time $longtimeout",
       "call transactionData/$1",
       "# calculate fee",
@@ -140,7 +148,11 @@
       "tran { id:'.txid', timestamp:'=.time|.locktime|null', height:null, amount:'$txSpentValue', symbol:'$symbol', fee:'$txFeeValue', 'fee-symbol':'$symbol', source:'${txAddr.sources}', target:'${txAddr.targets}', confirmed:'=.confirmations|0' } @success @failed",
       "@failed",
       "fail 'Cannot interpret transaction data!'",
-      "@success"
+      "@success",
+      "poke txData",
+      "pack",
+      "save 'txEl$storageHash'",
+      "peek txData"
     ],
     "transactionValueFilter" : [
       "time $timeout",
@@ -199,6 +211,13 @@
       "flow 'null' 1 2",
       "done ''",
       "code hex utf8",
+      "done"
+    ],
+    "confirmed" : [
+      "time $longtimeout",
+      "call transactionData/$1",
+      "tran .vout 1 @empty",
+      "tran '=.confirmations|0'",
       "done"
     ],
     "history" : [
