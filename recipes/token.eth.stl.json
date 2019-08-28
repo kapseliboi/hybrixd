@@ -1,0 +1,10 @@
+{
+    "symbol":"eth.stl",
+    "name":"Stablecoinswap",
+    "module":"ethereum",
+    "import":"eth",
+    "mode":"ethereum.token",
+    "contract":"0xC1Ad68c43508dD5AdDb8d0ac0927dbE752d149D6",
+    "originator":"0x053b7f29Bc6d95182F0E54eFc86549938878647E",
+    "factor":18
+}
