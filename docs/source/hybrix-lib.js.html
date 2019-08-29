@@ -1,12 +1,14 @@
-<script>initNavigation("hybrix-lib.js")</script>
-<div id="console-wrapper" style="display:none;"></div>
+          <script>
+            var id = "hybrix-lib.js"
+            initNavigation(id)
+          </script>
 
-          <h2>hybrix Javascript Library</h2>
+          <h1>hybrix JS Library</h1>
 
-          <p>This library can be used to connect software to leverage the capabilities of the hybrix platform. It serves two purposes: first to facilitate the logistics of interfacing with the hybrixd REST API, secondly to handle all client side operations securely and privately. This ensures that keys required for transaction never leave the users device and communication over an encrypted channel.</p>
+          <p>This library can be used to connect software to leverage the capabilities of the hybrix platform. It serves two purposes: first to facilitate the logistics of interfacing with the hybrixd REST API, secondly to handle all client-side operations securely and privately. This ensures that keys required for transaction never leave the users device and communication over an encrypted channel.</p>
 
           <a href="https://www.hybrix.io/downloads/interface/v0.5.0/hybrix-lib.web.js" target="_blank" download>
-            <div class="download">
+            <div class="download" style="min-width: 280px;">
               <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                   <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                       <g transform="translate(-494.000000, -599.000000)" fill="#F5A104">
@@ -21,8 +23,9 @@
               <span class="usage">&lt;script src="./hybrix-lib.web.js"&gt;&lt;/script&gt;</span>
             </div>
           </a>
+          <br/>
           <a href="https://www.hybrix.io/downloads/interface/v0.5.0/hybrix-lib.nodejs.js" target="_blank" download>
-            <div class="download">
+            <div class="download" style="min-width: 280px; margin-top: 0px;">
               <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                   <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                       <g transform="translate(-494.000000, -599.000000)" fill="#F5A104">
@@ -38,66 +41,63 @@
             </div>
           </a>
 
-          <p><a onclick="document.getElementById('more').style.display='block'; event.target.style.display='none';">Read more...</a></p>
+           <h2><a id="quick-start"></a>Quick start</h2>
 
-          <div id="more" style="display:none;">
+          <p>There are two flavours of the library: the web version to include in your webpage or front-end, and the node js version to include when you are building back-end software.</p>
 
-            <h3>Getting started</h3>
+          <p>Here is a Hello World example of how to use hybrixd-lib.js in your front-end. First include the library using script tags.</p>
 
-            <p>There are two flavours of the library: the web version to include in your webpage or front-end; and the node js version to include when you are building back-end software.</p>
+          <pre><code class="language-html">&lt;html&gt;
+&nbsp;&lt;head&gt;
+&nbsp;&nbsp;&lt;script src='hybrixd-lib.web.js'&gt;&lt;/script&gt;
+&nbsp;&lt;/head&gt;
+&nbsp;&lt;body&gt;
+ &nbsp;&lt;script&gt;
+   var hybrix = new Hybrix.Interface({XMLHttpRequest:XMLHttpRequest});
+   hybrix.sequential(
+    [
+     'init',                                                        // Initialize hybrix
+    ],
+    ()=>{alert('Hello World!');},                                   // Define action to execute on successfull completion
+    error=>{alert('Oops, something went wrong: '+error);}           // Define action to exectue when an error is encountered
+   );
+ &nbsp;&lt;/script&gt;
+&nbsp;&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
 
-            <p>Here is a Hello World example of how to use hybrixd-lib.js in your front-end. First include the library using script tags.</p>
+          <p>For nodejs projects:</p>
 
-            <pre>&lt;html&gt;
-  &nbsp;&lt;head&gt;
-  &nbsp;&nbsp;&lt;script src='hybrixd-lib.web.js'&gt;&lt;/script&gt;
-  &nbsp;&lt;/head&gt;
-  &nbsp;&lt;body&gt;
-   &nbsp;&lt;script&gt;
-     var hybrix = new Hybrix.Interface({XMLHttpRequest:XMLHttpRequest});
-     hybrix.sequential(
-      [
-       'init',                                                        // Initialize hybrix
-      ],
-      ()=>{alert('Hello World!');},                                   // Define action to execute on successfull completion
-      error=>{alert('Oops, something went wrong: '+error);}           // Define action to exectue when an error is encountered
-     );
-   &nbsp;&lt;/script&gt;
-  &nbsp;&lt;/body&gt;
-  &lt;/html&gt;
-  </pre>
+          <pre><code class="language-js">var Hybrix = require('hybrix-lib.nodejs.js');
+var hybrix = new Hybrix.Interface({http:require('http')});
+hybrix.sequential(
+[
+ 'init',                                                        // Initialize hybrix
+],
+()=>{console.log('Hello World!');},                             // Define action to execute on successfull completion
+error=>{console.log('Oops, something went wrong: '+error);}     // Define action to exectue when an error is encountered
+);</code></pre>
 
-            <p>For nodejs projects:</p>
+          <h2><a id="callbacks"></a>Callbacks</h2>
 
-            <pre>
-  var Hybrix = require('hybrix-lib.nodejs.js');
-  var hybrix = new Hybrix.Interface({http:require('http')});
-  hybrix.sequential(
-  [
-   'init',                                                        // Initialize hybrix
-  ],
-  ()=>{console.log('Hello World!');},                             // Define action to execute on successfull completion
-  error=>{console.log('Oops, something went wrong: '+error);}     // Define action to exectue when an error is encountered
-  );</pre>
+          <p>Each command is implemented as a member function of the Hybrix.Interface class. Adding a host can be done as follows.</p>
 
             <h3>Connectors</h3>
 
             <p>The connector is the method that is used to make calls to the host. For NodeJS the http and/or https modules can be used:
 
-              <pre>
-  var hybrix = new Hybrix.Interface({http:require('http')}); // Provide a http connector
-  var hybrix = new Hybrix.Interface({https:require('https')}); // Provide a https connector
-  var hybrix = new Hybrix.Interface({http:require('http'),https:require('https')}); // Provide http and https connectors for mixed usage
-              </pre>
+<pre><code class="language-js">var hybrix = new Hybrix.Interface({http:require('http')}); // Provide a http connector
+var hybrix = new Hybrix.Interface({https:require('https')}); // Provide a https connector
+var hybrix = new Hybrix.Interface({http:require('http'),https:require('https')}); // Provide http and https connectors for mixed usage
+</code></pre>
 
-              For web/html implementations the XMLHttpRequest method is used which is supplied by the browser.
+              <p>For web/html implementations the XMLHttpRequest method is used which is supplied by the browser.</p>
 
-              <pre>var hybrix = new Hybrix.Interface({XMLHttpRequest:XMLHttpRequest});</pre>
+              <pre><code class="language-js">var hybrix = new Hybrix.Interface({XMLHttpRequest:XMLHttpRequest});</code></pre>
 
-              There is also the option to define a custom connector which should be a function with the following signature:
+              <p>There is also the option to define a custom connector which should be a function with the following signature:</p>
 
-              <pre>
-(host,query,dataCallback,errorCallback) => {
+<pre><code class="language-js">(host,query,dataCallback,errorCallback) => {
   // do the call to the host using the query and return the result or error
   if(error){
     errorCallback(error);
@@ -105,120 +105,134 @@
     dataCallback(result);
   }
 }
-              </pre>
+</code></pre>
 
 
             <h3>Callbacks</h3>
 
-            <p>Each command is implemented as a member function of the Hybrix.Interface class. Adding a host can be done as follows:</p>
+          <p>Here only one parameter is passed but each member function has four parameters: data, onSuccess, onError and onProgress.</p>
 
-            <code>hybrix.addHost({host:'https://www.example.com'});</code>
+          <p>The first is used to pass parameter data to the function. The last three are callback functions. onSuccess is called once when the method has finished successfully. onError is called once when an error is encountered. onProgress is called whenever a progress update is available, passing a number between 0 and 1, and 1 upon completion.</p>
 
-            <p>Here only one parameter is passed but each member function has four parameters: data, onSuccess, onError and onProgress.</p>
-
-            <p>The first is used to pass parameter data to the function, the last three are callback functions. onSuccess is called once when the method has finished successfully. onError is called once when an error is encountred. onProgress is called whenever an progress update is available, passing a number between 0 and 1, and 1 upon completion.</p>
-
-            <p>To first initialize the interface, add a host and then rout query for asset balance to the host one could try the following:</p>
+          <p>To first initialize the interface, add a host, and then query for asset balance one could try the following:</p>
 
 
-            <pre>
-hybrix.init();                                   // This is an asynchronious function. It can take some time to complete.
-hybrix.addHost({host:'https://www.example.com'});  <span style="color:red;">// Problem! This will try to add the host before the initialization is done.</span>
-hybrix.rout({query: 'Query for asset balance'});      <span style="color:red;">// Problem! This will try to  request routing before the initialization and/or addition of the host is done.</span></pre>
+<pre><code class="language-js">hybrix.init();                                     // This is an asynchronous function. It can take some time to complete.
+hybrix.addHost({host:'https://www.example.com'});  // Problem! This will try to add the host before the initialization is done.
+hybrix.rout({query: 'Query for asset balance'});   // Problem! This will try to request routing before the initialization and/or addition of the host is done.</code></pre>
 
 
-            <p>This results in serious problems due to asynchronicity. One could use the callbacks to ensure execute order.</p>
+          <p>This results in serious problems due to asynchronicity. One could use the callbacks to ensure the execution order.</p>
 
-            <pre>
-hybrix.init(null,
-function(){
-  hybrix.addHost({host:'https://www.example.com'}, // This will now be called after initialization is successfully completed.
-    function(){
-     hybrix.rout({query: '/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'});     // Query for asset balance
-    }
-  );
-}
-);</pre>
+          <pre><code class="language-js">hybrix.init(null,
+  function(){
+    hybrix.addHost({host:'https://www.example.com'}, // This will now be called after initialization is successfully completed.
+      function(){
+        hybrix.rout({query: '/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'});     // Query for asset balance
+      }
+    );
+  }
+);</code></pre>
 
-            <p>But adding more steps or error handling will end up with code that is both very hard to read and maintain. (This is sometimes dubbed <i>callback hell</i>.) To mitigate this the library comes equiped with a sequential and a parallel command to handle these asynchronious call flows. With an added bonus of handling the progress for combined commands as well.</p>
+          <p>But adding more steps or error handling will end up with code that is both very hard to read and maintain. (This is sometimes dubbed <i>callback hell</i>.) To mitigate this the library comes equiped with a sequential and a parallel command to handle these asynchronious call flows. With an added bonus of handling the progress for combined commands as well.</p>
 
-            <pre id="exampleHelloWorld">
-hybrix.sequential([
-  'init',                                                        // Initialize hybrix
-  {host: 'http://localhost:1111/'}, 'addHost',                   // Add and initialize the host
-  {query: '/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'}, 'rout'  // Query for asset balance
+          <pre><code class="language-js">hybrix.sequential([
+'init',                                                        // Initialize hybrix
+{host: 'http://localhost:1111/'}, 'addHost',                   // Add and initialize the host
+{query: '/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'}, 'rout'  // Query for asset balance
 ],
- onSuccess,                                                      // Define action to execute on successfull completion
- onError,                                                        // Define action to execute when an error is encountered
- onProgress                                                      // Define action to execute whenever there is a progress update
+onSuccess,                                                      // Define action to execute on successfull completion
+onError,                                                        // Define action to execute when an error is encountered
+onProgress                                                      // Define action to execute whenever there is a progress update
+);</code></pre>
+
+          <pre id="exampleHelloWorld" style="display: none">hybrix.sequential([
+'init',                                                        // Initialize hybrix
+{host: 'http://localhost:1111/'}, 'addHost',                   // Add and initialize the host
+{query: '/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'}, 'rout'  // Query for asset balance
+],
+onSuccess,                                                      // Define action to execute on successfull completion
+onError,                                                        // Define action to execute when an error is encountered
+onProgress                                                      // Define action to execute whenever there is a progress update
 );</pre>
 
-            <p>For even more complex behaviour we advice you to implement your own favourite flavour method of handling the call flow, be it <i>promises</i>, <i>streams</i>, or <i>async</i>, etc.</p>
+          <p>For even more complex behaviour we advice you to implement your own favourite flavour method of handling the call flow, be it <i>promises</i>, <i>streams</i>, or <i>async</i>, etc.</p>
 
-          </div> <!-- end of read more content -->
 
-          <h3>Live example</h3>
 
-          <div class="try">
-            <select id="selectExample" onchange="var s = document.getElementById('selectExample');codeMirrorEditor.setValue(document.getElementById(s[s.selectedIndex].value).innerHTML.replace('http://localhost:1111',window.location.href.split(`/help`)[0]));">
-              <option value="exampleHelloWorld">Hello World</option>
-            </select>
 
-            <script>
-             var codeMirrorEditor;
-             setTimeout(function(){
-               var examples = document.getElementsByClassName('example');
-               var selectExample = document.getElementById('selectExample');
-               for (let example of examples) {
-                 var option = document.createElement('OPTION');
-                 option.value= example.id;
-                 option.innerHTML = example.title;
-                 selectExample.appendChild(option);
-                 var button = document.createElement('input');
-                 button.type='submit';
-                 button.value="Try it!";
+          <h2><a id="live-example"></a>Live example</h2>
 
-                 button.onclick = function(body,id){
-                   return event => {
+          <div class="example-block">
+            <div class="try">
+              <select id="selectExample" onchange="var s = document.getElementById('selectExample');codeMirrorEditor.setValue(document.getElementById(s[s.selectedIndex].value).innerHTML.replace('http://localhost:1111',window.location.href.split(`/help`)[0]));">
+                <option value="exampleHelloWorld">Hello World</option>
+              </select>
 
-                     console.log(body);
-                     codeMirrorEditor.setValue(body.replace('http://localhost:1111',window.location.href.split(`/help`)[0]))
+              <script>
+               var codeMirrorEditor;
+               setTimeout(function(){
+                 var examples = document.getElementsByClassName('example');
+                 var selectExample = document.getElementById('selectExample');
+                 for (let example of examples) {
+                   var option = document.createElement('OPTION');
+                   option.value= example.id;
+                   option.innerHTML = example.title;
+                   selectExample.appendChild(option);
+                   var button = document.createElement('input');
+                   button.type='submit';
+                   button.value="Try it!";
 
-                     for(let option of document.getElementById('selectExample').options){
-                       if(option.value===id){
-                         option.selected='selected';
+                   button.onclick = function(body,id){
+                     return event => {
+
+                       console.log(body);
+                       codeMirrorEditor.setValue(body.replace('http://localhost:1111',window.location.href.split(`/help`)[0]))
+
+                       for(let option of document.getElementById('selectExample').options){
+                         if(option.value===id){
+                           option.selected='selected';
+                         }
                        }
+                       var tr = document.getElementById('try').parentNode;
+                       tr.scrollIntoView();
+                       runExample(event);
                      }
-                     var tr = document.getElementById('try').parentNode;
-                     tr.scrollIntoView();
-                     runExample(event);
-                   }
-                 }(example.innerHTML,example.id);
-                 example.parentNode.insertBefore(button, example.nextSibling);
-               }
-               document.getElementById('try').innerHTML=document.getElementById('exampleHelloWorld').innerHTML.replace('http://localhost:1111',window.location.href.split(`/help`)[0]);
+                   }(example.innerHTML,example.id);
+                   example.parentNode.insertBefore(button, example.nextSibling);
+                 }
+                 document.getElementById('try').innerHTML=document.getElementById('exampleHelloWorld').innerHTML.replace('http://localhost:1111',window.location.href.split(`/help`)[0]);
 
-               codeMirrorEditor = CodeMirror.fromTextArea(document.getElementById("try"), {
-                 lineNumbers: true,
-                 mode: "application/javascript",
-                 matchBrackets: true
-               });
+                 codeMirrorEditor = CodeMirror.fromTextArea(document.getElementById("try"), {
+                     mode: "application/javascript",
+                     lineWrapping:false,
+                     lineNumbers:true,
+                     matchBrackets:false,
+                     scrollbarStyle:null,
+                     fixedGutter:true
+                   });
+                   codeMirrorEditor.setOption("theme", "mdn-like");
 
-             },250);
-            </script>
+               },250);
+              </script>
 
-            <textarea id="try" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+              <textarea id="try" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
 
-            <p>Progress:</p>
-            <div id="progressContainer">
-              <div id="progress"></div>
+              <p>Progress</p>
+              <div id="progressContainer">
+                <div id="progress"></div>
+              </div>
+
+              <p>Result</p>
+              <div id="result">...</div>
+
             </div>
-
-            <p>Result:</p>
-            <div id="result">...</div>
 
             <input type="submit" value="Try it!" onclick="runExample(event)">
           </div>
 
-          <h3>Reference</h3>
-          <div id="filterBox"><input id="search" onkeyup="search(event)" placeholder="Filter" onclick="search"><input type="submit" value="&#215;" onclick="clearSearch()"/></div>
+          <h2 style="margin-bottom: 20px;"><a id="reference"></a>Reference</h2>
+
+          <div id="filterBox"><input id="search" onkeyup="search(event)" placeholder="Apply filter..." onclick="search"><input type="submit" value="&#215;" onclick="clearSearch()"/></div>
+
+          <div id="noResults">No results. Change your search filter or <a onclick="clearSearch()" style="cursor: pointer;">reset the filter</a>.</div>

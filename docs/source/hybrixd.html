@@ -1,74 +1,64 @@
-<script>initNavigation("Introduction")</script>
+          <script>
+            var id = "hybrixd"
+            initNavigation(id)
+          </script>
 
-<h2>hybrixd daemon</h2>
+          <h1>hybrix node</h1>
 
-<p>The <i>hybrix</i> platform environment can be run on your own personal computer or server by downloading the daemon called <i>hybrixd</i>. This makes it possible to host your own wallet, be your own bank and have a powerful multi blockchain system at your fingertips.</p>
+          <p>The hybrix platform environment can be run on your own personal computer or server by downloading the daemon called hybrixd. This makes it possible to host your own wallet, be your own bank and have a powerful multi-blockchain system at your fingertips.</p>
 
-<a href="https://github.com/hybrix-io/dist/blob/master/node/latest/hybrixd.node.latest.zip" target="_blank">
-  <div class="download">
-    <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-            <g transform="translate(-494.000000, -599.000000)" fill="#F5A104">
-                <g transform="translate(494.000000, 599.000000)">
-                    <path d="M19,12 C18.4,12 18,12.4 18,13 L18,17 C18,17.6 17.6,18 17,18 L3,18 C2.4,18 2,17.6 2,17 L2,13 C2,12.4 1.6,12 1,12 C0.4,12 0,12.4 0,13 L0,17 C0,18.7 1.3,20 3,20 L17,20 C18.7,20 20,18.7 20,17 L20,13 C20,12.4 19.6,12 19,12 Z"></path>
-                    <path d="M9.3,13.7 C9.4,13.8 9.5,13.9 9.6,13.9 C9.7,14 9.9,14 10,14 C10.1,14 10.3,14 10.4,13.9 C10.5,13.8 10.6,13.8 10.7,13.7 L15.7,8.7 C16.1,8.3 16.1,7.7 15.7,7.3 C15.3,6.9 14.7,6.9 14.3,7.3 L11,10.6 L11,1 C11,0.4 10.6,-1.77635684e-15 10,-1.77635684e-15 C9.4,-1.77635684e-15 9,0.4 9,1 L9,10.6 L5.7,7.3 C5.3,6.9 4.7,6.9 4.3,7.3 C3.9,7.7 3.9,8.3 4.3,8.7 L9.3,13.7 Z"></path>
-                </g>
-            </g>
-        </g>
-    </svg>
-    <span class="download-text">Download for Linux/MacOS</span>
-  </div>
-</a>
+          <a href="https://github.com/hybrix-io/dist/blob/master/node/latest/hybrixd.node.latest.zip" target="_blank">
+            <div class="download">
+              <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                  <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                      <g transform="translate(-494.000000, -599.000000)" fill="#F5A104">
+                          <g transform="translate(494.000000, 599.000000)">
+                              <path d="M19,12 C18.4,12 18,12.4 18,13 L18,17 C18,17.6 17.6,18 17,18 L3,18 C2.4,18 2,17.6 2,17 L2,13 C2,12.4 1.6,12 1,12 C0.4,12 0,12.4 0,13 L0,17 C0,18.7 1.3,20 3,20 L17,20 C18.7,20 20,18.7 20,17 L20,13 C20,12.4 19.6,12 19,12 Z"></path>
+                              <path d="M9.3,13.7 C9.4,13.8 9.5,13.9 9.6,13.9 C9.7,14 9.9,14 10,14 C10.1,14 10.3,14 10.4,13.9 C10.5,13.8 10.6,13.8 10.7,13.7 L15.7,8.7 C16.1,8.3 16.1,7.7 15.7,7.3 C15.3,6.9 14.7,6.9 14.3,7.3 L11,10.6 L11,1 C11,0.4 10.6,-1.77635684e-15 10,-1.77635684e-15 C9.4,-1.77635684e-15 9,0.4 9,1 L9,10.6 L5.7,7.3 C5.3,6.9 4.7,6.9 4.3,7.3 C3.9,7.7 3.9,8.3 4.3,8.7 L9.3,13.7 Z"></path>
+                          </g>
+                      </g>
+                  </g>
+              </svg>
+              <span class="download-text">Download for Linux/MacOS</span>
+            </div>
+          </a>
 
-<h3>Getting started</h3>
+          <h2><a id="quick-start"></a>Quick start</h2>
 
-<p><i>hybrixd</i> can be run on the following operating systems:</p>
+          <p>The hybrix node can be run on the following operating systems:</p>
+          <ul>
+           <li>GNU/Linux</li>
+           <li>MacOS (Darwin)</li>
+          </ul>
+          <p>Furthermore, hybrixd requires <a href="https://nodejs.org" target="_BLANK">NodeJS</a>. We recommend using NodeJS version 8.12 or higher.</p>
+          <p>To install the hybrix, node download the latest release above, and extract the zip file to your computer. You can now start the hybrix node using the following command: <code class="prompt">./hybrixd</code></p>
 
-<ul>
- <li>GNU/Linux</li>
- <li>MacOS (Darwin)</li>
-</ul>
 
-<p><i>hybrixd</i> requires NodeJS (<a href="https://nodejs.org" target="_BLANK">https://nodejs.org</a>). We recommend using NodeJS version 8.12 or higher.</p>
+          <h2><a id="usage"></a>Using the hybrix node</h2>
 
-<p>To install <i>hybrixd</i> download the release above, and extract the zip file to your computer.</p>
+          <h3><a id="web-wallet"></a>Web wallet</h3>
+          <p>Browse to <code class="ref">http://localhost:8080</code> to access the web wallet.</p>
 
-<p>You can now start <i>hybrixd</i> using the following command:</p>
 
-<p><code class="prompt">./hybrixd</code></p>
+          <h3><a id="rest-api"></a>REST-API</h3>
+          <p>Use <code class="ref">http://localhost:1111</code> or <code class="ref">http://localhost:8080/api</code> to access the REST API. The distinction between the 8080 and 1111 ports is that the first is for public access and the later for restricted root access.</p>
+          <p>You can perform API calls using a browser or <code class="ref">curl</code> commands:</p>
+          <div class="example-block">
+            <span class="title">Example</span>
+            <p><code class="prompt">curl http://localhost:8080/api/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</code></p>
+          </div>
+          <p>See also: <a href=".">REST API reference</a>.</p>
 
-<h3>Using <i>hybrixd</i></h3>
 
-<h4>Webwallet</h4>
+          <h3><a id="cli"></a>Command-line interface</h3>
+          <p>Perform REST API calls from the command line by using the following structure:
+          <div class="example-block">
+            <span class="title">Example</span>
+            <p><code class="prompt">./hybrixd /asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</code>.</p>
+          </div>
+          <p>See <code  class="prompt">./hybrixd --help</code> to view available command-line options and browse to <a href=".">REST API</a> for reference.</p>
 
-<p>Browse to <u>http://localhost:8080</u> to access the web wallet.</p>
-
-<h4>REST-API</h4>
-
-<p>Use <u>http://localhost:1111</u> or <u>http://localhost:8080/api</u> to access the REST API.</p>
-
-<p>The distinction between the 8080 and 1111 ports is that the first is for public access and the later for restricted root access.</p>
-
-<p>You can perform API calls using a browser or <code class="ref">curl</code> commands:</p>
-
-<p><u>http://localhost:8080/api/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</u></p>
-
-<p><code class="prompt">curl http://localhost:8080/api/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</code></p>
-
-<p>See also: <a href=".">REST API reference</a>.</p>
-
-<h4>Command line interface</h4>
-
-<p>Perform REST API calls from the command line by using:</p>
-
-<p><code class="prompt">./hybrixd /asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</code>.</p>
-
-<p>See <br/>
-  <code  class="prompt">./hybrixd --help</code> <br/>
-  to view available command line options and browse to <a href=".">REST API</a> for reference.</p>
-
-<h3>Configuring <i>hybrixd</i></h3>
-
-<p>General settings for hybrixd can be configured using the configuration file: <code class="ref">hybrixd.conf</code></p>
-
-<p>See <code class="ref">hybrixd.conf.example</code> for an example configuration.</p>
+          <h2><a id="configuration"></a>Configuring the hybrix node</h2>
+          <p>General settings for hybrixd can be configured using the configuration file: <code class="ref">hybrixd.conf</code></p>
+          <p>See <code class="ref">hybrixd.conf.example</code> for an example configuration.</p>
+          <br/>

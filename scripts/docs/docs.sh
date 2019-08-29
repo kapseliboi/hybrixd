@@ -18,6 +18,9 @@ node "$NODE/scripts/docs/docs.js"
 
 node "$NODE/scripts/docs/conf.js"
 
+node "$NODE/scripts/docs/cli.js" "$HYBRIXD/cli-wallet"
+
+
 
 cd "$WHEREAMI"
 export PATH="$OLDPATH"
