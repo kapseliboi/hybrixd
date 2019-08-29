@@ -13,14 +13,27 @@ else
     mode=release
 fi
 
+echo "[.] apk update"
+
 echo "[.] Install rsync"
-apt update -qq -y > /dev/null
-apt install rsync -qq -y > /dev/null
+apk update
+apk add npm
+#apt update -qq -y > /dev/null
+apk add rsync 
+#apk install rsync -qq -y > /dev/null
+apk add unzip
+apk add curl
+#apk add jq
+
+npm install n -g 
+n 8.15.0
 
 echo "[i] Node version $(node --version)"
 
 echo "[.] Retrieve common artifact"
-wget -q --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fcommon/jobs/artifacts/master/download?job=common" -O artifacts-common.zip
+#wget -q --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fcommon/jobs/artifacts/master/download?job=common" -O artifacts-common.zip
+#curl --location --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fcommon/jobs/artifacts/master/download?job=common" -o artifacts-common.zip
+curl --location --header "Private-Token: $PRIVATE_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fcommon/jobs/artifacts/master/download?job=common" -o artifacts-common.zip
 
 echo "[.] Unzip and replace common"
 # remove link to common and unzip the downloaded artifact to the directory (|| true --> on error, no problem)
@@ -32,7 +45,8 @@ unzip -q -o artifacts-common.zip -d common/
 rm -rf  artifacts-common.zip || true
 
 echo "[.] Retrieve interface artifact"
-wget -q --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Finterface/jobs/artifacts/master/download?job=interface${DEBUG}" -O artifacts-interface.zip
+#wget -q --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Finterface/jobs/artifacts/master/download?job=interface${DEBUG}" -O artifacts-interface.zip
+curl --location --header "Private-Token: $PRIVATE_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Finterface/jobs/artifacts/master/download?job=interface${DEBUG}" -o artifacts-interface.zip
 
 echo "[.] Unzip and replace interface"
 # remove link to interface
@@ -54,7 +68,9 @@ unzip -q -o artifacts-interface.zip -d ./interface/
 rm -rf  artifacts-interface.zip || true
 
 echo "[.] Retrieve deterministic artifact"
-wget -q --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fmodules%2Fdeterministic/jobs/artifacts/master/download?job=deterministic" -O artifacts-deterministic.zip
+#wget -q --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fmodules%2Fdeterministic/jobs/artifacts/master/download?job=deterministic" -O artifacts-deterministic.zip
+curl --location --header "Private-Token: $PRIVATE_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fmodules%2Fdeterministic/jobs/artifacts/master/download?job=deterministic" -o artifacts-deterministic.zip
+
 
 echo "[.] Unzip and replace deterministic"
 # unzip the downloaded artifact to the directory (consider the artifact is packed as /modules/name/filename.lzma)
@@ -69,7 +85,8 @@ rm -rf  artifacts-deterministic.zip || true
 BRANCH_WEB_WALLET=master
 
 echo "[.] Retrieve web-wallet artifact from branch:  $BRANCH_WEB_WALLET"
-wget -q --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fweb-wallet/jobs/artifacts/$BRANCH_WEB_WALLET/download?job=web-wallet" -O artifacts-web-wallet.zip
+#wget -q --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fweb-wallet/jobs/artifacts/$BRANCH_WEB_WALLET/download?job=web-wallet" -O artifacts-web-wallet.zip
+curl --location --header "Private-Token: $PRIVATE_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fweb-wallet/jobs/artifacts/$BRANCH_WEB_WALLET/download?job=web-wallet" -o artifacts-web-wallet.zip
 
 # run the build-script of the hybrixd-node
 ./scripts/npm/compile.sh

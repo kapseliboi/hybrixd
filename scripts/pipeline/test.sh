@@ -8,6 +8,12 @@ echo "[.] remove transports module"
 
 rm -rf "./modules/transport"
 
+# for testing purposes replace port 5000 for api root 1111 with  in config
+sed -i -e "s#5000#1111#g" hybrixd.conf
+
+# for testing purposes replace empty string with /root in config
+sed -i -e "s#\"\"#\"/root\"#g" hybrixd.conf
+
 echo "[.] Starting hybrixd"
 ./hybrixd > /dev/null &
 
