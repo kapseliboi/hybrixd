@@ -1,52 +1,91 @@
-/* open-sans-regular - latin */
+/* -- Fonts --------------------------------------------------------- */
+
+/* ------------------------------------------------------------------ */
+
+/* Standard Font */
+
+/* ------------------------------------------------------------------ */
+
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 400;
-  src: url('./files/fonts_/OpenSans-Regular.eot'); /* IE9 Compat Modes */
+  src: url('./fonts/OpenSans-Regular.eot'); /* IE9 Compat Modes */
   src: local('Open Sans Regular'), local('OpenSans-Regular'),
-       url('./files/fonts_/OpenSans-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('./files/fonts_/OpenSans-Regular.woff2') format('woff2'), /* Super Modern Browsers */
-       url('./files/fonts_/OpenSans-Regular.woff') format('woff'), /* Modern Browsers */
-       url('./files/fonts_/OpenSans-Regular') format('truetype'), /* Safari, Android, iOS */
-       url('./files/fonts_/OpenSans-Regular.svg#OpenSans') format('svg'); /* Legacy iOS */
+       url('./fonts/OpenSans-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('./fonts/OpenSans-Regular.woff2') format('woff2'), /* Super Modern Browsers */
+       url('./fonts/OpenSans-Regular.woff') format('woff'), /* Modern Browsers */
+       url('./fonts/OpenSans-Regular') format('truetype'), /* Safari, Android, iOS */
+       url('./fonts/OpenSans-Regular.svg#OpenSans') format('svg'); /* Legacy iOS */
 }
-/* open-sans-italic - latin */
+
 @font-face {
   font-family: 'Open Sans';
   font-style: italic;
   font-weight: 400;
-  src: url('./files/fonts_/OpenSans-Italic.eot'); /* IE9 Compat Modes */
+  src: url('./fonts/OpenSans-Italic.eot'); /* IE9 Compat Modes */
   src: local('Open Sans Italic'), local('OpenSans-Italic'),
-       url('./files/fonts_/OpenSans-Italic.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('./files/fonts_/OpenSans-Italic.woff2') format('woff2'), /* Super Modern Browsers */
-       url('./files/fonts_/OpenSans-Italic.woff') format('woff'), /* Modern Browsers */
-       url('./files/fonts_/OpenSans-Italic.ttf') format('truetype'), /* Safari, Android, iOS */
-       url('./files/fonts_/OpenSans-Italic.svg#OpenSans') format('svg'); /* Legacy iOS */
+       url('./fonts/OpenSans-Italic.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('./fonts/OpenSans-Italic.woff2') format('woff2'), /* Super Modern Browsers */
+       url('./fonts/OpenSans-Italic.woff') format('woff'), /* Modern Browsers */
+       url('./fonts/OpenSans-Italic.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('./fonts/OpenSans-Italic.svg#OpenSans') format('svg'); /* Legacy iOS */
 }
-/* open-sans-600 - latin */
+
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 600;
-  src: url('./files/fonts_/OpenSans-SemiBold.eot'); /* IE9 Compat Modes */
+  src: url('./fonts/OpenSans-SemiBold.eot'); /* IE9 Compat Modes */
   src: local('Open Sans SemiBold'), local('OpenSans-SemiBold'),
-       url('./files/fonts_/OpenSans-SemiBold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('./files/fonts_/OpenSans-SemiBold.woff2') format('woff2'), /* Super Modern Browsers */
-       url('./files/fonts_/OpenSans-SemiBold.woff') format('woff'), /* Modern Browsers */
-       url('./files/fonts_/OpenSans-SemiBold.ttf') format('truetype'), /* Safari, Android, iOS */
-       url('./files/fonts_/OpenSans-SemiBold.svg#OpenSans') format('svg'); /* Legacy iOS */
+       url('./fonts/OpenSans-SemiBold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('./fonts/OpenSans-SemiBold.woff2') format('woff2'), /* Super Modern Browsers */
+       url('./fonts/OpenSans-SemiBold.woff') format('woff'), /* Modern Browsers */
+       url('./fonts/OpenSans-SemiBold.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('./fonts/OpenSans-SemiBold.svg#OpenSans') format('svg'); /* Legacy iOS */
 }
-/* open-sans-700 - latin */
+
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 700;
-  src: url('./files/fonts_/OpenSans-Bold.eot'); /* IE9 Compat Modes */
+  src: url('./fonts/OpenSans-Bold.eot'); /* IE9 Compat Modes */
   src: local('Open Sans Bold'), local('OpenSans-Bold'),
-       url('./files/fonts_/OpenSans-Bold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('./files/fonts_/OpenSans-Bold.woff2') format('woff2'), /* Super Modern Browsers */
-       url('./files/fonts_/OpenSans-Bold.woff') format('woff'), /* Modern Browsers */
-       url('./files/fonts_/OpenSans-Bold.ttf') format('truetype'), /* Safari, Android, iOS */
-       url('./files/fonts_/OpenSans-Bold.svg#OpenSans') format('svg'); /* Legacy iOS */
+       url('./fonts/OpenSans-Bold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('./fonts/OpenSans-Bold.woff2') format('woff2'), /* Super Modern Browsers */
+       url('./fonts/OpenSans-Bold.woff') format('woff'), /* Modern Browsers */
+       url('./fonts/OpenSans-Bold.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('./fonts/OpenSans-Bold.svg#OpenSans') format('svg'); /* Legacy iOS */
+}
+
+/* ------------------------------------------------------------------ */
+
+/* Code Font */
+
+/* ------------------------------------------------------------------ */
+
+@font-face {
+  font-family: 'Inconsolata';
+  font-style: normal;
+  font-weight: 400;
+  src: url('./fonts/Inconsolata-Regular.eot'); /* IE9 Compat Modes */
+  src: local('Inconsolata Regular'), local('Inconsolata-Regular'),
+       url('./fonts/Inconsolata-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('./fonts/Inconsolata-Regular.woff2') format('woff2'), /* Super Modern Browsers */
+       url('./fonts/Inconsolata-Regular.woff') format('woff'), /* Modern Browsers */
+       url('./fonts/Inconsolata-Regular') format('truetype'), /* Safari, Android, iOS */
+       url('./fonts/Inconsolata-Regular.svg#Inconsolata') format('svg'); /* Legacy iOS */
+}
+
+@font-face {
+  font-family: 'Inconsolata';
+  font-style: normal;
+  font-weight: 700;
+  src: url('./fonts/Inconsolata-Bold.eot'); /* IE9 Compat Modes */
+  src: local('Inconsolata Bold'), local('Inconsolata-Bold'),
+       url('./fonts/Inconsolata-Bold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('./fonts/Inconsolata-Bold.woff2') format('woff2'), /* Super Modern Browsers */
+       url('./fonts/Inconsolata-Bold.woff') format('woff'), /* Modern Browsers */
+       url('./fonts/Inconsolata-Bold.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('./fonts/Inconsolata-Bold.svg#Inconsolata') format('svg'); /* Legacy iOS */
 }
