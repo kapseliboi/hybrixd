@@ -1,0 +1,108 @@
+{
+  "symbol":"bnb",
+  "name":"Binance Coin",
+  "mode":"binance",
+  "module":"quartz",
+  "addressRegex":"^bnb[A-Za-z0-9]{39}$",
+  "factor":8,
+  "fee":"0.000375",
+  "blockexplorer":["https://explorer.binance.org"],
+  "listOfHosts":[
+    "https://testnet-dex.binance.org/api/v1/",
+    "tcp://dataseed1.binance.org:80/api/v1/",
+    "wss://testnet-dex.binance.org/api/ws/",
+    "wss://dex.binance.org/api/ws/",
+    "https://dex.binance.org/api/v1/",
+    "https://dex.binance.org:443/api/v1/"],
+  "host":"https://dex.binance.org/api/v1/",
+  "cache":10000,
+  "contract": null,
+  "throttle":1,
+  "rate-limit":"1 request per IP per second.",
+  "documentation":"https://docs.binance.org/api-reference/dex-api/paths.html",
+  "quartz":{
+    "balance" : [
+      "curl asset://$symbol account/$1 GET",
+      "tran '.balances' @success @fail",
+      "@fail",
+      "fail 'No Result'",
+      "@success",
+      "find {'symbol':'BNB'} 1 @fail",
+      "tran '[0].free'",
+      "done"
+    ],
+    "unspent" : [
+      "data '$1'",
+      "curl asset://$symbol account/$1 GET",
+      "tran {accountNumber : '.account_number', sequence : '.sequence'}",
+      "done"
+    ],
+    "push" : [
+      "data '$1'",
+      "curl asset://$symbol broadcast/?sync=true POST {'content-type': 'text/plain'}",
+      "tran '[0].hash' 1 2",
+      "done",
+      "fail"
+    ],
+    "test": [
+      "done {hash:dynamic}"
+    ],
+    "factor" : [
+      "pass('$factor')"
+    ],
+    "sample" : [
+      "done {address:'bnb177qrmvquh5flg6axap943clfm9cq09qcpwxc0m',transaction:'6F52B2DA41DC9E9EA91E16F1028F2C6D89B425A22A8E97CFAAA250375FC11E2D'}"
+    ],
+    "transaction" : [
+      "curl asset://$symbol tx/$1?format=json GET",
+      "poke txData",
+      "with reformatAmount    [data,$txData] [tran,'.tx.value.msg[0].value.outputs[0].coins[0].amount',2,1] [fail, 'Could not get amout out of transaction'] [atom]",
+      "with reformatSender    [data,$txData] [tran,'.tx.value.msg[0].value.inputs[0].address',2,1]          [fail, 'Could not get sender address out of transaction']",
+      "with reformatRecipient [data,$txData] [tran,'.tx.value.msg[0].value.outputs[0].address',2,1]         [fail, 'Could not get receiver address out of transaction']",
+      "with height            [data,$txData] [tran,'.height',2,1]                                           [fail, 'Could not get height out of transaction']",
+      "curl asset://$symbol transactions/?address=$reformatSender&blockheight=$height GET",
+      "poke txData_",
+      "with reformatTimestamp [data,$txData_] [tran,'.tx[0].timeStamp',2,1] [fail, 'n/a']",
+      "with reformatFee       [data,$txData_] [tran,'.tx[0].txFee',2,1]     [fail, 'n/a']",
+      "peek txData",
+      "tran { id:'.hash', timestamp: '$reformatTimestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'$symbol', source:'$reformatSender', target:'$reformatRecipient',confirmed:'.ok' } 1 @fail",
+      "done",
+      "@fail",
+      "fail 'Could not get transaction information!'"
+    ],
+    "transactionData" : [
+      "curl asset://$symbol tx/$1?format=json GET",
+      "poke txData",
+      "tran { txData: $txData } 1 @fail",
+      "done",
+      "@fail",
+      "fail 'Could not get transaction information!'"
+    ],
+    "attachment" : [
+      "call transactionData/$1",
+      "tran '.txData.tx.value.data' 1 @fail",
+      "done",
+      "@fail",
+      "fail 'Could not get attachment information!'"
+    ],
+    "message" : [
+      "call transactionData/$1",
+      "tran '.txData.tx.value.memo' 1 @fail",
+      "done",
+      "@fail",
+      "fail 'Could not get message information!'"
+    ],
+    "history" : [
+      "poke count $2 12",
+      "poke offset $3 0",
+      "curl asset://$symbol transactions/?address=$1&offset=$offset&limit=$count GET",
+      "tran '.tx' @success @fail",
+      "@success",
+      "sort ['.blockHeight',num,desc]",
+      "tran '[].txHash'",
+      "done",
+      "@fail",
+      "fail 'Could not retrieve transaction history.'"
+    ]
+  }
+}
