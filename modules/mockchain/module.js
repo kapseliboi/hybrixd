@@ -3,7 +3,7 @@
 // Module to provide a mock chain for testing
 
 const fs = require('fs');
-const Decimal = require('../../../common/crypto/decimal-light.js');
+const Decimal = require('../../common/crypto/decimal-light.js');
 
 // exports
 exports.mine = mine;
