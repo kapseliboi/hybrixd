@@ -14,18 +14,28 @@ else
 fi
 
 echo "[.] apk update"
-
-echo "[.] Install rsync"
 apk update
-apk add npm
 #apt update -qq -y > /dev/null
+
+echo "[.] Add npm"
+apk add npm
+npm config set unsafe-perm true
+
+echo "[.] Add rsync"
 apk add rsync 
 #apk install rsync -qq -y > /dev/null
+
+echo "[.] Add unzip"
 apk add unzip
+
+echo "[.] Add curl"
 apk add curl
 #apk add jq
 
+echo "[.] Install n -g "
 npm install n -g 
+
+echo "[.] Install node 8.15.0"
 n 8.15.0
 
 echo "[i] Node version $(node --version)"
