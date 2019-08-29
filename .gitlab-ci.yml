@@ -162,9 +162,9 @@ staging:
     #url: http://$CI_PROJECT_PATH_SLUG-staging.$AUTO_DEVOPS_DOMAIN
     url: https://node-staging.$AUTO_DEVOPS_DOMAIN
   only:
-    refs:
-      - tags
-    kubernetes: active
+#    refs:
+#      - tags
+#    kubernetes: active
     variables:
       - $STAGING_ENABLED
 
