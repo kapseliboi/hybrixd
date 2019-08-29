@@ -1,0 +1,167 @@
+          <script>
+            var id = "getting-started"
+            initNavigation(id)
+          </script>
+
+          <h1>Getting Started</h1>
+
+          <p>hybrix provides several methods to easily interact with distributed ledgers and data sources. This enables you to connect your application to a multitude of blockchains!</p>
+
+
+          <h2 class="small"><a id="beginner"></a>Are you a beginner?</h2>
+
+          <p>If you are just a beginner, it is best to try and learn about blockchain by experimenting with the <a href="./getting-started#RESTAPI">REST API</a>. Without difficulty, you will be able to get balance values for any cryptocurrency, or retrieve the fee needed for sending a transaction to a blockchain system. You may also experiment with decentralized storage, validate addresses or read data directly from processes. The blockchain world is your oyster, go wild and experiment, and above all... have fun!</p>
+
+
+          <h2 class="small"><a id="advanced"></a>Are you a more advanced developer?</h2>
+
+          <p>More advanced developers will most likely want to use the <a href="./getting-started#lib">Javascript library</a> to enable their application to talk to hybrix. This makes it possible to build powerful client-side applications. The library also talks to the REST-API when necessary over an encrypted channel, and it offers useful functions to construct and sign your transactions client side. Furthermore, there is the possibility to run a <a href="./getting-started#node">local node</a> for complete control and support the decentral network.</p>
+
+          <hr>
+
+          <h2><a id="RESTAPI"></a>REST API</h2>
+
+          <p>Retrieve information from hybrixd using uniform endpoints for all supported blockchains.</p>
+
+          <div class="highlight-block">
+            <span class="title">Features</span>
+            <ul>
+              <li>Retrieve balances</li>
+              <li>Retrieve transaction history</li>
+              <li>Address validation</li>
+              <li>Push transactions</li>
+              <li>Encrypted and compressed communication channels</li>
+              <li>Retrieve client-side code</li>
+            </ul>
+          </div>
+
+          <div class="example-block">
+            <span class="title">Live example</span>
+
+            <p>For example, the balance of the Bitcoin address <code class="ref">13JQwoSLLR3ffXwswe2HCTK9oq4i8MWK3q</code> can be retrieved using </p>
+            <code>https://api.hybrix.io<span style="color:#4782bc;">/asset/btc/balance/13JQwoSLLR3ffXwswe2HCTK9oq4i8MWK3q</span></code>
+
+            <input type="submit" value="Try it!" onclick="rout('/asset/btc/balance/13JQwoSLLR3ffXwswe2HCTK9oq4i8MWK3q');">
+          </div>
+
+          <p><a href="./api" class="read-more">Read more about the REST API <img src="./icon-arrow-right.svg" alt=">" /></a></p>
+
+          <hr>
+
+          <h2><a id="lib"></a>hybrix JS library</h2>
+
+          <p>Connect your software to leverage the capabilities of the hybrix platform. </p>
+
+          <div class="highlight-block">
+            <span class="title">Features</span>
+            <ul>
+              <li>Seamlessly interface with hybrixd</li>
+              <li>Handle all client-side operations securely</li>
+              <li>Encrypted channels</li>
+            </ul>
+          </div>
+
+          <div class="example-block">
+            <span class="title">Live example</span>
+            <br/>
+            <pre id="exampleHelloWorld" style="display: none;">
+hybrix.sequential([
+  'init',                                                        // Initialize hybrix
+  {host: 'http://localhost:1111/'}, 'addHost',                   // Add and initialize the host
+  {query: '/asset/btc/balance/13JQwoSLLR3ffXwswe2HCTK9oq4i8MWK3q'}, 'rout'  // Query for asset balance
+],
+ onSuccess,                                                      // Define action to execute on successfull completion
+ onError,                                                        // Define action to execute when an error is encountered
+ onProgress                                                      // Define action to execute whenever there is a progress update
+);</pre>
+
+            <div class="try">
+              <select style="display:none;" id="selectExample" onchange="var s = document.getElementById('selectExample');codeMirrorEditor.setValue(document.getElementById(s[s.selectedIndex].value).innerHTML.replace('http://localhost:1111',window.location.href.split(`/help`)[0]));">
+                <option value="exampleHelloWorld">Hello World</option>
+              </select>
+
+              <script>
+               var codeMirrorEditor;
+               setTimeout(function(){
+                 var examples = document.getElementsByClassName('example');
+                 var selectExample = document.getElementById('selectExample');
+                 for (let example of examples) {
+                   var option = document.createElement('OPTION');
+                   option.value= example.id;
+                   option.innerHTML = example.title;
+                   selectExample.appendChild(option);
+                   var button = document.createElement('input');
+                   button.type='submit';
+                   button.value="Try it!";
+
+                   button.onclick = function(body,id){
+                     return event => {
+
+                       codeMirrorEditor.setValue(body.replace('http://localhost:1111',window.location.href.split(`/help`)[0]))
+
+                       for(let option of document.getElementById('selectExample').options){
+                         if(option.value===id){
+                           option.selected='selected';
+                         }
+                       }
+                       var tr = document.getElementById('try').parentNode;
+                       tr.scrollIntoView();
+                       runExample(event);
+                     }
+                   }(example.innerHTML,example.id);
+                   example.parentNode.insertBefore(button, example.nextSibling);
+                 }
+                 document.getElementById('try').innerHTML=document.getElementById('exampleHelloWorld').innerHTML.replace('http://localhost:1111',window.location.href.split(`/help`)[0]);
+
+                 codeMirrorEditor = CodeMirror.fromTextArea(document.getElementById("try"), {
+                   mode: "application/javascript",
+                   lineWrapping:false,
+                   lineNumbers:true,
+                   matchBrackets:false,
+                   scrollbarStyle:null,
+                   fixedGutter:true
+                 });
+                 codeMirrorEditor.setOption("theme", "mdn-like");
+
+               },250);
+              </script>
+
+              <textarea id="try" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+
+              <input type="submit" value="Try it!" onclick="runExample(event)">
+
+              <p>Progress</p>
+              <div id="progressContainer">
+                <div id="progress"></div>
+              </div>
+
+              <p>Result</p>
+              <div id="result">...</div>
+
+            </div>
+          </div>
+
+          <p><a href="./hybrix-lib.js" class="read-more">Read more about the hybrix JS library <img src="./icon-arrow-right.svg" alt=">" /></a></p>
+
+          <hr>
+
+          <h2><a id="node"></a>hybrix node</h2>
+
+          <p>Run a local node for complete control and support the decentral network.</p>
+
+          <div class="highlight-block">
+            <span class="title">Features</span>
+            <ul>
+              <li>Connect to a plethora of blockchain and ledger systems</li>
+              <li>Get formatted information from different sources</li>
+              <li>Push deterministic transactions to decentralized ledgers</li>
+              <li>Execute Qrtz script applications</li>
+            </ul>
+          </div>
+
+          <div class="example-block">
+            <span class="title">Example</span>
+            <p><code class="prompt">./hybrixd /asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</code></p>
+          </div>
+
+          <p><a href="./hybrixd" class="read-more">Read more about the hybrix node <img src="./icon-arrow-right.svg" alt=">" /></a></p>

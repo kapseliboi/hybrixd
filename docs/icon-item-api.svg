@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.1 (78136) - https://sketchapp.com -->
+    <title>build</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linejoin="round">
+        <g id="Artboard" transform="translate(-741.000000, -468.000000)" fill-rule="nonzero" stroke="#FFFFFF" stroke-width="1.6">
+            <g id="build" transform="translate(742.000000, 469.000000)">
+                <path d="M17.9653045,14.6352844 C18.3139132,14.8651935 18.3139132,15.4403753 17.8876523,15.785648 L15.9901306,17.6650117 C15.6415219,18.0102844 15.177261,18.0102844 14.8286523,17.6650117 L7.31621752,10.2244662 C5.41869578,10.9534662 3.21139143,10.569739 1.6236523,8.9971935 C-0.0417390059,7.34773895 -0.467173789,4.8931935 0.539000124,2.93773895 L4.17873925,6.46655713 L6.65700012,4.01201168 L3.09408708,0.483193496 C5.06926099,-0.398806504 7.54752186,-0.0919883221 9.21208708,1.55746622 C10.7998262,3.13001168 11.187261,5.3161935 10.4512175,7.19555713 L17.9653045,14.6352844 Z" id="Path"></path>
+            </g>
+        </g>
+    </g>
+</svg>

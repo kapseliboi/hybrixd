@@ -24,7 +24,7 @@ function describe (meta, name) {
     if (item.hasOwnProperty('default') || item.hasOwnProperty('info') || item.hasOwnProperty('type') || item.hasOwnProperty('unit')) {
       const unit = item.hasOwnProperty('unit') ? ('&nbsp;' + item.unit) : '';
 
-      data += '<b>' + key + ' : </b>';
+      data += '<code class="ref">' + key + '</code>: &nbsp;';
       if (item.hasOwnProperty('info')) { data += item['info']; }
       if (item.hasOwnProperty('default')) { data += ' [default = ' + JSON.stringify(item['default']) + unit + ']'; }
 
@@ -34,7 +34,7 @@ function describe (meta, name) {
     }
   }
   if (name) {
-    data += '</div>';
+    data += '</div><br/>';
   }
 }
 
