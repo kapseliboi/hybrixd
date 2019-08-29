@@ -23,7 +23,9 @@
       "done"
     ],
     "push" : [
-      "rout('/engine/mockchain/push/$1')",
+      "data $1",
+      "with .factor data $factor",
+      "rout('/engine/mockchain/push/$')",
       "done"
     ],
     "factor" : [

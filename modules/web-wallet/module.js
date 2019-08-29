@@ -28,7 +28,7 @@ function web_wallet (proc) {
   let mimeType = mimeTypes.hasOwnProperty(extension) ? mimeTypes[extension] : 'text/html';
 
   proc.mime('file:' + mimeType);
-  proc.done(fileName);
+  proc.done(fileName.split('?')[0]);
 }
 
 // exports

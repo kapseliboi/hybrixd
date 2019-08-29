@@ -2,7 +2,8 @@
 // hybrixd module - mockchain/module.js
 // Module to provide a mock chain for testing
 
-let fs = require('fs');
+const fs = require('fs');
+const Decimal = require('../../../common/crypto/decimal-light.js');
 
 // exports
 exports.mine = mine;
@@ -61,6 +62,12 @@ function balance (proc) {
   proc.done('' + balance);
 }
 
+const fromInt = function (input, factor) {
+  const f = Number(factor);
+  const x = new Decimal(String(input));
+  return x.times((f > 1 ? '0.' + new Array(f).join('0') : '') + '1').toFixed();
+};
+
 function push (proc) {
   let mockchain;
   try {
@@ -77,11 +84,15 @@ function push (proc) {
   const source = newTransaction.source;
   const target = newTransaction.target;
   const contract = newTransaction.contract;
-  const amount = newTransaction.amount;
+  const factor = newTransaction.factor;
+
+  const atomicAmount = newTransaction.amount;
+  const amount = fromInt(atomicAmount, factor);
   const fee = newTransaction.fee;
   const message = typeof newTransaction.message === 'string' ? newTransaction.message : '';
   const signature = newTransaction.signature;
-  if (signature !== source * target + amount + fee * 3.14 + contract.length * 1001 + message.length * 123) {
+
+  if (signature !== source * target + atomicAmount + fee * 3.14 + contract.length * 1001 + message.length * 123) {
     proc.fail('illegal signature');
   } else {
     let balance = 0;
@@ -91,6 +102,8 @@ function push (proc) {
       if (transaction.source === source && transaction.contract === contract) { balance -= transaction.amount + transaction.fee; }
     }
     if (balance >= amount + fee) {
+      delete newTransaction.factor;
+      newTransaction.amount = amount;
       newTransaction.timestamp = Date.now();
       newTransaction.id = mockchain.length;
       newTransaction.type = 'tran';
