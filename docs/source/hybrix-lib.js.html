@@ -80,6 +80,34 @@
   error=>{console.log('Oops, something went wrong: '+error);}     // Define action to exectue when an error is encountered
   );</pre>
 
+            <h3>Connectors</h3>
+
+            <p>The connector is the method that is used to make calls to the host. For NodeJS the http and/or https modules can be used:
+
+              <pre>
+  var hybrix = new Hybrix.Interface({http:require('http')}); // Provide a http connector
+  var hybrix = new Hybrix.Interface({https:require('https')}); // Provide a https connector
+  var hybrix = new Hybrix.Interface({http:require('http'),https:require('https')}); // Provide http and https connectors for mixed usage
+              </pre>
+
+              For web/html implementations the XMLHttpRequest method is used which is supplied by the browser.
+
+              <pre>var hybrix = new Hybrix.Interface({XMLHttpRequest:XMLHttpRequest});</pre>
+
+              There is also the option to define a custom connector which should be a function with the following signature:
+
+              <pre>
+(host,query,dataCallback,errorCallback) => {
+  // do the call to the host using the query and return the result or error
+  if(error){
+    errorCallback(error);
+  }else{
+    dataCallback(result);
+  }
+}
+              </pre>
+
+
             <h3>Callbacks</h3>
 
             <p>Each command is implemented as a member function of the Hybrix.Interface class. Adding a host can be done as follows:</p>
