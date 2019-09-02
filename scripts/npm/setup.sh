@@ -45,7 +45,7 @@ if [ ! -e "$NODE/node_binaries" ];then
     if [ ! -e "$NODEJS" ];then
         cd "$HYBRIXD"
         echo " [i] Clone node js runtimes files"
-        git clone https://gitlab.com/hybrix/hybrixd/dependencies/nodejs.git #TODO find this on github for public consumption
+        git clone https://gitlab.com/hybrix/hybrixd/dependencies/nodejs.git #TODO find this on github for public consumption!
 
     fi
     echo " [i] Link node_binaries"
