@@ -16,10 +16,10 @@ WEB_WALLET="$HYBRIXD/web-wallet"
 ENVIRONMENT=$1
 
 if [ "$ENVIRONMENT" == "dev" ]; then
-    URL="https://gitlab.com/hybrix/hybrixd/common.git"
+    URL_COMMON="https://gitlab.com/hybrix/hybrixd/common.git"
     echo "[i] Environment is development..."
 elif [ "$ENVIRONMENT" == "public" ]; then
-    URL="https://github.com/hybrix-io/hybrixd-common.git"
+    URL_COMMON="https://github.com/hybrix-io/hybrixd-common.git"
     echo "[i] Environment is public..."
 else
     echo "[!] Unknown Environment (please use npm run setup[:dev])"
@@ -63,7 +63,7 @@ if [ ! -e "$NODE/common" ];then
     if [ ! -e "$COMMON" ];then
         cd "$HYBRIXD"
         echo " [i] Clone common files"
-        git clone $URL
+        git clone $URL_COMMON
 
     fi
     echo " [i] Link common files"
