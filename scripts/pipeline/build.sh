@@ -14,18 +14,28 @@ else
 fi
 
 echo "[.] apk update"
-
-echo "[.] Install rsync"
 apk update
-apk add npm
 #apt update -qq -y > /dev/null
+
+echo "[.] Add npm"
+apk add npm
+npm config set unsafe-perm true
+
+echo "[.] Add rsync"
 apk add rsync 
 #apk install rsync -qq -y > /dev/null
+
+echo "[.] Add unzip"
 apk add unzip
+
+echo "[.] Add curl"
 apk add curl
 #apk add jq
 
+echo "[.] Install n -g "
 npm install n -g 
+
+echo "[.] Install node 8.15.0"
 n 8.15.0
 
 echo "[i] Node version $(node --version)"
@@ -61,6 +71,7 @@ git checkout origin/master -- lib
 cd ..
 cd node
 
+
 # unzip the downloaded artifact to the directory
 unzip -q -o artifacts-interface.zip -d ./interface/
 
@@ -87,6 +98,10 @@ BRANCH_WEB_WALLET=master
 echo "[.] Retrieve web-wallet artifact from branch:  $BRANCH_WEB_WALLET"
 #wget -q --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fweb-wallet/jobs/artifacts/$BRANCH_WEB_WALLET/download?job=web-wallet" -O artifacts-web-wallet.zip
 curl --location --header "Private-Token: $PRIVATE_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fweb-wallet/jobs/artifacts/$BRANCH_WEB_WALLET/download?job=web-wallet" -o artifacts-web-wallet.zip
+
+echo "[.] Retrieve cli-wallet artifact"
+wget -q --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fcli-wallet/jobs/artifacts/master/download?job=cli-wallet" -O artifacts-cli-wallet.zip
+
 
 # run the build-script of the hybrixd-node
 ./scripts/npm/compile.sh

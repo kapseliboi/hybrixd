@@ -1,44 +1,51 @@
-<div class="download">Download</div>
+          <script>
+            var id = "qrtz"
+            initNavigation(id)
+          </script>
 
-<p><i>qrtz</i> is the processing language for hybrixd. It is used to handle routing requests. Each routing request spawns a process that follows <i>qrtz</i> steps to a result, or a failure.</p>
-<p>A <i>qrtz</i> command always consists of 4 characters. The parameters are appended in either a space or a comma separated fashion:</p>
+          <h1>Qrtz</h1>
 
-<p><code>head parameter1 parameter2 ...</code></p>
+          <p>qrtz is the processing language for hybrixd. It is used to handle routing requests. Each routing request
+            spawns a process that follows qrtz steps to a result, or a failure.</p>
 
-<p><code>head(parameter1,parameter2,...)</code></p>
+          <p>A qrtz command always consists of 4 characters. The parameters are
+            appended in either a space or a comma-separated fashion:</p>
 
-<p><a onclick="document.getElementById('more').style.display='block'; event.target.style.display='none';">Read more...</a></p>
-<div id="more" style="display:none;">
+          <p><code>head parameter1 parameter2 ...</code></p>
 
-  <h3>Recipe</h3>
+          <p><code>head(parameter1,parameter2,...)</code></p>
 
-  <p>Recipes are JSON files that contain parameters and <i>qrtz</i> methods for asset handling, data source queries or actionable engines. A recipe, depending on what it does, fits in one of three categories: asset, source, or engine.</p>
-  <p>A source-recipe in principle contains only methods to query read-only data sources.</p>
-  <p>An engine-recipe contains methods to perform actions based on incoming data, business logic and often interfaces with other programming languages.</p>
-  <p>An asset-recipe contains methods to query value-related ledger or cryptocurrency API's. It returns path options to the hybrixd routing engine for users or machines to perform actions like, for example, querying the balance of an address.</p>
-  <p>The categories above make it easier to instantly recognize the functionality of a recipe, and analyze it from the proper context. Source and engine recipes are interpreted identically by the scheduler, however, they are available through separate paths: <code>/source</code> and <code>/engine</code>. Asset recipes are specifically tailored to be used in the context of decentralized banking, and are available through the routing path: <code>/asset</code>.</p>
+          <h2><a id="recipe"></a>Recipe</h2>
 
-  <h3>Data flow</h3>
+          <p>Recipes are JSON files that contain parameters and qrtz methods for asset handling, data source queries or actionable engines. A recipe, depending on what it does, fits in one of three categories: asset, source, or engine.</p>
 
-  <p>Every step in a <i>qrtz</i> recipe has the potential to alter the data of the process in which the script is running. Process data is available by using the dollar sign <code>$</code>. It is also available as input to every new process step. It behaves like a variable in <i>qrtz</i> in that it can be read anywhere, however, the difference with a variable is that the data of the process can be changed by every step of the process. The design consideration is that this coaxes you to design your <i>qrtz</i> script with a concise data flow in mind.</p>
-  <p>Here is an example of some <i>qrtz</i> steps and the resulting data flow.</p>
-  <code>
-  data 'Hello dog!'       // data 'Hello dog!'    - set the data of the process
-  pull -4                 // data 'Hello '        - pulls the last 4 characters
-  repl ' ' 'world!'       // data 'Hello world!'  - replaces the ' ' (space) by 'world!'
-  </code>
+          <p>A source-recipe in principle contains only methods to query read-only data sources.</p>
 
-  <h3>Variables and Scopes</h3>
+          <p>An engine-recipe contains methods to perform actions based on incoming data, business logic and often interfaces with other programming languages.</p>
 
-  <p><code>$</code> the main stream variable it is the output of the previous step. Use <code>$$</code> to escape the dollar sign (for example in regular expressions). </p>
-  <p><code>$.property</code></p>
+          <p>An asset-recipe contains methods to query value-related ledger or cryptocurrency API's. It returns path options to the hybrixd routing engine for users or machines to perform actions like, for example, querying the balance of an address.</p>
 
-  <p><code>$variable</code>  Retrieve a propery from the recipe.(read only) (falls back to proc:: scope if no recipe variable is found)</p>
-  <p><code>$local::variable</code>  or <code>$::variable</code> Use a local scope (maintained between all processes spawned from the same recipe).</p>
-  <p><code>$proc::variable</code> process scope.</p>
-  <p><code>$otherRecipe::variable</code> the local scope of another recipe (read only)</p>
+          <p>The categories above make it easier to recognize the functionality of a recipe instantly, and analyze it from the proper context. Source and engine recipes are interpreted identically by the scheduler. However, they are available through separate paths: <code>/source</code> and <code>/engine</code>. Asset recipes are specifically tailored to be used in the context of decentralized banking and are available through the routing path: <code>/asset</code>.</p>
 
+          <h2><a id="data-flow"></a>Data flow</h2>
 
-</div>
+          <p>Every step in a qrtz recipe has the potential to alter the data of the process in which the script is running. Process data is available by using the dollar sign <code>$</code>. It is also available as input to every new process step. It behaves like a variable in qrtz in that it can be read anywhere. However, the difference with a variable is that the data of the process can be changed by every step of the process. The design consideration is that this coaxes you to design your qrtz script with a concise data flow in mind.</p>
 
-<h3>Reference</h3>
+          <p>Here is an example of some qrtz steps and the resulting data flow.</p>
+
+<pre><code class="language-html">data 'Hello dog!'       // data 'Hello dog!'    - set the data of the process
+pull -4                 // data 'Hello '        - pulls the last 4 characters
+repl ' ' 'world!'       // data 'Hello world!'  - replaces the ' ' (space) by 'world!'
+</code></pre>
+
+          <h2><a id="var-and-scope"></a>Variables & Scopes</h2>
+
+          <p><code>$</code> the main stream variable it is the output of the previous step. Use <code>$$</code> to escape the dollar sign (for example in regular expressions). </p>
+          <p><code>$.property</code></p>
+
+          <p><code>$variable</code>  Retrieve a property from the recipe.(read only) (falls back to proc:: scope if no recipe variable is found)</p>
+          <p><code>$local::variable</code>  or <code>$::variable</code> Use a local scope (maintained between all processes spawned from the same recipe).</p>
+          <p><code>$proc::variable</code> process scope.</p>
+          <p><code>$otherRecipe::variable</code> the local scope of another recipe (read-only)</p>
+
+          <h2><a id="reference"></a>Reference</h2>

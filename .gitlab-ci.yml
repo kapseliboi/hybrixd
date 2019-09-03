@@ -1,10 +1,7 @@
 image: node:8.12.0
 
 variables:
-  # AUTO_DEVOPS_DOMAIN is the application deployment domain and should be set as a variable at the group or project level.
-  # AUTO_DEVOPS_DOMAIN: domain.example.com
   BRANCH_WEB_WALLET: $BRANCH_WEB_WALLET
-  #BUILDPACK_URL: https://github.com/heroku/heroku-buildpack-nodejs
 
   POSTGRES_USER: user
   POSTGRES_PASSWORD: testing-password
@@ -12,8 +9,6 @@ variables:
   POSTGRES_DB: $CI_ENVIRONMENT_SLUG
 
   KUBERNETES_VERSION: 1.13.7
-  #HELM_VERSION: 2.10.0
-  #HELM_VERSION: 2.6.1
   HELM_VERSION: 2.14.3
 
   DOCKER_DRIVER: overlay2
@@ -164,6 +159,7 @@ staging:
   only:
     refs:
       - tags
+      - master
     kubernetes: active
     variables:
       - $STAGING_ENABLED
@@ -209,6 +205,7 @@ production_manual:
   only:
     refs:
       - tags
+      - master
     kubernetes: active
     variables:
       - $STAGING_ENABLED

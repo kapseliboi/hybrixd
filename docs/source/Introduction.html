@@ -1,145 +1,81 @@
-<script>initNavigation("Introduction")</script>
+          <script>
+            var id = "introduction"
+            initNavigation(id)
+          </script>
 
-          <h2>Introduction</h2>
+          <h1>Documentation</h1>
 
-          <p><i>hybrix</i> is a highly inclusive distributed platform environment to network and manage digital forms of value transfer, interlinking other decentralized networks. It solves the problem of a currently fragmented ecosystem of solutions in digital ledger technologies and alternative economies. The <i>hybrix</i> network runs through a collection of decentralized nodes and puts a lot of power at your fingertips.</p>
+          <p><b>Welcome to hybrix!</b> hybrix is a highly inclusive distributed platform environment to network and manage digital forms of value transfer, interlinking other decentralized networks. It solves the problem of a currently fragmented ecosystem of solutions in digital ledger technologies and alternative economies. The hybrix network runs through a collection of decentralized nodes and puts a lot of power at your fingertips.</p>
 
-          <img src="./hybrix-diagram.svg" alt="hybrix overview" class="diagram-img" />
+          <p>Get familiar with the hybrix products and explore their features:</p>
 
-          <h3>Connect to every blockchain</h3>
+          <div class="pure-g">
+            <div class="pure-u-1 pure-u-lg-1-3 pure-u-md-1-1 c-block">
+              <h2>
+                <a id="run"></a>
+                <img src="./icon-Run.svg" alt="icon" />
+                Run
+              </h2>
+              <p>Core of the hybrix platform.</p>
 
-          <p><i>hybrix</i> provides several methods to easily interact with distributed ledgers and data sources. This enables you to connect your application to a multitude of blockchains!</p>
-
-          <h4>Beginners start here</h4>
-
-          <p>If you are just a beginner, it is best to try and learn about blockchain by experimenting with the <a href="./Introduction#RESTAPI">REST-API</a>. Without difficulty, you will be able to get balance values for any cryptocurrency, or retrieve the fee needed for sending a transaction to a blockchain system. You may also experiment with decentralized storage, validate addresses or read data directly from processes. The blockchain world is your oyster, go wild and experiment, and above all... have fun!</p>
-
-          <h4>Seasoned developers</h4>
-          <p>More advanced developers will most likely want to use the <a href="./Introduction#lib">Javascript library</a> to enable their application to talk to <i>hybrix</i>. This makes it possible to build powerful client-side applications. The library also talks to the REST-API when necessary over an encrypted channel, and it offers useful functions to construct and sign your transactions client side.</p>
-
-          <h3><a id="RESTAPI"></a>REST API</h3>
-
-          <p>This Application Programming Interface can be used to retrieve information from hybrixd.</p>
-
-          <p><code>https://api.hybrix.io<span style="color:#4782bc;">/asset/btc/balance/13JQwoSLLR3ffXwswe2HCTK9oq4i8MWK3q</span></code>
-            <br/>
-            returns the balance of the Bitcoin address 13JQwoSLLR3ffXwswe2HCTK9oq4i8MWK3q.<input type="submit" value="Try it!" onclick="rout('/asset/btc/balance/13JQwoSLLR3ffXwswe2HCTK9oq4i8MWK3q');"></p>
-
-          <b>Features</b>
-
-          <ul>
-            <li>Retrieve balances</li>
-            <li>Retrieve transaction history</li>
-            <li>Address validation</li>
-            <li>Push transactions</li>
-            <li>Ecrypted and compressed communication channels</li>
-            <li>Retrieve client side code</li>
-          </ul>
-
-          <p><a href=".">More about this subject...</a></p>
-
-          <h3><a id="lib"></a>hybrix Javascript Library</h3>
-
-          <p>This library can be used to connect software to leverage the capabilities of the hybrix platform. It serves two purposes: first to facilitate the logistics of interfacing with the hybrixd REST API, secondly to handle all client side operations securely and privately. This ensures that keys required for transaction never leave the users device and communication over an encrypted channel.</p>
-
-          <b>Features</b>
-
-          <ul>
-            <li>Seamlessly interface with hybrixd</li>
-            <li>Handle all client side operations securely</li>
-            <li>Encrypted channels</li>
-          </ul>
-          <b>Live example</b>
-
-          <pre id="exampleHelloWorld" style="display: none;">
-hybrix.sequential([
-  'init',                                                        // Initialize hybrix
-  {host: 'http://localhost:1111/'}, 'addHost',                   // Add and initialize the host
-  {query: '/asset/btc/balance/13JQwoSLLR3ffXwswe2HCTK9oq4i8MWK3q'}, 'rout'  // Query for asset balance
-],
- onSuccess,                                                      // Define action to execute on successfull completion
- onError,                                                        // Define action to execute when an error is encountered
- onProgress                                                      // Define action to execute whenever there is a progress update
-);</pre>
-
-          <div class="try">
-            <select style="display:none;" id="selectExample" onchange="var s = document.getElementById('selectExample');codeMirrorEditor.setValue(document.getElementById(s[s.selectedIndex].value).innerHTML.replace('http://localhost:1111',window.location.href.split(`/help`)[0]));">
-              <option value="exampleHelloWorld">Hello World</option>
-            </select>
-
-            <script>
-             var codeMirrorEditor;
-             setTimeout(function(){
-               var examples = document.getElementsByClassName('example');
-               var selectExample = document.getElementById('selectExample');
-               for (let example of examples) {
-                 var option = document.createElement('OPTION');
-                 option.value= example.id;
-                 option.innerHTML = example.title;
-                 selectExample.appendChild(option);
-                 var button = document.createElement('input');
-                 button.type='submit';
-                 button.value="Try it!";
-
-                 button.onclick = function(body,id){
-                   return event => {
-
-                     codeMirrorEditor.setValue(body.replace('http://localhost:1111',window.location.href.split(`/help`)[0]))
-
-                     for(let option of document.getElementById('selectExample').options){
-                       if(option.value===id){
-                         option.selected='selected';
-                       }
-                     }
-                     var tr = document.getElementById('try').parentNode;
-                     tr.scrollIntoView();
-                     runExample(event);
-                   }
-                 }(example.innerHTML,example.id);
-                 example.parentNode.insertBefore(button, example.nextSibling);
-               }
-               document.getElementById('try').innerHTML=document.getElementById('exampleHelloWorld').innerHTML.replace('http://localhost:1111',window.location.href.split(`/help`)[0]);
-
-               codeMirrorEditor = CodeMirror.fromTextArea(document.getElementById("try"), {
-                 lineNumbers: true,
-                 mode: "application/javascript",
-                 matchBrackets: true
-               });
-
-             },250);
-            </script>
-
-            <textarea id="try" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
-
-            <p>Progress:</p>
-            <div id="progressContainer">
-              <div id="progress"></div>
+              <a href="./hybrixd">
+                <div class="item" style="background-image: linear-gradient(26deg, #50CBAF 0%, #80A1C9 100%);">
+                  <img src="./icon-item-node.svg" alt="icon" />
+                  <span>hybrix node</span>
+                </div>
+              </a>
             </div>
 
-            <p>Result:</p>
-            <div id="result">...</div>
+            <div class="pure-u-1 pure-u-lg-1-3 pure-u-md-1-1 c-block">
+              <h2>
+                <a id="build"></a>
+                <img src="./icon-Build.svg" alt="icon" />
+                Build
+              </h2>
+              <p>Tools for development.</p>
 
-            <input type="submit" value="Try it!" onclick="runExample(event)">
+              <a href="./api">
+                <div class="item" style="background-image: linear-gradient(44deg, #6FB7D4 0%, #F287D1 49%, #E49384 100%);">
+                  <img src="./icon-item-api.svg" alt="icon" />
+                  <span>rest api</span>
+                </div>
+              </a>
+              <a href="./hybrix-lib.js">
+                <div class="item" style="background-image: linear-gradient(44deg, #6FB7D4 0%, #F287D1 49%, #E49384 100%);">
+                  <img src="./icon-item-jslib.svg" alt="icon" />
+                  <span>hybrix JS library</span>
+                </div>
+              </a>
+            </div>
+
+            <div class="pure-u-1 pure-u-lg-1-3 pure-u-md-1-1 c-block">
+              <h2>
+                <a id="use"></a>
+                <img src="./icon-Use.svg" alt="icon" />
+                Use
+              </h2>
+              <p>Software built with hybrix.</p>
+
+              <a href="./block-explorer">
+                <div class="item" style="background-image: linear-gradient(211deg, #E89F5E 0%, #E382A6 100%);">
+                  <img src="./icon-item-explorer.svg" alt="icon" />
+                  <span>block explorer</span>
+                </div>
+              </a>
+              <a href="./web-wallet">
+                <div class="item" style="background-image: linear-gradient(211deg, #E89F5E 0%, #E382A6 100%);">
+                  <img src="./icon-item-wallet.svg" alt="icon" />
+                  <span>web wallet</span>
+                </div>
+              </a>
+              <a href="./cli">
+                <div class="item" style="background-image: linear-gradient(211deg, #E89F5E 0%, #E382A6 100%);">
+                  <img src="./icon-item-wallet.svg" alt="icon" />
+                  <span>command-line wallet</span>
+                </div>
+              </a>
+            </div>
           </div>
 
-          <p><a href="./hybrix-lib.js">More about this subject...</a></p>
-
-          <h3>hybrixd daemon</h3>
-
-          <p>The <i>hybrix</i> platform environment can be run on your own personal computer or server by downloading the daemon called <i>hybrixd</i>. This makes it possible to host your own wallet, be your own bank and have a powerful multi blockchain system at your fingertips.</p>
-
-          <p><code class="prompt">./hybrixd /asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</code>.</p>
-
-          <b>Features</b>
-
-          <ul>
-            <li>Connect to a plethora of blockchain and ledger systems</li>
-            <li>Get formatted information from different sources</li>
-            <li>Push deterministic transactions to decentralized ledgers</li>
-            <li>Execute Qrtz script applications</li>
-          </ul>
-
-          <p><a href="./hybrixd">More about this subject...</a></p>
-        </div>
-      </div>
-    </div>
+          <p>hybrix provides several methods to easily interact with distributed ledgers and data sources.</p>
+          <p>Not sure where to start? Follow our <a href="./getting-started">quickstart guide</a> and start connecting your application to a multitude of blockchains!</p>

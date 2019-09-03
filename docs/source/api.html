@@ -1,50 +1,85 @@
-<script>initNavigation("REST API")</script>
+          <script>
+            var id = "api"
+            initNavigation(id)
+          </script>
 
-<h2>REST API</h2>
+          <h1>REST API</h1>
 
-<p>This Application Programming Interface can be used to retrieve information from hybrixd. The requests are formatted as forward slash ('/') separated commands (similar to a website url or file path.)</p>
+          <p>This Application Programming Interface can be used to retrieve information from hybrixd. The requests are formatted as forward-slash ('/') separated commands (similar to a website url or file path.)</p>
 
-<p><a onclick="document.getElementById('more').style.display='block'; event.target.style.display='none';">Read more...</a></p>
 
-<div id="more" style="display:none;">
+          <h2><a id="examples"></a>Examples</h2>
 
-  <h3>Examples</h3>
-  <ul>
-    <li><code><span style="color:#4782bc">/asset</span></code> returns the assets supported by the hybrixd node.<input type="submit" value="Try it" onclick="rout('/asset');"> </li>
-    <li><code><span style="color:#4782bc">/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</span></code> returns the balance of the Bitcoin address 32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ.<input type="submit" value="Try it" onclick="rout('/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ');"></li>
-    <li><code>/command/reload</code> reload hybrixd and reinitialize modules and recipes.<input type="submit" disabled value="Try it" onclick="rout('/asset');"> <span class="root-only">(Root only)</span></li>
-    <li><code><span style="color:#5DBEC8">/proc</span></code> returns the list of processes running on the hybrixd node.<input type="submit" value="Try it" onclick="rout('/proc');"></li>
-    <li><code><span style="color:#5DBEC8">/proc/1543921378626236</span></code> returns the progress and result of process 1543921378626236.
-  </ul>
+          <div class="example-block">
+            <p><code><span style="color:#4782bc">/asset</span></code> returns the assets supported by the hybrixd node.</p>
+            <input type="submit" value="Try it" onclick="rout('/asset');">
+          </div>
 
-  <p>The response will be in JSON format. For the balance request <code>/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</code> this will be of the form:</p>
+          <div class="example-block">
+            <p><code><span style="color:#4782bc">/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</span></code> returns the balance of the Bitcoin address 32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ.</p>
+            <input type="submit" value="Try it" onclick="rout('/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ');">
+          </div>
 
-  <p><code>{"error":0,"info":"Process data.","id":"1543921378626236","progress":1,"started":1543923093402,"stopped":1543923093695,"data":"<span style="color:orange;">0.00000000</span>","request":"<span style="color:#4782bc">/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</span>"}</code></p>
+          <div class="example-block">
+            <p><code>/command/reload</code> reload hybrixd and reinitialize modules and recipes.</p>
+            <input type="submit" disabled value="Try it" onclick="rout('/asset');"> <span class="root-only">(root only)</span>
+          </div>
 
-  <p>From which we see that the balance on this address is <span style="color:orange;">0.00000000</span>.</p>
+          <div class="example-block">
+            <p><code><span style="color:#5DBEC8">/proc</span></code> returns the list of processes running on the hybrixd node.</p>
+            <input type="submit" value="Try it" onclick="rout('/proc');">
+          </div>
 
-  <h3>Two Stage Requests</h3>
+          <div class="example-block">
+            <p><code><span style="color:#5DBEC8">/proc/1543921378626236</span></code> returns the progress and result of process 1543921378626236.</p>
+          </div>
 
-  <p>For some requests the response will consist of a process reference. This means that the response to your request is not yet finished but you can follow up on it using the given process id.</p>
 
-  <p><code><span style="color:#4782bc">/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</span></code><input type="submit" value="Try it" onclick="rout('/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ');"></p>
+          <p>The response will be in JSON format. For the balance request <code>/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</code> this will be of the form:</p>
 
-  <p>then returns</p>
+          <div class="paragraph"><pre><code class="language-json">{"error":0,"info":"Process data.","id":"1543921378626236","progress":1,"started":1543923093402,"stopped":1543923093695,"data":"<span style="color:orange;">0.00000000</span>","request":"<span style="color:#4782bc">/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</span>"}</code></pre></div>
 
-  <p><code>{"error":0,"info":"Command process ID.","id":"id","request":"<span style="color:#4782bc">/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</span>","data":"<span style="color:#5DBEC8;">1543921378626236</span>"}</code></p>
+          <p>From which we see that the balance on this address is <span style="color:orange;">0.00000000</span>.</p>
 
-  <p>and the request <code><span style="color:#5DBEC8">/proc/1543921378626236</span></code> then returns</p>
 
-  <p><code>{"error":0,"info":"Process data.","id":"<span style="color:#5DBEC8;">1543921378626236</span>","progress":1,"started":1543923093402,"stopped":1543923093695,"data":"<span style="color:orange;">0.00000000</span>","request":"<span style="color:#4782bc">/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</span>"}</code></p>
+          <h2><a id="two-stage-requests"></a>Two-Stage Requests</h2>
 
-  <h3>hybrixd-lib.js - a Javascript Library</h3>
+          <p>For some requests, the response will consist of a process reference. This means that the response to your request is not yet finished, but you can follow up on it using the given process id.</p>
 
-  <p>To facilitate integration of the API into you Javascript projects we have created a library. This library will handle two stage request and all client side steps for the encyrption and signing of transactions.</p>
+          <div class="example-block">
+            <span class="title">Example</span>
+            <p><code><span style="color:#4782bc">/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</span></code></p>
+            <input type="submit" value="Try it" onclick="rout('/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ');">
 
-  <p><a href="./hybrix-lib.js">Learn more...</a></p>
-</div>
+            <br/>
 
-<h3>Reference</h3>
-<div id="filterBox"><input id="search" onkeyup="search(event)" placeholder="Filter" onclick="search"><input type="submit" value="&#215;" onclick="clearSearch()"/></div>
-<script>initNavigation("' + id + '")</script>
+            <span class="title">Result</span>
+            <div class="paragraph"><pre><code class="language-json">{"error":0,"info":"Command process ID.","id":"id","request":"<span style="color:#4782bc">/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</span>","data":"<span style="color:#5DBEC8;">1543921378626236</span>"}</code></pre></div>
+          </div>
 
+          <p>The same is true for the following request.</p>
+
+          <div class="example-block">
+            <span class="title">Example</span>
+            <p><code><span style="color:#5DBEC8">/proc/1543921378626236</span></code></p>
+
+            <br/>
+
+            <span class="title">Result</span>
+            <div class="paragraph"><pre><code class="language-json">{"error":0,"info":"Process data.","id":"<span style="color:#5DBEC8;">1543921378626236</span>","progress":1,"started":1543923093402,"stopped":1543923093695,"data":"<span style="color:orange;">0.00000000</span>","request":"<span style="color:#4782bc">/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ</span>"}</code></pre></div>
+          </div>
+
+
+          <h2><a id="js-lib"></a>hybrix JS library</h2>
+
+          <p>To facilitate integration of the API into you Javascript projects we have created a library. This library will handle two stage request and all client side steps for the encyrption and signing of transactions.</p>
+
+          <p><a href="./hybrix-lib.js">Read more about the hybrix JS library &#187;</a></p>
+
+
+
+          <h2 style="margin-bottom: 20px;"><a id="reference"></a>Reference</h2>
+
+          <div id="filterBox"><input id="search" onkeyup="search(event)" placeholder="Apply filter..." onclick="search"><input type="submit" value="&#215;" onclick="clearSearch()"/></div>
+
+          <div id="noResults">No results. Change your search filter or <a onclick="clearSearch()" style="cursor: pointer;">reset the filter</a>.</div>
