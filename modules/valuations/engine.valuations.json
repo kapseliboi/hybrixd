@@ -39,7 +39,7 @@
   "quartz" : {
     "cron" : [
       "# check if prices were recently updated",
-      "with 'timeNow' 'date'",
+      "with timeNow date now",
       "peek 'local::pricesTimestamp'",
       "ship 2 1 1",
       "data 0",

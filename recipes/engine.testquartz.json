@@ -22,7 +22,7 @@
       "fail $NOT_OK:$0:$"
     ],
     "date" : [
-      "date",
+      "date now",
       "data '$'",
       "head 2",
       "flow '15' 1 2",
