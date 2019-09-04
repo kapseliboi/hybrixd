@@ -10,18 +10,31 @@ hybrixd can be run on the following operating systems:
 - macOS (Darwin)
 
 ### Installing hybrixd
+#### Prerequisites
+The hybrixd node depends on several other Hybrix libraries. To keep everything organized, we advise you create and change into a new directory before installing it:
 
+```
+mkdir hybrix
+cd hybrix
+```
+#### Installation
 To install hybrixd please clone the repository using the following command:
 
 ```
-git clone https://gitlab.com/hybrix/hybrixd
+git clone https://github.com/hybrix-io/hybrixd-node
 ```
 
-Or download our distributable here:
+Or download our distributable here: <https://api.hybrix.io/help/hybrixd>
 
-<https://api.hybrix.io/help/hybrixd>
+#### Dependencies
+Change into the hybrix-node directory to download and install necessary dependencies and Hybrix libraries. To install, run:
 
-After extracting the archive, you can now start hybrixd in the same directory using the command:
+```
+cd hybrix-node
+npm run setup
+```
+#### Running hybrixd
+After extracting the archive and running setup, you can now start hybrixd in the same directory using the command:
 
 ```
 ./hybrixd
