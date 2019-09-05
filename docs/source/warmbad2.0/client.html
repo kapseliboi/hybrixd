@@ -1,0 +1,224 @@
+<h1>Client side modules</h1>
+
+<h2>Introduction</h2>
+
+<p>A deterministic module is a client side module for hybrixd. It is used
+  to handle client seeds, keys addresses and signing. As we
+  do not want a client to share their keys all these actions should be
+  performed client side. The node should never touch this data.
+  To facilitate this the node supplies a 'client code blob' : compressed
+  javascript code that can be executed on the client side.</p>
+
+<h2>Types</h2>
+
+<p>Most client side modules will be asset modules. For example the client
+  module <code>bitcoinjsli</code>` to handle bitcoin key and address generation and transaction signing.
+  Other custom client side modules can also be provided. For example to
+  provide connectivity to (decentralized) exchanges.</p>
+
+<h2>Source Files</h2>
+
+<p>The source files for deterministic modules with name <code>$MY_ASSET_NAME</code> are grouped in the module folder:</p>
+
+<pre>$HYBRIXD/deterministic/modules/$MY_ASSET_NAME/</pre>
+
+<p>You will need to create the following file(s):</p>
+<dl>
+  <dt> <code>deterministic.js</code>      </dt><dd>        The entry file see below for the deterministic.js template</dd>
+  <dt>[Optional]: <code>precompile.sh</code>    </dt><dd>     A script to standardize and
+    automate changes to third party libraries.</dd>
+  <dt>[Optional]:<code>compile.sh</code>       </dt><dd>     a script to compile the above into a single LZMA file
+
+    </dd>
+</dl>
+
+The artifact (compilation result) is build in the
+<code>$HYBRIXD/deterministic/dist/$MY_ASSET_NAME/</code> folder. It will consist of a LZMA
+compressed code blob file named <code>deterministic.js.lzma</code>
+
+
+<h2>Grocery List</h2>
+
+<p>To implement a deterministic module you will need the following</p>
+
+<dl>
+  <dt>Node Side Module</dt><dd>
+
+    A qrtz module added to the <code>$HYBRIXD/node/recipes</code> folder.
+This should provide a connection to the asset API's (for example: the block
+explorers) Handling queries for balance, unspents and pushing transactions.
+</dd>
+
+<dt>A javascript library for the asset.</dt><dd>
+
+A library provided by the developers of the crypto currency. This can
+be a npm module or  a (minified) web js library. Search online for
+"$MY_ASSET_NAME javascript library" this will very likely guide you
+to a github repository or npm module which you can download.
+</dd>
+</dl>
+
+<h2>Library Dependencies</h2>
+
+To install npm modules: please use supplied npm to ensure version compatibility:
+
+<pre>
+cd $HYBRIXD/deterministic/modules/$YOUR_ASSET
+$HYBRIXD/deterministic node_binaries/bin/npm i $MY_ASSETS_NPM_MODULE
+</pre>
+
+Each asset module will have its own <code>package.json</code> and <code>node_modules</code>
+folder. Only dev dependencies(webpack, eslint) are stored in <code>$HYBRIXD/deterministic/node_modules</code>
+
+To then include the npm module in your <code>deterministic.js</code>:
+
+<pre>
+const myAssetLib = require("$MY_ASSETS_NPM_MODULE")
+</pre>
+
+To include a js library file:
+
+Place the file in the module folder:
+<code>$HYBRIXD/deterministic/modules/$MY_ASSET_NAME/$MY_ASSET_LIBRARY/$SOME_FILE.js</code>
+
+To then include the js library in your `deterministic.js`:
+
+<code>const myAssetLib = require("$MY_ASSET_LIBRARY/$SOME_FILE")</code>
+
+<h2>deterministic.js Template</h2>
+
+<code>deterministic.js</code> must provide the functions: <code>keys</code>, <code>importKeys</code>,
+<code>address</code> and <code>transaction</code>.
+
+<pre>
+const wrapperlib = require("$MY_ASSET_LIBRARY/$SOME_FILE")
+
+const wrapper = {
+  keys : function(data) {
+    return wrapperLib.someFunctionToCreateKeysFromSeed(data.seed);
+  },
+
+   // generate a unique wallet address from a given public key
+  address : function(data) {
+    return wrapperLib.someFunctionToGenerateAddressFromKeys(data.keys);
+  },
+
+  // create and sign a transaction for the given keys, amount, addresses and fees
+  transaction : function(data,callback) {
+    // contruct a transaction object
+    var tx = {
+      amount: data.amount
+      fee:data.fee
+      targetaddress: data.target
+      sourceaddress: data.source
+      fee: data.fee
+    };
+    return wrapperLib.someFunctionToSignTransaction(tx,data.keys);
+    // If the function is asynchronious then use
+    // wrapperLib.someAsyncFunctionToSignTransaction(tx,data.keys,callback);
+  }
+}
+
+// export the wrapper
+window.deterministic = wrapper;
+</pre>
+
+<p>The `keys' function expects a data parameter containing the seed
+property and returns an keys object with a key.</p>
+
+<pre>
+keys : function({seed: ..}){
+  return  {privateKey:...}; // or {privateKey: ..., publicKey: ...} or { WIF: wif }
+}
+</pre>
+
+<p>The `address` function expects a data parameter containing the seed,
+the keys, and the mode. (The mode is used to distinguish between
+assets using the same deterministic module. For example
+bitcoinjslib.bitcoin and bitcoinjslib.omni) It returns a string
+containing the address</p>
+
+<pre>
+address : function({seed: .. , keys: ..., mode: ...}){
+ return "ABC123";
+}
+</pre>
+
+<p>The `transaction` function expects a data parameter of the following
+  format:</p>
+
+<pre>
+{
+  keys:
+  symbol:,
+  source: ,
+  target: ,
+  account:,
+  fee:,
+  factor:,
+  contract:,
+  unspent:,
+  target:,
+  amount:,
+  message: [optional]
+}
+</pre>
+
+<p>and an optional callback parameter in case the transaction generation
+  is asynchronious. The function will return the stringified signed transaction.</p>
+
+<h2>Result</h2>
+
+A possible module folder could look like this:
+
+<pre>node_modules
+deterministic.js
+package.json
+package-lock.json
+precompile.sh</pre>
+
+
+<h2>Compilation</h2>
+<p>All deterministic modules (which source files are modified more recent
+than the corresponding LZMA) are compiled by executing:</p>
+
+<code>$HYBRIXD/deterministic/npm run build</code>
+
+<h3>Pipeline</h3>
+The following steps are performed to create the client code blob:
+<dl>
+  <dt>[Optional] Precompile </dt><dd> automatic modification are made to third
+    party libraries.</dd>
+  <dt>Compile</dt><dd>The compile script is run</dd>
+  <dt>Degloballify</dt><dd>  All global/undeclared variables 'x' are declared as
+    'window.x'</dd>
+  <dt> Webpack </dt><dd> create a package that can be used by browsers</dd>
+  <dt> Compress </dt><dd> compress the result using lmza</dd>
+</dl>
+
+
+<h3>Precompile</h3>
+<p>The precompile step is only executed if there's a precompile.sh
+  present in the module folder. This can and should be used to make modification to third
+  party libraries (which is sometimes required). We do not want to make
+  these modification in the libraries statically because then our
+  changes will be lost if we update the libraries. By adding the code in
+  precompile.sh the changes will be reapplied after code updates.</p>
+
+<h3>Compile override</h3>
+<p>To override the compile script place a compile.sh script of your own
+making in the module folder.</p>
+
+<h2>Testing</h2>
+
+<p>Use <code>$HYBRIXD/interface/test/run test.js --symbol $YOUR_ASSET_NAME</code> to
+  test your implementation for nodejs or browse to:</p>
+
+<p><code>file://$HYBRIXD/interface/test/test.html?symbol=$YOUR_ASSET_NAME</code></p>
+
+<p>to test your implementation for web.</p>
+
+<p>If you encounter issues you can do a partial testing (without webpack)
+  by running:</p>
+
+<p><code>$HYBRIXD/deterministic/test/run test.js --symbol $YOUR_ASSET_NAME</code></p>

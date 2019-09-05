@@ -1,0 +1,376 @@
+<h1>Node side modules (Recipes)</h1>
+
+
+<p>A recipe file is a json file describing the properties of an
+  asset (also token), a (data) source or an engine implementation. </p>
+
+<p>For example: when you query hybrixd for the balance of your waves address:  <code>/asset/waves/$ADDRESS</code>
+  this will be routed to the Node side  module defined in
+  <code>recipes/asset.waves.json</code>. <br/>
+  The logic there (written in Qrtz) will reformat the request to
+  <u>https://nodes.wavesplatform.com/addresses/balance/details/$YOUR_ADDRESS</u> <br/>
+  it will retrieve the result, extract the required information, reformat that and return the standardized end result.
+</p>
+
+
+<p>Recipes are stored in the <code>$HYBRIXD/node/recipes</code> folder.</p>
+
+<p>For a token only a basic recipe is required that will import an existing chain's properties.</p>
+
+<p>Example for an asset foo with properties host and cache and quartz program for balance that
+  does something and returns something: </p>
+
+
+<pre>
+asset.foo.json
+{
+  "symbol" :"foo",
+  "host" : "http://foo.bar",
+  "quartz" : {
+    "balance" : ["dosomething", "returnsomething"]
+  },
+  "router" : {
+    "balance" : "Does something and then returns something to the user."
+  }
+}
+</pre>
+
+<p>A recipe defines either an asset/token or a source. For assets (and tokens) a symbol is required, for sources an id. </p>
+
+
+
+<p> To facilitate some common standards there are qrtz engines
+  available for Insight and Electrum rpc's. Import these to use their functionality</p>
+
+
+<h2>Filename</h2>
+
+<p>For assets the filename is defined as <code>/recipes/asset.$SYMBOL.json</code> or <code>/recipes/token.$SYMBOL.json</code></p>
+
+<p>For sources the filename is defined as <code>/recipes/source.$TYPE.$ID.json</code></p>
+
+<p>For engines the filename is defined as <code>/recipes/engine.$NAME.json</code></p>
+
+<h2>Properties</h2>
+
+<table>
+  <tr><td>symbol</td><td>
+    (Only required for assets)
+    Discription: A string containing the symbol. This is used as the main idenitfier.
+    Format: "$base[.$token]"
+    Examples: "BTC", "ETH.SHIFT"
+  </td></tr>
+
+  <tr><td>source</td><td>
+    (Only required for sources)
+    Discription:
+    Examples: "abe.bitcoin", "insight.litecoin", "deterministic"
+  </td></tr>
+
+  <tr><td>engine</td><td>
+    (Only required for engines)
+    Discription:
+    Examples: "storage"
+  </td></tr>
+
+  <tr><td>name</td><td>
+    Discription: A string containing the display name (for pretty printing).
+    Example: "Bitcoin"
+  </td></tr>
+
+  <tr><td>mode</td><td>
+    Discription: A string containing the deterministic mode.
+    Format: "$DeterministicModule.$modus"
+    Example: "bitjoinjslib.bitcoin"
+  </td></tr>
+
+  <tr><td>contract</td><td>
+    (Only required for token assets)
+    Description: The unique identifier for an asset token
+  </td></tr>
+
+  <tr><td>originator</td><td>
+    (Only required for token assets)
+    Description: The creator or origin address for an asset token
+  </td></tr>
+
+  <tr><td>import</td><td>
+    Discription: A string or array of strings containing the id's /
+    symbols of the recipes from which this recipe should inherit
+    properties. Cf Import section below
+    Example: "btc", ["btc","eth"] , "btc::host"
+  </td></tr>
+
+  <tr><td>module</td><td>
+    Discription:  The name of the server/node side code implementation
+  </td></tr>
+
+  <tr><td>module-deterministic</td><td>
+    (Only required for assets)
+    Discription: The name of the client side code implementation  (TODO TO BE RENAMED!)
+  </td></tr>
+
+  <tr><td>factor</td><td>
+    (Only required for assets)
+    Discription: The number of decimal digits used for this asset.
+  </td></tr>
+
+  <tr><td>fee</td><td>
+    (Only required for assets)
+    Discription: A number representing the fee associated with
+    transfering assets
+  </td></tr>
+
+  <tr><td>fee-symbol</td><td>
+    (Optional for assets)
+    Discription: the symbol in which the fee is calculated
+  </td></tr>
+
+  <tr><td>generated</td><td>
+    Discription: A string indicating whether an address needs to
+    be generated
+    never : no generation needed,
+    once : generation only needed once,
+    always : generation each time you want to receive a transferr
+    Example: "never", "once", "always"
+  </td></tr>
+
+
+
+
+  <tr><td>host</td><td>                  A string or array of strings containing the hosts
+
+    <dl>
+      <dt>[cache]</dt><dd>              The ammount of time in miliseconds that data should be cached (Defaults to 12000)</dd>
+      <dt>[throttle]</dt><dd>            Defaults to 5</dd>
+      <dt>[retry]         </dt><dd>   Defaults to 3</dd>
+      <dt>[timeout]     </dt><dd>        Defaults to 15000</dd>
+      <dt>[interval]    </dt><dd>        Defaults to 2000</dd>
+    </dl>
+
+    The following properties are used to initialize the connection: (cf
+    https://www.npmjs.com/package/node-rest-client#options-parameters )
+    <dl>
+      <dt>[user]</dt><dd></dd>
+      <dt>[pass]</dt><dd></dd>
+      <dt>[proxy]</dt><dd></dd>
+      <dt>[connection]</dt><dd></dd>
+      <dt>  [mimetypes]</dt><dd></dd>
+      <dt>[requestConfig]</dt><dd></dd>
+      <dt> [responseConfig]</dt><dd></dd>
+
+    </dl>
+  </td></tr>
+
+  <tr><td>quartz    </td><td><p>Defines the Qrtz code. A function is defined by an array of qrtz statements.</p>
+
+  </td></tr>
+
+  <tr><td>router    </td><td>Defines the routing definitions. Used to expose functions as API endpoints and to generate documentation.</td></tr>
+
+</table>
+
+
+<h2>Asset Endpoints</h2>
+
+An asset should provide the following endpoints:
+
+TODO
+
+TODO mention default.qrtz
+<table>
+  <tr><td>Endpoint</td><td>Description</td><td>Expected output</td></tr   <tr><td>/balance/$ADDRESS</td><td></td><td></td></tr>                                                                          <tr><td>/transaction/$TRANSACTION_ID</td><td></td><td></td></tr>
+  <tr><td>/validate/$ADDRESS</td><td></td><td></td></tr>
+  <tr><td>/sample/$ADDRESS</td><td></td><td></td></tr>
+  <tr><td>/details/$ADDRESS</td><td></td><td></td></tr>
+  <tr><td>/fee</td><td></td><td></td></tr>
+  <tr><td>/factor</td><td></td><td></td></tr>
+  <tr><td>/unspent/$ADDRESS</td><td></td><td></td></tr>
+</table>
+
+<h2>Qrtz</h2>
+
+<p>Browse to <a href="https://api.hybrix.io/help/qrtz">https://api.hybrix.io/help/qrtz</a> for more help on qrtz.</p>
+
+<h3> $ Operator  $PROPERTY</h3>
+
+<p>For qrtz commands the <code>$</code> is used (inspired by posix) to retrieve variables:</p>
+
+
+<p>Calling <code>/asset/foo/balance/bar</code> on</p>
+
+<pre>
+asset.foo.json
+{
+  "id" :"foo",
+  "a" : 1,
+  "b" : 2,
+  "quartz" : {
+  "balance" : ["dosomething with $a, $b, $0", "returns $1"]
+}
+}
+</pre>
+
+<p>Results in</p>
+
+<pre>
+asset.foo.json
+{
+  "id" :"foo",
+  "a" : 1,
+  "b" : 2,
+  "quartz" : {
+    "balance" : ["dosomething with 1, 2, balance", "returns bar"]
+  }
+}
+</pre>
+
+<h3> Cross recipe variables  $RECIPE::PROPERTY</h3>
+
+<p>The <code>$foo::bar</code> notation can be used to reference variables in other
+  (non imported files)</p>
+
+<p>Given</p>
+
+<pre>
+asset.foo.json
+{
+  "id" :"foo",
+  "a" : 1,
+}
+ </pre>
+
+ <p>then</p>
+
+ <pre>
+asset.bar.json
+{
+  "id" :"bar",
+  "a" : -1,
+  "quartz" : {
+    "balance" : ["dosomething with $a, $foo::a", "returnsomething"]
+  }
+}
+ </pre>
+
+ <p>Compiles to:</p>
+
+
+ <pre>
+{
+  "id" :"bar",
+  "a" : -1,
+  "quartz" : {
+    "balance" : ["dosomething with -1, 1", "returnsomething"]
+  }
+}
+ </pre>
+
+ <h3>Import</h3>
+
+ <p>Inheritance using <code>"import"</code>:</p>
+
+<p>Given foo.json</p>
+
+<pre>
+asset.foo.json
+{
+  "id" :"foo",
+  "a" : 1,
+  "b" : 2,
+}
+  </pre>
+
+
+  <p><code>bar.json</code> can inherit <code>foo.json</code> by using</p>
+
+  <pre>
+asset.bar.json
+{
+"id" :"bar",
+"a" : -1,
+"c" : 3,
+"import" : "foo"
+}
+  </pre>
+
+
+  <p>which compiles to</p>
+
+  <pre>
+asset.bar.json
+{
+  "id" :"bar",
+  "a" : -1,
+  "b" : 2,
+  "c" : 3,
+  "import" : "foo"
+}
+  </pre>
+
+
+  <p>Note that the value of <code>a</code> is retained, bu <code>b</code> is added.</p>
+
+
+  <h3>Multi-inheritance</h3>
+
+  <p>Multi-inheritance can be defined by using:</p>
+
+  <pre>
+asset.bar.json
+{
+  "id" :"bar",
+  "a" : -1,
+  "c" : 3,
+  "import" : ["foo1","foo2","foo3"]
+}
+  </pre>
+
+
+  <p>They are imported from left to right (values in <code>foo3</code> overwrite those of <code>foo1</code> and <code>foo2</code>)</p>
+
+
+  <h3>Specific inheritance</h3>
+
+  <p>Specific inheritance can be defined by using</p>
+
+  <pre>
+asset.foo.json
+{
+  "id" :"foo",
+  "a" : 1,
+  "b" : 2,
+  "c" : 3
+}
+  </pre>
+
+
+  <p><code>bar.json</code> can inherit <code>foo.json</code> by using</p>
+
+  <pre>
+asset.bar.json
+{
+  "id" :"bar",
+  "a" : -1,
+  "import" : "foo::b"
+}
+  </pre>
+
+
+  <p>which compiles to</p>
+
+  <pre>
+asset.bar.json
+{
+  "id" :"bar",
+  "a" : -1,
+  "b" : 2,
+  "import" : "foo::b"
+}
+  </pre>
+
+<h3>Token inheritance</h3>
+
+<p>A token asset, identified by a two part symbol "$base.$token", for
+example: "eth.shift" will automatically inherit the Quartz code from its
+  base asset "eth".</p>
