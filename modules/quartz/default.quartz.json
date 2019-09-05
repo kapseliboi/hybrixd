@@ -69,9 +69,13 @@
       "done"
     ],
     "fee-symbol" : [
+      "data '$fee-symbol'",
+      "flow {undefined:1} @differentFeeSymbol",
       "data '$symbol'",
       "splt '.'",
       "pick 0",
+      "done",
+      "@differentFeeSymbol",
       "done"
     ],
     "generated" : [
