@@ -248,7 +248,7 @@ code,pre {
   word-break: break-all;
   color: #222;
   margin: 0;
-  overflow: scroll;
+  overflow: auto;
   border-radius: 3px;
   font-size: 14px;
   line-height: 1.5;
@@ -790,7 +790,7 @@ select option {
   max-height: 1000px;
   opacity: 1;
   visibility: visible;
-  overflow: hidden scroll;
+  overflow: auto;
   margin: -20px 0px 20px;
 }
 .sidebar #mobile-sub-nav {
@@ -818,7 +818,7 @@ select option {
     max-height: unset;
     opacity: 1;
     visibility: visible;
-    overflow-y: scroll;
+    overflow-y: auto;
     margin-bottom: 0px;
     margin: 100px 20px 60px 5%;
     padding: 0px;
@@ -830,6 +830,8 @@ select option {
 }
 .menuItem, .menuItem-parent {
   display: block;
+  user-select: none;
+  cursor: pointer;
 }
 .menuItem-parent {
   color: black;
@@ -837,9 +839,6 @@ select option {
   font-size: 16px;
   font-weight: 600;
   transition: 0.3s all ease-in;
-}
-.menuItem-parent.inactive {
-  cursor: default;
 }
 .menuItem-parent svg {
   vertical-align: middle;
@@ -1387,7 +1386,7 @@ table.ref-table td:nth-child(2) code {
 }
 #console-results{
   width:100%;
-  overflow-y:scroll;
+  overflow-y:auto;
   height:0;
 }
 #console-close {
@@ -1700,4 +1699,10 @@ code.ref{
 }
 .footer a.footer-link:hover {
   opacity: 1;
+}
+
+/* ------------------------------------------------------------------- */
+
+.hide {
+  display: none;
 }
