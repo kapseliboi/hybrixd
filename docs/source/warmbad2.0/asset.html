@@ -1,0 +1,152 @@
+<h1>Adding assets to hybrix</h1>
+
+<h2>Introduction</h2>
+
+There are three levels of complexity when adding a new asset or coin
+to hybrix.
+
+<ol>
+  <li>A token based on an already supported chain.</li>
+  <li>A chain derived from a supported chain.</li>
+  <li>A completely new chain</li>
+</ol>
+
+<h3>Tokens</h3>
+
+<p>For the first case, if the asset is a token based on an existing base chain, only a simplified <i>Node side
+    module</i> or <i>recipe</i> needs to be defined. (Without qrtz / API endpoints definition
+  as those will already be defined in the base asset recipe.). You
+  can import the base recipe using the import property. See below for
+    an example:</p>
+
+<pre>
+recipes/token.burst.lex.json
+{
+  "symbol":"burst.lex",
+  "name":"Lex4All",
+  "module":"quartz",</pre><pre style="font-weight:bold;">  "import":"burst",</pre><pre>  "mode":"nxt.burst-token",
+  "contract":"2264511436216725766",
+  "originator":"BURST-KN9G-WJH6-BGAA-GWLWF",
+  "factor":0
+}
+</pre>
+
+<p>TODO link to token editor</p>
+
+<h3>New chains and derived chains</h3>
+
+<p>To add a new crypto currency as asset you will need a <i>Client side
+  module</i> for deterministic cryptography and a <i>Node side module</i> or <i>recipe</i> to handle information requests. For derived chains you may be able to reuse either or both of the client and node side modules.</p>
+
+<p>The <i>Client side module</i> will handle address and key generation and transaction signing.
+  See <a href="./client.html">Client.</a> for more information.</p>
+
+<p>The <i>Node side module</i> defines API endpoints in hybrixd that enables users and wallets to interact with
+  other blockchains by translating and relaying calls
+  to API endpoints from RPC's and block explorers for the given crypto
+  currency. Please see below for instructions.</p>
+
+<p>The following files are associated with the modules:</p>
+
+<dl>
+  <dt><code> modules/deterministic/$ASSET/deterministic.js.lmza </code></dt><dd> The compiled
+    Client side module. </dd>
+  <dt><code> recipes/asset.$ASSET.json </code></dt><dd> The definition of the asset details
+    and Node side module.</dd>
+</dl>
+
+TODO link to hybrix setup dev environment
+
+<h2>Setup local dev environment</h2>
+
+To build client side modules you will need to setup your local hybrix development environment. Including the deterministic modules.
+
+See <a href="./dev.html">Setup local dev environment.</a>
+
+<h2>Grocery List</h2>
+
+<p>You will need the following information:</p>
+
+<dl>
+  <dt> Asset Details</dt><dd>
+    <dl>
+      <dt>Symbol</dt><dd>The symbol associated with the asset (Bitcoin has btc much like the US dollar has usd)</dd>
+      <dt>Factor</dt><dd>The factor determines the nr of digits after the dot. (The precision of the currency) </dd>
+      <dt>Fee</dt><dd>The transaction fee that is required as overhead payment for a transaction. </dd>
+      <dt>Fee-Symbol</dt><dd>The symbol that is used to pay fees. This is usually the same value as Symbol name. </dd>
+      <dt>Fee-Factor</dt><dd>The factor of the fee. This is usually the same value as Factor. </dd>
+      <dt>Address Regex</dt><dd>The regex to which an address must
+      comply to be valid. </dd>
+    </dl>
+  </dd>
+
+  <dt>Hosts </dt><dd>The url's of API endpoints. Searching for '$ASSETNAME
+    block explorer api' , '$ASSETNAME rpc'. The goal is to find API's
+    where we can send requests for balances etc.<br/><br/></dd>
+
+  <dt> API endpoints</dt><dd>
+    Endpoints You will need api endpoints for the following. For example <u>https://nodes.wavesplatform.com</u>
+    <dl>
+      <dt>balance</dt><dd>The balance a given address. For example <code>/addresses/balance/$ADDRESS</code></dd>
+      <dt>unspents </dt><dd> The unspents (pre-transactional data) for a given address. </dd>
+      <dt>push </dt><dd>To submit a signed transaction to the blockchain. </dd>
+      <dt>message/attachement </dt><dd> Retrieve the message, attachement or 'op_return'
+        attached to an transaction. </dd>
+      <dt>transaction </dt><dd> To retrieve details about a transaction </dd>
+      <dt>history </dt><dd> To retrieve history for a given address.</dd>
+    </dl>
+  </dd>
+
+  <dt>Javascript library</dt><dd>
+    To create a client side module you will need to wrap a library
+    containing the following functions:
+    <dl>
+      <dt>seed to keys</dt><dd> A deterministic function to generate
+      a public private key pair from a seed. </dd>
+      <dt>keys to address </dt><dd> A function to retrieve the
+      address belonging to a key pair  </dd>
+      <dt>create and sign transaction </dt><dd>A function to create
+        and sign (but not yet broadcast) a transaction. </dd>
+    </dl>
+  </dd>
+
+
+</dl>
+
+<p>Browse to <a href="https://api.hybrix.io">https://api.hybrix.io</a>
+  and view 'asset' for more details on the API endpoints for assets.</p>
+
+<h2>Client - Node separation</h2>
+
+<p>The strict seperation between client and node is to ensure that private keys data always remains on the client side.<br/>
+  The node should never touch this data. To facilitate this the node supplies a 'client code blob' : compressed javascript code that can be executed on the client side.<br/>
+  The client does the signing. The ode handles the logistics.</p>
+
+<h3>Node side module</h2>
+
+<p>The node side module serves as a relay between APIs.</p>
+
+<p>For example: when you query hybrixd for the balance of your waves address:  <code>/asset/waves/$ADDRESS</code>
+  this will be routed to the Node side  module defined in
+  <code>recipes/asset.waves.json</code>. <br/>
+  The logic there (written in Qrtz) will reformat the request to
+  <u>https://nodes.wavesplatform.com/addresses/balance/details/$YOUR_ADDRESS</u> <br/>
+  it will retrieve the result, extract the required information, reformat that and return the standardized end result.
+</p>
+
+<p>The Node side module is defined using a json recipe containing the
+  asset properties and the logic implemented in qrtz ("Quartz") .</p>
+
+See <a href="./node.html">Node side modules / Recipes </a>
+
+<h2>Client side module</h2>
+
+<p>A deterministic module is a client side module for hybrixd. It is used
+  to handle client seeds, keys addresses and signing. As we
+  do not want a client to share their keys all these actions should be
+  performed client side. The node should never touch this data.
+  To facilitate this the node supplies a 'client code blob' : compressed
+  javascript code that can be executed on the client side.</p>
+
+
+See <a href="./client.html">Client side modules (deterministic)</a>
