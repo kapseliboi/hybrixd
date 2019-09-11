@@ -2,7 +2,8 @@
 ## Furry Purple Phoenix
 ## 11-09-2019
 
-* recipe fixes for BTC and ARDR to 
+* recipe fixes for BTC and ARDR
+* added extra host for BCH
 * small fixes: scrollbar in sidebar, clickable menu items and qrtz link on introduction page
 * qrtz indx() supports finding the location of a string
 * fee-symbol now set according to variable, before defaulting to string split method
