@@ -74,13 +74,18 @@
       "fail 'Could not read transaction data!'"
     ],
     "transaction" : [
+      "# TODO fix this engine to provide better history!",
       "time $timeout",
       "call transactionData/$1",
       "poke txSource",
-      "with txSource [tran,'.vout[1].scriptPubKey.addresses[0]',2,1] [data,null] [done]",
-      "tran { id:'.txid', timestamp:'.time', amount:'.vout[0].value', symbol:'$symbol', fee:'=.fees|0', 'fee-symbol':'$symbol', source:'$txSource', target:'.vout[0].scriptPubKey.addresses[0]', confirmed:'.confirmations' } 3 @badTx",
+      "copy txSource txTarget",
+      "with txSource [tran,'.vout[1].scriptPubKey.addresses[0]',2,1] [data,'unknown'] [done]",
+      "with txTarget [tran,'.vout[0].scriptPubKey.addresses[0]',2,1] [data,'unknown'] [done]",
+      "tran { id:'.txid', timestamp:'.time', amount:'.vout[0].value', symbol:'$symbol', fee:'=.fees|0', 'fee-symbol':'$symbol', source:'$txSource', target:'$txTarget', confirmed:'.confirmations' } @okayTx @badTx",
       "@badTx",
-      "fail 'Cannot interpret transaction data!'"
+      "fail 'Cannot interpret transaction data!'",
+      "@okayTx",
+      "done"
     ],
     "attachment" : [
       "time $timeout",
