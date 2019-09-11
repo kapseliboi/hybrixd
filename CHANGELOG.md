@@ -1,3 +1,17 @@
+# v0.5.16
+## Furry Purple Phoenix
+## 11-09-2019
+
+* recipe fixes for BTC and ARDR
+* added extra host for BCH
+* small fixes: scrollbar in sidebar, clickable menu items and qrtz link on introduction page
+* qrtz indx() supports finding the location of a string
+* fee-symbol now set according to variable, before defaulting to string split method
+* add draft documentation for contributing to hybrix
+* Update node readme and setup script.
+* add-date-to-unix-conversion
+* clarify hybrixd usage in readme.
+
 # v0.5.15
 ## Happy Purple Sphinx
 ## 29-08-2019
