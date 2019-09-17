@@ -29,7 +29,7 @@ echo "[.] Add unzip"
 apk add unzip
 
 echo "[.] Add curl"
-apk add curl
+apk add curl && apk upgrade
 #apk add jq
 
 echo "[.] Install n -g "
