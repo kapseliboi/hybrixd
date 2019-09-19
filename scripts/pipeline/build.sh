@@ -22,7 +22,7 @@ apk add npm
 npm config set unsafe-perm true
 
 echo "[.] Add rsync"
-apk add rsync 
+apk add rsync
 #apk install rsync -qq -y > /dev/null
 
 echo "[.] Add unzip"
@@ -32,13 +32,20 @@ echo "[.] Add curl"
 apk add curl && apk upgrade
 #apk add jq
 
+echo "[.] Add bash"
+apk add bash
+
+echo "[.] Update apk"
+apk update
+apk add --update-cache --upgrade curl
+
 echo "[.] Install n -g "
-npm install n -g 
+npm install n -g
 
 echo "[.] Install node 8.15.0"
 n 8.15.0
 
-echo "[i] Node version $(node --version)"
+echo "[i] Node version $(node --version) $(command -v node)"
 
 echo "[.] Retrieve common artifact"
 #wget -q --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fcommon/jobs/artifacts/master/download?job=common" -O artifacts-common.zip
