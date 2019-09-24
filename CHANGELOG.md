@@ -1,3 +1,10 @@
+# v0.5.17
+## Little Purple Ogre
+## 24-09-2019
+
+* added history for BNB
+* added "apk upgrade" as fix for failing curl
+
 # v0.5.16
 ## Furry Purple Phoenix
 ## 11-09-2019
