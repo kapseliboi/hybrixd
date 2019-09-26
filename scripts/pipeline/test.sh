@@ -1,6 +1,8 @@
 #!/bin/sh
 OLDPATH=$PATH
-WHEREAMI=`pwd`
+WHEREAMI=$(pwd)
+
+export PATH=$WHEREAMI/node_binaries/bin:"$PATH"
 
 echo "[i] node version $(node --version)"
 

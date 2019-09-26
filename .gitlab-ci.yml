@@ -1,12 +1,6 @@
-image: node:8.12.0
+image: registry.gitlab.com/hybrix/hybrixd/base-images/build-image:stable
 
 variables:
-  BRANCH_WEB_WALLET: $BRANCH_WEB_WALLET
-
-  POSTGRES_USER: user
-  POSTGRES_PASSWORD: testing-password
-  POSTGRES_ENABLED: "true"
-  POSTGRES_DB: $CI_ENVIRONMENT_SLUG
 
   KUBERNETES_VERSION: 1.13.7
   HELM_VERSION: 2.14.3
@@ -27,7 +21,6 @@ stages:
 hybrixd:
   cache: {}
   stage: build
-  image: docker:stable-git
   variables:
     GIT_STRATEGY: none
   services:
@@ -45,9 +38,8 @@ hybrixd:
     -   echo "Commit $CI_COMMIT_SHA does not exist, retrieving latest in branch $CI_COMMIT_REF_NAME"
     -   "git checkout"
     - fi
-
+    - service docker start
     - sh ./scripts/pipeline/build.sh
-    
     - setup_docker
     - build
 
@@ -56,17 +48,9 @@ hybrixd:
     - ./
 
 test:
-  cache: {}
-  services:
-    - postgres:latest
-  variables:
-    POSTGRES_DB: test
   stage: test
-  image: node:8.12.0
   script:
-    - setup_test_db
     - sh ./scripts/pipeline/test.sh
-
   coverage: /SUCCESS RATE[^|]*\:[^|]*\s+([\d\.]+)/
   except:
    refs:
@@ -80,11 +64,9 @@ test:
 
 review:
   cache: {}
-  image: alpine:latest
   stage: review
   script:
     - check_kube_domain
-    - install_dependencies
     - download_chart
     - ensure_namespace
     - install_tiller
@@ -110,7 +92,6 @@ review:
 stop_review:
   stage: cleanup
   script:
-    - install_dependencies
     - delete
   environment:
     name: review-node
@@ -140,12 +121,9 @@ stop_review:
 
 staging:
   cache: {}
-  #image: node:8.12.0-stretch --> change apk command in certain functions
-  image: alpine:latest
   stage: staging
   script:
     - check_kube_domain
-    - install_dependencies
     - download_chart
     - ensure_namespace
     - install_tiller
@@ -166,11 +144,9 @@ staging:
 
 .production: &production_template
   cache: {}
-  image: alpine:latest
   stage: production
   script:
     - check_kube_domain
-    - install_dependencies
     - download_chart
     - ensure_namespace
     - install_tiller
@@ -336,77 +312,6 @@ dist:
     fi
   }
 
-  function container_scanning() {
-    registry_login
-
-    docker run -d --name db arminc/clair-db:latest
-    docker run -p 6060:6060 --link db:postgres -d --name clair --restart on-failure arminc/clair-local-scan:v2.0.1
-    apk add -U wget ca-certificates
-    docker pull ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
-    wget https://github.com/arminc/clair-scanner/releases/download/v8/clair-scanner_linux_amd64
-    mv clair-scanner_linux_amd64 clair-scanner
-    chmod +x clair-scanner
-    touch clair-whitelist.yml
-    retries=0
-    echo "Waiting for clair daemon to start"
-    while( ! wget -T 10 -q -O /dev/null http://docker:6060/v1/namespaces ) ; do sleep 1 ; echo -n "." ; if [ $retries -eq 10 ] ; then echo " Timeout, aborting." ; exit 1 ; fi ; retries=$(($retries+1)) ; done
-    ./clair-scanner -c http://docker:6060 --ip $(hostname -i) -r gl-container-scanning-report.json -l clair.log -w clair-whitelist.yml ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} || true
-  }
-
-  function code_quality() {
-    docker run --env SOURCE_CODE="$PWD" \
-               --volume "$PWD":/code \
-               --volume /var/run/docker.sock:/var/run/docker.sock \
-               "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
-  }
-
-  function license_management() {
-    if echo $GITLAB_FEATURES |grep license_management > /dev/null ; then
-      # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable"
-      LICENSE_MANAGEMENT_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
-
-      docker run --volume "$PWD:/code" \
-                 "registry.gitlab.com/gitlab-org/security-products/license-management:$LICENSE_MANAGEMENT_VERSION" analyze /code
-    else
-      echo "License management is not available in your subscription"
-    fi
-  }
-
-  function sast() {
-    case "$CI_SERVER_VERSION" in
-      *-ee)
-
-        # Deprecation notice for CONFIDENCE_LEVEL variable
-        if [ -z "$SAST_CONFIDENCE_LEVEL" -a "$CONFIDENCE_LEVEL" ]; then
-          SAST_CONFIDENCE_LEVEL="$CONFIDENCE_LEVEL"
-          echo "WARNING: CONFIDENCE_LEVEL is deprecated and MUST be replaced with SAST_CONFIDENCE_LEVEL"
-        fi
-
-        docker run --env SAST_CONFIDENCE_LEVEL="${SAST_CONFIDENCE_LEVEL:-3}" \
-                   --volume "$PWD:/code" \
-                   --volume /var/run/docker.sock:/var/run/docker.sock \
-                   "registry.gitlab.com/gitlab-org/security-products/sast:$SP_VERSION" /app/bin/run /code
-        ;;
-      *)
-        echo "GitLab EE is required"
-        ;;
-    esac
-  }
-
-  function dependency_scanning() {
-    case "$CI_SERVER_VERSION" in
-      *-ee)
-        docker run --env DEP_SCAN_DISABLE_REMOTE_CHECKS="${DEP_SCAN_DISABLE_REMOTE_CHECKS:-false}" \
-                   --volume "$PWD:/code" \
-                   --volume /var/run/docker.sock:/var/run/docker.sock \
-                   "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$SP_VERSION" /code
-        ;;
-      *)
-        echo "GitLab EE is required"
-        ;;
-    esac
-  }
-
   function get_replicas() {
     track="${1:-stable}"
     percentage="${2:-100}"
@@ -489,58 +394,12 @@ dist:
     kubectl rollout status -n "$KUBE_NAMESPACE" -w "deployment/$name"
   }
 
-  function scale() {
-    track="${1-stable}"
-    percentage="${2-100}"
-    name="$CI_ENVIRONMENT_SLUG"
-
-    if [[ "$track" != "stable" ]]; then
-      name="$name-$track"
-    fi
-
-    replicas=$(get_replicas "$track" "$percentage")
-
-    if [[ -n "$(helm ls -q "^$name$")" ]]; then
-      helm upgrade --reuse-values \
-        --wait \
-        --set replicaCount="$replicas" \
-        --namespace="$KUBE_NAMESPACE" \
-        "$name" \
-        chart/
-    fi
-  }
-
-  function install_dependencies() {
-    apk add -U openssl curl tar gzip bash ca-certificates git && apk upgrade
-    curl -L -o /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
-    curl -L -O https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.28-r0/glibc-2.28-r0.apk
-    apk add glibc-2.28-r0.apk
-    rm glibc-2.28-r0.apk
-
-    curl "https://kubernetes-helm.storage.googleapis.com/helm-v${HELM_VERSION}-linux-amd64.tar.gz" | tar zx
-    mv linux-amd64/helm /usr/bin/
-    helm version --client
-
-    curl -L -o /usr/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBERNETES_VERSION}/bin/linux/amd64/kubectl"
-    chmod +x /usr/bin/kubectl
-    kubectl version --client
-  }
-
   function setup_docker() {
     if ! docker info &>/dev/null; then
       if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
         export DOCKER_HOST='tcp://localhost:2375'
       fi
     fi
-  }
-
-  function setup_test_db() {
-    if [ -z ${KUBERNETES_PORT+x} ]; then
-      DB_HOST=postgres
-    else
-      DB_HOST=localhost
-    fi
-    export DATABASE_URL="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST}:5432/${POSTGRES_DB}"
   }
 
   function download_chart() {
@@ -622,7 +481,7 @@ dist:
       #cat hybrixd.conf
       # replace port for api root (1111) with 5000 in config
       sed -i -e "s#1111#5000#g" hybrixd.conf
-      
+
       # replace /root with empty string in config
       sed -i -e "s#\"/root\"#\"\"#g" hybrixd.conf
       cat hybrixd.conf
@@ -631,7 +490,7 @@ dist:
       # replace 127.0.0.1 with $POD_IP on start
       sed -i -e "s:\"./hybrixd\":\"sed -i -e 's/127.0.0.1/'\$POD_IP'/g' hybrixd.conf \&\& ./hybrixd\":g" package.json
       #cat package.json
-      
+
       #workaround: edit the package.json, with an on start config-edit (replace 127.0.0.1 with POD's IP, replace 8080 with 5000)
       #sed -i -e "s:./hybrixd:sed -i -e 's/userbind = 127.0.0.1/userbind = '\$POD_IP'/g' hybrixd.conf \&\& sed -i -e 's/userport = 8080/userport = 5000/g' hybrixd.conf \&\& ./hybrixd:g" package.json
       #sed -i -e "s:\"./hybrixd\":\"sed -i -e 's#127.0.0.1#'\$POD_IP'#g' hybrixd.conf \&\& sed -i -e 's#8080#5000#g' hybrixd.conf \&\& sed -i -e 's#\"\"#\"/source/web-blockexplorer\"#g' hybrixd.conf \&\& ./hybrixd\":g" package.json
@@ -640,7 +499,7 @@ dist:
 
       docker cp hybrixd.conf "$CI_CONTAINER_NAME":/app/hybrixd.conf
       docker cp package.json "$CI_CONTAINER_NAME":/app/package.json
-      
+
       #END CUSTOM SCRIPT
 
       docker commit "$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
@@ -679,33 +538,6 @@ dist:
       -o yaml --dry-run | kubectl replace -n "$KUBE_NAMESPACE" --force -f -
   }
 
-  function dast() {
-    export CI_ENVIRONMENT_URL=$(cat environment_url.txt)
-
-    mkdir /zap/wrk/
-    /zap/zap-baseline.py -J gl-dast-report.json -t "$CI_ENVIRONMENT_URL" || true
-    cp /zap/wrk/gl-dast-report.json .
-  }
-
-  function performance() {
-    export CI_ENVIRONMENT_URL=$(cat environment_url.txt)
-
-    mkdir gitlab-exporter
-    wget -O gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/10-5/index.js
-
-    mkdir sitespeed-results
-
-    if [ -f .gitlab-urls.txt ]
-    then
-      sed -i -e 's@^@'"$CI_ENVIRONMENT_URL"'@' .gitlab-urls.txt
-      docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.3.1 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results .gitlab-urls.txt
-    else
-      docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.3.1 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results "$CI_ENVIRONMENT_URL"
-    fi
-
-    mv sitespeed-results/data/performance.json performance.json
-  }
-
   function persist_environment_url() {
       echo $CI_ENVIRONMENT_URL > environment_url.txt
   }
@@ -732,4 +564,3 @@ dist:
 
 before_script:
   - *auto_devops
-
