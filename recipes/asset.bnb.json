@@ -55,7 +55,8 @@
     ],
     "transaction" : [
       "curl https://explorer.binance.org/api/v1/ tx?txHash=$1",
-      "tran { id:'.txHash', timestamp: '.timeStamp', amount:'.value', symbol:'.txAsset', fee:'.txFee', 'fee-symbol':'.txAsset', source:'.fromAddr', target:'.toAddr',confirmed:'yes' } 1 @fail",
+      "with newTimestamp [data,$] [tran, '.timeStamp'] [jstr] [drop, -3]",
+      "tran { id:'.txHash', timestamp: '$newTimestamp', amount:'.value', symbol:'.txAsset', fee:'.txFee', 'fee-symbol':'.txAsset', source:'.fromAddr', target:'.toAddr',confirmed:'yes' } 1 @fail",
       "done",
       "@fail",
       "fail 'Could not get transaction information!'"
