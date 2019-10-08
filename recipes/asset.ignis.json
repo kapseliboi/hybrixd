@@ -5,7 +5,7 @@
   "mode":"ardor.ignis",
   "addressRegex":"^ARDOR(-[A-HJ-N-P-Z2-9]{4}){4}[A-HJ-N-P-Z2-9]$",
   "factor":8,
-  "fee":0.019,
+  "fee":0.05,
   "fee-symbol":"ignis",
   "host":["https://ardor.tools/ardor/nxt"],
   "cache":15000,

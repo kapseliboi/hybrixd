@@ -7,7 +7,6 @@ SCRIPTDIR="`dirname \"$0\"`"
 HYBRIXD="`cd \"$SCRIPTDIR/../../..\" && pwd`"
 
 INTERFACE="$HYBRIXD/interface"
-NODE="$HYBRIXD/node"
 DETERMINISTIC="$HYBRIXD/deterministic"
 NODEJS="$HYBRIXD/nodejs"
 COMMON="$HYBRIXD/common"
@@ -37,10 +36,16 @@ else
     echo "[!] Unknown Architecture (or incomplete implementation)"
 fi
 
+if if [ -e "$HYBRIXD/hybrixd-node" ]; then
+    NODE="$HYBRIXD/hybrixd-node"
+else
+    NODE="$HYBRIXD/node"
+fi
+
 # NODE_BINARIES
 if [ ! -e "$NODE/node_binaries" ];then
 
-    echo " [!] node/node_binaries not found."
+    echo " [!] $NODE/node_binaries not found."
 
     if [ ! -e "$NODEJS" ];then
         cd "$HYBRIXD"
@@ -58,7 +63,7 @@ export PATH="$NODE/node_binaries/bin:$PATH"
 # COMMON
 if [ ! -e "$NODE/common" ];then
 
-    echo " [!] node/common not found."
+    echo " [!] $NODE/common not found."
 
     if [ ! -e "$COMMON" ];then
         cd "$HYBRIXD"

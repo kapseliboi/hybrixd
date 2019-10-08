@@ -54,18 +54,9 @@
       "done {address:'bnb177qrmvquh5flg6axap943clfm9cq09qcpwxc0m',transaction:'6F52B2DA41DC9E9EA91E16F1028F2C6D89B425A22A8E97CFAAA250375FC11E2D'}"
     ],
     "transaction" : [
-      "curl asset://$symbol tx/$1?format=json GET",
-      "poke txData",
-      "with reformatAmount    [data,$txData] [tran,'.tx.value.msg[0].value.outputs[0].coins[0].amount',2,1] [fail, 'Could not get amout out of transaction'] [atom]",
-      "with reformatSender    [data,$txData] [tran,'.tx.value.msg[0].value.inputs[0].address',2,1]          [fail, 'Could not get sender address out of transaction']",
-      "with reformatRecipient [data,$txData] [tran,'.tx.value.msg[0].value.outputs[0].address',2,1]         [fail, 'Could not get receiver address out of transaction']",
-      "with height            [data,$txData] [tran,'.height',2,1]                                           [fail, 'Could not get height out of transaction']",
-      "curl asset://$symbol transactions/?address=$reformatSender&blockheight=$height GET",
-      "poke txData_",
-      "with reformatTimestamp [data,$txData_] [tran,'.tx[0].timeStamp',2,1] [fail, 'n/a']",
-      "with reformatFee       [data,$txData_] [tran,'.tx[0].txFee',2,1]     [fail, 'n/a']",
-      "peek txData",
-      "tran { id:'.hash', timestamp: '$reformatTimestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'$symbol', source:'$reformatSender', target:'$reformatRecipient',confirmed:'.ok' } 1 @fail",
+      "curl https://explorer.binance.org/api/v1/ tx?txHash=$1",
+      "with newTimestamp [data,$] [tran, '.timeStamp'] [jstr] [drop, -3]",
+      "tran { id:'.txHash', timestamp: '$newTimestamp', amount:'.value', symbol:'.txAsset', fee:'.txFee', 'fee-symbol':'.txAsset', source:'.fromAddr', target:'.toAddr',confirmed:'yes' } 1 @fail",
       "done",
       "@fail",
       "fail 'Could not get transaction information!'"
@@ -92,17 +83,59 @@
       "@fail",
       "fail 'Could not get message information!'"
     ],
-    "history" : [
-      "poke count $2 12",
-      "poke offset $3 0",
-      "curl asset://$symbol transactions/?address=$1&offset=$offset&limit=$count GET",
-      "tran '.tx' @success @fail",
-      "@success",
-      "sort ['.blockHeight',num,desc]",
-      "tran '[].txHash'",
+    "subHistory": [
+      "tran '.value.txHash' 1 @fail",
+      "done",
+      "@fail",
+      "done 0"
+    ],
+    "callForHistory": [
+      "curl https://explorer.binance.org/api/v1/ txs?page=$3&rows=$2&address=$1",
+      "tran '.txArray[]' 1 @fail",
+      "each 'subHistory'",
       "done",
       "@fail",
       "fail 'Could not retrieve transaction history.'"
+    ],
+    "historyPageByCountLoop": [
+      "poke rowsForCall 100",
+      "with pageForCall [math, '$2/$rowsForCall'] [math, floor]",
+      "with decimalsOffset [data,'$2'] [tail, 2]",
+      "with countNumber [math, '$1 + $decimalsOffset']",
+      "@loopStart",
+      "with pageForCall [math, '+1']",
+      "call callForHistory/$3/$rowsForCall/$pageForCall",
+      "with result [fuse, $]",
+      "loop @loopStart 'countNumber' '>0' '$1' '-$rowsForCall'",
+      "data $result",
+      "take $decimalsOffset",
+      "pick 0 $1",
+      "done"
+    ],
+    "makeTime": [
+      "data $1",
+      "true '>100' 1 @default",
+      "math '/100'",
+      "math 'floor'",
+      "math '*10000'",
+      "done",
+      "@default",
+      "data 15000",
+      "done"
+    ],
+    "history" : [
+      "poke count $2 12",
+      "poke offset $3 0",
+      "call makeTime/$count",
+      "poke timeToSpend",
+      "time $timeToSpend",
+      "with toBig [math, '$offset + $count']",
+      "true $toBig>10000 @toBig @next",
+      "@next",
+      "call historyPageByCountLoop/$count/$offset/$1",
+      "done",
+      "@toBig",
+      "fail 'Error range to big for the API to handle, please keep range (offset + count) under 10000'"
     ]
   }
 }

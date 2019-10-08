@@ -1,3 +1,54 @@
+# v0.5.17
+## Little Purple Ogre
+## 24-09-2019
+
+* added history for BNB
+* added "apk upgrade" as fix for failing curl
+
+# v0.5.16
+## Furry Purple Phoenix
+## 11-09-2019
+
+* recipe fixes for BTC and ARDR
+* added extra host for BCH
+* small fixes: scrollbar in sidebar, clickable menu items and qrtz link on introduction page
+* qrtz indx() supports finding the location of a string
+* fee-symbol now set according to variable, before defaulting to string split method
+* add draft documentation for contributing to hybrix
+* Update node readme and setup script.
+* add-date-to-unix-conversion
+* clarify hybrixd usage in readme.
+
+# v0.5.15
+## Happy Purple Sphinx
+## 29-08-2019
+
+* qrtz improved repl function for regex replacement
+* upgrade client library docs
+* add connector documentation
+* APIqueue auto parse
+* updated mockchain and update web-wallet
+* add numeric sorting for debug
+* added STL token from esaulkov/stablecoinswap
+* fixed qrtz tran bug
+* fix Bank Address Retrieve
+* electrum Cache Improvement
+* add symbol properly before address retrieval
+* caching of calculated transaction results to increase performance of tx requests
+* electrum cache improvement
+* moved EXP out of maintenance
+* remove hosts without history
+* Add push for unified asset
+* split Eth Recipe To Engine
+* fix parsing bug for qrtz find
+* fixed ETH asset support by splitting out to engine
+* EXP put into maintenance
+* add unified asset as recipe
+* documentation changes to atom, bank, burn, call, case, code, copy, curl, data, date, done, drop, fork
+* qrtz flow Improve handling of non string labels and edge cases
+* catch parse bug
+* fixed ardr + cli wallet issue
+
 # v0.5.14
 ## Fluffy Pink Kobold
 ## 06-08-2019

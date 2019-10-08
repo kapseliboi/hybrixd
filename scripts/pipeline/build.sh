@@ -1,6 +1,7 @@
 #!/bin/sh
 OLDPATH=$PATH
-WHEREAMI=`pwd`
+WHEREAMI=$(pwd)
+export PATH=$WHEREAMI/node_binaries/bin:"$PATH"
 
 # prepare variable for DEBUG purposes
 if [ "$DEBUG_ENABLED" = "1" ]; then
@@ -13,36 +14,10 @@ else
     mode=release
 fi
 
-echo "[.] apk update"
-apk update
-#apt update -qq -y > /dev/null
-
-echo "[.] Add npm"
-apk add npm
-npm config set unsafe-perm true
-
-echo "[.] Add rsync"
-apk add rsync 
-#apk install rsync -qq -y > /dev/null
-
-echo "[.] Add unzip"
-apk add unzip
-
-echo "[.] Add curl"
-apk add curl
-#apk add jq
-
-echo "[.] Install n -g "
-npm install n -g 
-
-echo "[.] Install node 8.15.0"
-n 8.15.0
-
-echo "[i] Node version $(node --version)"
+echo "[i] Node version $(node --version) $(command -v node)"
 
 echo "[.] Retrieve common artifact"
-#wget -q --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fcommon/jobs/artifacts/master/download?job=common" -O artifacts-common.zip
-#curl --location --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fcommon/jobs/artifacts/master/download?job=common" -o artifacts-common.zip
+
 curl --location --header "Private-Token: $PRIVATE_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fcommon/jobs/artifacts/master/download?job=common" -o artifacts-common.zip
 
 echo "[.] Unzip and replace common"
@@ -55,7 +30,6 @@ unzip -q -o artifacts-common.zip -d common/
 rm -rf  artifacts-common.zip || true
 
 echo "[.] Retrieve interface artifact"
-#wget -q --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Finterface/jobs/artifacts/master/download?job=interface${DEBUG}" -O artifacts-interface.zip
 curl --location --header "Private-Token: $PRIVATE_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Finterface/jobs/artifacts/master/download?job=interface${DEBUG}" -o artifacts-interface.zip
 
 echo "[.] Unzip and replace interface"
@@ -65,7 +39,7 @@ rm -rf  interface || true
 echo "[.] Retrieve interface source for generation of documentation"
 # get content of interface/lib for generation of documentation
 cd ..
-git clone --quiet -n https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/hybrix/hybrixd/interface.git --depth 1
+git clone --quiet -n "https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/hybrix/hybrixd/interface.git" --depth 1
 cd interface
 git checkout origin/master -- lib
 cd ..
@@ -96,7 +70,6 @@ rm -rf  artifacts-deterministic.zip || true
 BRANCH_WEB_WALLET=master
 
 echo "[.] Retrieve web-wallet artifact from branch:  $BRANCH_WEB_WALLET"
-#wget -q --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fweb-wallet/jobs/artifacts/$BRANCH_WEB_WALLET/download?job=web-wallet" -O artifacts-web-wallet.zip
 curl --location --header "Private-Token: $PRIVATE_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fweb-wallet/jobs/artifacts/$BRANCH_WEB_WALLET/download?job=web-wallet" -o artifacts-web-wallet.zip
 
 echo "[.] Retrieve cli-wallet artifact"

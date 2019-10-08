@@ -22,7 +22,7 @@
       "fail $NOT_OK:$0:$"
     ],
     "date" : [
-      "date",
+      "date now",
       "data '$'",
       "head 2",
       "flow '15' 1 2",
@@ -36,6 +36,7 @@
       "done $OK",
       "fail $NOT_OK:$0:$"
     ],
+
     "excl" : [
       "data gloves",
       "excl [g,s]",
@@ -43,14 +44,15 @@
       "done $OK",
       "fail $NOT_OK:$0:$"
     ],
-     "excl2" : [
+    "excl2" : [
       "data [g,l,o,v,e,s]",
-       "excl [g,s]",
-       "jstr",
+      "excl [g,s]",
+      "jstr",
       "flow '[\"l\",\"o\",\"v\",\"e\"]' 1 2",
       "done $OK",
       "fail $NOT_OK:$0:$"
     ],
+
     "filt" : [
       "data helloworld",
       "filt [o,d]",
@@ -81,6 +83,49 @@
       "fail $NOT_OK:$0:$"
     ],
 
+    "indx" : [
+      "data 'This is a needle and not a needle...'",
+      "indx 'needle'",
+      "flow 10 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+    "indx2" : [
+      "data 'This is a needle and not a needle...'",
+      "indx 'needle' true",
+      "flow 27 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+    "indx3" : [
+      "data ['This is a needle and not a needle...',0,null,'needle','nein']",
+      "indx 'needle'",
+      "flow 3 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+    "indx4" : [
+      "data ['This is a needle and not a needle...',0,null,'needle','nein']",
+      "indx 'needle' true",
+      "flow 3 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+    "indx5" : [
+      "data ['This is a needle and not a needle...',0,null,'needle','nein']",
+      "indx 'needle' false true",
+      "flow [10,-1,-1,0,-1] 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+    "indx6" : [
+      "data ['This is a needle and not a needle...',0,null,'needle','nein']",
+      "indx 'needle' true true",
+      "flow [27,-1,-1,0,-1] 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+    
     "jpar" : [
       "data '{\"key\":\"value\"}'",
       "jpar 1 4",
@@ -89,19 +134,20 @@
       "done $OK",
       "fail $NOT_OK:$0:$"
     ],
-     "jpar2" : [
+    "jpar2" : [
       "data 'broken JSON key:value}'",
       "jpar 2 1",
       "done $OK",
       "fail $NOT_OK:$0:$"
-     ],
-     "jstr" : [
+    ],
+
+    "jstr" : [
       "data {key:value,array:[1,2,3]}",
       "jstr",
       "flow '{\"key\":\"value\",\"array\":[1,2,3]}' 1 2",
       "done $OK",
       "fail $NOT_OK:$0:$"
-     ],
+    ],
     "many" : [
       "data abcdefaba",
       "many 2",
@@ -109,6 +155,7 @@
       "done $OK",
       "fail $NOT_OK:$0:$"
     ],
+
     "pick" : [
       "data abcdef",
       "pick 2",
@@ -137,6 +184,7 @@
       "done $OK",
       "fail $NOT_OK:$0:$"
     ],
+
     "pull" : [
       "data abc",
       "push def",
@@ -151,27 +199,24 @@
       "done $OK",
       "fail $NOT_OK:$0:$"
     ],
-     "size" : [
+    "size" : [
       "data '1234'",
       "size",
       "flow 4 1 2",
       "done $OK",
       "fail $NOT_OK:$0:$"
-     ],
-
+    ],
 
     "burn" : [
       "burn test",
       "done $OK"
     ],
-
     "save" : [
       "#wait for the burn to be done",
       "wait 400",
       "save test 123",
       "done $OK"
     ],
-
     "load" : [
       "#wait for the save to be done",
       "wait 400",
@@ -179,17 +224,14 @@
       "flow '123' 1 2",
       "done $OK",
       "fail $NOT_OK:$0:$"
-     ],
-
+    ],
     "seek" : [
       "#wait for the save to be done",
       "wait 400",
       "seek test 1 3",
       "done $OK",
       "fail $NOT_OK:$0:$"
-     ],
-
-
+    ],
 
     "fail" : [
       "hook @hook",
@@ -221,7 +263,6 @@
       "@fail",
       "done $NOT_OK::$0:$"
     ]
-
 
   },
   "router":{

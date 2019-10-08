@@ -7,11 +7,10 @@
   "factor":8,
   "fee":0.000025,
   "feePerByte":0.0000002,
-  "host":["tcp://btc-cce-1.coinomi.net:5001","tcp://btc-cce-2.coinomi.net:5001","tcp://btc-2.indexer.coinomi.net:5001"],
-  "broken_host_no_history":["tcp://electrum3.cipig.net:10000","tcp://electrum2.cipig.net:10000","tcp://electrum1.cipig.net:10000"],
+  "host":["https://insight.bitpay.com/api"],
   "cache":60000,
   "throttle":10,
-  "import":"electrum-tcp",
+  "import":"insight",
   "quartz":{
     "sample" : [
       "done {address:'13JQwoSLLR3ffXwswe2HCTK9oq4i8MWK3q',transaction:'b4132e9dcaf7899baf66bc86ad065def10e5df8b4bc13f93bf778c22d14ba5cd'}"

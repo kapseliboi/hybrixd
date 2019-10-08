@@ -291,13 +291,13 @@ function initNavigation (currentMenuItem) {
   for (let menuItem in menuItems) {
     if (currentMenuItem === menuItem) {
       if (menuItem in menuIcons) {
-        data += '<a class="menuItem-parent current">' + menuIcons[menuItem] + menuLabels[menuItem] + '</a> ';
+        data += '<a class="menuItem-parent current" onclick="hideChildren(this);">' + menuIcons[menuItem] + menuLabels[menuItem] + '</a> ';
       } else {
         data += '<a class="menuItem current">' + menuLabels[menuItem] + '</a> ';
       }
     } else {
       if ((menuItem == 'run') || (menuItem == 'build') || (menuItem == 'use')) {
-        data += '<a class="menuItem-parent inactive">' + menuIcons[menuItem] + menuLabels[menuItem] + '</a> ';
+        data += '<a class="menuItem-parent inactive" onclick="hideChildren(this);">' + menuIcons[menuItem] + menuLabels[menuItem] + '</a> ';
       } else if ((menuItem == 'introduction') || (menuItem == 'getting-started')) {
         data += '<a class="menuItem-parent" href="' + menuItems[menuItem] + '">' + menuIcons[menuItem] + menuLabels[menuItem] + '</a> ';
       } else {
@@ -398,5 +398,14 @@ function toggleSubNav () {
     subNav.classList.add("toggle-off");
 
     document.getElementById('mobile-sub-nav').innerHTML = 'show navigation <img src="./icon-arrow-right.svg" alt=">" style="transform: rotate(90deg);" />';
+  }
+}
+
+function hideChildren(el) {
+  elem = el.nextElementSibling;
+  while (elem) {
+    if (elem.classList.contains('menuItem-parent')) break;
+    elem.classList.toggle('hide');
+    elem = elem.nextElementSibling;
   }
 }
