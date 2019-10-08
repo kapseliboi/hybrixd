@@ -14,10 +14,10 @@ INTERFACE="$HYBRIXD/interface"
 WEB_WALLET="$HYBRIXD/web-wallet"
 ENVIRONMENT=$1
 
-if [ "$ENVIRONMENT" == "dev" ]; then
+if [ "$ENVIRONMENT" = "dev" ]; then
     URL_COMMON="https://gitlab.com/hybrix/hybrixd/common.git"
     echo "[i] Environment is development..."
-elif [ "$ENVIRONMENT" == "public" ]; then
+elif [ "$ENVIRONMENT" = "public" ]; then
     URL_COMMON="https://github.com/hybrix-io/hybrixd-common.git"
     echo "[i] Environment is public..."
 else
@@ -36,7 +36,7 @@ else
     echo "[!] Unknown Architecture (or incomplete implementation)"
 fi
 
-if if [ -e "$HYBRIXD/hybrixd-node" ]; then
+if [ -e "$HYBRIXD/hybrixd-node" ]; then
     NODE="$HYBRIXD/hybrixd-node"
 else
     NODE="$HYBRIXD/node"
@@ -69,6 +69,10 @@ if [ ! -e "$NODE/common" ];then
         cd "$HYBRIXD"
         echo " [i] Clone common files"
         git clone $URL_COMMON
+        if [ "$ENVIRONMENT" = "public" ]; then
+            echo " [i] Renaming common folder"
+            mv hybrixd-common common
+        fi
 
     fi
     echo " [i] Link common files"
@@ -79,5 +83,5 @@ fi
 # GIT HOOKS
 sh "$COMMON/hooks/hooks.sh" "$NODE"
 
-cd "$WHEREAMI"
 export PATH="$OLDPATH"
+cd "$WHEREAMI"
