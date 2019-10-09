@@ -1,3 +1,14 @@
+# v0.5.18
+## Cosy Purple Kobold
+## 09-10-2019
+
+* Source Code Pro font reference fixed
+* Setup script fixed
+* Check if file is a file and not a directory
+* Fixed BNB-timestamp bug (was in miliseconds)
+* Fixed Broken js-lib examples on docs page
+* Removed html tags from exampleCode
+
 # v0.5.17
 ## Little Purple Ogre
 ## 24-09-2019
