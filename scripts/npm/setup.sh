@@ -24,7 +24,7 @@ else
 #    exit 1;
 fi
 
-if if [ -e "$HYBRIXD/hybrixd-node" ]; then
+if [ -e "$HYBRIXD/hybrixd-node" ]; then
     NODE="$HYBRIXD/hybrixd-node"
 else
     NODE="$HYBRIXD/node"
