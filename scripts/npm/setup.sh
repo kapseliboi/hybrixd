@@ -9,16 +9,18 @@ HYBRIXD="`cd \"$SCRIPTDIR/../../..\" && pwd`"
 INTERFACE="$HYBRIXD/interface"
 DETERMINISTIC="$HYBRIXD/deterministic"
 NODEJS="$HYBRIXD/nodejs"
-COMMON="$HYBRIXD/common"
+URL_COMMON="$HYBRIXD/common"
 INTERFACE="$HYBRIXD/interface"
 WEB_WALLET="$HYBRIXD/web-wallet"
 ENVIRONMENT=$1
 
 if [ "$ENVIRONMENT" = "dev" ]; then
     URL_COMMON="https://gitlab.com/hybrix/hybrixd/common.git"
+    URL_NODEJS="https://www.gitlab.com/hybrix/hybrixd/dependencies/nodejs.git"
     echo "[i] Environment is development..."
 elif [ "$ENVIRONMENT" = "public" ]; then
     URL_COMMON="https://github.com/hybrix-io/hybrixd-common.git"
+    URL_NODEJS="https://github.com/hybrix-io/nodejs.git"
     echo "[i] Environment is public..."
 else
     echo "[!] Unknown Environment (please use npm run setup[:dev])"
@@ -36,12 +38,6 @@ else
     echo "[!] Unknown Architecture (or incomplete implementation)"
 fi
 
-if [ -e "$HYBRIXD/hybrixd-node" ]; then
-    NODE="$HYBRIXD/hybrixd-node"
-else
-    NODE="$HYBRIXD/node"
-fi
-
 # NODE_BINARIES
 if [ ! -e "$NODE/node_binaries" ];then
 
@@ -50,7 +46,7 @@ if [ ! -e "$NODE/node_binaries" ];then
     if [ ! -e "$NODEJS" ];then
         cd "$HYBRIXD"
         echo " [i] Clone node js runtimes files"
-        git clone https://gitlab.com/hybrix/hybrixd/dependencies/nodejs.git #TODO find this on github for public consumption!
+        git clone $URL_NODEJS
 
     fi
     echo " [i] Link node_binaries"
@@ -70,8 +66,7 @@ if [ ! -e "$NODE/common" ];then
         echo " [i] Clone common files"
         git clone $URL_COMMON
         if [ "$ENVIRONMENT" = "public" ]; then
-            echo " [i] Renaming common folder"
-            mv hybrixd-common common
+            ln -sf "hybrixd-common" "common"
         fi
 
     fi
