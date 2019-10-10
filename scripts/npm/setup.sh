@@ -9,7 +9,7 @@ HYBRIXD="`cd \"$SCRIPTDIR/../../..\" && pwd`"
 INTERFACE="$HYBRIXD/interface"
 DETERMINISTIC="$HYBRIXD/deterministic"
 NODEJS="$HYBRIXD/nodejs"
-URL_COMMON="$HYBRIXD/common"
+COMMON="$HYBRIXD/common"
 INTERFACE="$HYBRIXD/interface"
 WEB_WALLET="$HYBRIXD/web-wallet"
 ENVIRONMENT=$1
@@ -24,6 +24,8 @@ elif [ "$ENVIRONMENT" = "public" ]; then
     echo "[i] Environment is public..."
 else
     echo "[!] Unknown Environment (please use npm run setup[:dev])"
+    export PATH="$OLDPATH"
+    cd "$WHEREAMI"
     exit 1
 fi
 
@@ -46,8 +48,10 @@ if [ ! -e "$NODE/node_binaries" ];then
     if [ ! -e "$NODEJS" ];then
         cd "$HYBRIXD"
         echo " [i] Clone node js runtimes files"
-        git clone $URL_NODEJS
-
+        git clone "$URL_NODEJS"
+        if [ "$ENVIRONMENT" = "public" ]; then
+            ln -sf "hybrixd-dependencies-nodejs" "nodejs"
+        fi
     fi
     echo " [i] Link node_binaries"
     ln -sf "$NODEJS/$SYSTEM" "$NODE/node_binaries"
@@ -64,15 +68,13 @@ if [ ! -e "$NODE/common" ];then
     if [ ! -e "$COMMON" ];then
         cd "$HYBRIXD"
         echo " [i] Clone common files"
-        git clone $URL_COMMON
+        git clone "$URL_COMMON"
         if [ "$ENVIRONMENT" = "public" ]; then
             ln -sf "hybrixd-common" "common"
         fi
-
     fi
     echo " [i] Link common files"
     ln -sf "$COMMON" "$NODE/common"
-
 fi
 
 # GIT HOOKS
