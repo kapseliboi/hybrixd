@@ -38,6 +38,7 @@ elif [ "`uname -m`" = "x86_64" ]; then
     SYSTEM="x86_64"
 else
     echo "[!] Unknown Architecture (or incomplete implementation)"
+    exit 1;
 fi
 
 # NODE_BINARIES
