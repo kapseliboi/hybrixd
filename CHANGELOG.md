@@ -1,3 +1,9 @@
+# v0.5.19
+## Fluffy Purple Sphinx
+## 11-10-2019
+
+* Add checks for file existance (fix for wallet-crashes)
+
 # v0.5.18
 ## Cosy Purple Kobold
 ## 09-10-2019
