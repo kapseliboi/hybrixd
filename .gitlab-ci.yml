@@ -10,14 +10,14 @@ variables:
   GIT_STRATEGY: none
 
 stages:
-  - build
-  - test
-  - review
-  - staging
-  - production
-  - release
+  # - build
+  # - test
+  # - review
+  # - staging
+  # - production
+  # - release
   - publish
-  - cleanup
+  # - cleanup
 
 hybrixd:
   cache: {}
