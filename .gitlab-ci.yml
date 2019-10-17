@@ -583,14 +583,17 @@ dist:
   }
 
   function publish() {
+  version=${CI_COMMIT_TAG/-release/}
+
   echo "Publishing to NPM"
   # Remove redundant files
   rm -rf node_modules
   rm environment_url.txt
 
   npm install -g npm-cli-login
-  npm-cli-login -u $NPM_USER -p $NPM_PASSWORD -e $NPM_MAIL
+  npm-cli-login -u "$NPM_USER" -p "$NPM_PASSWORD" -e "$NPM_MAIL"
 
+  npm version "$version"
   npm publish
   }
 
