@@ -583,9 +583,9 @@ dist:
   }
 
   function publish() {
-  ls -l
-  rm -rf node_modules
-  ls -l
+  echo "Publishing to NPM"
+  npm install -g npm-cli-login
+  npm-cli-login -u $NPM_USER -p $NPM_PASSWORD -e $NPM_MAIL
   }
 
 before_script:
