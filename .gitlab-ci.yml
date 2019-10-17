@@ -585,17 +585,29 @@ dist:
   function publish() {
   version=${CI_COMMIT_TAG/-release/}
 
+
+  TOKEN=$(curl -s \
+  -H "Accept: application/json" \
+  -H "Content-Type:application/json" \
+  -X PUT --data '{"name": "$NPM_USER", "password": "$NPM_PASSWORD"}' \
+  http://registry.npmjs.org/-/user/org.couchdb.user:$NPM_USER 2>&1 | grep -Po \
+  '(?<="token": ")[^"]*')
+
+  npm set registry "http://registry.npmjs.org"
+  npm set //registry.npmjs.org/:_authToken $TOKEN
+
+
   echo "Publishing to NPM"
 
   ls -l
 
-  echo "credentials"
-  echo "$NPM_USER $NPM_PASSWORD $NPM_MAIL"
+  # echo "credentials"
+  # echo "$NPM_USER $NPM_PASSWORD $NPM_MAIL"
 
-  npm install npm-cli-login
-  node node_modules/npm-cli-login/bin/npm-cli-login.js -u "\"$NPM_USER\"" -p "\"$NPM_PASSWORD\"" -e "\"$NPM_MAIL\""
+  # npm install npm-cli-login
+  # node node_modules/npm-cli-login/bin/npm-cli-login.js -u "\"$NPM_USER\"" -p "\"$NPM_PASSWORD\"" -e "\"$NPM_MAIL\""
 
-  ls -l
+  # ls -l
 
   # Remove redundant files
   rm -rf node_modules
