@@ -79,6 +79,39 @@ if [ ! -e "$NODE/common" ];then
     ln -sf "$COMMON" "$NODE/common"
 fi
 
+
+if [ "$ENVIRONMENT" = "public" ]; then
+    read -p " [?] Do you wish to use the supported node_modules from Hybrix? [y/n] " CONFIRM
+
+    if [ "$CONFIRM" = "n" ]; then
+        USE_SUPPORTED=false
+    else
+        USE_SUPPORTED=true
+    fi
+else
+    USE_SUPPORTED=true
+fi
+
+echo " [i] Clear node_modules"
+rm -rf "$NODE/node_modules"
+
+if [ "$USE_SUPPORTED" = true ]; then
+
+    if [ ! -e "$HYBRIXD/node_modules" ];then
+        cd "$HYBRIXD"
+        echo " [i] Clone node_modules dependencies"
+        git clone https://gitlab.com/hybrix/hybrixd/dependencies/node_modules.git
+    fi
+
+    echo " [i] Link node_modules"
+    ln -sf "$HYBRIXD/node_modules" "$NODE/node_modules"
+else
+    echo " [i] Downloading dependencies from NPM."
+    cd "$NODE"
+    npm install
+fi
+
+
 # GIT HOOKS
 sh "$COMMON/hooks/hooks.sh" "$NODE"
 
