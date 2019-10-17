@@ -26,8 +26,8 @@
   "scripts": {
     "start": "./hybrixd",
     "test": "sh ./scripts/npm/test.sh",
-    "setup": "sh scripts/npm/setup.sh 'public'",
-    "setup:dev": "sh scripts/npm/setup.sh 'dev'",
+    "setup": "sh scripts/npm/setup.sh 'dev'",
+    "setup:public": "sh scripts/npm/setup.sh 'public'",
     "build": "",
     "compile": "sh scripts/npm/compile.sh",
     "docs": "sh scripts/docs/docs.sh",

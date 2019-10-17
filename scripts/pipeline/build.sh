@@ -16,6 +16,19 @@ fi
 
 echo "[i] Node version $(node --version) $(command -v node)"
 
+# echo " [i] Install node_modules dependencies"
+# curl --location --header "Private-Token: $PRIVATE_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fdependencies%2Fnode_modules/jobs/artifacts/master/download?job=node_modules" -o node_modules.zip
+
+# echo "[.] Unzip and replace node_modules"
+# # remove link to node_modules and unzip the downloaded artifact to the directory (|| true --> on error, no problem)
+# rm -rf  node_modules || true
+# unzip -q -o artifacts-node_modules.zip -d node_modules/
+
+git clone "https://Private-Token:${PRIVATE_TOKEN}@gitlab.com/hybrix/hybrixd/dependencies/node_modules.git" --single-branch --branch master
+cd node_modules
+git checkout
+cd ..
+
 echo "[.] Retrieve common artifact"
 
 curl --location --header "Private-Token: $PRIVATE_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fcommon/jobs/artifacts/master/download?job=common" -o artifacts-common.zip
