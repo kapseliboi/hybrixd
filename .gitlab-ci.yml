@@ -16,6 +16,7 @@ stages:
   - staging
   - production
   - release
+  - publish
   - cleanup
 
 hybrixd:
@@ -149,6 +150,17 @@ staging:
     kubernetes: active
     variables:
       - $STAGING_ENABLED
+
+publish:
+  cache: {}
+  stage: publish
+  script:
+    - publish
+  # only:
+  #   refs:
+  #     - master
+  #   variables:
+  #     - PUBLISH_ENABLED
 
 .production: &production_template
   cache: {}
@@ -568,6 +580,12 @@ dist:
     if [[ -n "$(helm ls -q "^$name$")" ]]; then
       helm delete --purge "$name"
     fi
+  }
+
+  function publish() {
+  ls -l
+  rm -rf node_modules
+  ls -l
   }
 
 before_script:
