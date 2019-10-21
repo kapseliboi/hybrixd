@@ -589,13 +589,6 @@ dist:
 
   ls -l
 
-  # curl -s \
-  # -H "Accept: application/json" \
-  # -H "Content-Type:application/json" \
-  # -X PUT --data '{"name": "hybrix-io", "password": "\$c\!Dn9xNu2XLyGA"}' \ --user "hybrix-io":"\$c\!Dn9xNu2XLyGA" \ https://registry.npmjs.org/-/user/org.couchdb.user:"hybrix-io"
-
-  # curl -s \ -H "Accept: application/json" \ -H "Content-Type:application/json" \ -X PUT --data '{"name": "$NPM_USER", "password": "$NPM_PASSWORD"}' \ --user $NPM_USER:$NPM_PASSWORD \ http://registry/-/user/org.couchdb.user:$NPM_USER
-
   echo '------------------'
   echo "$NPM_USER"
   echo "$NPM_PASSWORD"
@@ -605,14 +598,16 @@ dist:
   npm install npm-cli-login
   node ./node_modules/npm-cli-login/bin/npm-cli-login.js -u "$NPM_USER" -p "$NPM_PASSWORD" -e "$NPM_MAIL"
 
-  # ls -l
-
   # Remove redundant files
   rm -rf node_modules
   rm environment_url.txt
 
   # Change package name for NPM
   sed -i -e "s#\"name\": \"hybrixd\"#\"name\": \"hybrix-node\"#g" package.json
+
+  npm -v
+  npm view "hybrix-node" version
+  npm ls
 
   npm version "$version"
   npm publish
