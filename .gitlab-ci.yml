@@ -583,7 +583,7 @@ dist:
   }
 
   function publish() {
-  version=${CI_COMMIT_TAG/-release/}
+  VERSION=${CI_COMMIT_TAG/-release/}
 
   echo "Publishing to NPM"
 
@@ -609,7 +609,9 @@ dist:
   npm view "hybrix-node" version
   npm ls
 
-  npm version "$version"
+  echo "$VERSION"
+
+  npm version "$VERSION"
   npm publish
   }
 
