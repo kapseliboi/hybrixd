@@ -594,7 +594,7 @@ dist:
   echo "$NPM_PASSWORD"
   echo "$NPM_MAIL"
   echo "$VERSION"
-  echo ${CI_COMMIT_TAG}
+  echo "${CI_COMMIT_TAG}"
   echo '------------------'
 
   npm install npm-cli-login
