@@ -605,7 +605,6 @@ dist:
 
   # Change package name for NPM
   sed -i -e "s#\"name\": \"hybrixd\"#\"name\": \"hybrix-node\"#g" package.json
-  sed -i '' '/version/c\"version":"$VERSION",' package.json
 
   sed -i '' '/version/c\
   \ \ "version":"$VERSION",
