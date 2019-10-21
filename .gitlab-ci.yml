@@ -592,13 +592,13 @@ dist:
   # curl -s \ -H "Accept: application/json" \ -H "Content-Type:application/json" \ -X PUT --data '{"name": "$NPM_USER", "password": "$NPM_PASSWORD"}' \ --user $NPM_USER:$NPM_PASSWORD \ http://registry/-/user/org.couchdb.user:$NPM_USER
 
   echo '------------------'
-  echo '$NPM_USER'
-  echo '$NPM_PASSWORD'
-  echo '$NPM_MAIL'
+  echo "$NPM_USER"
+  echo "$NPM_PASSWORD"
+  echo "$NPM_MAIL"
   echo '------------------'
 
   npm install npm-cli-login
-  node ./node_modules/npm-cli-login/bin/npm-cli-login.js -u '$NPM_USER' -p '$NPM_PASSWORD' -e '$NPM_MAIL'
+  node ./node_modules/npm-cli-login/bin/npm-cli-login.js -u "$NPM_USER" -p "$NPM_PASSWORD" -e "$NPM_MAIL"
 
   # ls -l
 
