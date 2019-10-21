@@ -593,6 +593,7 @@ dist:
   echo "$NPM_USER"
   echo "$NPM_PASSWORD"
   echo "$NPM_MAIL"
+  echo "$VERSION"
   echo '------------------'
 
   npm install npm-cli-login
@@ -604,14 +605,12 @@ dist:
 
   # Change package name for NPM
   sed -i -e "s#\"name\": \"hybrixd\"#\"name\": \"hybrix-node\"#g" package.json
+  sed -i '' '/version/c\"version":"$VERSION",' package.json
 
-  npm -v
-  npm view "hybrix-node" version
-  npm ls
+  sed -i '' '/version/c\
+  \ \ "version":"$VERSION",
+  ' package.json
 
-  echo "$VERSION"
-
-  npm version "$VERSION"
   npm publish
   }
 
