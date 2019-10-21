@@ -584,6 +584,7 @@ dist:
 
   function publish() {
   VERSION=${CI_COMMIT_TAG/-release/}
+  VERSION_NUMBER=${VERSION/v/\ }
 
   echo "Publishing to NPM"
 
@@ -593,7 +594,8 @@ dist:
   echo "$NPM_USER"
   echo "$NPM_PASSWORD"
   echo "$NPM_MAIL"
-  echo "$VERSION"
+  echo "${VERSION}"
+  echo "$VERSION_NUMBER"
   echo "${CI_COMMIT_TAG}"
   echo '------------------'
 
@@ -608,7 +610,7 @@ dist:
   sed -i -e "s#\"name\": \"hybrixd\"#\"name\": \"hybrix-node\"#g" package.json
 
   # sed -i -e '/version/c\
-  # \ \ "version":"$VERSION",
+  # \ \ "version":"$VERSION_NUMBER",
   # ' package.json
 
   sed -i -e '/version/c\
