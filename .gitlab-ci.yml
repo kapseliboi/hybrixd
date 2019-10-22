@@ -588,8 +588,6 @@ dist:
 
   echo "Publishing to NPM"
 
-  ls -l
-
   echo '------------------'
   echo "$NPM_USER"
   echo "$NPM_PASSWORD"
