@@ -1,3 +1,13 @@
+# v0.5.20
+## Happy Sienna Phoenix
+## 19-10-2019
+
+* ethereum gas calculation enhancements
+* modified deterministic library to handle dynamic gas calculations
+* add gaslimit to eth unspent
+* added variable declaration for node in setup script
+* added recipe for Circuits of Value (eth.coval) 
+
 # v0.5.19
 ## Fluffy Purple Sphinx
 ## 11-10-2019

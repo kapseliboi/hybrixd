@@ -589,9 +589,6 @@ dist:
   echo "Publishing to NPM"
 
   echo '------------------'
-  echo "$NPM_USER"
-  echo "$NPM_PASSWORD"
-  echo "$NPM_MAIL"
   echo "${VERSION}"
   echo "$VERSION_NUMBER"
   echo "${CI_COMMIT_TAG}"
@@ -611,9 +608,9 @@ dist:
   # \ \ "version":"$VERSION_NUMBER",
   # ' package.json
 
-  sed -i -e '/version/c\
-  \ \ "version":"0.0.1",
-  ' package.json
+  # sed -i -e '/version/c\
+  # \ \ "version":"0.0.1",
+  # ' package.json
 
   npm publish
   }
