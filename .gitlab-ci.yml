@@ -592,8 +592,6 @@ dist:
 
   ls -l
 
-  cd dist
-
   echo '------------------'
   echo "${VERSION}"
   echo "$VERSION_NUMBER"
