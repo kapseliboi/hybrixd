@@ -588,6 +588,8 @@ dist:
 
   echo "Publishing to NPM"
 
+  cd dist
+
   echo '------------------'
   echo "${VERSION}"
   echo "$VERSION_NUMBER"
