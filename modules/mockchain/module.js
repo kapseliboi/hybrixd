@@ -30,7 +30,7 @@ function mine (proc) {
   const contract = proc.command[1];
   const target = Number(proc.command[2]);
   const amount = Number(proc.command[3]);
-  const timestamp = Date.now();
+  const timestamp = Math.round(Date.now() * 0.001);
   const newTransaction = {type: 'mine', timestamp, contract, target, amount, id: mockchain.length};
 
   mockchain.push(newTransaction);
@@ -92,7 +92,8 @@ function push (proc) {
   const message = typeof newTransaction.message === 'string' ? newTransaction.message : '';
   const signature = newTransaction.signature;
 
-  if (signature !== source * target + atomicAmount + fee * 3.14 + contract.length * 1001 + message.length * 123) {
+  const expectedSignature = Number(source) * Number(target) + Number(atomicAmount) + Number(fee) * 3.14 + contract.length * 1001 + message.length * 123;
+  if (signature !== expectedSignature) {
     proc.fail('illegal signature');
   } else {
     let balance = 0;
@@ -104,7 +105,7 @@ function push (proc) {
     if (balance >= amount + fee) {
       delete newTransaction.factor;
       newTransaction.amount = amount;
-      newTransaction.timestamp = Date.now();
+      newTransaction.timestamp = Math.round(Date.now() * 0.001);
       newTransaction.id = mockchain.length;
       newTransaction.type = 'tran';
       mockchain.push(newTransaction);
@@ -136,14 +137,14 @@ function history (proc) {
   const history = [];
   for (let transactionId = 0; transactionId < mockchain.length; ++transactionId) {
     const transaction = mockchain[transactionId];
-    if ((transaction.target === address || transaction.source === address) && transaction.contract === contract) {
-      history.push(transactionId);
+    if ((Number(transaction.target) === address || Number(transaction.source) === address) && transaction.contract === contract) {
+      history.unshift(transactionId);
     }
   }
   if (!isNaN(offset)) {
     history.splice(0, offset);
   }
-  if (!isNaN(length)) {
+  if (!isNaN(length) && length < history.length) {
     history.length = length;
   }
   proc.done(history);
@@ -169,7 +170,7 @@ function transaction (proc) {
       timestamp: transaction.timestamp,
       amount: transaction.amount,
       symbol: transaction.contract === 'main' ? 'mock' : 'mock.' + transaction.contract,
-      fee: transaction.fee,
+      fee: transaction.fee || '0',
       'fee-symbol': transaction.contract === 'main' ? 'mock' : 'mock.' + transaction.contract,
       source: transaction.source,
       target: transaction.target,

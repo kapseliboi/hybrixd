@@ -3,7 +3,15 @@
   "name":"Mock Bitcoin",
   "contract":"btc",
   "factor":8,
-  "fee":0.000025,
+  "fee":"0.0",
+  "fee-symbol": "mock.btc",
   "import":"mock",
-  "quartz":{}
+  "quartz":{
+    "sample":[
+      "done {address:'638',transaction:'1'}"
+    ],
+    "test":[
+      "done {hash:'dynamic'}"
+    ]
+  }
 }

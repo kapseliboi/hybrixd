@@ -80,6 +80,7 @@ if [ ! -e "$NODE/common" ];then
 fi
 
 
+# NODE_MODULES
 if [ "$ENVIRONMENT" = "public" ]; then
     read -p " [?] Do you wish to use the supported node_modules from Hybrix? [y/n] " CONFIRM
 
@@ -111,6 +112,11 @@ else
     npm install
 fi
 
+
+# PROJECT XHY
+if [ -e "$HYBRIXD/project-xhy" ]; then
+    ln -sf "$HYBRIXD/project-xhy" "$NODE/modules/project-xhy"
+fi
 
 # GIT HOOKS
 sh "$COMMON/hooks/hooks.sh" "$NODE"
