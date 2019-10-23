@@ -125,7 +125,7 @@
       "done $OK",
       "fail $NOT_OK:$0:$"
     ],
-    
+
     "jpar" : [
       "data '{\"key\":\"value\"}'",
       "jpar 1 4",
@@ -230,6 +230,32 @@
       "wait 400",
       "seek test 1 3",
       "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+
+    "rout0" : [
+      "rout /a/dummy/factor 1 3",
+      "flow {8:1} 2",
+      "done '$OK'",
+      "fail $NOT_OK:$0:$"
+    ],
+
+    "rout1" : [
+      "rout /a/non_existing_asset/factor 2 1",
+      "done '$OK'",
+      "fail $NOT_OK:$0:$"
+    ],
+
+    "rout2" : [
+      "rout /s/web-wallet/non_existing_file 2 1",
+      "done '$OK'",
+      "fail $NOT_OK:$0:$"
+    ],
+
+    "rout3" : [
+      "#fonts is a directory should fail but not crash",
+      "rout /s/web-wallet/fonts 2 1",
+      "done '$OK'",
       "fail $NOT_OK:$0:$"
     ],
 
