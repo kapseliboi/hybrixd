@@ -152,6 +152,8 @@ staging:
       - $STAGING_ENABLED
 
 publish:
+  dependencies:
+    - release
   cache: {}
   stage: publish
   script:
@@ -587,6 +589,8 @@ dist:
   VERSION_NUMBER=${VERSION/v/\ }
 
   echo "Publishing to NPM"
+
+  ls -l
 
   cd dist
 
