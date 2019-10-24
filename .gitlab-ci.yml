@@ -14,7 +14,7 @@ stages:
   - test
   - review
   - staging
-  # - production
+  - production
   - release
   - publish
   - cleanup
@@ -162,49 +162,49 @@ publish:
     refs:
       - tags
 
-# .production: &production_template
-#   cache: {}
-#   stage: production
-#   script:
-#     - check_kube_domain
-#     - download_chart
-#     - ensure_namespace
-#     - install_tiller
-#     - create_secret
-#     - deploy
-#     - delete canary
-#     - delete rollout
-#     - persist_environment_url
-#   environment:
-#     name: production
-#     url: http://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
-#   artifacts:
-#     paths: [environment_url.txt]
+.production: &production_template
+  cache: {}
+  stage: production
+  script:
+    - check_kube_domain
+    - download_chart
+    - ensure_namespace
+    - install_tiller
+    - create_secret
+    - deploy
+    - delete canary
+    - delete rollout
+    - persist_environment_url
+  environment:
+    name: production
+    url: http://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
+  artifacts:
+    paths: [environment_url.txt]
 
-# production:
-#   <<: *production_template
-#   only:
-#     refs:
-#       - tags
-#     kubernetes: active
-#   except:
-#     variables:
-#       - $STAGING_ENABLED
+production:
+  <<: *production_template
+  only:
+    refs:
+      - tags
+    kubernetes: active
+  except:
+    variables:
+      - $STAGING_ENABLED
 
-# production_manual:
-#   <<: *production_template
-#   environment:
-#     name: production
-#     url: http://api.hybrix.io
-#   when: manual
-#   allow_failure: false
-#   only:
-#     refs:
-#       - tags
-#       #- master
-#     kubernetes: active
-#     variables:
-#       - $STAGING_ENABLED
+production_manual:
+  <<: *production_template
+  environment:
+    name: production
+    url: http://api.hybrix.io
+  when: manual
+  allow_failure: false
+  only:
+    refs:
+      - tags
+      #- master
+    kubernetes: active
+    variables:
+      - $STAGING_ENABLED
 
 dist:
   dependencies:
@@ -292,14 +292,14 @@ dist:
   #- cp -r ./${component}/*.js ./dist/${path}
   - cd ./dist/
 
-  # # configure git-user
-  # - "git config --global user.name \"${GITLAB_USER_NAME}\""
-  # - "git config --global user.email \"${GITLAB_USER_EMAIL}\""
+  # configure git-user
+  - "git config --global user.name \"${GITLAB_USER_NAME}\""
+  - "git config --global user.email \"${GITLAB_USER_EMAIL}\""
 
-  # # add, commit and push
-  # - "git add ."
-  # - "git commit -m \"release ${version} ${component}\" || true"
-  # - "git push https://oauth2:${PRIVATE_TOKEN}@gitlab.com/hybrix/dist.git -f"
+  # add, commit and push
+  - "git add ."
+  - "git commit -m \"release ${version} ${component}\" || true"
+  - "git push https://oauth2:${PRIVATE_TOKEN}@gitlab.com/hybrix/dist.git -f"
 
   except:
     refs:
@@ -587,8 +587,6 @@ dist:
   function publish() {
   VERSION=${CI_COMMIT_TAG/-release/}
   VERSION_NUMBER=${VERSION/v/\ }
-
-  echo "${VERSION_NUMBER}"
 
   echo "Publishing to NPM"
 
