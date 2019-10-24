@@ -13,7 +13,8 @@ const KRPC = require('k-rpc');
 const utils = require('../../utils');
 const errors = require('../../errors');
 const DHT = require('./bittorrent-dht');
-const ed = require('ed25519-supercop');
+// DEPRECATED: const ed = require('ed25519-supercop'); -> does not compile on Node V12
+const ed = require('supercop');
 const crypto = require('crypto');
 
 class DhtProtocol extends EventEmitter {
@@ -342,10 +343,15 @@ class DhtProtocol extends EventEmitter {
             opts.seq = this._seq.get(keyStr);
         }
 
-        let hash = utils.sha1(Buffer.concat([
-            this.groupKeyPair.publicKey,
-            opts.salt
-        ]));
+		let hash;
+        if(this.groupKeyPair.publicKey) {
+	        hash = utils.sha1(Buffer.concat([
+	            this.groupKeyPair.publicKey,
+	            opts.salt
+	        ]));
+		} else {
+	    	hash = null;
+	    }
 
         let done = (err, resp) => {
             if (resp) {
@@ -361,11 +367,13 @@ class DhtProtocol extends EventEmitter {
             }
         };
 
-        if (node) {
-            this.dht.getOnce(node, hash, opts, done);
-        } else {
-            this.dht.get(hash, opts, done);
-        }
+		if (hash) {
+	        if (node) {
+	            this.dht.getOnce(node, hash, opts, done);
+	        } else {
+	            this.dht.get(hash, opts, done);
+	        }
+	    }
     }
 }
 

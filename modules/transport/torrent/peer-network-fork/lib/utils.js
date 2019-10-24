@@ -5,7 +5,8 @@
 'use strict';
 
 const crypto = require('crypto');
-const ed = require('ed25519-supercop');
+// DEPRECATED: const ed = require('ed25519-supercop'); -> does not compile on node V12
+const ed = require('supercop');
 const natUpnp = require('nat-upnp');
 const Netmask = require('netmask').Netmask;
 
