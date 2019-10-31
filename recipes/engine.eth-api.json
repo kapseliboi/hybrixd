@@ -129,7 +129,7 @@
       "code hex dec",
       "poke nonce",
       "call estimateGas/$4",
-      "poke gasDataFee",      
+      "poke gasDataFee",
       "peek contract",
       "flow '0x0000000000000000000000000000000000000000' @native @token",
       "@native",
