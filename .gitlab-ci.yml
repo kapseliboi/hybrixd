@@ -292,14 +292,14 @@ dist:
   #- cp -r ./${component}/*.js ./dist/${path}
   - cd ./dist/
 
-  # configure git-user
-  - "git config --global user.name \"${GITLAB_USER_NAME}\""
-  - "git config --global user.email \"${GITLAB_USER_EMAIL}\""
+  # # configure git-user
+  # - "git config --global user.name \"${GITLAB_USER_NAME}\""
+  # - "git config --global user.email \"${GITLAB_USER_EMAIL}\""
 
-  # add, commit and push
-  - "git add ."
-  - "git commit -m \"release ${version} ${component}\" || true"
-  - "git push https://oauth2:${PRIVATE_TOKEN}@gitlab.com/hybrix/dist.git -f"
+  # # add, commit and push
+  # - "git add ."
+  # - "git commit -m \"release ${version} ${component}\" || true"
+  # - "git push https://oauth2:${PRIVATE_TOKEN}@gitlab.com/hybrix/dist.git -f"
 
   except:
     refs:
