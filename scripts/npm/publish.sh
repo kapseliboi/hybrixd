@@ -1,5 +1,10 @@
 echo "Publishing to NPM"
 
+sed -i -e '/### Installing hybrixd/,/##/{/#### Running hybrixd/!d}' README.md
+sed -i -e '/#### Running hybrixd/s/^./ /' README.md
+
+cat README.md
+
 # Publish on NPM
 npm install npm-cli-login
 node ./node_modules/npm-cli-login/bin/npm-cli-login.js -u "$NPM_USER" -p "$NPM_PASSWORD" -e "$NPM_MAIL"
