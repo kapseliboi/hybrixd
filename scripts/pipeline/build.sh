@@ -24,7 +24,7 @@ echo "[i] Node version $(node --version) $(command -v node)"
 # rm -rf  node_modules || true
 # unzip -q -o artifacts-node_modules.zip -d node_modules/
 
-git clone "https://Private-Token:${PRIVATE_TOKEN}@gitlab.com/hybrix/hybrixd/dependencies/node_modules.git" --single-branch --branch master
+git clone --quiet -n "https://Private-Token:${PRIVATE_TOKEN}@gitlab.com/hybrix/hybrixd/dependencies/node_modules.git" --depth 1 --single-branch --branch master
 cd node_modules
 git checkout
 cd ..
