@@ -24,7 +24,7 @@ echo "[i] Node version $(node --version) $(command -v node)"
 # rm -rf  node_modules || true
 # unzip -q -o artifacts-node_modules.zip -d node_modules/
 
-git clone "https://Private-Token:${PRIVATE_TOKEN}@gitlab.com/hybrix/hybrixd/dependencies/node_modules.git" --single-branch --branch master
+git clone --quiet -n "https://Private-Token:${PRIVATE_TOKEN}@gitlab.com/hybrix/hybrixd/dependencies/node_modules.git" --depth 1 --single-branch --branch master
 cd node_modules
 git checkout
 cd ..
@@ -66,7 +66,6 @@ unzip -q -o artifacts-interface.zip -d ./interface/
 rm -rf  artifacts-interface.zip || true
 
 echo "[.] Retrieve deterministic artifact"
-#wget -q --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fmodules%2Fdeterministic/jobs/artifacts/master/download?job=deterministic" -O artifacts-deterministic.zip
 curl --location --header "Private-Token: $PRIVATE_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fmodules%2Fdeterministic/jobs/artifacts/master/download?job=deterministic" -o artifacts-deterministic.zip
 
 
@@ -86,7 +85,7 @@ echo "[.] Retrieve web-wallet artifact from branch:  $BRANCH_WEB_WALLET"
 curl --location --header "Private-Token: $PRIVATE_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fweb-wallet/jobs/artifacts/$BRANCH_WEB_WALLET/download?job=web-wallet" -o artifacts-web-wallet.zip
 
 echo "[.] Retrieve cli-wallet artifact"
-wget -q --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fcli-wallet/jobs/artifacts/master/download?job=cli-wallet" -O artifacts-cli-wallet.zip
+curl --location  --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fcli-wallet/jobs/artifacts/master/download?job=cli-wallet" -o artifacts-cli-wallet.zip
 
 
 # run the build-script of the hybrixd-node
