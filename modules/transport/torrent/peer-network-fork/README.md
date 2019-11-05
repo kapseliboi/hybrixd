@@ -1,5 +1,10 @@
 # Peer Network
-> DISCLAIMER: This work is for study purposes only. It should not be used in production.
+> DISCLAIMER Joachim de Koning: This library is an adapted version of NPM @josiasmoura/peer-network .
+>                               It has been adapted from his experimental setup to work with more recent
+>                               libraries, and NodeJS V12, and suffices for production.
+>                               We are using this library mainly for fallback rendezvous communication,
+>                               and DHT peering, and according to testing it works properly for this purpose.
+>                               Most likely to be replaced by hyperdht in the future.
 
 A module for direct P2P (peer-to-peer) communication using Bittorrent DHT nodes like a rendezvous server.
 
