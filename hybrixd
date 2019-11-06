@@ -11,18 +11,18 @@ if [ "$1" = "" ]; then
   NODE_VERSION_MAJOR="`echo $NODE_VERSION | cut -d'.' -f1`"
   NODE_VERSION_MINOR="`echo $NODE_VERSION | cut -d'.' -f2`"
 
-  if [ "$NODE_VERSION_MAJOR" != "v12" ] || [ $NODE_VERSION_MINOR -lt 13 ]; then
-      echo " [!] warning: hybrixd expects Node v12.13.0 or higher (found node $NODEINST @ $NODE_VERSION)"
-      echo "             $NODEINST"
-      read -p " [?] Do you wish to continue? [y/N] " CONFIRM
-      if [ "$CONFIRM" != "y" ]; then
-          PATH=$OLDPATH
-          echo "\n [i] Stopped hybrixd."
-          exit 0
-      fi
-  else
-      echo " [i] using node executable $NODEINST $NODE_VERSION "
-  fi
+#  if [ "$NODE_VERSION_MAJOR" != "v12" ] || [ $NODE_VERSION_MINOR -lt 13 ]; then
+#      echo " [!] warning: hybrixd expects Node v12.13.0 or higher (found node $NODEINST @ $NODE_VERSION)"
+#      echo "             $NODEINST"
+#      read -p " [?] Do you wish to continue? [y/N] " CONFIRM
+#      if [ "$CONFIRM" != "y" ]; then
+#          PATH=$OLDPATH
+#         echo "\n [i] Stopped hybrixd."
+#          exit 0
+#      fi
+#  else
+  echo " [i] using node executable $NODEINST $NODE_VERSION "
+#  fi
 
 
   cd lib
