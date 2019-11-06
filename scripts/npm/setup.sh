@@ -34,9 +34,7 @@ fi
 if [ "`uname`" = "Darwin" ]; then
     SYSTEM="darwin-x64"
 elif [ "`uname -m`" = "i386" ] || [ "`uname -m`" = "i686" ]; then
-    SYSTEM="x86"
-elif [ "`uname -m`" = "x86_64" ]; then
-    SYSTEM="x86_64"
+    SYSTEM="linux-x64"
 else
     echo "[!] Unknown Architecture (or incomplete implementation)"
     exit 1;
