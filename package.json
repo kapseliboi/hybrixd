@@ -1,6 +1,6 @@
 {
   "name": "hybrixd",
-  "version": "0.6.20",
+  "version": "0.6.1",
   "description": "The network agent for the Internet of Coins hybrix node",
   "main": "lib/hybrixd.js",
   "directories": {
