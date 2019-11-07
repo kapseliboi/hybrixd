@@ -1,47 +1,43 @@
 #!/bin/sh
 OLDPATH=$PATH
+
+SCRIPTDIR="`dirname \"$0\"`"
+NODE="`cd \"$SCRIPTDIR\" && pwd`"
+
 WHEREAMI=`pwd`
 
-
-
-SCRIPTDIR=$(dirname "$0")
-HYBRIXD_NODE="`cd \"$SCRIPTDIR/.\" && pwd`"
-
-export PATH=$WHEREAMI/node_binaries/bin:"$PATH"
-
-cd "$HYBRIXD_NODE"
+export PATH=$NODE/node_binaries/bin:"$PATH"
+NODEINST=`which node`
 
 if [ "$1" = "" ]; then
-  NODE_WHICH=$(which node)
-  echo " [i] starting hybrixd..."
-  NODE_VERSION=$($NODE_WHICH --version)
-  NODE_VERSION_MAJOR="`echo $NODE_VERSION | cut -d'.' -f1`"
-  NODE_VERSION_MINOR="`echo $NODE_VERSION | cut -d'.' -f2`"
+    echo " [i] starting hybrixd..."
+    NODE_VERSION=$($NODEINST --version)
+    NODE_VERSION_MAJOR="`echo $NODE_VERSION | cut -d'.' -f1`"
+    NODE_VERSION_MINOR="`echo $NODE_VERSION | cut -d'.' -f2`"
 
-  if [ "$NODE_VERSION_MAJOR" != "v12" ] || [ "$NODE_VERSION_MINOR" -lt 13 ]; then
-      echo " [!] warning: hybrixd expects Node v12.13.0  (found node $NODE_VERSION)"
-      echo "              $NODEINST"
-      read -p " [?] Do you wish to continue? [y/N] " CONFIRM
-      if [ "$CONFIRM" != "y" ]; then
-          cd "$WHEREAMI"
-          export PATH="$OLDPATH"
-          echo " [i] Stopped hybrixd."
-          exit 0
-      fi
-  else
-      echo " [i] using node executable $NODE_WHICH @ $NODE_VERSION"
-  fi
+    if [ "$NODE_VERSION_MAJOR" != "v12" ] || [ $NODE_VERSION_MINOR -lt 13 ]; then
+        echo " [!] warning: hybrixd expects Node v12.13.0 or higher (found node $NODEINST @ $NODE_VERSION)"
+        read -p " [?] Do you wish to continue? [y/N] " CONFIRM
+        if [ "$CONFIRM" != "y" ]; then
+            cd "$WHEREAMI"
+            export "PATH=$OLDPATH"
+            echo " [i] Stopped hybrixd."
+            exit 0
+        fi
+    else
+        echo " [i] using node executable $NODEINST @ $NODE_VERSION "
+    fi
 
 
-  mkdir -p "$HYBRIXD_NODE/var/log"
-  cd "$HYBRIXD_NODE/lib"
-  node hybrixd.js 2>&1 | tee "$HYBRIXD_NODE/var/log/hybrixd.log"
-  echo " [i] stopped hybrixd"
-  echo
-elif [ "$1" = "start" ] || [ "$1" = "/c/start" ] || [ "$1" = "/command/start" ]; then
-  ./hybrixd.start
+    cd "$NODE/lib"
+    mkdir -p "$NODE/var/log"
+    node hybrixd.js 2>&1 | tee "$NODE/var/log/hybrixd.log"
+    echo " [i] stopped hybrixd"
+    echo
+elif [ "$1" = "start" ]; then
+    ./hybrixd.start
 else
-    cd "$HYBRIXD_NODE/lib"
+    cd "$NODE/lib"
     node hcmd.js $@
 fi
 
