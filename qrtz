@@ -1,0 +1,17 @@
+#!/bin/sh
+OLDPATH="$PATH"
+WHEREAMI="`pwd`"
+
+SCRIPTDIR="`dirname \"$0\"`"
+NODE="`cd \"$SCRIPTDIR\" && pwd`"
+
+export PATH="$NODE/node_binaries/bin:$PATH"
+
+if [ -p /dev/stdin ]; then
+    node "$NODE/lib/qrtz.js" $@ < /dev/stdin
+else
+    node "$NODE/lib/qrtz.js" $@
+fi
+
+export PATH="$OLDPATH"
+cd "$WHEREAMI"

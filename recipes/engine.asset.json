@@ -1,4 +1,5 @@
 {
+  "engine":"asset",
   "quartz" : {
     "balance" : [
       "fail 'Not yet implemented!'"
