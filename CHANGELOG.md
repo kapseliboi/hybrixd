@@ -1,3 +1,13 @@
+# v0.6.1
+## Little Teal Sphinx
+## 07-11-2019
+
+* upgrade to Node JS 12 (version 12.13)
+* fixes for tcp socket error
+* type checks for flat and join
+* buffer fixes
+* integrate Windows Subsystem for Linux in documentation
+
 # v0.5.20
 ## Happy Sienna Phoenix
 ## 19-10-2019
