@@ -41,7 +41,6 @@
     "list":[
       "time $readTimeout",
       "rout e/transport/rout/$1/e/storage/pull",
-      "logs '$ KAKAKAKAKAKAKAKAKAAKKAKA syncListresult pull'",
       "# sort by last/first to pull newest stuff first!",
       "sort",
       "poke syncList",
@@ -53,10 +52,8 @@
       "# we must compare hashes to see if data has changed",
       "@syncLoop",
       "peek syncList",
-      "logs '$ KAKAKAKAKAKAKAKAKAAKKAKA syncList'",
       "tran '[$cnt]'",
       "splt '/'",
-      "logs '$ KAKAKAKAKAKAKAKAKAAKKAKA syncItem'",
       "poke syncItem",
       "with syncHash [data,$syncItem] [tran,'[2]']",
       "with syncKey [data,$syncItem] [tran,'[1]']",
@@ -91,7 +88,6 @@
     "syncItem":[
       "time $readTimeout",
       "data '${.value}'",
-      "logs '$ logs in syncItem'",
       "void 'empty' 1 2",
       "done null",
       "poke key",
