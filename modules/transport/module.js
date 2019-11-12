@@ -22,24 +22,28 @@ if (httpEndpoints instanceof Array) {
 }
 
 function open (proc) {
-  const command = proc.command;
-
-  if (typeof command[1] === 'undefined') {
-    proc.done(['irc', 'torrent']);
+  if (conf.get('transport.enabled') !== true) {
+    proc.done();
   } else {
-    let protocol = proc.command[1];
-    let channel;
-    switch (protocol) {
-      case 'irc':
-        channel = (command[3] || proc.peek('defaultChannel')).toLowerCase();
-        let host = command[2] || proc.peek('defaultIrcHost');
-        transportIrc.open(proc, host, channel, proc.peek('hashSalt'));
-        break;
-      case 'torrent':
-        channel = command[2] || proc.peek('defaultChannel');
-        let passwd = command[3] || proc.peek('defaultIrcHost');
-        transportTorrent.open(proc, channel, passwd, proc.peek('hashSalt'));
-        break;
+    const command = proc.command;
+
+    if (typeof command[1] === 'undefined') {
+      proc.done(['irc', 'torrent']);
+    } else {
+      let protocol = proc.command[1];
+      let channel;
+      switch (protocol) {
+        case 'irc':
+          channel = (command[3] || proc.peek('defaultChannel')).toLowerCase();
+          let host = command[2] || proc.peek('defaultIrcHost');
+          transportIrc.open(proc, host, channel, proc.peek('hashSalt'));
+          break;
+        case 'torrent':
+          channel = command[2] || proc.peek('defaultChannel');
+          let passwd = command[3] || proc.peek('defaultIrcHost');
+          transportTorrent.open(proc, channel, passwd, proc.peek('hashSalt'));
+          break;
+      }
     }
   }
 }
