@@ -34,7 +34,7 @@ if [ "$1" = "" ]; then
     node hybrixd.js 2>&1 | tee "$NODE/var/log/hybrixd.log"
     echo " [i] stopped hybrixd"
     echo
-elif [ "$1" = "start" ]; then
+elif [ "$1" = "start" ] || [ "$1" = "/c/start" ] || [ "$1" = "/command/start" ]; then
     ./hybrixd.start
 else
     cd "$NODE/lib"
