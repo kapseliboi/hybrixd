@@ -250,6 +250,7 @@
         }
       }
     },
+    "start" : "Start hybrixd (only available through CLI)",
     "stop" : "Stop hybrixd."
   },
   "e":{"_alias":"engine"},
