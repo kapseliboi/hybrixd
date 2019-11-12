@@ -76,9 +76,8 @@
     "push" : [
       "time $timeout",
       "data {'rawtx':'$1'}",
-      "curl asset://$symbol /tx/send POST {Accept:'application/json, text/plain, */*',Content-Type:'application/json;charset=utf-8',DNT:1,Connection:'keep-alive'} {timeout:$shortTimeout} 1 1",
-      "tran '.txid' 1 3",
-      "tran '.result' 3 1",
+      "curl asset://$symbol /tx/send POST {Accept:'application/json, text/plain, */*',Content-Type:'application/json;charset=utf-8',DNT:1,Connection:'keep-alive'} {timeout:$shortTimeout} 1 3",
+      "tran '.txid' 3 1",
       "fail ${.error}",
       "fail 'Bad transaction result!'",
       "done"

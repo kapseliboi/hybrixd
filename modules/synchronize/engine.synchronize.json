@@ -87,7 +87,7 @@
     ],
     "syncItem":[
       "time $readTimeout",
-      "data ${.value}",
+      "data '${.value}'",
       "void 'empty' 1 2",
       "done null",
       "poke key",
