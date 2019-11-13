@@ -19,7 +19,7 @@ sed -i -e "s#\"\"#\"/root\"#g" hybrixd.conf
 echo "[.] Starting hybrixd"
 ./hybrixd > /dev/null &
 
-sleep 20s
+sleep 1m # FIX! Replace by pinging for readiness from test script.
 
 echo "[.] Enable hybrixd api queue forced test mode"
 ./hybrixd /c/apiqueue/test/force
