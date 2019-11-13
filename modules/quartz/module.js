@@ -3,123 +3,22 @@
 // Module to connect to zcash or any of its derivatives
 
 // required libraries in this context
-let scheduler = require('../../lib/scheduler/scheduler');
-let modules = require('../../lib/modules');
-let fs = require('fs');
+const scheduler = require('../../lib/scheduler/scheduler');
 
 // exports
-exports.init = init;
 exports.exec = exec;
 
-let defaultQuartz = null; // the default quartz functions
-
-// initialization function
-function init () {
-  defaultQuartz = JSON.parse(fs.readFileSync('../modules/quartz/default.quartz.json', 'utf8'));
-
-  modules.initexec('quartz', ['init']);
-}
-
-function addSubprocesses (subprocesses, commands, recipe, xpath) {
-  let command = xpath[0];
-  if (recipe.hasOwnProperty('symbol')) { // only for assets
-    if (command === 'balance' || command === 'history' || command === 'unspent') {
-      subprocesses.push('call validate/$1');
-      subprocesses.push('flow valid 2  1');
-      subprocesses.push('fail "Invalid address $1"');
-    }
-    if (command === 'transactionData') { // cache data
-      // attempt reload of data
-      subprocesses.push('time $timeout');
-      subprocesses.push('data "$1_$symbol"');
-      subprocesses.push('hash');
-      subprocesses.push('data "tx$"');
-      subprocesses.push('poke storageHash');
-      subprocesses.push('load "$storageHash" 1 @requestData');
-      subprocesses.push('unpk 1 @requestData');
-      subprocesses.push('logs "getting transaction data from storage $1"');
-      subprocesses.push('done');
-      subprocesses.push('@requestData');
-    }
-    /* DISABLED BY ROUKE : CACHING BREAKS FUNCTIONALITY
-
-      if (command === 'history') { // cache data
-      subprocesses.push('poke count "$2" 12');
-      subprocesses.push('poke offset "$3" 0');
-      subprocesses.push('data "$1_$count_$offset_$symbol"');
-      subprocesses.push('hash');
-      subprocesses.push('data tx$');
-      subprocesses.push('poke storageHash');
-    } */
-  }
-
-  for (let i = 0, len = commands.length; i < len; ++i) {
-    subprocesses.push(commands[i]);
-  }
-
-  if (recipe.hasOwnProperty('symbol')) { // only for assets
-    // Prepend address validation
-
-    // Postprocess: Append formating of result for specific commands
-    if (command === 'balance' || command === 'fee') { // append formatting of returned numbers
-      subprocesses.push('form');
-      subprocesses.push('done');
-    }
-    if (command === 'transactionData') { // cache data
-      // save/cache rawtx data
-      subprocesses.push('poke txData');
-      subprocesses.push('pack');
-      subprocesses.push('hook @returnResult');
-      subprocesses.push('save "$storageHash"');
-      subprocesses.push('@returnResult');
-      subprocesses.push('peek txData');
-      subprocesses.push('done');
-    }
-    if (command === 'transaction') { // append formatting of returned numbers
-      subprocesses.push('poke formAmount ${.amount}');
-      subprocesses.push('with formAmount form');
-      subprocesses.push('poke formFee ${.fee}');
-      subprocesses.push('with formFee form $fee-factor');
-      subprocesses.push('data {id:"${.id}",timestamp:${.timestamp},height:${.height},amount:"$formAmount",symbol:"${.symbol}",fee:"$formFee",fee-symbol:"${.fee-symbol}",source:"${.source}",target:"${.target}",confirmed:${.confirmed}}');
-      subprocesses.push('done');
-    }
-    /*  DISABLED BY ROUKE : CACHING BREAKS FUNCTIONALITY
-        if (command === 'history') { // take into account the offset and record count
-      subprocesses.push('take $offset $count');
-      subprocesses.push('poke historyData');
-      subprocesses.push('pack');
-      subprocesses.push('save "$storageHash"');
-      subprocesses.push('peek historyData');
-      subprocesses.push('done');
-      subprocesses.push('@returnCache');
-      subprocesses.push('load "$storageHash" 1 @failCache');
-      subprocesses.push('unpk 1 @failCache');
-      subprocesses.push('logs "getting history data from storage $1"');
-      subprocesses.push('done');
-      subprocesses.push('@failCache');
-      subprocesses.push('fail "Cannot get history!"');
-    } */
-    if (command === 'status') { // significantly shorten the status hash to save bandwidth
-      subprocesses.push('take 24 16');
-      subprocesses.push('done');
-    }
-  }
-  if (subprocesses.length > 0) { // add a done if process does not end with stop,done or fail
-    const lastSubprocess = subprocesses[subprocesses.length - 1];
-    if (!lastSubprocess.startsWith('done') && !lastSubprocess.startsWith('fail') && !lastSubprocess.startsWith('stop')) {
-      subprocesses.push('done');
-    }
-  } else {
-    subprocesses.push('done');
+function addSteps (subprocesses, steps) {
+  for (let step of steps) {
+    subprocesses.push(step);
   }
 }
 
 // standard functions of an asset store results in a process superglobal -> global.hybrixd.process[processID]
 // child processes are waited on, and the parent process is then updated by the postprocess() function
 function exec (properties) {
-  // decode our serialized properties
-  let processID = properties.processID;
-  let recipe = properties.target; // The recipe object
+  const processID = properties.processID;
+  const recipe = properties.target; // The recipe object
 
   let id; // This variable will contain the recipe.id for sources or the recipe.symbol for assets
 
@@ -135,19 +34,15 @@ function exec (properties) {
 
   global.hybrixd.proc[processID].request = properties.command; // set request to what command we are performing
 
-  let recipecall = properties.command[0];
+  const command = properties.command[0];
 
-  let subprocesses = [];
-  if (recipe.hasOwnProperty('quartz') && recipe.quartz.hasOwnProperty(recipecall)) {
-    addSubprocesses(subprocesses, recipe.quartz[recipecall], recipe, properties.command);
+  const subprocesses = [];
+  if (recipe.hasOwnProperty('quartz') && recipe.quartz.hasOwnProperty(command)) {
+    addSteps(subprocesses, recipe.quartz[command]);
   } else if (recipe.hasOwnProperty('quartz') && recipe.quartz.hasOwnProperty('_root')) {
-    addSubprocesses(subprocesses, recipe.quartz['_root'], recipe, properties.command);
+    addSteps(subprocesses, recipe.quartz['_root']);
   } else {
-    if (defaultQuartz.hasOwnProperty('quartz') && defaultQuartz.quartz.hasOwnProperty(recipecall)) {
-      addSubprocesses(subprocesses, defaultQuartz.quartz[recipecall], recipe, properties.command);
-    } else {
-      subprocesses.push('stop(1,"Recipe function \'' + recipecall + '\' not supported for \'' + id + '\'.")');
-    }
+    subprocesses.push('fail "Recipe function \'' + command + '\' not supported for \'' + id + '\'."');
   }
 
   // fire the Qrtz-language program into the subprocess queue

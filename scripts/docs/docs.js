@@ -39,15 +39,19 @@ for (let id in files) {
   let body = fs.readFileSync(files[id]).toString();
   if (id === 'hybrix-lib.js') { // add all methods
     const path = '../../../interface/lib/methods';
-    const files = fs.readdirSync(path);
-    files.forEach(function (file, index) {
-      body += '\n' + fs.readFileSync(path + '/' + file, 'utf8').toString();
+    const methodFiles = fs.readdirSync(path);
+    methodFiles.forEach(function (file, index) {
+      if (file.endsWith('.js')) {
+        body += '\n' + fs.readFileSync(path + '/' + file, 'utf8').toString();
+      }
     });
   } else if (id === 'qrtz') { // add all methods
     const path = '../../lib/scheduler/methods';
-    const files = fs.readdirSync(path);
-    files.forEach(function (file, index) {
-      body += '\n' + fs.readFileSync(path + '/' + file, 'utf8').toString();
+    const methodFiles = fs.readdirSync(path);
+    methodFiles.forEach(function (file, index) {
+      if (file.endsWith('.js')) {
+        body += '\n' + fs.readFileSync(path + '/' + file, 'utf8').toString();
+      }
     });
   }
 

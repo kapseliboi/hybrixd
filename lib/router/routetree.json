@@ -250,6 +250,7 @@
         }
       }
     },
+    "start" : "Start hybrixd (only available through CLI)",
     "stop" : "Stop hybrixd."
   },
   "e":{"_alias":"engine"},
@@ -294,6 +295,11 @@
         "_list" : "proc",
         "_this" : "Specify the process ID to resume."
       }
+    },
+   "exec":{
+     "_ellipsis": true,
+     "_this" : "Execute a qrtz statement.",
+     "_access":"root"
     },
     "pause":{
       "_this" : "List all paused processes.",

@@ -1,6 +1,6 @@
 {
   "name": "hybrixd",
-  "version": "0.5.20",
+  "version": "0.6.1",
   "description": "The network agent for the Internet of Coins hybrix node",
   "main": "lib/hybrixd.js",
   "directories": {
@@ -21,13 +21,12 @@
     "cssmin": "^0.4.3"
   },
   "engines": {
-    "node": ">=8.12.0 <9.0.0"
+    "node": ">=12.13.0 <13.0.0"
   },
   "scripts": {
     "start": "./hybrixd",
     "test": "sh ./scripts/npm/test.sh",
     "setup": "sh scripts/npm/setup.sh 'dev'",
-    "setup:public": "sh scripts/npm/setup.sh 'public'",
     "build": "",
     "compile": "sh scripts/npm/compile.sh",
     "docs": "sh scripts/docs/docs.sh",

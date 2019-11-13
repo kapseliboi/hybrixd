@@ -23,9 +23,9 @@
       "call factor"
     ],
 
-     "getSubFactor" :[
+    "getSubFactor" :[
       "rout /a/${.key}/factor/"
-     ],
+    ],
 
     "factor" : [
       "peek unified-symbols",

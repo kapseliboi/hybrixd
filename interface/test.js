@@ -548,6 +548,8 @@ function go (mode) {
       xrp: testAsset('xrp'),
       zec: testAsset('zec'),
 
+      'mock.btc': testAsset('mock.btc'),
+
       'eth.xhy': testAsset('eth.xhy'),
       'waves.xhy': testAsset('waves.xhy'),
       'nxt.xhy': testAsset('nxt.xhy'),
