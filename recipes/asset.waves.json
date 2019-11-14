@@ -16,18 +16,24 @@
   "quartz":{
     "balance" : [
       "data '$contract'",
-      "flow 'null' 1 3",
-      "curl asset://$symbol /addresses/balance/details/$1 GET",
-      "tran '.regular' 4 3",
-      "curl asset://$symbol /assets/balance/$1/$contract GET",
-      "tran '.balance' 2 1",
+      "flow 'null' 1 @token",
+      "curl /addresses/balance/details/$1 2 1",
+      "fail 'Could not connect to host'",
+      "tran '.regular' @result 1",
       "fail 'No result!'",
+      "@token",
+      "curl /assets/balance/$1/$contract 2 1",
+      "fail 'Could not connect to host'",
+      "tran '.balance' @result 1",
+      "fail 'No result!'",
+      "@result",
       "atom"
     ],
     "push" : [
       "data '$1'",
       "jpar",
-      "curl asset://$symbol /transactions/broadcast POST {'Accept':'application/json','content-type':'application/json'}",
+      "curl /transactions/broadcast POST {'Accept':'application/json','content-type':'application/json'} 2 1",
+      "fail 'Could not connect to host'",
       "tran '.error' 1 2",
       "fail '${.message}'",
       "tran '.id' 2 1",
@@ -38,7 +44,8 @@
       "poke count $2 12",
       "poke offset $3 0",
       "with amount math $count+$offset+1",
-      "curl asset://$symbol /transactions/address/$1/limit/$amount GET",
+      "curl /transactions/address/$1/limit/$amount 2 1",
+      "fail 'Could not connect to host'",
       "pick",
       "sort ['.height',num,desc]",
       "tran '[].id'",
@@ -46,7 +53,8 @@
       "done"
     ],
     "transactionData" : [
-      "curl asset://$symbol /transactions/info/$1 GET",
+      "curl /transactions/info/$1 2 1",
+      "fail 'Could not connect to host'",
       "done"
     ],
     "transaction" : [

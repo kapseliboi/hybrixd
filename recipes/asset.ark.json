@@ -44,7 +44,10 @@
       "tran .transactions[].id 1 4",
       "fuse $received",
       "done",
-      "fail 'Unable to retrieve history.'"
+      "fail 'Unable to retrieve history.'",
+      "tran .data[].id 2 1 ",
+      "fail 'Could not parse history'",
+      "done"
     ],
     "transaction" : [
       "call transactionData/$1",
