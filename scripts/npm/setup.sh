@@ -9,22 +9,26 @@ HYBRIXD="`cd \"$SCRIPTDIR/../../..\" && pwd`"
 INTERFACE="$HYBRIXD/interface"
 DETERMINISTIC="$HYBRIXD/deterministic"
 NODEJS="$HYBRIXD/nodejs"
-NODE="$HYBRIXD/node"
-COMMON="$HYBRIXD/common"
-INTERFACE="$HYBRIXD/interface"
-WEB_WALLET="$HYBRIXD/web-wallet"
 ENVIRONMENT="$1"
 
-if [ "$ENVIRONMENT" = "dev" ]; then
+if [ -e "$HYBRIXD/node" ]; then
     URL_COMMON="https://gitlab.com/hybrix/hybrixd/common.git"
     URL_NODEJS="https://www.gitlab.com/hybrix/hybrixd/dependencies/nodejs.git"
+    NODE="$HYBRIXD/node"
+    COMMON="$HYBRIXD/common"
+    INTERFACE="$HYBRIXD/interface"
+    WEB_WALLET="$HYBRIXD/web-wallet"
     echo "[i] Environment is development..."
-elif [ "$ENVIRONMENT" = "public" ]; then
+elif [ -e "$HYBRIXD/hybrixd-node" ]; then
     URL_COMMON="https://github.com/hybrix-io/hybrixd-common.git"
     URL_NODEJS="https://github.com/hybrix-io/nodejs.git"
+    NODE="$HYBRIXD/hybrixd-node"
+    COMMON="$HYBRIXD/hybrixd-common"
+    INTERFACE="$HYBRIXD/hybrixd-interface"
+    WEB_WALLET="$HYBRIXD/hybrixd-web-wallet"
     echo "[i] Environment is public..."
 else
-    echo "[!] Unknown Environment (please use npm run setup[:dev])"
+    echo "[!] Unknown Environment"
     export PATH="$OLDPATH"
     cd "$WHEREAMI"
     exit 1
@@ -34,9 +38,7 @@ fi
 if [ "`uname`" = "Darwin" ]; then
     SYSTEM="darwin-x64"
 elif [ "`uname -m`" = "i386" ] || [ "`uname -m`" = "i686" ]; then
-    SYSTEM="x86"
-elif [ "`uname -m`" = "x86_64" ]; then
-    SYSTEM="x86_64"
+    SYSTEM="linux-x64"
 else
     echo "[!] Unknown Architecture (or incomplete implementation)"
     exit 1;
@@ -82,7 +84,7 @@ fi
 
 # NODE_MODULES
 if [ "$ENVIRONMENT" = "public" ]; then
-    read -p " [?] Do you wish to use the supported node_modules from Hybrix? [y/n] " CONFIRM
+    read -p " [?] Do you wish to use the supported node_modules from hybrix? [y/n] " CONFIRM
 
     if [ "$CONFIRM" = "n" ]; then
         USE_SUPPORTED=false

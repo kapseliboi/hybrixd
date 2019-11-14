@@ -17,10 +17,11 @@
       "done {address:'0xbb1e3c386a01826bbae330870b96870d2b571d12',transaction:'0xa0cb3baf5105be78e4f52218f371592cd64cd154cdf75ac5eaeb114ff6da7a15'}"
     ],
     "test":[
-      "done {hash:64DABF6B}"
+      "done {hash:773A8052}"
     ],
     "transaction":[
-      "curl 'https://v3.ubiqscan.io' '/transaction/$1' GET",
+      "curl 'https://v3.ubiqscan.io' '/transaction/$1' 2 1",
+      "fail 'Could not connect to host'",
       "with txMinusGas [math,'${.value}-${.gasUsed}'] [atom]",
       "with txGasUsed [data,'${.gasUsed}'] [atom]",
       "tran {amount:'$txMinusGas',timestamp:.timestamp,id:'$1',source:.from,target:.to,fee:'$txGasUsed', symbol:'$symbol',fee-symbol:'$symbol',confirmed:true} @success @fail",
@@ -42,7 +43,8 @@
       "poke count $2 5",
       "poke offset $3 0",
       "data $1",
-      "curl 'https://v3.ubiqscan.io' '/latestaccounttxns/$1' GET",
+      "curl 'https://v3.ubiqscan.io' '/latestaccounttxns/$1' 2 1",
+      "fail 'Could not connect to host'",
       "tran '.txns' @nxt @fail",
       "@nxt",
       "sort ['.timestamp','num','desc']",

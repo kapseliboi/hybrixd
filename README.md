@@ -8,6 +8,7 @@ hybrixd can be run on the following operating systems:
 
 - GNU/Linux
 - macOS (Darwin)
+- [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
 
 ### Installing hybrixd
 #### Prerequisites

@@ -19,7 +19,8 @@
   "quartz":{
     "balance" : [
       "time $timeout",
-      "curl asset://$symbol /addr/$1?noTxList=1 GET {} {timeout:$shortTimeout}",
+      "curl /addr/$1?noTxList=1 {} {timeout:$shortTimeout} 2 1",
+      "fail 'Connection to host failed'",
       "tran {confirmed:'.balance',unconfirmed:'.unconfirmedBalance'} 3 1",
       "data 0",
       "jump 2",
@@ -33,7 +34,8 @@
       "poke inputval '$2' '1000000000000'",
       "with inputval atom 1",
       "time $timeout",
-      "curl asset://$symbol /addr/$1/utxo GET {}",
+      "curl /addr/$1/utxo 2 1 ",
+      "fail 'Could not connect to host'",
       "each 'unspent_tran'",
       "sort '.amount'",
       "scan 'cnt<($inputval+val.amount)' '+val.amount'",
@@ -49,7 +51,8 @@
     ],
     "unspentAll" : [
       "time $timeout",
-      "curl asset://$symbol /addr/$1/utxo GET {}",
+      "curl /addr/$1/utxo 2 1",
+      "fail 'Could not connect to host'",
       "each 'unspent_tran'",
       "poke 'selected'",
       "tran '[].amount' 2 1",
@@ -76,17 +79,18 @@
     "push" : [
       "time $timeout",
       "data {'rawtx':'$1'}",
-      "curl asset://$symbol /tx/send POST {Accept:'application/json, text/plain, */*',Content-Type:'application/json;charset=utf-8',DNT:1,Connection:'keep-alive'} {timeout:$shortTimeout} 1 1",
-      "tran '.txid' 1 3",
-      "tran '.result' 3 1",
-      "fail ${.error}",
+      "curl /tx/send POST {Accept:'application/json, text/plain, */*',Content-Type:'application/json;charset=utf-8',DNT:1,Connection:'keep-alive'} {timeout:$shortTimeout} 2 1",
+      "fail 'Could not connect to host'",
+      "tran '.txid' 3 1",
+      "tran '.error' 1 2",
+      "fail '$'",
       "fail 'Bad transaction result!'",
       "done"
     ],
     "transactionData" : [
       "time $timeout",
-      "curl asset://$symbol /tx/$1 GET {'Content-Type': 'application/json'} {timeout:$shortTimeout} 2 1",
-      "fail 'Could not get transaction data!'",
+      "curl /tx/$1 GET {'Content-Type': 'application/json'} {timeout:$shortTimeout} 2 1",
+      "fail 'Could not connect to host'",
       "have .txid 2 1",
       "fail 'Could not read transaction data!'"
     ],
@@ -131,7 +135,8 @@
       "poke offset $3 0",
       "time $longTimeout",
       "with countTo [data,'$count'] [math,'+$offset']",
-      "curl asset://$symbol /addrs/$1/txs?from=$offset&to=$countTo GET {} {timeout:$timeout} 1 @fail",
+      "curl /addrs/$1/txs?from=$offset&to=$countTo 2 1",
+      "fail 'Could not connect to host'",
       "tran '.items' 1 @fail",
       "tran '[].txid' 1 @fail",
       "done",
@@ -156,7 +161,8 @@
     ],
     "experimental_A" : [
       "# get latest block hash",
-      "curl asset://$symbol /blocks?limit=3 GET {} {timeout:$timeout}",
+      "curl /blocks?limit=3 2 1",
+      "fail 'Could not connect to host'",
       "tran .blocks[].hash 2 1",
       "fail 'Cannot get fee!'",
       "# get at least 10 tx hashes",
@@ -176,7 +182,8 @@
     ],
     "experimental_getBlock" : [
       "data ${.value}",
-      "curl asset://$symbol /txs/?block=$ GET {} {timeout:$timeout}",
+      "curl /txs/?block=$ 2 1",
+      "fail 'Could not connect to host'",
       "tran .txs[].txid",
       "done"
     ],
@@ -191,7 +198,8 @@
     ],
     "getFee" : [
       "time $timeout",
-      "curl asset://$symbol /utils/estimatefee GET {} {timeout:$timeout}",
+      "curl /utils/estimatefee 2 1",
+      "fail 'Could not connect to host'",
       "tran '.2' 1 3",
       "ship 1 2 2 2",
       "poke local::fee",

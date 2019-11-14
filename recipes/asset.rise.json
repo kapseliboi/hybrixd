@@ -14,9 +14,10 @@
   "version" : "0.1.2",
   "quartz":{
     "balance" :[
-      "curl 'asset://$symbol' '/api/accounts/getBalance?address=$1' 'GET' {}",
-      "tran('.unconfirmedBalance',2,1)",
-      "fail 'Balance could not be retrieved'",
+      "curl '/api/accounts/getBalance?address=$1' 2 1",
+      "fail 'Could not connect to host'",
+      "tran .unconfirmedBalance 2 1",
+      "fail 'Balance could not be retrieved $'",
       "atom"
     ],
     "unspent" :[
@@ -29,19 +30,22 @@
       "poke count $2 12",
       "poke offset $3 0",
       "#'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': ''",
-      "curl 'asset://$symbol' '/api/transactions?recipientId=$1&limit=$count&offset=$offset' 'GET' {}",
+      "curl '/api/transactions?recipientId=$1&limit=$count&offset=$offset' 2 1",
+      "fail 'Could not connect to host'",
       "tran .transactions[].id 1 2",
       "done",
       "fail 'Unable to retrieve history.'"
     ],
     "push":[
-      "curl 'asset://$symbol' '/api/blocks/getNetHash' 'GET'",
-      "tran('.nethash',2,1)",
+      "curl /api/blocks/getNetHash 2 1",
+      "fail 'Could not connect to host'",
+      "tran .nethash 2 1",
       "fail 'nethash could not be retrieved'",
       "poke 'nethash'",
       "data {transaction: '$1'}",
-      "curl 'asset://$symbol' '/peer/transactions' 'POST' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': '$nethash'}",
-      "tran('.transactionId',2,1)",
+      "curl '/peer/transactions' 'POST' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': '$nethash'} 2 1",
+      "fail 'Could not connect to host'",
+      "tran .transactionId 2 1",
       "fail",
       "done"
     ],
@@ -49,11 +53,12 @@
       "done {hash:dynamic}"
     ],
     "transactionData" : [
-       "curl asset://$symbol /api/transactions?id=$1 GET",
-       "tran .transactions 2 1",
-       "fail 'Cannot get transaction data!'",
-       "pick",
-       "done"
+      "curl /api/transactions?id=$1 2 1",
+      "fail 'Could not connect to host'",
+      "tran .transactions 2 1",
+      "fail 'Cannot get transaction data!'",
+      "pick",
+      "done"
     ],
      "transaction" : [
       "call transactionData/$1",

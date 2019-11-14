@@ -15,7 +15,8 @@
   "genesisBlockTime":1464116400,
   "quartz":{
     "balance" : [
-      "curl asset://$symbol /api/accounts?address=$1&limit=1&offset=0&sort=balance:asc GET {Accept:'application/json','Content-Type':'application/json'}",
+      "curl /api/accounts?address=$1&limit=1&offset=0&sort=balance:asc {Accept:'application/json','Content-Type':'application/json'} 2 1",
+      "fail 'Could not connect to host'",
       "tran '.data[0].unconfirmedBalance' @nonzero",
       "data 0",
       "jump @done",
@@ -25,13 +26,15 @@
     ],
     "push" : [
       "data '$1'",
-      "curl asset://$symbol /api/transactions POST {Accept:'application/json','Content-Type':'application/json', Accept: 'application/json'}",
+      "curl /api/transactions POST {Accept:'application/json','Content-Type':'application/json', Accept: 'application/json'} 2 1",
+      "fail 'Could not connect to host'",
       "done"
     ],
     "history" : [
       "poke count $2 12",
       "poke offset $3 0",
-      "curl asset://$symbol /api/transactions?recipientId=$1&offset=$offset&limit=$count GET {Accept:'application/json'}",
+      "curl /api/transactions?recipientId=$1&offset=$offset&limit=$count GET {Accept:'application/json'} 2 1",
+      "fail 'Could not connect to host'",
       "tran .data 2 1",
       "fail 'Cannot get transaction history!'",
       "sort ['.height',num,desc]",
@@ -39,7 +42,8 @@
       "done"
     ],
     "transactionData" : [
-      "curl asset://$symbol /api/transactions?id=$1&limit=1&offset=0 GET {Accept:'application/json'}",
+      "curl /api/transactions?id=$1&limit=1&offset=0 {Accept:'application/json'} 2 1",
+      "fail 'Could not connect to host'",
       "tran .data 2 1",
       "fail 'Cannot get transaction data!'",
       "pick"
