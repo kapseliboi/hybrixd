@@ -23,10 +23,11 @@
       "done {hash:dynamic}"
     ],
     "balance":[
-      "curl 'asset://$symbol' '/api/wallets/$1' GET  {'Content-Type': 'application/json', 'API-Version': '$version'}",
+      "curl 'asset://$symbol' '/api/wallets/$1?' GET  {'Content-Type': 'application/json', 'API-Version': '$version'} 1 @fail",
       "logs",
       "tran '.data.balance' @succes @fail",
       "@fail",
+      "logs '$ fail in curl'",
       "fail ${.error}",
       "@succes",
       "logs",
