@@ -24,14 +24,19 @@
     "history":[
       "poke count $2 12",
       "poke offset $3 0",
-      "curl 'asset://$symbol' '/api/transactions?recipientId=$1&limit=$count&offset=$offset' 'GET' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': ''}",
+      "curl '/api/transactions?recipientId=$1&limit=$count&offset=$offset' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': ''} 2 1",
+      "fail 'Could not connect to host'",
       "tran .transactions[].id 1 2",
       "poke received $data []",
-      "curl 'asset://$symbol' '/api/transactions?senderId=$1&limit=$count&offset=$offset' 'GET' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': ''}",
+      "curl '/api/transactions?senderId=$1&limit=$count&offset=$offset' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': ''} 2 1",
+      "fail 'Could not connect to host'",
       "tran .transactions[].id 1 4",
       "fuse $received",
       "done",
-      "fail 'Unable to retrieve history.'"
+      "fail 'Unable to retrieve history.'",
+      "tran .data[].id 2 1 ",
+      "fail 'Could not parse history'",
+      "done"
     ],
     "transaction" : [
       "call transactionData/$1",

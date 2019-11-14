@@ -24,7 +24,8 @@
     "balance" : [
       "time $timeout",
       "data {'jsonrpc':'2.0','id':0,'method':'get_normalized_balances','params':{'addresses':['$1']}}",
-      "curl asset://$symbol /_api POST {'content-type':'text/plain'}",
+      "curl /_api POST {'content-type':'text/plain'} 2 1",
+      "fail 'Could not connect to host'",
       "tran '.result' 2 1",
       "fail 'No result!'",
       "find {'asset':'$contract'} 3 1",
@@ -39,7 +40,8 @@
     ],
     "pushAPI" : [
       "data {'jsonrpc':'2.0','id':0,'method':'broadcast_tx','params':{'signed_tx_hex':'$1'}}",
-      "curl asset://$symbol /_api POST {'content-type':'text/plain'}",
+      "curl /_api POST {'content-type':'text/plain'} 2 1",
+      "fail 'Could not connect to host'",
       "test $ 2 1",
       "fail 'Broadcast failed!'",
       "tran '.result' 2 1",
@@ -51,7 +53,8 @@
       "rout 'asset/btc/transaction/$1'",
       "poke txFee",
       "with txFee [tran,'.fee',2,1] [fail,'failed to get transaction'] [done]",
-      "curl 'https://xchain.io/api' '/tx/$1' GET",
+      "curl 'https://xchain.io/api' '/tx/$1' 2 1",
+      "fail 'Could not connect to host'",
       "poke txConfirmed",
       "with txConfirmed [tran,'.status',1,2] [flow,'valid',3,1] [data,'unknown'] [done] [data,'true']",
       "tran {id:'.tx_hash', timestamp:'.timestamp', amount:'.quantity', symbol:'.asset', fee:'$txFee', 'fee-symbol':'$fee-symbol', source:'.source', target:'.destination', confirmed:'$txConfirmed'} @done @fail",
@@ -77,7 +80,8 @@
       "done"
     ],
     "history" : [
-      "curl 'https://xchain.io/api' '/history/$1' GET",
+      "curl 'https://xchain.io/api' '/history/$1' 2 1",
+      "fail 'Could not connect to host'",
       "tran '.data' @success @fail",
       "@fail",
       "fail 'Could not retrieve history'",
