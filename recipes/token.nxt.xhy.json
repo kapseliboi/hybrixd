@@ -6,5 +6,11 @@
   "mode":"nxt.token",
   "contract":"17179021398403681515",
   "originator":"NXT-FCXQ-K5NB-EA5E-CF36G",
-  "factor":8
+  "factor":8,
+  "quartz":{
+    "sample" : [
+      "done {address:'NXT-4RU9-TNCT-F3MU-8952K',transaction:'14843343332531582444',publicKey:'32f5fa059b39fae92e41fee6606c5afa4db80d426532fa94f50415c062794c4b'}"
+    ]
+
+  }
 }

@@ -166,6 +166,8 @@
     ],
     "transactionData" : [
       "data $symbol",
+      "splt .",
+      "pick 0",
       "flow {nxt:1, burst:1} 3",
       "data '?requestType=getTransaction&transaction=$1'",
       "jump 2",
@@ -177,16 +179,43 @@
       "# withMessage is true to retrieve only transactions having a message attachment, either non-encrypted or decryptable by the account (optional)"
     ],
     "transaction" : [
+      "data $symbol",
+      "find . @token 1",
+      "call mainTransaction/$1",
+      "done",
+      "@token",
+      "call tokenTransaction/$1"
+    ],
+
+    "mainTransaction" : [
       "call 'transactionData/$1'",
-      "data $",
       "with reformatAmount [data,'${.amountNQT}'] [atom]",
       "with reformatFee [data,'${.feeNQT}'] [atom]",
       "with sender [data,'${.senderRS}'] [flow,'undefined',1,2] [data,'${.sender}'] [done]",
       "with recipient [data,'${.recipientRS}'] [flow,'undefined',1,2] [data,'${.recipient}'] [done]",
       "with .timestamp math +$genesisBlockTime",
       "tran { id:'$1', timestamp:'.timestamp', height:'.height', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'$sender', target:'$recipient', confirmed:'.confirmations' } 2 1",
-      "fail 'Could not read transaction!'"
+      "fail 'Could not read transaction!'",
+      "done"
     ],
+
+    "tokenTransaction" : [
+      "call 'transactionData/$1'",
+      "poke transaction",
+      "tran .attachment.asset",
+      "flow {'$contract':2} 1",
+      "fail 'Not a transaction for this token asset.'",
+      "peek transaction",
+      "with reformatAmount [data,'${.attachment.quantityQNT}'] [atom]",
+      "with reformatFee [data,'${.feeNQT}'] [atom]",
+      "with sender [data,'${.senderRS}'] [flow,'undefined',1,2] [data,'${.sender}'] [done]",
+      "with recipient [data,'${.recipientRS}'] [flow,'undefined',1,2] [data,'${.recipient}'] [done]",
+      "with .timestamp math +$genesisBlockTime",
+      "tran { id:'$1', timestamp:'.timestamp', height:'.height', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'$sender', target:'$recipient', confirmed:'.confirmations' } 2 1",
+      "fail 'Could not read transaction!'",
+      "done"
+    ],
+
     "attachment" : [
       "call 'transactionData/$1'",
       "tran '.attachment' 2 1",
