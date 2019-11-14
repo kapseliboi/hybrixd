@@ -60,7 +60,8 @@
       "poke 'key' ${.key}",
       "poke 'site' ${.value.site}",
       "poke 'type' ${.value.type}",
-      "curl '$site' '' 'GET' {} {parsing:'$type'}",
+      "curl '$site' {} {parsing:'$type'} 2 1",
+      "fail 'Could not connect to host'",
       "done"
     ],
     "rate" : [

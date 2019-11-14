@@ -22,7 +22,8 @@
   "documentation":"https://docs.binance.org/api-reference/dex-api/paths.html",
   "quartz":{
     "balance" : [
-      "curl asset://$symbol account/$1 GET",
+      "curl /account/$1 2 1",
+      "fail 'Could not connect to host'",
       "tran '.balances' @success @fail",
       "@fail",
       "fail 'No Result'",
@@ -32,14 +33,15 @@
       "done"
     ],
     "unspent" : [
-      "data '$1'",
-      "curl asset://$symbol account/$1 GET",
+      "curl /account/$1 2 1",
+      "fail 'Could not connect to host'",
       "tran {accountNumber : '.account_number', sequence : '.sequence'}",
       "done"
     ],
     "push" : [
       "data '$1'",
-      "curl asset://$symbol broadcast/?sync=true POST {'content-type': 'text/plain'}",
+      "curl /broadcast/?sync=true POST {'content-type': 'text/plain'} 2 1",
+      "fail 'Could not connect to host'",
       "tran '[0].hash' 1 2",
       "done",
       "fail"
@@ -48,13 +50,14 @@
       "done {hash:dynamic}"
     ],
     "factor" : [
-      "pass('$factor')"
+      "pass '$factor'"
     ],
     "sample" : [
       "done {address:'bnb177qrmvquh5flg6axap943clfm9cq09qcpwxc0m',transaction:'6F52B2DA41DC9E9EA91E16F1028F2C6D89B425A22A8E97CFAAA250375FC11E2D'}"
     ],
     "transaction" : [
-      "curl https://explorer.binance.org/api/v1/ tx?txHash=$1",
+      "curl https://explorer.binance.org/api/v1/ /tx?txHash=$1 2 1",
+      "fail 'Could not connect to host'",
       "with newTimestamp [data,$] [tran, '.timeStamp'] [jstr] [drop, -3]",
       "tran { id:'.txHash', timestamp: '$newTimestamp', amount:'.value', symbol:'.txAsset', fee:'.txFee', 'fee-symbol':'.txAsset', source:'.fromAddr', target:'.toAddr',confirmed:'yes' } 1 @fail",
       "done",
@@ -62,7 +65,8 @@
       "fail 'Could not get transaction information!'"
     ],
     "transactionData" : [
-      "curl asset://$symbol tx/$1?format=json GET",
+      "curl /tx/$1?format=json 2 1",
+      "fail 'Could not connect to host'",
       "poke txData",
       "tran { txData: $txData } 1 @fail",
       "done",
@@ -90,7 +94,8 @@
       "done 0"
     ],
     "callForHistory": [
-      "curl https://explorer.binance.org/api/v1/ txs?page=$3&rows=$2&address=$1",
+      "curl https://explorer.binance.org/api/v1/ /txs?page=$3&rows=$2&address=$1 2 1",
+      "fail 'Could not connect to host'",
       "tran '.txArray[]' 1 @fail",
       "each 'subHistory'",
       "done",

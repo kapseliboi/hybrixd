@@ -26,7 +26,8 @@
     "balance" : [
       "time $timeout",
       "data 'addr=$1'",
-      "curl asset://$symbol /v2/address/addr POST {'content-type':'application/x-www-form-urlencoded'} {timeout:$timeout}",
+      "curl /v2/address/addr POST {'content-type':'application/x-www-form-urlencoded'} {timeout:$timeout} 2 1",
+      "fail 'Could not connect to host'",
       "tran '.$1.balance' 2 1",
       "fail 'No result!'",
       "find {'id':'$contract'} 1 2",
@@ -48,8 +49,8 @@
     ],
     "transactionData" : [
       "data '$1'",
-      "curl 'asset://$symbol' '/v1/transaction/tx/$1' GET {'content-type':'application/x-www-form-urlencoded'} {timeout:$timeout} 2 1",
-      "fail 'Error retrieving data!'",
+      "curl '/v1/transaction/tx/$1' {'content-type':'application/x-www-form-urlencoded'} {timeout:$timeout} 2 1",
+      "fail 'Could not connect to host'",
       "have '.txid' 2 1",
       "fail 'Transaction does not exist!'"
     ],

@@ -22,10 +22,12 @@
       "case lower",
       "drop -8",
       "data {address:'$'}",
-      "curl asset://$symbol /walletsolidity/getaccount POST",
+      "curl /walletsolidity/getaccount POST 2 1",
+      "fail 'Could not connect to host'",
       "tran .balance @done @empty",
       "@tokenBalance",
-      "curl $hostTronScan /api/account?address=$1 GET",
+      "curl $hostTronScan /api/account?address=$1 2 1",
+      "fail 'Could not connect to host'",
       "poke result",
       "tran .trc20token_balances 1 1",
       "find {contract_address:'$contract'} 1 @trc10tokens",
@@ -47,7 +49,8 @@
       "data '$1'",
       "code hex utf8",
       "poke txData",
-      "curl asset://$symbol /wallet/broadcasttransaction POST",
+      "curl /wallet/broadcasttransaction POST 2 1",
+      "fail 'Could not connect to host'",
       "tran .result @end @fail",
       "@end",
       "flow 'true' 1 @fail",
@@ -61,7 +64,8 @@
       "fail 'Could not retrieve transaction ID!'"
     ],
     "transactionData" : [
-      "curl $hostTronScan /transaction-info?hash=$1",
+      "curl $hostTronScan /transaction-info?hash=$1 2 1",
+      "fail 'Could not connect to host'",
       "done"
     ],
     "transaction" : [
@@ -83,7 +87,8 @@
       "done"
     ],
     "history" : [
-      "curl $hostTronScan /transfer?sort=-timestamp&count=true&limit=$count&start=$offset&address=$1 GET",
+      "curl $hostTronScan '/transfer?sort=-timestamp&count=true&limit=$count&start=$offset&address=$1' 2 1",
+      "fail 'Could not connect to host'",
       "tran '.data' 2 1",
       "fail 'Could not get transaction history!'",
       "tran '[].transactionHash' 1 -1",
