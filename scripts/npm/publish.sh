@@ -20,7 +20,7 @@ npm publish
 echo "Publish on Github"
 touch .npmrc
 echo "//npm.pkg.github.com/:_authToken=$GITHUB_PAT" >> .npmrc
-echo "@hybrix-io:registry=https://npm.pkg.github.com" >> .npmrc
+echo "registry=https://npm.pkg.github.com/hybrix.io" >> .npmrc
 
 sed -i -e "\$i \,\"publishConfig\": { \"registry\": \"https://npm.pkg.github.com/\" }" package.json
 
