@@ -102,7 +102,7 @@ Discription: A string indicating whether an address needs to
 be generated
 never : no generation needed,
 once : generation only needed once,
-always : generation each time you want to receive a transferr
+always : generation each time you want to receive a transfer
 Example: "never", "once", "always"
 
 

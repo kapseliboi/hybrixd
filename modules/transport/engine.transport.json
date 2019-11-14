@@ -13,9 +13,9 @@
   "defaultTorrentPasswd":"l3ts_b34t_th3_b4nks!",
   "cron" : 60,
   "conf" :{
-    "test" :{
-      "default":10,
-      "info":"test"
+    "enabled" :{
+      "default":false,
+      "info":"Whether to enable"
     }
   },
   "quartz" : {

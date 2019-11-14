@@ -24,7 +24,8 @@
       "pass('$factor')"
     ],
     "balance": [
-      "curl('$host','/accounts/$1','GET')",
+      "curl '/accounts/$1' 2 1",
+      "fail 'Could not connect to host'",
       "tran('.balances',@getBalance,1)",
       "tran .title 2 1",
       "fail",
@@ -42,22 +43,25 @@
     "push": [
       "data '$1'",
       "repl '*' '/'",
-      "data encodeURIComponent('$')",
-      "curl('$host','/transactions?tx=$','POST', {})",
+      "data '$'",
+      "curl '/transactions?tx=$' POST 2 1",
+      "fail 'Could not connect to host'",
       "done"
     ],
     "contract": [
       "done '$contract'"
     ],
     "unspent": [
-      "curl('$host','/accounts/$1','GET')",
-      "tran('.sequence',2,1)",
+      "curl '/accounts/$1 2 1",
+      "fail 'Could not connect to host'",
+      "tran .sequence 2 1",
       "fail",
       "done"
     ],
     "history": [
       "#TODO offset and limit https://horizon.stellar.org/accounts/{account_id}/transactions{?cursor,limit",
-      "curl('$host','/accounts/$1/transactions','GET')",
+      "curl '/accounts/$1/transactions' 2 1",
+      "fail 'Could not connect to host'",
       "tran ._embedded.records[].id 1 2",
       "done"
     ],
@@ -65,7 +69,8 @@
       "done {unspent:'998719879287873', hash:'0555065F'}"
     ],
     "transaction": [
-      "curl('$host','/transactions/$1','GET')",
+      "curl '/transactions/$1' 2 1",
+      "fail 'Could not connect to host'",
       "#TODO transform",
       "done"
     ],
