@@ -5,7 +5,7 @@
   "fee-symbol":"xrp",
   "addressRegex":"^r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}$",
   "fee":"0.00001",
-  "fee-factor":0,
+  "fee-factor":6,
   "cron":300,
   "mode":"xrp",
   "contract":"",
@@ -149,12 +149,13 @@
     "transaction" : [
       "rand 10000",
       "data {'id': $,'command': 'tx','transaction': '$1','binary': false}",
-      "with dropsFactor [math,'10^$factor']",
       "curl 'asset://$symbol' '' 'POST'",
-      "tran {id:'=.result.hash|unknown',fee:'=.result.Fee / $dropsFactor|unknown',timestamp:'=.result.date+$genesisBlockTime |unknown',symbol:'XRP',amount:'=.result.Amount / $dropsFactor|unknown',source:'=.result.Account|unknown',target:'=.result.Destination|unknown',fee-symbol: $fee-symbol, confirmed:.validated} @success @fail",
+      "tran {id:'=.result.hash|unknown',fee:'=.result.Fee|unknown',timestamp:'=.result.date+$genesisBlockTime|unknown',symbol:'xrp',amount:'.result.Amount',source:'=.result.Account|unknown',target:'=.result.Destination|unknown',fee-symbol: $fee-symbol, confirmed:.result.validated} @success @fail",
       "@fail",
       "fail 'error'",
-      "@success"
+      "@success",
+      "with .fee math '/10^$factor'",
+      "with .amount math '/10^$factor'"
     ],
     "unspent" : [
       "rand 10000",
@@ -183,7 +184,7 @@
       "fail 'No result!'"
     ],
     "sample" : [
-      "pass({address:'rbwE6wsxzYat1YyGGxzAwq6wBSF5MdoAg',transaction:'699C005DEA8638B6FFEDB6039A82EB4190E0BAFAAA6E14307042FBA089E93EFE'})"
+      "pass {address:'rbwE6wsxzYat1YyGGxzAwq6wBSF5MdoAg',transaction:'699C005DEA8638B6FFEDB6039A82EB4190E0BAFAAA6E14307042FBA089E93EFE'}"
     ],
     "subhistory" : [
       "tran '.value.tx.hash' 1 @fail",
