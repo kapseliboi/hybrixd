@@ -3,16 +3,17 @@
   "name":"Ark",
   "module":"quartz",
   "mode":"ark",
-  "import":"rise",
+  "#import":"rise",
   "addressRegex":"^A\\w{33}$",
   "factor":8,
   "fee":0.1,
   "fee-symbol":"ark",
   "contract":null,
-  "host":["https://node1.arknet.cloud"],
+  "oldHost":["https://node1.arknet.cloud"],
+  "host":["https://api.ark.io"],
   "cache":15000,
   "throttle":5,
-  "version":"0.9.9",
+  "version":"2",
   "genesisBlockTime":1490101200,
   "quartz":{
     "sample" : [
@@ -21,13 +22,24 @@
     "test":[
       "done {hash:dynamic}"
     ],
+    "balance":[
+      "curl 'asset://$symbol' '/api/wallets/$1' GET  {'Content-Type': 'application/json', 'API-Version': '$version'}",
+      "logs",
+      "tran '.data.balance' @succes @fail",
+      "@fail",
+      "fail ${.error}",
+      "@succes",
+      "logs",
+      "atom",
+      "done"
+    ],
     "history":[
       "poke count $2 12",
       "poke offset $3 0",
-      "curl 'asset://$symbol' '/api/transactions?recipientId=$1&limit=$count&offset=$offset' 'GET' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': ''}",
+      "curl 'asset://$symbol' '/api/transactions?recipientId=$1&limit=$count&offset=$offset' 'GET' {'Content-Type': 'application/json', 'API-Version': '$version'}",
       "tran .transactions[].id 1 2",
       "poke received $data []",
-      "curl 'asset://$symbol' '/api/transactions?senderId=$1&limit=$count&offset=$offset' 'GET' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': ''}",
+      "curl 'asset://$symbol' '/api/transactions?senderId=$1&limit=$count&offset=$offset' 'GET' {'Content-Type': 'application/json', 'API-Version': '$version'}",
       "tran .transactions[].id 1 4",
       "fuse $received",
       "done",
