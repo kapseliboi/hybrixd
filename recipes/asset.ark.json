@@ -27,12 +27,10 @@
       "@curlFail",
       "fail 'Unable to retrieve balance.'",
       "@curlSuccess",
-      "logs",
       "tran '.data.balance' @tranSuccess @tranFail",
       "@tranFail",
       "fail ${.error}",
       "@tranSuccess",
-      "logs",
       "atom",
       "done"
     ],
@@ -45,14 +43,11 @@
     "history":[
       "poke count $2 12",
       "poke offset $3 0",
-      "logs 'Address = $1'",
       "curl 'asset://$symbol' '/api/v2/wallets/$1/transactions?orderBy=timestamp:desc&limit=$count&offset=$offset' 'GET' {'Content-Type': 'application/json', 'API-Version': '$version'} @curlSuccess @curlFail",
       "@curlSuccess",
       "tran '.data' @tranSuccess @tranFail",
       "@tranSuccess",
-      "logs '$ logs after tran'",
       "each 'subhistory'",
-      "logs '$ logs after each'",
       "done",
       "@curlFail",
       "fail 'Unable to retrieve history.'",
@@ -70,25 +65,14 @@
       "fail",
       "done"
     ],
-    "#transaction":[
-      "call transactionData/$1",
-      "with reformatTimestamp [data,${.timestamp}] [math,'+$genesisBlockTime']",
-      "with reformatFee [data,'${.fee}'] [atom]",
-      "with reformatAmount [data,'${.amount}'] [atom]",
-      "tran { id:'.id', timestamp:'$reformatTimestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.senderId', target:'.recipientId', confirmed:'.confirmations' } 2 1",
-      "fail 'Cannot get transaction data!'",
-      "done"
-    ],
     "transaction":[
       "curl 'asset://$symbol' '/api/v2/transactions/$1' 'GET' {'Content-Type': 'application/json', 'API-Version': '$version'} @curlSuccess @curlFail",
-      "#curl 'asset://$symbol' '/api/v2/transactions/$1' 'GET' {'API-Version': '$version'} @curlSuccess @curlFail",
       "@curlSuccess",
-      "logs '$ log after curl'",
       "tran '.data' @dataTranSuccess @dataTranFail",
       "@dataTranFail",
       "fail ${.error}",
       "@dataTranSuccess",
-      "with reformatTimestamp [data,'${.timestamp.unix}'] [math,'+$genesisBlockTime']",
+      "with reformatTimestamp [data,'${.timestamp.unix}']",
       "with reformatFee [data,'${.fee}'] [atom]",
       "with reformatAmount [data,'${.amount}'] [atom]",
       "tran { id:'.id', timestamp:'$reformatTimestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.sender', target:'.recipient', confirmed:'.confirmations' } @tranSuccess @tranFail",
@@ -97,7 +81,6 @@
       "@tranFail",
       "fail 'Could not parse transaction'",
       "@tranSuccess",
-      "logs '$ logs after tran'",
       "done"
     ]
   }
