@@ -23,7 +23,7 @@
       "done {hash:dynamic}"
     ],
     "balance":[
-      "curl 'asset://$symbol' '/api/v2/wallets/AUDud8tvyVZa67p3QY7XPRUTjRGnWQQ9Xv' GET  {'Content-Type': 'application/json', 'API-Version': '$version'} @curlSuccess @curlFail",
+      "curl 'asset://$symbol' '/api/v2/wallets/$1' GET  {'Content-Type': 'application/json', 'API-Version': '$version'} @curlSuccess @curlFail",
       "@curlFail",
       "fail 'Unable to retrieve balance.'",
       "@curlSuccess",
@@ -43,7 +43,7 @@
     "history":[
       "poke count $2 12",
       "poke offset $3 0",
-      "curl 'asset://$symbol' '/api/v2/wallets/AUDud8tvyVZa67p3QY7XPRUTjRGnWQQ9Xv/transactions?orderBy=timestamp:desc&limit=$count&offset=$offset' 'GET' {'Content-Type': 'application/json', 'API-Version': '$version'} @curlSuccess @curlFail",
+      "curl 'asset://$symbol' '/api/v2/wallets/$1/transactions?orderBy=timestamp:desc&limit=$count&offset=$offset' 'GET' {'Content-Type': 'application/json', 'API-Version': '$version'} @curlSuccess @curlFail",
       "@curlSuccess",
       "tran '.data' @tranSuccess @tranFail",
       "@tranSuccess",
@@ -68,7 +68,6 @@
     "transaction":[
       "curl 'asset://$symbol' '/api/v2/transactions/$1' GET {'Content-Type': 'application/json', 'API-Version': '$version'} @curlSuccess @curlFail",
       "@curlSuccess",
-      "logs 'LOGS FROM TX CURL $'",
       "tran '.data' @dataTranSuccess @dataTranFail",
       "@dataTranFail",
       "fail ${.error}",
