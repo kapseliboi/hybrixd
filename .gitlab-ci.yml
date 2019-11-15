@@ -157,7 +157,7 @@ publish:
   cache: {}
   stage: publish
   script:
-    - sh ./scripts/npm/publish.sh
+    - publish
   only:
     refs:
       - tags
