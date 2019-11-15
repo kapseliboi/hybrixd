@@ -23,7 +23,7 @@
       "done {hash:dynamic}"
     ],
     "balance":[
-      "curl 'asset://$symbol' '/api/v2/wallets/$1' GET  {'Content-Type': 'application/json', 'API-Version': '$version'} @curlSuccess @curlFail",
+      "curl '/api/v2/wallets/$1' {'Content-Type': 'application/json', 'API-Version': '$version'} @curlSuccess @curlFail",
       "@curlFail",
       "fail 'Unable to retrieve balance.'",
       "@curlSuccess",
@@ -43,7 +43,7 @@
     "history":[
       "poke count $2 12",
       "poke offset $3 0",
-      "curl 'asset://$symbol' '/api/v2/wallets/$1/transactions?orderBy=timestamp:desc&limit=$count&offset=$offset' 'GET' {'Content-Type': 'application/json', 'API-Version': '$version'} @curlSuccess @curlFail",
+      "curl '/api/v2/wallets/$1/transactions?orderBy=timestamp:desc&limit=$count&offset=$offset' {'Content-Type': 'application/json', 'API-Version': '$version'} @curlSuccess @curlFail",
       "@curlSuccess",
       "tran '.data' @tranSuccess @tranFail",
       "@tranSuccess",
@@ -55,18 +55,18 @@
       "fail 'Could not parse history'"
     ],
     "push":[
-      "curl 'asset://$symbol' '/api/blocks/getNetHash' GET",
+      "curl '/api/blocks/getNetHash'",
       "tran('.nethash',2,1)",
       "fail 'nethash could not be retrieved'",
       "poke 'nethash'",
       "data {transaction: '$1'}",
-      "curl 'asset://$symbol' '/peer/transactions' POST {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': '$nethash'}",
+      "curl  '/peer/transactions' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': '$nethash'}",
       "tran('.transactionId',2,1)",
       "fail",
       "done"
     ],
     "transaction":[
-      "curl 'asset://$symbol' '/api/v2/transactions/$1' GET {'Content-Type': 'application/json', 'API-Version': '$version'} @curlSuccess @curlFail",
+      "curl '/api/v2/transactions/$1' {'Content-Type': 'application/json', 'API-Version': '$version'} @curlSuccess @curlFail",
       "@curlSuccess",
       "tran '.data' @dataTranSuccess @dataTranFail",
       "@dataTranFail",
