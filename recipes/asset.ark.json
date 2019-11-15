@@ -60,7 +60,7 @@
       "fail 'nethash could not be retrieved'",
       "poke 'nethash'",
       "data {transaction: '$1'}",
-      "curl  '/peer/transactions' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': '$nethash'}",
+      "curl '/peer/transactions' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': '$nethash'}",
       "tran('.transactionId',2,1)",
       "fail",
       "done"
