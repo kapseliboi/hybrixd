@@ -32,7 +32,7 @@
       "@tranFail",
       "fail ${.error}",
       "@tranSuccess",
-      "atom",
+      "atom"
     ],
     "subhistory" : [
       "tran '.value.id' 1 @fail",
