@@ -8,6 +8,7 @@
   "fee":0.1,
   "fee-symbol":"ark",
   "contract":null,
+  "blockexplorer":["https://explorer.ark.io/"],
   "oldHost":["https://node1.arknet.cloud"],
   "host":["https://api.ark.io"],
   "documentation":["https://docs.ark.io/api/public/v2/"],
@@ -32,7 +33,6 @@
       "fail ${.error}",
       "@tranSuccess",
       "atom",
-      "done"
     ],
     "subhistory" : [
       "tran '.value.id' 1 @fail",
