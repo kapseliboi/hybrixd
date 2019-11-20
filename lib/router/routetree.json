@@ -290,6 +290,10 @@
     },
     "debug":{
       "_access":"root",
+      "debug.js":{
+        "_this" : "test",
+        "hidden" : true
+      },
       "_this" : "Debug UI.",
       "_ref" : {
         "_access":"root",
