@@ -1,237 +1,112 @@
-<style>
-  a {
-  cursor:pointer;
-  text-decoration:underline;
-  }
-  span.variable{
-  color:blue;
-  }
-  a.label, a.label:visited{
-  cursor:default;
-  color:green;
-  }
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>hybrix | qrtz debug interface</title>
+    <meta charset="UTF-8">
+    <script src="./debug/debug.js"></script>
 
-   a.reference, a.reference:visited{
-  cursor:default;
-  color:darkgreen;
-  }
+    <style>
 
-
-  body{
-  font-family: monospace;
-  }
-  input[type="text"]{
-  margin:0;
-  width:80vw;
-  }
-  input[type="submit"]{
-  margin:0;
-  width:10vw;
-  }
-
-  .notStarted {
-  color:lightgrey;
-  }
-  .started {
-//  background-color:blue;
-  }
-  .done {
-  background-color:green;
-  }
-  .fail {
-  color:red;
-  }
-
-  .progress{
-  width:200px;
-  }
-
-  .progress div {
-  background-color:green;
-  }
-
-  .fail .progress div {
-  background-color:red;
-  }
-
-  .data{
-  text-overflow: ellipsis;
-  }
-
-</style>
-
-<script>
-
-  const sortNumeric = (n, m) => {
-  if (n === m) return 0;
-  const nLabel = n.endsWith('@')?1:0;
-  const mLabel = m.endsWith('@')?1:0;
-  n = n.replace('@','');
-  m = m.replace('@','');
-
-  const nSplit = n.split('.');
-  const mSplit = m.split('.');
-  const nLength = nSplit.length;
-  const mLength = mSplit.length;
-  const baseLength = Math.min(nLength, mLength);
-
-  const nBase = nSplit.slice(0, baseLength);
-  const mBase = mSplit.slice(0, baseLength);
-
-  const elemIsEqual = (e, i) => e === mBase[i];
-
-  const getValueByComparison = (n, m) => {
-    let equal=true;
-    for(let i = 0; i< baseLength; ++i){
-      if(Number(n[i])>Number(m[i])){return 1;}
-      equal = equal && Number(n[i])===Number(m[i]);
-    }
-    if(equal){
-     return mLabel<nLabel || mSplit.length>nSplit.length?-1:1;
-    }else{
-     return -1;
-    }
-  };
-
-  return  getValueByComparison(nBase, mBase);
-};
-
-
-  const DEFAULT_RETRIES = 60;
-  const DEFAULT_PAGE_SIZE = 10;
-  const FIRST_RETRY_DELAY = 100;
-  const DEFAULT_RETRY_DELAY = 500;
-
-  const host="http://localhost:1111";
-
-  function request (url, dataCallback, errorCallback, progressCallback, retries) {
-
-  if (typeof retries === 'undefined') { retries = DEFAULT_RETRIES; }
-
-      const xhr = new XMLHttpRequest();
-      console.log(host + url)
-  xhr.open('GET', host + url, true);
-
-  xhr.onreadystatechange = (e) => {
-    if (xhr.readyState == 4) {
-        let result;
-
-        try { // Catch bad parse
-          result = JSON.parse(xhr.responseText);
-        } catch (e) {
-          errorCallback(e);
-          return;
-        }
-        if (typeof result !== 'object' || result === null) {
-          errorCallback('Invalid response: ' + xhr.responseText);
-          return;
-        }
-
-    if (result.error !== 0) {
-    let help;
-    if(result.help){
-    help = result.help.replace(/`(.*?)`/g, (a,b) =>
-    (`<a onclick="document.getElementById('request').value='${b}';if(!'${b}'.includes('$')){go();}">${b}</a>`))
-    }else{
-      help = result.data;
-    }
-
-    errorCallback(help);
-          return;
-        }
-
-        if (result.hasOwnProperty('id') && result.id === 'id') { // requires follow up
-          request('/p/debug/' + result.data, dataCallback, errorCallback, progressCallback, undefined, url);
-        } else if (result.stopped !== null) { // done
-          dataCallback(result.data);
-        } else { // not yet finished
-          if (typeof progressCallback === 'function') {
-            progressCallback(1.0 - retries / DEFAULT_RETRIES,result.data);
-          }
-          if (retries === 0) {
-            errorCallback('Timeout');
-          } else {
-            setTimeout(() => {
-              request(url, dataCallback, errorCallback, progressCallback, retries - 1);
-            }, retries === DEFAULT_RETRIES ? FIRST_RETRY_DELAY : DEFAULT_RETRY_DELAY);
-          }
-        }
-    }
-  };
-  xhr.send();
-    }
-
-      function render(line){
-      if(line.startsWith('@')){
-      return line;
-      }else{
-      return '<b>'+line.substr(0,4)+'</b>'+line.substr(4).replace(/@(\w+)/g,(a,b)=>('<a class="reference" href="#'+b+'">@'+b+'</a>')).replace(/\$((\w|-)+)/g,(a,b)=>('<span class="variable">$'+b+'</span>'));
+      a {
+      cursor:pointer;
+      text-decoration:underline;
+      }
+      span.variable{
+      color:blue;
       }
 
+      a.label, a.label:visited{
+      cursor:default;
+      color:green;
       }
 
-      function update(progress,data){
-      console.log(data);
-    for(let pid in data){
-    const process= data[pid];
-    for(let spid in process.labels){
-     const step = pid+'.'+process.labels[spid]+'@';
-     data[step]={qrtz:'@'+spid};
-    }
-
-    }
-
-  const procs = {};
-
-  Object.keys(data).sort(sortNumeric).forEach(function (key) {
-    procs[key] = data[key];
-  });
-
-    let html ='<table>';
-      for(let pid in procs){
-      const process= procs[pid];
-      //{"data":"valid","err":0,"progress":1,"qrtz":"call validate/$1","path":null}
-        const label = typeof process.qrtz === 'undefined'
-        ? (process.path?('/'+process.path.join('/')):'?')
-        :('&nbsp;&nbsp;'+render(process.qrtz));
-const progress = process.progress;
-        const pdata = process.data;
-        const fail = process.started!==null && process.err!==null &&
-        process.err!==0 && typeof  process.err!=='undefined';
- if(label.startsWith('&nbsp;&nbsp;@')){
-        html+=`<tr class="">
-          <td></td>
-          <td></td>
-          <td>&nbsp;<a class="label" name="${label.substr(13)}">${label.substr(12)}</a></td>
-          <td></td>
-        </tr>`;
-        }else{
-        html+=`<tr class="${process.started?'started':'notStarted'} ${fail?'fail':''}">
-          <td>${pid}</td>
-          <td class="progress"><div style="width:${progress*100}%">${progress*100}%</div></td>
-          <td>${label}</td>
-          <td class="data" title='${JSON.stringify(pdata)}'>${JSON.stringify(pdata)}</td>
-        </tr>`;
-        }
-
-      }
-      html+='</table>';
-    document.getElementById('output').innerHTML=html;
-
-    }
-
-    function go(){
-      const xpath = document.getElementById('request').value;
-    request(xpath,
-    data=>update(1,data),
-    error=>{
-    document.getElementById('output').innerHTML=error;
-    },
-    update
-      );
+      a.reference, a.reference:visited{
+      color:green;
       }
 
-</script>
+      .notStarted span.variable{
+      color:rgb(100,100,150);
+      }
 
-<input placeholder="Enter api call, for example: /asset/dummy/balance/_dummyaddress_" onkeyup="if(event.keyCode===13){go();}" type="text" id="request" value=""><input type="submit" value="go" onclick="go()">
-<div id="output"></div>
+      .notStarted a.reference, .notStarted a.reference:visited{
+      color:rgb(100,150,100);
+      }
+
+      body{
+      font-family: monospace;
+      }
+      input[type="text"]{
+      margin:0;
+      width:100%;
+      }
+      input[type="submit"]{
+      margin:0;
+      width:10vw;
+      }
+
+      .notStarted {
+      color:lightgrey;
+      }
+
+      .done {
+      background-color:green;
+      }
+      .fail {
+      color:red;
+      }
+
+      td{
+      word-wrap:break-words;
+      }
+
+      div.progress {
+      margin:0;
+      display:inline-block;
+      background-color:green;
+      }
+      td.pid {
+      padding:0;
+      }
+      div.pid {
+      display:inline-block;
+      position:absolute;
+      left:1em;
+      color:black;
+      }
+      tr.fail div.progress {
+      background-color:red;
+      }
+
+      .data{
+      text-overflow: ellipsis;
+      }
+
+      tr:nth-child(even) {background: #EEE}
+      tr:nth-child(odd) {background: #FFF}
+      table {
+      max-width:90%;
+      width:90%;
+      }
+
+      tr.header td{
+      background-color:blue;
+      color:white;
+      }
+
+    </style>
+  </head>
+
+  <body>
+
+    <table><tr class="header"><td colspan="2">hybrix: qrtz debug interface</td></tr>
+      <tr><td>
+          <input placeholder="Enter api call, for example:
+                              /asset/dummy/balance/_dummyaddress_"
+                 onkeyup="if(event.keyCode===13){go();}" type="text"
+                 id="request" value="/a/btc/details">
+
+        <td width="15ch"><input type="submit" value="execute" onclick="go()"></td>
+    </td></tr></table>
+    <div id="output"></div>
+  </body>
+</html>

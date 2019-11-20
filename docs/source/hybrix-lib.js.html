@@ -165,7 +165,7 @@ onProgress                                                      // Define action
 
           <div class="example-block">
             <div class="try">
-              <select id="selectExample" onchange="const exampleCode = document.getElementById(s[s.selectedIndex].value).innerHTML.replace('http://localhost:1111',window.location.href.split(`/help`)[0]).replace(/<[^>]*>/g, ``);
+              <select id="selectExample" onchange="const s=document.getElementById('selectExample');const exampleCode = document.getElementById(s[s.selectedIndex].value).innerHTML.replace('http://localhost:1111',window.location.href.split(`/help`)[0]).replace(/<[^>]*>/g, ``);
 codeMirrorEditor.setValue(exampleCode);">
 
 
