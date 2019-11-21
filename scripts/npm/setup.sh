@@ -1,32 +1,30 @@
 #!/bin/sh
 WHEREAMI=`pwd`
 OLDPATH=$PATH
-# $HYBRIXD/$NODE/scripts/npm  => $HYBRIXD
 
+# $HYBRIXD/$NODE/scripts/npm  => $HYBRIXD
 SCRIPTDIR="`dirname \"$0\"`"
 HYBRIXD="`cd \"$SCRIPTDIR/../../..\" && pwd`"
 
-INTERFACE="$HYBRIXD/interface"
-DETERMINISTIC="$HYBRIXD/deterministic"
-NODEJS="$HYBRIXD/nodejs"
-ENVIRONMENT="$1"
 
-if [ -e "$HYBRIXD/node" ]; then
-    URL_COMMON="https://gitlab.com/hybrix/hybrixd/common.git"
-    URL_NODEJS="https://www.gitlab.com/hybrix/hybrixd/dependencies/nodejs.git"
-    NODE="$HYBRIXD/node"
-    COMMON="$HYBRIXD/common"
-    INTERFACE="$HYBRIXD/interface"
-    WEB_WALLET="$HYBRIXD/web-wallet"
-    echo "[i] Environment is development..."
-elif [ -e "$HYBRIXD/hybrixd-node" ]; then
+if [ -e "$HYBRIXD/hybrixd-node" ]; then
     URL_COMMON="https://github.com/hybrix-io/hybrixd-common.git"
     URL_NODEJS="https://github.com/hybrix-io/nodejs.git"
+    URL_NODE_MODULES="https://github.com/hybrix-io/hybrixd-dependencies-node_modules.git"
     NODE="$HYBRIXD/hybrixd-node"
     COMMON="$HYBRIXD/hybrixd-common"
-    INTERFACE="$HYBRIXD/hybrixd-interface"
-    WEB_WALLET="$HYBRIXD/hybrixd-web-wallet"
+    NODEJS="$HYBRIXD/hybrixd-dependencies-nodejs"
+    ENVIRONMENT="public"
     echo "[i] Environment is public..."
+elif [ -e "$HYBRIXD/node" ]; then
+    URL_COMMON="https://gitlab.com/hybrix/hybrixd/common.git"
+    URL_NODEJS="https://www.gitlab.com/hybrix/hybrixd/dependencies/nodejs.git"
+    URL_NODE_MODULES="https://gitlab.com/hybrix/hybrixd/dependencies/node_modules.git"
+    NODE="$HYBRIXD/node"
+    COMMON="$HYBRIXD/common"
+    ENVIRONMENT="dev"
+    NODEJS="$HYBRIXD/nodejs"
+    echo "[i] Environment is development..."
 else
     echo "[!] Unknown Environment"
     export PATH="$OLDPATH"
@@ -103,7 +101,7 @@ if [ "$USE_SUPPORTED" = true ]; then
     if [ ! -e "$HYBRIXD/node_modules" ];then
         cd "$HYBRIXD"
         echo " [i] Clone node_modules dependencies"
-        git clone https://gitlab.com/hybrix/hybrixd/dependencies/node_modules.git
+        git clone "$URL_NODE_MODULES"
     fi
 
     echo " [i] Link node_modules"
