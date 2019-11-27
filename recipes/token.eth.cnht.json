@@ -1,0 +1,11 @@
+{
+    "symbol":"eth.cnht",
+    "name":"Chinese Yuan Tether Stablecoin (ETH)",
+    "info":"<p>Tether (CNHT) is a cryptocurrency with a value meant to mirror the value of the Chinese Yuan. The initial idea was to create a stable cryptocurrency that can be used like digital dollars. Coins that serve this purpose of being a stable dollar substitute are called “stable coins.” According to their site, Tether converts cash into digital currency, to anchor or “tether” the value of the coin to the price of national currencies like the US dollar, the Euro, and the Yen. Tether (USDT) is issued on the Omni, TRON, and ETH blockchains.</p>",
+    "module":"ethereum",
+    "import":"eth",
+    "mode":"ethereum.token",
+    "contract":"0x6e109e9dd7fa1a58bc3eff667e8e41fc3cc07aef",
+    "originator":"0xe1f3c653248de6894d683cb2f10de7ca2253046f",
+    "factor":6
+}

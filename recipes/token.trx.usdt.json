@@ -1,10 +1,9 @@
 {
-  "symbol":"omni.usdt",
-  "name":"US dollar Tether Stablecoin (Omni)",
+  "symbol":"trx.usdt",
+  "name":"US dollar Tether Stablecoin (TRX)",
   "info":"<p>Tether (USDT) is a cryptocurrency with a value meant to mirror the value of the U.S. dollar. The idea was to create a stable cryptocurrency that can be used like digital dollars. Coins that serve this purpose of being a stable dollar substitute are called “stable coins.” According to their site, Tether converts cash into digital currency, to anchor or “tether” the value of the coin to the price of national currencies like the US dollar, the Euro, and the Yen. Tether (USDT) is issued on the Omni, TRON, and ETH blockchains.</p>",
-  "module":"quartz",
-  "mode":"bitcoinjslib.omni",
-  "import":"omni",
-  "factor":8,
-  "contract":"31"
+  "import":"trx",
+  "contract":"TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
+  "originator":"THPvaUhoh2Qn2y9THCZML3H815hhFhn5YC",
+  "factor":6
 }
