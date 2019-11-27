@@ -14,14 +14,13 @@
   "cron" : 60,
   "conf" :{
     "enabled" :{
-      "default":false,
+      "default":true,
       "info":"Whether to enable"
     }
   },
   "quartz" : {
     "cron" :[
       "# open transports IRC and Torrent, unless already open",
-      "func open/irc",
       "func open/torrent"
     ],
     "open" :[
