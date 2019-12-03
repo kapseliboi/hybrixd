@@ -24,7 +24,7 @@
       "done {hash:dynamic}"
     ],
     "balance":[
-      "curl '/api/v2/wallets/$1' {'Content-Type': 'application/json', 'API-Version': '$version'} @curlSuccess @curlFail",
+      "curl '/api/v2/wallets/$1' {'Content-Type': 'application/json'} @curlSuccess @curlFail",
       "@curlFail",
       "fail 'Unable to retrieve balance.'",
       "@curlSuccess",
@@ -43,7 +43,7 @@
     "history":[
       "poke count $2 12",
       "poke offset $3 0",
-      "curl '/api/v2/wallets/$1/transactions?orderBy=timestamp:desc&limit=$count&offset=$offset' {'Content-Type': 'application/json', 'API-Version': '$version'} @curlSuccess @curlFail",
+      "curl '/api/v2/wallets/$1/transactions?orderBy=timestamp:desc&limit=$count&offset=$offset' {'Content-Type': 'application/json'} @curlSuccess @curlFail",
       "@curlSuccess",
       "tran '.data' @tranSuccess @tranFail",
       "@tranSuccess",
@@ -66,7 +66,7 @@
       "done"
     ],
     "transaction":[
-      "curl '/api/v2/transactions/$1' {'Content-Type': 'application/json', 'API-Version': '$version'} @curlSuccess @curlFail",
+      "curl '/api/v2/transactions/$1' {'Content-Type': 'application/json'} @curlSuccess @curlFail",
       "@curlSuccess",
       "tran '.data' @dataTranSuccess @dataTranFail",
       "@dataTranFail",
