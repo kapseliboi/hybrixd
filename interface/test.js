@@ -34,8 +34,8 @@ const knownIssues = {
 
 
   ubq_sampleHistory: {message:"Not yet functioning", link:"https://gitlab.com/hybrix/hybrixd/node/issues/697"},
-  rise_sampleTransaction: {message:"Not yet functioning", link:"https://gitlab.com/hybrix/hybrixd/node/issues/703"},
-  shift_sampleTransaction: {message:"Not yet functioning", link:"https://gitlab.com/hybrix/hybrixd/node/issues/704"},
+  rise_sampleTransaction: {message:"Not yet functioning", link:"https://gitlab.com/hybrix/hybrixd/node/issues/885"},
+  shift_sampleTransaction: {message:"Not yet functioning", link:"https://gitlab.com/hybrix/hybrixd/node/issues/885"},
 
   xcp_seedSignHash: {message:"Signing still holds a dynamic componement", link:""},
   'xcp.xhy_seedSignHash': {message:"Signing still holds a dynamic componement", link:""},
