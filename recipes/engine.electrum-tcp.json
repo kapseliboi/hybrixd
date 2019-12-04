@@ -36,7 +36,7 @@
       "fail 'Could not connect to host'",
       "tran '.result' 2 1",
       "fail 'Bad input unspents from Electrum!'",
-      "each 'unspent_tran'",
+      "tran []{script:$script,amount:=.value|0,txid:.tx_hash,txn:.tx_pos}",
       "sort '.amount'",
       "scan 'cnt<($inputval+val.amount)' '+val.amount'",
       "poke 'selected'",
@@ -64,7 +64,7 @@
       "fail 'Could not connect to host'",
       "tran '.result' 2 1",
       "fail 'Bad input unspents from Electrum!'",
-      "each 'unspent_tran'",
+      "tran []{script:$script,amount:=.value|0,txid:.tx_hash,txn:.tx_pos}",
       "poke 'selected'",
       "tran '[].amount' 2 1",
       "data []",
@@ -75,17 +75,6 @@
       "done {unspents:$selected,change:'$'}"
     ],
 
-    "unspent_tran" : [
-      "data ${.value}",
-      "poke unspent",
-      "tran '.value' 2 1",
-      "data 0",
-      "poke amount",
-      "peek unspent",
-      "tran {script:'$parent::script',amount:'$amount',txid:'.tx_hash',txn:'.tx_pos'} 2 1",
-      "fail 'Bad input unspents from Electrum!'",
-      "done"
-    ],
     "balance" : [
       "time $timeout",
       "rand 10000",

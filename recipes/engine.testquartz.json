@@ -270,6 +270,24 @@
       "done"
     ],
 
+    "tran1" : [
+      "data [{a:x},{a:y}]",
+      "tran [].a 1 4",
+      "jstr string",
+      "flow '[\"x\",\"y\"]' 1 2",
+      "done '$OK'",
+      "fail $NOT_OK:$0:$"
+    ],
+    "tran2" : [
+      "data [{a:x},{a:y}]",
+      "tran []{b:.a} 1 5",
+      "jstr string",
+      "flow '[{\"b\":\"x\"},{\"b\":\"y\"}]' 1 2",
+      "done '$OK'",
+      "fail $NOT_OK:$0:$",
+      "fail 'aaaa $'"
+    ],
+
     "test" : [
       "qrtz",
       "excl [test,subtest]",
