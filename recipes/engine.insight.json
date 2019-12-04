@@ -36,7 +36,7 @@
       "time $timeout",
       "curl /addr/$1/utxo 2 1 ",
       "fail 'Could not connect to host'",
-      "each 'unspent_tran'",
+      "tran []{script:.scriptPubKey,amount:=atom(.amount,true)|.satoshis,txid:.txid,txn:.vout}",
       "sort '.amount'",
       "scan 'cnt<($inputval+val.amount)' '+val.amount'",
       "poke 'selected'",
@@ -53,7 +53,7 @@
       "time $timeout",
       "curl /addr/$1/utxo 2 1",
       "fail 'Could not connect to host'",
-      "each 'unspent_tran'",
+      "tran []{script:.scriptPubKey,amount:=atom(.amount,true)|.satoshis,txid:.txid,txn:.vout}",
       "poke 'selected'",
       "tran '[].amount' 2 1",
       "data []",
@@ -62,19 +62,6 @@
       "ship 2 2 1",
       "data 0",
       "done {unspents:$selected,change:'$'}"
-    ],
-    "unspent_tran" : [
-      "data ${.value}",
-      "poke unspent",
-      "tran '.amount' 3 1",
-      "tran '.satoshis' 3 1",
-      "data 0",
-      "atom 1",
-      "poke amount",
-      "peek unspent",
-      "tran {script:'.scriptPubKey',amount:'$amount',txid:'.txid',txn:'.vout'} 2 1",
-      "fail 'Bad input unspents from Insight!'",
-      "done"
     ],
     "push" : [
       "time $timeout",
