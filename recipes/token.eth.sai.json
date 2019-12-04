@@ -1,11 +1,11 @@
 {
-    "symbol":"eth.dai",
-    "name":"MakerDAO USD value multi-asset collateral Stablecoin (ETH)",
+    "symbol":"eth.sai",
+    "name":"MakerDAO USD value single-asset collateral Stablecoin (ETH)",
     "info":"<p>Dai (DAI) is a USD-pegged stablecoin built on the Ethereum blockchain, and has no centralized authority. Its $1 USD equivalent is maintained through automatic pricing mechanisms built into smart contracts. When Dai is worth more than $1, the smart contract pricing mechanisms works to decrease the price. Conversely, when Dai is worth below $1, the smart contract pricing mechanisms works to increase the price. Dai can be freely traded like any other ERC20 token, and anyone with an Ethereum wallet can own, accept, and transfer it without a middleman.</p>",
     "module":"ethereum",
     "import":"eth",
     "mode":"ethereum.token",
-    "contract":"0x6B175474E89094C44Da98b954EedeAC495271d0F",
-    "originator":"0xb5b06a16621616875a6c2637948bf98ea57c58fa",
+    "contract":"0x89d24A6b4CcB1B6fAA2625fE562bDD9a23260359",
+    "originator":"0x552f355ccb9b91c8fb47d9c011abad5b72ec30e9",
     "factor":18
 }

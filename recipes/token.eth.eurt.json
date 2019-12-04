@@ -1,0 +1,11 @@
+{
+    "symbol":"eth.eurt",
+    "name":"Euro Tether Stablecoin (ETH)",
+    "info":"<p>Tether (EURT) is a cryptocurrency with a value meant to mirror the value of the Euro. The initial idea was to create a stable cryptocurrency that can be used like digital dollars. Coins that serve this purpose of being a stable dollar substitute are called “stable coins.” According to their site, Tether converts cash into digital currency, to anchor or “tether” the value of the coin to the price of national currencies like the US dollar, the Euro, and the Yen. Tether (USDT) is issued on the Omni, TRON, and ETH blockchains.</p>",
+    "module":"ethereum",
+    "import":"eth",
+    "mode":"ethereum.token",
+    "contract":"0xabdf147870235fcfc34153828c769a70b3fae01f",
+    "originator":"0x36928500bc1dcd7af6a2b4008875cc336b927d57",
+    "factor":6
+}
