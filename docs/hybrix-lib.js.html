@@ -301,7 +301,7 @@ onProgress                                                      // Define action
 
           <div class="example-block">
             <div class="try">
-              <select id="selectExample" onchange="const exampleCode = document.getElementById(s[s.selectedIndex].value).innerHTML.replace('http://localhost:1111',window.location.href.split(`/help`)[0]).replace(/<[^>]*>/g, ``);
+              <select id="selectExample" onchange="const s=document.getElementById('selectExample');const exampleCode = document.getElementById(s[s.selectedIndex].value).innerHTML.replace('http://localhost:1111',window.location.href.split(`/help`)[0]).replace(/<[^>]*>/g, ``);
 codeMirrorEditor.setValue(exampleCode);">
 
 
@@ -375,9 +375,9 @@ codeMirrorEditor.setValue(exampleCode);">
           <div id="filterBox"><input id="search" onkeyup="search(event)" placeholder="Apply filter..." onclick="search"><input type="submit" value="&#215;" onclick="clearSearch()"/></div>
 
           <div id="noResults">No results. Change your search filter or <a onclick="clearSearch()" style="cursor: pointer;">reset the filter</a>.</div>
-<script>initNavigation("hybrix-lib.js")</script><div class="category"><h3>AssetManagement</h3></div><div class="command-header" onclick="toggleCommand('addAsset')"><b>addAsset</b><span class="quickDescription">{<i>symbol</i>, [<i>seed</i>], [<i>clientModuleCodeBlob</i>], [<i>host</i>], [<i>channel</i>]}Add an asset (crypto currency or token) to the session.</span><span class="toggleIcon"><svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <path d="M9,0 C11.4848182,0 13.7356364,1.00881818 15.3638182,2.63618182 C16.992,4.26354545 18,6.51518182 18,9 C18,11.4848182 16.9911818,13.7356364 15.3638182,15.3638182 C13.7364545,16.992 11.4848182,18 9,18 C6.51518182,18 4.26436364,16.9911818 2.63618182,15.3638182 C1.008,13.7364545 0,11.4848182 0,9 C0,6.51518182 1.00881818,4.26436364 2.63618182,2.63618182 C4.26354545,1.008 6.51518182,0 9,0 Z M9,4.90909091 C8.54836364,4.90909091 8.18181818,5.27563636 8.18181818,5.72727273 L8.18181818,8.18181818 L5.72727273,8.18181818 C5.27563636,8.18181818 4.90909091,8.54836364 4.90909091,9 C4.90909091,9.45163636 5.27563636,9.81818182 5.72727273,9.81818182 L8.18181818,9.81818182 L8.18181818,12.2727273 C8.18181818,12.7243636 8.54836364,13.0909091 9,13.0909091 C9.45163636,13.0909091 9.81818182,12.7243636 9.81818182,12.2727273 L9.81818182,9.81818182 L12.2727273,9.81818182 C12.7243636,9.81818182 13.0909091,9.45163636 13.0909091,9 C13.0909091,8.54836364 12.7243636,8.18181818 12.2727273,8.18181818 L9.81818182,8.18181818 L9.81818182,5.72727273 C9.81818182,5.27563636 9.45163636,4.90909091 9,4.90909091 Z" fill="#5DBDC9" fill-rule="nonzero"></path> </g> </svg></span></div><div style="display:none;" class="command-body" id="addAsset">
+<script>initNavigation("hybrix-lib.js")</script><div class="category"><h3>AssetManagement</h3></div><div class="command-header" onclick="toggleCommand('addAsset')"><b>addAsset</b><span class="quickDescription">{<i>symbol</i>, [<i>seed</i>], [<i>keys</i>], [<i>privateKey</i>], [<i>clientModuleCodeBlob</i>], [<i>host</i>], [<i>channel</i>]}Add an asset (crypto currency or token) to the session.</span><span class="toggleIcon"><svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <path d="M9,0 C11.4848182,0 13.7356364,1.00881818 15.3638182,2.63618182 C16.992,4.26354545 18,6.51518182 18,9 C18,11.4848182 16.9911818,13.7356364 15.3638182,15.3638182 C13.7364545,16.992 11.4848182,18 9,18 C6.51518182,18 4.26436364,16.9911818 2.63618182,15.3638182 C1.008,13.7364545 0,11.4848182 0,9 C0,6.51518182 1.00881818,4.26436364 2.63618182,2.63618182 C4.26354545,1.008 6.51518182,0 9,0 Z M9,4.90909091 C8.54836364,4.90909091 8.18181818,5.27563636 8.18181818,5.72727273 L8.18181818,8.18181818 L5.72727273,8.18181818 C5.27563636,8.18181818 4.90909091,8.54836364 4.90909091,9 C4.90909091,9.45163636 5.27563636,9.81818182 5.72727273,9.81818182 L8.18181818,9.81818182 L8.18181818,12.2727273 C8.18181818,12.7243636 8.54836364,13.0909091 9,13.0909091 C9.45163636,13.0909091 9.81818182,12.7243636 9.81818182,12.2727273 L9.81818182,9.81818182 L12.2727273,9.81818182 C12.7243636,9.81818182 13.0909091,9.45163636 13.0909091,9 C13.0909091,8.54836364 12.7243636,8.18181818 12.2727273,8.18181818 L9.81818182,8.18181818 L9.81818182,5.72727273 C9.81818182,5.27563636 9.45163636,4.90909091 9,4.90909091 Z" fill="#5DBDC9" fill-rule="nonzero"></path> </g> </svg></span></div><div style="display:none;" class="command-body" id="addAsset">
     Add an asset (crypto currency or token) to the session.
-   <table class="parameters"><tr><th>Name</th><th>Type</th><th>Description</th></tr><tr><td>data</td><td>Object</td><td></td></tr><tr><td>data.symbol</td><td>string</td><td> The symbol of the asset</td></tr><tr><td>data.seed</td><td>string</td><td><span style="color:grey;">[Optional]</span> CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Pass a custom seed to generate the asset keys</td></tr><tr><td>data.clientModuleCodeBlob</td><td>string</td><td><span style="color:grey;">[Optional]</span> A string containing the client module code blob.</td></tr><tr><td>data.host</td><td>string</td><td><span style="color:grey;">[Optional]</span> The host used for the calls.</td></tr><tr><td>data.channel</td><td>string</td><td><span style="color:grey;">[Optional]</span> The channel used for the calls. 'y' for encryped, 'z' for encryped and compresses;</td></tr></table><pre class="example" title="addAsset" id="example0"><code class="language-javascript">    hybrix.sequential([
+   <table class="parameters"><tr><th>Name</th><th>Type</th><th>Description</th></tr><tr><td>data</td><td>Object</td><td></td></tr><tr><td>data.symbol</td><td>string</td><td> The symbol of the asset</td></tr><tr><td>data.seed</td><td>string</td><td><span style="color:grey;">[Optional]</span> CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Pass a custom seed to generate the asset keys</td></tr><tr><td>data.keys</td><td>string</td><td><span style="color:grey;">[Optional]</span> CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Pass a keypair</td></tr><tr><td>data.privateKey</td><td>string</td><td><span style="color:grey;">[Optional]</span> CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Pass a privateKey</td></tr><tr><td>data.clientModuleCodeBlob</td><td>string</td><td><span style="color:grey;">[Optional]</span> A string containing the client module code blob.</td></tr><tr><td>data.host</td><td>string</td><td><span style="color:grey;">[Optional]</span> The host used for the calls.</td></tr><tr><td>data.channel</td><td>string</td><td><span style="color:grey;">[Optional]</span> The channel used for the calls. 'y' for encryped, 'z' for encryped and compresses;</td></tr></table><pre class="example" title="addAsset" id="example0"><code class="language-javascript">    hybrix.sequential([
     'init',
     {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
     {host: 'http://localhost:1111/'}, 'addHost',
@@ -458,21 +458,21 @@ codeMirrorEditor.setValue(exampleCode);">
       , onSuccess
       , onError
       , onProgress
-    );</code></pre></div><div class="command-header" onclick="toggleCommand('initAsset')"><b>initAsset</b><span class="quickDescription">{<i>assetDetails</i>, <i>clientModuleCodeBlob</i>, [<i>seed</i>]}Initialize an asset (crypto currency or token)</span><span class="toggleIcon"><svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <path d="M9,0 C11.4848182,0 13.7356364,1.00881818 15.3638182,2.63618182 C16.992,4.26354545 18,6.51518182 18,9 C18,11.4848182 16.9911818,13.7356364 15.3638182,15.3638182 C13.7364545,16.992 11.4848182,18 9,18 C6.51518182,18 4.26436364,16.9911818 2.63618182,15.3638182 C1.008,13.7364545 0,11.4848182 0,9 C0,6.51518182 1.00881818,4.26436364 2.63618182,2.63618182 C4.26354545,1.008 6.51518182,0 9,0 Z M9,4.90909091 C8.54836364,4.90909091 8.18181818,5.27563636 8.18181818,5.72727273 L8.18181818,8.18181818 L5.72727273,8.18181818 C5.27563636,8.18181818 4.90909091,8.54836364 4.90909091,9 C4.90909091,9.45163636 5.27563636,9.81818182 5.72727273,9.81818182 L8.18181818,9.81818182 L8.18181818,12.2727273 C8.18181818,12.7243636 8.54836364,13.0909091 9,13.0909091 C9.45163636,13.0909091 9.81818182,12.7243636 9.81818182,12.2727273 L9.81818182,9.81818182 L12.2727273,9.81818182 C12.7243636,9.81818182 13.0909091,9.45163636 13.0909091,9 C13.0909091,8.54836364 12.7243636,8.18181818 12.2727273,8.18181818 L9.81818182,8.18181818 L9.81818182,5.72727273 C9.81818182,5.27563636 9.45163636,4.90909091 9,4.90909091 Z" fill="#5DBDC9" fill-rule="nonzero"></path> </g> </svg></span></div><div style="display:none;" class="command-body" id="initAsset">
+    );</code></pre></div><div class="command-header" onclick="toggleCommand('initAsset')"><b>initAsset</b><span class="quickDescription">{<i>assetDetails</i>, <i>clientModuleCodeBlob</i>, [<i>seed</i>], [<i>keys</i>], [<i>privateKey</i>]}Initialize an asset (crypto currency or token)</span><span class="toggleIcon"><svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <path d="M9,0 C11.4848182,0 13.7356364,1.00881818 15.3638182,2.63618182 C16.992,4.26354545 18,6.51518182 18,9 C18,11.4848182 16.9911818,13.7356364 15.3638182,15.3638182 C13.7364545,16.992 11.4848182,18 9,18 C6.51518182,18 4.26436364,16.9911818 2.63618182,15.3638182 C1.008,13.7364545 0,11.4848182 0,9 C0,6.51518182 1.00881818,4.26436364 2.63618182,2.63618182 C4.26354545,1.008 6.51518182,0 9,0 Z M9,4.90909091 C8.54836364,4.90909091 8.18181818,5.27563636 8.18181818,5.72727273 L8.18181818,8.18181818 L5.72727273,8.18181818 C5.27563636,8.18181818 4.90909091,8.54836364 4.90909091,9 C4.90909091,9.45163636 5.27563636,9.81818182 5.72727273,9.81818182 L8.18181818,9.81818182 L8.18181818,12.2727273 C8.18181818,12.7243636 8.54836364,13.0909091 9,13.0909091 C9.45163636,13.0909091 9.81818182,12.7243636 9.81818182,12.2727273 L9.81818182,9.81818182 L12.2727273,9.81818182 C12.7243636,9.81818182 13.0909091,9.45163636 13.0909091,9 C13.0909091,8.54836364 12.7243636,8.18181818 12.2727273,8.18181818 L9.81818182,8.18181818 L9.81818182,5.72727273 C9.81818182,5.27563636 9.45163636,4.90909091 9,4.90909091 Z" fill="#5DBDC9" fill-rule="nonzero"></path> </g> </svg></span></div><div style="display:none;" class="command-body" id="initAsset">
     Initialize an asset (crypto currency or token)
-   <table class="parameters"><tr><th>Name</th><th>Type</th><th>Description</th></tr><tr><td>data</td><td>Object</td><td></td></tr><tr><td>data.assetDetails</td><td>Object</td><td> Asset details as retrieved by calling `/a/$SYMBOL/details`</td></tr><tr><td>data.clientModuleCodeBlob</td><td>string</td><td> A string containing the client module code blob.</td></tr><tr><td>data.seed</td><td>string</td><td><span style="color:grey;">[Optional]</span> CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Pass a custom seed the asset keys</td></tr></table></div><div class="command-header" onclick="toggleCommand('refreshAsset')"><b>refreshAsset</b><span class="quickDescription">{[<i>symbol</i>]}Update the balance of a given asset (or all assets if no symbol is defined)</span><span class="toggleIcon"><svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <path d="M9,0 C11.4848182,0 13.7356364,1.00881818 15.3638182,2.63618182 C16.992,4.26354545 18,6.51518182 18,9 C18,11.4848182 16.9911818,13.7356364 15.3638182,15.3638182 C13.7364545,16.992 11.4848182,18 9,18 C6.51518182,18 4.26436364,16.9911818 2.63618182,15.3638182 C1.008,13.7364545 0,11.4848182 0,9 C0,6.51518182 1.00881818,4.26436364 2.63618182,2.63618182 C4.26354545,1.008 6.51518182,0 9,0 Z M9,4.90909091 C8.54836364,4.90909091 8.18181818,5.27563636 8.18181818,5.72727273 L8.18181818,8.18181818 L5.72727273,8.18181818 C5.27563636,8.18181818 4.90909091,8.54836364 4.90909091,9 C4.90909091,9.45163636 5.27563636,9.81818182 5.72727273,9.81818182 L8.18181818,9.81818182 L8.18181818,12.2727273 C8.18181818,12.7243636 8.54836364,13.0909091 9,13.0909091 C9.45163636,13.0909091 9.81818182,12.7243636 9.81818182,12.2727273 L9.81818182,9.81818182 L12.2727273,9.81818182 C12.7243636,9.81818182 13.0909091,9.45163636 13.0909091,9 C13.0909091,8.54836364 12.7243636,8.18181818 12.2727273,8.18181818 L9.81818182,8.18181818 L9.81818182,5.72727273 C9.81818182,5.27563636 9.45163636,4.90909091 9,4.90909091 Z" fill="#5DBDC9" fill-rule="nonzero"></path> </g> </svg></span></div><div style="display:none;" class="command-body" id="refreshAsset">
-    Update the balance of a given asset (or all assets if no symbol is defined)
-   <table class="parameters"><tr><th>Name</th><th>Type</th><th>Description</th></tr><tr><td>data</td><td>Object</td><td></td></tr><tr><td>data.symbol</td><td>string</td><td><span style="color:grey;">[Optional]</span> The symbol of the asset to be refreshed, leave undefined to refresh all assets.</td></tr></table><pre class="example" title="refreshAsset" id="example7"><code class="language-javascript">    hybrix.sequential([
-    'init',
-    {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
-    {host: 'http://localhost:1111/'}, 'addHost',
-    {symbol: 'dummy'}, 'addAsset',
-    {symbol: 'dummy'}, 'refreshAsset',
-    ]
-      , onSuccess
-      , onError
-      , onProgress
-    );</code></pre></div><div class="command-header" onclick="toggleCommand('removeAsset')"><b>removeAsset</b><span class="quickDescription">{<i>symbol</i>, [<i>host</i>], [<i>channel</i>]}Remove an asset (crypto currency or token) from the session.</span><span class="toggleIcon"><svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <path d="M9,0 C11.4848182,0 13.7356364,1.00881818 15.3638182,2.63618182 C16.992,4.26354545 18,6.51518182 18,9 C18,11.4848182 16.9911818,13.7356364 15.3638182,15.3638182 C13.7364545,16.992 11.4848182,18 9,18 C6.51518182,18 4.26436364,16.9911818 2.63618182,15.3638182 C1.008,13.7364545 0,11.4848182 0,9 C0,6.51518182 1.00881818,4.26436364 2.63618182,2.63618182 C4.26354545,1.008 6.51518182,0 9,0 Z M9,4.90909091 C8.54836364,4.90909091 8.18181818,5.27563636 8.18181818,5.72727273 L8.18181818,8.18181818 L5.72727273,8.18181818 C5.27563636,8.18181818 4.90909091,8.54836364 4.90909091,9 C4.90909091,9.45163636 5.27563636,9.81818182 5.72727273,9.81818182 L8.18181818,9.81818182 L8.18181818,12.2727273 C8.18181818,12.7243636 8.54836364,13.0909091 9,13.0909091 C9.45163636,13.0909091 9.81818182,12.7243636 9.81818182,12.2727273 L9.81818182,9.81818182 L12.2727273,9.81818182 C12.7243636,9.81818182 13.0909091,9.45163636 13.0909091,9 C13.0909091,8.54836364 12.7243636,8.18181818 12.2727273,8.18181818 L9.81818182,8.18181818 L9.81818182,5.72727273 C9.81818182,5.27563636 9.45163636,4.90909091 9,4.90909091 Z" fill="#5DBDC9" fill-rule="nonzero"></path> </g> </svg></span></div><div style="display:none;" class="command-body" id="removeAsset">
+   <table class="parameters"><tr><th>Name</th><th>Type</th><th>Description</th></tr><tr><td>data</td><td>Object</td><td></td></tr><tr><td>data.assetDetails</td><td>Object</td><td> Asset details as retrieved by calling `/a/$SYMBOL/details`</td></tr><tr><td>data.clientModuleCodeBlob</td><td>string</td><td> A string containing the client module code blob.</td></tr><tr><td>data.seed</td><td>string</td><td><span style="color:grey;">[Optional]</span> CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Pass a custom seed</td></tr><tr><td>data.keys</td><td>string</td><td><span style="color:grey;">[Optional]</span> CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Pass a keypair</td></tr><tr><td>data.privateKey</td><td>string</td><td><span style="color:grey;">[Optional]</span> CAREFUL! Using this feature incorrectly can reduce your security and privacy. Only use when you know what you're doing. Pass a privateKey</td></tr></table></div><div class="command-header" onclick="toggleCommand('refreshAsset')"><b>refreshAsset</b><span class="quickDescription">{[<i>symbol</i>]}Update the balance of a given asset (or all assets if no symbol is defined)</span><span class="toggleIcon"><svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <path d="M9,0 C11.4848182,0 13.7356364,1.00881818 15.3638182,2.63618182 C16.992,4.26354545 18,6.51518182 18,9 C18,11.4848182 16.9911818,13.7356364 15.3638182,15.3638182 C13.7364545,16.992 11.4848182,18 9,18 C6.51518182,18 4.26436364,16.9911818 2.63618182,15.3638182 C1.008,13.7364545 0,11.4848182 0,9 C0,6.51518182 1.00881818,4.26436364 2.63618182,2.63618182 C4.26354545,1.008 6.51518182,0 9,0 Z M9,4.90909091 C8.54836364,4.90909091 8.18181818,5.27563636 8.18181818,5.72727273 L8.18181818,8.18181818 L5.72727273,8.18181818 C5.27563636,8.18181818 4.90909091,8.54836364 4.90909091,9 C4.90909091,9.45163636 5.27563636,9.81818182 5.72727273,9.81818182 L8.18181818,9.81818182 L8.18181818,12.2727273 C8.18181818,12.7243636 8.54836364,13.0909091 9,13.0909091 C9.45163636,13.0909091 9.81818182,12.7243636 9.81818182,12.2727273 L9.81818182,9.81818182 L12.2727273,9.81818182 C12.7243636,9.81818182 13.0909091,9.45163636 13.0909091,9 C13.0909091,8.54836364 12.7243636,8.18181818 12.2727273,8.18181818 L9.81818182,8.18181818 L9.81818182,5.72727273 C9.81818182,5.27563636 9.45163636,4.90909091 9,4.90909091 Z" fill="#5DBDC9" fill-rule="nonzero"></path> </g> </svg></span></div><div style="display:none;" class="command-body" id="refreshAsset">
+ Update the balance of a given asset (or all assets if no symbol is defined)
+<table class="parameters"><tr><th>Name</th><th>Type</th><th>Description</th></tr><tr><td>data</td><td>Object</td><td></td></tr><tr><td>data.symbol</td><td>string</td><td><span style="color:grey;">[Optional]</span> The symbol of the asset to be refreshed, leave undefined to refresh all assets.</td></tr></table><pre class="example" title="refreshAsset" id="example7"><code class="language-javascript"> hybrix.sequential([
+ 'init',
+ {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
+ {host: 'http://localhost:1111/'}, 'addHost',
+ {symbol: 'dummy'}, 'addAsset',
+ {symbol: 'dummy'}, 'refreshAsset',
+ ]
+   , onSuccess
+   , onError
+   , onProgress
+ );</code></pre></div><div class="command-header" onclick="toggleCommand('removeAsset')"><b>removeAsset</b><span class="quickDescription">{<i>symbol</i>, [<i>host</i>], [<i>channel</i>]}Remove an asset (crypto currency or token) from the session.</span><span class="toggleIcon"><svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <path d="M9,0 C11.4848182,0 13.7356364,1.00881818 15.3638182,2.63618182 C16.992,4.26354545 18,6.51518182 18,9 C18,11.4848182 16.9911818,13.7356364 15.3638182,15.3638182 C13.7364545,16.992 11.4848182,18 9,18 C6.51518182,18 4.26436364,16.9911818 2.63618182,15.3638182 C1.008,13.7364545 0,11.4848182 0,9 C0,6.51518182 1.00881818,4.26436364 2.63618182,2.63618182 C4.26354545,1.008 6.51518182,0 9,0 Z M9,4.90909091 C8.54836364,4.90909091 8.18181818,5.27563636 8.18181818,5.72727273 L8.18181818,8.18181818 L5.72727273,8.18181818 C5.27563636,8.18181818 4.90909091,8.54836364 4.90909091,9 C4.90909091,9.45163636 5.27563636,9.81818182 5.72727273,9.81818182 L8.18181818,9.81818182 L8.18181818,12.2727273 C8.18181818,12.7243636 8.54836364,13.0909091 9,13.0909091 C9.45163636,13.0909091 9.81818182,12.7243636 9.81818182,12.2727273 L9.81818182,9.81818182 L12.2727273,9.81818182 C12.7243636,9.81818182 13.0909091,9.45163636 13.0909091,9 C13.0909091,8.54836364 12.7243636,8.18181818 12.2727273,8.18181818 L9.81818182,8.18181818 L9.81818182,5.72727273 C9.81818182,5.27563636 9.45163636,4.90909091 9,4.90909091 Z" fill="#5DBDC9" fill-rule="nonzero"></path> </g> </svg></span></div><div style="display:none;" class="command-body" id="removeAsset">
     Remove an asset (crypto currency or token) from the session.
    <table class="parameters"><tr><th>Name</th><th>Type</th><th>Description</th></tr><tr><td>data</td><td>Object</td><td></td></tr><tr><td>data.symbol</td><td>string</td><td> The symbol of the asset</td></tr><tr><td>data.host</td><td>string</td><td><span style="color:grey;">[Optional]</span> The host used for the calls.</td></tr><tr><td>data.channel</td><td>string</td><td><span style="color:grey;">[Optional]</span> The channel used for the calls. 'y' for encryped, 'z' for encryped and compresses;</td></tr></table><pre class="example" title="removeAsset" id="example8"><code class="language-javascript">    hybrix.sequential([
     'init',
@@ -756,232 +756,7 @@ codeMirrorEditor.setValue(exampleCode);">
       , onSuccess
       , onError
       , onProgress
-    );
-
-
-const hasDifferentFeeSymbol = asset => asset['fee-symbol'] !== asset.symbol;
-const isUnifiedAsset = asset => asset.hasOwnProperty('symbols');
-
-function calcUnspentAmount (data, asset) {
-  if (!hasDifferentFeeSymbol(asset)) {
-    try {
-      return new Decimal(data.amount).plus((data.hasOwnProperty('fee') ? data.fee : asset.fee)).toString();
-    } catch (e) {
-      return undefined;
-    }
-  } else {
-    return data.amount;
-  }
-}
-
-function testBalance (balance, data, asset) {
-  let amount;
-  if (!hasDifferentFeeSymbol(asset)) {
-    try {
-      amount = new Decimal(data.amount).plus((data.hasOwnProperty('fee') ? data.fee : asset.fee));
-    } catch (e) {
-      return false;
-    }
-  } else {
-    amount = new Decimal(data.amount);
-  }
-  return amount.lte(new Decimal(balance));
-}
-
-function testBaseBalance (baseBalance, data, asset) {
-  if (!hasDifferentFeeSymbol(asset)) {
-    return true; // it has already been checked in testBalance
-  } else {
-    const fee = new Decimal((data.hasOwnProperty('fee') ? data.fee : asset.fee));
-    return fee.lte(new Decimal(baseBalance));
-  }
-}
-
-function prependValidationSteps (steps, data, asset) {
-  steps.unshift(
-    // Validate balanse
-    {query: '/asset/' + data.symbol + '/balance/' + asset.data.address, host: data.host, channel: data.channel}, 'rout',
-    balance => { return {condition: testBalance(balance, data, asset), message: 'Insufficient funds available for transaction: ' + balance + ' ' + asset.symbol + '.'}; }, 'assert',
-    // Validate target address
-    {query: '/asset/' + data.symbol + '/validate/' + data.target, host: data.host, channel: data.channel}, 'rout',
-    valid => { return {condition: valid === 'valid', message: 'Target ' + data.target + ' is not a valid address'}; }, 'assert'
-  );
-  // Validate Base balance if fee is paid in different symbol (for example tokens)
-  if (hasDifferentFeeSymbol(asset)) {
-    steps.unshift(
-      {query: '/asset/' + asset['fee-symbol'] + '/balance/' + asset.data.address, host: data.host, channel: data.channel}, 'rout',
-      baseBalance => { return {condition: testBaseBalance(baseBalance, data, asset), message: 'Insufficient funds available for transaction: ' + baseBalance + ' ' + asset['fee-symbol'] + '.'}; }, 'assert'
-    );
-  }
-}
-
-const validateConstructAndSignRawTransaction = function (asset, data, dataCallback, errorCallback, progressCallback) {
-  const steps = [];
-
-  if (data.message && !data.hasOwnProperty('fee')) { // if the transaction has a message and no fee is explicitly specified then calculate te required fee
-    const msgBytes = data.message.length;
-    steps.push({query: '/a/' + data.symbol + '/fee/' + msgBytes}, 'rout',
-      fee => { data.fee = fee; }); // explicitly specify the fee required for a message of this length.
-  }
-
-  if (data.hasOwnProperty('unspent')) { // Use explicitly defined unspents
-    steps.push(() => data.unspent);
-  } else { // Retrieve unspents
-    steps.push(() => { return {query: '/a/' + data.symbol + '/unspent/' + asset.data.address + '/' + calcUnspentAmount(data, asset) + '/' + data.target + (asset.data.publickey ? '/' + asset.data.publickey : '') + '/' + (data.message ? data.message : ''), channel: data.channel, host: data.host}; }, 'rout');
-  }
-
-  steps.push( // Construct and sign Transaction
-    unspent => {
-      return {symbol: data.symbol, target: data.target, amount: data.amount, fee: data.fee, unspent: unspent, message: data.message, time: data.time};
-    }, 'signTransaction'
-  );
-  if (data.validate !== false) {
-    prependValidationSteps(steps, data, asset);
-  }
-  this.sequential(steps, dataCallback, errorCallback, progressCallback);
-};
-
-function checkAvailableBalance (subSymbol, subResult, assets) {
-  const subAsset = assets[subSymbol];
-  if (!hasDifferentFeeSymbol(subAsset)) {
-    const availableBalance = new Decimal(subResult.balance).minus(subAsset.fee);
-    if (availableBalance.isPositive()) {
-      return {balance: availableBalance.toString()};
-    } else {
-      const feeSymbol = subSymbol.toUpperCase();
-      return {error: `Insufficient balance for ${subSymbol}. Available: ${subResult.balance} ${feeSymbol}. Required: ${subAsset.fee} ${feeSymbol}`};
-    }
-  } else {
-    const availableBalance = new Decimal(subResult.feeBalance).minus(subAsset.fee);
-    if (availableBalance.isPositive()) {
-      return {balance: availableBalance.toString()};
-    } else {
-      const feeSymbol = subAsset['fee-symbol'].toUpperCase();
-      return {error: `Insufficient base balance for ${subSymbol}. Available: ${subResult.feeBalance} ${feeSymbol}. Required: ${subAsset.fee} ${feeSymbol}`};
-    }
-  }
-}
-
-function createSubTransactionStep (subSymbol, targetSubAddress, amount, data) {
-  return {data: {
-    symbol: subSymbol,
-    target: targetSubAddress,
-    amount,
-    validate: false,
-    // TODO     message:
-    time: data.time,
-    host: data.host,
-    channel: data.channel
-  },
-  step: 'rawTransaction'};
-}
-
-const combineSubTransactions = dataCallback => subTransactions => { // subTransactions = {eth:'tx',btc:'tx1'} => 'eth:tx,btc:tx2'
-  const combinedCompressedSubTransactions = Object.keys(subTransactions).reduce((transactionString, subSymbol) => {
-    const compressedSubTransaction = LZString.compressToEncodedURIComponent(subTransactions[subSymbol]);
-    return transactionString + (transactionString ? ',' : '') + subSymbol + ':' + compressedSubTransaction;
-  }, '');
-  dataCallback(combinedCompressedSubTransactions);
-};
-
-const createUnifiedTransaction = (assets, targetSubAddresses, data) => function (subResults, dataCallback, errorCallback, progressCallback) {
-  let totalAvailableBalance = new Decimal(0);
-  const errors = [];
-  const availableBalances = {};
-  for (let subSymbol in subResults) {
-    const subResult = subResults[subSymbol];
-    if (!subResult.validate && data.validate) {
-      errors.push(`Invalid address for ${subSymbol} : ${targetSubAddresses[subSymbol]}`);
-    } else {
-      const availableBalance = checkAvailableBalance(subSymbol, subResult, assets);
-      if (availableBalance.error) {
-        errors.push(availableBalance.error);
-      } else {
-        availableBalances[subSymbol] = availableBalance.balance;
-        totalAvailableBalance = totalAvailableBalance.plus(subResult.balance);
-      }
-    }
-  }
-
-  if (totalAvailableBalance.gte(data.amount)) {
-    let cummulativeBalance = new Decimal(0);
-    const subTransactionSteps = {};
-    for (let subSymbol in availableBalances) {
-      const subBalance = availableBalances[subSymbol];
-      const delta = cummulativeBalance.plus(subBalance).minus(data.amount); // a+b+c+d-amount
-      if (delta.isZero()) { // including the balance of this sub asset the cummulative amount is exactly the requested amount
-        subTransactionSteps[subSymbol] = createSubTransactionStep(subSymbol, targetSubAddresses[subSymbol], subBalance, data);
-        break;
-      } else if (delta.isNegative()) { // including the balance of this sub asset the cummulative amount is not yet enough
-        subTransactionSteps[subSymbol] = createSubTransactionStep(subSymbol, targetSubAddresses[subSymbol], subBalance, data);
-      } else { // including the balance of this sub asset the cummulative amount is more than enough
-        subTransactionSteps[subSymbol] = createSubTransactionStep(subSymbol, targetSubAddresses[subSymbol], delta.toString(), data);
-        break;
-      }
-    }
-
-    this.parallel(subTransactionSteps, combineSubTransactions(dataCallback), errorCallback, progressCallback);
-  } else {
-    const symbol = data.symbol.toUpperCase();
-    errors.push(`Insufficient total balance for ${symbol}. Available: ${totalAvailableBalance.toString()} ${symbol}. Requested: ${data.amount} ${symbol}`);
-    errorCallback(errors.join('\n'));
-  }
-};
-
-function parseTargetAdresses (target) {
-  const targetSubAddressPairs = target.split(',').map(x => x.split(':')); // 'btc:123,eth:456' -> ['btc:123','eth:456'] -> [['btc','123'],['eth','456']]
-  const targetSubAddresses = {};
-  for (let targetSubAddressPair of targetSubAddressPairs) { // [['btc','123'],['eth','456']] -> {btc:'123',eth:'456'}
-    const [subSymbol, targetSubAddress] = targetSubAddressPair;
-    targetSubAddresses[subSymbol] = targetSubAddress;
-  }
-  return targetSubAddresses;
-}
-
-function unifiedValidationSteps (subAsset, subSymbol, targetSubAddress, data) {
-  const subSteps = {
-    // Query balance for sub symbol
-    balance: {data: {query: '/asset/' + subSymbol + '/balance/' + subAsset.data.address, host: data.host, channel: data.channel}, step: 'rout'}
-  };
-  if (data.validate) {
-    // Validate target sub address
-    subSteps.validate = {data: {query: '/asset/' + subSymbol + '/validate/' + targetSubAddress, host: data.host, channel: data.channel}, step: 'rout'};
-  }
-  if (hasDifferentFeeSymbol(subAsset)) {
-    // Query Fee balance for sub base symbol if the fee symbol is different from the subsymbol
-    subSteps.feeBalance = {data: {query: '/asset/' + subAsset['fee-symbol'] + '/balance/' + subAsset.data.address, host: data.host, channel: data.channel}, step: 'rout'};
-  }
-  return subSteps;
-}
-
-const assetHasBeenAdded = (assets, data, dataCallback, errorCallback, progressCallback) => function () {
-  const asset = assets[data.symbol];
-
-  if (isUnifiedAsset(asset)) {
-    const targetSubAddresses = parseTargetAdresses(data.target);
-    const targetSubSymbols = Object.keys(targetSubAddresses);
-    const subSymbols = asset.symbols;
-
-    targetSubSymbols.filter(x => subSymbols.hasOwnProperty(x)); // only use target addresses for symbols that are unified by this asset
-    // TODO provide option to sort on cheapest fee:  targetSubSymbols.sort((a, b) => { return assets[a].fee - assets[b].feereturn ; });
-
-    const steps = {};
-    for (let subSymbol of targetSubSymbols) {
-      const subAsset = assets[subSymbol];
-      const targetSubAddress = targetSubAddresses[subSymbol];
-      steps[subSymbol] = {data: unifiedValidationSteps(subAsset, subSymbol, targetSubAddress, data), step: 'parallel'};
-    }
-
-    this.sequential([
-      steps, 'parallel',
-      subResults => { return {func: createUnifiedTransaction(assets, targetSubAddresses, data).bind(this), data: subResults}; }, 'call'
-    ],
-    dataCallback, errorCallback, progressCallback
-    );
-  } else {
-    validateConstructAndSignRawTransaction.call(this, asset, data, dataCallback, errorCallback, progressCallback);
-  }
-};</code></pre></div><div class="command-header" onclick="toggleCommand('signTransaction')"><b>signTransaction</b><span class="quickDescription">{<i>symbol</i>, <i>target</i>, <i>amount</i>, [<i>message</i>], [<i>fee</i>], [<i>time</i>], <i>unspent</i>}Create a signed transaction using all inputs.</span><span class="toggleIcon"><svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <path d="M9,0 C11.4848182,0 13.7356364,1.00881818 15.3638182,2.63618182 C16.992,4.26354545 18,6.51518182 18,9 C18,11.4848182 16.9911818,13.7356364 15.3638182,15.3638182 C13.7364545,16.992 11.4848182,18 9,18 C6.51518182,18 4.26436364,16.9911818 2.63618182,15.3638182 C1.008,13.7364545 0,11.4848182 0,9 C0,6.51518182 1.00881818,4.26436364 2.63618182,2.63618182 C4.26354545,1.008 6.51518182,0 9,0 Z M9,4.90909091 C8.54836364,4.90909091 8.18181818,5.27563636 8.18181818,5.72727273 L8.18181818,8.18181818 L5.72727273,8.18181818 C5.27563636,8.18181818 4.90909091,8.54836364 4.90909091,9 C4.90909091,9.45163636 5.27563636,9.81818182 5.72727273,9.81818182 L8.18181818,9.81818182 L8.18181818,12.2727273 C8.18181818,12.7243636 8.54836364,13.0909091 9,13.0909091 C9.45163636,13.0909091 9.81818182,12.7243636 9.81818182,12.2727273 L9.81818182,9.81818182 L12.2727273,9.81818182 C12.7243636,9.81818182 13.0909091,9.45163636 13.0909091,9 C13.0909091,8.54836364 12.7243636,8.18181818 12.2727273,8.18181818 L9.81818182,8.18181818 L9.81818182,5.72727273 C9.81818182,5.27563636 9.45163636,4.90909091 9,4.90909091 Z" fill="#5DBDC9" fill-rule="nonzero"></path> </g> </svg></span></div><div style="display:none;" class="command-body" id="signTransaction">
+    );</code></pre></div><div class="command-header" onclick="toggleCommand('signTransaction')"><b>signTransaction</b><span class="quickDescription">{<i>symbol</i>, <i>target</i>, <i>amount</i>, [<i>message</i>], [<i>fee</i>], [<i>time</i>], <i>unspent</i>}Create a signed transaction using all inputs.</span><span class="toggleIcon"><svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <path d="M9,0 C11.4848182,0 13.7356364,1.00881818 15.3638182,2.63618182 C16.992,4.26354545 18,6.51518182 18,9 C18,11.4848182 16.9911818,13.7356364 15.3638182,15.3638182 C13.7364545,16.992 11.4848182,18 9,18 C6.51518182,18 4.26436364,16.9911818 2.63618182,15.3638182 C1.008,13.7364545 0,11.4848182 0,9 C0,6.51518182 1.00881818,4.26436364 2.63618182,2.63618182 C4.26354545,1.008 6.51518182,0 9,0 Z M9,4.90909091 C8.54836364,4.90909091 8.18181818,5.27563636 8.18181818,5.72727273 L8.18181818,8.18181818 L5.72727273,8.18181818 C5.27563636,8.18181818 4.90909091,8.54836364 4.90909091,9 C4.90909091,9.45163636 5.27563636,9.81818182 5.72727273,9.81818182 L8.18181818,9.81818182 L8.18181818,12.2727273 C8.18181818,12.7243636 8.54836364,13.0909091 9,13.0909091 C9.45163636,13.0909091 9.81818182,12.7243636 9.81818182,12.2727273 L9.81818182,9.81818182 L12.2727273,9.81818182 C12.7243636,9.81818182 13.0909091,9.45163636 13.0909091,9 C13.0909091,8.54836364 12.7243636,8.18181818 12.2727273,8.18181818 L9.81818182,8.18181818 L9.81818182,5.72727273 C9.81818182,5.27563636 9.45163636,4.90909091 9,4.90909091 Z" fill="#5DBDC9" fill-rule="nonzero"></path> </g> </svg></span></div><div style="display:none;" class="command-body" id="signTransaction">
     Create a signed transaction using all inputs.
    <table class="parameters"><tr><th>Name</th><th>Type</th><th>Description</th></tr><tr><td>data</td><td>Object</td><td></td></tr><tr><td>data.symbol</td><td>string</td><td> The symbol of the asset.</td></tr><tr><td>data.target</td><td>string</td><td> The target address.</td></tr><tr><td>data.amount</td><td>Number</td><td> The amount.</td></tr><tr><td>data.message</td><td>Number</td><td><span style="color:grey;">[Optional]</span>  Option to add data (message, attachment, op return) to a transaction.</td></tr><tr><td>data.fee</td><td>Number</td><td><span style="color:grey;">[Optional]</span> The fee.</td></tr><tr><td>data.time</td><td>Number</td><td><span style="color:grey;">[Optional]</span> Provide an explicit timestamp</td></tr><tr><td>data.unspent</td><td>Object</td><td> Pretransaction data.</td></tr></table><pre class="example" title="signTransaction" id="example34"><code class="language-javascript">    hybrix.sequential([
     'init',

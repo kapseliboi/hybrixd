@@ -48,4 +48,102 @@ repl ' ' 'world!'       // data 'Hello world!'  - replaces the ' ' (space) by 'w
           <p><code>$proc::variable</code> process scope.</p>
           <p><code>$otherRecipe::variable</code> the local scope of another recipe (read-only)</p>
 
+          <h2><a id="debugging"></a>Debugging</h2>
+
+<p>qrtz processes flow can be analyzed using the debug tool. These are only available to node operators with root access.</p>
+<h3>CLI debugging</h3>
+<p>Adding the <code>-d</code> flag to a cli api call will provide the debug output. This will illustrate the programe flow of all subprocesses and steps.
+  <style>
+    .var{color:blue}
+    .not{color:grey}
+
+    .err{color:red}
+    </style>
+
+  <pre>$ ./hybrixd /a/dummy/balance/wrongaddress -d
+pid: 1575447893066808
+<span class="err">.      ╻ /asset/dummy/balance/wrongaddress                 "Invalid address wrongaddress"</span>
+.0     ┗┳ <b>call</b> validate/<span class="var">$1</span>                                 "invalid"
+.0.0    ┣┳ /asset/dummy/validate/wrongaddress              "invalid"
+.0.0.0  ┃┗┳ <b>data</b> '<span class="var">$addressRegex</span>'                           "^_dummyaddress_$"
+.0.0.1  ┃ ┣ <b>flow</b> 'undefined' 1 3                           "^_dummyaddress_$"
+<span class="not">.0.0.2  ┃ ┣ <b>rout</b> '/source/wavalidator/<span class="var">$symbol</span>/<span class="var">$1</span>'          null</span>
+<span class="not">.0.0.3  ┃ ┣ <b>done</b>                                           null</span>
+.0.0.4  ┃ ┣ <b>data</b> '<span class="var">$1</span>'                                      "wrongaddress"
+.0.0.5  ┃ ┣ <b>regx</b> '<span class="var">$addressRegex</span>' 1 2                       "wrongaddress"
+<span class="not">.0.0.6  ┃ ┣ <b>done</b> valid                                     null</span>
+.0.0.7  ┃ ┗ <b>done</b> invalid                                   "invalid"
+.1      ┣ <b>flow</b> valid 2 1                                   "invalid"
+<span class="err">.2      ┣ <b>fail</b> "Invalid address <span class="var">$1</span>"                        "Invalid address wrongaddress"</span>
+<span class="not">.3      ┣ <b>data</b> '<span class="var">$1</span>'                                        null
+.4      ┣ <b>flow</b> _dummyaddress_ 2 1                          null
+.5      ┣ <b>stop</b> 1,'Error: invalid address!'                 null
+.6      ┣ <b>pass</b> '10000.00000000'                            null
+.7      ┣ <b>form</b>                                             null
+<span class="not">.8      ┣ <b>done</b>                                             null</span>
+</pre>
+
+<p><ul><code>
+    <li><span class="var">$variables </span></li>
+    <li><span style="color:green;">@labels</span></li>
+    <li><span class="err">Process steps that contain errors.</span></li>
+    <li><span class="not">Process steps that have not been executed.</span></li>
+  </ul></code>
+</p>
+
+<h3>Using the Browser debug interface</h3>
+
+<p> An interactive debug interface is available through: </p>
+
+<p><a href="http://localhost:1111/process/debug">http://localhost:1111/process/debug</a></p>
+
+This interface is similar to the cli interface but includes live updated progress views.
+
+
+          <h2><a id="shell"></a>Shell</h2>
+
+<p>qrtz can be ran as a shell and interactive mode.</p>
+
+<p><code>$./qrtz</code> Start qrtz in interactive mode</p>
+<p><code>$ cat data ./qrtz -i </code> or <code>$ ./qrtz &lt; cat data </code> Pipe data to interactive mode</p>
+<p><code>$ qrtz script.qrtz $1 $2</code> or <code>$ qrtz -s script.qrtz $1 $2</code> Execute script with command parameters 1,2</p>
+<p><code>$ qrtz $1 $2 &lt; cat script.qrtz</code> or <code>$ cat script.qrtz | qrtz $1 $2</code> Execute script provided trough pipe with command parameters 1,2</p>
+
+
+<h3>Script Example </h3>
+
+<p> Create a file <code>script.qrtz</code> with the following content:</p>
+
+<p><pre>
+data "hello $1"
+done</pre></p>
+<p> Then use the following to execute:</p>
+
+<p><code>$ ./qrtz script.qrtz "world"</code></p>
+
+<p>This results in:</p>
+
+<p><code>hello world</code></p>
+
+<p>By adding a <i><a href="https://en.wikipedia.org/wiki/Shebang_(Unix)">"shebang"</a></i> the file can be made into a qrtz executable:</p>
+
+<p><pre>#!/$QRTZ_HOME/qrtz
+data "hello $1"
+done</pre></p>
+<p> Then use the following to execute:</p>
+
+<p><code>$ ./script.qrtz "world"</code></p>
+
+
+
+
+<h3>Interactive Shell Example </h3>
+
+<p><pre>$ ./qrtz
+> data "hello world"
+hello world
+> quit
+$
+</pre></p>
+
           <h2><a id="reference"></a>Reference</h2>
