@@ -1,3 +1,35 @@
+# v0.6.2
+## Fluffy Maroon Ogre
+## 04-12-2019
+
+* Fixed ark-to-many-requests
+* Improved setup script
+* Fix switch live example
+* Added qrtz debug ui
+* Added blockexplorer URL, removed donee from balance
+* Removed logs and redundant code
+* Transaction lookup works now
+* Fix debug-access
+* Fix xem-history-parsing
+* Warn-error-handling-for-curl
+* Curl upgrades
+* Fix subcommand bug
+* Qrtz debug ui
+* Fix xrp transaction
+* Retry websocket initialization
+* Fix nxt token transaction
+* remove broken bitcoin cash host
+* remove the letter r from transferr in readme file recipes
+* update sleep time
+* handle tcp connection errors
+* Disable transports by default
+* Add start-up commands to hybrixd
+* fix xem history parsing
+* rename-refs-in-package-json-to-hybrix
+* curl in push now on fail giving error msg
+* fixed small bug in engine.synchronize quotes were missing, and btc recipe fix for the faulty tran
+* Precompile-qrtz-recipes-in-memory
+
 # v0.6.1
 ## Little Teal Sphinx
 ## 07-11-2019
