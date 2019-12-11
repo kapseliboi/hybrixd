@@ -80,10 +80,16 @@ function push (proc) {
     proc.fail('This node does not support mockchain.');
   }
 
-  const newTransaction = JSON.parse(proc.command[1]);
+  const newTransaction = JSON.parse(proc.command[2]);
   const source = newTransaction.source;
   const target = newTransaction.target;
   const contract = newTransaction.contract;
+  const contract_ = proc.command[1];
+  if (contract_ !== contract) {
+    proc.fail(`pushed ${contract} to ${contract_}`);
+    return;
+  }
+
   const factor = newTransaction.factor;
 
   const atomicAmount = newTransaction.amount;
@@ -162,23 +168,28 @@ function transaction (proc) {
     proc.fail('This node does not support mockchain.');
   }
 
-  const transactionId = Number(proc.command[1]);
+  const contract = proc.command[1];
+  const transactionId = Number(proc.command[2]);
+
   if (transactionId < mockchain.length) {
     const transaction = mockchain[transactionId];
-    const normalizedTransaction = {
-      id: transaction.id,
-      timestamp: transaction.timestamp,
-      amount: transaction.amount,
-      symbol: transaction.contract === 'main' ? 'mock' : 'mock.' + transaction.contract,
-      fee: transaction.fee || '0',
-      'fee-symbol': transaction.contract === 'main' ? 'mock' : 'mock.' + transaction.contract,
-      source: transaction.source,
-      target: transaction.target,
-      confirmed: 1
-    };
-    proc.done(normalizedTransaction);
+    if (transaction.contract !== contract) {
+    } else {
+      const normalizedTransaction = {
+        id: transaction.id,
+        timestamp: transaction.timestamp,
+        amount: transaction.amount,
+        symbol: transaction.contract === 'main' ? 'mock' : 'mock.' + transaction.contract,
+        fee: transaction.fee || '0',
+        'fee-symbol': transaction.contract === 'main' ? 'mock' : 'mock.' + transaction.contract,
+        source: transaction.source,
+        target: transaction.target,
+        confirmed: 1
+      };
+      proc.done(normalizedTransaction);
+    }
   } else {
-    proc.fail('unknown transaction');
+    proc.fail('unknown transaction2');
   }
 }
 
@@ -195,10 +206,15 @@ function message (proc) {
     proc.fail('This node does not support mockchain.');
   }
 
-  const transactionId = Number(proc.command[1]);
+  const transactionId = Number(proc.command[2]);
   if (transactionId < mockchain.length) {
+    const contract = proc.command[1];
     const transaction = mockchain[transactionId];
-    proc.done(transaction.message);
+    if (transaction.contract !== contract) {
+      proc.fail('unknown transaction');
+    } else {
+      proc.done(transaction.message);
+    }
   } else {
     proc.fail('unknown transaction');
   }
