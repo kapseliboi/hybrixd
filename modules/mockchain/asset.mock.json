@@ -22,22 +22,22 @@
     "push" : [
       "data $1",
       "with .factor data $factor",
-      "rout /engine/mockchain/push/$",
+      "rout /engine/mockchain/push/$contract/$",
       "done"
     ],
     "sample" : [
       "done {address:'123',transaction:'0'}"
     ],
     "transaction" : [
-      "rout /engine/mockchain/transaction/$1",
+      "rout /engine/mockchain/transaction/$contract/$1",
       "done"
     ],
     "message" : [
-      "rout /engine/mockchain/message/$1",
+      "rout /engine/mockchain/message/$contract/$1",
       "done"
     ],
     "attachment" : [
-      "rout /engine/mockchain/attachment/$1",
+      "rout /engine/mockchain/attachment/$contract/$1",
       "done"
     ],
     "history" : [

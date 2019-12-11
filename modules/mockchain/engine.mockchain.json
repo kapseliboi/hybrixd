@@ -10,14 +10,16 @@
       "rout '/asset/mock/factor'",
       "jump 2",
       "rout '/asset/mock.$1/factor'",
-      "poke 'factor'",
+      "poke 'factorValue'",
       "func 'balance'",
-      "form '$factor'",
+      "form '$factorValue'",
       "done"
     ],
     "history" : ["func 'history'"],
     "push" : ["func 'push'"],
-    "transaction" : ["func 'transaction'"],
+    "transaction" : [
+      "func 'transaction'"
+    ],
     "message" : ["func 'message'"]
   },
   "router" : {
@@ -34,22 +36,34 @@
     },
     "push" : {
       "_ref" : {
-        "_list" : "transaction",
-        "_this" : "Push a transaction to the mockchain."
+        "_list" : "contract",
+        "_sample": "btc",
+        "_ref" : {
+          "_list" : "transaction",
+          "_this" : "Push a transaction to the mockchain."
+        }
       }
     },
     "message" : {
       "_ref" : {
-        "_list" : "transactionid",
-        "_sample": "0",
-        "_this" : "Retrieve a transaction message message/attachment."
+        "_list" : "contract",
+        "_sample": "btc",
+        "_ref" : {
+          "_list" : "transactionid",
+          "_sample": "0",
+          "_this" : "Retrieve a transaction message message/attachment."
+        }
       }
     },
     "transaction" : {
       "_ref" : {
-        "_list" : "transactionid",
-        "_sample": "0",
-        "_this" : "Retrieve transaction details"
+        "_list" : "contract",
+        "_sample": "btc",
+        "_ref" : {
+          "_list" : "transactionid",
+          "_sample": "0",
+          "_this" : "Retrieve transaction details"
+        }
       }
     },
     "history" : {
