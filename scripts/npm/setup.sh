@@ -7,13 +7,13 @@ SCRIPTDIR="`dirname \"$0\"`"
 HYBRIXD="`cd \"$SCRIPTDIR/../../..\" && pwd`"
 
 
-if [ -e "$HYBRIXD/hybrixd-node" ]; then
-    URL_COMMON="https://github.com/hybrix-io/hybrixd-common.git"
+if [ -e "$HYBRIXD/hybrixd" ]; then
+    URL_COMMON="https://github.com/hybrix-io/common.git"
     URL_NODEJS="https://github.com/hybrix-io/nodejs.git"
-    URL_NODE_MODULES="https://github.com/hybrix-io/hybrixd-dependencies-node_modules.git"
-    NODE="$HYBRIXD/hybrixd-node"
-    COMMON="$HYBRIXD/hybrixd-common"
-    NODEJS="$HYBRIXD/hybrixd-dependencies-nodejs"
+    URL_NODE_MODULES="https://github.com/hybrix-io/node_modules.git"
+    NODE="$HYBRIXD/hybrixd"
+    COMMON="$HYBRIXD/common"
+    NODEJS="$HYBRIXD/nodejs"
     ENVIRONMENT="public"
     echo "[i] Environment is public..."
 elif [ -e "$HYBRIXD/node" ]; then
@@ -51,9 +51,6 @@ if [ ! -e "$NODE/node_binaries" ];then
         cd "$HYBRIXD"
         echo " [i] Clone node js runtimes files"
         git clone "$URL_NODEJS"
-        if [ "$ENVIRONMENT" = "public" ]; then
-            ln -sf "hybrixd-dependencies-nodejs" "nodejs"
-        fi
     fi
     echo " [i] Link node_binaries"
     ln -sf "$NODEJS/$SYSTEM" "$NODE/node_binaries"
@@ -71,9 +68,6 @@ if [ ! -e "$NODE/common" ];then
         cd "$HYBRIXD"
         echo " [i] Clone common files"
         git clone "$URL_COMMON"
-        if [ "$ENVIRONMENT" = "public" ]; then
-            ln -sf "hybrixd-common" "common"
-        fi
     fi
     echo " [i] Link common files"
     ln -sf "$COMMON" "$NODE/common"
