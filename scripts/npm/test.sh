@@ -1,7 +1,6 @@
 #!/bin/sh
 OLDPATH=$PATH
 WHEREAMI=`pwd`
-NODEINST=`which node`
 
 # $NODE/scripts/npm  => $NODE
 SCRIPTDIR="`dirname \"$0\"`"
@@ -11,11 +10,11 @@ export PATH="$NODE/node_binaries/bin:$PATH"
 
 echo " [i] Running Interface tests"
 
-if [ "$1" = "v" ]; then
-    node "$NODE/interface/test.js" --path="$NODE/interface" -v --xml="$NODE/test-hybrixd.xml" | tee output
-else
-    node "$NODE/interface/test.js" --path="$NODE/interface" | tee output
-fi
+sh "$NODE/hybrixd" /r/assets/test > "$NODE/test-hybrixd.xml"
+
+echo " [i]Output test data"
+
+sh "$NODE/hybrixd" /r/assets/cli | tee output
 
 TEST_INTERFACE_OUTPUT=$(cat output)
 

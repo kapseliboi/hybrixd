@@ -71,19 +71,14 @@
           }
         }
       },
-      "info" : {
-        "_this": "Retrieve info about the asset."
-      },
-      "icon" : {
-        "_this": "Retrieve the svg icon for this asset."
-      },
-      "test" : {
-        "_this": "Retrieve test data."
-      },
+      "info" :  "Retrieve info about the asset.",
+      "icon" :  "Retrieve the svg icon for this asset.",
+      "report" :  "Retrieve test results.",
       "sample" : {
         "_this": "Retrieve a sample address and transaction id for test purposes.",
         "_response": {"address":"1J3St3rp3hVsuLGhegbLWicyPL3NRD3YJ7","transaction":"2c0832c153cf33327dae0e95a3bc39f4b02ae887725a32c07b1be47a2faffc55"}
       },
+      "test" : "Retrieve data used for testing.",
       "transaction":{
         "_help" : "Get transaction information.",
         "_ref" : {
@@ -336,6 +331,28 @@
       "_ref" : {
         "_list" : "proc",
         "_this" : "Specify the process ID to get its queue status."
+      }
+    }
+  },
+  "r":{"_alias":"report"},
+  "report":{
+    "assets" : {
+      "_this" : "View asset report",
+      "test" : {
+        "_this":"Run tests and return xml report ",
+        "_access" : "root"
+      },
+      "cli" : {
+        "_this":"Return test results in cli format",
+        "_access" : "root"
+      },
+      "xml" : "Return test results in xml format.",
+      "json" : "Return test results in json format"
+    },
+    "asset":{
+      "_ref":{
+        "_list" : "symbol",
+        "_this" : "Return test results for $SYMBOL."
       }
     }
   },

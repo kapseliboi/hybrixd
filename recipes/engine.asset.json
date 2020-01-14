@@ -107,6 +107,9 @@
       "data null",
       "done"
     ],
+    "report" : [
+      "rout '/r/asset/$symbol'"
+    ],
    "test" : [
       "done {}"
     ],
