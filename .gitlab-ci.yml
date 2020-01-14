@@ -568,25 +568,25 @@ dist:
   }
 
   function publish () {
-    # Publish on NPM
-
     # Get correct version from repository tag
     VERSION=${CI_COMMIT_REF_NAME/-release/}
     VERSION_NUMBER="${VERSION//v}"
 
     sed -i -e "s/.*version.*/\"version\": \"$VERSION_NUMBER\",/" package.json
 
-    echo "Publish on NPM"
+    # Publish on NPM
+    echo "PUBLISH ON NPM"
     npm install npm-cli-login
     node ./node_modules/npm-cli-login/bin/npm-cli-login.js -u "$NPM_USER" -p "$NPM_PASSWORD" -e "$NPM_MAIL" -r "https://registry.npmjs.org"
     npm publish
-
+  
     # Publish on Github
-    # echo "Publish on Github"
+    echo "PUBLISH ON GITHUB"
+    npm config set registry "https://npm.pkg.github.com/"
+    node ./node_modules/npm-cli-login/bin/npm-cli-login.js -u "$GITHUB_USER" -p "$GITHUB_PAT" -e "$GITHUB_MAIL" -r "https://npm.pkg.github.com/"
+    npm publish
 
-    # node ./node_modules/npm-cli-login/bin/npm-cli-login.js -u "GITHUB_USER" -p "$GITHUB_PASSWORD" -e "$GITHUB_MAIL" -r "https://npm.pkg.github.com/"
-    # npm publish
-
+    rm ~/.npmrc
   }
 
 before_script:
