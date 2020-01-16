@@ -66,12 +66,18 @@
     "push" : [
       "time $timeout",
       "data {'rawtx':'$1'}",
-      "curl /tx/send POST {Accept:'application/json, text/plain, */*',Content-Type:'application/json;charset=utf-8',DNT:1,Connection:'keep-alive'} {timeout:$shortTimeout} 2 1",
+      "curl /tx/send POST {Accept:'application/json, text/plain, */*',Content-Type:'application/json;charset=utf-8',DNT:1,Connection:'keep-alive'} {timeout:$shortTimeout} @curlSucces @curlFail",
+      "@curlFail",
       "fail 'Could not connect to host'",
-      "tran '.txid' 3 1",
-      "tran '.error' 1 2",
+      "@curlSucces",
+      "tran '.txid' @succes @noId",
+      "@noId",
+      "tran '.error' @error @badTxRes",
+      "@error",
       "fail '$'",
-      "fail 'Bad transaction result!'",
+      "@badTxRes",
+      "fail 'Bad transaction result'",
+      "@succes",
       "done"
     ],
     "transactionData" : [
