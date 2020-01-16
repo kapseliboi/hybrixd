@@ -1,0 +1,21 @@
+{
+  "engine":"report",
+  "name":"Report job for /report api endpoints",
+  "cron": 86400,
+    "conf" :{
+    "enable_daily_asset_report" :{
+      "default":false,
+      "info":"Whether to enable daily asset report generation."
+    }
+  },
+  "quartz":{
+    "cron" :[
+      "flow conf::enable_daily_asset_report {true:2,false:1}",
+      "done",
+      "rout /report/assets/test"
+      ]
+  },
+  "router":{
+    "_hidden" : true
+  }
+}
