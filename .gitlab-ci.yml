@@ -499,8 +499,13 @@ dist:
       # replace /root with empty string in config
       sed -i -e "s#\"/root\"#\"\"#g" hybrixd.conf
 
+
       # replace 127.0.0.1 with $POD_IP on start
       sed -i -e "s:\"./hybrixd\":\"sed -i -e 's/127.0.0.1/'\$POD_IP'/g' hybrixd.conf \&\& ./hybrixd\":g" package.json
+
+      echo "[.] Enable Asset reporting"
+      echo "[report]" >> hybrixd.conf
+      echo "enable_daily_asset_report = true" >> hybrixd.conf
 
       docker cp hybrixd.conf "$CI_CONTAINER_NAME":/app/hybrixd.conf
       docker cp package.json "$CI_CONTAINER_NAME":/app/package.json
@@ -567,6 +572,8 @@ dist:
     fi
   }
 
+  #BEGIN CUSTOM SCRIPT
+
   function publish () {
     # Get correct version from repository tag
     VERSION=${CI_COMMIT_REF_NAME/-release/}
@@ -579,7 +586,7 @@ dist:
     npm install npm-cli-login
     node ./node_modules/npm-cli-login/bin/npm-cli-login.js -u "$NPM_USER" -p "$NPM_PASSWORD" -e "$NPM_MAIL" -r "https://registry.npmjs.org"
     npm publish
-  
+
     # Publish on Github
     echo "PUBLISH ON GITHUB"
     npm config set registry "https://npm.pkg.github.com/"
@@ -588,6 +595,9 @@ dist:
 
     rm ~/.npmrc
   }
+
+  #END CUSTOM SCRIPT
+
 
 before_script:
   - *auto_devops
