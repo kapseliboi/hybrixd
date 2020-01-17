@@ -579,28 +579,28 @@ dist:
     VERSION=${CI_COMMIT_REF_NAME/-release/}
     VERSION_NUMBER="${VERSION//v}"
 
+    echo "[.] Modify version in package.json"
     sed -i -e "s/.*version.*/\"version\": \"$VERSION_NUMBER\",/" package.json
 
-    # Publish on NPM
-    echo "PUBLISH ON NPM"
-    npm install npm-cli-login
+    echo "[.] Install npm-cli-login (FIXME: should not be needed)"
+    #TODO implement without npm-cli-login use .npmrc instead (in interface as well)
+    npm install npm-cli-login --save-dev
+
+    echo "[.] Login to npm"
     node ./node_modules/npm-cli-login/bin/npm-cli-login.js -u "$NPM_USER" -p "$NPM_PASSWORD" -e "$NPM_MAIL" -r "https://registry.npmjs.org"
+
+    echo "[.] Publish on npm"
     npm publish
 
-        # Publish on Github
-    echo "PUBLISH ON GITHUB"
-    sed -i -e '2i\
-    "publishConfig": {"registry": "https://npm.pkg.github.com/"},' package.json
-    
-    touch .npmrc
-    echo "//npm.pkg.github.com/:_authToken=$GITHUB_PAT" >> .npmrc
+    echo "[.] Modify package.json for github"
+    sed -i -e 's+"name": "+"name": "@hybrix-io/+g' package.json
+
+    echo "//npm.pkg.github.com/:_authToken=$GITHUB_PAT" > .npmrc
     echo "@hybrix-io:registry=https://npm.pkg.github.com" >> .npmrc
-    
-    npm config set registry "https://npm.pkg.github.com/"
-    node ./node_modules/npm-cli-login/bin/npm-cli-login.js -u "$GITHUB_USER" -p "$GITHUB_PAT" -e "$GITHUB_MAIL" -r "https://npm.pkg.github.com/"
+
+    echo "[.] Publish to github packages"
     npm publish
-  
-    rm ~/.npmrc
+    rm .npmrc
   }
 
   #END CUSTOM SCRIPT
