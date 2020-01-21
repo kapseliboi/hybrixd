@@ -58,17 +58,17 @@ window.addEventListener('resize', function () {
     document.getElementById('main').style.paddingTop = '0px';
   }
   if (window.innerWidth > 1024) {
-    document.getElementById('navigation').classList.remove("mobile-on");
-    document.getElementById('navigation').classList.add("mobile-off");
-    document.getElementById('navigation').classList.remove("toggle-on");
-    document.getElementById('navigation').classList.add("toggle-off");
+    document.getElementById('navigation').classList.remove('mobile-on');
+    document.getElementById('navigation').classList.add('mobile-off');
+    document.getElementById('navigation').classList.remove('toggle-on');
+    document.getElementById('navigation').classList.add('toggle-off');
     document.getElementById('mobile-sub-nav').innerHTML = 'show navigation <img src="./icon-arrow-right.svg" alt=">" style="transform: rotate(90deg);" />';
   }
   if (window.innerWidth <= 1024) {
-    document.getElementById('navigation').classList.add("mobile-on");
-    document.getElementById('navigation').classList.remove("mobile-off");
-    document.getElementById('navigation').classList.remove("toggle-on");
-    document.getElementById('navigation').classList.add("toggle-off");
+    document.getElementById('navigation').classList.add('mobile-on');
+    document.getElementById('navigation').classList.remove('mobile-off');
+    document.getElementById('navigation').classList.remove('toggle-on');
+    document.getElementById('navigation').classList.add('toggle-off');
     document.getElementById('mobile-sub-nav').innerHTML = 'show navigation <img src="./icon-arrow-right.svg" alt=">" style="transform: rotate(90deg);" />';
   }
 });
@@ -121,25 +121,23 @@ function rout (path, noHistory) {
   xhr.open('GET', url, true);
   xhr.onreadystatechange = e => {
     if (xhr.readyState === 4) {
-      if (xhr.status >= 200 && xhr.status <= 299) {
-        let header = xhr.getResponseHeader('Content-Type');
-        if (header === 'application/json') {
-          let result;
-          try {
-            result = JSON.parse(xhr.responseText);
-          } catch (e) {
-            result = {data: 'Unknown Error', error: 1};
-          }
-          if (result.error === 0 && result.hasOwnProperty('progress') && result.progress !== 1) {
-            setTimeout(() => {
-              rout(path, true);
-            }, 500);
-          } else {
-            display(result);
-          }
-        } else {
-          document.write(xhr.responseText);
+      let header = xhr.getResponseHeader('Content-Type');
+      if (header === 'application/json') {
+        let result;
+        try {
+          result = JSON.parse(xhr.responseText);
+        } catch (e) {
+          result = {data: 'Unknown Error', error: 1};
         }
+        if (result.error === 0 && result.hasOwnProperty('progress') && result.progress !== 1) {
+          setTimeout(() => {
+            rout(path, true);
+          }, 500);
+        } else {
+          display(result);
+        }
+      } else {
+        document.write(xhr.responseText);
       }
     }
   };
@@ -309,8 +307,8 @@ function initNavigation (currentMenuItem) {
 
   document.getElementById('navigation').innerHTML = data;
 
-  if (window.innerWidth > 1024) { document.getElementById('navigation').classList.add("mobile-off"); }
-  if (window.innerWidth <= 1024) { document.getElementById('navigation').classList.add("mobile-on"); }
+  if (window.innerWidth > 1024) { document.getElementById('navigation').classList.add('mobile-off'); }
+  if (window.innerWidth <= 1024) { document.getElementById('navigation').classList.add('mobile-on'); }
 
   let filterBox = document.getElementById('filterBox');
 
@@ -389,19 +387,19 @@ function toggleSubNav () {
   subNav = document.getElementById('navigation');
 
   if (subNav.classList.contains('toggle-off')) {
-    subNav.classList.add("toggle-on");
-    subNav.classList.remove("toggle-off");
+    subNav.classList.add('toggle-on');
+    subNav.classList.remove('toggle-off');
 
     document.getElementById('mobile-sub-nav').innerHTML = 'hide navigation <img src="./icon-arrow-right.svg" alt=">" style="transform: rotate(-90deg);" />';
   } else {
-    subNav.classList.remove("toggle-on");
-    subNav.classList.add("toggle-off");
+    subNav.classList.remove('toggle-on');
+    subNav.classList.add('toggle-off');
 
     document.getElementById('mobile-sub-nav').innerHTML = 'show navigation <img src="./icon-arrow-right.svg" alt=">" style="transform: rotate(90deg);" />';
   }
 }
 
-function hideChildren(el) {
+function hideChildren (el) {
   elem = el.nextElementSibling;
   while (elem) {
     if (elem.classList.contains('menuItem-parent')) break;
