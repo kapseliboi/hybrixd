@@ -1,3 +1,28 @@
+# v0.6.3
+## Happy Pink Kobold
+## 17-01-2020
+
+* Fixed for hybrix-jslib: Cannot inititiate without session Thanks for reporting bartwr!
+* Release to npm
+* Release to github packages
+* Implement daily asset status reports /report/assets
+* Improve error handling for local variable storage and refactor to separate functions
+* improve electrum transaction postprocessing
+* Parse ubq balance (from hexadeximal)
+* Hide proc calls from log /p/$PROCID
+* Pass command line parameters to qrtz interactive
+* Improve error handling for load, save, seek
+* Handle command parameters in vars
+* Improvements to qrtz math, fuse, rout, flow and rand functions
+* qrtz flow based on a peek value
+* Add contract check to mockchain
+* Parse binary numbers
+* Catch non existing module
+* Fix qrtz data date documentation
+
+
+
+
 # v0.6.2
 ## Fluffy Maroon Ogre
 ## 04-12-2019
