@@ -176,8 +176,7 @@
               <br/>
               <br/>
               <br/>
-<script>initNavigation("404")</script>
-          <br/><br/><hr>
+<script>initNavigation("404")</script>          <br/><br/><hr>
           <div class="footer">
             <div class="wrapper padding">
               <div class="social-icons">
@@ -266,7 +265,7 @@
         <div class="pure-u-1 pure-u-lg-1-5 secondary-sidebar">
           <div id="subnavigation"></div>
         </div>
-        <script>initSubNavigation(id)</script>
+        <script>if(typeof id !== 'undefined'){initSubNavigation(id)}</script>
       </div>
     </div>
   </body>

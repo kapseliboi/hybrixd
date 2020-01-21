@@ -158,8 +158,7 @@
           <p>To transfer your crypto coins to the wallet: go to Assets > Receive Transaction and copy the displayed address.</p>
 
 
-<script>initNavigation("web-wallet")</script>
-          <br/><br/><hr>
+<script>initNavigation("web-wallet")</script>          <br/><br/><hr>
           <div class="footer">
             <div class="wrapper padding">
               <div class="social-icons">
@@ -248,7 +247,7 @@
         <div class="pure-u-1 pure-u-lg-1-5 secondary-sidebar">
           <div id="subnavigation"></div>
         </div>
-        <script>initSubNavigation(id)</script>
+        <script>if(typeof id !== 'undefined'){initSubNavigation(id)}</script>
       </div>
     </div>
   </body>

@@ -301,8 +301,7 @@ hybrix.sequential([
           </div>
 
           <p><a href="./hybrixd" class="read-more">Read more about the hybrix node <img src="./icon-arrow-right.svg" alt=">" /></a></p>
-<script>initNavigation("getting-started")</script>
-          <br/><br/><hr>
+<script>initNavigation("getting-started")</script>          <br/><br/><hr>
           <div class="footer">
             <div class="wrapper padding">
               <div class="social-icons">
@@ -391,7 +390,7 @@ hybrix.sequential([
         <div class="pure-u-1 pure-u-lg-1-5 secondary-sidebar">
           <div id="subnavigation"></div>
         </div>
-        <script>initSubNavigation(id)</script>
+        <script>if(typeof id !== 'undefined'){initSubNavigation(id)}</script>
       </div>
     </div>
   </body>
