@@ -57,6 +57,13 @@
       "fail 'Could not connect to host'",
       "done"
     ],
+    "getContractSymbol" : [
+      "curl $block-explorer-host /assets/details/$ 2 1",
+      "fail",
+      "tran .name",
+      "case lower",
+      "fuse waves. 0"
+    ],
     "transaction" : [
       "call transactionData/$1",
       "poke reformatObj",
@@ -65,7 +72,7 @@
       "with reformatTimestamp [data,$reformatObj] [tran,'.timestamp'] [math,'/1000'] [math, 'round']",
       "with reformatFee [data,$reformatObj] [tran,'.fee'] [atom]",
       "with reformatAmount [data,$reformatObj] [tran,'.transfers[].amount',2,1] [done,0] [math,'+'] [atom]",
-      "with reformatSymbol [data,$reformatObj] [tran,'.assetId',2,1] [data,'$symbol'] [done]",
+      "with reformatSymbol [data,$reformatObj] [logs] [tran,'.assetId',1,4] [void, 3, 1] [call, getContractSymbol] [done] [data,'$symbol']",
       "with reformatRecipient [data,$reformatObj] [tran,'.recipient',3,1] [tran,'.transfers[0].recipient',2,1] [done,'undefined'] [done]",
       "peek reformatObj",
       "tran { id:'.id', timestamp:'$reformatTimestamp', amount:'$reformatAmount', symbol:'$reformatSymbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.sender', target:'$reformatRecipient', confirmed:true } 2 1",
@@ -82,7 +89,7 @@
       "done"
     ],
     "sample" : [
-      "done {address:'3PBUkL5rphESXxq1yJzW2erVzTTKAXXeCUo',transaction:'Du5uMXjTc4YA4C3bY7WcDLvq4UPgBwuVGGDWaQsfvpuU'}"
+      "done {address:'3PBUkL5rphESXxq1yJzW2erVzTTKAXXeCUo',transaction:'DA5h9i1nJh8YXSVJv8ZAaWGeSHeBQnNYp47shFnhQmiM'}"
     ],
     "test":[
       "done {hash:dynamic,time:1536917842558}"
