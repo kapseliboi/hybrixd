@@ -320,6 +320,20 @@
       "fail 'aaaa $'"
     ],
 
+    "with1":[
+      "data '$NOT_OK'",
+      "poke with_test",
+      "with with_test done $OK",
+      "peek with_test"
+    ],
+
+    "with2":[
+      "data '$NOT_OK'",
+      "poke with_test",
+      "with with_test [data,3] [true,'==3',2,1] [fail] [done,$OK]",
+      "peek with_test"
+    ],
+
     "test" : [
       "qrtz",
       "excl [test,subtest]",
@@ -339,7 +353,6 @@
       "@fail",
       "done $NOT_OK::$0:$"
     ]
-
   },
   "router":{
     "_hidden" : true,
