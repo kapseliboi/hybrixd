@@ -16,6 +16,14 @@
           "_response": {"error":0,"info":"Process data.","id":"1519829438958324","progress":1,"started":1519829438958,"stopped":1519829440606,"data":"0.025106200000000000"}
         }
       },
+      "confirmed":{
+        "_help" : "Get confiramation status for a transaction information.",
+        "_ref" : {
+          "_list" : "transaction_id",
+          "_sample" : "$TRANSACTION_ID",
+          "_this": "Retrieve the confirmation status for a given a transaction ID."
+        }
+      },
       "contract":{
         "_this" : "Get the contract unique identifier for a token asset.",
         "_response": {"error":0,"info":"Process data.","id":"1519829634775083","progress":1,"started":1519829634775,"stopped":1519829634778,"data":"0xf230b790E05390FC8295F4d3F60332c93BEd42e2"}
