@@ -68,10 +68,18 @@
       "done $OK",
       "fail $NOT_OK:$0:$"
     ],
-    "fuse" : [
+    "fuse1" : [
       "data appel!",
       "fuse taart 5",
       "flow 'appeltaart!' 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+    "fuse2" : [
+      "data [1,2,3]",
+      "fuse [4,5,6]",
+      "pick 4",
+      "flow '5' 1 2",
       "done $OK",
       "fail $NOT_OK:$0:$"
     ],
