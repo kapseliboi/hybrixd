@@ -68,6 +68,30 @@
       "done $OK",
       "fail $NOT_OK:$0:$"
     ],
+    "flow1" : [
+      "data appel",
+      "flow appel 1 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+    "flow2" : [
+      "data appel",
+      "flow {appel:1} 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+    "flow3" : [
+      "poke fruit appel",
+      "flow fruit {appel:1} 2",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+    "flow4" : [
+      "# $1 has null so flow should fail",
+      "flow 1 {fruit:2} 1",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
     "fuse1" : [
       "data appel!",
       "fuse taart 5",
