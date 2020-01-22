@@ -25,6 +25,12 @@
     "mode" : [
       "done '$mode'"
     ],
+    "confirmed" : [
+      "call transaction/$1",
+      "tran .confirmed 1 2",
+      "done",
+      "fail 'Could not get confirmations'"
+    ],
     "contract" : [
       "data '$contract'",
       "flow 'undefined' 1 2",
