@@ -26,7 +26,6 @@ function mine (proc) {
   } catch (e) {
     proc.fail('This node does not support mockchain.');
   }
-
   const contract = proc.command[1];
   const target = Number(proc.command[2]);
   const amount = Number(proc.command[3]);
@@ -174,6 +173,7 @@ function transaction (proc) {
   if (transactionId < mockchain.length) {
     const transaction = mockchain[transactionId];
     if (transaction.contract !== contract) {
+      proc.fail('transaction belongs to ' + transaction.contract + ' mockchain');
     } else {
       const normalizedTransaction = {
         id: transaction.id,
