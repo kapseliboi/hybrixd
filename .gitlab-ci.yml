@@ -472,7 +472,10 @@ dist:
         --build-arg no_proxy="$no_proxy" \
         -t "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" .
     else
-      echo "Building Heroku-based application using gliderlabs/herokuish docker image..."
+
+      #BEGIN CUSTOM SCRIPT
+
+      echo "[.] Building using docker image registry.gitlab.com/hybrix/hybrixd/base-images/build-image:stable"
       docker run -i \
         -e BUILDPACK_URL \
         -e HTTP_PROXY \
@@ -483,15 +486,11 @@ dist:
         -e ftp_proxy \
         -e NO_PROXY \
         -e no_proxy \
-        --name="$CI_CONTAINER_NAME" -v "$(pwd):/tmp/app:ro" gliderlabs/herokuish /bin/herokuish buildpack build
+        --name="$CI_CONTAINER_NAME" -v "$(pwd):/tmp/app:ro" registry.gitlab.com/hybrix/hybrixd/base-images/build-image:stable
       docker commit "$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
       docker rm "$CI_CONTAINER_NAME" >/dev/null
       echo ""
-
-      echo "Configuring $CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG docker image..."
-      docker create --expose 5000 --env PORT=5000 --name="$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" /bin/herokuish procfile start web
-
-      #BEGIN CUSTOM SCRIPT
+      docker create --entrypoint "entrypoint" --expose 5000 --env PORT=5000 --name="$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
 
       # replace port for api root (1111) with 5000 in config
       sed -i -e "s#1111#5000#g" hybrixd.conf
@@ -499,16 +498,27 @@ dist:
       # replace /root with empty string in config
       sed -i -e "s#\"/root\"#\"\"#g" hybrixd.conf
 
-
-      # replace 127.0.0.1 with $POD_IP on start
-      sed -i -e "s:\"./hybrixd\":\"sed -i -e 's/127.0.0.1/'\$POD_IP'/g' hybrixd.conf \&\& ./hybrixd\":g" package.json
-
       echo "[.] Enable Asset reporting"
       echo "[report]" >> hybrixd.conf
       echo "enable_daily_asset_report = true" >> hybrixd.conf
 
-      docker cp hybrixd.conf "$CI_CONTAINER_NAME":/app/hybrixd.conf
-      docker cp package.json "$CI_CONTAINER_NAME":/app/package.json
+      echo "[.] Copy files to docker"
+      docker cp ../node "$CI_CONTAINER_NAME":/
+
+      # Prepare entrypoint script. Script that will be executed at pod startup
+      echo "#!/bin/sh" > entrypoint
+      echo "cd node" >> entrypoint
+      # Ensure that the pod replaces the ip with its own ip address at startup
+      echo "sed -i -e \"s#127.0.0.1#\"\$(hostname -i)\"#g\" hybrixd.conf" >> entrypoint
+      echo "/bin/sh hybrixd >/dev/null" >> entrypoint
+      chmod +x entrypoint
+
+      # Copy entrypoint script to docker
+      docker cp entrypoint "$CI_CONTAINER_NAME":/usr/local/bin
+
+      echo "Configuring $CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG docker image..."
+
+      echo "[.] Commit docker image $CI_CONTAINER_NAME $CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
 
       #END CUSTOM SCRIPT
 
