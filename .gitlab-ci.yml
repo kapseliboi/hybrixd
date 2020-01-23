@@ -43,6 +43,7 @@ hybrixd:
     - service docker start
     - sh ./scripts/pipeline/build.sh
     - setup_docker
+    - sleep 3
     - build
 
   artifacts:

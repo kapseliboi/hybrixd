@@ -1,7 +1,50 @@
 const id = 'hybrixd';
-let fs = require('fs');
+const fs = require('fs');
+const path = require('path');
+
+const recipesDirectory = '../../recipes/';
+const modulesDirectory = '../../modules/';
 
 const meta = JSON.parse(fs.readFileSync('../../lib/conf/metaconf.json').toString());
+
+function collectRecipesRecursivelySync (dir) {
+  const results = [];
+  const files = fs.readdirSync(dir);
+  for (let file of files) {
+    const filePath = path.resolve(dir, file);
+    const stat = fs.statSync(filePath);
+    if (stat.isDirectory()) {
+      const dirFiles = collectRecipesRecursivelySync(filePath);
+      results.push(...dirFiles);
+    } else if (path.extname(filePath) === '.json') { // Ignore non json files
+      results.push(filePath);
+    }
+  }
+  return results;
+}
+
+function getModulesDirectory (modules, moduleName) {
+  if (fs.statSync(modulesDirectory + moduleName).isDirectory()) {
+    const moduleRecipeFiles = fs.readdirSync(modulesDirectory + moduleName);
+    const filesInDirectory = moduleRecipeFiles.map(fileName => modulesDirectory + moduleName + '/' + fileName).filter(fileName => fileName.endsWith(moduleName + '.json'));
+    return modules.concat(filesInDirectory);
+  } else {
+    return modules;
+  }
+}
+
+const moduleDirectories = fs.readdirSync(modulesDirectory).reduce(getModulesDirectory, []);
+
+const recipeFiles = collectRecipesRecursivelySync(recipesDirectory);
+recipeFiles.concat(moduleDirectories).forEach(filePath => {
+  const recipe = JSON.parse(fs.readFileSync(filePath));
+  if (recipe.hasOwnProperty('conf')) {
+    console.log(filePath);
+
+    const id = recipe.asset || recipe.engine || recipe.source;
+    meta[id] = recipe.conf;
+  }
+});
 
 const html = fs.readFileSync('../../docs/source/hybrixd.html').toString();
 
