@@ -74,6 +74,7 @@ cp "$NODE/scripts/pipeline/test.sh" "$DIST/scripts/pipeline/test.sh"
 
 # Copy common
 rsync -avq "$NODE/common/crypto" "$DIST/common/"
+rsync -avq "$NODE/common/byte" "$DIST/common/"
 rsync -avq "$NODE/common/node_modules" "$DIST/common/"
 cp $NODE/common/*.js "$DIST/common/"
 cp $NODE/common/*.json "$DIST/common/"
