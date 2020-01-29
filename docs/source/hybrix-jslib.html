@@ -1,5 +1,5 @@
           <script>
-            var id = "hybrix-jslib"
+            const id = "hybrix-jslib"
             initNavigation(id)
           </script>
 
@@ -37,7 +37,7 @@
                   </g>
               </svg>
               <span class="download-text">Download for NodeJS</span>
-              <span class="usage">var Hybrix = require("./hybrix-lib.nodejs");</span>
+              <span class="usage">const Hybrix = require('./hybrix-lib.nodejs');</span>
             </div>
           </a>
 
@@ -68,8 +68,8 @@
 
           <p>For nodejs projects:</p>
 
-          <pre><code class="language-js">var Hybrix = require('hybrix-lib.nodejs.js');
-var hybrix = new Hybrix.Interface({http:require('http')});
+          <pre><code class="language-js">const Hybrix = require('./hybrix-lib.nodejs.js');
+const hybrix = new Hybrix.Interface({http:require('http')});
 hybrix.sequential(
 [
  'init',                                                        // Initialize hybrix
@@ -86,14 +86,14 @@ error=>{console.log('Oops, something went wrong: '+error);}     // Define action
 
             <p>The connector is the method that is used to make calls to the host. For NodeJS the http and/or https modules can be used:
 
-<pre><code class="language-js">var hybrix = new Hybrix.Interface({http:require('http')}); // Provide a http connector
-var hybrix = new Hybrix.Interface({https:require('https')}); // Provide a https connector
-var hybrix = new Hybrix.Interface({http:require('http'),https:require('https')}); // Provide http and https connectors for mixed usage
+<pre><code class="language-js">const hybrix = new Hybrix.Interface({http:require('http')}); // Provide a http connector
+const hybrix = new Hybrix.Interface({https:require('https')}); // Provide a https connector
+const hybrix = new Hybrix.Interface({http:require('http'),https:require('https')}); // Provide http and https connectors for mixed usage
 </code></pre>
 
               <p>For web/html implementations the XMLHttpRequest method is used which is supplied by the browser.</p>
 
-              <pre><code class="language-js">var hybrix = new Hybrix.Interface({XMLHttpRequest:XMLHttpRequest});</code></pre>
+              <pre><code class="language-js">const hybrix = new Hybrix.Interface({XMLHttpRequest:XMLHttpRequest});</code></pre>
 
               <p>There is also the option to define a custom connector which should be a function with the following signature:</p>
 
