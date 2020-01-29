@@ -45,6 +45,11 @@ function save (proc, data) {
   storage.set({key: data.key, value: data.value, noSync: data.noSync}, proc.done, proc.fail);
 }
 
+function list (proc, data) {
+  const key = proc.command && proc.command[1] ? proc.command[1] : data.key;
+  storage.list({key: key}, proc.done, proc.fail);
+}
+
 function burn (proc, data) {
   const key = proc.command && proc.command[1] ? proc.command[1] : data.key;
   storage.burn(key, proc.done, proc.fail);
@@ -53,6 +58,7 @@ function burn (proc, data) {
 // exports
 exports.save = save;
 exports.load = load;
+exports.list = list;
 exports.work = work;
 exports.seek = seek;
 exports.size = size;

@@ -268,23 +268,30 @@
       "done $OK"
     ],
     "save" : [
-      "#wait for the burn to be done",
-      "wait 400",
-      "save test 123",
+      "burn testSave",
+      "save testSave 123",
       "done $OK"
     ],
     "load" : [
-      "#wait for the save to be done",
-      "wait 400",
-      "load test 1 3",
+      "data 123",
+      "save testLoad",
+      "load testLoad 1 3",
       "flow '123' 1 2",
       "done $OK",
       "fail $NOT_OK:$0:$"
     ],
     "seek" : [
-      "#wait for the save to be done",
-      "wait 400",
+      "save testseek",
+      "list testseek",
       "seek test 1 3",
+      "done $OK",
+      "fail $NOT_OK:$0:$"
+    ],
+    "list" : [
+      "save testlist",
+      "list testlist",
+      "size",
+      "ship 1 2 2 2",
       "done $OK",
       "fail $NOT_OK:$0:$"
     ],

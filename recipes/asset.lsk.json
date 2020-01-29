@@ -41,6 +41,16 @@
       "tran '[].id'",
       "done"
     ],
+    "reformatTx": [
+      "tran .value 2 1",
+      "fail 'failed tran'",
+      "with reformatTimestamp [data,${.timestamp}] [math,'+$genesisBlockTime']",
+      "with reformatFee [data,'${.fee}'] [atom]",
+      "with reformatAmount [data,'${.amount}'] [atom]",
+      "tran { id:'.id', timestamp:'$reformatTimestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.senderId', target:'.recipientId', confirmed:'.confirmations' } 2 1",
+      "fail 'failed tran'",
+      "done"
+    ],
     "transactionData" : [
       "curl /api/transactions?id=$1&limit=1&offset=0 {Accept:'application/json'} 2 1",
       "fail 'Could not connect to host'",
@@ -53,7 +63,8 @@
       "with reformatTimestamp [data,${.timestamp}] [math,'+$genesisBlockTime']",
       "with reformatFee [data,'${.fee}'] [atom]",
       "with reformatAmount [data,'${.amount}'] [atom]",
-      "tran { id:'.id', timestamp:'$reformatTimestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.senderId', target:'.recipientId', confirmed:'.confirmations' } 2 1",
+      "tran { id:'.id', timestamp:'$reformatTimestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.senderId', target:'.recipientId', confirmed:'.confirmations' } 1 @fail",
+      "done",
       "fail 'Cannot get transaction data!'"
     ],
     "attachment" : [

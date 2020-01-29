@@ -1,0 +1,69 @@
+{
+  "engine":"transaction-data",
+  "name":"Transaction data history engine",
+  "quartz" : {
+    "transaction": [
+      "poke txID '$1'",    
+      "poke fileName ${txID}-${symbol}-transaction",
+      "seek $fileName @returnCachedHistory @retrieve",
+      "@retrieve",
+      "call getTransaction/$1",
+      "poke tx",
+      "fork 'save/$1'",
+      "done $tx",
+      "@returnCachedHistory",
+      "list $fileName",
+      "void {'array':4} 1",
+      "pick",
+      "load $",
+      "done",
+      "data $1",
+      "call getTransaction/$txID",
+      "poke tx",
+      "fork 'save/$1'",
+      "done $tx"
+    ],
+    "save": [
+      "poke txData",
+      "poke txID '$1'",
+      "date now",
+      "data '${txID}-${symbol}-transaction'",
+      "poke fileName",
+      "call removeTransactionFile/$txID/transaction",
+      "save $fileName $txData",
+      "data $txData",
+      "tran .source 1 @fail",
+      "poke sourceAddress",
+      "data $txData",
+      "tran .target 1 @fail",
+      "poke targetAddress",
+      "data ['$txID']",
+      "call saveNewTransactionIds/$sourceAddress/1/1/true",
+      "data ['$txID']",
+      "call saveNewTransactionIds/$targetAddress/1/1/true",
+      "@fail",
+      "done $txData"
+    ],
+    "saveTransactionData": [
+      "poke txID",
+      "data $1",
+      "tran .value",
+      "poke txData",
+      "data ${txID}-${symbol}-transaction", 
+      "poke fileName",
+      "call removeTransactionFile/$txID/transaction",
+      "save $fileName $txData",
+      "done $1"
+    ],
+    "retrieveLatestTransactions": [
+      "call getHistory/$1/$2/$3",
+      "poke txs",
+      "fork 'cacheHistory/$1'",
+      "data $txs",
+      "tran '[].id'",
+      "poke idx",
+      "call 'saveNewTransactionIds/$1/$2/$3/false'",
+      "done $idx"
+    ]
+  }
+}
