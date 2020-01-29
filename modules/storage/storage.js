@@ -3,6 +3,7 @@
 const SECONDS_IN_A_DAY = 5184000;
 
 let fs = require('fs');
+let glob = require('glob');
 let conf = require('../../lib/conf/conf');
 let DJB2 = require('../../common/crypto/hashDJB2');
 let proofOfWork = require('../../common/crypto/proof');
@@ -29,14 +30,15 @@ const size = function (dataCallback, errorCallback) {
   dataCallback(storageSize);
 };
 
-const seek = function (data, dataCallback, errorCallback) { // TODO equip with dataCallback, errorCallback
-  const fold = data.key.substr(0, 2) + '/';
-  const filePath = storagePath + fold + data.key;
-  if (fs.existsSync(filePath)) {
-    dataCallback(true);
-  } else {
-    errorCallback('Not found');
-  }
+const seek = function (data, dataCallback, errorCallback) {
+  const successCallback = function (data) {
+    if (data.length) {
+      dataCallback(true);
+    } else {
+      dataCallback(false);
+    }
+  };
+  list(data, successCallback, errorCallback);
 };
 
 const load = function (data, dataCallback, errorCallback) {
@@ -135,6 +137,28 @@ const save = function (data, dataCallback, errorCallback) {
   }
 };
 
+const list = function (data, dataCallback, errorCallback) {
+  if (data.key.length < 2) {
+    errorCallback('Specify a search string of two or more characters!');
+  } else {
+    const fold = data.key.substr(0, 2) + '/';
+    const filePath = storagePath + fold;
+    glob(data.key, {cwd: filePath, nodir: true}, function (err, files) {
+      if (err) {
+        errorCallback('Error reading storage list.');
+      } else {
+        let result = [];
+        for (var i = 0; i < files.length; i += 2) {
+          if (files[i].substr(-5) !== '.meta') {
+            result.push(files[i]);
+          }
+        }
+        dataCallback(result);
+      }
+    });
+  }
+};
+
 const pullList = function () {
   const range = 250;
   const list = [];
@@ -173,7 +197,7 @@ const sync = function (data, dataCallback, errorCallback) {
     try {
       fs.writeFileSync(storagePath + '/sync' + randomIdx, data.key);
       dataCallback();
-    } catch(e) {
+    } catch (e) {
       errorCallback(e);
     }
   }
@@ -188,7 +212,7 @@ const burn = function (key, dataCallback, errorCallback) {
   if (fs.existsSync(filePath + '.meta')) {
     fs.unlinkSync(filePath + '.meta');
   }
-  dataCallback('Done');
+  dataCallback('Burned key ' + key);
 };
 
 const provideProof = function (data, dataCallback, errorCallback) {
@@ -304,6 +328,7 @@ const autoClean = function () {
 
 exports.size = size;
 exports.seek = seek;
+exports.list = list;
 exports.sync = sync;
 exports.pull = pull;
 exports.get = load;

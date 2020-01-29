@@ -97,6 +97,13 @@
         "_this" : "Specify the ID key to delete the storage object."
       }
     },
+    "list":{
+      "_help" : "List keys by identifiable string.",
+      "_ref" : {
+        "_list" : "storage_id",
+        "_this" : "Specify part or all of the ID key to include on the list. Wildcards (*,?) are allowed."
+      }
+    },
     "work":{
       "_help" : "Provide proof-of-work for long term storage.",
       "_ref" : {

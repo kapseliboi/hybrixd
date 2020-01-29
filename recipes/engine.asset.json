@@ -1,5 +1,6 @@
 {
   "engine":"asset",
+  "import": "transaction-history",
   "quartz" : {
     "balance" : [
       "fail 'Not yet implemented!'"
