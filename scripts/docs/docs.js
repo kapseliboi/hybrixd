@@ -4,7 +4,7 @@ let files = {
   'introduction': '../../docs/source/introduction.html',
   'getting-started': '../../docs/source/getting-started.html',
   'hybrixd': '../../docs/source/hybrixd.html',
-  'hybrix-lib.js': '../../../interface/lib/interface.js',
+  'hybrix-jslib': '../../../interface/lib/interface.js',
   'qrtz': '../../lib/scheduler/quartz.js',
   'block-explorer': '../../docs/source/block-explorer.html',
   'web-wallet': '../../docs/source/web-wallet.html',
@@ -37,7 +37,7 @@ function typeConverter (type) {
 
 for (let id in files) {
   let body = fs.readFileSync(files[id]).toString();
-  if (id === 'hybrix-lib.js') { // add all methods
+  if (id === 'hybrix-jslib') { // add all methods
     const path = '../../../interface/lib/methods';
     const methodFiles = fs.readdirSync(path);
     methodFiles.forEach(function (file, index) {
@@ -64,7 +64,7 @@ for (let id in files) {
 
   if (files[id].substr(-5) !== '.html') {
     let re;
-    if (id === 'hybrix-lib.js' || id === 'qrtz') {
+    if (id === 'hybrix-jslib' || id === 'qrtz') {
       re = /\/\*\*([\s\S]+?)exports\.(\w*)/g; // match jsdoc templates
     } else {
       re = /\/\*\*([\s\S]+?)this\.(\w*)/g; // match jsdoc templates
@@ -132,13 +132,13 @@ for (let id in files) {
 
       data += '<span class="quickDescription">';
 
-      if (id === 'hybrix-lib.js') { data += '{'; }
+      if (id === 'hybrix-jslib') { data += '{'; }
 
       for (let j = 0; j < func.parameters.length; ++j) {
         let parameter = func.parameters[j];
         if (parameter.name.indexOf('.') !== -1 || id === 'qrtz') {
           let name;
-          if (id === 'hybrix-lib.js' && j > 1) { data += ', '; }
+          if (id === 'hybrix-jslib' && j > 1) { data += ', '; }
 
           if (id === 'qrtz') {
             data += ' ';
@@ -153,7 +153,7 @@ for (let id in files) {
           }
         }
       }
-      if (id === 'hybrix-lib.js') { data += '}'; }
+      if (id === 'hybrix-jslib') { data += '}'; }
       data += '' + func.description.trim() + '</span><span class="toggleIcon"><svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <path d="M9,0 C11.4848182,0 13.7356364,1.00881818 15.3638182,2.63618182 C16.992,4.26354545 18,6.51518182 18,9 C18,11.4848182 16.9911818,13.7356364 15.3638182,15.3638182 C13.7364545,16.992 11.4848182,18 9,18 C6.51518182,18 4.26436364,16.9911818 2.63618182,15.3638182 C1.008,13.7364545 0,11.4848182 0,9 C0,6.51518182 1.00881818,4.26436364 2.63618182,2.63618182 C4.26354545,1.008 6.51518182,0 9,0 Z M9,4.90909091 C8.54836364,4.90909091 8.18181818,5.27563636 8.18181818,5.72727273 L8.18181818,8.18181818 L5.72727273,8.18181818 C5.27563636,8.18181818 4.90909091,8.54836364 4.90909091,9 C4.90909091,9.45163636 5.27563636,9.81818182 5.72727273,9.81818182 L8.18181818,9.81818182 L8.18181818,12.2727273 C8.18181818,12.7243636 8.54836364,13.0909091 9,13.0909091 C9.45163636,13.0909091 9.81818182,12.7243636 9.81818182,12.2727273 L9.81818182,9.81818182 L12.2727273,9.81818182 C12.7243636,9.81818182 13.0909091,9.45163636 13.0909091,9 C13.0909091,8.54836364 12.7243636,8.18181818 12.2727273,8.18181818 L9.81818182,8.18181818 L9.81818182,5.72727273 C9.81818182,5.27563636 9.45163636,4.90909091 9,4.90909091 Z" fill="#5DBDC9" fill-rule="nonzero"></path> </g> </svg></span></div><div style="display:none;" class="command-body" id="' + func.name.trim() + '">';
       data += func.description;
       data += '<table class="parameters">';
@@ -161,7 +161,7 @@ for (let id in files) {
       for (let j = 0; j < func.parameters.length; ++j) {
         let parameter = func.parameters[j];
         let type = typeConverter(parameter.type);
-        let dataTest = /data./.test(parameter.name) || id !== 'hybrix-lib.js';
+        let dataTest = /data./.test(parameter.name) || id !== 'hybrix-jslib';
         if (parameter.optional && dataTest) {
           data += '<tr><td>' + parameter.name + '</td><td>' + type + '</td><td><span style="color:grey;">[Optional';
           if (parameter.default) {
