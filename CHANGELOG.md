@@ -1,3 +1,27 @@
+# v0.6.4
+## Furry Pink Sphinx
+## 30-01-2020
+
+* Fix parsing of huge hexadecimals
+* Fix require statement in example
+* Implement method to list stored items
+* Update hybrix-jslib names in documentation
+* Import recipes recursively from recipe folder
+* Add byte folder to common on compile
+* Add variable flow for command parameters
+* Modify qrtz true to only do math comparisons
+* Create preparational stub for asset confirmed endpoint
+* Implement qrtz byte command for bit encoding
+* Fix true fn in qrtz is evaluated as boolean when used within the with fn
+* Improve mock chain
+* Waves sample transaction does not handle symbol properly
+* Put fork parameters in documented order
+* Fix fuse method
+* Continue with main process after childless fork
+
+
+
+
 # v0.6.3
 ## Happy Pink Kobold
 ## 17-01-2020
