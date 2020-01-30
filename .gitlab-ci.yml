@@ -27,7 +27,9 @@ hybrixd:
   services:
   - docker:stable-dind
   script:
-
+    # are we in a docker-executor?
+    - if [ -f /.dockerenv ]; then echo "docker-executor..."; else echo "no docker-executor..."; fi
+    
     # Because of race conditions with merge squashes leaving broken references we circumvent the default git strategy GIT_STRATEGY: none
     - cd ..
     - "git clone -n https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/hybrix/hybrixd/node.git --depth 10 --single-branch --branch $CI_COMMIT_REF_NAME"
@@ -53,6 +55,8 @@ hybrixd:
 test:
   stage: test
   script:
+    # are we in a docker-executor?
+    - if [ -f /.dockerenv ]; then echo "docker-executor..."; else echo "no docker-executor..."; fi
     - sh ./scripts/pipeline/test.sh
   coverage: /SUCCESS RATE[^|]*\:[^|]*\s+([\d\.]+)/
   except:
