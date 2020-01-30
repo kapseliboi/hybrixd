@@ -1,27 +1,3 @@
-# v0.6.4
-## Furry Pink Sphinx
-## 30-01-2020
-
-* Fix parsing of huge hexadecimals
-* Fix require statement in example
-* Implement method to list stored items
-* Update hybrix-jslib names in documentation
-* Import recipes recursively from recipe folder
-* Add byte folder to common on compile
-* Add variable flow for command parameters
-* Modify qrtz true to only do math comparisons
-* Create preparational stub for asset confirmed endpoint
-* Implement qrtz byte command for bit encoding
-* Fix true fn in qrtz is evaluated as boolean when used within the with fn
-* Improve mock chain
-* Waves sample transaction does not handle symbol properly
-* Put fork parameters in documented order
-* Fix fuse method
-* Continue with main process after childless fork
-
-
-
-
 # v0.6.3
 ## Happy Pink Kobold
 ## 17-01-2020
@@ -97,7 +73,7 @@
 * modified deterministic library to handle dynamic gas calculations
 * add gaslimit to eth unspent
 * added variable declaration for node in setup script
-* added recipe for Circuits of Value (eth.coval) 
+* added recipe for Circuits of Value (eth.coval)
 
 # v0.5.19
 ## Fluffy Purple Sphinx
@@ -453,7 +429,7 @@
 * added js-sha256 module
 * Add support for importing keys
 * Add support for Florincoin (FLO)
-* Fix qrtz atom 
+* Fix qrtz atom
 * Fix Bitcoin sample in recipe
 * Implement address validation
 * ETH improvements
