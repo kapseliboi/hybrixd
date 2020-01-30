@@ -5,15 +5,14 @@ OLDPATH=$PATH
 # $HYBRIXD/$NODE/scripts/npm  => $HYBRIXD
 SCRIPTDIR="`dirname \"$0\"`"
 HYBRIXD="`cd \"$SCRIPTDIR/../../..\" && pwd`"
-
+COMMON="$HYBRIXD/common"
+NODEJS="$HYBRIXD/nodejs"
 
 if [ -e "$HYBRIXD/hybrixd" ]; then
     URL_COMMON="https://github.com/hybrix-io/common.git"
     URL_NODEJS="https://github.com/hybrix-io/nodejs.git"
     URL_NODE_MODULES="https://github.com/hybrix-io/node_modules.git"
     NODE="$HYBRIXD/hybrixd"
-    COMMON="$HYBRIXD/common"
-    NODEJS="$HYBRIXD/nodejs"
     ENVIRONMENT="public"
     echo "[i] Environment is public..."
 elif [ -e "$HYBRIXD/node" ]; then
@@ -21,9 +20,7 @@ elif [ -e "$HYBRIXD/node" ]; then
     URL_NODEJS="https://www.gitlab.com/hybrix/hybrixd/dependencies/nodejs.git"
     URL_NODE_MODULES="https://gitlab.com/hybrix/hybrixd/dependencies/node_modules.git"
     NODE="$HYBRIXD/node"
-    COMMON="$HYBRIXD/common"
     ENVIRONMENT="dev"
-    NODEJS="$HYBRIXD/nodejs"
     echo "[i] Environment is development..."
 else
     echo "[!] Unknown Environment"
@@ -32,10 +29,9 @@ else
     exit 1
 fi
 
-
 if [ "`uname`" = "Darwin" ]; then
     SYSTEM="darwin-x64"
-elif [ "`uname -m`" = "i386" ] || [ "`uname -m`" = "i686" ]; then
+elif [ "`uname -m`" = "i386" ] || [ "`uname -m`" = "i686" ] || [ "`uname -m`" = "x86_64" ]; then
     SYSTEM="linux-x64"
 else
     echo "[!] Unknown Architecture (or incomplete implementation)"
@@ -58,7 +54,6 @@ fi
 
 export PATH="$NODE/node_binaries/bin:$PATH"
 
-
 # COMMON
 if [ ! -e "$NODE/common" ];then
 
@@ -72,7 +67,6 @@ if [ ! -e "$NODE/common" ];then
     echo " [i] Link common files"
     ln -sf "$COMMON" "$NODE/common"
 fi
-
 
 # NODE_MODULES
 if [ "$ENVIRONMENT" = "public" ]; then
@@ -105,7 +99,6 @@ else
     cd "$NODE"
     npm install
 fi
-
 
 # PROJECT XHY
 if [ -e "$HYBRIXD/project-xhy" ]; then
