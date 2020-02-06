@@ -229,7 +229,7 @@ input {
 ul {
   list-style: none; /* Remove default bullets */
 }
-ul li::before {
+/* ul li::before {
   content: "-";
   color: black;
   font-weight: bold;
@@ -237,7 +237,7 @@ ul li::before {
   width: 0.5em;
   margin-left: -2em;
   margin-right: 0.5em
-}
+} */
 li {
   list-style-type: none;
 }
@@ -294,6 +294,30 @@ hr {
   margin-top: 20px;
   margin-bottom: 20px;
 }
+
+.social-link {
+  font-size: 20px;
+  font-size: 1.33333rem;
+  color: #fff;
+  display: inline-block;
+  margin-left: 20px;
+  margin-right: 6px;
+  margin-top: 20px;
+  vertical-align: middle; }
+  .social-link img,
+  .social-link svg {
+    width: 22px; }
+  @media screen and (min-width: 48em) {
+    .social-link {
+      margin-top: 0; } }
+  .social-link:hover {
+    -moz-transform: translateY(-1px);
+    -o-transform: translateY(-1px);
+    -ms-transform: translateY(-1px);
+    -webkit-transform: translateY(-1px);
+    transform: translateY(-1px);
+    filter: alpha(opacity=1);
+    opacity: 1; }
 
 /* ------------------------------------------------------------------- */
 /* Headers */
@@ -485,7 +509,6 @@ select option {
   width: 100%;
   padding: 20px 20px;
   text-align: center;
-  font-size: 18px;
   opacity:0;
   height: 0;
   overflow: hidden;
@@ -523,7 +546,6 @@ select option {
 }
 .header nav a {
   display: block;
-  margin: 10px 0;
   -webkit-backface-visibility: hidden;
   font-smoothing: antialiased !important;
   transition: 0.3s all ease;
@@ -531,8 +553,12 @@ select option {
   font-weight: 500;
   color: #FFFFFF;
   margin-top: 0px;
-  margin-bottom: -20px;
   text-decoration: none;
+}
+.header nav ul li ul .socials .social-link img,
+.header nav ul li ul .socials .social-link svg {
+  -webkit-filter: invert(100%);
+  filter: invert(100%);
 }
 @media screen and (min-width: 48em) {
   .header nav a {
@@ -541,6 +567,11 @@ select option {
     color: #000000;
     text-decoration: none;
     margin-bottom: 0;
+  }
+  .header nav ul li ul .socials .social-link img,
+  .header nav ul li ul .socials .social-link svg {
+    -webkit-filter: invert(0%);
+    filter: invert(0%);
   }
 }
 .header nav a:hover {
@@ -559,6 +590,7 @@ select option {
 .header nav li {
   display: inline;
   vertical-align: middle;
+  position: relative;
 }
 .header nav li.selected > a {
   font-weight: 400;
@@ -582,7 +614,7 @@ select option {
   color: white;
   font-size: 20px;
   margin-left: 20px;
-  margin-right: 6px;
+  margin-right: 8px;
   vertical-align: middle;
   display: inline-block;
   margin-top: 20px;
@@ -637,20 +669,6 @@ select option {
   .header nav ul li > a.trigger-drop {
     cursor: default;
   }
-  .header nav ul li .drop {
-    float: right;
-    position: absolute;
-    right: 0;
-    top: 44px;
-    width: 280px;
-    background:white;
-    color: #5DBEC8;
-    border-radius: 4px;
-    box-shadow: 0 5px 28px rgba(0,0,0,0.15), 0 10px 10px rgba(0,0,0,0.12);
-    display:block;
-    right: 65px;
-    padding:30px 0 20px;
-  }
   .header nav ul li .drop ul {
     margin: 0;
     padding: 0;
@@ -660,7 +678,6 @@ select option {
     list-style: none;
     display: block;
     text-align: left;
-    padding: 5px 30px;
     margin: 0;
     width: 100%;
   }
@@ -684,7 +701,6 @@ select option {
   .header nav ul li .drop .arrow-up {
     display: block;
     position: absolute;
-    margin-top:-40px;
     width: 0;
     height: 0;
     border-left: 10px solid transparent;
@@ -739,6 +755,15 @@ select option {
     animation: fade-in-top ease 0.4s forwards;
   }
 }
+@media screen and (min-width: 48em) {
+  .header nav a {
+    display: inline-block;
+    margin: 0px 20px;
+    color: #000000;
+    text-decoration: none;
+    margin-bottom: 0;
+  }
+}
 @-webkit-keyframes fade-in-top {
   from {
     opacity: 0;
@@ -761,6 +786,87 @@ select option {
             transform: translateY(0);
   }
 }
+
+@media screen and (min-width: 48em) {
+
+  .header nav ul li:hover > .drop {
+      filter: alpha(opacity=1);
+      opacity: 1;
+      animation: fade-in-top ease .4s forwards;
+      max-height: 1000px;
+      overflow: visible;
+      visibility: visible;
+  }
+  .header nav ul li > .drop {
+      filter: alpha(opacity=0);
+      opacity: 0;
+      background: #fff;
+      max-height: 0;
+      overflow: hidden;
+      visibility: hidden;
+  }
+  .header nav ul li ul {
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    background: #fff;
+    box-shadow: 0 5px 28px rgba(0, 0, 0, 0.15), 0 10px 10px rgba(0, 0, 0, 0.12);
+    color: #5dbec8;
+    display: block;
+    float: right;
+    padding: 20px 0 16px;
+    position: absolute;
+    right: -22px;
+    top: 60px;
+    width: 280px;
+}
+.header nav ul li ul > li {
+    clear: both;
+    display: block;
+    list-style: none;
+    margin: 0;
+    padding: 5px 30px;
+    text-align: left;
+    width: 100%;
+}
+
+.header nav ul li ul > li {
+    clear: both;
+    display: block;
+    list-style: none;
+    margin: 0;
+    padding: 5px 30px;
+    text-align: left;
+    width: 100%;
+}
+
+.header nav ul li ul .arrow-up {
+    border-bottom: 10px solid #fff;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    display: block;
+    height: 0;
+    margin-left: 74%;
+    margin-top: -27px;
+    position: absolute;
+    width: 0;
+}
+
+.header nav ul li ul > li > a {
+    color: #000 !important;
+    margin: 0;
+    padding: 0;
+    text-transform: none;
+}
+.header nav ul li ul .socials .social-link img,
+.header nav ul li ul .socials .social-link svg {
+  -webkit-filter: invert(0%);
+  filter: invert(0%);
+}
+
+}
+
 
 /* ------------------------------------------------------------------- */
 /* Sidebar */
