@@ -8,5 +8,10 @@
     },
     "_ellipsis":true,
     "_this" : "Provides the necessary bindings to host the web wallet interface."
+  },
+  "quartz" :{
+    "_root" : [
+      "sync web_wallet"
+    ]
   }
 }

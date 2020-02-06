@@ -98,14 +98,14 @@ function display (result) {
   }
 
   r += '</div>';
-  let consoleResults = document.getElementById('console-results');
+  const consoleResults = document.getElementById('console-results');
   consoleResults.innerHTML += r;
   setTimeout(() => { consoleResults.lastChild.scrollIntoView(false); }, 100);
 }
 
 function rout (path, noHistory) {
   // make console visible
-  let consoleWrapper = document.getElementById('console-wrapper');
+  const consoleWrapper = document.getElementById('console-wrapper');
   if (consoleWrapper) {
     consoleWrapper.style.display = 'block';
   }
@@ -116,12 +116,12 @@ function rout (path, noHistory) {
   }
 
   // make call to hybrixd
-  let url = window.location.protocol + '//' + window.location.host + (window.location.pathname.startsWith('/api') ? '/api' : '') + path;
-  let xhr = new XMLHttpRequest();
+  const url = window.location.protocol + '//' + window.location.host + (window.location.pathname.startsWith('/api') ? '/api' : '') + path;
+  const xhr = new XMLHttpRequest();
   xhr.open('GET', url, true);
   xhr.onreadystatechange = e => {
     if (xhr.readyState === 4) {
-      let header = xhr.getResponseHeader('Content-Type');
+      const header = xhr.getResponseHeader('Content-Type');
       if (header === 'application/json') {
         let result;
         try {
@@ -129,7 +129,7 @@ function rout (path, noHistory) {
         } catch (e) {
           result = {data: 'Unknown Error', error: 1};
         }
-        if (result.error === 0 && result.hasOwnProperty('progress') && result.progress !== 1) {
+        if (result.error === 0 && result.hasOwnProperty('progress') && result.progress !== 1 && result.id !== 'id') {
           setTimeout(() => {
             rout(path, true);
           }, 500);

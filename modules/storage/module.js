@@ -28,7 +28,7 @@ function seek (proc, data) {
 
 function meta (proc, data) {
   const key = proc.command && proc.command[1] ? proc.command[1] : data.key;
-  storage.getMeta({key: key}, proc.done, proc.fail);
+  storage.getMeta({key: key, sessionID: proc.sessionID}, proc.done, proc.fail);
 }
 
 function work (proc, data) {

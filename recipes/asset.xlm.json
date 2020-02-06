@@ -52,7 +52,7 @@
       "done '$contract'"
     ],
     "unspent": [
-      "curl '/accounts/$1 2 1",
+      "curl '/accounts/$1' 2 1",
       "fail 'Could not connect to host'",
       "tran .sequence 2 1",
       "fail",

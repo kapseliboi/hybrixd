@@ -18,7 +18,7 @@ const getFilesizeInBytes = function (filename) {
 
 function makeDir (dirname) {
   if (!fs.existsSync(dirname)) {
-    fs.mkdirSync(dirname);
+    fs.mkdirSync(dirname, { recursive: true });
   }
 }
 
@@ -148,7 +148,7 @@ const list = function (data, dataCallback, errorCallback) {
         errorCallback('Error reading storage list.');
       } else {
         let result = [];
-        for (var i = 0; i < files.length; i += 2) {
+        for (let i = 0; i < files.length; i += 2) {
           if (files[i].substr(-5) !== '.meta') {
             result.push(files[i]);
           }
@@ -259,7 +259,9 @@ const getMeta = function (key, dataCallback, errorCallback) {
 
 const getMetaExt = function (data, dataCallback, errorCallback) {
   getMeta(data.key, m => {
-    delete m.pow; // Remove meta to not expose
+    if (data.sessionID !== 1) {
+      delete m.pow; // Remove meta to not expose for non root users
+    }
     dataCallback(m);
   }, errorCallback
   );
@@ -268,7 +270,7 @@ const getMetaExt = function (data, dataCallback, errorCallback) {
 const autoClean = function () {
   if (!fs.existsSync(storagePath)) {
     console.log(' [.] module storage: creating storage directory');
-    fs.mkdirSync(storagePath);
+    fs.mkdirSync(storagePath, { recursive: true });
     return; // if path did not exists it's already cleaned
   }
   console.log(' [.] module storage: auto-clean scan');
