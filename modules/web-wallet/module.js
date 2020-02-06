@@ -4,14 +4,15 @@
 
 // exec
 function web_wallet (proc) {
-  let source = 'web-wallet';
-  let command = proc.command;
-  proc.sync();
-  let fileName = command.length === 0
+  const source = 'web-wallet';
+  const command = proc.command;
+  command.shift();
+
+  const fileName = command.length === 0
     ? 'modules/' + source + '/files/index.html'
     : 'modules/' + source + '/files/' + command.join('/');
 
-  let mimeTypes = {
+  const mimeTypes = {
     css: 'text/css',
     ico: 'image/x-icon',
     js: 'text/javascript',
@@ -23,9 +24,9 @@ function web_wallet (proc) {
     eot: 'application/vnd.ms-fontobject'
   };
 
-  let fileNameSplitByDot = fileName.split('.');
-  let extension = fileNameSplitByDot[fileNameSplitByDot.length - 1];
-  let mimeType = mimeTypes.hasOwnProperty(extension) ? mimeTypes[extension] : 'text/html';
+  const fileNameSplitByDot = fileName.split('.');
+  const extension = fileNameSplitByDot[fileNameSplitByDot.length - 1];
+  const mimeType = mimeTypes.hasOwnProperty(extension) ? mimeTypes[extension] : 'text/html';
 
   proc.mime('file:' + mimeType);
   proc.done(fileName.split('?')[0]);

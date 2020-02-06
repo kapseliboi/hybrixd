@@ -37,7 +37,16 @@
       "data {key:'$1',value:'$2'}",
       "func 'save'",
       "done"
-    ]
+    ],
+    "work": ["func work/$1/$2"],
+    "size": ["func size/$1"],
+    "sync": ["func sync/$1"],
+    "seek": ["func seek/$1"],
+    "pull": ["func pull/$1"],
+    "seek": ["func seek/$1"],
+    "burn": ["func burn/$1"],
+    "work": ["func work/$1"],
+    "meta": ["func meta/$1"]
   },
   "router" : {
     "_help" : "Control the decentralized storage engine.",
@@ -61,13 +70,6 @@
     "pull":{
       "_help" : "Retrieve the sync list.",
       "_this" : "The list contains a randomized key list of recently created or updated storage items."
-    },
-    "seek":{
-      "_help" : "Check if a storage key exists.",
-      "_ref" : {
-        "_list" : "storage_id",
-        "_this" : "Specify the ID key too check if it exists."
-      }
     },
     "load":{
       "_help" : "Load data from storage.",

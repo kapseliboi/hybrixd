@@ -45,7 +45,7 @@
       "poke 'userhash' ${userdata[0]}",
       "poke 'useraddr' ${userdata[1]}",
       "call 'coreList/eligibility/$1'",
-      "excl '$userhash' 1 @notelligible",
+      "excl '$userhash' false 1 @notelligible",
     "# reinsert hash at beginning of array",
       "fuse '$userhash' 0",
     "# check if address is not already added",
@@ -81,7 +81,7 @@
     ],
     "addEligibility" : [
       "call 'coreList/eligibility/$1'",
-      "excl '.EOF' @immutable 1",
+      "excl '.EOF' false @immutable 1",
       "find '$2' @alreadyadd",
       "call 'coreAdd/eligibility/$1/$2'",
       "done",

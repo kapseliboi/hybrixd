@@ -6,14 +6,15 @@ const fs = require('fs');
 
 // exec
 function web_blockexplorer (proc) {
-  let source = 'web-blockexplorer';
-  let command = proc.command;
-  proc.sync();
+  const source = 'web-blockexplorer';
+  const command = proc.command;
+  command.shift();
+
   let fileName = command.length === 0 || command[0].startsWith('?')
     ? 'modules/' + source + '/files/index.html'
     : 'modules/' + source + '/files/' + command.join('/');
 
-  let mimeTypes = {
+  const mimeTypes = {
     css: 'text/css',
     ico: 'image/x-icon',
     js: 'text/javascript',
@@ -33,9 +34,9 @@ function web_blockexplorer (proc) {
     fileName = 'modules/' + source + '/files/index.html';
   }
 
-  let fileNameSplitByDot = fileName.split('.');
-  let extension = fileNameSplitByDot[fileNameSplitByDot.length - 1];
-  let mimeType = mimeTypes.hasOwnProperty(extension) ? mimeTypes[extension] : 'text/html';
+  const fileNameSplitByDot = fileName.split('.');
+  const extension = fileNameSplitByDot[fileNameSplitByDot.length - 1];
+  const mimeType = mimeTypes.hasOwnProperty(extension) ? mimeTypes[extension] : 'text/html';
 
   proc.mime('file:' + mimeType);
   proc.done(fileName);

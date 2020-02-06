@@ -12,14 +12,14 @@
       "case upper",
       "flow ABC123 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "code" : [
       "data woot",
       "code utf-8 bin",
       "flow '1110111011011110110111101110100' 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "date" : [
       "date now",
@@ -27,77 +27,115 @@
       "head 2",
       "flow '15' 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "drop" : [
       "data 'abc'",
       "drop 1",
       "flow 'bc' 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
 
-    "excl" : [
+    "excl1" : [
       "data gloves",
-      "excl [g,s]",
-      "flow 'love' 1 2",
+      "excl g",
+      "flow 'loves' 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "excl2" : [
       "data [g,l,o,v,e,s]",
-      "excl [g,s]",
+      "excl g",
+      "jstr",
+      "flow '[\"l\",\"o\",\"v\",\"e\",\"s\"]' 1 2",
+      "done $OK",
+      "fail"
+    ],
+      "excl3" : [
+      "data gloves",
+      "excl [g,s] true",
+      "flow 'love' 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "excl4" : [
+      "data [g,l,o,v,e,s]",
+      "excl [g,s] true",
       "jstr",
       "flow '[\"l\",\"o\",\"v\",\"e\"]' 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
+    ],
+    "filt1" : [
+      "data gloves",
+      "filt g",
+      "flow 'g' 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "filt2" : [
+      "data [g,l,o,v,e,s]",
+      "filt g",
+      "jstr",
+      "flow '[\"g\"]' 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "filt3" : [
+      "data gloves",
+      "filt [g,s] true",
+      "flow 'gs' 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "filt4" : [
+      "data [g,l,o,v,e,s]",
+      "filt [g,s] true",
+      "jstr",
+      "flow '[\"g\",\"s\"]' 1 2",
+      "done $OK",
+      "fail"
     ],
 
-    "filt" : [
-      "data helloworld",
-      "filt [o,d]",
-      "flow 'ood' 1 2",
-      "done $OK",
-      "fail $NOT_OK:$0:$"
-    ],
     "find" : [
       "data [{id:1,test:2},{id:3,test:4},{id:5,test:6}]",
       "find {id:5}",
       "data ${[0].test}",
       "flow 6 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "flow1" : [
       "data appel",
       "flow appel 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "flow2" : [
       "data appel",
       "flow {appel:1} 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "flow3" : [
       "poke fruit appel",
       "flow fruit {appel:1} 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "flow4" : [
       "# $1 has null so flow should fail",
       "flow 1 {fruit:2} 1",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "fuse1" : [
       "data appel!",
       "fuse taart 5",
       "flow 'appeltaart!' 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "fuse2" : [
       "data [1,2,3]",
@@ -105,14 +143,14 @@
       "pick 4",
       "flow '5' 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "head" : [
       "data appeltaart",
       "head 5",
       "flow 'appel' 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
 
     "indx" : [
@@ -120,42 +158,42 @@
       "indx 'needle'",
       "flow 10 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "indx2" : [
       "data 'This is a needle and not a needle...'",
       "indx 'needle' true",
       "flow 27 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "indx3" : [
       "data ['This is a needle and not a needle...',0,null,'needle','nein']",
       "indx 'needle'",
       "flow 3 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "indx4" : [
       "data ['This is a needle and not a needle...',0,null,'needle','nein']",
       "indx 'needle' true",
       "flow 3 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "indx5" : [
       "data ['This is a needle and not a needle...',0,null,'needle','nein']",
       "indx 'needle' false true",
       "flow [10,-1,-1,0,-1] 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "indx6" : [
       "data ['This is a needle and not a needle...',0,null,'needle','nein']",
       "indx 'needle' true true",
       "flow [27,-1,-1,0,-1] 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
 
     "jpar" : [
@@ -164,13 +202,13 @@
       "data ${.key}",
       "flow value 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "jpar2" : [
       "data 'broken JSON key:value}'",
       "jpar 2 1",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
 
     "jstr" : [
@@ -178,14 +216,14 @@
       "jstr",
       "flow '{\"key\":\"value\",\"array\":[1,2,3]}' 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "many" : [
       "data abcdefaba",
       "many 2",
       "flow 'aaa' 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
 
     "pick" : [
@@ -193,50 +231,50 @@
       "pick 2",
       "flow c 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "pick2" : [
       "data abcdef",
       "pick -1",
       "flow f 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "pick3" : [
       "data abcdef",
       "pick 1 3",
       "flow bc 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "pick4" : [
       "data abcdef",
       "pick [1,3]",
       "flow bd 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
 
-    "pull" : [
+    "push" : [
       "data abc",
       "push def",
       "flow abcdef 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "repl" : [
       "data 'Many apples for you.'",
       "repl [apples,you] [pears,me]",
       "flow 'Many pears for me.' 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "size" : [
       "data '1234'",
       "size",
       "flow 4 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
 
     "math1" : [
@@ -261,16 +299,19 @@
       "done $OK",
       "fail"
     ],
-
-
     "burn" : [
-      "burn test",
-      "done $OK"
+      "save testBurn",
+      "burn testBurn",
+      "seek testBurn 2 1",
+      "done $OK",
+      "fail"
     ],
     "save" : [
       "burn testSave",
       "save testSave 123",
-      "done $OK"
+      "seek testSave 1 2",
+      "done $OK",
+      "fail"
     ],
     "load" : [
       "data 123",
@@ -278,29 +319,35 @@
       "load testLoad 1 3",
       "flow '123' 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
-    ],
-    "seek" : [
-      "save testseek",
-      "list testseek",
-      "seek test 1 3",
-      "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "list" : [
-      "save testlist",
-      "list testlist",
+      "burn testList",
+      "save testList",
+      "list testList",
       "size",
       "ship 1 2 2 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
-
+    "work" : [
+      "burn testWork",
+      "save testWork 123",
+      "poke challenge ${.challenge}",
+      "rout /e/storage/meta/testWork",
+      "tran .pow",
+      "rout '/e/storage/work/testWork/$'",
+      "rout /e/storage/meta/testWork",
+      "tran .expire",
+      "flow null 2 1",
+      "done $OK",
+      "fail"
+    ],
     "rout0" : [
       "rout /a/dummy/factor 1 3",
       "flow {8:1} 2",
       "done '$OK'",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
 
     "rout1" : [
@@ -312,25 +359,43 @@
     "rout2" : [
       "rout /s/web-wallet/non_existing_file 2 1",
       "done '$OK'",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
 
     "rout3" : [
       "#fonts is a directory should fail but not crash",
       "rout /s/web-wallet/fonts 2 1",
       "done '$OK'",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
 
     "fail" : [
       "hook @hook",
-      "fail '$NOT_OK:$0:$'",
+      "fail",
       "@hook",
       "done '$OK'"
     ],
     "data" : [
       "data '$OK'",
       "done"
+    ],
+    "peek1" : [
+      "data a",
+      "poke b",
+      "data x",
+      "peek b",
+      "flow a 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+     "peek2" : [
+      "data a",
+      "poke local::b",
+      "data x",
+      "peek local::b",
+      "flow a 1 2",
+      "done '$OK'",
+      "fail"
     ],
 
     "tran1" : [
@@ -339,16 +404,15 @@
       "jstr string",
       "flow '[\"x\",\"y\"]' 1 2",
       "done '$OK'",
-      "fail $NOT_OK:$0:$"
+      "fail"
     ],
     "tran2" : [
       "data [{a:x},{a:y}]",
-      "tran []{b:.a} 1 5",
+      "tran []{b:.a} 1 4",
       "jstr string",
       "flow '[{\"b\":\"x\"},{\"b\":\"y\"}]' 1 2",
       "done '$OK'",
-      "fail $NOT_OK:$0:$",
-      "fail 'aaaa $'"
+      "fail"
     ],
     "with1":[
       "data '$NOT_OK'",
@@ -363,6 +427,14 @@
       "with with_test [data,3] [true,'==3',2,1] [fail] [done,$OK]",
       "peek with_test"
     ],
+    "with3":[
+      "data '$NOT_OK'",
+      "poke test $OK",
+      "poke with_test",
+      "with with_test peek test",
+      "peek with_test"
+    ],
+
     "true1":[
       "data 2",
       "true '<1' 1 2",
@@ -376,22 +448,22 @@
     ],
     "test" : [
       "qrtz",
-      "excl [test,subtest]",
+      "excl [test,subtest] true",
       "each subtest",
       "excl $OK",
+      "poke testResults",
       "size",
       "flow 0 1 2",
       "done $OK",
-      "fail $NOT_OK:$0:$"
+      "fail $testResults"
     ],
-
     "subtest":[
+      "poke method ${.value}",
       "hook @fail",
-      "#logs '${.value}'",
       "call '${.value}'",
-      "done $OK",
+      "done",
       "@fail",
-      "done $NOT_OK::$0:$"
+      "done '$method failed : $'"
     ]
   },
   "router":{

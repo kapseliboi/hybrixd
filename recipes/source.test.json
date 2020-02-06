@@ -4,14 +4,15 @@
   "module":"quartz",
   "router" : {
     "_hidden":true,
-    "test": "test"
+    "test": "test",
+    "_elipsis" : true
   },
   "quartz" : {
 
     "test" : [
-      "data [1,2,3]",
-      "poke [a,b,c]",
-      "peek [c,b,a]",
+      "poke a 1",
+      "with b [peek,a] [math,+$1]",
+      "peek b",
       "done"
     ]
   }

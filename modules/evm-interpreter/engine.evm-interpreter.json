@@ -59,5 +59,10 @@
         "_this" : "Decompile bytecode into readable Solidity-like pseudocode."
       }
     }
+  },
+  "quartz" :{
+    "get":[
+      "func get/$1/$2"
+    ]
   }
 }

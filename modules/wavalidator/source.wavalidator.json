@@ -5,7 +5,8 @@
 
   "quartz":{
     "_root" : [
-      "func 'validate'"
+      "func 'validate'",
+      "done"
     ]
   },
   "router" : {

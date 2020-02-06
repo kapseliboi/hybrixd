@@ -8,12 +8,6 @@ const scheduler = require('../../lib/scheduler/scheduler');
 // exports
 exports.exec = exec;
 
-function addSteps (subprocesses, steps) {
-  for (let step of steps) {
-    subprocesses.push(step);
-  }
-}
-
 // standard functions of an asset store results in a process superglobal -> global.hybrixd.process[processID]
 // child processes are waited on, and the parent process is then updated by the postprocess() function
 function exec (properties) {
@@ -34,17 +28,17 @@ function exec (properties) {
 
   global.hybrixd.proc[processID].request = properties.command; // set request to what command we are performing
 
-  const command = properties.command[0];
+  const functionName = properties.command[0];
 
-  const subprocesses = [];
-  if (recipe.hasOwnProperty('quartz') && recipe.quartz.hasOwnProperty(command)) {
-    addSteps(subprocesses, recipe.quartz[command]);
+  let qrtzFunctionOrSteps;
+  if (recipe.hasOwnProperty('quartz') && recipe.quartz.hasOwnProperty(functionName)) {
+    qrtzFunctionOrSteps = recipe.quartz[functionName];
   } else if (recipe.hasOwnProperty('quartz') && recipe.quartz.hasOwnProperty('_root')) {
-    addSteps(subprocesses, recipe.quartz['_root']);
+    qrtzFunctionOrSteps = recipe.quartz['_root'];
   } else {
-    subprocesses.push('fail "Recipe function \'' + command + '\' not supported for \'' + id + '\'."');
+    qrtzFunctionOrSteps = ['fail "Recipe function \'' + functionName + '\' not supported for \'' + id + '\'."'];
   }
 
   // fire the Qrtz-language program into the subprocess queue
-  scheduler.fire(processID, subprocesses);
+  scheduler.fire(processID, qrtzFunctionOrSteps);
 }
