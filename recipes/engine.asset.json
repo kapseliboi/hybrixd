@@ -123,7 +123,7 @@
     "validate" : [
       "data '$addressRegex'",
       "flow 'undefined' 1 3",
-      "rout '/source/wavalidator/$symbol/$1'",
+      "rout '/source/wavalidator/validate/$symbol/$1'",
       "done",
       "data '$1'",
       "regx '$addressRegex' 1 2",

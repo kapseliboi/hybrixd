@@ -11,7 +11,7 @@
       "done 'modules/deterministic/$1/deterministic.js.lzma'"
     ],
     "hash" : [
-      "func 'hash'"
+      "func 'hash/$1'"
     ],
     "hashes" : [
       "func 'hashes'"

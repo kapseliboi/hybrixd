@@ -8,28 +8,44 @@ NODE="`cd \"$SCRIPTDIR/../..\" && pwd`"
 
 export PATH="$NODE/node_binaries/bin:$PATH"
 
-#echo " [i] Running Interface tests"
 
-#sh "$NODE/hybrixd" /r/assets/test > "$NODE/test-hybrixd.xml"
+sed -i -e "s/enable_daily_asset_report = true/enable_daily_asset_report = false/g" "$NODE/hybrixd.conf"
 
-#echo " [i]Output test data"
+#echo " [d] Output conf"
+#cat "$NODE/hybrixd.conf"
 
-#sh "$NODE/hybrixd" /r/assets/cli | tee output
+echo " [i] Running Interface tests"
 
-#TEST_INTERFACE_OUTPUT=$(cat output)
+sh "$NODE/hybrixd" /r/assets/test > "$NODE/test-hybrixd.xml"
 
-#SUCCESS_RATE=$(echo "$TEST_INTERFACE_OUTPUT" | grep "SUCCESS RATE")
-#rm output
+if [ -s "$NODE/test-hybrixd.xml" ]; then
+    echo " [.] Interface test completed!"
+else
+    echo " [!] Interface test failed!"
+   # exit 1
+fi
 
-## "      SUCCESS RATE :${PERCENTAGE}%' => "$PERCENTAGE"
-#PERCENTAGE=$(echo $SUCCESS_RATE| cut -d':' -f2  | cut -d'%' -f1)
+echo " [d] test-hybrixd.xml"
+cat "$NODE/test-hybrixd.xml"
 
-#if [ "$PERCENTAGE" -lt "80" ]; then
- #   echo " [!] Interface test failed!"
-#    exit 1
-#else
-#    echo " [v] Interface test succeeded."
-#fi
+echo " [i] Output test data"
+
+sh "$NODE/hybrixd" /r/assets/cli | tee output
+
+TEST_INTERFACE_OUTPUT=$(cat output)
+
+SUCCESS_RATE=$(echo "$TEST_INTERFACE_OUTPUT" | grep "SUCCESS RATE")
+rm output
+
+# "      SUCCESS RATE :${PERCENTAGE}%' => "$PERCENTAGE"
+PERCENTAGE=$(echo $SUCCESS_RATE| cut -d':' -f2  | cut -d'%' -f1)
+
+if [ "$PERCENTAGE" -lt "80" ]; then
+    echo " [!] Interface test failed!"
+    exit 1
+else
+    echo " [v] Interface test succeeded."
+fi
 
 echo " [i] Running Quartz tests"
 

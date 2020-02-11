@@ -1,4 +1,4 @@
-// (C) 2015 Internet of Coins / Metasync / Joachim de Koning
+// (C) 2015 Internet of Coins / Joachim de Koning / Rouke Pouw
 // required libraries in this context
 
 // load validators
@@ -10,10 +10,10 @@ const stellarValidator = require('./validators/validator.xlm.js');
 exports.validate = validate;
 
 function validate (proc, data) {
-  let command = proc.command;
+  const command = proc.command;
 
-  let symbol = command[0].toUpperCase().split('.')[0];
-  let address = command[1];
+  let symbol = command[1].toUpperCase().split('.')[0];
+  const address = command[2];
   if (symbol === 'UBQ' || symbol === 'EXP') { symbol = 'ETH'; }
   if (symbol === 'XCP' || symbol === 'OMNI') { symbol = 'BTC'; }
 
