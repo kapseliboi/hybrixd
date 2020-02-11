@@ -4,21 +4,23 @@
   "module":"wavalidator",
 
   "quartz":{
-    "_root" : [
-      "func 'validate'",
+    "validate" : [
+      "func 'validate/$1/$2'",
       "done"
     ]
   },
   "router" : {
     "_hidden":true,
     "_help" : "Validate address formatting.",
-    "_ref" : {
-      "_list" : "symbol",
-      "_sample" : "dummy",
+    "validate" : {
       "_ref" : {
-        "_list" : "address",
-        "_sample" : "_dummyaddress_",
-        "_this" : "Validate $ADDRESS for asset $SYMBOL."
+        "_list" : "symbol",
+        "_sample" : "dummy",
+        "_ref" : {
+          "_list" : "address",
+          "_sample" : "_dummyaddress_",
+          "_this" : "Validate $ADDRESS for asset $SYMBOL."
+        }
       }
     }
   }

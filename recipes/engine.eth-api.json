@@ -61,10 +61,6 @@
       "poke local::gasPrice",
       "done"
     ],
-    "validate" : [
-      "rout '/source/wavalidator/$symbol/$1'",
-      "done"
-    ],
     "sample":[
       "done {address:'0x896a0b2b259d62fd27aeab05c81bb1897ecf767b',transaction:'0x5496d381d8b2c6ae028c69f90a643f1c453bbfd0381df9d0af0e20b09a04dadd'}"
     ],

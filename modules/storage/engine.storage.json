@@ -45,7 +45,6 @@
     "pull": ["func pull/$1"],
     "seek": ["func seek/$1"],
     "burn": ["func burn/$1"],
-    "work": ["func work/$1"],
     "meta": ["func meta/$1"]
   },
   "router" : {
