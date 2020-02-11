@@ -116,6 +116,7 @@
       "math 'ceil'",
       "poke 'pages'",
       "poke 'loopVar' 0",
+      "poke resultArray []",
       "@countLoop",
       "data '$address$hash'",
       "curl /account/transfers/all?address=$address$hash {'content-type':'application/json'} 2 1",
