@@ -25,16 +25,18 @@
     ],
     "open" :[
       "prog 0 1 8000",
-      "func open"
+      "func open/$1/$2/$3"
     ],
     "stop" :[
       "prog 0 1 8000",
-      "func stop"
+      "func stop/$1"
     ],
-    "info" :["func info"],
+    "info" :[
+      "func info/$1"
+    ],
     "read" :[
       "time $readTimeout",
-      "func read",
+      "func read/$1/$2/$3",
       "done"
     ],
     "send" :[
@@ -44,7 +46,11 @@
       "func $",
       "done"
     ],
-    "list" :["func list"],
+    "list" :[
+      "data $@",
+      "join '/'",
+      "func $"
+    ],
     "node" : [
       "node",
       "done"
@@ -76,7 +82,7 @@
       "peek path",
       "push '$nodeId' 1",
       "join '/'",
-      "logs 'module transport: decentralized call */$curlpath ...'",
+      "logs 'module transport: decentralized call @/$curlpath ...'",
       "call 'send/*/$'",
       "call 'read/*/$nodeId/$'",
       "done"
