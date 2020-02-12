@@ -1,3 +1,15 @@
+# v0.7.0
+## Fluffy Pink Kobold
+## 12-02-2020
+
+* Rebuild qrtz scheduler engine for performance
+* Copy to clipboard error in api documentation
+* Update fix for eth huge hexadecimals
+* Improve testing for pow and qrtz
+* Rebuild rest call for stability
+
+
+
 # v0.6.4
 ## Furry Pink Sphinx
 ## 30-01-2020
