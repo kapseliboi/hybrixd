@@ -214,6 +214,7 @@ function read (proc) {
       loopHandles = [ handleId ];
     }
     if (loopHandles.length > 0) {
+      let timeoutHandle;
       let readInterval = setInterval(function (loopHandles, messageResponseId) {
         for (let i = 0; i < loopHandles.length; i++) {
           const curHandleId = loopHandles[i];
@@ -226,6 +227,8 @@ function read (proc) {
               }
             }
             if (idx > -1 && curHandle.buffer[idx].data !== null) {
+              clearInterval(readInterval);
+              clearTimeout(timeoutHandle);
               try {
                 let messageData = JSON.parse(curHandle.buffer[idx].data);
                 curHandle.buffer.splice(idx, 1);
@@ -237,7 +240,7 @@ function read (proc) {
           }
         }
       }, 250, loopHandles, messageResponseId);
-      setTimeout(function (readInterval) {
+      timeoutHandle = setTimeout(function (readInterval) {
         clearInterval(readInterval);
         proc.fail('Transport message read timeout!');
       }, proc.peek('readTimeout') || 32000, readInterval);
