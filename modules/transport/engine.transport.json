@@ -46,7 +46,7 @@
       "func $",
       "done"
     ],
-    "list" :["func list/$1"],
+    "list" :["func list/$1/$2/$3"],
     "node" : [
       "node",
       "done"
