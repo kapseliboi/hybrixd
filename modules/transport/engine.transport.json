@@ -46,7 +46,12 @@
       "func $",
       "done"
     ],
-    "list" :["func list/$1/$2/$3"],
+    "list" :[
+      "data $@",
+      "pull",
+      "join '/'",
+      "func list/$"
+    ],
     "node" : [
       "node",
       "done"
