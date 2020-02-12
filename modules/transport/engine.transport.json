@@ -47,10 +47,7 @@
       "done"
     ],
     "list" :[
-      "data $@",
-      "pull",
-      "join '/'",
-      "func list/$"
+      "func list/$1/$2/$3"
     ],
     "node" : [
       "node",
