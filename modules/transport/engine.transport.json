@@ -47,7 +47,9 @@
       "done"
     ],
     "list" :[
-      "func list/$1/$2/$3"
+      "data $@",
+      "join '/'",
+      "func $"
     ],
     "node" : [
       "node",
