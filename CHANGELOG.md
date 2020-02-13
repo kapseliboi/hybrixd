@@ -1,3 +1,14 @@
+# v0.7.1
+## Happy Purple Sphinx
+## 13-02-2020
+
+* Fix ardor transacton date is incorrect
+* web-wallet: fix favorite assets settings
+* web-wallet: add extra notifications on errors
+* web-wallet: fix insufficient fee messages
+
+
+
 # v0.7.0
 ## Fluffy Pink Kobold
 ## 12-02-2020
