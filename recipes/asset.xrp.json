@@ -36,9 +36,6 @@
       "fail 'Could not connect to host'",
       "done"
     ],
-    "fee-factor" : [
-      "pass '$fee-factor'"
-    ],
     "balance" : [
       "data '$symbol'",
       "flow 'xrp' @balance @tokenBalance",
@@ -91,12 +88,6 @@
       "@end",
       "done"
     ],
-    "factor" : [
-      "pass '$factor'"
-    ],
-    "contract" : [
-      "pass '$contract'"
-    ],
     "cron" : [
       "data $symbol",
       "flow 'xrp' 2 1",
@@ -118,18 +109,17 @@
       "tran '.result.info.load_factor' @fee @fail",
       "@fee",
       "poke 'local::load_factor'",
-      "math '$xrp::fee * $local::load_factor'",
+      "math '$fee * $local::load_factor'",
       "poke 'local::fee'",
       "done"
     ],
     "fee" : [
-      "data '$local::fee'",
-      "flow 'undefined' @xrpFee @localFee",
-      "@xrpFee",
-      "pass '$xrp::fee'",
-      "done",
+      "peek local::fee",
+      "flow 'undefined' @defaulFee @localFee",
+      "@defaulFee",
+      "done $fee",
       "@localFee",
-      "pass '$local::fee'"
+      "done"
     ],
     "push" : [
       "data '$1'",
@@ -195,7 +185,7 @@
       "fail 'No result!'"
     ],
     "sample" : [
-      "pass {address:'rbwE6wsxzYat1YyGGxzAwq6wBSF5MdoAg',transaction:'699C005DEA8638B6FFEDB6039A82EB4190E0BAFAAA6E14307042FBA089E93EFE'}"
+      "done {address:'rbwE6wsxzYat1YyGGxzAwq6wBSF5MdoAg',transaction:'699C005DEA8638B6FFEDB6039A82EB4190E0BAFAAA6E14307042FBA089E93EFE'}"
     ],
     "subhistory" : [
       "tran '.value.tx.hash' 1 @fail",
