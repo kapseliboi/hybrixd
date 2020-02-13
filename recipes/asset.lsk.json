@@ -17,7 +17,7 @@
     "balance" : [
       "curl /api/accounts?address=$1&limit=1&offset=0&sort=balance:asc {Accept:'application/json','Content-Type':'application/json'} 2 1",
       "fail 'Could not connect to host'",
-      "tran '.data[0].unconfirmedBalance' @nonzero",
+      "tran '.data[0].balance' @nonzero",
       "data 0",
       "jump @done",
       "@nonzero",
