@@ -12,16 +12,5 @@
   "import":"ardr",
   "throttle":5,
   "genesisBlockTime":1385294400,
-  "chain":2,
-  "quartz":{
-    "validate": [
-      "done valid"
-    ],
-    "sample" : [
-      "done {address:'ARDOR-4ZYF-VT4W-9R9F-ED96T',transaction:'e1337ab1e625ba11c42e00eb5a0cd719286b460d8961d8ef57788603710c21ea',publicKey:'bf9d64d9abf5b844e819aae24ef9290ae2ffa62ae322754b9c6ee21571a1474f'}"
-    ],
-    "test" :[
-      "done {hash:dynamic}"
-    ]
-  }
+  "chain":2
 }
