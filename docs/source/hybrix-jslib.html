@@ -56,7 +56,7 @@
    var hybrix = new Hybrix.Interface({XMLHttpRequest:XMLHttpRequest});
    hybrix.sequential(
     [
-     'init',                                                        // Initialize hybrix
+     'init'                                                        // Initialize hybrix
     ],
     ()=>{alert('Hello World!');},                                   // Define action to execute on successfull completion
     error=>{alert('Oops, something went wrong: '+error);}           // Define action to exectue when an error is encountered
