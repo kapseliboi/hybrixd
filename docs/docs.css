@@ -1049,6 +1049,11 @@ select option {
 .content {
   padding: 0px 30px 60px 30px;
 }
+
+.content ol li {
+  list-style-type: decimal;
+  padding-bottom: 4px;
+}
 @media screen and (min-width: 1024px) {
   .content {
     padding: 90px 60px 20px 60px;
