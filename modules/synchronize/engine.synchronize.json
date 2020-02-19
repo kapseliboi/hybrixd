@@ -15,6 +15,7 @@
       "data ${.value}",
       "poke key",
       "data $1",
+      "jpar",
       "tran '.$key' 1 4",
       "flat",
       "tran '[0]'",
@@ -28,6 +29,9 @@
       "tran '[0]'",
       "each selectGetPeerIDs/$nodeList",
       "flat",
+      "pick 1",
+      "void @noPeers",
+      "flat",
       "uniq",
       "excl null",
       "poke nodeList",
@@ -36,6 +40,9 @@
       "poke selected",
       "peek nodeList",
       "pick $selected",
+      "void 'undefined' @noPeers 2",
+      "@noPeers",
+      "fail 'No peers connected!'",
       "done"
     ],
     "list":[
