@@ -345,17 +345,17 @@
   "r":{"_alias":"report"},
   "report":{
     "assets" : {
-      "_this" : "View asset report",
+      "_this" : "View the asset test report. Requires test data to be available. Run /report/assets/test to gather data or ensure enable_daily_asset_report is set to true.",
       "test" : {
         "_this":"Run tests and return xml report ",
         "_access" : "root"
       },
       "cli" : {
-        "_this":"Return test results in cli format",
+        "_this":"Return test results in cli format.",
         "_access" : "root"
       },
       "xml" : "Return test results in xml format.",
-      "json" : "Return test results in json format"
+      "json" : "Return test results in json format."
     },
     "asset":{
       "_ref":{
