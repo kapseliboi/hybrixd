@@ -1,3 +1,17 @@
+# v0.7.2
+## Furry Purple Phoenix
+## 20-02-2020
+
+* now utilizing own ETH nodes
+* Fix to synchronization failure.
+* Added wallet faq to documentation
+* Fix for failing ethereum token balance
+* Expand report endpoint documentation
+* Implement address validation for ardor and ignis
+* Fix for lisk balance calls
+
+
+
 # v0.7.1
 ## Happy Purple Sphinx
 ## 13-02-2020
