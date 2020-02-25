@@ -1,6 +1,6 @@
 {
   "symbol":"dummy",
-  "name":"Dummycoin (test coin for Internet of Coins)",
+  "name":"Dummycoin (test coin for hybrix)",
   "module":"quartz",
   "mode":"dummycoin",
   "addressRegex":"^_dummyaddress_$",
