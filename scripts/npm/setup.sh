@@ -35,20 +35,32 @@ elif [ "`uname -m`" = "i386" ] || [ "`uname -m`" = "i686" ] || [ "`uname -m`" = 
     SYSTEM="linux-x64"
 else
     echo "[!] Unknown Architecture (or incomplete implementation)"
+    export PATH="$OLDPATH"
+    cd "$WHEREAMI"
     exit 1;
+fi
+
+# NODE
+if [ "$ENVIRONMENT" = "public" ]; then
+    if [ ! -e "$HYBRIXD/node" ];then
+        echo "[i] linking hybrixd to node folder."
+        ln -sf "$HYBRIXD/hybrixd" "$HYBRIXD/node"
+    else
+        echo "[i] node folder exists."
+    fi
 fi
 
 # NODE_BINARIES
 if [ ! -e "$NODE/node_binaries" ];then
 
-    echo " [!] $NODE/node_binaries not found."
+    echo "[!] $NODE/node_binaries not found."
 
     if [ ! -e "$NODEJS" ];then
         cd "$HYBRIXD"
-        echo " [i] Clone node js runtimes files"
+        echo "[i] Clone node js runtimes files"
         git clone "$URL_NODEJS"
     fi
-    echo " [i] Link node_binaries"
+    echo "[i] Link node_binaries"
     ln -sf "$NODEJS/$SYSTEM" "$NODE/node_binaries"
 fi
 
@@ -57,20 +69,20 @@ export PATH="$NODE/node_binaries/bin:$PATH"
 # COMMON
 if [ ! -e "$NODE/common" ];then
 
-    echo " [!] $NODE/common not found."
+    echo "[!] $NODE/common not found."
 
     if [ ! -e "$COMMON" ];then
         cd "$HYBRIXD"
-        echo " [i] Clone common files"
+        echo "[i] Clone common files"
         git clone "$URL_COMMON"
     fi
-    echo " [i] Link common files"
+    echo "[i] Link common files"
     ln -sf "$COMMON" "$NODE/common"
 fi
 
 # NODE_MODULES
 if [ "$ENVIRONMENT" = "public" ]; then
-    read -p " [?] Do you wish to use the supported node_modules from hybrix? [y/n] " CONFIRM
+    read -p "[?] Do you wish to use the supported node_modules from hybrix? [y/n] " CONFIRM
 
     if [ "$CONFIRM" = "n" ]; then
         USE_SUPPORTED=false
@@ -81,21 +93,21 @@ else
     USE_SUPPORTED=true
 fi
 
-echo " [i] Clear node_modules"
+echo "[i] Clear node_modules"
 rm -rf "$NODE/node_modules"
 
 if [ "$USE_SUPPORTED" = true ]; then
 
     if [ ! -e "$HYBRIXD/node_modules" ];then
         cd "$HYBRIXD"
-        echo " [i] Clone node_modules dependencies"
+        echo "[i] Clone node_modules dependencies"
         git clone "$URL_NODE_MODULES"
     fi
 
-    echo " [i] Link node_modules"
+    echo "[i] Link node_modules"
     ln -sf "$HYBRIXD/node_modules" "$NODE/node_modules"
 else
-    echo " [i] Downloading dependencies from NPM."
+    echo "[i] Downloading dependencies from NPM."
     cd "$NODE"
     npm install
 fi
