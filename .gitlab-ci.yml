@@ -29,7 +29,7 @@ hybrixd:
   script:
     # are we in a docker-executor?
     - if [ -f /.dockerenv ]; then echo "docker-executor..."; else echo "no docker-executor..."; fi
-    
+
     # Because of race conditions with merge squashes leaving broken references we circumvent the default git strategy GIT_STRATEGY: none
     - cd ..
     - "git clone -n https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/hybrix/hybrixd/node.git --depth 10 --single-branch --branch $CI_COMMIT_REF_NAME"
@@ -593,6 +593,10 @@ dist:
     # Get correct version from repository tag
     VERSION=${CI_COMMIT_REF_NAME/-release/}
     VERSION_NUMBER="${VERSION//v}"
+
+    echo "[.] Use README.npm.md as README.md"
+    rm -rf ./README.md
+    mv ./README.npm.md ./README.md
 
     echo "[.] Modify version in package.json"
     sed -i -e "s/.*version.*/\"version\": \"$VERSION_NUMBER\",/" package.json
