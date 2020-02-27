@@ -1,82 +1,34 @@
-# hybrixd documentation
+# hybrixd
 
-## Getting started
-
-### Operating systems
-
-hybrixd can be run on the following operating systems:
-
-- GNU/Linux
-- macOS (Darwin)
-- [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
-
-### Installing hybrixd
-#### Prerequisites
-The hybrixd node depends on several other Hybrix libraries. To keep everything organized, we advise you create and change into a new directory before installing it:
-
-```
-mkdir hybrix
-cd hybrix
-```
-#### Installation
-To install hybrixd please clone the repository using the following command:
-
-```
-git clone https://github.com/hybrix-io/hybrixd-node
-```
-
-Or download our distributable here: <https://api.hybrix.io/help/hybrixd>
-
-#### Dependencies
-Change into the hybrix-node directory to download and install necessary dependencies and Hybrix libraries. To install, run:
-
-```
-cd hybrix-node
-npm run setup
-```
-#### Running hybrixd
-After extracting the archive and running setup, you can now start hybrixd in the same directory using the command:
-
-```
-./hybrixd
-```
+The hybrix platform environment can be run on your own personal
+computer or server by downloading the daemon called hybrixd. This
+makes it possible to host your own wallet, be your own bank and have a
+powerful multi-blockchain system at your fingertips.
 
 ## Using hybrixd
 
-### Command line interface
-**Usage**
-Command line / terminal commands can be accessed in the following manner:
+Please visit https://api.hybrix.io/help/hybrixd for
+information on installing and using hybrixd.
 
-`.\hybrixd /$cmd` where `$cmd` refers to the endpoints you wish to access. The requests are formatted as forward-slash ('/') separated commands.
+## Contributing to hybrixd
 
-**Example endpoints**
-`.\hybrixd /asset` returns a list of all the available assets in hybrixd.
-`./hybrixd /command/apiqueue/status` returns the status of the API queue.
+If you want to add features or change functionality of the
+hybrix-jslib you can do this by forking or by creating pull requests
+on
 
-**Available endpoints**
-You can find all the available endpoints here at <http://localhost:1111> or <http://localhost:8080/api> to view locally or browse to  <https://api.hybrix.io/help/api> to view it online.
+https://github.com/hybrix-io/hybrixd
 
-**Command line options** :
-Use `.\hybrixd --help` to view all command line options.
+## Setup the development environment
 
-### REST API
-Use <http://localhost:1111> or <http://localhost:8080/api> to access the REST API. Browse to <http://localhost:8080/api/help> for documentation.
+Clone the development repository:
 
-### JavaScript API Library
-Import hybrix.lib, a Javascript library file for NodeJS and browsers, to create applications or websites that can connect to hybrixd.
+`$ git clone https://github.com/hybrix-io/hybrixd.git`
 
-### Webwallet
-Browse to <http://localhost:8080> to access the web wallet.
+To setup and install development dependencies run:
 
-## Configuring hybrixd
+`$ npm run setup`
 
-General settings for hybrixd can be configured using the configuration file:
-
-```
-hybrixd.conf
-```
-
-See `hybrixd.conf.example` for more information.
+## Overview
 
 For the configuration and addition of tokens please see the recipe folder located in:
 
@@ -84,4 +36,9 @@ For the configuration and addition of tokens please see the recipe folder locate
 recipes/
 ```
 
-More information about how to create recipe files to add your own assets can be found in the the readme file README-add-asset.md .
+More information about how to create recipe files to add your own
+assets can be found in the the readme files:
+
+`./README-add-asset.md`
+`./recipes/README-recipes.md`
+`./modules/README-modules.md`

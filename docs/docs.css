@@ -1107,9 +1107,6 @@ select option {
   vertical-align: middle;
   margin-top: 2px;
 }
-.download svg {
-  margin-top: -7px;
-}
 .download span,
 .item span {
   color: white;
@@ -1130,13 +1127,25 @@ select option {
 .download .usage {
   font-size: 13px;
   display: block;
-  margin-top: 4px;
+  margin-top: 8px;
   opacity: 0.8;
   font-weight: 500;
   margin-bottom: 2px;
+  margin-left: 36px;
 }
 .download svg g g {
   fill: white;
+}
+@media screen and (max-width: 385px) {
+  .download {
+    min-width: unset !important;
+    width: 100%;
+  }
+}
+@media screen and (max-width: 340px) {
+  .download .usage {
+    margin-left: 0px;
+  }
 }
 .c-block p {
   margin-bottom: 20px;

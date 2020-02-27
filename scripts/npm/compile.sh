@@ -42,8 +42,9 @@ cd "$NODE"
 cp "$NODE/hybrixd" "$DIST/"
 # Copy license
 cp "$NODE/LICENSE.md" "$DIST/"
-# Copy readme
-cp "$NODE/README.md" "$DIST/"
+# Copy readme's
+cp "$NODE/README.release.md" "$DIST/README.md"
+cp "$NODE/README.npm.md" "$DIST/README.npm.md"
 
 # Copy package.json
 cp "$NODE/package.json" "$DIST/"
