@@ -1,3 +1,13 @@
+# v0.7.3
+## Little Purple Ogre
+## 27-02-2020
+
+* Update xel hosts
+* Add operator, dev and npm specific readme's
+
+
+
+
 # v0.7.2
 ## Furry Purple Phoenix
 ## 20-02-2020
