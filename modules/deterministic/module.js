@@ -30,7 +30,6 @@ function init () {
       let filename = '../modules/deterministic/' + mode.split('.')[0] + '/deterministic.js.lzma';
       if (typeof hashes[mode.split('.')[0]] === 'undefined' && fs.existsSync(filename)) {
         hashes[mode.split('.')[0]] = DJB2.hash(String(fs.readFileSync(filename)));
-        console.log(' [i] module deterministic: hashed mode ' + mode.split('.')[0]);
       }
     }
   }

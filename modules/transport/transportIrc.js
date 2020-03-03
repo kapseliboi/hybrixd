@@ -41,7 +41,7 @@ function open (proc, host, chan, hashSalt) {
     });
     // event: event fires when online
     handle.socket.addListener('registered', function (message) {
-      console.log(' [i] transport irc: connected as peer [' + this.handle.peerId + '] on port ' + port);
+      proc.logs('irc: connected as peer [' + this.handle.peerId + '] on port ' + port);
       // add handle and endpoint
       functions.addHandleAndEndpoint(this.handle.id, this.handle.peerId, 'irc://' + host + '/' + chan + '/' + this.handle.peerId);
       // send message function
@@ -61,7 +61,7 @@ function open (proc, host, chan, hashSalt) {
           if ((Number(this.handle.peers[peersArray[i]].time) + 240000) < timenow) {
             if (this.handle.peers[peersArray[i]].peerId) {
               // only mention non-relayed peers going offline
-              console.log(' [.] transport irc: peer [' + this.handle.peers[peersArray[i]].peerId + '] offline');
+              proc.logs('irc: peer [' + this.handle.peers[peersArray[i]].peerId + '] offline');
             }
             delete this.handle.peers[peersArray[i]];
           }
@@ -86,7 +86,7 @@ function open (proc, host, chan, hashSalt) {
             if (!relay) {
               let fromPeerId = from;
               if (!this.handle.peers.hasOwnProperty(fromNodeId)) {
-                console.log(' [.] transport irc: peer [' + fromPeerId + '] online');
+                this.proc.logs('irc: peer [' + fromPeerId + '] online');
                 this.handle.peers[fromNodeId] = {peerId: fromPeerId, time: (new Date()).getTime()};
               } else {
                 this.handle.peers[fromNodeId].time = (new Date()).getTime();
@@ -96,18 +96,18 @@ function open (proc, host, chan, hashSalt) {
                 this.handle.peers[fromNodeId] = { peerId: null };
               }
               this.handle.peers[fromNodeId].time = (new Date()).getTime();
-              console.log(' [.] transport irc: relay peer information from node ' + fromNodeId);
+              this.proc.logs('irc: relay peer information from node ' + fromNodeId);
             }
           }
           functions.managePeerURIs(this.handle, relay || fromPeerId, fromNodeId, message[1]);
         }
       } else {
-        let messageData = functions.readMessage(this.handle, message);
+        const messageData = functions.readMessage(this.proc, this.handle, message);
         // if target is us, route (and respond) to message
         if (messageData) {
           if (messageData.nodeIdTarget === nodeId) {
             if (messageData.complete && !messageData.response) {
-              functions.routeMessage(this.handle, messageData.nodeIdTarget, messageData.messageId, messageData.messageContent);
+              functions.routeMessage(this.proc, this.handle, messageData.nodeIdTarget, messageData.messageId, messageData.messageContent);
             }
           } else { // else relay the message to other channels
             functions.relayMessage(this.handle, messageData.nodeIdTarget, messageData.messageId, messageData.messageContent);
@@ -117,7 +117,7 @@ function open (proc, host, chan, hashSalt) {
     }.bind({proc: proc, handle: handle}));
     // event: warnings and errors
     handle.socket.addListener('error', function (message) {
-      console.log(' [!] transport irc: Error! ' + JSON.stringify(message));
+      proc.warn('Transport irc: Error! ' + JSON.stringify(message));
     });
     proc.done(handle.id);
   } else {
@@ -129,7 +129,7 @@ function open (proc, host, chan, hashSalt) {
 function stop (proc, handle, callback) {
   if (typeof handle.socket === 'undefined') {
     proc.fail('could not close irc socket!');
-    console.log(' [!] transport irc: could not close irc socket!');
+    proc.warn('Transport irc: could not close irc socket!');
   } else {
     clearInterval(handle.announce);
     handle.socket.part('#' + handle.channel);
@@ -137,7 +137,7 @@ function stop (proc, handle, callback) {
       functions.removeEndpoint('irc://' + handle.host + '/' + handle.channel + '/' + handle.peerId);
       functions.removeHandle(handle.id);
       proc.done('irc socket closed');
-      console.log(' [i] transport irc: stopped and closed socket ' + handle.id);
+      proc.logs('irc: stopped and closed socket ' + handle.id);
     }, 8000);
   }
 }

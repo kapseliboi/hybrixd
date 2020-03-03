@@ -126,7 +126,7 @@ function relayMessage (handle, nodeIdTarget, messageId, messageContent) {
   }
 }
 
-function routeMessage (handle, nodeIdTarget, messageId, messageContent) {
+function routeMessage (proc, handle, nodeIdTarget, messageId, messageContent) {
   if (typeof messageContent === 'string') {
     let sessionID = 0; // do we want to give special session ID? At the moment this doesn't work: nodeIdTarget;
     let nodeIdSource = messageContent.split('/')[0];
@@ -136,6 +136,7 @@ function routeMessage (handle, nodeIdTarget, messageId, messageContent) {
       let routeResult = router.route({url: xpath, sessionID: sessionID});
       let response = '#|' + JSON.stringify(routeResult);
       sendMessage(
+        proc,
         handle,
         nodeIdSource,
         messageResponseId,
@@ -144,7 +145,7 @@ function routeMessage (handle, nodeIdTarget, messageId, messageContent) {
   }
 }
 
-function sendMessage (handle, nodeIdTarget, messageId, message) {
+function sendMessage (proc, handle, nodeIdTarget, messageId, message) {
   try {
     if (handle) {
       let messageChunks = stringChunks(message, 256);
@@ -154,9 +155,7 @@ function sendMessage (handle, nodeIdTarget, messageId, message) {
       for (let i = messageChunks.length - 1; i > -1; i--) {
         chunkNr = i || '^' + messageChunks.length;
         chunk = chunkNr + '|' + messageChunks[i];
-        // console.log(' ORIGINL ' + i + ' : ' + chunk );
         messageContent = (i === messageChunks.length - 1 ? nodeIdTarget : '') + '|' + messageId + '|' + UrlBase64.safeCompress(chunk);
-        // console.log(' CRYPTED ' + i + ' : ' + messageContent);
         handle.send(handle, nodeIdTarget, messageContent);
       }
       return messageId;
@@ -164,7 +163,7 @@ function sendMessage (handle, nodeIdTarget, messageId, message) {
       return null;
     }
   } catch (e) {
-    console.log(' [i] module transport: socket error on message send -> ' + e);
+    proc.warn('Socket error on message send -> ' + e);
   }
 }
 
@@ -199,7 +198,7 @@ function messageIndex (handle, messageId, nodeIdTarget) {
   return idx;
 }
 
-function readMessage (handle, message) {
+function readMessage (proc, handle, message) {
   if (handle) {
     let transport = handle.protocol;
     try {
@@ -273,16 +272,16 @@ function readMessage (handle, message) {
               return null;
             }
           } else {
-            console.log(' [!] transport ' + transport + ': mangled message [' + messageId + ']!');
+            proc.warn(transport + ' : mangled message [' + messageId + ']!');
             return null;
           }
         }
       } else {
-        console.log(' [!] transport ' + transport + ': buffer overflow, discarding messages!');
+        proc.warn(transport + ' : buffer overflow, discarding messages!');
         return null;
       }
     } catch (e) {
-      console.log(' [i] module transport: socket error on message read');
+      proc.warn('Socket error on message read');
     }
   }
 }
