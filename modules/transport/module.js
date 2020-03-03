@@ -167,6 +167,7 @@ function send (proc) {
         const handleId = data.handleIds[i];
         if (data.handles.hasOwnProperty(handleId) && data.handles[handleId].hasOwnProperty('protocol')) {
           messageId = functions.sendMessage(
+            proc,
             data.handles[handleId],
             nodeIdTarget,
             messageId,
@@ -180,6 +181,7 @@ function send (proc) {
       if (data.handleIds.indexOf(handleId) > -1) {
         if (data.handles.hasOwnProperty(handleId) && data.handles[handleId].hasOwnProperty('protocol')) {
           messageId = functions.sendMessage(
+            proc,
             data.handles[handleId],
             nodeIdTarget,
             messageId,

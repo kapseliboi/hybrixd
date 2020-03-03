@@ -21,7 +21,7 @@ function open (proc, channel, passwd, hashSalt) {
     // event: event fires when online
     handle.socket.on('ready', (peerId) => {
       if (peerId) {
-        console.log(' [i] transport torrent: connected as peer [' + peerId + '] on port ' + port);
+        proc.logs('torrent: connected as peer [' + peerId + '] on port ' + port);
         // add handle and endpoint
         functions.addHandleAndEndpoint(handle.id, peerId, 'torrent://' + channel + '/' + peerId);
         // send message function
@@ -53,7 +53,7 @@ function open (proc, channel, passwd, hashSalt) {
             if ((Number(handle.peers[peersArray[i]].time) + 240000) < timenow) {
               if (handle.peers[peersArray[i]].peerId) {
                 // only mention non-relayed peers going offline
-                console.log(' [.] transport torrent: peer [' + handle.peers[peersArray[i]].peerId + '] offline');
+                proc.logs('torrent: peer [' + handle.peers[peersArray[i]].peerId + '] offline');
               }
               delete handle.peers[peersArray[i]];
             }
@@ -63,7 +63,7 @@ function open (proc, channel, passwd, hashSalt) {
         }, 30000, handle);
         proc.done(handle.id);
       } else {
-        console.log(' [!] transport torrent: failed to connect on port ' + port);
+        proc.warn('Transport torrent: failed to connect on port ' + port);
         proc.fail('failed to connect to torrent!');
       }
     });
@@ -71,7 +71,7 @@ function open (proc, channel, passwd, hashSalt) {
     handle.socket.on('message', function (msg, fromPeerId) {
       // ignore self
       if (fromPeerId !== this.handle.peerId) {
-        let message = msg.toString(); // DEBUG:  console.log(' [.] transport torrent: incoming message ' + fromPeerId + ' ' + message);
+        let message = msg.toString();
         // peer announcements: register new users in peer list (and return announce)
         if (message.substr(0, 2) === '@|' || message.substr(0, 2) === '~|') {
           // determine if peer relay message
@@ -82,12 +82,12 @@ function open (proc, channel, passwd, hashSalt) {
           if (fromNodeId !== nodeId) {
             if (!relay) {
               if (!this.handle.peers.hasOwnProperty(fromNodeId)) {
-                console.log(' [.] transport torrent: peer [' + fromPeerId + '] online');
+                this.proc.logs('torrent: peer [' + fromPeerId + '] online');
                 // announce self (return endpoint information)
                 let message = '@|' + nodeId + '|' + data.endpoints.join();
                 // init announce message must be directly through the socket to start filling remote empty peer list
                 this.handle.socket.send(Buffer.from(message), fromPeerId);
-                console.log(' [.] transport torrent: returning endpoint information to peer [' + fromPeerId + ']');
+                this.proc.logs('torrent: returning endpoint information to peer [' + fromPeerId + ']');
                 this.handle.peers[fromNodeId] = {peerId: fromPeerId, time: (new Date()).getTime()};
               } else {
                 this.handle.peers[fromNodeId].time = (new Date()).getTime();
@@ -97,17 +97,17 @@ function open (proc, channel, passwd, hashSalt) {
                 this.handle.peers[fromNodeId] = { peerId: null };
               }
               this.handle.peers[fromNodeId].time = (new Date()).getTime();
-              console.log(' [.] transport torrent: relay peer information from node ' + fromNodeId);
+              this.proc.logs('torrent: relay peer information from node ' + fromNodeId);
             }
             functions.managePeerURIs(this.handle, relay || fromPeerId, fromNodeId, message[1]);
           }
         } else {
-          let messageData = functions.readMessage(this.handle, message);
+          const messageData = functions.readMessage(this.proc, this.handle, message);
           // if target is us, route (and respond) to message
           if (messageData) {
             if (messageData.nodeIdTarget === nodeId) {
               if (messageData.complete && !messageData.response) {
-                functions.routeMessage(this.handle, messageData.nodeIdTarget, messageData.messageId, messageData.messageContent);
+                functions.routeMessage(this.proc, this.handle, messageData.nodeIdTarget, messageData.messageId, messageData.messageContent);
               }
             } else { // else relay the message to other channels
               functions.relayMessage(this.handle, messageData.nodeIdTarget, messageData.messageId, messageData.messageContent);
@@ -136,13 +136,13 @@ function open (proc, channel, passwd, hashSalt) {
     });
     // event: going offline
     handle.socket.on('offline', (fromPeerId) => {
-      console.log(' [.] transport torrent: peer [' + fromPeerId + '] offline');
+      proc.logs('torrent: peer [' + fromPeerId + '] offline');
       // perform housecleaning of peer list
       if (handle.hasOwnProperty('peers')) {
         let peersArray = Object.keys(handle.peers);
         for (let i = 0; i < peersArray.length; i++) {
           if (handle.peers[peersArray[i]].peerId === fromPeerId) {
-            console.log(' [.] transport torrent: peer [' + handle.peers[peersArray[i]].peerId + '] offline');
+            proc.logs('torrent: peer [' + handle.peers[peersArray[i]].peerId + '] offline');
             delete handle.peers[peersArray[i]];
           }
         }
@@ -150,7 +150,7 @@ function open (proc, channel, passwd, hashSalt) {
     });
     // event: warnings and errors
     handle.socket.on('warning', (err) => {
-      console.log(' [!] transport torrent: Error! ' + err.message);
+      proc.warn('Transport torrent: Error! ' + err.message);
     });
   } else {
     // return handle when socket already open
@@ -165,7 +165,7 @@ function stop (proc, handle) {
       functions.removeEndpoint('torrent://' + handle.channel + '/' + handle.peerId);
       functions.removeHandle(handle);
       proc.done('torrent socket closed');
-      console.log(' [i] transport torrent: stopped and closed socket ' + handle.id);
+      proc.logs('torrent: stopped and closed socket ' + handle.id);
     }, 3000);
   });
 }

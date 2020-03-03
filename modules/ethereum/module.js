@@ -15,7 +15,7 @@ function activate (code) {
     eval('window.deterministic = (function(){})(); ' + code); // init deterministic code
     return window.deterministic;
   }
-  console.log(' [!] error: cannot activate deterministic code!');
+  global.hybrixd.logger(['error', 'ethereum'], 'Cannot activate deterministic code!');
   return function () {};
 }
 
