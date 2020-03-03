@@ -227,6 +227,8 @@
       "curl POST {'Content-Type': 'application/json'} 2 1",
       "fail 'Could not connect to host'",
       "poke tokenData",
+      "rand 10000",
+      "poke 'randomId'",
       "data {jsonrpc: '2.0', method: 'eth_getTransactionByHash', params: ['$1'], id: $randomId}",
       "curl POST {'Content-Type': 'application/json'} 2 1",
       "fail 'Could not connect to host'",
@@ -304,8 +306,7 @@
     ],
     "blockRaw" : [
       "rand 10000",
-      "poke 'randomId'",
-      "data {jsonrpc: '2.0', method: 'eth_getBlockByNumber', params: ['$1',false], id: $randomId}",
+      "data {jsonrpc: '2.0', method: 'eth_getBlockByNumber', params: ['$1',false], id: $}",
       "curl POST {'Content-Type': 'application/json'} 2 1",
       "fail",
       "done"
