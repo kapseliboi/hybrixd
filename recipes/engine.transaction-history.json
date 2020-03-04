@@ -1,7 +1,7 @@
 {
   "engine":"transaction-history",
   "name":"Transaction history engine",
-  "cacheTime": "1",
+  "cacheTime": "1000",
   "import": "transaction-data",
   "quartz" : {
     "checkTimestampForUpdate": [

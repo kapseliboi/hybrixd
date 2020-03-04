@@ -1,6 +1,7 @@
 // storage.js :: higher level storage functions
 // depends on localforage.nopromises.min.js
 const SECONDS_IN_A_DAY = 5184000;
+const SYNC_RANDOM_ID_RANGE = 250;
 
 let fs = require('fs');
 let glob = require('glob');
@@ -131,8 +132,8 @@ const save = function (data, dataCallback, errorCallback) {
     } else {
       createFile(data.key, data.value, dataCallback, errorCallback);
     }
-    if (!data.noSync) {
-      sync(data, dataCallback, errorCallback);
+    if (!data.noSync && modules.module['synchronize'] !== undefined && modules.module['synchronize'].main.writeSyncFile !== undefined) {
+      modules.module['synchronize'].main.writeSyncFile(data, dataCallback, errorCallback);
     }
   }
 };
@@ -156,50 +157,6 @@ const list = function (data, dataCallback, errorCallback) {
         dataCallback(result);
       }
     });
-  }
-};
-
-const pullList = function () {
-  const range = 250;
-  const list = [];
-  for (let i = 0; i < range; i++) {
-    const randomIdx = ('00' + i).slice(-3);
-    const filePath = storagePath + '/sync' + randomIdx;
-    if (fs.existsSync(filePath)) {
-      list.push(fs.readFileSync(filePath).toString());
-    }
-  }
-  return list;
-};
-
-const pull = function (dataCallback, errorCallback) {
-  const list = pullList();
-  const result = [];
-  for (let i = 0; i < list.length; i++) {
-    const fold = list[i].substr(0, 2) + '/';
-    const filePath = storagePath + fold + list[i];
-    if (fs.existsSync(filePath + '.meta')) {
-      try {
-        const meta = JSON.parse(String(fs.readFileSync(filePath + '.meta')));
-        result.push(meta.mod + '/' + list[i] + '/' + meta.hash);
-      } catch (e) {}
-    }
-  }
-  dataCallback(result);
-};
-
-const sync = function (data, dataCallback, errorCallback) {
-  const fold = data.key.substr(0, 2) + '/';
-  const filePath = storagePath + fold + data.key;
-  const range = 250;
-  const randomIdx = ('00' + Math.floor(Math.random() * range)).slice(-3);
-  if (pullList().indexOf(data.key) === -1 && fs.existsSync(filePath)) {
-    try {
-      fs.writeFileSync(storagePath + '/sync' + randomIdx, data.key);
-      dataCallback();
-    } catch (e) {
-      errorCallback(e);
-    }
   }
 };
 
@@ -331,8 +288,6 @@ const autoClean = function () {
 exports.size = size;
 exports.seek = seek;
 exports.list = list;
-exports.sync = sync;
-exports.pull = pull;
 exports.get = load;
 exports.set = save;
 exports.burn = burn;
