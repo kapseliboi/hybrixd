@@ -1,14 +1,21 @@
 {
   "engine":"transaction-history",
   "name":"Transaction history engine",
-  "cacheTime": "1000",
+  "cacheTime": "60000",
   "import": "transaction-data",
   "quartz" : {
-    "checkTimestampForUpdate": [
-      "list $1-${symbol}-history-*",
+    "checkTimestampForUpdate/addr/count/offset": [
+      "list ${addr}-${symbol}-history-*",
       "void {'array':8} 1",
       "jpar",
       "pick",
+      "poke fileName",
+      "load",
+      "jpar",
+      "drop $offset",
+      "size",
+      "true '>$count' 1 @fail",
+      "data $fileName",
       "splt '-' 3",
       "poke timestamp",
       "date 'now'",
@@ -21,7 +28,7 @@
       "poke addr $1",
       "poke count $2 12",
       "poke offset $3 0",
-      "call checkTimestampForUpdate/$1",
+      "call checkTimestampForUpdate/$addr/$count/$offset",
       "true '$<${cacheTime}' @returnCachedHistory @retrieve",
       "@retrieve",
       "peek import[0]",
@@ -35,10 +42,10 @@
       "@returnCachedHistory",
       "call getCachedTransactionIds/$1/$count/$offset"
     ],
-    "retrieveNewTransactionIds": [
-      "call getHistory/$1/$2/$3",
+    "retrieveNewTransactionIds/addr/count/offset": [
+      "call getHistory/$addr/$count/$offset",
       "poke idx",
-      "fork 'saveNewTransactionIds/$1/$2/$3/false'",
+      "fork 'saveNewTransactionIds/$addr/$count/$offset/false'",
       "data $idx",
       "done"
     ],
@@ -50,8 +57,8 @@
       "@done",
       "done"
     ],
-    "removeTransactionFile": [
-      "data $1-${symbol}-$2*",      
+    "removeTransactionFile/addr/type": [
+      "data ${addr}-${symbol}-${type}*",      
       "poke tx",
       "seek 1 @fail",
       "list $tx",
@@ -60,17 +67,21 @@
       "@fail",
       "done"
     ],
-    "saveNewTransactionIds": [
-      "poke txs",
-      "call getCachedTransactionIds/$1/1000/0",
-      "uniq",
-      "poke idx",      
+    "hasIntersection/txs": [
+      "isct $txs",
+      "void {'array':1} 2",
+      "done false",
+      "done true"
+    ],
+    "concatTxs/addr/count/offset/isNew/txs": [
+      "fuse $txs",
+      "uniq",      
       "call sortIdxByTimestamp",
+      "poke idx",
       "void {'array':1} 3",
       "peek idx",
       "jump 2",
-      "poke idx",
-      "data $1-${symbol}-history-*",      
+      "data $addr-${symbol}-history-*",      
       "list $",
       "poke history",
       "void {'array': 2} 1",
@@ -89,15 +100,49 @@
       "call removeTransactionFile/$1/history/$idx",
       "data $fileName",
       "save $ $idx",
-      "poke count $2 12",
-      "poke offset $3 0",
+      "poke count $count 12",
+      "poke offset $offset 0",
       "math '$count+$offset'",
       "poke endingIndex",
       "data $idx",
       "pick $offset $endingIndex",
       "poke idx",
       "@done",
-      "done $idx"
+      "done $idx"      
+    ],
+    "mvCachedTxs/addr": [
+      "poke txs",
+      "pick",
+      "poke start",
+      "peek txs",
+      "pick -1",
+      "poke end",
+      "data ${addr}-${symbol}-chunk-${start}-${end}",
+      "save $ $txs",
+      "done"
+    ],
+    "saveNewTransactionIds/addr/count/offset/isNew": [
+      "poke txs",
+      "call getCachedTransactionIds/$addr/10000000/0",
+      "poke cachedTxs",
+      "void {'array':5} 1",
+      "call hasIntersection/$txs",
+      "flow true @concat 1",
+      "data $isNew",
+      "flow 0 @update @chunk",
+      "@concat",
+      "data $cachedTxs",
+      "call concatTxs/$addr/$count/$offset/$isNew/$txs",
+      "done",
+      "@update",
+      "data $cachedTxs",
+      "call mvCachedTxs/$1",
+      "data []",
+      "call concatTxs/$addr/$count/$offset/$isNew/$txs",
+      "done txs",
+      "@chunk",
+      "data $txs",
+      "call mvCachedTxs/$addr"
     ],
     "sortIdxByTimestamp": [
       "each getTxData",
@@ -108,7 +153,6 @@
       "tran .value",
       "list $-${symbol}-transaction",
       "void {'array':6} 1",
-      "jpar",
       "pick",
       "load",
       "jpar",
@@ -116,23 +160,27 @@
       "@fail",
       "done []"
     ],
-    "getCachedTransactionIds": [
-      "math $2+$3",
+    "getCachedTransactionIds/addr/count/offset": [
+      "math $count+$offset",
       "poke endingIndex",
-      "list $1-${symbol}-history-*",      
+      "list ${addr}-${symbol}-history-*",      
       "void {'array':6} 1",
       "pick",
       "load",
       "jpar",
-      "pick $3 $endingIndex",
+      "pick $offset $endingIndex",
       "done",
       "done []"
     ],
     "cacheTransactionData": [
+      "tran '.value' 1 4",
       "poke txData",
-      "tran '.value.id' 2 1",
+      "tran '.id' 2 1",
       "fail 'Incorrect transaction data format.'",
-      "call saveTransactionData/$txData",
+      "poke txID",
+      "peek txData",
+      "call saveTransactionData/$txID",
+      "@done",
       "done $txData"
     ],
     "cacheHistory": [

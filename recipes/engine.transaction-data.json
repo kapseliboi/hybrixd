@@ -1,8 +1,8 @@
 {
   "engine":"transaction-data",
   "name":"Transaction data history engine",
-  "cacheConfirmed" : 60000,
-  "quartz" : {
+  "cacheConfirmed": 1,
+  "quartz": {
     "transaction/txID": [
       "poke fileName ${txID}-${symbol}-transaction",
       "seek $fileName @returnCachedHistory @retrieve",
@@ -63,10 +63,8 @@
       "@fail",
       "done $txData"
     ],
-    "saveTransactionData": [
-      "poke txID",
-      "data $1",
-      "tran .value",
+    "saveTransactionData/txID": [
+      "data $",
       "poke txData",
       "data ${txID}-${symbol}-transaction",
       "poke fileName",
@@ -74,15 +72,20 @@
       "save $fileName $txData",
       "done $1"
     ],
-    "retrieveLatestTransactions": [
-      "call getHistory/$1/$2/$3",
+    "retrieveLatestTransactions/addr/count_/offset": [
+      "data $count_",
+      "math '+1'",
+      "poke count",
+      "call getHistory/$addr/$count/$offset",
       "poke txs",
-      "fork 'cacheHistory/$1'",
+      "fork 'cacheHistory/$addr'",
       "data $txs",
       "tran '[].id'",
       "poke idx",
-      "call 'saveNewTransactionIds/$1/$2/$3/false'",
-      "done $idx"
+      "fork 'saveNewTransactionIds/$addr/$count/$offset/false'",
+      "peek idx",
+      "drop -1",
+      "done"
     ],
     "message/txID" : [
       "poke fileName ${txID}-${symbol}-message",
