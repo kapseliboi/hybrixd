@@ -64,6 +64,19 @@
       "poke idx",
       "call 'saveNewTransactionIds/$1/$2/$3/false'",
       "done $idx"
+    ],
+    "message/txID" : [
+      "poke fileName ${txID}-${symbol}-message",
+      "seek $fileName 1 @retrieve",
+      "load $fileName",
+      "jump @done",
+      "@retrieve",
+      "call getMessage/$txID",
+      "poke message",
+      "save $fileName $message",
+      "peek message",
+      "@done",
+      "done"
     ]
   }
 }
