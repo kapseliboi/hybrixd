@@ -1,7 +1,7 @@
 {
   "engine":"synchronize",
   "name":"Storage synchronization module",
-  "module":"quartz",
+  "module":"synchronize",
   "readTimeout":120000,
   "syncTimeout":300000,
   "cron" : 60,
@@ -47,7 +47,7 @@
     ],
     "list":[
       "time $readTimeout",
-      "rout e/transport/rout/$1/e/storage/pull",
+      "rout e/transport/rout/$1/e/synchronize/pull",
       "# sort by last/first to pull newest stuff first!",
       "sort",
       "poke syncList",
@@ -83,26 +83,27 @@
       "# first get a list of items that need synchronization",
       "poke nodeID $1",
       "call list/$nodeID",
-      "poke syncList",
       "# foreach through the list and synchronize the items",
       "each syncItem/$nodeID",
       "poke syncResult",
       "copy syncResult syncSuccess syncFailure",
-      "with syncSuccess [excl,[0,null]] [size]",
-      "with syncFailure [excl,[1,null]] [size]",
+      "with syncSuccess [excl,0] [size]",
+      "with syncFailure [excl,1] [size]",
       "done {synced:$syncSuccess,failed:$syncFailure}"
     ],
     "syncItem":[
       "time $readTimeout",
       "data '${.value}'",
-      "void 'empty' 1 2",
-      "done null",
+      "void 'empty' @syncFail",
+      "regx '^[\\w\\-]+$$' 1 @syncFail",
       "poke key",
-      "rout e/transport/rout/$1/e/storage/get/$key 2 1",
-      "done 0",
+      "rout e/transport/rout/$1/e/storage/get/$key 1 @syncFail",
       "jpar",
       "save $key",
-      "done 1"
+      "sync $key",
+      "done 1",
+      "@syncFail",
+      "done 0"
     ],
     "autosync":[
       "time $syncTimeout",
@@ -114,7 +115,9 @@
       "done {node:'$nodeID',synced:${.synced},failed:${.failed}}",
       "@noPeers",
       "fail 'There are currently no peers connected to this node!'"
-    ]
+    ],
+    "queue": ["func queue/$1"],
+    "pull": ["func pull/$1"]    
   },
   "router" : {
     "_help" : "Control the storage synchronization engine.",
@@ -141,6 +144,18 @@
         "_list" : "peer_ID",
         "_this" : "Specify the ID of the peer to synchronize with."
       }
+    },
+    "queue":{
+      "_help" : "Add storage key to sync queue.",
+      "_access" : "root",
+      "_ref" : {
+        "_list" : "storage_id",
+        "_this" : "Specify the ID key to add to the randomized synchronization queue."
+      }
+    },
+    "pull":{
+      "_help" : "Retrieve the sync queue.",
+      "_this" : "The list contains a randomized key list of recently created or updated storage items marked for synchronization."
     }
   }
 }

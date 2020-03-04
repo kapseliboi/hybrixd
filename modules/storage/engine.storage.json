@@ -40,9 +40,7 @@
     ],
     "work": ["func work/$1/$2"],
     "size": ["func size/$1"],
-    "sync": ["func sync/$1"],
     "seek": ["func seek/$1"],
-    "pull": ["func pull/$1"],
     "seek": ["func seek/$1"],
     "burn": ["func burn/$1"],
     "meta": ["func meta/$1"]
@@ -58,17 +56,6 @@
         "_list" : "storage_id",
         "_this" : "Specify the ID key to check if it exists."
       }
-    },
-    "sync":{
-      "_help" : "Add storage key to sync list.",
-      "_ref" : {
-        "_list" : "storage_id",
-        "_this" : "Specify the ID key to add to the randomized synchronization list."
-      }
-    },
-    "pull":{
-      "_help" : "Retrieve the sync list.",
-      "_this" : "The list contains a randomized key list of recently created or updated storage items."
     },
     "load":{
       "_help" : "Load data from storage.",

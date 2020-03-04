@@ -17,10 +17,6 @@ function size (proc, data) {
   storage.size(proc.done, proc.fail);
 }
 
-function pull (proc, data) {
-  storage.pull(proc.done, proc.fail);
-}
-
 function seek (proc, data) {
   const key = proc.command && proc.command[1] ? proc.command[1] : data.key;
   storage.seek({key: key}, proc.done, proc.fail);
@@ -64,5 +60,4 @@ exports.seek = seek;
 exports.size = size;
 exports.cron = cron;
 exports.meta = meta;
-exports.pull = pull;
 exports.burn = burn;
