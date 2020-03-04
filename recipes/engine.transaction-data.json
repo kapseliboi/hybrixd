@@ -1,15 +1,15 @@
 {
   "engine":"transaction-data",
   "name":"Transaction data history engine",
+  "cacheConfirmed" : 60000,
   "quartz" : {
-    "transaction": [
-      "poke txID '$1'",    
+    "transaction/txID": [
       "poke fileName ${txID}-${symbol}-transaction",
       "seek $fileName @returnCachedHistory @retrieve",
       "@retrieve",
-      "call getTransaction/$1",
+      "call getTransaction/$txID",
       "poke tx",
-      "fork 'save/$1'",
+      "fork 'save/$txID'",
       "done $tx",
       "@returnCachedHistory",
       "list $fileName",
@@ -23,9 +23,28 @@
       "fork 'save/$1'",
       "done $tx"
     ],
-    "save": [
+    "confirmed/txID" : [
+      "poke fileName ${txID}-${symbol}-transaction",
+      "seek $fileName 1 @retrieve",
+      "meta $fileName",
+      "tran .time 1 @retrieve",
+      "poke timestamp",
+      "date now",
+      "true '$<$timestamp+$cacheConfirmed' 1 @retrieve",
+      "load $fileName",
+      "jump @skipRetrieve",
+      "@retrieve",
+      "call getTransaction/$txID",
+      "poke tx",
+      "fork 'save/$txID'",
+      "peek tx",
+      "@skipRetrieve",
+      "tran .confirmed 1 2",
+      "done",
+      "fail 'Could not get confirmations'"
+    ],
+    "save/txID": [
       "poke txData",
-      "poke txID '$1'",
       "date now",
       "data '${txID}-${symbol}-transaction'",
       "poke fileName",
@@ -49,7 +68,7 @@
       "data $1",
       "tran .value",
       "poke txData",
-      "data ${txID}-${symbol}-transaction", 
+      "data ${txID}-${symbol}-transaction",
       "poke fileName",
       "call removeTransactionFile/$txID/transaction",
       "save $fileName $txData",
