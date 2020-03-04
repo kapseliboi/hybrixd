@@ -1,6 +1,5 @@
 {
   "engine":"asset",
-  "import": "transaction-history",
   "quartz" : {
     "balance" : [
       "fail 'Not yet implemented!'"
@@ -26,8 +25,8 @@
     "mode" : [
       "done '$mode'"
     ],
-    "confirmed" : [
-      "call transaction/$1",
+    "confirmed/txID" : [
+      "call transaction/$txID",
       "tran .confirmed 1 2",
       "done",
       "fail 'Could not get confirmations'"
