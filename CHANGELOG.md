@@ -1,3 +1,19 @@
+# v0.7.4
+## Cosy Purple Kobold
+## 05-03-2020
+
+* Retrieve eth token details using hybrixd internal evm module
+* Ensure push returns a string transaction id for flo/insight 
+* Improve storage syncing
+* Fix qrtz each for arrays
+* qrtz logs and warn to use data stream if no parameters were provided
+* Prepare separate endpoint and caching for confirmations
+* Improve logging with timestamps and categories
+
+
+
+
+
 # v0.7.3
 ## Little Purple Ogre
 ## 27-02-2020
