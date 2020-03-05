@@ -63,6 +63,12 @@
   "quartz" :{
     "get":[
       "func get/$1/$2"
+    ],
+    "parse":[
+      "func parse/$1"
+    ],
+    "decompile":[
+      "func decompile/$1"
     ]
   }
 }
