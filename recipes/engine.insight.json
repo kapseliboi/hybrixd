@@ -78,6 +78,7 @@
       "@badTxRes",
       "fail 'Bad transaction result'",
       "@succes",
+      "tran .result 1 1",
       "done"
     ],
     "transactionData" : [
