@@ -56,8 +56,10 @@ cp "$NODE/hybrixd.conf" "$DIST/"
 # Copy node_modules
 rsync -avq "$NODE/node_modules" "$DIST/"
 
+echo "[.] Copy modules... XXXXXXXXXXXXXXXXXXXXXX"
+
 # Copy modules
-rsync -avq "$NODE/modules" "$DIST/"
+rsync -av "$NODE/modules" "$DIST/"
 
 # Copy interface
 rsync -avq "$NODE/interface" "$DIST/"
