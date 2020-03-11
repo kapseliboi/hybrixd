@@ -13,7 +13,7 @@ information on installing and using hybrixd.
 ## Contributing to hybrixd
 
 If you want to add features or change functionality of the
-hybrix-jslib you can do this by forking or by creating pull requests
+hybrixd you can do this by forking or by creating pull requests
 on
 
 https://github.com/hybrix-io/hybrixd
