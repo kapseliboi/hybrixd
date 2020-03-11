@@ -1,7 +1,7 @@
 {
   "engine":"transaction-data",
   "name":"Transaction data history engine",
-  "cacheConfirmed": 1,
+  "cacheConfirmed": "60000",
   "quartz": {
     "transaction/txID": [
       "poke fileName ${txID}-${symbol}-transaction",
