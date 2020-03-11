@@ -11,16 +11,16 @@
       "jump 2",
       "rout '/asset/mock.$1/factor'",
       "poke 'factorValue'",
-      "func 'balance'",
+      "func 'balance/$1/$2'",
       "form '$factorValue'",
       "done"
     ],
-    "history" : ["func 'history'"],
-    "push" : ["func 'push'"],
+    "history" : ["func 'history/$1/$2/$3/$4'"],
+    "push" : ["func 'push/$1/$2'"],
     "transaction" : [
-      "func 'transaction'"
+      "func 'transaction/$1/$2'"
     ],
-    "message" : ["func 'message'"]
+    "message" : ["func 'message/$1/$2'"]
   },
   "router" : {
     "balance" : {
