@@ -1,7 +1,7 @@
 {
   "engine":"transaction-history",
   "name":"Transaction history engine",
-  "cacheTime": "1000",
+  "cacheHistoryTime": "60000",
   "import": "transaction-data",
   "quartz" : {
     "checkTimestampForUpdate": [
@@ -22,7 +22,7 @@
       "poke count $2 12",
       "poke offset $3 0",
       "call checkTimestampForUpdate/$1",
-      "true '$<${cacheTime}' @returnCachedHistory @retrieve",
+      "true '$<${cacheHistoryTime}' @returnCachedHistory @retrieve",
       "@retrieve",
       "peek import[0]",
       "flow 'insight' @idx @full",
@@ -63,9 +63,10 @@
     "saveNewTransactionIds": [
       "poke txs",
       "call getCachedTransactionIds/$1/1000/0",
-      "uniq",
-      "poke idx",      
+      "fuse $txs",
+      "uniq",      
       "call sortIdxByTimestamp",
+      "poke idx",
       "void {'array':1} 3",
       "peek idx",
       "jump 2",
@@ -108,7 +109,6 @@
       "tran .value",
       "list $-${symbol}-transaction",
       "void {'array':6} 1",
-      "jpar",
       "pick",
       "load",
       "jpar",
@@ -129,10 +129,14 @@
       "done []"
     ],
     "cacheTransactionData": [
+      "tran '.value' 1 4",
       "poke txData",
-      "tran '.value.id' 2 1",
+      "tran '.id' 2 1",
       "fail 'Incorrect transaction data format.'",
-      "call saveTransactionData/$txData",
+      "poke txID",
+      "peek txData",
+      "call saveTransactionData/$txID",
+      "@done",
       "done $txData"
     ],
     "cacheHistory": [
