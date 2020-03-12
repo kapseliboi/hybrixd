@@ -13,8 +13,6 @@ stages:
   - build
   - test
   - review
-  #- staging
-  #- production
   - deploy
   - release
   - cleanup
@@ -149,7 +147,7 @@ stop_review:
 #    variables:
 #      - $STAGING_ENABLED
 
-deploy:
+trigger_cluster_deployment:
   cache: {}
   stage: deploy
   script:
@@ -284,14 +282,14 @@ dist_manual:
       - ./
 
 publish_manual:
-  allow_failure: false
+#  allow_failure: false
 # dependencies:
 #   - dist_manual
   cache: {}
   stage: release
   script:
     - publish
-  when: manual
+#  when: manual
   only:
     refs:
       - tags
