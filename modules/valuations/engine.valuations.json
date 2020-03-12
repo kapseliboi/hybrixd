@@ -10,11 +10,6 @@
       "type" : "none",
       "site" : "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
     },
-    "coinmarketcap": {
-      "notes" : "coinmarketcap: https://coinmarketcap.com/api/",
-      "type" : "json",
-      "site" : "https://api.coinmarketcap.com/v2/ticker/"
-    },
     "coinbase" : {
       "notes" : "coinbase: https://developers.coinbase.com/api/v2#exchange-rates",
       "type" : "json",
