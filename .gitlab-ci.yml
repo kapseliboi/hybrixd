@@ -2,7 +2,7 @@ image: registry.gitlab.com/hybrix/hybrixd/base-images/build-image:stable
 
 variables:
 
-  KUBERNETES_VERSION: 1.13.7
+  KUBERNETES_VERSION: 1.13.12
   HELM_VERSION: 2.14.3
 
   DOCKER_DRIVER: overlay2
