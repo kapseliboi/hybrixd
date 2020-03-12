@@ -14,9 +14,9 @@ stages:
   - test
   - review
   #- staging
-  - production
+  #- production
+  - deploy
   - release
-  - publish
   - cleanup
 
 hybrixd:
@@ -149,29 +149,13 @@ stop_review:
 #    variables:
 #      - $STAGING_ENABLED
 
-publish:
-  allow_failure: false
-  dependencies:
-    - dist
-  cache: {}
-  stage: publish
-  script:
-    - publish
-  when: manual
-  only:
-    refs:
-      - tags
 
-.production: &production_template
+
+deploy:
   cache: {}
   stage: production
   script:
     - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=master https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fcluster/trigger/pipeline
-  artifacts:
-    paths: [environment_url.txt]
-
-production:
-  <<: *production_template
   only:
     refs:
       - tags
@@ -194,7 +178,20 @@ production:
 #    variables:
 #      - $STAGING_ENABLED
 
-dist:
+publish_manual:
+  allow_failure: false
+  dependencies:
+    - dist
+  cache: {}
+  stage: release
+  script:
+    - publish
+  when: manual
+  only:
+    refs:
+      - tags
+
+dist_manual:
   allow_failure: false
   dependencies:
     - hybrixd
