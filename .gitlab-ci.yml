@@ -149,11 +149,9 @@ stop_review:
 #    variables:
 #      - $STAGING_ENABLED
 
-
-
 deploy:
   cache: {}
-  stage: production
+  stage: deploy
   script:
     - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=master https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fcluster/trigger/pipeline
   only:
