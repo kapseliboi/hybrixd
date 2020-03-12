@@ -285,8 +285,8 @@ dist_manual:
 
 publish_manual:
   allow_failure: false
-  dependencies:
-    - dist_manual
+# dependencies:
+#   - dist_manual
   cache: {}
   stage: release
   script:
