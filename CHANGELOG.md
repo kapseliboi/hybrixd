@@ -1,3 +1,17 @@
+# v0.7.5
+## Fluffy Yellow Sphinx
+## 12-03-2020
+
+* Added isct method to qrtz
+* Updated address validation to include newer BTC addresses
+* Improve error responses for insight
+* Update flo/insight engine (Thanks to Bitspill)
+* Improve error responses for ethereum api
+* web-wallet : improve error responses
+* web-wallet : add option to bypass address validation
+
+
+
 # v0.7.4
 ## Cosy Purple Kobold
 ## 05-03-2020
