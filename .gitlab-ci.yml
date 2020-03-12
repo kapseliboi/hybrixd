@@ -13,7 +13,7 @@ stages:
   - build
   - test
   - review
-  - staging
+  #- staging
   - production
   - release
   - publish
@@ -126,32 +126,33 @@ stop_review:
 # only manually promote to production, enable this job by setting
 # STAGING_ENABLED.
 
-staging:
-  cache: {}
-  stage: staging
-  script:
-    - check_kube_domain
-    - download_chart
-    - ensure_namespace
-    - install_tiller
-    - create_secret
-    - install_certificate
-    - deploy
-  environment:
-    name: staging
-    #url: http://$CI_PROJECT_PATH_SLUG-staging.$AUTO_DEVOPS_DOMAIN
-    url: https://node-staging.$AUTO_DEVOPS_DOMAIN
-  only:
-    refs:
-      - tags
-      #- master
-    kubernetes: active
-    variables:
-      - $STAGING_ENABLED
+#staging:
+#  cache: {}
+#  stage: staging
+#  script:
+#    - check_kube_domain
+#    - download_chart
+#    - ensure_namespace
+#    - install_tiller
+#    - create_secret
+#    - install_certificate
+#    - deploy
+#  environment:
+#    name: staging
+#    #url: http://$CI_PROJECT_PATH_SLUG-staging.$AUTO_DEVOPS_DOMAIN
+#    url: https://node-staging.$AUTO_DEVOPS_DOMAIN
+#  only:
+#    refs:
+#      - tags
+#      #- master
+#    kubernetes: active
+#    variables:
+#      - $STAGING_ENABLED
 
 publish:
   dependencies:
     - dist
+  when: manual
   cache: {}
   stage: publish
   script:
@@ -164,18 +165,7 @@ publish:
   cache: {}
   stage: production
   script:
-    - check_kube_domain
-    - download_chart
-    - ensure_namespace
-    - install_tiller
-    - create_secret
-    - deploy
-    - delete canary
-    - delete rollout
-    - persist_environment_url
-  environment:
-    name: production
-    url: http://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
+    - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=master https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fcluster/trigger/pipeline
   artifacts:
     paths: [environment_url.txt]
 
@@ -189,26 +179,27 @@ production:
     variables:
       - $STAGING_ENABLED
 
-production_manual:
-  <<: *production_template
-  environment:
-    name: production
-    url: http://api.hybrix.io
-  when: manual
-  allow_failure: false
-  only:
-    refs:
-      - tags
-      #- master
-    kubernetes: active
-    variables:
-      - $STAGING_ENABLED
+#production_manual:
+#  <<: *production_template
+#  environment:
+#    name: production
+#    url: http://api.hybrix.io
+#  when: manual
+#  allow_failure: false
+#  only:
+#    refs:
+#      - tags
+#      #- master
+#    kubernetes: active
+#    variables:
+#      - $STAGING_ENABLED
 
 dist:
   dependencies:
     - hybrixd
   image: alpine:latest
   stage: release
+  when: manual
   script:
   # install the packages that we need
   - apk update
