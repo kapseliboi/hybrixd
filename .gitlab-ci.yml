@@ -179,7 +179,7 @@ deploy:
 publish_manual:
   allow_failure: false
   dependencies:
-    - dist
+    - dist_manual
   cache: {}
   stage: release
   script:
