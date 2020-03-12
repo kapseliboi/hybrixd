@@ -150,13 +150,14 @@ stop_review:
 #      - $STAGING_ENABLED
 
 publish:
+  allow_failure: false
   dependencies:
     - dist
-  when: manual
   cache: {}
   stage: publish
   script:
     - publish
+  when: manual
   only:
     refs:
       - tags
@@ -175,7 +176,6 @@ production:
     refs:
       - tags
     kubernetes: active
-  except:
     variables:
       - $STAGING_ENABLED
 
@@ -195,11 +195,11 @@ production:
 #      - $STAGING_ENABLED
 
 dist:
+  allow_failure: false
   dependencies:
     - hybrixd
   image: alpine:latest
   stage: release
-  when: manual
   script:
   # install the packages that we need
   - apk update
@@ -289,7 +289,8 @@ dist:
   - "git add ."
   - "git commit -m \"release ${version} ${component}\" || true"
   - "git push https://oauth2:${PRIVATE_TOKEN}@gitlab.com/hybrix/dist.git -f"
-
+  
+  when: manual
   except:
     refs:
       - /^Issue.*$/
