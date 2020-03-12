@@ -176,19 +176,6 @@ deploy:
 #    variables:
 #      - $STAGING_ENABLED
 
-publish_manual:
-  allow_failure: false
-  dependencies:
-    - dist_manual
-  cache: {}
-  stage: release
-  script:
-    - publish
-  when: manual
-  only:
-    refs:
-      - tags
-
 dist_manual:
   allow_failure: false
   dependencies:
@@ -296,6 +283,18 @@ dist_manual:
     paths:
       - ./
 
+publish_manual:
+  allow_failure: false
+  dependencies:
+    - dist_manual
+  cache: {}
+  stage: release
+  script:
+    - publish
+  when: manual
+  only:
+    refs:
+      - tags
 
 # ---------------------------------------------------------------------------
 
