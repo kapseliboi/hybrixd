@@ -255,10 +255,48 @@
       "fail"
     ],
 
-    "push" : [
+    "push1" : [
       "data abc",
       "push def",
       "flow abcdef 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "push2" : [
+      "data abc",
+      "push X 1",
+      "flow aXbc 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "push3" : [
+      "data [a,b,c]",
+      "push X",
+      "join",
+      "flow abcX 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "push4" : [
+      "data [a,b,c]",
+      "push X 1",
+      "join",
+      "flow aXbc 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "push5" : [
+      "data abc",
+      "push X [1,3]",
+      "flow aXbcX 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "push6" : [
+      "data [a,b,c]",
+      "push X [1,3]",
+      "join",
+      "flow aXbcX 1 2",
       "done $OK",
       "fail"
     ],
