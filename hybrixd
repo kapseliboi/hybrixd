@@ -10,29 +10,28 @@ export PATH=$NODE/node_binaries/bin:"$PATH"
 NODEINST=`which node`
 
 if [ "$1" = "" ]; then
-    echo " [i] starting hybrixd..."
+    echo "[i] starting hybrixd..."
     NODE_VERSION=$($NODEINST --version)
     NODE_VERSION_MAJOR="`echo $NODE_VERSION | cut -d'.' -f1`"
     NODE_VERSION_MINOR="`echo $NODE_VERSION | cut -d'.' -f2`"
 
     if [ "$NODE_VERSION_MAJOR" != "v12" ] || [ $NODE_VERSION_MINOR -lt 13 ]; then
-        echo " [!] warning: hybrixd expects Node v12.13.0 or higher (found node $NODEINST @ $NODE_VERSION)"
-        read -p " [?] Do you wish to continue? [y/N] " CONFIRM
+        echo "[!] warning: hybrixd expects Node v12.13.0 or higher (found node $NODEINST @ $NODE_VERSION)"
+        read -p "[?] Do you wish to continue? [y/N] " CONFIRM
         if [ "$CONFIRM" != "y" ]; then
             cd "$WHEREAMI"
             export "PATH=$OLDPATH"
-            echo " [i] Stopped hybrixd."
+            echo "[i] Stopped hybrixd."
             exit 0
         fi
     else
-        echo " [i] using node executable $NODEINST @ $NODE_VERSION "
+        echo "[i] using node executable $NODEINST @ $NODE_VERSION "
     fi
-
 
     cd "$NODE/lib"
     mkdir -p "$NODE/var/log"
-    node hybrixd.js 2>&1 | tee "$NODE/var/log/hybrixd.log"
-    echo " [i] stopped hybrixd"
+    node hybrixd.js 2>&1 | tee -a "$NODE/var/log/hybrixd.log"
+    echo "[i] stopped hybrixd"
     echo
 elif [ "$1" = "start" ] || [ "$1" = "/c/start" ] || [ "$1" = "/command/start" ]; then
     ./hybrixd.start
