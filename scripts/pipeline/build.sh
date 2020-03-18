@@ -87,7 +87,7 @@ curl -s --location --header "Private-Token: $PRIVATE_TOKEN" "https://gitlab.com/
 echo "[.] Retrieve cli-wallet artifact"
 curl -s --location  --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fcli-wallet/jobs/artifacts/master/download?job=cli-wallet" -o artifacts-cli-wallet.zip
 
-
+echo "[.] Compile hybrixd"
 # run the build-script of the hybrixd-node
 ./scripts/npm/compile.sh
 
@@ -103,7 +103,21 @@ unzip -q -o artifacts-web-wallet.zip -d ./dist/modules/web-wallet/
 rm -rf  artifacts-web-wallet || true
 rm -rf  artifacts-web-wallet.zip || true
 
-# remove .git files from artifact
+echo "[.] Retrieve web-blockexplorer artifact"
+curl -s --location --header "Private-Token: $PRIVATE_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fweb-blockexplorer/jobs/artifacts/master/download?job=web-blockexplorer" -o artifacts-web-blockexplorer.zip
+
+# unzip the downloaded artifact to the directory
+rm -rf ./dist/modules/web-blockexplorer
+mkdir -p ./dist/modules/web-blockexplorer
+chmod 755 ./dist/modules/web-blockexplorer
+unzip -q -o artifacts-web-blockexplorer.zip -d ./dist/modules/web-blockexplorer/
+
+# remove the unzipped-files and the zip-file (|| true --> on error, no problem)
+rm -rf  artifacts-web-blockexplorer || true
+rm -rf  artifacts-web-blockexplorer.zip || true
+
+
+echo "[.] Clean git files"
 rm -rf ./.git* || true
 
 
