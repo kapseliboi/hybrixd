@@ -60,6 +60,13 @@
       "unit" : "milliseconds"
     }
   },
+  "log" : {
+    "hstatloglocation":{
+      "info" : "Location(s) of the log files.",
+      "type" : "string",
+      "default" : "./var/log/hybrixd.log"
+    }
+  },
   "storage" : {
     "maxstoragesize" : {
       "default" : 1000000000,
