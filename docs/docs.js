@@ -129,7 +129,7 @@ function rout (path, noHistory) {
         } catch (e) {
           result = {data: 'Unknown Error', error: 1};
         }
-        if (result.error === 0 && result.hasOwnProperty('progress') && result.progress !== 1 && result.id !== 'id') {
+        if (result.error === 0 && result.stopped === null && result.id !== 'id') {
           setTimeout(() => {
             rout(path, true);
           }, 500);
