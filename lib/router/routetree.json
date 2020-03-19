@@ -360,7 +360,26 @@
     "asset":{
       "_ref":{
         "_list" : "symbol",
+        "_sample" : "dummy",
         "_this" : "Return test results for $SYMBOL."
+      }
+    },
+    "log" :{
+      "_access" : "root",
+      "_ref":{
+        "_list" : "categories",
+        "_sample" : "error|fatal",
+        "_this" : "Return log entries for given categories for last hour.",
+        "_ref":{
+          "_list" : "start",
+          "_sample" : "1d",
+          "_this" : "Return log entries for given categories from $START till now.",
+          "_ref":{
+            "_list" : "end",
+            "_sample" : "2d",
+            "_this" : "Return log entries for given categories from $START till $END."
+          }
+        }
       }
     }
   },
