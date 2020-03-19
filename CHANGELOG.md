@@ -1,3 +1,20 @@
+# v0.7.6
+## Shiny Orange Dragon
+## 19-03-2020
+
+* Added functionality to search hybrixd logs
+* Improvements REST engine
+* Implemented report endpoints for logging
+* Hidden process ids for non root users
+* Fixes for ZEC empty unspents
+* qrtz math handle empty summation
+* Fixed qrtz shell could crash node (root only)
+* Upgrade to NEM address parsing
+* Removed malfunctioning valuations
+
+
+
+
 # v0.7.5
 ## Fluffy Yellow Sphinx
 ## 12-03-2020
