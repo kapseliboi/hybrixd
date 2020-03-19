@@ -50,10 +50,12 @@
       "done {unspents:$selected,change:'$'}"
     ],
     "unspentAll" : [
+      "poke inputval '$2' '1000000000000'",
       "time $timeout",
       "curl /addr/$1/utxo 2 1",
       "fail 'Could not connect to host'",
-      "tran []{script:.scriptPubKey,amount:=atom(.amount,true)|.satoshis,txid:.txid,txn:.vout}",
+      "tran []{script:.scriptPubKey,amount:=atom(.amount,true)|.satoshis,txid:.txid,txn:.vout} 2 1",
+      "fail 'Could not parse unspents'",
       "poke 'selected'",
       "tran '[].amount' 2 1",
       "data []",
