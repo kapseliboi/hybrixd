@@ -19,32 +19,28 @@
   "quartz":{
     "init" : [
       "peek contract",
-      "flow '0x0000000000000000000000000000000000000000' @finished @token",
-      "@token",
-      "peek feeContractTx",
-      "form",
-      "poke local::fee",
-      "@finished",
+      "flow '0x0000000000000000000000000000000000000000' 1 @skipTokens",
+      "peek gasPrice",
+      "poke local::gasPrice",
+      "@skipTokens",
       "done"
     ],
     "cron" : [
+      "peek contract",
+      "flow '0x0000000000000000000000000000000000000000' 1 @skipTokens",
       "time 45000",
       "call updateFee",
+      "@skipTokens",
       "done"
     ],
     "updateFee" : [
       "time 45000",
       "call getGasPrice",
-      "peek contract",
-      "flow '0x0000000000000000000000000000000000000000' @native @token",
-      "@native",
       "logs 'module ethereum: updating fee for asset $symbol'",
-      "math '$gasPrice*$gasBaseFee'",
+      "math '$local::gasPrice*$gasBaseFee'",
       "poke local::fee",
-      "done",
-      "@token",
-      "math '$gasPrice*($gasBaseFee+$gasContractAvgFee)'",
-      "poke local::fee",
+      "math '$local::gasPrice*($gasBaseFee+$gasContractAvgFee)'",
+      "poke local::feeContractTx",
       "done"
     ],
     "getGasPrice" : [
@@ -366,8 +362,24 @@
     "fee":[
       "call estimateGas/$1",
       "poke gasEstimation",
+      "peek contract",
+      "flow '0x0000000000000000000000000000000000000000' @native @token",
+      "@native",
       "peek local::fee $fee",
-      "math '$ + ($gasPrice * $gasEstimation)'",
+      "jump @done",
+      "@token",
+      "peek symbol",
+      "splt .",
+      "pick",
+      "rout '/asset/$/fee'",
+      "math $/$gasBaseFee",
+      "poke mainAssetGasPrice",
+      "math '$*($gasBaseFee+$gasContractAvgFee)'",
+      "math '$+($mainAssetGasPrice*$gasEstimation)'",
+      "form",
+      "done",
+      "@done",
+      "math '$ + ($local::gasPrice * $gasEstimation)'",
       "form",
       "done"
     ]
