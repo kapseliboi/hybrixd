@@ -14,7 +14,7 @@
   "gasLimitNativeTx":90000,
   "gasLimitContractTx":336000,
   "factor":18,
-  "host":["http://eth1.hybrix.io:8545","http://eth1.hybrix.io:8545"],
+  "host":["http://eth1.hybrix.io:8545","http://eth2.hybrix.io:8545"],
   "cron":300,
   "quartz":{
     "sample":[
