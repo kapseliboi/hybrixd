@@ -20,23 +20,21 @@ stages:
 hybrixd:
   cache: {}
   stage: build
-  variables:
-    GIT_STRATEGY: none
   services:
   - docker:stable-dind
   script:
     # are we in a docker-executor?
-    - if [ -f /.dockerenv ]; then echo "docker-executor..."; else echo "no docker-executor..."; fi
+    - if [ -f /.dockerenv ]; then echo "[i] docker-executor..."; else echo "[i] no docker-executor..."; fi
 
     # Because of race conditions with merge squashes leaving broken references we circumvent the default git strategy GIT_STRATEGY: none
     - cd ..
     - "git clone -n https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/hybrix/hybrixd/node.git --depth 10 --single-branch --branch $CI_COMMIT_REF_NAME"
     - cd node
     - if git log | grep $CI_COMMIT_SHA; then
-    -   echo "Commit $CI_COMMIT_SHA exists, retrieving it."
+    -   echo "[i] Commit $CI_COMMIT_SHA exists, retrieving it."
     -   "git -c advice.detachedHead=false checkout $CI_COMMIT_SHA"
     - else
-    -   echo "Commit $CI_COMMIT_SHA does not exist, retrieving latest in branch $CI_COMMIT_REF_NAME"
+    -   echo "[i] Commit $CI_COMMIT_SHA does not exist, retrieving latest in branch $CI_COMMIT_REF_NAME"
     -   "git checkout"
     - fi
 
@@ -54,7 +52,7 @@ test:
   stage: test
   script:
     # are we in a docker-executor?
-    - if [ -f /.dockerenv ]; then echo "docker-executor..."; else echo "no docker-executor..."; fi
+    - if [ -f /.dockerenv ]; then echo "[i] docker-executor..."; else echo "[i] no docker-executor..."; fi
     - sh ./scripts/pipeline/test.sh
   coverage: /SUCCESS RATE[^|]*\:[^|]*\s+([\d\.]+)/
   except:
@@ -113,68 +111,19 @@ stop_review:
     variables:
       - $REVIEW_DISABLED
 
-# Keys that start with a dot (.) will not be processed by GitLab CI.
-# Staging and canary jobs are disabled by default, to enable them
-# remove the dot (.) before the job name.
-# https://docs.gitlab.com/ee/ci/yaml/README.html#hidden-keys
 
-# Staging deploys are disabled by default since
-# continuous deployment to production is enabled by default
-# If you prefer to automatically deploy to staging and
-# only manually promote to production, enable this job by setting
-# STAGING_ENABLED.
-
-#staging:
-#  cache: {}
-#  stage: staging
-#  script:
-#    - check_kube_domain
-#    - download_chart
-#    - ensure_namespace
-#    - install_tiller
-#    - create_secret
-#    - install_certificate
-#    - deploy
-#  environment:
-#    name: staging
-#    #url: http://$CI_PROJECT_PATH_SLUG-staging.$AUTO_DEVOPS_DOMAIN
-#    url: https://node-staging.$AUTO_DEVOPS_DOMAIN
-#  only:
-#    refs:
-#      - tags
-#      #- master
-#    kubernetes: active
-#    variables:
-#      - $STAGING_ENABLED
-
-trigger_cluster_deployment:
+trigger_cluster_deployment_manual:
   cache: {}
   stage: deploy
+  allow_failure: false
   script:
     - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=master https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fcluster/trigger/pipeline
+  when: manual
   only:
     refs:
       - tags
-    kubernetes: active
-    variables:
-      - $STAGING_ENABLED
 
-#production_manual:
-#  <<: *production_template
-#  environment:
-#    name: production
-#    url: http://api.hybrix.io
-#  when: manual
-#  allow_failure: false
-#  only:
-#    refs:
-#      - tags
-#      #- master
-#    kubernetes: active
-#    variables:
-#      - $STAGING_ENABLED
-
-dist_manual:
+dist:
   allow_failure: false
   dependencies:
     - hybrixd
@@ -182,6 +131,7 @@ dist_manual:
   stage: release
   script:
   # install the packages that we need
+  # FIXME do not update packages on every run
   - apk update
   - apk add curl
   - apk add git
@@ -190,33 +140,16 @@ dist_manual:
   - apk add zip
   - apk add jq
 
-  # set variables
-  # version -> branchname without '-release'
-  #- version=${CI_COMMIT_REF_NAME/-release/}
   - version=${CI_COMMIT_TAG/-release/}
   - component=node
   - file=hybrixd.${component}.${version}
   - fileLatest=hybrixd.${component}.latest
   - path=${component}/${version}/
 
-  - ls
-
-  #- cp -r ./dist/. /tmp/${component}/
-  #- cp -r . /tmp/${component}/
-  #- cp .version . /tmp/${component}/
-
   - cd /tmp
   - git clone --depth=1 https://oauth2:${PRIVATE_TOKEN}@gitlab.com/hybrix/dist
   - mkdir -p ./dist/${component}/${version}/
 
-  # download [interface] artifact
-  #- "curl --location --header \"JOB-TOKEN: $CI_JOB_TOKEN\" \"https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Finterface/jobs/artifacts/${CI_COMMIT_REF_NAME}/download?job=interface\" -o ${path}${file}.zip"
-
-  # go to folder
-  #- ls ./dist/${path}
-
-  #- cp ${path}${file}.zip ./../${file}.zip
-  #- unzip ${file}.zip -d ${component}
 
   # workaround to get the latest artifact
   - PROJECT_REF_SLUG=hybrix%2Fhybrixd%2Fnode
@@ -232,18 +165,6 @@ dist_manual:
   - "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/api/v4/projects/${PROJECT_REF_SLUG}/jobs/${BUILD_JOB_ID}/artifacts\" -o artifacts-${PROJECT_REF_NAME}.zip"
   - unzip -o artifacts-hybrixd.zip -d ./${component}/
 
-  - ls
-  - ls ${component}
-
-  # archive to zip
-  #- mv artifacts-hybrixd.zip ${file}.zip
-
-  # archive to tar.gz
-  #- tar -zcvf ${file}.tar.gz ${component}
-
-  # create a xz-archive as well
-  #- gunzip < ${file}.tar.gz | xz > ${file}.tar.xz
-
   - zip -r ${file}.zip ${component}
   - tar -zcvf ${file}.tar.gz ${component}
   - tar cfJ ${file}.tar.xz ${component}
@@ -257,8 +178,6 @@ dist_manual:
   - cp ${file}.tar.gz ./dist/${component}/latest/${fileLatest}.tar.gz
   - cp ${file}.tar.xz ./dist/${component}/latest/${fileLatest}.tar.xz
 
-  # for interface we like to distribute the js files directly as well
-  #- cp -r ./${component}/*.js ./dist/${path}
   - cd ./dist/
 
   # configure git-user
@@ -269,11 +188,7 @@ dist_manual:
   - "git add ."
   - "git commit -m \"release ${version} ${component}\" || true"
   - "git push https://oauth2:${PRIVATE_TOKEN}@gitlab.com/hybrix/dist.git -f"
-  
-  when: manual
-  except:
-    refs:
-      - /^Issue.*$/
+
   only:
     refs:
       - tags
@@ -281,15 +196,11 @@ dist_manual:
     paths:
       - ./
 
-publish_manual:
-#  allow_failure: false
-# dependencies:
-#   - dist_manual
+publish:
   cache: {}
   stage: release
   script:
     - publish
-#  when: manual
   only:
     refs:
       - tags
