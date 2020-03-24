@@ -227,30 +227,30 @@ const getMetaExt = function (data, dataCallback, errorCallback) {
 
 const autoClean = function () {
   if (!fs.existsSync(storagePath)) {
-    console.log(' [.] module storage: creating storage directory');
+    global.hybrixd.logger(['storage'], 'creating storage directory');
     fs.mkdirSync(storagePath, { recursive: true });
     return; // if path did not exists it's already cleaned
   }
-  console.log(' [.] module storage: auto-clean scan');
+  global.hybrixd.logger(['storage'], 'auto-clean scan');
 
   const now = Date.now();
   du(storagePath, function (e, maxstoragesize) {
-    console.log(' [i] module storage: size is ' + maxstoragesize + ' bytes');
+    global.hybrixd.logger(['info', 'storage'], 'size is ' + maxstoragesize + ' bytes');
     fs.writeFileSync(storagePath + '/size', maxstoragesize); // store size for /size call
 
     if (maxstoragesize > conf.get('storage.maxstoragesize')) {
-      console.log(' [.] module storage: size maximum reached, cleaning...');
+      global.hybrixd.logger(['storage'], 'size maximum reached, cleaning...');
 
       fs.readdir(storagePath, (e, directories) => {
         // scan storage directories
         directories.forEach((fold, dirindex, dirarray) => {
           if (fs.statSync(storagePath + fold).isDirectory()) {
-            // DEBUG: console.log(" [i] module storage: found directory " + storepath + fold);
+            // DEBUG: global.hybrixd.logger(['info', 'storage'], 'found directory ' + storepath + fold);
             fs.readdir(storagePath + fold, (e, files) => {
               files.forEach((storekey, fileindex, filearray) => {
                 if (storekey.substr(-5) === '.meta') {
                   let fileelement = storagePath + fold + '/' + storekey;
-                  // DEBUG: console.log(" [i] module storage: test on storage " + fileelement);
+                  // DEBUG: global.hybrixd.logger(['info', 'storage'], 'test on storage ' + fileelement);
                   if (fs.existsSync(fileelement)) {
                     let meta = JSON.parse(String(fs.readFileSync(fileelement)));
 
@@ -268,9 +268,9 @@ const autoClean = function () {
                         // delete the file and metadata
                         fs.unlinkSync(dataelement);
                         fs.unlinkSync(fileelement);
-                        console.log(' [i] module storage: purged stale storage element' + dataelement);
+                        global.hybrixd.logger(['info', 'storage'], 'purged stale storage element' + dataelement);
                       } catch (e) {
-                        console.log(' [!] module storage: failed to purge stale storage ' + dataelement);
+                        global.hybrixd.logger(['info', 'storage'], 'failed to purge stale storage ' + dataelement);
                       }
                     }
                   }
@@ -281,7 +281,7 @@ const autoClean = function () {
         });
       });
     } else {
-      console.log(' [i] module storage: no cleaning necessary');
+      global.hybrixd.logger(['info', 'storage'], 'no cleaning necessary');
     }
   });
 };
