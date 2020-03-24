@@ -16,7 +16,7 @@
   "quartz":{
     "balance" : [
       "curl /api/accounts?address=$1&limit=1&offset=0&sort=balance:asc {Accept:'application/json','Content-Type':'application/json'} 2 1",
-      "fail 'Could not connect to host'",
+      "fail 'Error from $symbol host : $'",
       "tran '.data[0].balance' @nonzero",
       "data 0",
       "jump @done",
@@ -27,14 +27,14 @@
     "push" : [
       "data '$1'",
       "curl /api/transactions POST {Accept:'application/json','Content-Type':'application/json', Accept: 'application/json'} 2 1",
-      "fail 'Could not connect to host'",
+      "fail 'Error from $symbol host : $'",
       "done"
     ],
     "history" : [
       "poke count $2 12",
       "poke offset $3 0",
       "curl /api/transactions?recipientId=$1&offset=$offset&limit=$count GET {Accept:'application/json'} 2 1",
-      "fail 'Could not connect to host'",
+      "fail 'Error from $symbol host : $'",
       "tran .data 2 1",
       "fail 'Cannot get transaction history!'",
       "sort ['.height',num,desc]",
@@ -53,7 +53,7 @@
     ],
     "transactionData" : [
       "curl /api/transactions?id=$1&limit=1&offset=0 {Accept:'application/json'} 2 1",
-      "fail 'Could not connect to host'",
+      "fail 'Error from $symbol host : $'",
       "tran .data 2 1",
       "fail 'Cannot get transaction data!'",
       "pick"
