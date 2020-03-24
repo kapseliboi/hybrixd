@@ -366,6 +366,7 @@
     },
     "log" :{
       "_access" : "root",
+      "_this" : "Return log entries for the last hour.",
       "_ref":{
         "_list" : "categories",
         "_sample" : "error|fatal",
@@ -377,7 +378,63 @@
           "_ref":{
             "_list" : "end",
             "_sample" : "2d",
-            "_this" : "Return log entries for given categories from $START till $END."
+            "_this" : "Return log entries for given categories from $START till $END.",
+            "_ref":{
+              "_list" : "search",
+              "_sample" : "keyword",
+              "_this" : "Return log entries for given categories from $START till $END with message containing $SEARCH."
+            }
+          }
+        }
+      }
+    },
+    "sessions" :{
+      "_access" : "root",
+      "_this" : "Return session timestamps for the last hour.",
+      "_ref":{
+        "_list" : "start",
+        "_sample" : "1d",
+        "_this" : "Return session timestamps from $START till now.",
+        "_ref":{
+          "_list" : "end",
+          "_sample" : "2d",
+          "_this" : "Return session timestamps from $START till $END."
+        }
+      }
+    },
+    "api" :{
+      "_access" : "root",
+      "assets": {
+        "_this" : "Return asset api call timestamps and symbols for the last hour.",
+        "_ref":{
+          "_list" : "start",
+          "_sample" : "1d",
+          "_this" : "Return asset api call timestamps and symbols from $START till now.",
+          "_ref":{
+            "_list" : "end",
+            "_sample" : "2d",
+            "_this" : "Return asset api call timestamps and symbols $START till $END.",
+            "_ref":{
+              "_list" : "search",
+              "_sample" : "keyword",
+              "_this" : "Return asset api call timestamps and symbols containing $SEARCH."
+            }
+          }
+        }
+      },
+      "_this" : "Return api call timestamps for the last hour.",
+      "_ref":{
+        "_list" : "start",
+        "_sample" : "1d",
+        "_this" : "Return api call timestamps from $START till now.",
+        "_ref":{
+          "_list" : "end",
+          "_sample" : "2d",
+          "_this" : "Return api call timestamps $START till $END.",
+          "_ref":{
+            "_list" : "search",
+            "_sample" : "keyword",
+            "_this" : "Return api call timestamps containing $SEARCH."
           }
         }
       }
