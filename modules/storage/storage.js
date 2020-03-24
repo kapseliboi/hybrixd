@@ -2,6 +2,7 @@
 // depends on localforage.nopromises.min.js
 const SECONDS_IN_A_DAY = 5184000;
 const SYNC_RANDOM_ID_RANGE = 250;
+const modules = require('../../lib/modules');
 
 let fs = require('fs');
 let glob = require('glob');
