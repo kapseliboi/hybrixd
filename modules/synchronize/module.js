@@ -39,10 +39,11 @@ function writeSyncFile (data, dataCallback, errorCallback) {
   if (!pullList().includes(data.key) && fileExists) {
     try {
       fs.writeFileSync(storagePath + 'sync' + randomIdx, data.key);
-      dataCallback('Queued on index ' + randomIdx);
     } catch (e) {
       errorCallback(e);
+      return;
     }
+    dataCallback('Queued on index ' + randomIdx);
   } else if (!fileExists) {
     dataCallback(false);
   } else {
@@ -55,5 +56,6 @@ function queue (proc, data) {
   writeSyncFile({key: key}, proc.done, proc.fail);
 }
 
+exports.writeSyncFile = writeSyncFile;
 exports.queue = queue;
 exports.pull = pull;
