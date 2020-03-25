@@ -26,6 +26,8 @@
       "@dataGet",
       "data {key:'$1',value:'$2'}",
       "func 'save'",
+      "sync '$1' 2 1",
+      "warn 'Sync failed for $1'",
       "done"
     ],
     "save":[
@@ -36,6 +38,8 @@
       "@dataGet",
       "data {key:'$1',value:'$2'}",
       "func 'save'",
+      "sync '$1' 2 1",
+      "warn 'Sync failed for $1'",
       "done"
     ],
     "work": ["func work/$1/$2"],
