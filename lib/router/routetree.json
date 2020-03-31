@@ -447,6 +447,7 @@
   },
   "v":{"_alias":"version"},
   "version":{
+    "_this": "Get version.",
     "_help" : "Display version information.",
     "details" : "Get version details."
   },
