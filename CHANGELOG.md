@@ -1,3 +1,20 @@
+# v0.7.7
+## Cuddly Blueish Ogre
+## 31-03-2020
+
+* Reports for node operators sessions, api call and log statistics via /report endpoint (public reports will follow)
+* Enable staggered cronjobs for reporting
+* Include error output in test reports
+* Extend logging improvements to storage module
+* Improve storage sync module integration
+* Improve error response for assets 
+* Reduce eth token fee updates per token to single approach
+* web-wallet : Extend headless browser tests 
+* web-wallet : Fix bug with address book
+* web-wallet : Extend error and validation feedback 
+* hybrix-jslib : Added option to parallel processes to return error instead of result upon failure
+
+
 # v0.7.6
 ## Shiny Orange Dragon
 ## 19-03-2020
