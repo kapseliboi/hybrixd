@@ -276,6 +276,10 @@
       "details":"Retrieve a list of all basic asset details [{symbol,name,mode}]."
     }
   },
+  "m":{"_alias":"meta"},
+  "meta":{
+    "_this":"Provides the api routing tree data"
+  },
   "p":{"_alias":"proc"},
   "proc":{
     "_this" : "List all processes.",
@@ -292,6 +296,7 @@
       }
     },
     "debug":{
+      "_ui" : "debug",
       "_access":"root",
       "debug.js":{
         "_this" : "test",
@@ -344,7 +349,9 @@
   },
   "r":{"_alias":"report"},
   "report":{
+    "_ui" : "report",
     "assets" : {
+      "_ui" : "report/assets",
       "_this" : "View the asset test report. Requires test data to be available. Run /report/assets/test to gather data or ensure enable_daily_asset_report is set to true.",
       "test" : {
         "_this":"Run tests and return xml report ",
@@ -365,6 +372,7 @@
       }
     },
     "log" :{
+      "_ui" : "report/log",
       "_access" : "root",
       "_this" : "Return log entries for the last hour.",
       "_ref":{
@@ -389,6 +397,7 @@
       }
     },
     "sessions" :{
+      "_ui" : "report/sessions",
       "_access" : "root",
       "_this" : "Return session timestamps for the last hour.",
       "_ref":{
@@ -403,6 +412,7 @@
       }
     },
     "api" :{
+      "_ui" : "report/api",
       "_access" : "root",
       "assets": {
         "_this" : "Return asset api call timestamps and symbols for the last hour.",
