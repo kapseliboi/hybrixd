@@ -2,6 +2,9 @@ const functions = require('./functions.js');
 const PeerNetwork = require('./torrent/peer-network-fork');
 const data = require('./data');
 
+const PEER_IDLE_TIME = 600000;
+const PEER_MAINTENANCE_INTERVAL = 60000;
+
 function open (proc, channel, passwd, hashSalt) {
   let shaHash = require('js-sha256').sha224;
   let openTime = (new Date()).getTime();
@@ -50,7 +53,7 @@ function open (proc, channel, passwd, hashSalt) {
           let timenow = (new Date()).getTime();
           for (let i = 0; i < peersArray.length; i++) {
             // delete idle peers
-            if ((Number(handle.peers[peersArray[i]].time) + 240000) < timenow) {
+            if ((Number(handle.peers[peersArray[i]].time) + PEER_IDLE_TIME) < timenow) {
               if (handle.peers[peersArray[i]].peerId) {
                 // only mention non-relayed peers going offline
                 proc.logs('torrent: peer [' + handle.peers[peersArray[i]].peerId + '] offline');
@@ -60,7 +63,7 @@ function open (proc, channel, passwd, hashSalt) {
             // deduplicate peer announce if not found on other channels
             functions.relayPeers(handle, peersArray[i]);
           }
-        }, 30000, handle);
+        }, PEER_MAINTENANCE_INTERVAL, handle);
         proc.done(handle.id);
       } else {
         proc.warn('Transport torrent: failed to connect on port ' + port);
@@ -148,6 +151,7 @@ function open (proc, channel, passwd, hashSalt) {
         }
       }
     });
+    
     // event: warnings and errors
     handle.socket.on('warning', (err) => {
       proc.warn('Transport torrent: Error! ' + err.message);
