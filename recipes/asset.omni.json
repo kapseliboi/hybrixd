@@ -9,6 +9,8 @@
   "keygen-base":"btc",
   "contract":"1",
   "host":"https://api.omniexplorer.info",
+  "import": "transaction-history",
+  "apiProvidesFullTx": true,
   "timeout":60000,
   "cache":180000,
   "throttle":0.1,
@@ -43,9 +45,30 @@
     "factor" : [
       "data '$factor'"
     ],
-    "history" : [
-      "rout '/asset/$keygen-base/history/$1/$2/$3'",
+    "reformatTx" : [
+      "poke txSource",
+      "tran .value 2 1",
+      "fail 'failed reformatting transaction.'",
+      "copy txSource txTarget",
+      "with txSource [data, $] [tran,'.vout[1].scriptPubKey.addresses[0]',2,1] [data,'unknown'] [done]",
+      "with txTarget [data, $] [tran,'.vout[0].scriptPubKey.addresses[0]',2,1] [data,'unknown'] [done]",
+      "tran { id:'.txid', timestamp:'.time', amount:'.vout[0].value', symbol:'$symbol', fee:'=.fees|0', 'fee-symbol':'$symbol', source:'$txSource', target:'$txTarget', confirmed:'.confirmations' } @success @fail",
+      "@fail",
+      "fail 'Cannot interpret transaction data!'",
+      "@success",
       "done"
+    ],
+    "getHistory" : [
+      "poke count $2 12",
+      "poke offset $3 0",
+      "time $longTimeout",
+      "with countTo [data,'$count'] [math,'+$offset']",
+      "curl /addrs/$1/txs?from=$offset&to=$countTo 2 1",
+      "fail 'Could not connect to host'",
+      "tran '.items' 1 @fail",
+      "done",
+      "@fail",
+      "fail "
     ],
     "transactionData" : [
       "data '$1'",

@@ -13,6 +13,8 @@
   "host":["https://api.ark.io"],
   "documentation":["https://docs.ark.io/api/public/v2/"],
   "cache":15000,
+  "import": "transaction-history",
+  "apiProvidesFullTx": true,
   "throttle":5,
   "version":"2",
   "genesisBlockTime":1490101200,
@@ -40,14 +42,25 @@
       "@fail",
       "done 0"
     ],
-    "history":[
+    "reformatTx": [
+      "tran .value 2 1",
+      "fail 'failed reformatting transaction.'",
+      "with reformatTimestamp [data,'${.timestamp.unix}']",
+      "with reformatFee [data,'${.fee}'] [atom]",
+      "with reformatAmount [data,'${.amount}'] [atom]",
+      "tran { id:'.id', timestamp:'$reformatTimestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.sender', target:'.recipient', confirmed:'.confirmations' } @tranSuccess @tranFail",
+      "@tranSuccess",
+      "done",
+      "@tranFail",
+      "fail 'Could not parse transaction'"
+    ],
+    "getHistory":[
       "poke count $2 12",
       "poke offset $3 0",
       "curl '/api/v2/wallets/$1/transactions?orderBy=timestamp:desc&limit=$count&offset=$offset' {'Content-Type': 'application/json'} @curlSuccess @curlFail",
       "@curlSuccess",
       "tran '.data' @tranSuccess @tranFail",
       "@tranSuccess",
-      "each 'subhistory'",
       "done",
       "@curlFail",
       "fail 'Error from $symbol host : $'",
@@ -65,23 +78,18 @@
       "fail",
       "done"
     ],
-    "transaction":[
+    "getTransaction":[
       "curl '/api/v2/transactions/$1' {'Content-Type': 'application/json'} @curlSuccess @curlFail",
       "@curlSuccess",
       "tran '.data' @dataTranSuccess @dataTranFail",
       "@dataTranFail",
       "fail 'Error from $symbol host : $'",
       "@dataTranSuccess",
-      "with reformatTimestamp [data,'${.timestamp.unix}']",
-      "with reformatFee [data,'${.fee}'] [atom]",
-      "with reformatAmount [data,'${.amount}'] [atom]",
-      "tran { id:'.id', timestamp:'$reformatTimestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.sender', target:'.recipient', confirmed:'.confirmations' } @tranSuccess @tranFail",
+      "tran {value: $}",
+      "call reformatTx",
+      "done",
       "@curlFail",
-      "fail 'Unable to retrieve transaction.'",
-      "@tranFail",
-      "fail 'Could not parse transaction'",
-      "@tranSuccess",
-      "done"
+      "fail 'Unable to retrieve transaction.'"
     ]
   }
 }

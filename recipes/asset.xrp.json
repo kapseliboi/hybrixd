@@ -11,6 +11,8 @@
   "contract":"",
   "factor":6,
   "host":"wss://s2.ripple.com:443",
+  "import": "transaction-history",
+  "apiProvidesFullTx": true,
   "cache":15000,
   "throttle":5,
   "api-rate-info":{
@@ -144,7 +146,7 @@
       "@success2",
       "done"
     ],
-    "transaction" : [
+    "getTransaction" : [
       "rand 10000",
       "data {'id': $,'command': 'tx','transaction': '$1','binary': false}",
       "curl POST 2 1",
@@ -188,12 +190,22 @@
       "done {address:'rbwE6wsxzYat1YyGGxzAwq6wBSF5MdoAg',transaction:'699C005DEA8638B6FFEDB6039A82EB4190E0BAFAAA6E14307042FBA089E93EFE'}"
     ],
     "subhistory" : [
-      "tran '.value.tx.hash' 1 @fail",
+      "tran '.value' 1 @fail",
       "done",
       "@fail",
       "done 0"
     ],
-    "history" : [
+    "reformatTx": [
+      "tran .value 2 1",
+      "fail 'failed reformatting transaction.'",
+      "with reformatTimestamp [data,'${.tx.date}'] [math, '+${genesisBlockTime}']",
+      "tran {id:'=.tx.hash|unknown', fee:'=.tx.Fee|unknown', timestamp:'$reformatTimestamp', symbol:'$symbol', amount:'=.tx.Amount.value|.tx.Amount|unknown', source:'=.tx.Account|unknown', target:'=.tx.Destination|unknown', fee-symbol: ${fee-symbol}, confirmed:'=.tx.validated|unknown'} @tranSuccess @tranFail",
+      "@tranSuccess",
+      "done",
+      "@tranFail",
+      "fail 'Could not parse history'"      
+    ],
+    "getHistory" : [
       "poke count $2 12",
       "poke offset $3 0",
       "with limit [math,'$count+$offset']",
@@ -202,7 +214,6 @@
       "curl POST 2 1",
       "fail 'Could not connect to host'",
       "tran '.result.transactions[]' 1 @fail",
-      "each 'subhistory'",
       "take '$offset'",
       "done",
       "@fail",

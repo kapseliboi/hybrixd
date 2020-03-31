@@ -8,6 +8,8 @@
   "factor": 7,
   "fee": 0.001,
   "host": "https://horizon.stellar.org",
+  "import": "transaction-history",
+  "apiProvidesFullTx": false,
   "rejectUnauthorized": false,
   "cache": 15000,
   "throttle": 3,
@@ -58,7 +60,7 @@
       "fail",
       "done"
     ],
-    "history": [
+    "getHistory": [
       "#TODO offset and limit https://horizon.stellar.org/accounts/{account_id}/transactions{?cursor,limit",
       "curl '/accounts/$1/transactions' 2 1",
       "fail 'Could not connect to host'",
@@ -68,7 +70,7 @@
     "test":[
       "done {unspent:'998719879287873', hash:'0555065F'}"
     ],
-    "transaction": [
+    "getransaction": [
       "curl '/transactions/$1' 2 1",
       "fail 'Could not connect to host'",
       "#TODO transform",
