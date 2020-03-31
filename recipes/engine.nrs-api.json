@@ -8,6 +8,8 @@
   "fee":1,
   "feePerByte":0,
   "genesisBlockTime":1385294400,
+  "import": "transaction-history",
+  "apiProvidesFullTx": true,
   "chain":0,
   "quartz":{
     "balance":[
@@ -152,7 +154,18 @@
       "loop @retryLoop 'retries' '<5' '1'",
       "fail 'Error: $symbol network not responding. Cannot push transaction!'"
     ],
-    "history" : [
+    "reformatTx" : [
+      "tran .value 2 1",
+      "fail 'Failed reformatting transaction.'",
+      "with reformatFee [data,'${.feeNQT}'] [atom]",
+      "with reformatAmount [data,'${.amountNQT}'] [atom]",
+      "tran { id:'=.fullHash|.transaction|unknown', timestamp:'.timestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.senderRS', target:'.recipientRS', confirmed:'.confirmations' } @tranSuccess @tranFail",
+      "@tranSuccess",
+      "done",
+      "@tranFail",
+      "fail 'Could not parse history'"
+    ],
+    "getHistory" : [
       "poke count $2 12",
       "poke offset $3 0",
       "data $symbol",
@@ -168,12 +181,7 @@
       "sort ['.timestamp',num,desc]",
       "poke txData",
       "data $symbol",
-      "flow {nxt:1, burst:1} 4",
       "peek txData",
-      "tran '[].transaction'",
-      "jump 3",
-      "peek txData",
-      "tran '[].fullHash'",
       "done"
     ],
     "transactionData" : [
@@ -190,7 +198,7 @@
       "fail 'Transaction does not exist!'",
       "# withMessage is true to retrieve only transactions having a message attachment, either non-encrypted or decryptable by the account (optional)"
     ],
-    "transaction" : [
+    "getTransaction" : [
       "data $symbol",
       "find . @token 1",
       "call mainTransaction/$1",
@@ -198,7 +206,6 @@
       "@token",
       "call tokenTransaction/$1"
     ],
-
     "mainTransaction" : [
       "call 'transactionData/$1'",
       "with reformatAmount [data,'${.amountNQT}'] [atom]",

@@ -8,8 +8,10 @@
   "fee":0,
   "fee-symbol":"trx",
   "contract":null,
+  "apiProvidesFullTx": false,
   "host":["https://api.trongrid.io"],
   "hostTronScan":"https://api.tronscan.org/api",
+  "import": "transaction-history",
   "cache":10000,
   "throttle":10,
   "quartz":{
@@ -68,17 +70,20 @@
       "fail 'Could not connect to host'",
       "done"
     ],
-    "transaction" : [
-      "call 'transactionData/$1'",
-      "# TODO: fee can be TRX and/or 'bandwidth' or 'energy', depending on contract or normal tx!",
+    "reformatTx": [
       "with txFee [data,$] [tran,'.costs.net_fee',2,1] [data,0] [atom] [done]",
       "with txAmount [data,$] [tran,'.contractData.amount',2,1] [data,0] [atom] [done]",
       "with txSymbol [data,$] [tran,'.contractData.asset_name',2,1] [data,'$symbol'] [done]",
       "tran {id:'.hash',height:'.block',timestamp:'.timestamp',amount:'$txAmount',symbol:'$txSymbol',fee:'$txFee','fee-symbol':'${fee-symbol}',source:'.ownerAddress',target:'.toAddress',confirmed:'.confirmed'} @okayData @failData",
       "@failData",
       "done",
-      "fail 'Cannot get transaction data!'",
+      "fail 'Cannot parse transaction data!'",
       "@okayData"
+    ],
+    "getTransaction" : [
+      "call 'transactionData/$1'",
+      "# TODO: fee can be TRX and/or 'bandwidth' or 'energy', depending on contract or normal tx!",
+      "call reformatTx"
     ],
     "attachment" : [
       "call 'transactionData/$1'",
@@ -86,14 +91,15 @@
       "data null",
       "done"
     ],
-    "history" : [
+    "getHistory" : [
       "curl $hostTronScan '/transfer?sort=-timestamp&count=true&limit=$count&start=$offset&address=$1' 2 1",
       "fail 'Could not connect to host'",
-      "tran '.data' 2 1",
-      "fail 'Could not get transaction history!'",
-      "tran '[].transactionHash' 1 -1",
+      "tran '.data' 1 @fail",
+      "tran '[].transactionHash' 1 @fail",
       "# done is needed only in this case, since API already correctly defines offset and limit",
-      "done"
+      "done",
+      "@fail",
+      "fail 'Could not get transaction history!'"
     ],
     "sample" : [
       "# contract transaction example: dfc96136312abc9071f92759e41dc3a3d07905f1a12e8c03a558f09917f1c25c",

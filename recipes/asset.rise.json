@@ -9,6 +9,8 @@
   "fee-symbol":"rise",
   "contract":null,
   "host":["https://wallet.rise.vision"],
+  "import": "transaction-history",
+  "apiProvidesFullTx": true,
   "cache":15000,
   "throttle":5,
   "version" : "0.1.2",
@@ -26,13 +28,13 @@
     "sample" : [
       "done {address:'13188395790866768123R',transaction:'11931543500510473853'}"
     ],
-    "history":[
+    "getHistory":[
       "poke count $2 12",
       "poke offset $3 0",
       "#'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': ''",
       "curl '/api/transactions?recipientId=$1&limit=$count&offset=$offset' 2 1",
       "fail 'Could not connect to host'",
-      "tran .transactions[].id 1 2",
+      "tran .transactions 1 2",   
       "done",
       "fail 'Unable to retrieve history.'"
     ],
@@ -60,12 +62,21 @@
       "pick",
       "done"
     ],
-     "transaction" : [
-      "call transactionData/$1",
+    "reformatTx": [
+      "tran .value 2 1",
+      "fail 'failed reformatting transaction.'",
       "with reformatFee [data,'${.fee}'] [atom]",
       "with reformatAmount [data,'${.amount}'] [atom]",
-      "tran { id:'.id', timestamp:'.timestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.senderId', target:'.recipientId', confirmed:'.confirmations' } 2 1",
-      "fail 'Cannot get transaction data2!'",
+      "tran { id:'.id', timestamp:'.timestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.senderId', target:'.recipientId', confirmed:'.confirmations' } tranSuccess tranFail",
+      "@tranSuccess",
+      "done",
+      "@tranFail",
+      "fail 'Could not parse history'"
+    ],
+     "getTransaction" : [
+      "call transactionData/$1",
+       "tran {value: $}",
+       "call reformatTx",
       "done"
     ]
   }

@@ -15,6 +15,8 @@
     "https://dex.binance.org/api/v1/",
     "https://dex.binance.org:443/api/v1/"],
   "host":"https://dex.binance.org/api/v1/",
+  "import": "transaction-history",
+  "apiProvidesFullTx": true,
   "cache":10000,
   "contract": null,
   "throttle":1,
@@ -55,11 +57,21 @@
     "sample" : [
       "done {address:'bnb177qrmvquh5flg6axap943clfm9cq09qcpwxc0m',transaction:'6F52B2DA41DC9E9EA91E16F1028F2C6D89B425A22A8E97CFAAA250375FC11E2D'}"
     ],
-    "transaction" : [
+    "reformatTx" : [
+      "tran .value 2 1",
+      "fail 'failed reformatting transaction.'",
+      "with newTimestamp [data,$] [tran, '.timeStamp']",
+      "tran { id:'.txHash', timestamp: '$newTimestamp', amount:'.value', symbol:'.txAsset', fee:'.txFee', 'fee-symbol':'.txAsset', source:'.fromAddr', target:'.toAddr',confirmed:'yes' } @tranSuccess @tranFail",
+      "@tranSuccess",
+      "done",
+      "@tranFail",
+      "fail 'Could not parse transaction.'"
+    ],
+    "getTransaction" : [
       "curl https://explorer.binance.org/api/v1/ /tx?txHash=$1 2 1",
       "fail 'Could not connect to host'",
-      "with newTimestamp [data,$] [tran, '.timeStamp'] [jstr] [drop, -3]",
-      "tran { id:'.txHash', timestamp: '$newTimestamp', amount:'.value', symbol:'.txAsset', fee:'.txFee', 'fee-symbol':'.txAsset', source:'.fromAddr', target:'.toAddr',confirmed:'yes' } 1 @fail",
+      "tran {value: $}",
+      "call reformatTx",
       "done",
       "@fail",
       "fail 'Could not get transaction information!'"
@@ -97,12 +109,13 @@
       "curl https://explorer.binance.org/api/v1/ /txs?page=$3&rows=$2&address=$1 2 1",
       "fail 'Could not connect to host'",
       "tran '.txArray[]' 1 @fail",
-      "each 'subHistory'",
+
       "done",
       "@fail",
       "fail 'Could not retrieve transaction history.'"
     ],
     "historyPageByCountLoop": [
+      "poke result []",
       "poke rowsForCall 100",
       "with pageForCall [math, '$2/$rowsForCall'] [math, floor]",
       "with decimalsOffset [data,'$2'] [tail, 2]",
@@ -128,7 +141,7 @@
       "data 15000",
       "done"
     ],
-    "history" : [
+    "getHistory" : [
       "poke count $2 12",
       "poke offset $3 0",
       "call makeTime/$count",

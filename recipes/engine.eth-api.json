@@ -16,6 +16,8 @@
   "gasLimitContractTx":336000,
   "contract":"0x0000000000000000000000000000000000000000",
   "histPage":25,
+  "import": "transaction-history",
+  "apiProvidesFullTx": false,
   "quartz":{
     "init" : [
       "peek contract",
@@ -138,7 +140,7 @@
       "loop @retryLoop 'retries' '<9' '1'",
       "fail 'Error: Ethereum network not responding. Cannot get nonce!'"
     ],
-    "history" : [
+    "getHistory" : [
       "poke count $2 12",
       "poke offset $3 0",
       "data $symbol",
@@ -206,14 +208,6 @@
       "fail 'Error: Ethereum network not responding. Cannot push transaction!'"
     ],
     "transactionData" : [
-      "data '$1 $symbol'",
-      "hash",
-      "poke storageHash",
-      "load 'tx$storageHash' 1 @requestData",
-      "unpk 1 @requestData",
-      "logs 'getting transaction data from storage $1'",
-      "done",
-      "@requestData",
       "time $timeout",
       "rand 10000",
       "poke 'randomId'",
@@ -234,18 +228,7 @@
       "peek txData",
       "done"
     ],
-    "transaction" : [
-      "data '$1 $symbol calculated'",
-      "hash",
-      "poke storageHash",
-      "load 'txEl$storageHash' 1 @calculateData",
-      "unpk 1 @calculateData",
-      "logs 'getting transaction calculation from storage $1'",
-      "done",
-      "@calculateData",
-      "time $timeout",
-      "with fee-factor [call,'fee-factor']",
-      "call 'transactionData/$1'",
+    "reformatTx": [
       "poke txData",
       "with txGas [data,'${.gas}'] [code,'hex','dec']",
       "with txGasPrice [data,'${.gasPrice}'] [code,'hex','dec']",
@@ -274,10 +257,13 @@
       "@notTokenTx",
       "fail 'This is a native, and not token transaction!'",
       "@okayData",
-      "poke txData",
-      "pack",
-      "save 'txEl$storageHash'",
-      "peek txData"
+      "done"
+    ],
+    "getTransaction" : [
+      "time $timeout",
+      "with fee-factor [call,'fee-factor']",
+      "call 'transactionData/$1'",
+      "call 'reformatTx/$1'"
     ],
     "attachment" : [
       "time $timeout",

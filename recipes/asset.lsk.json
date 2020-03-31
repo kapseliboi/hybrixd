@@ -11,6 +11,8 @@
   "contract":null,
   "host":["https://hub21.lisk.io","https://hub22.lisk.io","https://hub23.lisk.io","https://hub24.lisk.io","https://hub25.lisk.io","https://hub26.lisk.io","https://hub27.lisk.io","https://hub28.lisk.io","https://hub31.lisk.io","https://hub32.lisk.io","https://hub33.lisk.io","https://hub34.lisk.io","https://hub35.lisk.io","https://hub36.lisk.io","https://hub37.lisk.io","https://hub38.lisk.io"],
   "cache":15000,
+  "import": "transaction-history",
+  "apiProvidesFullTx": true,
   "throttle":5,
   "genesisBlockTime":1464116400,
   "quartz":{
@@ -30,7 +32,7 @@
       "fail 'Error from $symbol host : $'",
       "done"
     ],
-    "history" : [
+    "getHistory" : [
       "poke count $2 12",
       "poke offset $3 0",
       "curl /api/transactions?recipientId=$1&offset=$offset&limit=$count GET {Accept:'application/json'} 2 1",
@@ -38,9 +40,8 @@
       "tran .data 2 1",
       "fail 'Cannot get transaction history!'",
       "sort ['.height',num,desc]",
-      "tran '[].id'",
       "done"
-    ],
+    ],    
     "reformatTx": [
       "tran .value 2 1",
       "fail 'failed tran'",
@@ -58,14 +59,11 @@
       "fail 'Cannot get transaction data!'",
       "pick"
     ],
-    "transaction" : [
+    "getTransaction" : [
       "call transactionData/$1",
-      "with reformatTimestamp [data,${.timestamp}] [math,'+$genesisBlockTime']",
-      "with reformatFee [data,'${.fee}'] [atom]",
-      "with reformatAmount [data,'${.amount}'] [atom]",
-      "tran { id:'.id', timestamp:'$reformatTimestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.senderId', target:'.recipientId', confirmed:'.confirmations' } 1 @fail",
-      "done",
-      "fail 'Cannot get transaction data!'"
+      "tran {value: $}",
+      "call reformatTx",
+      "done"
     ],
     "attachment" : [
       "call transactionData/$1",

@@ -8,6 +8,8 @@
   "fee":0.001,
   "fee-symbol":"waves",
   "host": ["https://nodes.wavesplatform.com","https://nodes.wavesnodes.com"],
+  "import": "transaction-history",
+  "apiProvidesFullTx": true,
   "rejectUnauthorized":false,
   "cache":15000,
   "throttle":3,
@@ -40,7 +42,19 @@
       "fail 'Transaction failed! $'",
       "done"
     ],
-    "history" : [
+    "reformatTx": [
+      "tran .value 2 1",
+      "fail 'No transaction data found!'",
+      "with reformatTimestamp [data, '${.timestamp}'] [math,'/1000'] [math, 'round']",
+      "with reformatFee [data, '${.fee}'] [atom]",
+      "with reformatSymbol [data, $] [tran,'.assetId',1,4] [void, 3, 1] [call, getContractSymbol] [done] [data,'$symbol']",
+      "poke txData",
+      "with reformatAmount [data, $txData] [tran,'.transfers[].amount',2,1] [done,0] [math,'+'] [atom]",
+      "with reformatRecipient [data, $] [tran,'.recipient',3,1] [tran,'.transfers[0].recipient',2,1] [done,'undefined'] [done]",
+      "tran { id:'.id', timestamp:'$reformatTimestamp', amount:'$reformatAmount', symbol:'$reformatSymbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.sender', target:'$reformatRecipient', confirmed:true } 2 1",
+      "fail 'Cannot get transaction data!'"
+    ],
+    "getHistory" : [
       "poke count $2 12",
       "poke offset $3 0",
       "with amount math $count+$offset+1",
@@ -48,7 +62,6 @@
       "fail 'Could not connect to host'",
       "pick",
       "sort ['.height',num,desc]",
-      "tran '[].id'",
       "take $offset $count",
       "done"
     ],
@@ -64,19 +77,10 @@
       "case lower",
       "fuse waves. 0"
     ],
-    "transaction" : [
+    "getTransaction" : [
       "call transactionData/$1",
-      "poke reformatObj",
-      "tran '.id' 2 1",
-      "fail 'No transaction data found!'",
-      "with reformatTimestamp [peek,reformatObj] [tran,'.timestamp'] [math,'/1000'] [math, 'round']",
-      "with reformatFee [peek,reformatObj] [tran,'.fee'] [atom]",
-      "with reformatAmount [peek,reformatObj] [tran,'.transfers[].amount',2,1] [done,0] [math,'+'] [atom]",
-      "with reformatSymbol [peek,reformatObj] [tran,'.assetId',1,4] [void, 3, 1] [call, getContractSymbol] [done] [data,'$symbol']",
-      "with reformatRecipient [peek,reformatObj] [tran,'.recipient',3,1] [tran,'.transfers[0].recipient',2,1] [done,'undefined'] [done]",
-      "peek reformatObj",
-      "tran { id:'.id', timestamp:'$reformatTimestamp', amount:'$reformatAmount', symbol:'$reformatSymbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.sender', target:'$reformatRecipient', confirmed:true } 2 1",
-      "fail 'Cannot get transaction data!'"
+      "tran {value: $}",
+      "call reformatTx"
     ],
     "attachment" : [
       "call transactionData/$1",

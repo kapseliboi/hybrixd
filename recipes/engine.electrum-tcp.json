@@ -3,6 +3,8 @@
   "name":"Electrum TCP engine",
   "module":"quartz",
   "cache":1000,
+  "import": "transaction-history",
+  "apiProvidesFullTx": false,
   "throttle":0.2,
   "timeout":60000,
   "longtimeout":90000,
@@ -108,7 +110,7 @@
       "tran .result 2 1",
       "fail 'Could not read transaction data!'"
     ],
-    "transaction" : [
+    "getTransaction" : [
       "data '$1_$symbol_calculated'",
       "hash",
       "poke storageHash",
@@ -242,7 +244,7 @@
       "tran '=.confirmations|0'",
       "done"
     ],
-    "history" : [
+    "getHistory" : [
       "poke count $2 12",
       "poke offset $3 0",
       "time $longtimeout",
