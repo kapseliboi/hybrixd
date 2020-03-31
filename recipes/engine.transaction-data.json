@@ -32,6 +32,7 @@
       "date now",
       "true '$<$timestamp+$cacheConfirmed' 1 @retrieve",
       "load $fileName",
+      "jpar",
       "jump @skipRetrieve",
       "@retrieve",
       "call getTransaction/$txID",
