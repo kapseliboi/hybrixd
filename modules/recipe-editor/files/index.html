@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script type="text/javascript">
+      const href = document.location.href;
+      document.write("<base href='" +href+ (href.endsWith('/')?'':'/') + "' />");
+    </script>
+
+    <link href="https://fonts.googleapis.com/css?family=Palanquin:300,400,500,600,700&display=swap" rel="stylesheet">
+    <title>hybrix | add your token</title>
+    <link rel="stylesheet" type="text/css" href="./recipe-editor.css"/>
+    <script src="./recipe-editor.js"></script>
+  </head>
+
+  <body>
+    <div id="form" class="wrapper">
+      <a href="https://hybrix.io">
+        <img class="logotop" src="./img/hybrixlogo.svg">
+      </a>
+
+      <p>Adding support for your token to the hybrix is easy. Just fill in the info and your token will be reviewed and added by our team! </p>
+      <!--
+          <p class="videohelp">Need some help? contact us...<a href="https://www.youtube.com/watch?v=Iy8-YAwd9XY">watch video</a></p>
+          -->
+
+      <div class="formwrapper">
+        <h2>Add token!</h2>
+
+        <div class="formelement">
+          <label>base
+            <div class="infobox">
+              <img src="./img/infoicon.svg">
+              <div>Select the main ledger system of the token you want to add to hybrix. (Example: ETH)</div>
+            </div>
+          </label>
+
+          <select required id="base" onchange="changeBase(event)">
+            <option value="" diabled selected> select the ledger </option>
+          </select>
+        </div>
+
+        <div class="formelement">
+          <label>symbol
+            <div class="infobox">
+              <img src="./img/infoicon.svg">
+              <div>Specify your symbol name (usually 3 to 5 letters). (Example: .BAT)</div>
+            </div>
+          </label>
+          <div class="symbol-wrapper">
+            <span id="baseLabel"></span>.<input required  id="symbol" placeholder="myToken" type="text" required>
+          </div>
+        </div>
+
+        <div class="formelement">
+          <label>name
+            <div class="infobox">
+              <img src="./img/infoicon.svg">
+              <div>Short descriptive name of your token. (Example: Basic Attention Token) </div>
+            </div>
+          </label>
+          <input required  id="name" placeholder="super cool token" type="text" required>
+        </div>
+
+        <div class="formelement">
+          <label>information
+            <span class="optional"> (optional)</span>
+            <div class="infobox">
+              <img src="./img/infoicon.svg">
+              <div>A summary of information about the token. (Example: Basic Attention Token (BAT) project is an open-source, decentralized ad exchange platform built on the Ethereum platform. )</div>
+            </div>
+          </label>
+          <textarea id="info" placeholder="super cool token because of transaction speed"></textarea>
+        </div>
+
+        <div class="formelement">
+          <label>factor
+            <div class="infobox">
+              <img src="./img/infoicon.svg">
+              <div>How many decimals does the coin have? (Example: often 8 for a Bitcoin token, 18 for an Ethereum token, or 6 for a XEM token.)</div>
+            </div>
+          </label>
+          <input required id="factor" placeholder="8" type="number" min="0" required>
+        </div>
+
+        <div class="formelement contract">
+          <label>contract
+            <div class="infobox">
+              <img src="./img/infoicon.svg">
+              <div>The address or identifier or your token. (Example: 0x0D8775F648430679A709E98d2b0Cb6250d2887EF ) </div>
+            </div>
+          </label>
+          <input required  id="contract" placeholder="..." type="text" required>
+        </div>
+
+        <div class="formelement originator">
+          <label>originator
+            <div class="infobox">
+              <img src="./img/infoicon.svg">
+              <div>The address of the creator of the contract. (Example: 0x3095a47305EFD248f6ce272C2dB01297A91E8C41)</div>
+            </div>
+          </label>
+          <input id="originator" placeholder="..." type="text" required>
+        </div>
+
+        <div class="formelement">
+          <label>your name
+            <div class="infobox">
+              <img src="./img/infoicon.svg">
+              <div>Your name will be used to thank you in our release notes.</div>
+              <span class="optional">(optional)</span>
+            </div>
+          </label>
+          <input id="submitter" placeholder="me" type="text"/>
+        </div>
+
+        <div class="knop">
+          <input type="submit" value="send request" onclick="submit();">
+        </div>
+      </div>
+    </div>
+
+    <div id="thankyou" style="display:none;" class="wrapper">
+
+      <h1>Thank You!</h1>
+      <p> Thank you for adding a token to hybrix. Our team will review your submission. If we have any questions about your request we will contact you by the provided Email address.
+        <br>
+      </p>
+
+      <p>      You can monitor the progress of you request via this link: <a id="link" href=""></a></p>
+      <p>If you have any questions please contact use by our
+        <a href="https://matrix.to/#/!zaYpDPScfjjqkSHkBU:matrix.org?via=matrix.org&via=t2bot.io">Riot channel</a>
+        or
+        <a href="mailto:token@hybrix.io">Email.
+        </a>
+        <br>
+      </p>
+
+      <!--
+          <p class="videohelp">Need some help? contact us...<a href="https://www.youtube.com/watch?v=Iy8-YAwd9XY">watch video</a></p> https://matrix.to/#/!zaYpDPScfjjqkSHkBU:matrix.org?via=matrix.org&via=t2bot.io
+          -->
+
+    </div>
+
+        <div id="problem" style="display:none;" class="wrapper">
+
+      <h1>Something when wrong!</h1>
+      <p><span id="errorMessage"></span>
+        <br>
+      </p>
+
+      <p>
+        <div class="knop">
+          <input type="submit" value="cancel" onclick="retry();">
+        </div>
+      </p>
+
+      <!--
+          <p class="videohelp">Need some help? contact us...<a href="https://www.youtube.com/watch?v=Iy8-YAwd9XY">watch video</a></p> https://matrix.to/#/!zaYpDPScfjjqkSHkBU:matrix.org?via=matrix.org&via=t2bot.io
+          -->
+
+    </div>
+
+  </body>
+</html>
