@@ -37,7 +37,6 @@ hybrixd:
     -   echo "[i] Commit $CI_COMMIT_SHA does not exist, retrieving latest in branch $CI_COMMIT_REF_NAME"
     -   "git checkout"
     - fi
-
     - service docker start
     - sh ./scripts/pipeline/build.sh
     - setup_docker

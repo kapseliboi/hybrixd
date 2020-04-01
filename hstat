@@ -4,6 +4,7 @@ OLDPATH=$PATH
 SCRIPTDIR="`dirname \"$0\"`"
 NODE="`cd \"$SCRIPTDIR\" && pwd`"
 WHEREAMI=`pwd`
+
 export PATH=$NODE/node_binaries/bin:"$PATH"
 
 node "$NODE/lib/hstat.js" $@

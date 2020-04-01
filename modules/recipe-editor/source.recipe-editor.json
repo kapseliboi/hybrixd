@@ -1,0 +1,49 @@
+{
+  "source":"recipe-editor",
+  "name":"qrtz Recipe Editor",
+  "module":"recipe-editor",
+  "email" : "token@hybrix.io",
+  "auth":{"User-Agent": "hybrixio", "Authorization": "token "},
+  "router" : {
+    "api":{
+      "_alias":"/"
+    },
+    "submit" : {
+      "_this":"Pass form data",
+      "_mime":"test"
+    },
+    "_ellipsis":true,
+    "_this" : "Provides the necessary bindings to host the recipe editor."
+  },
+  "quartz":{
+    "_root" : [
+      "sync recipe_editor"
+    ],
+    "submit":[
+      "poke formData",
+      "curl https://api.github.com /repos/hybrix-io/hybrixd/git/refs/heads GET $auth 2 1" ,
+      "fail 'Failed to retrieve branches.'",
+      "find {ref:refs/heads/master}",
+      "tran [0].object.sha 2 1",
+      "fail 'Failed to retrieve master branch.'",
+      "data {ref: refs/heads/${formData.base}_${formData.symbol}, sha: $}",
+      "curl https://api.github.com /repos/hybrix-io/hybrixd/git/refs POST $auth 2 1",
+      "fail 'Failed to create branch.'",
+      "peek formData",
+      "jpar",
+      "tran {symbol:.symbol,name:.name,import:.base,info:.info,factor:.factor,contract:.contract,originator:.originator} 2 1",
+      "fail 'Failed to create recipe.'",
+      "jstr",
+      "code utf-8 base64",
+      "data { message: 'Add token recipe for ${formData.name} (${formData.symbol})', branch:'${formData.base}_${formData.symbol}', committer: {name: ${formData.submitter},email: '$email'}, content: '$'}",
+      "curl https://api.github.com /repos/hybrix-io/hybrixd/contents/recipes/token.${formData.base}.${formData.symbol}.json PUT $auth 2 1",
+      "fail 'Failed to commit recipe.'",
+      "data {head:'${formData.base}_${formData.symbol}',base:master,title:'Add token recipe for ${formData.name} (${formData.symbol})',body:'by ${formData.submitter}.',maintainer_can_modify:true}",
+      "curl https://api.github.com /repos/hybrix-io/hybrixd/pulls POST $auth 2 1",
+      "fail 'Failed to create pull request.'",
+      "tran .html_url 2 1",
+      "fail 'Failed to retrieve url.'",
+      "done"
+    ]
+  }
+}

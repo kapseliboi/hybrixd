@@ -1,0 +1,609 @@
+/* line 3, ../sass/form-reset.sass */
+::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+/* line 7, ../sass/form-reset.sass */
+input,
+button,
+select,
+textarea {
+  margin: 0;
+  outline: 0;
+  vertical-align: middle;
+}
+
+/* line 15, ../sass/form-reset.sass */
+button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"] {
+  -webkit-appearance: none;
+  -webkit-background-clip: padding;
+  -moz-background-clip: padding;
+  background-clip: padding-box;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  -ms-border-radius: 0;
+  -o-border-radius: 0;
+  border-radius: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-size: 1em;
+  overflow: visible;
+  padding: 0;
+  width: auto;
+}
+
+/* line 30, ../sass/form-reset.sass */
+textarea,
+select,
+input[type="date"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="email"],
+input[type="month"],
+input[type="number"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="text"],
+input[type="time"],
+input[type="url"],
+input[type="week"] {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-background-clip: padding;
+  -moz-background-clip: padding;
+  background-clip: padding-box;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  -ms-border-radius: 0;
+  -o-border-radius: 0;
+  border-radius: 0;
+  -webkit-appearance: none;
+  background: none;
+  border: 0;
+  outline: 0;
+  padding: 0;
+  text-align: left;
+  font-size: 1em;
+  height: 1.8em;
+}
+
+/* line 57, ../sass/form-reset.sass */
+button[disabled],
+input[disabled],
+select[disabled],
+select[disabled] option,
+select[disabled] optgroup,
+textarea[disabled] {
+  -moz-user-select: -moz-none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+/* line 69, ../sass/form-reset.sass */
+:invalid {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
+/* line 75, ../sass/form-reset.sass */
+textarea,
+select[size],
+select[multiple] {
+  height: auto;
+}
+
+@media (-webkit-min-device-pixel-ratio: 0) {
+  /* line 82, ../sass/form-reset.sass */
+  select,
+  select[size="0"],
+  select[size="1"] {
+    height: 1.8em;
+  }
+}
+/* line 87, ../sass/form-reset.sass */
+textarea {
+  min-height: 40px;
+  overflow: auto;
+  resize: none;
+  width: 100%;
+}
+
+/* line 93, ../sass/form-reset.sass */
+optgroup {
+  font-style: normal;
+  font-weight: normal;
+  font-family: inherit;
+}
+
+/* line 99, ../sass/form-reset.sass */
+textarea,
+input {
+  outline: none;
+}
+
+/* line 103, ../sass/form-reset.sass */
+:focus {
+  outline-color: transparent;
+  outline-style: none;
+}
+
+
+html {
+}
+
+body {
+  font-family: 'Palanquin', sans-serif;
+  line-height: 1.5;
+  font-size: 20px;
+  font-weight: 400;
+  color: white;
+  word-break: break-word;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  background-image: url(./img/backgroundimage.png);
+  background-size: 120% 120%;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  text-align: center;
+}
+
+
+/* logo hybrix */
+
+img.logotop{
+  width: 80%;
+  height: 80%;
+  max-width: 300px ;
+  display: block;
+  margin: 0 auto;
+}
+
+.logotop{
+
+  width: 100px;
+  height: 50px;
+}
+
+
+div.wrapper{
+  width: 70%;
+  margin: 70px auto;
+  max-width: 700px;
+  height:100%;
+}
+
+h1{
+  font-size: 58px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: 22px;
+}
+
+p.videohelp{
+  font-weight: 700;
+}
+
+a{
+  color:#5fc7c3;
+  text-decoration: none;
+  cursor:pointer;
+  transition: 0.2s all ease-in;
+}
+
+a:hover{
+  color:#e8a161;
+
+}
+
+
+div.formwrapper{
+  padding: 30px;
+  background-color:white;
+  color:black;
+  border-radius: 30px;
+  max-width: 400px;
+  margin: 60px auto 300px;
+}
+
+h2{
+  font-size:40px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1;
+  margin: 0 0 40px 0;
+}
+
+
+option{
+  color:red;
+}
+
+div.formelement{
+  text-align: left;
+  margin: 16px 20px;
+
+}
+
+div.formelement label,
+div.formelement input,
+div.formelement textarea,
+div.formelement select{
+  display: block;
+  font-family: "Palanquin", sans-serif;
+}
+
+/*
+INFOBOX________________________________________________________
+*/
+
+div.infobox img{
+  width: 15px;
+  vertical-align: middle;
+  padding-left: 5px;
+
+}
+
+div.infobox img:hover,
+div.infobox img:active{
+  transition: 0.2s all ease-in;
+  transform: scale(1.1);
+
+}
+
+div.infobox div{
+  opacity: 0;
+  height: 0px;
+  overflow: hidden;
+  position: absolute;
+  transition: 0.1s all ease-in;
+  width: 200px;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 0 30px 0 rgba(0,0,0,0.2);
+  left: 50%;
+  margin-left: -120px;
+  }
+
+div.infobox:hover div,
+div.infobox:active div{
+opacity: 1;
+height: unset;
+padding: 20px;
+}
+
+div.infobox{
+  display:inline-block;
+
+}
+
+.optional{
+  color: #aaaaaa;
+  font-weight: 300;
+  font-style:italic;
+}
+
+input[type="text"],
+textarea[id="info"],
+input[type="number"],
+input[type="email"],
+select{
+  border-bottom: 2px solid #e8e8e8;
+  width: 100%;
+  padding: 20px 0px 20px 0px;
+  font-size: 18px;
+  font-weight: 300;
+}
+
+input[type="text"]:focus,
+textarea[id="info"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus{
+  border-bottom: 2px solid #5fc7c3;
+  transition: 0.5s all ease-in;
+}
+
+::placeholder {
+  color: #aaaaaa;
+  opacity: 1;
+}
+
+input:focus::placeholder,
+textarea:focus::placeholder
+ {
+  color: #aaaaaa;
+  opacity: 0;
+  transition: 0.2s all ease-in;
+}
+
+input[type="number"]{
+
+  width: 100%;
+
+}
+
+div.originator,
+div.contract{
+  width: 39%;
+  display:inline-block;
+}
+
+div.contract {
+  margin-right: 5%;
+}
+
+textarea[id="info"]{
+  padding: 10px 0px 10px 0px;
+}
+
+select{
+  font-family: 'Palanquin', sans-serif;
+  color:black;
+  padding:0 0 0 0;
+  height: 40px;
+  font-weight: 700;
+  background: url(./img/ico-selector.png) right center no-repeat;
+}
+
+label{
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+
+div.knop{
+  margin:50px auto 0px;
+  background-image: linear-gradient(209deg, #E89F5E 0%, #E382A6 100%);
+  border-radius: 24px;
+}
+
+div.knop:hover{
+  transform: scale(1.02);
+  transition: 0.2s all ease-in;
+}
+
+
+input[type="submit"] {
+  color: white;
+  background-color: transparent;
+  font-size: 20PX;
+  font-weight: 500;
+  border: 0;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height:100%;
+  padding:20px 20px 20px 8px;
+  font-family: "Palanquin", sans-serif;
+
+
+}
+
+input[type="submit"]:hover {
+  text-decoration: none;
+}
+
+input[type="submit"]:disabled,
+input[type="submit"][disabled], input[type="submit"][disabled]:hover {
+  color: #bbb;
+  cursor:default;
+  font-style: italic;
+  text-decoration: none;
+}
+
+
+#searchWrapper {
+  text-align:center;
+}
+
+#searchBar {
+  display:inline-block;
+  padding:5px;
+  font-size:100%;
+  border: 1px solid #dedede;
+  border-radius: 15px;
+}
+
+
+#searchWrapper.no-result{
+  margin-top:30vh;
+}
+
+#query {
+  font-size:100%;
+  border-style:none;
+  margin:0;
+  width:70vh;
+}
+
+.symbol-wrapper {
+  border-bottom: 2px solid #e8e8e8;
+  transition: 0.5s all ease-in;
+  padding: 6px 0px;
+}
+.symbol-wrapper:hover{
+  border-bottom: 2px solid #5fc7c3;
+}
+#baseLabel {
+  font-size: 18px;
+  color: black;
+  font-weight: 700;
+  margin-right: 2px;
+}
+#symbols {
+  display:none;
+  text-align:left;
+  max-height:30vh;
+  overflow-y:scroll;
+}
+
+#symbol {
+  margin:0;
+  border-bottom: 0px;
+  margin-left:2px;
+  margin-top:-4px;
+}
+
+.symbol{
+  cursor:pointer;
+}
+
+.symbol:hover{
+  color:darkgrey;
+}
+
+#symbol:focus, #query:focus{
+  outline: none;
+}
+
+input#symbol{
+  display:inline;
+  width: unset;
+  padding: 0;
+}
+
+#cancel {
+  position: relative;
+  left: -33px;
+}
+
+
+
+
+
+.approve{
+
+  font-style: italic;
+  font-size: 14px;
+}
+
+
+.transactionId {
+  max-width: 50px;
+  width: 50px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#history {
+  width:100%;
+}
+
+table#transaction {
+  width:100%;
+}
+
+
+#balance {
+  font-size:200%;
+  text-align:right;
+}
+
+
+.header {
+  background-color:black;
+  color:white;
+}
+
+.confirmed, .unconfirmed, .unknown {
+  color:white;
+}
+
+.confirmed {
+  color:green;
+}
+
+.unconfirmed {
+  color:red;
+}
+
+.unknown {
+  color:orange;
+}
+
+.clipboard:hover{
+  background-color:lightgrey;
+}
+
+.clipboard {
+  background-image:url('./clipboard.png');
+  background-repeat:no-repeat;
+  background-color:grey;
+  background-size:80% 80%;
+
+  display:inline-block;
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  cursor:pointer;
+
+}
+
+.error {
+  background-color: #FFEEEE;
+  color:red;
+}
+
+
+#logo{
+  width: 80px;
+  display: inline-block;
+  border: none;
+  vertical-align:middle;
+}
+
+#logo.no-result{
+  width: 300px;
+  margin: 40px auto 50px;
+  display: block;
+}
+
+#result {
+background-color:  #eeeeee;
+}
+#result.no-result{
+display:none;
+}
+
+
+div.formelement input.missing,
+div.formelement textarea.missing,
+div.formelement select.missing {
+  border-color: #f22144;
+}
+
+div.formelement input.missing::placeholder,
+div.formelement textarea.missing::placeholder,
+div.formelement select.missing::placeholder{
+  color: #f22144;
+}
+
+
+/* media query ############################################################# */
+
+
+@media only screen and (max-width: 600px){
+  div.originator,
+  div.contract{
+    width: unset;
+    display:block;
+    margin: 16px 20px;
+  }
+}
