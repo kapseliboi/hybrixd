@@ -1,3 +1,17 @@
+# v0.7.8
+## Tiny Sienna Kobold
+## 02-04-2020
+
+* Improved history and transaction caching engine
+* Separate confirmed from transaction
+* Transports: cron decreased to for faster data propagation (tested)
+* Transports: more lenient timeout to account for noisy DHT to prevent incorrect offline messages
+* Expose version through version endpoint
+* Expose rout tree through meta endpoint
+
+
+
+
 # v0.7.7
 ## Cuddly Blueish Ogre
 ## 31-03-2020
