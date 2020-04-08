@@ -11,8 +11,8 @@ function open (proc, channel, passwd, hashSalt) {
   let nodeId = global.hybrixd.node.publicKey;
   // TODO: when wrong host or channel input, warn user and quit!!
   let handleId = shaHash(nodeId + channel + passwd + hashSalt).substr(16, 24);
-
-  if (!data.handles.hasOwnProperty(handleId)) {
+  // if data.forceStop is true, transports is being forcefully shut down!
+  if (!data.forceStop && !data.handles.hasOwnProperty(handleId)) {
     let port = Math.floor(Math.random() * 10000) + 21201; // choose random port
     // setup the torrent socket
     data.handles[handleId] = { id: handleId, opened: openTime, protocol: 'torrent', host: 'DHT', channel: channel, peerId: null, peers: {}, buffer: [] };
@@ -151,10 +151,10 @@ function open (proc, channel, passwd, hashSalt) {
         }
       }
     });
-    
+
     // event: warnings and errors
     handle.socket.on('warning', (err) => {
-      proc.warn('Transport torrent: Error! ' + err.message);
+      proc.warn('transport torrent: Error! ' + err.message);
     });
   } else {
     // return handle when socket already open
@@ -163,13 +163,21 @@ function open (proc, channel, passwd, hashSalt) {
 }
 
 function stop (proc, handle) {
+  proc.logs('torrent: stopping and closing socket ' + handle.id);
+  // clear intervals
   clearInterval(handle.announce);
+  // remove all listeners  - TODO: restructuring could make this a lot cleaner!
+  handle.socket.removeAllListeners(['peer']);
+  handle.socket.removeAllListeners(['message']);
+  handle.socket.removeAllListeners(['offline']);
+  handle.socket.removeAllListeners(['warning']);
+  handle.socket.removeAllListeners(['ready']);
   handle.socket.close(function () {
     setTimeout(function () {
+      // administrate handle data
       functions.removeEndpoint('torrent://' + handle.channel + '/' + handle.peerId);
-      functions.removeHandle(handle);
+      functions.removeHandle(handle.id);
       proc.done('torrent socket closed');
-      proc.logs('torrent: stopped and closed socket ' + handle.id);
     }, 3000);
   });
 }

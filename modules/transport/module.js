@@ -49,25 +49,54 @@ function open (proc) {
 }
 
 function stop (proc) {
-  const handleId = proc.command[1];
-  if (data.handleIds.indexOf(handleId) > -1) {
-    if (data.handles.hasOwnProperty(handleId) && data.handles[handleId].hasOwnProperty('protocol')) {
-      switch (data.handles[handleId].protocol) {
-        case 'irc':
-          transportIrc.stop(proc, data.handles[handleId]);
-          break;
-        case 'torrent':
-          transportTorrent.stop(proc, data.handles[handleId]);
-          break;
-        default:
-          proc.fail(1, 'Cannot close socket! Protocol not recognized!');
-          break;
+  let handleId = proc.command[1];
+  if (handleId === 'undefined') {
+    // experimental: signal to prevent opening new sockets
+    if (!data.handleIds.length) {
+      data.forceStop = true;
+      proc.logs('transport: preventing the opening of new sockets');
+      waitForBootstrap = 16000;
+    } else {
+      waitForBootstrap = 3000;
+    }
+    // attempt to close all open transports
+    proc.logs('transport: waiting for bootstrapping to finish before shutdown...');
+    setTimeout(function () {
+      for (let i = 0; i < this.data.handleIds.length; i++) {
+        handleId = this.data.handleIds[i];
+        if (this.data.handles.hasOwnProperty(handleId) && this.data.handles[handleId].hasOwnProperty('protocol')) {
+          stopTransport({ done: done => {}, fail: fail => {}, logs: logs => {} }, this.data.handles[handleId]);
+        }
+      }
+      this.data.forceStop = true;
+      this.proc.logs('transport: all sockets have been closed');
+      this.proc.done('All transport sockets closed.');
+    }.bind({data, proc, handleId}), waitForBootstrap);
+  } else {
+    // close a specific transport
+    if (data.handleIds.indexOf(handleId) > -1) {
+      if (data.handles.hasOwnProperty(handleId) && data.handles[handleId].hasOwnProperty('protocol')) {
+        stopTransport(proc, data.handles[handleId]);
+      } else {
+        proc.fail(500, 'Transport not yet fully bootstrapped. Please try again later!');
       }
     } else {
-      proc.fail(500, 'Transport not yet fully bootstrapped. Please try again later!');
+      proc.fail(404, 'Transport handle does not exist!');
     }
-  } else {
-    proc.fail(404, 'Transport handle does not exist!');
+  }
+}
+
+function stopTransport (proc, handle) {
+  switch (handle.protocol) {
+    case 'irc':
+      transportIrc.stop(proc, handle);
+      break;
+    case 'torrent':
+      transportTorrent.stop(proc, handle);
+      break;
+    default:
+      proc.fail(1, 'Cannot close socket! Protocol not recognized!');
+      break;
   }
 }
 
@@ -81,8 +110,7 @@ function info (proc) {
         opened: handle.opened,
         protocol: handle.protocol,
         channel: handle.channel,
-        peerId: handle.peerId,
-        nodeId: global.hybrixd.node.publicKey // TODO
+        peerId: handle.peerId
       });
     } else {
       proc.fail(500, 'Transport not yet fully initialized. Please try again later!');
@@ -143,7 +171,35 @@ function list (proc) {
         proc.done(peers);
       }
       break;
+    case 'nodes':
+      let nodes = [];
+      let handleId;
+      if (proc.command[2]) {
+        handleId = proc.command[2];
+        if (data.handleIds.indexOf(handleId) > -1) {
+          if (data.handles.hasOwnProperty(handleId) && data.handles[handleId].hasOwnProperty('protocol')) {
+            nodes = Object.keys(data.handles[handleId].peers);
+          } else {
+            proc.fail(500, 'Transport not yet fully initialized. Please try again later!');
+          }
+        } else {
+          proc.fail(404, 'Handle does not exist!');
+        }
+      } else {
+        for (let i = 0; i < data.handleIds.length; i++) {
+          handleId = data.handleIds[i];
+          nodes = nodes.concat(Object.keys(data.handles[handleId].peers));
+        }
+      }
+      proc.done(sortAndUniq(nodes));
+      break;
   }
+}
+
+function sortAndUniq (a) {
+  return a.sort().filter(function (item, pos, ary) {
+    return !pos || item !== ary[pos - 1];
+  });
 }
 
 function send (proc) {
