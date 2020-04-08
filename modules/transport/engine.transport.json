@@ -11,7 +11,6 @@
   "defaultChannel":"hybrixAnnouncements",
   "defaultIrcHost":"irc.freenode.net",
   "defaultTorrentPasswd":"l3ts_b34t_th3_b4nks!",
-  "cron" : 60,
   "conf" :{
     "enabled" :{
       "default":true,
@@ -19,7 +18,7 @@
     }
   },
   "quartz" : {
-    "cron" :[
+    "init" :[
       "# open transports IRC and Torrent, unless already open",
       "func open/torrent"
     ],
@@ -136,10 +135,8 @@
     "stop":{
       "_help" : "Close an active transport.",
       "_access" : "root",
-      "_ref" : {
-        "_list" : "handle",
-        "_this" : "Specify the handle of the transport to close."
-      }
+      "_ellipsis" : true,
+      "_this" : "Close all transports, or alternatively close one by specifying the handle of the transport to close."
     },
     "info":{
       "_help" : "Get information about an active transport.",
@@ -209,7 +206,8 @@
         }
       },
       "handles" : "Active transport handles are listed.",
-      "peers" : "Peers across all networks are listed."
+      "nodes" : "Nodes across all networks are listed. You can specify the handle to see only the nodes that belong to it.",
+      "peers" : "Peers across all networks are listed, categorized by handles. You can specify the handle to see only the peers that belong to it."
     }
   }
 }

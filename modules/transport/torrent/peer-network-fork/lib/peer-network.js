@@ -13,7 +13,7 @@ const CallbackQueue = require('./callback-queue');
 var emissionInterval;
 
 class PeerNetwork extends EventEmitter {
-    /**
+  /**
      * Peer-to-peer Network
      *
      * @constructor
@@ -31,98 +31,94 @@ class PeerNetwork extends EventEmitter {
      * @param {Array.<string>} [opts.bootstrap] Bootstrap Bitorrent DHT server (default value: router.bittorrent.com:6881, router.utorrent.com:6881, dht.transmissionbt.com:6881)
      * @param {Function} [callback] When network is alive
      */
-    constructor(opts) {
-        super();
+  constructor (opts) {
+    super();
 
-        this.__dht = new DhtProtocol(opts);
-        this.__network = new NetworkDht(this.__dht);
-        this.__queue = new CallbackQueue(10000);
+    this.__dht = new DhtProtocol(opts);
+    this.__network = new NetworkDht(this.__dht);
+    this.__queue = new CallbackQueue(10000);
 
-        this.__network.on('message', (msg, from) => {
-            if (!this.__network.isReady()) {
-                return this.__queue.push(() => {
-                    this.emit('message', msg, from);
-                });
-            }
-            this.emit('message', msg, from);
+    this.__network.on('message', (msg, from) => {
+      if (!this.__network.isReady()) {
+        return this.__queue.push(() => {
+          this.emit('message', msg, from);
         });
+      }
+      this.emit('message', msg, from);
+    });
 
-        this.__network.on('destroy', () => {
-            clearInterval(emissionInterval);
-            this.emit('close');
-        });
+    this.__network.on('destroy', () => {
+      this.emit('close');
+    });
 
-        this.__network.on('online', (peer) => {
-            this.emit('online', peer);
-            // agent725: fix premature peer emit
-            emissionInterval = setInterval(function() {
-              this.emit('peer', peer);
-            }.bind(this),60000,peer)
-        });
+    this.__network.on('online', (peer) => {
+      this.emit('online', peer);
+      // agent725: DEPRECATED this.emit('peer', peer);
+    });
 
-        this.__network.on('offline', (peer) => {
-            this.emit('offline', peer);
-        });
+    this.__network.on('offline', (peer) => {
+      this.emit('offline', peer);
+    });
 
-        Object.defineProperty(this, 'id', {
-            enumerable: true,
-            get: () => { return this.__network.myID(); }
-        });
-    }
+    Object.defineProperty(this, 'id', {
+      enumerable: true,
+      get: () => { return this.__network.myID(); }
+    });
+  }
 
-    /**
+  /**
      * Get list of peers online
      *
      * @param {integer} [port=21201] Port used on UDP Socket
      * @param {Function} [callback]
      * @return {Array}
      */
-    start(port, callback) {
-        if (this.__network.isReady()) {
-            this.emit('warning', 'Network started');
-            return this;
-        }
-        this.__network.once('alive', () => {
-            if (typeof callback === 'function') {
-                this.once('ready', callback);
-            }
-            this.emit('ready', this.__network.myID());
-            this.__queue.flush().forEach((err) => {
-                this.emit('warning', err.message);
-            });
-        });
-        this.__dht.listen(port);
-        return this;
+  start (port, callback) {
+    if (this.__network.isReady()) {
+      this.emit('warning', 'Network started');
+      return this;
     }
+    this.__network.once('alive', () => {
+      if (typeof callback === 'function') {
+        this.once('ready', callback);
+      }
+      this.emit('ready', this.__network.myID());
+      this.__queue.flush().forEach((err) => {
+        this.emit('warning', err.message);
+      });
+    });
+    this.__dht.listen(port);
+    return this;
+  }
 
-    /**
+  /**
      * Get list of peers online
      *
      * @return {Array}
      */
-    getPeers() {
-        return this.__network.peersIDs();
-    }
+  getPeers () {
+    return this.__network.peersIDs();
+  }
 
-    /**
+  /**
      * @return {boolean}
      */
-    isReady() {
-        return this.__network.isReady();
-    }
+  isReady () {
+    return this.__network.isReady();
+  }
 
-    /**
+  /**
      * Close p2p network
      *
      * @param {Function} [callback]
      * @return {void}
      */
-    close(callback) {
-        this.__network.destroy(callback);
-        this.__queue.clear();
-    }
+  close (callback) {
+    this.__network.destroy(callback);
+    this.__queue.clear();
+  }
 
-    /**
+  /**
      * Send a message to peer
      *
      * @param {Buffer} buf Message content
@@ -130,15 +126,15 @@ class PeerNetwork extends EventEmitter {
      * @param {Function} [callback]
      * @return {void}
      */
-    send(buf, peerId, callback) {
-        if (!this.__network.isReady()) {
-            return this.__queue.push(() => {
-                this.send(buf, peerId, callback);
-            });
-        }
-        callback = callback || function() {};
-        this.__network.send(buf, peerId, callback);
+  send (buf, peerId, callback) {
+    if (!this.__network.isReady()) {
+      return this.__queue.push(() => {
+        this.send(buf, peerId, callback);
+      });
     }
+    callback = callback || function () {};
+    this.__network.send(buf, peerId, callback);
+  }
 }
 
 // -- exports
