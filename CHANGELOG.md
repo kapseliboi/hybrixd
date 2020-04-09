@@ -1,3 +1,16 @@
+# v0.7.9
+## Beautiful Lavender Sphinx
+## 09-04-2020
+
+* Schedule session/api reports generation for public endpoints.
+* Ensure transports does not retain event listeners and processes after shutdown
+* Add bigint support to byte command
+* Handle none json responses in hcmd
+* web-explorer: added multi fee support
+* hybrix-jslib: added multi fee support
+
+
+
 # v0.7.8
 ## Tiny Sienna Kobold
 ## 02-04-2020
