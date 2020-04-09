@@ -350,6 +350,10 @@
   "r":{"_alias":"report"},
   "report":{
     "_ui" : "report",
+    "cron":{
+      "_this":"Update the weekly public statistics.",
+      "_access" : "root"
+    },
     "assets" : {
       "_ui" : "report/assets",
       "_this" : "View the asset test report. Requires test data to be available. Run /report/assets/test to gather data or ensure enable_daily_asset_report is set to true.",
@@ -398,9 +402,9 @@
     },
     "sessions" :{
       "_ui" : "report/sessions",
-      "_access" : "root",
-      "_this" : "Return session timestamps for the last hour.",
+      "_this" : "Return session statistics for the last week.",
       "_ref":{
+        "_access" : "root",
         "_list" : "start",
         "_sample" : "1d",
         "_this" : "Return session timestamps from $START till now.",
@@ -413,10 +417,10 @@
     },
     "api" :{
       "_ui" : "report/api",
-      "_access" : "root",
       "assets": {
-        "_this" : "Return asset api call timestamps and symbols for the last hour.",
+        "_this" : "Return asset api call statistics for the last week.",
         "_ref":{
+          "_access" : "root",
           "_list" : "start",
           "_sample" : "1d",
           "_this" : "Return asset api call timestamps and symbols from $START till now.",
@@ -432,8 +436,9 @@
           }
         }
       },
-      "_this" : "Return api call timestamps for the last hour.",
+      "_this" : "Return api call statistics for the last week.",
       "_ref":{
+        "_access" : "root",
         "_list" : "start",
         "_sample" : "1d",
         "_this" : "Return api call timestamps from $START till now.",
