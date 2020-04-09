@@ -2,17 +2,25 @@
   "engine":"report",
   "name":"Report job for /report api endpoints",
   "cron": 86400,
+  "cronOffset": 60,
     "conf" :{
     "enable_daily_asset_report" :{
       "default":false,
       "info":"Whether to enable daily asset report generation."
+    },
+    "enable_daily_public_report" :{
+      "default":true,
+      "info":"Whether to enable daily public report generation."
     }
   },
   "quartz":{
     "cron" :[
-      "flow conf::enable_daily_asset_report {true:2,false:1}",
-      "done",
-      "rout /report/assets/test"
+      "logs Run daily report",
+      "flow conf::enable_daily_asset_report {true:1,false:2}",
+      "rout /report/assets/test",
+      "flow conf::enable_daily_public_report {true:1,false:2}",
+      "rout /report/cron",
+      "done"
       ]
   },
   "router":{
