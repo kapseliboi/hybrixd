@@ -27,10 +27,13 @@
       "poke fileName ${txID}-${symbol}-transaction",
       "seek $fileName 1 @retrieve",
       "meta $fileName",
-      "tran .time 1 @retrieve",
-      "poke timestamp",
+      "tran .mod 1 @retrieve",
+      "math +$cacheConfirmed",
+      "poke timePlusCache",
       "date now",
-      "true '$<$timestamp+$cacheConfirmed' 1 @retrieve",
+      "# date returns seconds epoch, while meta timestamp var contains milliseconds!",
+      "math *1000",
+      "true '$<$timePlusCache' 1 @retrieve",
       "load $fileName",
       "jpar",
       "jump @skipRetrieve",
@@ -42,7 +45,7 @@
       "@skipRetrieve",
       "tran .confirmed 1 2",
       "done",
-      "fail 'Could not get confirmations'"
+      "fail 'Could not get confirmations!'"
     ],
     "save/txID": [
       "poke txData",
