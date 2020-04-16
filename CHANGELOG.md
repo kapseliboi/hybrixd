@@ -1,3 +1,16 @@
+# v0.7.10
+## Fluffy Green Kraken
+## 16-04-2020
+
+* Catch tcp errors during closing
+* Implement cli calls to external http(s) hosts
+* Improve error handling in valuation engine
+* Added new Litecoin hosts
+* Upgrade documentation menus
+* web-wallet: Improve client side caching 
+
+
+
 # v0.7.9
 ## Beautiful Lavender Sphinx
 ## 09-04-2020
