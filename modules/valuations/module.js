@@ -2,19 +2,16 @@ let xmldoc = require('xmldoc');
 
 function addQuote (accumulator, quote_currency, base_currency, price) {
   // Don't add quote if the input fails these requirements
-  if (quote_currency === base_currency || price === 0 || !isFinite(price)) {
-    return accumulator;
-  }
+  if (quote_currency === base_currency || price === 0 || !isFinite(price)) return accumulator;
 
-  if (!accumulator.hasOwnProperty(quote_currency)) {
-    accumulator[quote_currency] = {quotes: {}};
-  }
+  if (!accumulator.hasOwnProperty(quote_currency)) accumulator[quote_currency] = {quotes: {}};
+
   accumulator[quote_currency]['quotes'][base_currency] = price;
   return accumulator;
 }
 
 function parseEUCentralBank (xmlString) {
-  let name = 'EUCentralBank';
+  const name = 'EUCentralBank';
   let baseCurrencies = ['EUR'];
   let xmlElements;
   try {
@@ -35,14 +32,13 @@ function parseEUCentralBank (xmlString) {
 }
 
 function parseCoinmarketcap (obj) {
-  let name = 'coinmarketcap';
+  const name = 'coinmarketcap';
   let quote_accumulator = {};
-  if (!obj) {
-    return {name, quotes: quote_accumulator};
-  }
+  if (typeof obj !== 'object' || obj === null || !obj.hasOwnProperty('data')) return {name, quotes: quote_accumulator};
+
   Object.keys(obj.data).map(function (key, index) {
-    let price = obj.data[key].quotes.USD.price;
-    let quote_currency = obj.data[key].symbol;
+    const price = obj.data[key].quotes.USD.price;
+    const quote_currency = obj.data[key].symbol;
 
     quote_accumulator = addQuote(quote_accumulator, 'USD', quote_currency, 1 / price);
     quote_accumulator = addQuote(quote_accumulator, quote_currency, 'USD', price);
@@ -51,12 +47,9 @@ function parseCoinmarketcap (obj) {
 }
 
 function parseCoinbase (obj) {
-  let name = 'coinbase';
-  let baseCurrencies = ['USD'];
+  const name = 'coinbase';
   let quote_accumulator = {};
-  if (!obj) {
-    return {name, quotes: quote_accumulator};
-  }
+  if (typeof obj !== 'object' || obj === null) return {name, quotes: quote_accumulator};
 
   Object.keys(obj.data.rates).map(function (key, index) {
     let price = parseFloat(obj.data.rates[key]);
@@ -68,15 +61,13 @@ function parseCoinbase (obj) {
 }
 
 function parseBinance (obj) {
-  let name = 'binance';
-  let baseCurrencies = ['BTC', 'ETH', 'USDT', 'BNB'];
+  const name = 'binance';
+  const baseCurrencies = ['BTC', 'ETH', 'USDT', 'BNB'];
   let quote_accumulator = {};
-  if (!obj) {
-    return {name, quotes: quote_accumulator};
-  }
+  if (typeof obj !== 'object' || obj === null) return {name, quotes: quote_accumulator};
+
   Object.keys(obj).map(function (key, index) {
     let symbolPair = obj[key].symbol;
-
     let base_currency = baseCurrencies.find(function (currency) { return symbolPair.endsWith(currency); });
     if (base_currency) {
       let quote_currency = symbolPair.slice(0, symbolPair.length - base_currency.length);
@@ -90,12 +81,10 @@ function parseBinance (obj) {
 }
 
 function parseHitbtc (prices, symbols) {
-  let name = 'hitbtc';
+  const name = 'hitbtc';
   // baseCurrencies are included in the downloaded data
   let quote_accumulator = {};
-  if (!prices || !symbols) {
-    return {name, quotes: quote_accumulator};
-  }
+  if (!(prices instanceof Array) || !(symbols instanceof Array)) return {name, quotes: quote_accumulator};
 
   let symbols_obj = {};
   symbols.map(function (key, index) {
@@ -163,20 +152,22 @@ function updateMinAndMedians (exchangeRates) {
 }
 
 function parse (proc, data) {
-  let sourcesOut = combineQuoteSources([
+  const sourcesOut = combineQuoteSources([
     parseEUCentralBank(data.EUCentralBank),
     parseHitbtc(data.hitbtc_symbols, data.hitbtc_prices),
     parseBinance(data.binance),
     parseCoinmarketcap(data.coinmarketcap),
     parseCoinbase(data.coinbase)
   ]);
-  let result = updateMinAndMedians(sourcesOut);
+  const result = updateMinAndMedians(sourcesOut);
 
   proc.done(result);
 }
 
 function singleHop (exchangeRates, startSymbol, history, rate_mode) {
   let accumulator = {};
+  if (!exchangeRates) return accumulator;
+
   if (exchangeRates.hasOwnProperty(startSymbol)) {
     let quotes = exchangeRates[startSymbol]['quotes'];
     Object.keys(quotes).map(function (intermediateCurrency, _) {
@@ -225,7 +216,7 @@ function bestTransactionChain (exchangeRates, startSymbol, targetSymbol, maxHops
     let accumulator = intermediarySymbols.map(function (currency, _) {
       return singleHop(exchangeRates, currency, transactionChains[currency], rate_mode);
     }).concat(transactionChains);
-    transactionChains = accumulator.reduce(function (history1, history2) { return optimalTransaction(history1, history2); });
+    transactionChains = accumulator.reduce(function (history1, history2) { return optimalTransaction(history1, history2); }, {});
   }
   if (transactionChains.hasOwnProperty(targetSymbol)) {
     return transactionChains[targetSymbol];
