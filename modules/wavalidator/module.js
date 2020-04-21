@@ -14,10 +14,12 @@ function validate (proc, data) {
 
   let symbol = command[1].toUpperCase().split('.')[0];
   const address = command[2];
-  if (symbol === 'UBQ' || symbol === 'EXP') { symbol = 'ETH'; }
+  if (symbol === 'ETC' || symbol === 'UBQ' || symbol === 'EXP') { symbol = 'ETH'; }
   if (symbol === 'XCP' || symbol === 'OMNI') { symbol = 'BTC'; }
 
-  if (symbol === 'XLM') {
+  if (symbol.substr(0,5) === 'TEST_') {
+      proc.done('valid');    
+  } else if (symbol === 'XLM') {
     if (stellarValidator.isValidPublicKey(address)) {
       proc.done('valid');
     } else {

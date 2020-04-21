@@ -30,6 +30,7 @@ function open (proc) {
     if (typeof command[1] === 'undefined') {
       proc.done(['irc', 'torrent']);
     } else {
+      data.forceStop = false;
       let protocol = proc.command[1];
       let channel;
       switch (protocol) {
