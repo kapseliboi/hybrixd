@@ -1,7 +1,7 @@
 {
-  "symbol":"test_rinkeby_eth",
+  "symbol":"test_ropsten_eth",
   "name":"Ethereum testnet",
-  "info":"<p>Ethereum test net Rinkeby</p>",
+  "info":"<p>Ethereum test net Ropsten</p>",
   "module":"ethereum",
   "import":"eth-api",
   "mode":"ethereum.main",
@@ -14,8 +14,8 @@
   "gasLimitNativeTx":90000,
   "gasLimitContractTx":336000,
   "factor":18,
-  "host":["http://eth1.hybrix.io:8546","http://eth2.hybrix.io:8546"],
-  "historyAPI":"https://rinkeby.etherscan.io/api",
+  "host":["http://eth1.hybrix.io:8547","http://eth2.hybrix.io:8547"],
+  "historyAPI":"https://ropsten.etherscan.io/api",
   "cron":300,
   "quartz":{
     "sample":[
