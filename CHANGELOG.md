@@ -1,3 +1,14 @@
+# v0.7.11
+## Happy Teal Ogre
+## 23-04-2020
+
+* Add Ethereum test net connectors
+* Update to euro stablecoins
+
+
+
+
+
 # v0.7.10
 ## Fluffy Green Kraken
 ## 16-04-2020
