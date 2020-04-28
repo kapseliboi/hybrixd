@@ -22,7 +22,7 @@ if [ -s "$NODE/test-hybrixd.xml" ]; then
     echo " [.] Interface test completed!"
 else
     echo " [!] Interface test failed!"
-   # exit 1
+    exit 1
 fi
 
 echo " [d] test-hybrixd.xml"
