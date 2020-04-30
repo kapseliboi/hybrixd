@@ -1,3 +1,14 @@
+# v0.7.12
+## Bouncy Yellow Gremlin
+## 30-04-2020
+* Fix login example in hybrix-jslib documentation
+* Add missing glob dependency
+* web-wallet : implement multi asset fees
+* hybrix-jslib : finalize multi asset fees
+* explorer: SEO improvements
+
+
+
 # v0.7.11
 ## Happy Teal Ogre
 ## 23-04-2020
