@@ -1,3 +1,15 @@
+# v0.7.13
+## Curly Blue Pegasus
+## 07-05-2020
+
+
+* Upgrade bitcoin-jslib to 5.7.1
+* qrtz: Catch errors in javascript modules
+* Documentation: SEO improvements
+* web-wallet: mention wallet and hybrixd versions before login (Thanks George!)
+* web-wallet: /version endpoint
+
+
 # v0.7.12
 ## Bouncy Yellow Gremlin
 ## 30-04-2020
