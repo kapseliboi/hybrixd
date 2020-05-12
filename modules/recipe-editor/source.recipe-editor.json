@@ -3,7 +3,7 @@
   "name":"qrtz Recipe Editor",
   "module":"recipe-editor",
   "email" : "token@hybrix.io",
-  "auth":{"User-Agent": "hybrixio", "Authorization": "token "},
+  "auth":{"User-Agent": "hybrixio", "Authorization": "token xxx"},
   "router" : {
     "api":{
       "_alias":"/"
@@ -20,6 +20,7 @@
       "sync recipe_editor"
     ],
     "submit":[
+      "jpar",
       "poke formData",
       "curl https://api.github.com /repos/hybrix-io/hybrixd/git/refs/heads GET $auth 2 1" ,
       "fail 'Failed to retrieve branches.'",
