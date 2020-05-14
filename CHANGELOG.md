@@ -1,3 +1,15 @@
+# v0.7.14
+## Cosy Rose Phoenix
+## 14-05-2020
+
+* Fixed hcmd stopped listening when progress reported 100%, not waiting for actual process completion.
+* Recipe editor: fix parsing
+* Reinstate ychan communication (hybrix-jslib and web-wallet upgrades underway) 
+
+
+
+
+
 # v0.7.13
 ## Curly Blue Pegasus
 ## 07-05-2020
