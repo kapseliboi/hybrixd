@@ -7,7 +7,7 @@
   "mode":"ethereum.main",
   "fee":"0.0005",
   "feeContractTx":"0.005",
-  "gasprice":"0.000000015",
+  "gasprice":"0.000000020",
   "gasPerByte":625,
   "gasPerNativeTx":21000,
   "gasPerAvgERC20Tx":105000,
