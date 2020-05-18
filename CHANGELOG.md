@@ -1,3 +1,12 @@
+# v0.7.15
+## Fluffy Teal Ogre
+## 18-05-2020
+
+* Update eth fee calculation
+
+
+
+
 # v0.7.14
 ## Cosy Rose Phoenix
 ## 14-05-2020
