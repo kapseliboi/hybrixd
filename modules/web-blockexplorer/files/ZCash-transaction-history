@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Multi Blockchain Explorer | hybrix</title>
+    <title>explorer | hybrix</title>
     <meta charset="UTF-8">
     <meta name="description" content="The easiest way to find all your transactions, all major blockchains supported. Powered by hybrix the open source API for blockchain.">
     <meta name="keywords" content="Multi blockchain explorer Lisk explorer, bitcoin explorer, token explorer">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1.0">
+    <link href="https://explorer.hybrix.io" rel="cannonical"/>
     <link rel="stylesheet" type="text/css" href="./explorer.css"/>
     <link rel="icon" type="image/png" href="./img/icon.png" />
     <script src="./explorer.js"></script>

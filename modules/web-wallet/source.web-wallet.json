@@ -1,10 +1,14 @@
 {
   "source":"web-wallet",
   "name":"Web Wallet",
+  "version": "1.0.8",
   "module":"web-wallet",
   "router" : {
     "api":{
       "_alias":"/"
+    },
+    "version":{
+      "_this": "Get web-wallet version."
     },
     "_ellipsis":true,
     "_this" : "Provides the necessary bindings to host the web wallet interface."
@@ -12,6 +16,9 @@
   "quartz" :{
     "_root" : [
       "sync web_wallet"
+    ],
+    "version": [
+      "sync version"
     ]
   }
 }
