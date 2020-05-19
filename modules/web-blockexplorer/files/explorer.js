@@ -29,7 +29,7 @@ function cacheCheck (url) {
 
 function request (url, dataCallback, errorCallback, progressCallback, retries, originalUrl) {
   if (originalUrl && cache.hasOwnProperty(originalUrl)) { // Use cached data if available.
-    dataCallback(cache[url]);
+    dataCallback(cache[originalUrl]);
     return;
   } else if (cache.hasOwnProperty(url)) {
     dataCallback(cache[url]);
@@ -46,7 +46,7 @@ function request (url, dataCallback, errorCallback, progressCallback, retries, o
   xhr.open('GET', host + url, true);
 
   xhr.onreadystatechange = (e) => {
-    if (xhr.readyState == 4) {
+    if (xhr.readyState === 4) {
       if (xhr.status >= 200 && xhr.status <= 299) {
         let result;
 
@@ -143,16 +143,6 @@ function prettyTime (timestamp) {
   const sec = date.getSeconds();
   const time = month + ' ' + day + '<sup>' + ord + '</sup> ' + year + ' ' + padd(hour) + ':' + padd(min) + ':' + padd(sec);
   return time;
-}
-
-function confirmed (confirmations) {
-  if (isNaN(confirmations)) {
-    return '<span title="Unknown" class="unknown">unknown</span>';
-  } else if (confirmations > 0) {
-    return '<span title="Confirmed (' + confirmations + ')" class="confirmed">confirmed</span>';
-  } else {
-    return '<span  title="Unconfirmed" class="unconfirmed">unconfirmed</span>';
-  }
 }
 
 function copyText (text) {
@@ -332,7 +322,7 @@ const renderTransactionRow = (symbol, transactionId, address, currency) => trans
     const addressIsSource = sources.indexOf(address) !== -1;
     const noSource = sources.length === 0 || (sources.length === 1 && sources[0] === '');
     const fromAdress = targets.indexOf(address) !== -1;
-    const adressIsSourceAndTarget = sources.length === 1 && targets.length === 1 && sources[0] == targets[0];
+    const adressIsSourceAndTarget = sources.length === 1 && targets.length === 1 && sources[0] === targets[0];
     const zeroValueTransaction = Number(transaction.amount) === 0;
 
     if (adressIsSourceAndTarget) {
@@ -441,11 +431,10 @@ const progressTransaction = (symbol, transactionId, currency) => progress => {
   // note: amount and converted al already handled by progressCurrency
   document.getElementById('amount').innerHTML = failAmount(symbol, currency, 'amount');
   document.getElementById('converted').innerHTML = failAmount(symbol, currency, 'currency');
-
   const e = document.getElementById('transaction');
   if (e) {
-    for (let i = 0; i < 6; ++i) {
-      e.rows[0].cells[1].innerHTML = renderProgress(progress);
+    for (let i = 0; i <= 4; ++i) { // skip 5 =confirmed, 6=message
+      e.rows[i].cells[1].innerHTML = renderProgress(progress);
     }
   }
 };
@@ -469,16 +458,47 @@ const renderTransaction = (symbol, transactionId, currency) => transaction => {
       e.rows[2].cells[1].innerHTML += renderLink(symbol, target, undefined, currency) + ' ';
     }
     e.rows[3].cells[1].innerHTML = renderAmount(transaction.amount, symbol, currency, 'both');
-    e.rows[4].cells[1].innerHTML = renderAmount(transaction.fee, transaction['fee-symbol'], currency, 'both');
-    if (transaction.confirmed === 1) {
-      e.rows[5].cells[1].innerHTML = '1&nbsp;confirmation';
-    } else if (transaction.confirmed === true) {
-      e.rows[5].cells[1].innerHTML = 'confirmed';
-    } else if (!isNaN(transaction.confirmed)) {
-      e.rows[5].cells[1].innerHTML = transaction.confirmed + '&nbsp;confirmations';
-    } else {
-      e.rows[5].cells[1].innerHTML = `${confirmed(transaction.confirmed)}`;
+
+    let feeHTML = '';
+    if (typeof transaction.fee === 'string' || typeof transaction.fee === 'number') { // FIXME remove after multi asset fees are implemented
+      feeHTML = renderAmount(transaction.fee, transaction['fee-symbol'], currency, 'both');
+    } else if (transaction.fee !== null && typeof transaction.fee === 'object') {
+      for (let feeSymbol in transaction.fee) {
+        feeHTML += renderAmount(transaction.fee[feeSymbol], feeSymbol, currency, 'both') + ' ';
+      }
     }
+    e.rows[4].cells[1].innerHTML = feeHTML;
+  }
+};
+
+function prettyPrintConfirmed (confirmed) {
+  if (confirmed === true) {
+    return '<span  class="confirmed">confirmed</span>';
+  } else if (confirmed === 1) {
+    return '<span   class="confirmed">1 confirmation</span>';
+  } else if (confirmed === false) {
+    return '<span  class="unconfirmed">unconfirmed</span>';
+  } else if (confirmed === 0) {
+    return '<span  class="unconfirmed">no confirmations</span>';
+  } else if (!isNaN(confirmed)) {
+    return `<span  class="confirmed">${confirmed} confirmations</span>`;
+  } else {
+    return '<span  class="unconfirmed">Unconfirmed</span>';
+  }
+}
+
+const renderConfirmed = (symbol, transactionId) => confirmed => {
+  const e = document.getElementById('transaction');
+  if (e) {
+    e.rows[5].cells[1].innerHTML = prettyPrintConfirmed(confirmed);
+  }
+};
+
+const progressConfirmed = (symbol, transactionId, currency) => progress => {
+  // note: amount and converted al already handled by progressCurrency
+  const e = document.getElementById('transaction');
+  if (e) {
+    e.rows[5].cells[1].innerHTML = renderProgress(progress);
   }
 };
 
@@ -488,24 +508,6 @@ const failTransaction = (symbol, transactionId, currency) => error => {
     e.classList.add('error');
     e.innerHTML = `Format not recognized for ${symbol}. Please check for a typo or paste error.`;
   }
-/*
-
-  document.getElementById('amount').innerHTML=failAmount(symbol,currency,'amount');
-  document.getElementById('converted').innerHTML=failAmount(symbol,currency,'currency');
-
-  const e = document.getElementById('transaction');
-  if(e){
-    for(let i=0;i<6;++i){
-      e.rows[i].cells[1].classList.add('error');
-      e.rows[i].cells[1].title=error;
-    }
-    e.rows[0].cells[1].innerHTML='? Could not retrieve transaction.';
-    e.rows[1].cells[1].innerHTML='?';
-    e.rows[2].cells[1].innerHTML='?';
-    e.rows[3].cells[1].innerHTML= failAmount(symbol,currency,'both');
-    e.rows[4].cells[1].innerHTML= failAmount('?',currency,'both');
-    e.rows[5].cells[1].innerHTML= '?'
-  } */
 };
 
 const loadMoreHistory = (symbol, address, page, currency) => () => {
@@ -632,11 +634,12 @@ const handleTransaction = (symbol, transactionId, currency) => {
 <tr><td>to</td><td>${renderProgress(0)}</td></tr>
 <tr><td>amount</td><td>${renderProgress(0)}</td></tr>
 <tr><td>fee</td><td>${renderProgress(0)}</td></tr>
-<tr><td>confirmations</td><td>${renderProgress(0)}</td></tr>
+<tr><td>confirmed</td><td>${renderProgress(0)}</td></tr>
 <tr><td>message</td><td>${renderProgress(0)}</td></tr>
 </table>
 `;
     request('/a/' + symbol + '/transaction/' + transactionId, renderTransaction(symbol, transactionId, currency), failTransaction(symbol, transactionId, currency), progressTransaction(symbol, transactionId, currency));
+    request('/a/' + symbol + '/confirmed/' + transactionId, renderConfirmed(symbol, transactionId), failTransaction(symbol, transactionId, currency), progressConfirmed(symbol, transactionId, currency));
     request('/a/' + symbol + '/message/' + transactionId, renderMessage(symbol, transactionId), failMessage(symbol, transactionId), progressMessage(symbol, transactionId));
     request('/e/valuations/rate/' + symbol + '/' + currency, renderRate(currency), failRate(currency), progressRate(currency));
   }

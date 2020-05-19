@@ -32,5 +32,10 @@ function web_wallet (proc) {
   proc.done(fileName.split('?')[0]);
 }
 
+function version (proc) {
+  proc.done(proc.peek('version'));
+}
+
 // exports
 exports.web_wallet = web_wallet;
+exports.version = version;
