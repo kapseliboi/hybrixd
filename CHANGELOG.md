@@ -1,3 +1,14 @@
+# v0.7.16
+## Happy Turqoise Kobold
+## 19-05-2020
+
+* Web-wallet: ensure version display on all browsers
+* Web-wallet: fix computation of fee total
+* Handle api asset report failure
+
+
+
+
 # v0.7.15
 ## Fluffy Teal Ogre
 ## 18-05-2020
