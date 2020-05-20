@@ -134,7 +134,7 @@
       "@native",
       "done {'nonce':'$nonce', gasBaseFee: '$gasBaseFee', gasLimit: '$gasLimitNativeTx', gasPrice: '$gasPrice', gasDataFee: '$gasDataFee'}",
       "@token",
-      "done {'nonce':'$nonce', gasBaseFee: '$gasBaseFee', gasLimit: '$gasLimitContractTx', gasPrice: '$gasPrice', gasDataFee: '$gasDataFee'}",
+      "done {'nonce':'$nonce', gasBaseFee: '$gasBaseFee', gasLimit: '$gasLimitContractTx', gasPrice: '$gasPrice', gasDataFee: '$gasDataFee', gasContractAvgFee:'$gasContractAvgFee'}",
       "@fail",
       "logs 2 'module ethereum: bad RPC response, retrying request...'",
       "wait 1500",
