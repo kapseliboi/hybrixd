@@ -47,7 +47,7 @@
       "fail 'Could not connect to host'",
       "tran '.txns' @nxt @fail",
       "@nxt",
-      "sort ['.timestamp','num','desc']",
+      "sort 'desc' '.timestamp'",
       "each 'subhistory'",
       "take $offset $count",
       "done",

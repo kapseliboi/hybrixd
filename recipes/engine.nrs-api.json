@@ -178,7 +178,7 @@
       "fail 'Could not connect to host'",
       "tran '.transactions' 2 1",
       "fail 'Bad response from NRS node!'",
-      "sort ['.timestamp',num,desc]",
+      "sort desc '.timestamp'",
       "poke txData",
       "data $symbol",
       "peek txData",

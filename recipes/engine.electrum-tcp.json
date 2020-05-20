@@ -39,7 +39,7 @@
       "tran '.result' 2 1",
       "fail 'Bad input unspents from Electrum!'",
       "tran []{script:$script,amount:=.value|0,txid:.tx_hash,txn:.tx_pos}",
-      "sort '.amount'",
+      "sort asc '.amount'",
       "scan 'cnt<($inputval+val.amount)' '+val.amount'",
       "poke 'selected'",
       "tran '[].amount' 2 1",
@@ -253,7 +253,7 @@
       "curl {} {retry:15,timeout:$timeout,cache:5000} 2 1",
       "fail 'Could not retrieve history + $'",
       "tran '.result' 1 -1",
-      "sort ['.height','num','desc']",
+      "sort 'desc' '.height'",
       "tran '[].tx_hash'",
       "take $offset $count",
       "done"

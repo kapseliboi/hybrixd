@@ -58,7 +58,7 @@
       "done"
     ],
     "removeTransactionFile": [
-      "data $1-${symbol}-$2*",      
+      "data $1-${symbol}-$2*",
       "poke tx",
       "seek 1 @fail",
       "list $tx",
@@ -72,18 +72,18 @@
       "call getCachedTransactionIds/$1/1000/0",
       "fuse $txs",
       "uniq",
-      "poke idx",      
+      "poke idx",
       "peek apiProvidesFullTx",
-      "flow true 1 4",      
-      "peek idx",      
+      "flow true 1 4",
+      "peek idx",
       "call sortIdxByTimestamp",
       "poke idx",
-      "peek idx", 
+      "peek idx",
       "void {'array':1} 3",
       "peek idx",
       "jump 2",
       "poke idx",
-      "data $1-${symbol}-history-*",      
+      "data $1-${symbol}-history-*",
       "list $",
       "poke history",
       "void {'array': 2} 1",
@@ -114,7 +114,7 @@
     ],
     "sortIdxByTimestamp": [
       "each getTxData",
-      "sort ['.timestamp',num,desc]",
+      "sort desc '.timestamp'",
       "tran '[].id'"
     ],
     "getTxData": [
@@ -131,7 +131,7 @@
     "getCachedTransactionIds": [
       "math $2+$3",
       "poke endingIndex",
-      "list $1-${symbol}-history-*",      
+      "list $1-${symbol}-history-*",
       "void {'array':6} 1",
       "pick",
       "load",
