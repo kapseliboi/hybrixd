@@ -314,7 +314,125 @@
       "done $OK",
       "fail"
     ],
-
+    "sort" : [
+      "data '1234'",
+      "sort",
+      "flow '1234' 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "sort2" : [
+      "data '1234'",
+      "sort desc",
+      "flow '4321' 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "sort3" : [
+      "data [1,2,3,4]",
+      "sort",
+      "flow [1,2,3,4] 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "sort4" : [
+      "data [1,2,3,4]",
+      "sort",
+      "flow [4,3,2,1] 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "sort5" : [
+      "data [m,z,a,c]",
+      "sort",
+      "flow [a,c,m,z] 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "sort6" : [
+      "data [m,z,a,c]",
+      "sort desc",
+      "flow [z,m,c,a] 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "sort7" : [
+      "data {a:3,q:1,c:7,m:2}",
+      "sort ",
+      "flow [{'a': 3},{'c': 7},{'m': 2},{'q': 1}] 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "sort8" : [
+      "data {a:3,q:1,c:7,m:2}",
+      "sort desc",
+      "flow [{'q': 1},{'m': 2},{'c': 7},{'a': 3}] 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "sort9" : [
+      "data {a:3,q:1,c:7,m:2}",
+      "sort asc val",
+      "flow [{'q': 1},{'m': 2},{'a': 3},{'c': 7}] 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "sort10" : [
+      "data {a:3,q:1,c:7,m:2}",
+      "sort desc",
+      "flow [{'c': 7},{'a': 3},{'m': 2},{'q': 1}] 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "sort11" : [
+      "data {a:3,q:1,c:7,m:2}",
+      "sort asc desc",
+      "flow [{'c': 7},{'a': 3},{'m': 2},{'q': 1}] 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "sort12" : [
+      "data [{a:3},{q:1},{c:7},{m:2}]",
+      "sort asc",
+      "flow [{a:3},{q:1},{c:7},{m:2}] 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "sort13" : [
+      "data [{a:3},{a:1},{a:7},{a:2}]",
+      "sort asc '.a'",
+      "flow [{'a': 1},{'a': 2},{'a': 3},{'a': 7}] 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "sort14" : [
+      "data [{a:3},{a:1},{a:7},{a:2}]",
+      "sort '.a'",
+      "flow [{'a': 1},{'a': 2},{'a': 3},{'a': 7}] 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "sort15" : [
+      "data null",
+      "hook @hook",
+      "sort",
+      "@hook",
+      "done $OK"
+    ],
+    "sort16" : [
+      "data undefined",
+      "hook @hook",
+      "sort",
+      "@hook",
+      "done $OK"
+    ],
+    "sort17" : [
+      "data false",
+      "hook @hook",
+      "sort",
+      "@hook",
+      "done $OK"
+    ],
     "math1" : [
       "math 1+1",
       "flow 2 1 2",

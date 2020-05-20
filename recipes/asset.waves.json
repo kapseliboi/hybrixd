@@ -61,7 +61,7 @@
       "curl /transactions/address/$1/limit/$amount 2 1",
       "fail 'Could not connect to host'",
       "pick",
-      "sort ['.height',num,desc]",
+      "sort 'desc' '.height'",
       "take $offset $count",
       "done"
     ],

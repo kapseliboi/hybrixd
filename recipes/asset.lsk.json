@@ -39,9 +39,9 @@
       "fail 'Error from $symbol host : $'",
       "tran .data 2 1",
       "fail 'Cannot get transaction history!'",
-      "sort ['.height',num,desc]",
+      "sort desc '.height'",
       "done"
-    ],    
+    ],
     "reformatTx": [
       "tran .value 2 1",
       "fail 'failed tran'",

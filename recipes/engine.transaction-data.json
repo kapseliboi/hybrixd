@@ -82,7 +82,7 @@
       "poke count",
       "call getHistory/$addr/$count/$offset",
       "each reformatTx",
-      "sort ['.timestamp','num','desc']",
+      "sort 'desc' '.timestamp'",
       "poke txs",
       "fork 'cacheHistory/$addr'",
       "data $txs",

@@ -296,7 +296,6 @@
       }
     },
     "debug":{
-      "_ui" : "debug",
       "_access":"root",
       "debug.js":{
         "_this" : "test",
@@ -307,7 +306,8 @@
         "_access":"root",
         "_list" : "proc",
         "_this" : "Specify the process ID to debug."
-      }
+      },
+      "_ui" : "debug"
     },
    "exec":{
      "_ellipsis": true,
