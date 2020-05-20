@@ -119,6 +119,9 @@
       "call '${.key}'"
     ],
     "unspent" : [
+      "peek local::gasPrice",
+      "atom true",
+      "poke atomGasPrice",
       "@retryLoop",
       "rand 1000",
       "data {'jsonrpc': '2.0', 'method': 'eth_getTransactionCount', 'params': ['$1','pending'], 'id': $}",
@@ -132,9 +135,9 @@
       "peek contract",
       "flow '0x0000000000000000000000000000000000000000' @native @token",
       "@native",
-      "done {'nonce':'$nonce', gasBaseFee: '$gasBaseFee', gasLimit: '$gasLimitNativeTx', gasPrice: '$gasPrice', gasDataFee: '$gasDataFee'}",
+      "done {'nonce':'$nonce', gasBaseFee: '$gasBaseFee', gasLimit: '$gasLimitNativeTx', gasPrice: '$atomGasPrice', gasDataFee: '$gasDataFee'}",
       "@token",
-      "done {'nonce':'$nonce', gasBaseFee: '$gasBaseFee', gasLimit: '$gasLimitContractTx', gasPrice: '$gasPrice', gasDataFee: '$gasDataFee', gasContractAvgFee:'$gasContractAvgFee'}",
+      "done {'nonce':'$nonce', gasBaseFee: '$gasBaseFee', gasLimit: '$gasLimitContractTx', gasPrice: '$atomGasPrice', gasDataFee: '$gasDataFee', gasContractAvgFee:'$gasContractAvgFee'}",
       "@fail",
       "logs 2 'module ethereum: bad RPC response, retrying request...'",
       "wait 1500",

@@ -14,7 +14,8 @@
   "gasLimitNativeTx":90000,
   "gasLimitContractTx":336000,
   "factor":18,
-  "host":["http://eth1.hybrix.io:8545","http://eth2.hybrix.io:8545"],
+  "host":["https://nodes.mewapi.io/rpc/eth"],
+  "hostBU":["http://eth1.hybrix.io:8545","http://eth2.hybrix.io:8545"],
   "historyAPI":"https://api.etherscan.io/api",
   "cron":300,
   "quartz":{
