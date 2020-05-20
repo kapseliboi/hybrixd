@@ -2,9 +2,6 @@
 OLDPATH="$PATH"
 WHEREAMI="`pwd`"
 
-UGLIFY="node_modules/uglify-es/bin/uglifyjs"
-CSSMIN="node_modules/cssmin/bin/cssmin"
-
 # $HYBRIXD/node/scripts/npm  => $HYBRIXD
 SCRIPTDIR="`dirname \"$0\"`"
 HYBRIXD="`cd \"$SCRIPTDIR/../../..\" && pwd`"
@@ -13,7 +10,6 @@ NODE="$HYBRIXD/node"
 DIST="$NODE/dist"
 
 export PATH="$NODE/node_binaries/bin:$PATH"
-NODEINST="`which node`"
 NPMINST="`which npm`"
 
 
@@ -58,10 +54,10 @@ cp "$NODE/hybrixd.conf" "$DIST/"
 # Copy node_modules
 rsync -avq "$NODE/node_modules" "$DIST/"
 
-echo "[.] Copy modules... XXXXXXXXXXXXXXXXXXXXXX"
+echo "[.] Copy modules..."
 
 # Copy modules
-rsync -av "$NODE/modules" "$DIST/"
+rsync -avq "$NODE/modules" "$DIST/"
 
 # Copy interface
 rsync -avq "$NODE/interface" "$DIST/"
@@ -76,13 +72,16 @@ cp "$NODE/scripts/npm/test.sh" "$DIST/scripts/npm/test.sh"
 mkdir -p "$DIST/scripts/pipeline/"
 cp "$NODE/scripts/pipeline/build.sh" "$DIST/scripts/pipeline/build.sh"
 cp "$NODE/scripts/pipeline/test.sh" "$DIST/scripts/pipeline/test.sh"
+cp "$NODE/scripts/pipeline/dist.sh" "$DIST/scripts/pipeline/dist.sh"
+cp "$NODE/scripts/pipeline/publish.sh" "$DIST/scripts/pipeline/publish.sh"
+cp "$NODE/scripts/pipeline/clean.sh" "$DIST/scripts/pipeline/clean.sh"
 
 # Copy common
 rsync -avq "$NODE/common/crypto" "$DIST/common/"
 rsync -avq "$NODE/common/byte" "$DIST/common/"
 rsync -avq "$NODE/common/node_modules" "$DIST/common/"
-cp $NODE/common/*.js "$DIST/common/"
-cp $NODE/common/*.json "$DIST/common/"
+cp "$NODE"/common/*.js "$DIST/common/"
+cp "$NODE"/common/*.json "$DIST/common/"
 #TODO node runtime
 #TODO default dummy conf??
 
