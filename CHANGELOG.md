@@ -1,3 +1,21 @@
+# v0.7.17
+## Furry Turqoise Sphinx
+## 20-05-2020
+
+* Web-wallet: option to export your private keys from within the wallet. 
+* Web-wallet: improve loading speed by postponing balance calls till after loading.
+* Web-wallet: fix logging in after a logout.
+* Web-wallet: more verbose message on successfull push transaction
+* Web-wallet: display transaction and browser details in error message. Makes supporting based on screenshots easier.
+* Web-wallet: display transaction id after push
+* Web-wallet: fixed undefined address bug
+* hybrix-jslib : add fallback value for rout calls
+* hybrix-jslib : prevent failure for single asset refreshAsset calls
+* qrtz : fix sort function for arrays of objects
+
+
+
+
 # v0.7.16
 ## Happy Turqoise Kobold
 ## 19-05-2020
