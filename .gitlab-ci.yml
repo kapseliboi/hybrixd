@@ -23,9 +23,6 @@ hybrixd:
   services:
   - docker:stable-dind
   script:
-    # are we in a docker-executor?
-    - if [ -f /.dockerenv ]; then echo "[i] docker-executor..."; else echo "[i] no docker-executor..."; fi
-
     # Because of race conditions with merge squashes leaving broken references we circumvent the default git strategy GIT_STRATEGY: none
     - cd ..
     - "git clone -n https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/hybrix/hybrixd/node.git --depth 10 --single-branch --branch $CI_COMMIT_REF_NAME"
@@ -50,9 +47,7 @@ hybrixd:
 test:
   stage: test
   script:
-    # are we in a docker-executor?
-    - if [ -f /.dockerenv ]; then echo "[i] docker-executor..."; else echo "[i] no docker-executor..."; fi
-    - sh ./scripts/pipeline/test.sh
+     - sh ./scripts/pipeline/test.sh
   coverage: /SUCCESS RATE[^|]*\:[^|]*\s+([\d\.]+)/
   except:
    refs:
@@ -126,68 +121,9 @@ dist:
   allow_failure: false
   dependencies:
     - hybrixd
-  image: alpine:latest
   stage: release
   script:
-  # install the packages that we need
-  # FIXME do not update packages on every run
-  - apk update
-  - apk add curl
-  - apk add git
-  - apk add tar
-  - apk add xz
-  - apk add zip
-  - apk add jq
-
-  - version=${CI_COMMIT_TAG/-release/}
-  - component=node
-  - file=hybrixd.${component}.${version}
-  - fileLatest=hybrixd.${component}.latest
-  - path=${component}/${version}/
-
-  - cd /tmp
-  - git clone --depth=1 https://oauth2:${PRIVATE_TOKEN}@gitlab.com/hybrix/dist
-  - mkdir -p ./dist/${component}/${version}/
-
-
-  # workaround to get the latest artifact
-  - PROJECT_REF_SLUG=hybrix%2Fhybrixd%2Fnode
-  - PROJECT_REF_PATH=hybrix/hybrixd/node
-  - PROJECT_REF_NAME=hybrixd
-  - PROJECT_REF_BRANCH=${CI_COMMIT_TAG}
-  - "echo ${CI_COMMIT_TAG}"
-  - "RESPONSE=$(curl --header \"Private-Token: $PRIVATE_TOKEN\" --silent \"https://gitlab.com/api/v4/projects/${PROJECT_REF_SLUG}/jobs?scope=success\")"
-  - "echo \"${RESPONSE}\" | jq -r 'first(.[] | select(.name == \"hybrixd\" and .ref == \"'${PROJECT_REF_BRANCH}'\")) | .id'"
-  - "BUILD_JOB_ID=$(echo \"${RESPONSE}\" | jq -r 'first(.[] | select(.name == \"hybrixd\" and .ref == \"'${PROJECT_REF_BRANCH}'\")) | .id')"
-  - "echo \"Downloading the artifact from: https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\""
-  #- "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/${PROJECT_REF_PATH}/-/jobs/${BUILD_JOB_ID}/artifacts/download\" -o artifacts-${PROJECT_REF_NAME}.zip"
-  - "curl --location --header \"Private-Token: $PRIVATE_TOKEN\" \"https://gitlab.com/api/v4/projects/${PROJECT_REF_SLUG}/jobs/${BUILD_JOB_ID}/artifacts\" -o artifacts-${PROJECT_REF_NAME}.zip"
-  - unzip -o artifacts-hybrixd.zip -d ./${component}/
-
-  - zip -r ${file}.zip ${component}
-  - tar -zcvf ${file}.tar.gz ${component}
-  - tar cfJ ${file}.tar.xz ${component}
-
-  - cp ${file}.zip ./dist/${component}/${version}/${file}.zip
-  - cp ${file}.tar.gz ./dist/${component}/${version}/${file}.tar.gz
-  - cp ${file}.tar.xz ./dist/${component}/${version}/${file}.tar.xz
-
-  - mkdir -p ./dist/${component}/latest
-  - cp ${file}.zip ./dist/${component}/latest/${fileLatest}.zip
-  - cp ${file}.tar.gz ./dist/${component}/latest/${fileLatest}.tar.gz
-  - cp ${file}.tar.xz ./dist/${component}/latest/${fileLatest}.tar.xz
-
-  - cd ./dist/
-
-  # configure git-user
-  - "git config --global user.name \"${GITLAB_USER_NAME}\""
-  - "git config --global user.email \"${GITLAB_USER_EMAIL}\""
-
-  # add, commit and push
-  - "git add ."
-  - "git commit -m \"release ${version} ${component}\" || true"
-  - "git push https://oauth2:${PRIVATE_TOKEN}@gitlab.com/hybrix/dist.git -f"
-
+    - sh ./scripts/pipeline/dist.sh
   only:
     refs:
       - tags
@@ -197,9 +133,11 @@ dist:
 
 publish:
   cache: {}
+  dependencies:
+    - hybrixd
   stage: release
   script:
-    - publish
+    - sh ./scripts/pipeline/publish.sh
   only:
     refs:
       - tags
@@ -480,44 +418,6 @@ publish:
       helm delete --purge "$name"
     fi
   }
-
-  #BEGIN CUSTOM SCRIPT
-
-  function publish () {
-    # Get correct version from repository tag
-    VERSION=${CI_COMMIT_REF_NAME/-release/}
-    VERSION_NUMBER="${VERSION//v}"
-
-    echo "[.] Use README.npm.md as README.md"
-    rm -rf ./README.md
-    mv ./README.npm.md ./README.md
-
-    echo "[.] Modify version in package.json"
-    sed -i -e "s/.*version.*/\"version\": \"$VERSION_NUMBER\",/" package.json
-
-    echo "[.] Install npm-cli-login (FIXME: should not be needed)"
-    #TODO implement without npm-cli-login use .npmrc instead (in interface as well)
-    npm install npm-cli-login --save-dev
-
-    echo "[.] Login to npm"
-    node ./node_modules/npm-cli-login/bin/npm-cli-login.js -u "$NPM_USER" -p "$NPM_PASSWORD" -e "$NPM_MAIL" -r "https://registry.npmjs.org"
-
-    echo "[.] Publish on npm"
-    npm publish
-
-    echo "[.] Modify package.json for github"
-    sed -i -e 's+"name": "+"name": "@hybrix-io/+g' package.json
-
-    echo "//npm.pkg.github.com/:_authToken=$GITHUB_PAT" > .npmrc
-    echo "@hybrix-io:registry=https://npm.pkg.github.com" >> .npmrc
-
-    echo "[.] Publish to github packages"
-    npm publish
-    rm .npmrc
-  }
-
-  #END CUSTOM SCRIPT
-
 
 before_script:
   - *auto_devops

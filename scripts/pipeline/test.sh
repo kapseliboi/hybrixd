@@ -36,6 +36,8 @@ if [ "$FAILED" -eq 0  ]; then
 else
     echo "[!] Test failed!"
     cat "var/log/hybrixd.log"
+    export PATH="$OLDPATH"
+    cd "$WHEREAMI"
     exit 1;
 fi
 
