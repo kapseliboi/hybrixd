@@ -120,7 +120,6 @@
     ],
     "unspent" : [
       "peek local::gasPrice",
-      "atom true",
       "poke atomGasPrice",
       "@retryLoop",
       "rand 1000",
