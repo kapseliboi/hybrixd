@@ -1,3 +1,12 @@
+# v0.7.18
+## Little Blue Fairy
+## 22-05-2020
+
+* Web-wallet : Show message if there's insufficient base balance for fee.  
+
+
+
+
 # v0.7.17
 ## Furry Turqoise Sphinx
 ## 20-05-2020
