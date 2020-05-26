@@ -1,3 +1,16 @@
+# v0.7.19
+## Cosy Turqoise Ogre
+## 26-05-2020
+
+* add HY to valuations engine.
+* add endpoints for HY supply, volume and price.
+* add logs to init functions.
+* FIx mockchain test mining.
+* Web-wallet: improve address validation.
+* Web-wallet: continuously update balance in single asset view.
+
+
+
 # v0.7.18
 ## Little Blue Fairy
 ## 22-05-2020
