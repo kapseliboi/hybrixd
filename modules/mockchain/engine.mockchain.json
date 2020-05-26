@@ -3,7 +3,7 @@
   "name":"Mockchain Explorer.",
   "module":"mockchain",
   "quartz":{
-    "mine" : ["func 'mine'"],
+    "mine" : ["func 'mine/$1/$2/$3'"],
     "balance" : [
       "data '$1'",
       "flow {'main':1} 3",
