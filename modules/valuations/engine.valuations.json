@@ -29,6 +29,11 @@
       "notes" : "hitbtc: https://api.hitbtc.com/",
       "type" : "json",
       "site" : "https://api.hitbtc.com/api/2/public/ticker"
+    },
+    "biki_hyusdt" : {
+      "notes" : "https://github.com/code-biki/open-api/blob/master/README.us-en.md",
+      "type" : "json",
+      "site" : "https://openapi.biki.com/open/api/get_ticker?symbol=hyusdt"
     }
   },
   "quartz" : {
@@ -44,8 +49,8 @@
       "done 'valuations up-to-date'",
       "@refreshValuations",
       "data $sources",
-      "each 'download'",
-      "func 'parse'",
+      "each download",
+      "func parse",
       "poke 'local::prices'",
       "date",
       "poke 'local::pricesTimestamp'",
@@ -59,6 +64,11 @@
       "fail 'Could not connect to host'",
       "done"
     ],
+    "volume": [
+      "peek local::hy-volume",
+      "done"
+    ],
+
     "rate" : [
       "data '$3'",
       "ship 2 2 2 1",
@@ -73,6 +83,9 @@
     ]
   },
   "router" : {
+    "volume" : {
+      "hy" : "get hy volume"
+    },
     "_help" : "Valuation engine for calculating price conversion rates.",
     "list" : "List available symbols.",
     "rate": {
