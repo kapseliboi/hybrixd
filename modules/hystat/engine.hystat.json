@@ -1,0 +1,28 @@
+{
+  "engine":"hystat",
+  "module" : "hystat",
+  "name":"Provide hy statistics",
+    "cron" : 60,
+  "cronOffset":30,
+
+  "quartz":{
+    "_root" : [
+      "sync hystat"
+    ],
+    "cron" : [
+      "rout /e/valuations/rate/hy/usd",
+      "poke local::rate",
+      "rout /e/valuations/volume/hy",
+      "poke local::volume"
+    ]
+  },
+  "router":{
+    "maximumSupply" :"Get the maximum supply of HY.",
+    "circulatingSupply" :"Get the circulating supply of HY.",
+    "supplyFactor" :"Get the factor (nr of decimals)",
+    "circulatingSupplyAtom" :"Get the atomic circulating supply of HY",
+    "circulatingSupplyWithoutReserve" :"Get the circulating supply of HY without reserve",
+    "currentPrice" :"Get the current price of HY in USD.",
+    "currentVolume" :"Get the current exchange volume for HY."
+  }
+}
