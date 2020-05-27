@@ -2,10 +2,10 @@
 ## Cosy Turqoise Ogre
 ## 26-05-2020
 
-* add HY to valuations engine.
-* add endpoints for HY supply, volume and price.
-* add logs to init functions.
-* FIx mockchain test mining.
+* Add HY to valuations engine.
+* Add endpoints for HY supply, volume and price.
+* Add logs to init functions.
+* Fix mockchain test mining.
 * Web-wallet: improve address validation.
 * Web-wallet: continuously update balance in single asset view.
 
@@ -15,7 +15,7 @@
 ## Little Blue Fairy
 ## 22-05-2020
 
-* Web-wallet : Show message if there's insufficient base balance for fee.  
+* Web-wallet : Show message if there's insufficient base balance for fee.
 
 
 
@@ -24,7 +24,7 @@
 ## Furry Turqoise Sphinx
 ## 20-05-2020
 
-* Web-wallet: option to export your private keys from within the wallet. 
+* Web-wallet: option to export your private keys from within the wallet.
 * Web-wallet: improve loading speed by postponing balance calls till after loading.
 * Web-wallet: fix logging in after a logout.
 * Web-wallet: more verbose message on successfull push transaction
@@ -64,7 +64,7 @@
 
 * Fixed hcmd stopped listening when progress reported 100%, not waiting for actual process completion.
 * Recipe editor: fix parsing
-* Reinstate ychan communication (hybrix-jslib and web-wallet upgrades underway) 
+* Reinstate ychan communication (hybrix-jslib and web-wallet upgrades underway)
 
 
 
@@ -113,7 +113,7 @@
 * Improve error handling in valuation engine
 * Added new Litecoin hosts
 * Upgrade documentation menus
-* web-wallet: Improve client side caching 
+* web-wallet: Improve client side caching
 
 
 
@@ -153,11 +153,11 @@
 * Include error output in test reports
 * Extend logging improvements to storage module
 * Improve storage sync module integration
-* Improve error response for assets 
+* Improve error response for assets
 * Reduce eth token fee updates per token to single approach
-* web-wallet : Extend headless browser tests 
+* web-wallet : Extend headless browser tests
 * web-wallet : Fix bug with address book
-* web-wallet : Extend error and validation feedback 
+* web-wallet : Extend error and validation feedback
 * hybrix-jslib : Added option to parallel processes to return error instead of result upon failure
 
 
@@ -197,7 +197,7 @@
 ## 05-03-2020
 
 * Retrieve eth token details using hybrixd internal evm module
-* Ensure push returns a string transaction id for flo/insight 
+* Ensure push returns a string transaction id for flo/insight
 * Improve storage syncing
 * Fix qrtz each for arrays
 * qrtz logs and warn to use data stream if no parameters were provided
