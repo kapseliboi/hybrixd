@@ -242,6 +242,7 @@
       "with txTarget [peek,'txData'] [tran,'=.to']",
       "jump @sectionB",
       "@sectionA",
+      "with fee-factor [call,'fee-factor']",
       "with txFee [math,'$txGas*$txGasPrice'] [atom,0,$fee-factor]",
       "call 'attachment/$1'",
       "# TODO: we need more stringent checking for ERC type, than merely testing for empty!",
@@ -264,7 +265,6 @@
     ],
     "getTransaction" : [
       "time $timeout",
-      "with fee-factor [call,'fee-factor']",
       "call 'transactionData/$1'",
       "call 'reformatTx/$1'"
     ],
