@@ -6,6 +6,7 @@ const DEFAULT_VOLUME = '15635.3';
 function hystat (proc) {
   const command = proc.command;
   const endpoint = command[1];
+  proc.mime('text/plain');
   switch (endpoint) {
     case 'maximumSupply': proc.done('21000000'); return;
     case 'circulatingSupply': proc.done('7000000.00'); return;
