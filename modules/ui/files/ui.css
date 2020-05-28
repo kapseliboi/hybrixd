@@ -1,0 +1,62 @@
+body {
+  color: #000;
+  font: 400 15px Palanquin,Helvetica,Arial,sans-serif;
+  line-height: 1.4em;
+  margin: 0;
+  width: 100%;
+}
+
+header {
+  background: #fff;
+  border-bottom: 1px solid #ededed;
+  height: 80px;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 9999;
+}
+
+header .logo {
+  box-sizing: border-box;
+  float: left;
+  height: 100%;
+  padding-left: 5%;
+  width: 20%;
+}
+
+header .logo svg {
+  margin: 18px 0 13px;
+  width: 100px;
+}
+
+.navModuleNavigation {
+  height: 100%;
+  font-size: 16px;
+  font-weight: 600;
+  float: right;
+  margin-right: 100px;
+  display: flex;
+  align-items: center;
+}
+
+.navModuleNavigation > a {
+  margin: 0 10px;
+  float: right;
+}
+
+a {
+  color: #3da9b6;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+@media screen and (min-width: 48em) {
+  header .logo svg {
+    width: 120px;
+  }
+}

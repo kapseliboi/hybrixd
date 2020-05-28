@@ -349,11 +349,30 @@
   },
   "r":{"_alias":"report"},
   "report":{
+    "_this" : "Report utility UI",
+    "report.js":{
+      "_this" : "test",
+      "hidden" : true
+    },
+    "report.css":{
+      "_this" : "test",
+      "hidden" : true
+    },
     "_ui" : "report",
     "cron":{
       "_this":"Update the weekly public statistics.",
       "_access" : "root"
     },
+    "_this": "Report utility UI.",
+    "report.js":{
+      "_this" : "test",
+      "hidden" : true
+    },
+    "report.css":{
+      "_this" : "test",
+      "hidden" : true
+    },
+    "_ui" : "report",
     "assets" : {
       "_ui" : "report/assets",
       "_this" : "View the asset test report. Requires test data to be available. Run /report/assets/test to gather data or ensure enable_daily_asset_report is set to true.",
@@ -365,8 +384,14 @@
         "_this":"Return test results in cli format.",
         "_access" : "root"
       },
+      "html" : {
+        "_this":"Return test results in HTML format.",
+        "_access" : "root"
+      },
       "xml" : "Return test results in xml format.",
-      "json" : "Return test results in json format."
+      "json" : {
+        "_this": "Return test results in json format."
+      }
     },
     "asset":{
       "_ref":{
@@ -382,7 +407,7 @@
       "_ref":{
         "_list" : "categories",
         "_sample" : "error|fatal",
-        "_this" : "Return log entries for given categories for last hour.",
+        "_this" : "Return log entries for given categories for last hour. Use * wildcard for all categories.",
         "_ref":{
           "_list" : "start",
           "_sample" : "1d",
@@ -402,7 +427,8 @@
     },
     "sessions" :{
       "_ui" : "report/sessions",
-      "_this" : "Return session statistics for the last week.",
+      "_this" : "View report HTML.",
+      "json"  :  "Return session statistics for the last week.",
       "_ref":{
         "_access" : "root",
         "_list" : "start",
@@ -418,7 +444,8 @@
     "api" :{
       "_ui" : "report/api",
       "assets": {
-        "_this" : "Return asset api call statistics for the last week.",
+        "_this" : "View report HTML.",
+        "json"  :  "Return asset api statistics for the last week.",
         "_ref":{
           "_access" : "root",
           "_list" : "start",
@@ -436,7 +463,8 @@
           }
         }
       },
-      "_this" : "Return api call statistics for the last week.",
+      "_this" :"View report HTML.",
+      "json" : "Return api call statistics for the last week.",
       "_ref":{
         "_access" : "root",
         "_list" : "start",
