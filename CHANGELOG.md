@@ -1,3 +1,16 @@
+# v0.7.20
+## Fluffy Orange Gnome
+## 28-05-2020
+
+* Handle undefined values in debug ui
+* Update download links
+* Display eth fee's with correct factor in transaction history
+* hybrix-jslib: update asset test overview
+* hybrix-jslib: on refresh use current balance value as fallback
+
+
+
+
 # v0.7.19
 ## Cosy Turqoise Ogre
 ## 26-05-2020
