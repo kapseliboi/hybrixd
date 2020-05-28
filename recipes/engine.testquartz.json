@@ -433,6 +433,14 @@
       "@hook",
       "done $OK"
     ],
+    "sort18" : [
+      "data []",
+      "sort asc",
+      "flow [] 1 2",
+      "done $OK",
+      "fail"
+    ],
+
     "math1" : [
       "math 1+1",
       "flow 2 1 2",
