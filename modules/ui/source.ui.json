@@ -1,0 +1,17 @@
+{
+  "source":"ui",
+  "name":"Operator Web UI",
+  "module":"ui",
+  "router" : {
+    "api":{
+      "_alias":"/"
+    },
+    "_ellipsis":true,
+    "_this" : "Provides the necessary bindings to host the operator user interface."
+  },
+  "quartz" :{
+    "_root" : [
+      "sync ui"
+    ]
+  }
+}

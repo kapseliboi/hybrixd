@@ -6,11 +6,6 @@
     <script src="./debug/debug.js"></script>
 
     <style>
-
-      a {
-      cursor:pointer;
-      text-decoration:underline;
-      }
       span.variable{
       color:blue;
       }
@@ -33,7 +28,7 @@
       }
 
       body{
-      font-family: monospace;
+        background: #f7fafc;
       }
       input[type="text"]{
       margin:0;
@@ -55,8 +50,21 @@
       color:red;
       }
 
-      td{
-      word-wrap:break-words;
+      .debug {
+        margin-top: 100px;
+        font-family: monospace;
+      }
+
+      .debug, table {
+        margin-left: 32px;
+      }
+
+      #output table {
+        width: 100%;
+      }
+
+      #output td {
+        word-break: break-all;
       }
 
       div.progress {
@@ -65,7 +73,9 @@
       background-color:green;
       }
       td.pid {
+      position: relative;
       padding:0;
+      overflow: hidden;
       }
       div.pid {
       display:inline-block;
@@ -78,14 +88,23 @@
       }
 
       .data{
-      text-overflow: ellipsis;
+        width: 43ch;
+        max-width: 43ch;
+        text-overflow: ellipsis;
       }
 
       tr:nth-child(even) {background: #EEE}
       tr:nth-child(odd) {background: #FFF}
+
+      #output,
       table {
       max-width:90%;
       width:90%;
+      }
+
+      #output table {
+        width: 100%;
+        max-width: 100%;
       }
 
       tr.header td{
@@ -93,12 +112,22 @@
       color:white;
       }
 
+      #output {
+        font-family: monospace;
+      }
+
+      #output tr > td:nth-child(2) {
+        width: 50%;
+        max-width: 50%;
+        padding: 0 2%;
+      }
+
     </style>
   </head>
 
-  <body>
+  <body class="debug-body">
 
-    <table><tr class="header"><td colspan="2">hybrix: qrtz debug interface</td></tr>
+    <table class="debug"><tr class="header"><td colspan="2">hybrix: qrtz debug interface</td></tr>
       <tr><td>
           <input placeholder="Enter api call, for example:
                               /asset/dummy/balance/_dummyaddress_"
