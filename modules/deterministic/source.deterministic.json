@@ -3,8 +3,11 @@
   "name":"Deterministic",
   "module":"deterministic",
   "quartz":{
+    "init" : [
+      "func init"
+    ],
     "assets" : [
-      "func 'assets'"
+      "func assets"
     ],
     "code" : [
       "mime 'file:data'",
