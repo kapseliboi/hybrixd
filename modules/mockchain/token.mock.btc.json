@@ -3,7 +3,7 @@
   "name":"Mock Bitcoin",
   "contract":"btc",
   "factor":8,
-  "fee":"0.0",
+  "fee":"0.01",
   "fee-symbol": "mock.btc",
   "import":"mock",
   "quartz":{

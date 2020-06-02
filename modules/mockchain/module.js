@@ -15,17 +15,24 @@ exports.message = message;
 
 const filePath = '../modules/mockchain/test.mockchain.json';
 
-function mine (proc) {
-  let mockchain;
+function getMockchain () {
   try {
-    if (fs.existsSync(filePath)) {
-      mockchain = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    } else {
-      mockchain = [];
-    }
+    const mockchain = fs.existsSync(filePath)
+      ? JSON.parse(fs.readFileSync(filePath, 'utf8'))
+      : [];
+    return mockchain;
   } catch (e) {
-    proc.fail('This node does not support mockchain.');
+    return null;
   }
+}
+
+function mine (proc) {
+  const mockchain = getMockchain();
+  if (mockchain === null) {
+    proc.fail('This node does not support mockchain.');
+    return;
+  }
+
   const contract = proc.command[1];
   const target = Number(proc.command[2]);
   const amount = Number(proc.command[3]);
@@ -38,100 +45,128 @@ function mine (proc) {
   proc.done(newTransaction);
 }
 
-function balance (proc) {
-  let mockchain;
-  try {
-    if (fs.existsSync(filePath)) {
-      mockchain = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    } else {
-      mockchain = [];
+function getSymbol (contract) {
+  return contract === 'main' ? 'mock' : 'mock.' + contract;
+}
+
+function getContract (symbol) {
+  return symbol === 'mock' ? 'main' : symbol.substr(5);
+}
+
+function getBalance (mockchain, contract, address) {
+  let balance = 0;
+  for (let transactionId = 0; transactionId < mockchain.length; ++transactionId) {
+    const transaction = mockchain[transactionId];
+    if (Number(transaction.target) === Number(address) && transaction.contract === contract) { balance += Number(transaction.amount); }
+    if (Number(transaction.source) === Number(address)) {
+      if (transaction.contract === contract) balance -= Number(transaction.amount);
+      const symbol = getSymbol(contract);
+      if (typeof transaction.fee === 'object' && transaction.fee !== null && transaction.fee.hasOwnProperty(symbol)) balance -= Number(transaction.fee[symbol]);
     }
-  } catch (e) {
+  }
+  return balance;
+}
+
+function balance (proc) {
+  const mockchain = getMockchain();
+  if (mockchain === null) {
     proc.fail('This node does not support mockchain.');
+    return;
   }
 
   const contract = proc.command[1];
   const address = Number(proc.command[2]);
-  let balance = 0;
-  for (let transactionId = 0; transactionId < mockchain.length; ++transactionId) {
-    const transaction = mockchain[transactionId];
-    if (transaction.target === address && transaction.contract === contract) { balance += transaction.amount; }
-    if (transaction.source === address && transaction.contract === contract) { balance -= transaction.amount + transaction.fee; }
-  }
-  proc.done('' + balance);
+  proc.done('' + getBalance(mockchain, contract, address));
 }
 
 const fromInt = function (input, factor) {
   const f = Number(factor);
   const x = new Decimal(String(input));
-  return x.times((f > 1 ? '0.' + new Array(f).join('0') : '') + '1').toFixed();
+  return Number(x.times((f > 1 ? '0.' + new Array(f).join('0') : '') + '1').toFixed(factor));
 };
 
 function push (proc) {
-  let mockchain;
-  try {
-    if (fs.existsSync(filePath)) {
-      mockchain = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    } else {
-      mockchain = [];
-    }
-  } catch (e) {
+  const mockchain = getMockchain();
+  if (mockchain === null) {
     proc.fail('This node does not support mockchain.');
+    return;
   }
 
   const newTransaction = JSON.parse(proc.command[2]);
-  const source = newTransaction.source;
-  const target = newTransaction.target;
+  const source = Number(newTransaction.source);
+  const target = Number(newTransaction.target);
   const contract = newTransaction.contract;
   const contract_ = proc.command[1];
   if (contract_ !== contract) {
     proc.fail(`pushed ${contract} to ${contract_}`);
     return;
   }
-
-  const factor = newTransaction.factor;
+  const symbol = getSymbol(contract);
+  const factor = proc.peek(symbol + '::factor');
 
   const atomicAmount = newTransaction.amount;
+
   const amount = fromInt(atomicAmount, factor);
-  const fee = newTransaction.fee;
+
+  let fees = newTransaction.fee; // "fee" or {[fee-symbol]:fee}
+  if (typeof fees === 'number' || typeof fees === 'string') { // "fee" -> {[fee-symbol]:fee}
+    const feeSymbol = proc.peek(symbol + '::fee-symbol');
+    fees = {[feeSymbol]: fees};
+  }
+  let totalAtomicFee = 0;
+  for (let feeSymbol in fees) {
+    const feeFactor = proc.peek(feeSymbol + '::factor');
+    const fee = fees[feeSymbol];
+    totalAtomicFee += Number(fee);
+    fees[feeSymbol] = fromInt(fee, feeFactor);
+  }
+
+  const baseFee = fees.hasOwnProperty(symbol) ? fees[symbol] : 0;
+
   const message = typeof newTransaction.message === 'string' ? newTransaction.message : '';
   const signature = newTransaction.signature;
 
-  const expectedSignature = Number(source) * Number(target) + Number(atomicAmount) + Number(fee) * 3.14 + contract.length * 1001 + message.length * 123;
+  const expectedSignature = Number(source) * Number(target) + Number(atomicAmount) + totalAtomicFee * 3.14 + contract.length * 1001 + message.length * 123;
   if (signature !== expectedSignature) {
     proc.fail('illegal signature');
   } else {
-    let balance = 0;
-    for (let transactionId = 0; transactionId < mockchain.length; ++transactionId) {
-      const transaction = mockchain[transactionId];
-      if (transaction.target === source && transaction.contract === contract) { balance += transaction.amount; }
-      if (transaction.source === source && transaction.contract === contract) { balance -= transaction.amount + transaction.fee; }
+    // check if has sufficient base balance
+    const baseBalance = getBalance(mockchain, contract, source);
+    if (baseBalance < amount + baseFee) {
+      proc.fail('insufficient ' + symbol.toUpperCase() + ' balance. Required ' + (amount + baseFee) + ', Available ' + baseBalance);
+      return;
     }
-    if (balance >= amount + fee) {
-      delete newTransaction.factor;
-      newTransaction.amount = amount;
-      newTransaction.timestamp = Math.round(Date.now() * 0.001);
-      newTransaction.id = mockchain.length;
-      newTransaction.type = 'tran';
-      mockchain.push(newTransaction);
-      fs.writeFileSync(filePath, JSON.stringify(mockchain));
-      proc.done(newTransaction.id);
-    } else {
-      proc.fail('insufficient balance');
+    // check if sufficient fee balances
+    for (let feeSymbol in fees) {
+      if (feeSymbol !== symbol) {
+        const feeBalance = getBalance(mockchain, getContract(feeSymbol), source);
+        const feeAmount = fees[feeSymbol];
+        if (feeBalance < feeAmount) {
+          proc.fail('insufficient ' + feeSymbol.toUpperCase() + ' balance. Required ' + feeAmount + ', Available ' + feeBalance);
+          return;
+        }
+      }
     }
+
+    delete newTransaction.factor;
+    newTransaction.source = source;
+    newTransaction.target = target;
+    newTransaction.amount = Number(amount);
+    newTransaction.fee = fees;
+    newTransaction.timestamp = Math.round(Date.now() * 0.001);
+    newTransaction.id = mockchain.length;
+    newTransaction.type = 'tran';
+    mockchain.push(newTransaction);
+    fs.writeFileSync(filePath, JSON.stringify(mockchain));
+    proc.done(newTransaction.id);
   }
 }
 
 function history (proc) {
-  let mockchain;
-  try {
-    if (fs.existsSync(filePath)) {
-      mockchain = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    } else {
-      mockchain = [];
-    }
-  } catch (e) {
+  const mockchain = getMockchain();
+  if (mockchain === null) {
     proc.fail('This node does not support mockchain.');
+    return;
   }
 
   const contract = proc.command[1];
@@ -146,25 +181,17 @@ function history (proc) {
       history.unshift(transactionId);
     }
   }
-  if (!isNaN(offset)) {
-    history.splice(0, offset);
-  }
-  if (!isNaN(length) && length < history.length) {
-    history.length = length;
-  }
+  if (!isNaN(offset)) history.splice(0, offset);
+  if (!isNaN(length) && length < history.length) history.length = length;
+
   proc.done(history);
 }
 
 function transaction (proc) {
-  let mockchain;
-  try {
-    if (fs.existsSync(filePath)) {
-      mockchain = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    } else {
-      mockchain = [];
-    }
-  } catch (e) {
+  const mockchain = getMockchain();
+  if (mockchain === null) {
     proc.fail('This node does not support mockchain.');
+    return;
   }
 
   const contract = proc.command[1];
@@ -188,34 +215,22 @@ function transaction (proc) {
       };
       proc.done(normalizedTransaction);
     }
-  } else {
-    proc.fail('unknown transaction2');
-  }
+  } else proc.fail('unknown transaction2');
 }
 
 // message/attachment
 function message (proc) {
-  let mockchain;
-  try {
-    if (fs.existsSync(filePath)) {
-      mockchain = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    } else {
-      mockchain = [];
-    }
-  } catch (e) {
+  const mockchain = getMockchain();
+  if (mockchain === null) {
     proc.fail('This node does not support mockchain.');
+    return;
   }
 
   const transactionId = Number(proc.command[2]);
   if (transactionId < mockchain.length) {
     const contract = proc.command[1];
     const transaction = mockchain[transactionId];
-    if (transaction.contract !== contract) {
-      proc.fail('unknown transaction');
-    } else {
-      proc.done(transaction.message);
-    }
-  } else {
-    proc.fail('unknown transaction');
-  }
+    if (transaction.contract !== contract) proc.fail('unknown transaction');
+    else proc.done(transaction.message);
+  } else proc.fail('unknown transaction');
 }
