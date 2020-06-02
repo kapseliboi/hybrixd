@@ -111,14 +111,6 @@
       "fail 'Could not read transaction data!'"
     ],
     "getTransaction" : [
-      "data '$1_$symbol_calculated'",
-      "hash",
-      "poke storageHash",
-      "load 'txEl$storageHash' 1 @calculateData",
-      "unpk 1 @requestData",
-      "logs 'getting transaction calculation from storage $1'",
-      "done",
-      "@calculateData",
       "time $longtimeout",
       "call transactionData/$1",
       "# calculate fee",
@@ -173,10 +165,7 @@
       "@failed",
       "fail 'Cannot interpret transaction data!'",
       "@success",
-      "poke txData",
-      "pack",
-      "save 'txEl$storageHash'",
-      "peek txData"
+      "done"
     ],
     "transactionValueFilter" : [
       "time $timeout",
