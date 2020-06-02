@@ -1,3 +1,14 @@
+# v0.7.21
+## Happy Violet Sphinx
+## 02-06-2020
+
+
+* Fix qrtz sort for empty arrays
+* ethereum throttle adjustments
+
+
+
+
 # v0.7.20
 ## Fluffy Orange Gnome
 ## 28-05-2020
