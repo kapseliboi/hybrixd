@@ -1,3 +1,16 @@
+# v0.7.22
+## Curly Maroon Ogre
+## 04-06-2020
+
+* Remove duplicate transaction caching in electrum engine
+* Verbose logging on host error
+* Deployment improvements
+* Update etc host
+* Enable multi fee mockchain
+
+
+
+
 # v0.7.21
 ## Happy Violet Sphinx
 ## 02-06-2020
