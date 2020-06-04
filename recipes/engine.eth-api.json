@@ -11,7 +11,7 @@
   "gasPrice":"0.000000020",
   "gasPerByte":625,
   "gasBaseFee":21000,
-  "gasContractAvgFee":30000,
+  "gasContractAvgFee":55000,
   "gasLimitNativeTx":90000,
   "gasLimitContractTx":336000,
   "contract":"0x0000000000000000000000000000000000000000",
