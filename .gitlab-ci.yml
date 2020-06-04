@@ -13,8 +13,8 @@ stages:
   - build
   - test
   - review
-  - deploy
   - release
+  - deploy
   - cleanup
 
 hybrixd:
@@ -105,20 +105,7 @@ stop_review:
     variables:
       - $REVIEW_DISABLED
 
-
-trigger_cluster_deployment_manual:
-  cache: {}
-  stage: deploy
-  allow_failure: false
-  script:
-    - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=master https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fcluster/trigger/pipeline
-  when: manual
-  only:
-    refs:
-      - tags
-
 dist:
-  allow_failure: false
   dependencies:
     - hybrixd
   stage: release
@@ -138,6 +125,18 @@ publish:
   stage: release
   script:
     - sh ./scripts/pipeline/publish.sh
+  only:
+    refs:
+      - tags
+
+trigger_cluster_deployment:
+  cache: {}
+  dependencies:
+    - dist
+  stage: deploy
+  allow_failure: false
+  script:
+    - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=master https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fcluster/trigger/pipeline
   only:
     refs:
       - tags
