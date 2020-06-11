@@ -1,3 +1,19 @@
+# v0.7.23
+## Happy Pink Leprechaun
+## 11-06-2020
+
+* Added 'check for update' endpoint. Use /e/update/check to see if you're running the latest version
+* Improve configuration handling of hybrixd.conf. 
+* Add y and z channel tests. These channels can be used as (extra) encryption layer. For example when http instead of https is used.
+* Return errors if session creation fails.
+* SEO/metadata improvements for html endpoints
+* hybrix-jslib : Reconnect session if lost
+* hybrix-jslib : Improve import/export of deterministic code
+* web-wallet: add headless browser tests
+* web-wallet: add missing font
+
+
+
 # v0.7.22
 ## Curly Maroon Ogre
 ## 04-06-2020
