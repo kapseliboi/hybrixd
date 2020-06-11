@@ -68,6 +68,7 @@ rsync -avq "$NODE/files" "$DIST/"
 # Copy test scripts
 mkdir -p "$DIST/scripts/npm/"
 cp "$NODE/scripts/npm/test.sh" "$DIST/scripts/npm/test.sh"
+cp -r "$NODE/scripts/test" "$DIST/scripts/test"
 
 mkdir -p "$DIST/scripts/pipeline/"
 cp "$NODE/scripts/pipeline/build.sh" "$DIST/scripts/pipeline/build.sh"
