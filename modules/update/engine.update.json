@@ -1,0 +1,15 @@
+{
+  "engine":"update",
+  "name":"Update",
+  "module":"update",
+  "quartz":{
+    "check" :[
+      "curl https://storage.googleapis.com/hybrix-dist/",
+      "func check"
+      ]
+  },
+  "router" : {
+    "_access" : "root",
+    "check" :"Check if update available"
+  }
+}
