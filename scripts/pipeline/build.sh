@@ -49,6 +49,7 @@ echo "[.] Unzip and replace interface"
 # remove link to interface
 rm -rf  interface || true
 
+
 echo "[.] Retrieve interface source for generation of documentation"
 # get content of interface/lib for generation of documentation
 cd ..
@@ -116,10 +117,23 @@ unzip -q -o artifacts-web-blockexplorer.zip -d ./dist/modules/web-blockexplorer/
 rm -rf  artifacts-web-blockexplorer || true
 rm -rf  artifacts-web-blockexplorer.zip || true
 
+echo "[.] Retrieve operator-ui artifact"
+curl -s --location --header "Private-Token: $PRIVATE_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Foperator-ui/jobs/artifacts/master/download?job=build" -o artifacts-operator-ui.zip
+
+echo "[.] Overwrite operator-ui with artifact files"
+
+rm -rf ./dist/lib/router/report
+mkdir -p ./dist/lib/router/report
+chmod 755 ./dist/lib/router/report
+unzip -q -o artifacts-operator-ui.zip -d ./dist/lib/router/report/
+
+# remove the unzipped-files and the zip-file (|| true --> on error, no problem)
+rm -rf  artifacts-operator-ui || true
+rm -rf  artifacts-operator-ui.zip || true
+
 
 echo "[.] Clean git files"
 rm -rf ./.git* || true
-
 
 echo "[.] Collect version information "
 
