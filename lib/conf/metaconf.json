@@ -16,21 +16,25 @@
       "type" : "boolean"
     },
     "defaultmaxlisteners" : {
-      "default" : 25,
+      "default" : 300,
       "info" : "Set the amount of listners for the http server socket",
       "type" : "int"
     }
   },
   "scheduler" : {
     "procpurgetime" : {
-      "default" : 120,
+      "default" : 300,
       "type" : "int",
       "info" : "Amount of time before a stale process gets cleaned up",
       "unit" : "seconds"
     },
-    "maxparallelprocesses" :{},
+    "maxparallelprocesses" :{
+      "default" : 10000000,
+      "type" : "int",
+      "info" : "Maximum number of qrtz processes"
+    },
     "tick" : {
-      "default" : 50,
+      "default" : 30,
       "info":"Tick frequency for process steps",
       "type" : "int",
       "unit" : "milliseconds"
@@ -44,7 +48,7 @@
   },
   "cache" : {
     "maxentries" : {
-      "default" : 1000,
+      "default" : 3000,
       "type" : "int",
       "unit" : "objects"
     },
@@ -69,7 +73,7 @@
   },
   "storage" : {
     "maxstoragesize" : {
-      "default" : 1000000000,
+      "default" : 2000000000,
       "type" : "int",
       "unit" : "bytes"
     },
