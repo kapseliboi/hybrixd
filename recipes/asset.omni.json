@@ -14,20 +14,20 @@
   "timeout":60000,
   "cache":180000,
   "throttle":0.1,
+  "api-documentation": "https://api.omniexplorer.info",
   "api-rate-info":{
     "url": "https://api.omniexplorer.info",
     "rate-limit":"wait time of 5-10 seconds between repeat calls"
   },
   "quartz":{
-    "unspent" : [
+    "unspent/address" : [
       "rout '/asset/${keygen-base}/fee'",
       "math '+$feeOmniTX'",
-      "rout '/asset/${keygen-base}/unspent/$1/$'",
-      "done"
+      "rout '/asset/${keygen-base}/unspent/$address/$'"
     ],
-    "balance" : [
+    "balance/address" : [
       "time $timeout",
-      "data 'addr=$1'",
+      "data 'addr=$address'",
       "curl /v2/address/addr POST {'content-type':'application/x-www-form-urlencoded'} {timeout:$timeout} 2 1",
       "fail 'Could not connect to host'",
       "tran '.$1.balance' 2 1",
@@ -38,13 +38,13 @@
       "math '${.value}+${.in}+${.out}'",
       "atom"
     ],
-    "push" : [
-      "rout '/asset/$keygen-base/push/$1'",
-      "done"
+    "push/transaction" : [
+      "rout '/asset/$keygen-base/push/$transaction'"
     ],
     "factor" : [
       "data '$factor'"
     ],
+
     "reformatTx" : [
       "poke txSource",
       "tran .value 2 1",
@@ -52,36 +52,57 @@
       "copy txSource txTarget",
       "with txSource [data, $] [tran,'.vout[1].scriptPubKey.addresses[0]',2,1] [data,'unknown'] [done]",
       "with txTarget [data, $] [tran,'.vout[0].scriptPubKey.addresses[0]',2,1] [data,'unknown'] [done]",
-      "tran { id:'.txid', timestamp:'.time', amount:'.vout[0].value', symbol:'$symbol', fee:'=.fees|0', 'fee-symbol':'$symbol', source:'$txSource', target:'$txTarget', confirmed:'.confirmations' } @success @fail",
+      "tran { id:.txid, timestamp:.blocktime, amount:.amount, symbol:'$symbol', fee:.fee, 'fee-symbol':'$fee-symbol', source:'=.sendingaddress|unknown',target:'=.referenceaddress|unknown', confirmed:'.confirmations' } @success @fail",
       "@fail",
       "fail 'Cannot interpret transaction data!'",
       "@success",
       "done"
     ],
-    "getHistory" : [
-      "poke count $2 12",
-      "poke offset $3 0",
-      "time $longTimeout",
-      "with countTo [data,'$count'] [math,'+$offset']",
-      "curl /addrs/$1/txs?from=$offset&to=$countTo 2 1",
+
+    "getHistory/address/count=12/offset=0" : [
+      "peek contract",
+      "type number",
+      "poke numberContract",
+      "math 'floor($offset/10)'",
+      "poke page",
+      "poke transactions []",
+      "@nextPage",
+      "data 'addr=$address&page=$page'",
+      "curl POST /v1/transaction/address {'Content-Type': 'application/x-www-form-urlencoded', 'Content-Type': 'application/x-www-form-urlencoded'} 2 1",
       "fail 'Could not connect to host'",
-      "tran '.items' 1 @fail",
-      "done",
-      "@fail",
-      "fail "
+      "poke result",
+      "tran .pages",
+      "poke maxPages",
+      "peek result",
+      "tran .transactions",
+      "flow symbol {omni:2} 1",
+      "filt .propertyid $numberContract",
+      "filt .type 'Simple Send'",
+      "poke moreTransactions",
+      "with transactions fuse $moreTransactions",
+      "peek transactions",
+      "size",
+      "true '>=$count' @done 1",
+      "with page math +1",
+      "flow page {$maxPages:1} @nextPage",
+      "@done",
+      "math 0-($offset%10)",
+      "poke dropFromStart",
+      "peek transactions",
+      "drop $dropFromStart"
     ],
-    "transactionData" : [
-      "data '$1'",
-      "curl '/v1/transaction/tx/$1' {'content-type':'application/x-www-form-urlencoded'} {timeout:$timeout} 2 1",
+    "getTransaction/txId" : [
+      "time $timeout",
+      "data '$txId'",
+      "curl '/v1/transaction/tx/$txId' {'content-type':'application/x-www-form-urlencoded'} {timeout:$timeout} 2 1",
       "fail 'Could not connect to host'",
       "have '.txid' 2 1",
-      "fail 'Transaction does not exist!'"
+      "fail 'Transaction does not exist!'",
+      "tran {value: $}",
+      "call reformatTx",
+      "done"
     ],
-    "transaction" : [
-      "call 'transactionData/$1'",
-      "tran {id:'.txid',fee:'.fee',timestamp:'.blocktime',height:'.block',symbol:'$symbol','fee-symbol':'$fee-symbol',amount:'.amount',source:'=.sendingaddress|unknown',target:'=.referenceaddress|unknown',confirmed:true} 2 1",
-      "fail 'Cannot interpret transaction!'"
-    ],
+
     "contract" : [
       "done '$contract'"
     ],
@@ -93,7 +114,7 @@
       "done {address:'18XvhJmfciiE9khPisavJ2UdC5ybG94tYk',transaction:'1989dc575f94dcb45485b78b1b762e13a3a6d2eb59422b6217c93218a54ff80b'}"
     ],
     "test":[
-      "done {hash:56B04220,unspent:{'unspents':[{'script':'76a91493b4fa1cbfc9b379bee71ef2c9112d3bab6c9d688ac','amount':'1010','txid':'8169bee7dda515a24912023485497cb100ad4730b58d8be0bb963acd91b29c1f','txn':0}],'change':'0'}}"
+      "done {hash:1C5CA6EC,unspent:{'unspents':[{'script':'76a91493b4fa1cbfc9b379bee71ef2c9112d3bab6c9d688ac','amount':'1010','txid':'8169bee7dda515a24912023485497cb100ad4730b58d8be0bb963acd91b29c1f','txn':0}],'change':'0'}}"
     ]
   }
 }

@@ -463,6 +463,26 @@
       "done $OK",
       "fail"
     ],
+    "math4" : [
+      "data [1,2]",
+      "math +",
+      "flow 3 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "math5" : [
+      "data 1.2",
+      "math floor",
+      "flow 1 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "math6" : [
+      "math floor(1.2)",
+      "flow 1 1 2",
+      "done $OK",
+      "fail"
+    ],
     "burn" : [
       "save testBurn",
       "burn testBurn",
