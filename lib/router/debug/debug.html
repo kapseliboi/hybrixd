@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>hybrix | qrtz debug interface</title>
+    <title>qrtz debug | hybrixd</title>
     <meta charset="UTF-8">
     <script src="./debug/debug.js"></script>
 
@@ -107,10 +107,6 @@
         max-width: 100%;
       }
 
-      tr.header td{
-      background-color:blue;
-      color:white;
-      }
 
       #output {
         font-family: monospace;
@@ -122,19 +118,39 @@
         padding: 0 2%;
       }
 
+      input {
+      border-radius:5px;
+      border-width:1px;
+      height:24px;
+      padding-left:5px;
+      }
+      button {
+cursor:pointer;
+      margin-left:10px;
+      font-size: 16px;
+      color:white;
+      background-color: #5DBDC9;
+      border-style:none;
+      border-radius:5px;
+      padding-bottom: 5px;
+      padding-left: 20px;
+      padding-right: 20px;
+      padding-top: 5px;
+      }
+
     </style>
   </head>
 
   <body class="debug-body">
 
-    <table class="debug"><tr class="header"><td colspan="2">hybrix: qrtz debug interface</td></tr>
+    <table class="debug">
       <tr><td>
           <input placeholder="Enter api call, for example:
                               /asset/dummy/balance/_dummyaddress_"
                  onkeyup="if(event.keyCode===13){go();}" type="text"
                  id="request" value="">
 
-        <td width="15ch"><input type="submit" value="execute" onclick="go()"></td>
+        <td width="15ch"><button onclick="go()">Execute</button></td>
     </td></tr></table>
     <div id="output"></div>
   </body>
