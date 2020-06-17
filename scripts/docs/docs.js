@@ -124,11 +124,12 @@ for (let id in files) {
     });
 
     for (let i = 0; i < funcs.length; ++i) {
-      let func = funcs[i];
+      const func = funcs[i];
       if (i === 0 || funcs[i - 1].category !== func.category) {
         data += '<div class="category"><h3>' + func.category.trim() + '</h3></div>';
       }
-      data += '<div class="command-header" onclick="toggleCommand(\'' + func.name.trim() + '\')"><b>' + func.name.trim() + '</b>';
+      const name = func.name.trim();
+      data += '<div class="command-header" onclick="toggleCommand(\'' + func.name.trim() + '\')"><b><a id="' + name + '">' + name + '</a></b>';
 
       data += '<span class="quickDescription">';
 
