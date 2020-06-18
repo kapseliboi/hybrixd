@@ -94,13 +94,9 @@
       "fail 'Could not read transaction data!'"
     ],
     "reformatTx" : [
-      "poke txSource",
       "tran .value 2 1",
       "fail 'failed reformatting transaction.'",
-      "copy txSource txTarget",
-      "with txSource [data, $] [tran,'.vout[1].scriptPubKey.addresses[0]',2,1] [data,'unknown'] [done]",
-      "with txTarget [data, $] [tran,'.vout[0].scriptPubKey.addresses[0]',2,1] [data,'unknown'] [done]",
-      "tran { id:'.txid', timestamp:'.time', amount:'.vout[0].value', symbol:'$symbol', fee:'=.fees|0', 'fee-symbol':'$symbol', source:'$txSource', target:'$txTarget', confirmed:'.confirmations' } @success @fail",
+      "tran { id:'.txid', timestamp:'.time', amount:'.vout[0].value', symbol:'$symbol', fee:'=.fees|0', 'fee-symbol':'$symbol', source:'=.vout[1].scriptPubKey.addresses[0]|unknown', target:'=.vout[0].scriptPubKey.addresses[0]|unknown', confirmed:'.confirmations' } @success @fail",
       "@fail",
       "fail 'Cannot interpret transaction data!'",
       "@success",
