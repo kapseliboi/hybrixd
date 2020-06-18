@@ -58,7 +58,6 @@
       "@success",
       "done"
     ],
-
     "getHistory/address/count=12/offset=0" : [
       "peek contract",
       "type number",
