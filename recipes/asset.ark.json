@@ -1,8 +1,7 @@
 {
   "symbol":"ark",
   "name":"Ark",
-  "module":"quartz",
-  "mode":"ark",
+  "mode":"ark.main",
   "addressRegex":"^A\\w{33}$",
   "factor":8,
   "fee":0.1,
@@ -15,26 +14,42 @@
   "cache":15000,
   "import": "transaction-history",
   "apiProvidesFullTx": true,
-  "throttle":5,
-  "version":"2",
+  "throttle":10,
+  "version":"1",
   "genesisBlockTime":1490101200,
   "quartz":{
     "sample" : [
       "done {address:'AQYZJ6Mkv4DhnXhrXdxXwNKRKGvgrkhnRF',transaction:'f70e8f32e8a16c1dd1a0e97fa4075f96d8e8e16065d1a4406851252832d8e608'}"
     ],
     "test":[
-      "done {hash:dynamic}"
+      "done {hash:'4BD494E3'}"
     ],
     "balance":[
       "curl '/api/v2/wallets/$1' {'Content-Type': 'application/json'} @curlSuccess @curlFail",
       "@curlFail",
+      "regx '404' 2 1",
       "fail 'Error from $symbol host : $'",
+      "data 0",
+      "jump @tranSuccess",
       "@curlSuccess",
       "tran '.data.balance' @tranSuccess @tranFail",
       "@tranFail",
       "fail ${.error}",
       "@tranSuccess",
       "atom"
+    ],
+     "unspent/$address/amount/target/publicKey":[
+      "curl '/api/v2/wallets/$1' {'Content-Type': 'application/json'} @curlSuccess @curlFail",
+      "@curlFail",
+      "regx '404' 2 1",
+      "fail 'Error from $symbol host : $'",
+      "data {nonce:'-1', address:'$address',balance:'0',publicKey:'$publicKey', attributes:{htlc:{locks:{},lockedBalance:'0'}},lockedBalance:'0',isDelegate:false,isResigned:false}",
+      "jump @tranSuccess",
+      "@curlSuccess",
+      "tran '.data' @tranSuccess @tranFail",
+      "@tranFail",
+      "fail ${.error}",
+      "@tranSuccess"
     ],
     "subhistory" : [
       "tran '.value.id' 1 @fail",
@@ -63,18 +78,20 @@
       "@tranSuccess",
       "done",
       "@curlFail",
+      "regx '404' 1 2",
+      "done []",
       "fail 'Error from $symbol host : $'",
       "@tranFail",
       "fail 'Could not parse history'"
     ],
     "push":[
-      "curl '/api/blocks/getNetHash'",
-      "tran('.nethash',2,1)",
+      "curl '/api/v2/node/configuration' GET",
+      "tran('.data.nethash',2,1)",
       "fail 'Error from $symbol host : $'",
       "poke 'nethash'",
-      "data {transaction: '$1'}",
-      "curl '/peer/transactions' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': '$nethash'} 1 2",
-      "tran '.transactionId' 2 1",
+      "data '{\"transactions\": [$1]}'",
+      "curl POST '/api/v2/transactions' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': '$nethash'} 1 2",
+      "tran '.data.accept[0]' 2 1",
       "fail",
       "done"
     ],
