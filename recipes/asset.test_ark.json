@@ -1,0 +1,7 @@
+{
+  "symbol":"test_ark",
+  "name":"Test Ark",
+  "mode":"ark.dev",
+  "addressRegex":"^D\\w{33}$",
+  "import": "ark"
+}
