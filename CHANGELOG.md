@@ -1,3 +1,18 @@
+# v0.7.24
+## Furry Purple Owlbear
+## 18-06-2020
+
+* Update ark to newest sdk
+* Added new bitcore engine for bitcoin cash
+* Fixes for insight and florin coin history
+* qrtz: fix parsing of certain number went wrong
+* updated styling and added links to docs in debug ui
+* Fixes for omni history
+* Fixed problems with serving binary (image) files
+
+
+
+
 # v0.7.23
 ## Happy Pink Leprechaun
 ## 11-06-2020
