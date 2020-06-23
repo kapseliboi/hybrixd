@@ -6,5 +6,8 @@
   "import":"omni",
   "factor":8,
   "contract":"142",
-  "originator":"12VaCTi8wrdrjh2qdBjL7hJeDgdF9cdbso"
+  "originator":"12VaCTi8wrdrjh2qdBjL7hJeDgdF9cdbso",
+  "quartz": {
+    "test" : ["done {hash:01385EC2}"]
+  }
 }

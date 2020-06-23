@@ -203,7 +203,7 @@
       "@tranSuccess",
       "done",
       "@tranFail",
-      "fail 'Could not parse history'"      
+      "fail 'Could not parse history'"
     ],
     "getHistory" : [
       "poke count $2 12",
@@ -220,7 +220,7 @@
       "fail 'History failed to load'"
     ],
     "test" :[
-      "done {hash:4E5C0B7F, unspent:{lastLedgerSequencePlus:46084264,sequence:759}}"
+      "done {hash:'675F90D9', unspent:{lastLedgerSequencePlus:46084264,sequence:759}}"
     ]
   }
 }
