@@ -1,7 +1,6 @@
 {
   "engine":"bitcore",
   "name":"Bitcore HTTP(S) engine",
-  "module":"quartz",
   "cache":1000,
   "import": "transaction-history",
   "apiProvidesFullTx": false,

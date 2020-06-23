@@ -22,7 +22,7 @@
       "jump @allDone",
       "math '$fee+($byteFee*$1)'",
       "@allDone"
-    ],    
+    ],
     "attachment" : [
       "time $timeout",
       "call transactionData/$1",
@@ -37,6 +37,9 @@
     "cron" : [
       "# empty cron to avoid getting fee, since FLO insight does not support this!",
       "done"
+    ],
+    "test" : [
+      "done {hash:'69B3B24F'}"
     ]
   }
 }

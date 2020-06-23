@@ -16,6 +16,9 @@
   "quartz":{
     "sample" : [
       "done {address:'t1KvZrdebWzQjtfJMhuGMVzhTG9VpBXzVf3',transaction:'cdea6a548efa88b30fbd110472a1ea4c0e5dee4cc768141dcb09a8c0f9ba4211'}"
+    ],
+    "test" :[
+      "done {hash:'1AF8E0A3'}"
     ]
   }
 }
