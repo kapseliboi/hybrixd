@@ -20,6 +20,7 @@
   "cron":600,
   "quartz":{
     "balance/address" : [
+      "with address [regx,'^$prefix',1,2] [take,12]",
       "time $timeout",
       "curl /address/$address/balance 2 1",
       "fail 'Connection to host failed'",
@@ -139,6 +140,7 @@
       "done"
     ],
     "getHistory/address/count=12/offset=0" : [
+      "with address [regx,'^$prefix',1,2] [take,12]",
       "time $longTimeout",
       "with countTo [math,'$count+$offset']",
       "curl /address/$address/txs?limit=$countTo 2 1",
