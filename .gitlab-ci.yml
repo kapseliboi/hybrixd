@@ -136,11 +136,10 @@ trigger_cluster_deployment:
   stage: deploy
   allow_failure: false
   script:
-    - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=master https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fcluster/trigger/pipeline
+    - curl --request POST --form "variables[DATE]=$(date)" --form "token=$CI_JOB_TOKEN" --form ref=master https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fcluster/trigger/pipeline
   only:
     refs:
       - tags
-
 # ---------------------------------------------------------------------------
 
 .auto_devops: &auto_devops |
