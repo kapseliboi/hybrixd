@@ -73,6 +73,7 @@
       "done {unspents:$selected,change:'$'}"
     ],
     "push/transaction" : [
+      "fail 'No $symbol host available to push transaction to.'",
       "time $timeout",
       "data {'rawtx':'$transaction'}",
       "curl /tx/send POST {Accept:'application/json, text/plain, */*',Content-Type:'application/json;charset=utf-8',DNT:1,Connection:'keep-alive'} {timeout:$shortTimeout} @curlSucces @curlFail",
