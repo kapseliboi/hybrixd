@@ -7,13 +7,36 @@
   "addressRegex":"^\\d{19}\\d?S$",
   "factor":8,
   "fee":"0.1",
-  "host":["https://wallet.shiftnrg.org/"],
+  "host":["https://wallet.shiftnrg.org"],
   "cache":15000,
   "throttle":5,
-  "version":"6.6.2",
+  "version":"6.8.0",
   "quartz":{
     "sample" : [
       "done {address:'16296503595969372386S',transaction:'6908341461331361507'}"
+    ],
+    "push":[
+      "fail 'error: Could not push transaction, because Shift communication protocol does not adher to privacy standards.'",
+      "curl /api/blocks/getNetHash 2 1",
+      "fail 'Could not connect to host'",
+      "tran .nethash 2 1",
+      "fail 'nethash could not be retrieved'",
+      "poke 'nethash'",
+      "data $1",
+      "curl '/api/transactions' 'PUT' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': '$nethash'} 2 1",
+      "fail 'Could not connect to host'",
+      "poke res",
+      "tran .success 1 2",
+      "flow true @success 1",      
+      "peek res",
+      "tran .error 1 2",
+      "fail 'error: $'",
+      "fail 'Could not push transaction.'",
+      "@success",
+      "peek res",
+      "tran .transactionId 1 2",
+      "done",
+      "done 'Transaction successful.'"
     ],
     "test":[
       "done {hash:dynamic}"
