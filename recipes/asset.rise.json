@@ -13,7 +13,7 @@
   "apiProvidesFullTx": true,
   "cache":15000,
   "throttle":5,
-  "version" : "0.1.2",
+  "version" : "3.0.2",
   "quartz":{
     "balance" :[
       "curl '/api/accounts/getBalance?address=$1' 2 1",
@@ -47,19 +47,24 @@
       "data {transaction: '$1'}",
       "curl '/peer/transactions' 'POST' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': '$nethash'} 2 1",
       "fail 'Could not connect to host'",
-      "tran .transactionId 2 1",
-      "fail",
-      "done"
+      "poke res",
+      "tran .success 1 2",
+      "flow true @done 1",
+      "data $res",
+      "tran .error 1 2",
+      "fail 'error: $'",
+      "fail 'Error: Failed pushing transaction.'",
+      "@done",
+      "done 'Transaction successful. No transaction id was provided.'"
     ],
     "test":[
       "done {hash:dynamic}"
     ],
     "transactionData" : [
-      "curl /api/transactions?id=$1 2 1",
+      "curl /api/transactions/get?id=$1 2 1",
       "fail 'Could not connect to host'",
-      "tran .transactions 2 1",
+      "tran .transaction 2 1",
       "fail 'Cannot get transaction data!'",
-      "pick",
       "done"
     ],
     "reformatTx": [
@@ -75,8 +80,8 @@
     ],
      "getTransaction" : [
       "call transactionData/$1",
-       "tran {value: $}",
-       "call reformatTx",
+      "tran {value: $}",
+      "call reformatTx",
       "done"
     ]
   }
