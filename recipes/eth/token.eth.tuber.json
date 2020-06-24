@@ -1,0 +1,10 @@
+{
+    "symbol":"eth.tuber",
+    "name":"Tokentuber",
+    "module":"ethereum",
+    "import":"eth",
+    "mode":"ethereum.token",
+    "contract":"0xd1766A85B0d6F81185782dC07F15326d63C3cBaa",
+    "originator":"0xC87520F80a9eBa207cE7E63dB88462058bFfC366",
+    "factor":18
+}
