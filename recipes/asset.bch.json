@@ -23,6 +23,9 @@
     ],
     "sample" : [
       "done {address:'qzvmc7962aaftgglrg6y6nf2u40jlptmnqhpeu5t83',transaction:'1dbc4abe22519f003fe471ad5faf740a2ad99ce4b067ae4bd44f8ffc761dab20'}"
+    ],
+    "test":[
+      "done {hash:'5E64D7B1'}"
     ]
   }
 }
