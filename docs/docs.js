@@ -241,7 +241,7 @@ function search () {
 }
 
 function toggleCommand (id) {
-  let e = document.getElementById(id);
+  let e = document.querySelector(`#${id}.command-body`);
   if (e.style.display === 'block') {
     foldItem(e);
   } else {
