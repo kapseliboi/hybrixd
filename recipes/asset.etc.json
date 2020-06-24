@@ -10,6 +10,7 @@
   "host":["https://www.ethercluster.com/etc"],
   "oldhosts":["https://etc-geth.0xinfra.com","https://etc-parity.0xinfra.com","https://web3.gastracker.io"],
   "contract":"0x0000000000000000000000000000000000000000",
+  "historyAPI": "https://blockscout.com/etc/mainnet/api",
   "cache":15000,
   "timeout":30000,
   "throttle":1,
