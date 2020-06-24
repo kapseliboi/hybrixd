@@ -145,7 +145,7 @@ const list = function (data, dataCallback, errorCallback) {
       if (err) {
         errorCallback('Error reading storage list.');
       } else {
-        let result = [];
+        const result = [];
         for (let i = 0; i < files.length; i += 2) {
           if (files[i].substr(-5) !== '.meta') {
             result.push(files[i]);

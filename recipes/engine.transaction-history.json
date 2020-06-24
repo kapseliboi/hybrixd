@@ -24,10 +24,21 @@
       "@fail",
       "done 999999999999"
     ],
+    "greaterThanCache/address/count/offset": [
+      "list ${address}-${symbol}-history-* 2 1 1" ,
+      "done false",
+      "pick",
+      "load",
+      "jpar",
+      "size",
+      "math '<$count*($offset+1)'"
+    ],
     "history": [
       "poke addr $1",
       "poke count $2 12",
       "poke offset $3 0",
+      "call greaterThanCache/$addr/$count/$offset",
+      "true '$' @retrieve 1",
       "call checkTimestampForUpdate/$1",
       "true '$<${cacheHistoryTime}' @returnCachedHistory @retrieve",
       "@retrieve",
