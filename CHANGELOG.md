@@ -1,3 +1,23 @@
+# v0.7.25
+## Little Blue Mermaid
+## 25-06-2020
+
+* New ETH token: Tokentuber
+* Added Biki trade engine
+* Fix unspents for uninitialized burst addresses
+* Fixes for NXT tokens 
+* Autofocus for debug ui
+* Fix searching beyond cached history
+* docs: fix folding items.
+* Update several hosts (DGB,ETC)
+* Fix Rise and Shift
+* Update test data for assets
+* qrtz: Remove eval from scan, add NaN check and consts, fix BCH unspents
+* qrtz: add zip functionality to tran
+
+
+
+
 # v0.7.24
 ## Furry Purple Owlbear
 ## 18-06-2020
