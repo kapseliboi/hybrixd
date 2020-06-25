@@ -17,7 +17,7 @@
       "done {address:'0xbb1e3c386a01826bbae330870b96870d2b571d12',transaction:'0xa0cb3baf5105be78e4f52218f371592cd64cd154cdf75ac5eaeb114ff6da7a15'}"
     ],
     "test":[
-      "done {hash:773A8052}"
+      "done {hash:06B1040F}"
     ],
     "transaction":[
       "curl 'https://v3.ubiqscan.io' '/transaction/$1' 2 1",
