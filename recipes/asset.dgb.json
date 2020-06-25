@@ -9,6 +9,7 @@
   "host":["https://digiexplorer.info/api"],
   "host_electrums_OLD":["tcp://electrum3.cipig.net:10059","tcp://electrum2.cipig.net:10059","tcp://electrum1.cipig.net:10059"],
   "explorer":"https://chainz.cryptoid.info/dgb",
+  "unspentHost": "https://explorerapi.digiassets.net/api",
   "cache":20000,
   "throttle":0.1,
   "quartz":{
@@ -20,6 +21,53 @@
     ],
     "test":[
       "done {hash:dynamic}"
+    ],
+    "getUnspentData": [
+      "tran .value 1 @fail",
+      "tran {script: '.scriptPubKey.hex', amount: .value, txid: '.txid', txn: .index} 1 @fail",
+      "done",
+      "@fail",
+      "fail 'Could not get unspent data."
+    ],
+    "unspent" : [
+      "data $2",
+      "void 1 3",
+      "call unspentAll/$1",
+      "done",
+      "poke inputval '$2' '1000000000000'",
+      "with inputval atom 1",
+      "time $timeout",
+      "curl $unspentHost /getaddressutxos?address=$1 2 1 ",
+      "fail 'Could not connect to host'",
+      "tran .utxos",
+      "each getUnspentData",
+      "sort 'asc' '.amount'",
+      "scan 'cnt<($inputval+val.amount)' '+val.amount'",
+      "poke 'selected'",
+      "tran '[].amount' 2 1",
+      "data []",
+      "math '+'",
+      "with inputval [flow,'100000000000000000000',1,2] [done,'$'] [done]",
+      "math '-$inputval'",
+      "ship 2 2 1",
+      "data 0",
+      "done {unspents:$selected,change:'$'}"
+    ],
+    "unspentAll" : [
+      "poke inputval '$2' '1000000000000'",
+      "time $timeout",
+      "curl $unspentHost /getaddressutxos?address=$1 2 1 ",
+      "fail 'Could not connect to host'",
+      "tran .utxos",
+      "each getUnspentData/$result",
+      "poke 'selected'",
+      "tran '[].amount' 2 1",
+      "data []",
+      "math '+'",
+      "with inputval [flow,'100000000000000000000',1,2] [done,'$'] [done]",
+      "ship 2 2 1",
+      "data 0",
+      "done {unspents:$selected,change:'$'}"
     ]
   }
 }
