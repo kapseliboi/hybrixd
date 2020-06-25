@@ -52,6 +52,8 @@
       "fail 'Could not connect to host'",
       "poke 'result'",
       "tran '.errorDescription' 1 2",
+      "flow 'Unknown account' 1 2",
+      "done {uninitializedAccount:true}",
       "fail",
       "done $result"
     ],
@@ -74,7 +76,7 @@
       "done"
     ],
     "test" :[
-      "done {hash:dynamic}"
+      "done {hash:'2A82450B', unspent:{unsignedTransactionBytes: 0010c9660c0b2c0125cc2bb30ee7665737c9721090313c85176e485cd9a15495a0f3abc359d8d63272c647dca5cd540c00e9a4350000000000e1f505000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011b20b00cafde5f0168fe39f}}"
     ]
   }
 }
