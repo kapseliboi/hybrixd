@@ -8,6 +8,7 @@
   "host": ["https://api.bitcore.io/api/BCH/mainnet"],
   "#host": ["https://bch.blockdozer.com/api"],
   "brokenHost": ["https://bch-insight.bitpay.com/api"],
+  "transactionHost": "https://rest.bitcoin.com/v2",
   "cache":60000,
   "throttle":1,
   "prefix":"bitcoincash:",
