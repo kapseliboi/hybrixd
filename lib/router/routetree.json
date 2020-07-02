@@ -376,6 +376,10 @@
     "assets" : {
       "_ui" : "report/assets",
       "_this" : "View the asset test report. Requires test data to be available. Run /report/assets/test to gather data or ensure enable_daily_asset_report is set to true.",
+      "cron" : {
+        "_this":"Run tests and return json report ",
+        "_access" : "root"
+      },
       "test" : {
         "_this":"Run tests and return xml report ",
         "_access" : "root"

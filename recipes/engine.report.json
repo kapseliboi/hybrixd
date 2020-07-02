@@ -3,27 +3,93 @@
   "name":"Report job for /report api endpoints",
   "cron": 86400,
   "cronOffset": 900,
-    "conf" :{
+  "conf" :{
     "enable_daily_asset_report" :{
       "default":false,
+      "type" : "boolean",
       "info":"Whether to enable daily asset report generation."
     },
     "enable_daily_public_report" :{
       "default":true,
+      "type" : "boolean",
       "info":"Whether to enable daily public report generation."
+    },
+    "github_token" :{
+      "default":"",
+      "type":"string",
+      "info":"Pass a github API token to sync test results with github issues."
     }
   },
   "quartz":{
+    "flattenTests/symbol":[
+      "done {'${symbol}_${.key}':${.value}}"
+    ],
+    "flattenAssets" : [
+      "poke symbol ${.key}",
+      "tran .value",
+      "each flattenTests/$symbol true",
+      "flat",
+      "pick 1",
+      "join"
+    ],
+    "updateGitHubIssue" : [
+      "poke symbol_testname ${.key}",
+      "poke result ${.value}",
+      "tran .meta",
+      "filt '.title' '$symbol_testname' @updateIssue @maybeCreateIssue",
+      "@maybeCreateIssue",
+      "flow result.valid {true: 1} @createIssue",
+      "# Test succeeded and no existing issue, nothing need to be done",
+      "done",
+      "@createIssue",
+      "logs 'Create Github issue for $symbol_testname'",
+      "data {title:'$symbol_testname', body:'1/1/false/${result.result}'}",
+      "curl https://api.github.com /repos/hybrix-io/hybrixd/issues POST  {'User-Agent': 'hybrixio', 'Authorization': 'token $conf::github_token'} 2 1",
+      "done 'failed to create issue'",
+      "done",
+      "@updateIssue",
+      "logs 'Update $symbol_testname'",
+      "pick",
+      "poke issueId ${.number}",
+      "tran ${.body}",
+      "splt '/'",
+      "# update issue body (counters failures/total/lastValid/lastResult)",
+      "with .1 math +1",
+      "flow result.valid false 1 2",
+      "with .0 math +1",
+      "data {body:'${.0}/${.1}/${result.valid}/${result.result}'}",
+      "curl https://api.github.com /repos/hybrix-io/hybrixd/issues/$issueId PATCH {'User-Agent': 'hybrixio', 'Authorization': 'token $conf::github_token'} 2 1",
+      "done 'failed to create issue'",
+      "done"
+    ],
+    "updateGitHubIssues" : [
+      "# flatten tests results to {$symbol_$testname: {valid,result,messages},....}",
+      "tran .assets",
+      "each flattenAssets",
+      "flat",
+      "pick 1",
+      "join",
+      "poke testResults",
+      "peek conf::github_token",
+      "flow '' 1 2",
+      "done",
+      "curl https://api.github.com /repos/hybrix-io/hybrixd/issues GET {'User-Agent': 'hybrixio', 'Authorization': 'token $conf::github_token'} 2 1",
+      "done",
+      "poke issues",
+      "peek testResults",
+      "each updateGitHubIssue $issues"
+    ],
     "cron" :[
       "logs Run daily report",
-      "flow conf::enable_daily_asset_report {true:1,false:2}",
-      "rout /report/assets/test",
+      "flow conf::enable_daily_asset_report {true:1,false:3}",
+      "rout /report/assets/cron",
+      "call updateGitHubIssues",
       "flow conf::enable_daily_public_report {true:1,false:2}",
       "rout /report/cron",
       "done"
       ]
   },
-  "router":{
+  "router" : {
     "_hidden" : true
   }
 }
