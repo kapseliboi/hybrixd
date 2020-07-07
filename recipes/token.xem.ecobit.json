@@ -1,7 +1,6 @@
 {
   "symbol":"xem.eco",
   "name":"Ecobit (NEM)",
-  "module":"quartz",
   "mode":"nem.mosaic",
   "import": "xem",
   "contract":"ecobit:eco",
