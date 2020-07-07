@@ -5,10 +5,11 @@
   "mode":"bitcoin_cash",
   "factor":8,
   "fee":0.00001,
-  "host": ["https://api.bitcore.io/api/BCH/mainnet"],
-  "#host": ["https://bch.blockdozer.com/api"],
-  "brokenHost": ["https://bch-insight.bitpay.com/api"],
-  "transactionHost": "https://rest.bitcoin.com/v2",
+  "host": {
+    "default": "https://api.bitcore.io/api/BCH/mainnet",
+    "push": "https://rest.bitcoin.com/v2"
+  },
+  "oldHosts": ["https://bch.blockdozer.com/api", "https://bch-insight.bitpay.com/api"],
   "cache":60000,
   "throttle":1,
   "prefix":"bitcoincash:",

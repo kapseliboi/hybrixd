@@ -19,12 +19,6 @@
     "rate-limit":"3600 per hour"
   },
   "quartz": {
-    "init": [
-      "done"
-    ],
-    "factor": [
-      "pass('$factor')"
-    ],
     "balance": [
       "curl '/accounts/$1' 2 1",
       "fail 'Could not connect to host'",
@@ -39,9 +33,6 @@
       "tran('[0].balance',@done,1)",
       "@done"
     ],
-    "fee": [
-      "data('$fee')"
-    ],
     "push": [
       "data '$1'",
       "repl '*' '/'",
@@ -49,9 +40,6 @@
       "curl '/transactions?tx=$' POST 2 1",
       "fail 'Could not connect to host'",
       "done"
-    ],
-    "contract": [
-      "done '$contract'"
     ],
     "unspent": [
       "curl '/accounts/$1' 2 1",
@@ -77,7 +65,7 @@
       "done"
     ],
     "sample": [
-      "pass({address:'GCUBGHIGXAJBPEBSX5IWUK2HNQPFXPNXEN6YJI7YNLTFU3VBYOEBLMT3',transaction:'82887675c952e0c24f1cfa191e5b03fd624d89988466c38ff30ed138ffd49b0e',publicKey:'GCUBGHIGXAJBPEBSX5IWUK2HNQPFXPNXEN6YJI7YNLTFU3VBYOEBLMT3'})"
+      "done {address:'GCUBGHIGXAJBPEBSX5IWUK2HNQPFXPNXEN6YJI7YNLTFU3VBYOEBLMT3',transaction:'82887675c952e0c24f1cfa191e5b03fd624d89988466c38ff30ed138ffd49b0e',publicKey:'GCUBGHIGXAJBPEBSX5IWUK2HNQPFXPNXEN6YJI7YNLTFU3VBYOEBLMT3'}"
     ]
   }
 }

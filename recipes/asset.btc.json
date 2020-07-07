@@ -7,7 +7,7 @@
   "factor":8,
   "fee":0.000025,
   "feePerByte":0.0000002,
-  "host":["https://insight.bitpay.com/api"],
+  "host": "https://insight.bitpay.com/api",
   "cache":60000,
   "throttle":10,
   "import":"insight",

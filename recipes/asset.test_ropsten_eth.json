@@ -14,8 +14,10 @@
   "gasLimitNativeTx":90000,
   "gasLimitContractTx":336000,
   "factor":18,
-  "host":["https://ropsten-rpc.linkpool.io/","http://eth1.hybrix.io:8547","http://eth2.hybrix.io:8547"],
-  "historyAPI":"https://ropsten.etherscan.io/api",
+  "host": {
+    "default": ["https://ropsten-rpc.linkpool.io/","http://eth1.hybrix.io:8547","http://eth2.hybrix.io:8547"],
+    "history": "https://ropsten.etherscan.io/api"
+  },
   "cron":300,
   "quartz":{
     "sample":[

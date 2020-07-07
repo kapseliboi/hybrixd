@@ -8,7 +8,7 @@
   "fee":0.1,
   "fee-symbol":"rise",
   "contract":null,
-  "host":["https://wallet.rise.vision"],
+  "host": "https://wallet.rise.vision",
   "import": "transaction-history",
   "apiProvidesFullTx": true,
   "cache":15000,
@@ -34,7 +34,7 @@
       "#'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': ''",
       "curl '/api/transactions?recipientId=$1&limit=$count&offset=$offset' 2 1",
       "fail 'Could not connect to host'",
-      "tran .transactions 1 2",   
+      "tran .transactions 1 2",
       "done",
       "fail 'Unable to retrieve history.'"
     ],

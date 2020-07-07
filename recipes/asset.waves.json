@@ -7,14 +7,16 @@
   "factor":8,
   "fee":0.001,
   "fee-symbol":"waves",
-  "host": ["https://nodes.wavesplatform.com","https://nodes.wavesnodes.com"],
+  "host": {
+    "default": ["https://nodes.wavesplatform.com","https://nodes.wavesnodes.com"],
+    "contract": "https://nodes.wavesplatform.com"
+  },
   "import": "transaction-history",
   "apiProvidesFullTx": true,
   "rejectUnauthorized":false,
   "cache":15000,
   "throttle":3,
   "contract":null,
-  "block-explorer-host": "https://nodes.wavesplatform.com",
   "quartz":{
     "balance" : [
       "data '$contract'",
@@ -71,7 +73,7 @@
       "done"
     ],
     "getContractSymbol" : [
-      "curl $block-explorer-host /assets/details/$ 2 1",
+      "curl ${host.contract} /assets/details/$ 2 1",
       "fail",
       "tran .name",
       "case lower",

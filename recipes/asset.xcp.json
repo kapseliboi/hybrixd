@@ -9,7 +9,10 @@
   "fee-symbol":"btc",
   "keygen-base":"btc",
   "contract":"XCP",
-  "host":["https://counterwallet.coindaddy.io","https://wallet.counterwallet.io"],
+  "host": {
+    "default": ["https://counterwallet.coindaddy.io","https://wallet.counterwallet.io"],
+    "history": "https://xchain.io/api"
+  },
   "timeout":32000,
   "cache":7500,
   "throttle":5,
@@ -53,7 +56,7 @@
       "rout 'asset/btc/transaction/$1'",
       "poke txFee",
       "with txFee [tran,'.fee',2,1] [fail,'failed to get transaction'] [done]",
-      "curl 'https://xchain.io/api' '/tx/$1' 2 1",
+      "curl ${host.history} '/tx/$1' 2 1",
       "fail 'Could not connect to host'",
       "poke txConfirmed",
       "with txConfirmed [tran,'.status',1,2] [flow,'valid',3,1] [data,'unknown'] [done] [data,'true']",
@@ -80,7 +83,7 @@
       "done"
     ],
     "history" : [
-      "curl 'https://xchain.io/api' '/history/$1' 2 1",
+      "curl ${host.history} '/history/$1' 2 1",
       "fail 'Could not connect to host'",
       "tran '.data' @success @fail",
       "@fail",

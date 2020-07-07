@@ -119,6 +119,34 @@
    "test" : [
       "done {}"
     ],
+    "test-hosts" : [
+      "time 45000",
+      "peek host",
+      "type",
+      "flow {string:@fromString, array: @fromArray, object: @fromObject} 1",
+      "fail 'Could not interpret hosts'",
+      "@fromString",
+      "data [$host]",
+      "jump @getHostsAsArray",
+      "@fromArray",
+      "peek host",
+      "jump @getHostsAsArray",
+      "@fromObject",
+      "peek host",
+      "flat",
+      "pick 1",
+      "flat",
+      "@getHostsAsArray",
+      "type object",
+      "each pingHost"
+    ],
+    "pingHost" : [
+      "curl ${.key} {} {ping:true} 1 2",
+      "done $",
+      "fail $"
+    ],
+
+
     "validate" : [
       "data '$addressRegex'",
       "flow 'undefined' 1 4",

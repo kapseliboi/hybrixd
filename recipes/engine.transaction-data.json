@@ -3,7 +3,8 @@
   "name":"Transaction data history engine",
   "cacheConfirmed": "60000",
   "quartz": {
-    "transaction/txID": [
+    "transaction/txID/checkCache=true": [
+      "flow checkCache {true: 1} @retrieve",
       "poke fileName ${txID}-${symbol}-transaction",
       "seek $fileName @returnCachedHistory @retrieve",
       "@retrieve",

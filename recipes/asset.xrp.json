@@ -10,7 +10,7 @@
   "mode":"xrp",
   "contract":"",
   "factor":6,
-  "host":"wss://s2.ripple.com:443",
+  "host": "wss://s2.ripple.com:443",
   "import": "transaction-history",
   "apiProvidesFullTx": true,
   "cache":15000,

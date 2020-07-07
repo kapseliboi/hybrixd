@@ -74,7 +74,13 @@
             "_ref": {
               "_list": "offset",
               "_sample" : "0",
-              "_this": "Specify the offset starting from the latest transaction."
+              "_this": "Specify the offset starting from the latest transaction.",
+              "_ref": {
+                "_list": "checkCache",
+                "_access" : "root",
+                "_sample": "false",
+                "_this": "Specify whether to use any cached result."
+              }
             }
           }
         }
@@ -87,12 +93,22 @@
         "_response": {"address":"1J3St3rp3hVsuLGhegbLWicyPL3NRD3YJ7","transaction":"2c0832c153cf33327dae0e95a3bc39f4b02ae887725a32c07b1be47a2faffc55"}
       },
       "test" : "Retrieve data used for testing.",
+      "test-hosts" : {
+        "_access":"root",
+        "_this" : "Tests the hosts used for this asset"
+      },
       "transaction":{
         "_help" : "Get transaction information.",
         "_ref" : {
           "_list" : "transaction_id",
           "_sample" : "$TRANSACTION_ID",
-          "_this": "Retrieve the details belonging to a transaction ID."
+          "_this": "Retrieve the details belonging to a transaction ID.",
+          "_ref" : {
+            "_list": "checkCache",
+            "_access" : "root",
+            "_sample": "false",
+            "_this": "Specify whether to use any cached result."
+          }
         }
       },
       "attachment":{
