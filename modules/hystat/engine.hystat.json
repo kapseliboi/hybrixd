@@ -1,9 +1,11 @@
 {
-  "engine":"hystat",
+  "engine" : "hystat",
   "module" : "hystat",
-  "name":"Provide hy statistics",
-    "cron" : 60,
+  "name" : "Provide hy statistics",
+  "cron" : 60,
   "cronOffset":30,
+
+  "tokenSupply":7000000,
 
   "quartz":{
     "_root" : [
@@ -13,15 +15,48 @@
       "rout /e/valuations/rate/hy/usd",
       "poke local::rate",
       "rout /e/valuations/volume/hy",
-      "poke local::volume"
+      "poke local::volume",
+      "call getReservedSupply",
+      "poke local::reservedSupply",
+      "call getCirculatingSupply",
+      "poke local::circulatingSupply",
+      "call getCirculatingSupplyAtom",
+      "poke local::circulatingSupplyAtom",
+      "call getCirculatingSupplyWithoutReserve",
+      "poke local::circulatingSupplyWithoutReserve"
+    ],
+    "init" : [
+    ],
+    "details" : [
+      "done { rate:'$local::rate', volume:'$local::volume', reservedSupply:'$local::reservedSupply', circulatingSupply:'$local::circulatingSupply', circulatingSupplyAtom:'$local::circulatingSupplyAtom', circulatingSupplyWithoutReserve:'$local::circulatingSupplyWithoutReserve' }"
+    ],
+    "getReservedSupply" : [
+      "rout /asset/eth.hy/balance/0x6bcba1899e6f25a2369c99e5cac6943a9cfab287",
+      "math '$tokenSupply - $'",
+      "form"
+    ],
+    "getCirculatingSupply" : [
+      "math '$tokenSupply - $local::reservedSupply'",
+      "form"
+    ],
+    "getCirculatingSupplyAtom" : [
+      "math '$tokenSupply - $local::reservedSupply'",
+      "atom true 18",
+      "form"
+    ],
+    "getCirculatingSupplyWithoutReserve" : [
+      "done $tokenSupply",
+      "form"
     ]
   },
   "router":{
+    "details" :"Return all numbers.",
     "maximumSupply" :"Get the maximum supply of HY.",
+    "reservedSupply" :"Get the reserved supply of HY.",
     "circulatingSupply" :"Get the circulating supply of HY.",
-    "supplyFactor" :"Get the factor (nr of decimals)",
-    "circulatingSupplyAtom" :"Get the atomic circulating supply of HY",
-    "circulatingSupplyWithoutReserve" :"Get the circulating supply of HY without reserve",
+    "circulatingSupplyAtom" :"Get the atomic circulating supply of HY.",
+    "circulatingSupplyWithoutReserve" :"Get the circulating supply of HY without reserve.",
+    "supplyFactor" :"Get the factor (nr of decimals).",
     "currentPrice" :"Get the current price of HY in USD.",
     "currentVolume" :"Get the current exchange volume for HY."
   }
