@@ -6,7 +6,7 @@
   "mode":"ethereum.main",
   "fee":0.00025,
   "factor":18,
-  "host":["https://gexp.gander.tech"],
+  "host": "https://gexp.gander.tech",
   "contract":"0x0000000000000000000000000000000000000000",
   "cache":15000,
   "timeout":30000,

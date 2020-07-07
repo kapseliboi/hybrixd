@@ -33,11 +33,9 @@
       "size",
       "math '<$count*($offset+1)'"
     ],
-    "history": [
-      "poke addr $1",
-      "poke count $2 12",
-      "poke offset $3 0",
-      "call greaterThanCache/$addr/$count/$offset",
+    "history/address/count=12/offset=0/checkCache=true": [
+      "flow checkCache {true: 1} @retrieve",
+      "call greaterThanCache/$address/$count/$offset",
       "true '$' @retrieve 1",
       "call checkTimestampForUpdate/$1",
       "true '$<${cacheHistoryTime}' @returnCachedHistory @retrieve",
@@ -45,13 +43,13 @@
       "peek apiProvidesFullTx",
       "flow false @idx @full",
       "@full",
-      "call retrieveLatestTransactions/$addr/$count/$offset",
+      "call retrieveLatestTransactions/$address/$count/$offset",
       "done",
       "@idx",
-      "call retrieveNewTransactionIds/$addr/$count/$offset",
+      "call retrieveNewTransactionIds/$address/$count/$offset",
       "done",
       "@returnCachedHistory",
-      "call getCachedTransactionIds/$1/$count/$offset"
+      "call getCachedTransactionIds/$address/$count/$offset"
     ],
     "retrieveNewTransactionIds": [
       "call getHistory/$1/$2/$3",

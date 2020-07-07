@@ -5,35 +5,26 @@
   "mode":"dummycoin",
   "addressRegex":"^_dummyaddress_$",
   "factor":8,
+  "fee-factor":8,
   "fee":0.15,
-  "host":"none",
   "cache":10000,
   "throttle":10,
   "quartz":{
     "unspent" : [
-      "data '$1'",
-      "flow('_dummyaddress_',2,1)",
-      "stop(1,'Error: invalid address!')",
-      "pass([{amount:'$3',txid:'TXIDTXIDTXIDTXIDTXIDTXIDTXID',txn:1}])"
+      "done [{amount:'$3',txid:'TXIDTXIDTXIDTXIDTXIDTXIDTXID',txn:1}]"
     ],
     "balance" : [
-      "data '$1'",
-      "flow('_dummyaddress_',2,1)",
-      "stop(1,'Error: invalid address!')",
-      "pass('10000.00000000')"
+      "data '10000.00000000'"
     ],
     "push" : [
-      "wait(3000)",
-      "stop(0,'TXIDTXIDTXIDTXIDTXIDTXIDTXID')"
+      "wait 3000",
+      "done 'TXIDTXIDTXIDTXIDTXIDTXIDTXID'"
     ],
     "test": [
       "done {hash:'2698591A'}"
     ],
-    "factor" : [
-      "pass('$factor')"
-    ],
     "sample" : [
-      "stop(0,{address:'_dummyaddress_',transaction:'TXIDTXIDTXIDTXIDTXIDTXIDTXID'})"
+      "stop {address:'_dummyaddress_',transaction:'TXIDTXIDTXIDTXIDTXIDTXIDTXID'}"
     ],
     "transaction" : [
       "data '$1'",
@@ -50,16 +41,7 @@
       "fail 'Illegal transaction id.'"
     ],
     "history" : [
-      "data '$1'",
-      "flow('_dummyaddress_',2,1)",
-      "stop(1,'Error: invalid address!')",
-      "stop(0,['TXIDTXIDTXIDTXIDTXIDTXIDTXID'])"
-    ],
-    "contract" : [
-      "pass('dummy_contract')"
-    ],
-    "fee" : [
-      "pass('$fee')"
+      "done ['TXIDTXIDTXIDTXIDTXIDTXIDTXID']"
     ]
   }
 }

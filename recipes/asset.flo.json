@@ -7,7 +7,7 @@
   "factor":8,
   "fee":0.001,
   "byteFee":0.00001024,
-  "host":["https://livenet.flocha.in/api"],
+  "host": "https://livenet.flocha.in/api",
   "cache":15000,
   "throttle":10,
   "import":"insight",

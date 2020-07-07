@@ -74,9 +74,9 @@
     ],
     "push/transaction" : [
       "time $timeout",
-      "curl $transactionHost /rawtransactions/sendRawTransaction/$1 {Accept:'application/json, text/plain, */*',Content-Type:'application/json;charset=utf-8',DNT:1,Connection:'keep-alive'} {timeout:$shortTimeout} @curlSuccess @curlFail",
+      "curl '${host.push}' /rawtransactions/sendRawTransaction/$1 {Accept:'application/json, text/plain, */*',Content-Type:'application/json;charset=utf-8',DNT:1,Connection:'keep-alive'} {timeout:$shortTimeout} @curlSuccess @curlFail",
       "@curlFail",
-      "fail 'Could not connect to host'",
+      "fail 'Could not connect to host.'",
       "@curlSuccess",
       "poke res",
       "type",

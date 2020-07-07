@@ -6,7 +6,6 @@
   "addressRegex":"^bnb[A-Za-z0-9]{39}$",
   "factor":8,
   "fee":"0.000375",
-  "blockexplorer":["https://explorer.binance.org"],
   "listOfHosts":[
     "https://testnet-dex.binance.org/api/v1/",
     "tcp://dataseed1.binance.org:80/api/v1/",
@@ -14,7 +13,10 @@
     "wss://dex.binance.org/api/ws/",
     "https://dex.binance.org/api/v1/",
     "https://dex.binance.org:443/api/v1/"],
-  "host":"https://dex.binance.org/api/v1/",
+  "host": {
+    "default": "https://dex.binance.org/api/v1",
+    "explorer": "https://explorer.binance.org/api/v1"
+  },
   "import": "transaction-history",
   "apiProvidesFullTx": true,
   "cache":10000,
@@ -68,7 +70,7 @@
       "fail 'Could not parse transaction.'"
     ],
     "getTransaction" : [
-      "curl https://explorer.binance.org/api/v1/ /tx?txHash=$1 2 1",
+      "curl ${host.explorer} /tx?txHash=$1 2 1",
       "fail 'Could not connect to host'",
       "tran {value: $}",
       "call reformatTx",
@@ -106,7 +108,7 @@
       "done 0"
     ],
     "callForHistory": [
-      "curl https://explorer.binance.org/api/v1/ /txs?page=$3&rows=$2&address=$1 2 1",
+      "curl ${host.explorer} /txs?page=$3&rows=$2&address=$1 2 1",
       "fail 'Could not connect to host'",
       "tran '.txArray[]' 1 @fail",
 

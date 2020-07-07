@@ -7,7 +7,7 @@
   "factor":8,
   "fee":0.05,
   "fee-symbol":"ignis",
-  "host":["https://ardor.tools/ardor/nxt"],
+  "host": "https://ardor.tools/ardor/nxt",
   "cache":15000,
   "import":"ardr",
   "throttle":5,

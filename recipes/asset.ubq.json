@@ -6,7 +6,10 @@
   "mode":"ethereum.main",
   "fee":0.00005,
   "factor":18,
-  "host":["https://pyrus2.ubiqscan.io/","https://pyrus1.ubiqscan.io/"],
+  "host": {
+    "default": ["https://pyrus2.ubiqscan.io/","https://pyrus1.ubiqscan.io/"],
+    "history": "https://v3.ubiqscan.io"
+  },
   "contract":"0x0000000000000000000000000000000000000000",
   "cache":15000,
   "timeout":30000,
@@ -20,7 +23,7 @@
       "done {hash:06B1040F}"
     ],
     "transaction":[
-      "curl 'https://v3.ubiqscan.io' '/transaction/$1' 2 1",
+      "curl ${host.history} '/transaction/$1' 2 1",
       "fail 'Could not connect to host'",
       "with txMinusGas [math,'${.value}-${.gasUsed}'] [atom]",
       "with txGasUsed [data,'${.gasUsed}'] [atom]",
@@ -43,7 +46,7 @@
       "poke count $2 5",
       "poke offset $3 0",
       "data $1",
-      "curl 'https://v3.ubiqscan.io' '/latestaccounttxns/$1' 2 1",
+      "curl ${host.history} '/latestaccounttxns/$1' 2 1",
       "fail 'Could not connect to host'",
       "tran '.txns' @nxt @fail",
       "@nxt",

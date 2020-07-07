@@ -6,10 +6,12 @@
   "mode":"digibyte.livenet",
   "factor":8,
   "fee":0.001,
-  "host":["https://digiexplorer.info/api"],
+  "host": {
+    "default": ["https://digiexplorer.info/api"],
+    "explorer": "https://chainz.cryptoid.info/dgb",
+    "unspents": "https://explorerapi.digiassets.net/api"
+  },
   "host_electrums_OLD":["tcp://electrum3.cipig.net:10059","tcp://electrum2.cipig.net:10059","tcp://electrum1.cipig.net:10059"],
-  "explorer":"https://chainz.cryptoid.info/dgb",
-  "unspentHost": "https://explorerapi.digiassets.net/api",
   "cache":20000,
   "throttle":0.1,
   "quartz":{
@@ -27,7 +29,7 @@
       "tran {script: '.scriptPubKey.hex', amount: .value, txid: '.txid', txn: .index} 1 @fail",
       "done",
       "@fail",
-      "fail 'Could not get unspent data."
+      "fail 'Could not get unspent data.'"
     ],
     "unspent" : [
       "data $2",
@@ -37,7 +39,7 @@
       "poke inputval '$2' '1000000000000'",
       "with inputval atom 1",
       "time $timeout",
-      "curl $unspentHost /getaddressutxos?address=$1 2 1 ",
+      "curl '${host.unspents}' /getaddressutxos?address=$1 2 1 ",
       "fail 'Could not connect to host'",
       "tran .utxos",
       "each getUnspentData",
@@ -56,7 +58,7 @@
     "unspentAll" : [
       "poke inputval '$2' '1000000000000'",
       "time $timeout",
-      "curl $unspentHost /getaddressutxos?address=$1 2 1 ",
+      "curl '${host.unspents}' /getaddressutxos?address=$1 2 1 ",
       "fail 'Could not connect to host'",
       "tran .utxos",
       "each getUnspentData/$result",

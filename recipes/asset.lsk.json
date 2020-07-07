@@ -9,7 +9,7 @@
   "fee":0.1,
   "fee-symbol":"lsk",
   "contract":null,
-  "host":["https://hub21.lisk.io","https://hub22.lisk.io","https://hub23.lisk.io","https://hub24.lisk.io","https://hub25.lisk.io","https://hub26.lisk.io","https://hub27.lisk.io","https://hub28.lisk.io","https://hub31.lisk.io","https://hub32.lisk.io","https://hub33.lisk.io","https://hub34.lisk.io","https://hub35.lisk.io","https://hub36.lisk.io","https://hub37.lisk.io","https://hub38.lisk.io"],
+  "host": ["https://hub21.lisk.io","https://hub22.lisk.io","https://hub23.lisk.io","https://hub24.lisk.io","https://hub25.lisk.io","https://hub26.lisk.io","https://hub27.lisk.io","https://hub28.lisk.io","https://hub31.lisk.io","https://hub32.lisk.io","https://hub33.lisk.io","https://hub34.lisk.io","https://hub35.lisk.io","https://hub36.lisk.io","https://hub37.lisk.io","https://hub38.lisk.io"],
   "cache":15000,
   "import": "transaction-history",
   "apiProvidesFullTx": true,

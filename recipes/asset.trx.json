@@ -9,8 +9,10 @@
   "fee-symbol":"trx",
   "contract":null,
   "apiProvidesFullTx": false,
-  "host":["https://api.trongrid.io"],
-  "hostTronScan":"https://api.tronscan.org/api",
+  "host": {
+    "default": "https://api.trongrid.io",
+    "history": "https://api.tronscan.org/api"
+  },
   "import": "transaction-history",
   "cache":10000,
   "throttle":10,
@@ -28,7 +30,7 @@
       "fail 'Could not connect to host'",
       "tran .balance @done @empty",
       "@tokenBalance",
-      "curl $hostTronScan /api/account?address=$1 2 1",
+      "curl ${host.history} /api/account?address=$1 2 1",
       "fail 'Could not connect to host'",
       "poke result",
       "tran .trc20token_balances 1 1",
@@ -66,7 +68,7 @@
       "fail 'Could not retrieve transaction ID!'"
     ],
     "transactionData" : [
-      "curl $hostTronScan /transaction-info?hash=$1 2 1",
+      "curl ${host.history} /transaction-info?hash=$1 2 1",
       "fail 'Could not connect to host'",
       "done"
     ],
@@ -92,7 +94,7 @@
       "done"
     ],
     "getHistory" : [
-      "curl $hostTronScan '/transfer?sort=-timestamp&count=true&limit=$count&start=$offset&address=$1' 2 1",
+      "curl ${host.history} '/transfer?sort=-timestamp&count=true&limit=$count&start=$offset&address=$1' 2 1",
       "fail 'Could not connect to host'",
       "tran '.data' 1 @fail",
       "tran '[].transactionHash' 1 @fail",

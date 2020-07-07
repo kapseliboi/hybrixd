@@ -7,9 +7,7 @@
   "fee":0.1,
   "fee-symbol":"ark",
   "contract":null,
-  "blockexplorer":["https://explorer.ark.io/"],
-  "oldHost":["https://node1.arknet.cloud"],
-  "host":["https://api.ark.io"],
+  "host":  "https://api.ark.io",
   "documentation":["https://docs.ark.io/api/public/v2/"],
   "cache":15000,
   "import": "transaction-history",
@@ -17,6 +15,8 @@
   "throttle":10,
   "version":"1",
   "genesisBlockTime":1490101200,
+  "oldExplorer" : "https://explorer.ark.io/",
+  "oldHost" : ["https://node1.arknet.cloud"],
   "quartz":{
     "sample" : [
       "done {address:'AQYZJ6Mkv4DhnXhrXdxXwNKRKGvgrkhnRF',transaction:'f70e8f32e8a16c1dd1a0e97fa4075f96d8e8e16065d1a4406851252832d8e608'}"

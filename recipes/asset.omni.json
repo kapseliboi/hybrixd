@@ -8,7 +8,7 @@
   "fee-symbol":"btc",
   "keygen-base":"btc",
   "contract":"1",
-  "host":"https://api.omniexplorer.info",
+  "host": "https://api.omniexplorer.info",
   "import": "transaction-history",
   "apiProvidesFullTx": true,
   "timeout":60000,

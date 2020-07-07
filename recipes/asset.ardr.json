@@ -6,7 +6,7 @@
   "factor":8,
   "fee":2,
   "fee-symbol":"ardr",
-  "host":["https://ardor.tools/ardor/nxt"],
+  "host": "https://ardor.tools/ardor/nxt",
   "cache":15000,
   "throttle":5,
   "genesisBlockTime":1385294400,
