@@ -72,7 +72,7 @@
     ],
     "fee-factor" : [
       "call 'fee-symbol'",
-      "peek '${data}::factor'",
+      "rout '/a/$/factor'",
       "done"
     ],
     "fee-symbol" : [
@@ -85,6 +85,26 @@
       "@differentFeeSymbol",
       "done"
     ],
+    "formFee" : [
+      "poke feeObject",
+      "type",
+      "flow {string:1} @formMultiFee",
+      "peek feeObject",
+      "form '$fee-factor'",
+      "done",
+      "@formMultiFee",
+      "peek feeObject",
+      "each subFormFee",
+      "done"
+    ],
+    "subFormFee": [
+      "poke {subSymbol:key,amount:value}",
+      "rout '/a/$subSymbol/factor'",
+      "poke subFactor",
+      "peek amount",
+      "form '$subFactor'"
+    ],
+
     "generated" : [
       "data '$generated'",
       "flow 'undefined' 1 2",
