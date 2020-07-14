@@ -29,9 +29,9 @@ cd node_modules
 git checkout
 cd ..
 
-echo "[.] Retrieve common artifact"
+echo "[.] Retrieve common artifact PRIVATE-TOKEN:$HYBRIX_BOT_GITLAB_PIPELINE_TOKEN"
 
-curl -s --location --header "JOB-TOKEN:$CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fcommon/jobs/artifacts/master/download?job=common" -o artifacts-common.zip
+curl -s --location --header "PRIVATE-TOKEN:$HYBRIX_BOT_GITLAB_PIPELINE_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fcommon/jobs/artifacts/master/download?job=common" -o artifacts-common.zip
 
 echo "[.] Unzip and replace common"
 # remove link to common and unzip the downloaded artifact to the directory (|| true --> on error, no problem)
@@ -43,7 +43,7 @@ unzip -q -o artifacts-common.zip -d common/
 rm -rf  artifacts-common.zip || true
 
 echo "[.] Retrieve interface artifact"
-curl -s --location --header "JOB-TOKEN:$CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Finterface/jobs/artifacts/master/download?job=interface${DEBUG}" -o artifacts-interface.zip
+curl -s --location --header "PRIVATE-TOKEN:$HYBRIX_BOT_GITLAB_PIPELINE_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Finterface/jobs/artifacts/master/download?job=interface" -o artifacts-interface.zip
 
 echo "[.] Unzip and replace interface"
 # remove link to interface
@@ -67,7 +67,7 @@ unzip -q -o artifacts-interface.zip -d ./interface/
 rm -rf  artifacts-interface.zip || true
 
 echo "[.] Retrieve deterministic artifact"
-curl -s --location --header "JOB-TOKEN:$CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fmodules%2Fdeterministic/jobs/artifacts/master/download?job=deterministic" -o artifacts-deterministic.zip
+curl -s --location --header "PRIVATE-TOKEN:$HYBRIX_BOT_GITLAB_PIPELINE_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fmodules%2Fdeterministic/jobs/artifacts/master/download?job=deterministic" -o artifacts-deterministic.zip
 
 
 echo "[.] Unzip and replace deterministic"
@@ -83,10 +83,10 @@ rm -rf  artifacts-deterministic.zip || true
 BRANCH_WEB_WALLET=master
 
 echo "[.] Retrieve web-wallet artifact from branch:  $BRANCH_WEB_WALLET"
-curl -s --location --header "JOB-TOKEN:$CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fweb-wallet/jobs/artifacts/$BRANCH_WEB_WALLET/download?job=web-wallet" -o artifacts-web-wallet.zip
+curl -s --location --header "PRIVATE-TOKEN:$HYBRIX_BOT_GITLAB_PIPELINE_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fweb-wallet/jobs/artifacts/$BRANCH_WEB_WALLET/download?job=web-wallet" -o artifacts-web-wallet.zip
 
 echo "[.] Retrieve cli-wallet artifact"
-curl -s --location  --header "JOB-TOKEN:$CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fcli-wallet/jobs/artifacts/master/download?job=cli-wallet" -o artifacts-cli-wallet.zip
+curl -s --location  --header "PRIVATE-TOKEN:$HYBRIX_BOT_GITLAB_PIPELINE_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fcli-wallet/jobs/artifacts/master/download?job=cli-wallet" -o artifacts-cli-wallet.zip
 
 echo "[.] Compile hybrixd"
 # run the build-script of the hybrixd-node
@@ -105,7 +105,7 @@ rm -rf  artifacts-web-wallet || true
 rm -rf  artifacts-web-wallet.zip || true
 
 echo "[.] Retrieve web-blockexplorer artifact"
-curl -s --location --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fweb-blockexplorer/jobs/artifacts/master/download?job=web-blockexplorer" -o artifacts-web-blockexplorer.zip
+curl -s --location --header "PRIVATE-TOKEN:$HYBRIX_BOT_GITLAB_PIPELINE_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fweb-blockexplorer/jobs/artifacts/master/download?job=web-blockexplorer" -o artifacts-web-blockexplorer.zip
 
 # unzip the downloaded artifact to the directory
 rm -rf ./dist/modules/web-blockexplorer
@@ -118,7 +118,7 @@ rm -rf  artifacts-web-blockexplorer || true
 rm -rf  artifacts-web-blockexplorer.zip || true
 
 echo "[.] Retrieve operator-ui artifact"
-curl -s --location --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Foperator-ui/jobs/artifacts/master/download?job=build" -o artifacts-operator-ui.zip
+curl -s --location --header "PRIVATE-TOKEN:$HYBRIX_BOT_GITLAB_PIPELINE_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Foperator-ui/jobs/artifacts/master/download?job=build" -o artifacts-operator-ui.zip
 
 echo "[.] Overwrite operator-ui with artifact files"
 
