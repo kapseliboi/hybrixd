@@ -65,11 +65,10 @@ function determineHost(){
 
 const host = determineHost();
 
-function request (url, dataCallback, errorCallback, progressCallback, retries) {
+function request (url, dataCallback, errorCallback, progressCallback, debug=false, retries) {
   if (typeof retries === 'undefined') { retries = DEFAULT_RETRIES; }
 
   const xhr = new XMLHttpRequest();
-  console.log(host + url);
   xhr.open('GET', host + url, true);
 
   xhr.onreadystatechange = (e) => {
@@ -77,7 +76,6 @@ function request (url, dataCallback, errorCallback, progressCallback, retries) {
       let result;
 
       if (xhr.getResponseHeader('Content-Type') === 'text/html') {
-        console.log('htlm');
         dataCallback({html: xhr.responseText});
       }
 
@@ -106,18 +104,18 @@ function request (url, dataCallback, errorCallback, progressCallback, retries) {
       }
 
       if (result.hasOwnProperty('id') && result.id === 'id') { // requires follow up
-        request('/p/debug/' + result.data, dataCallback, errorCallback, progressCallback, undefined, url);
+        request('/p/' + (debug?'debug/':'') + result.data, dataCallback, errorCallback, progressCallback, debug);
       } else if (result.stopped !== null) { // done
         dataCallback(result.data);
       } else { // not yet finished
         if (typeof progressCallback === 'function') {
-          progressCallback(1.0 - retries / DEFAULT_RETRIES, result.data);
+          progressCallback(1.0 - retries / DEFAULT_RETRIES, result.progress);
         }
         if (retries === 0) {
           errorCallback('Timeout');
         } else {
           setTimeout(() => {
-            request(url, dataCallback, errorCallback, progressCallback, retries - 1);
+            request(url, dataCallback, errorCallback, progressCallback, debug, retries - 1);
           }, retries === DEFAULT_RETRIES ? FIRST_RETRY_DELAY : DEFAULT_RETRY_DELAY);
         }
       }
