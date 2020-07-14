@@ -29,13 +29,36 @@
       "done $OK",
       "fail"
     ],
-    "drop" : [
+    "drop1" : [
       "data 'abc'",
       "drop 1",
       "flow 'bc' 1 2",
       "done $OK",
       "fail"
     ],
+    "drop2" : [
+      "data 'abc'",
+      "drop -1",
+      "flow 'ab' 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "drop3" : [
+      "data 'abc'",
+      "drop 1 1",
+      "flow 'b' 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "drop4" : [
+      "data {a:1,b:2}",
+      "drop b",
+      "jstr",
+      "flow '{\"a\":1}' 1 2",
+      "done $OK",
+      "fail"
+    ],
+
 
     "excl1" : [
       "data gloves",
