@@ -112,11 +112,6 @@ else
     npm install
 fi
 
-# PROJECT XHY
-if [ -e "$HYBRIXD/project-xhy" ]; then
-    ln -sf "$HYBRIXD/project-xhy" "$NODE/modules/project-xhy"
-fi
-
 # GIT HOOKS
 sh "$COMMON/hooks/hooks.sh" "$NODE"
 
