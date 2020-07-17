@@ -3,10 +3,11 @@
   "module" : "hystat",
   "name" : "Provide hy statistics",
   "cron" : 60,
-  "cronOffset":30,
-
-  "tokenSupply":7000000,
-
+  "cronOffset" : 30,
+  "totalSupply" : 21000000,
+  "tradeSupply" : 7000000,
+  "reservedSupply" : 1000000,
+  "factor" : 18,
   "quartz":{
     "_root" : [
       "sync hystat"
@@ -16,36 +17,38 @@
       "poke local::rate",
       "rout /e/valuations/volume/hy",
       "poke local::volume",
+      "call getMaximumSupply",
+      "poke local::maximumSupply",
       "call getReservedSupply",
       "poke local::reservedSupply",
       "call getCirculatingSupply",
       "poke local::circulatingSupply",
-      "call getCirculatingSupplyAtom",
+      "atom true 18",
       "poke local::circulatingSupplyAtom",
       "call getCirculatingSupplyWithoutReserve",
-      "poke local::circulatingSupplyWithoutReserve"
-    ],
-    "init" : [
+      "poke local::circulatingSupplyWithoutReserve",
+      "atom true 18",
+      "poke local::circulatingSupplyWithoutReserveAtom"
     ],
     "details" : [
-      "done { rate:'$local::rate', volume:'$local::volume', reservedSupply:'$local::reservedSupply', circulatingSupply:'$local::circulatingSupply', circulatingSupplyAtom:'$local::circulatingSupplyAtom', circulatingSupplyWithoutReserve:'$local::circulatingSupplyWithoutReserve' }"
+      "done { rate:'$local::rate', volume:'$local::volume', maximumSupply:'$local::maximumSupply', reservedSupply:'$local::reservedSupply', circulatingSupply:'$local::circulatingSupply', circulatingSupplyWithoutReserve:'$local::circulatingSupplyWithoutReserve' }"
+    ],
+    "getMaximumSupply" : [
+      "peek totalSupply",
+      "form"
     ],
     "getReservedSupply" : [
-      "rout /asset/eth.hy/balance/0x6bcba1899e6f25a2369c99e5cac6943a9cfab287",
-      "math '$tokenSupply - $'",
+      "peek reservedSupply",
       "form"
     ],
     "getCirculatingSupply" : [
-      "math '$tokenSupply - $local::reservedSupply'",
-      "form"
-    ],
-    "getCirculatingSupplyAtom" : [
-      "math '$tokenSupply - $local::reservedSupply'",
-      "atom true 18",
+      "rout /asset/eth.hy/balance/0x6bcba1899e6f25a2369c99e5cac6943a9cfab287",
+      "math '$tradeSupply - $ + $reservedSupply'",
       "form"
     ],
     "getCirculatingSupplyWithoutReserve" : [
-      "done $tokenSupply",
+      "peek local::circulatingSupply",
+      "math '- $reservedSupply'",
       "form"
     ]
   },
@@ -56,6 +59,7 @@
     "circulatingSupply" :"Get the circulating supply of HY.",
     "circulatingSupplyAtom" :"Get the atomic circulating supply of HY.",
     "circulatingSupplyWithoutReserve" :"Get the circulating supply of HY without reserve.",
+    "circulatingSupplyWithoutReserveAtom" :"Get the circulating supply of HY without reserve.",
     "supplyFactor" :"Get the factor (nr of decimals).",
     "currentPrice" :"Get the current price of HY in USD.",
     "currentVolume" :"Get the current exchange volume for HY."
