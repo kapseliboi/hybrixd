@@ -1,3 +1,40 @@
+# v0.7.26
+## Cosy Pink Griffin
+## 17-07-2020
+
+* Update hystat to get current HY data
+* Prevent node crash on faulty proc commands
+* Hide internal routing calls in logs
+* Improve fee computation.
+* Disable idex and waves exhanges engines
+* add non debug requests for ui, remove console log
+* Fix error response for non standalone api endpoints
+* Add biki exchange connector
+* Prettify multi fees in transactions
+* Debug ui rendering of undefineds
+* Fix xem and ubq tokens
+* Add asset host test endpoints
+* Depreciate exp (no stable hosts)
+* Update testdata
+* qrtz: add drop for objects
+* qrtz: improve find
+* qrtz: Allow import and command parameters for exec
+* qrtz: pick and code
+* qrtz: use fallback for proc.peek for javascript modules
+* qrtz: Fallback to undefined for undefined named parameters
+* qrtz: precompile named vars
+* qrtz: fix jumplabels for filt
+* qrtz: Add PATCH method to curl
+* qrtz : extend join to merge array of objects
+* qrtz: add meta data for each
+* qrtz: add more hash methods
+* web-wallet: fix send to contact from address book
+* web-wallet: fix transaction history mixing up ingoing and outgoing transactions
+
+
+
+
+
 # v0.7.25
 ## Little Blue Mermaid
 ## 25-06-2020
