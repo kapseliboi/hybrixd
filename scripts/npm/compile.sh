@@ -38,6 +38,8 @@ cd "$NODE"
 cp "$NODE/hybrixd" "$DIST/"
 # Copy the main entrypoint
 cp "$NODE/hstat" "$DIST/"
+# Copy the qrtz entrypoint
+cp "$NODE/qrtz" "$DIST/"
 # Copy license
 cp "$NODE/LICENSE.md" "$DIST/"
 # Copy readme's
