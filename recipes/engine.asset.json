@@ -88,7 +88,7 @@
     "formFee" : [
       "poke feeObject",
       "type",
-      "flow {string:1} @formMultiFee",
+      "flow {string:1, number: 1} @formMultiFee",
       "peek feeObject",
       "form '$fee-factor'",
       "done",
