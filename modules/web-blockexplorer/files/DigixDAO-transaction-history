@@ -24,7 +24,7 @@
 
       <header id="header" class="wrapper no-result">
         <a href="./" class="logo-small" >
-          <img alt="hybrix blockchain explorer" src="./img/search-logo.svg"/>
+          <h1><img alt="hybrix blockchain explorer" src="./img/search-logo.svg"/></h1>
         </a>
 
         <nav>
