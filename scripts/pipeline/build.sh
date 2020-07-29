@@ -29,7 +29,7 @@ cd node_modules
 git checkout
 cd ..
 
-echo "[.] Retrieve common artifact PRIVATE-TOKEN:$HYBRIX_BOT_GITLAB_PIPELINE_TOKEN"
+echo "[.] Retrieve common artifact"
 
 curl -s --location --header "PRIVATE-TOKEN:$HYBRIX_BOT_GITLAB_PIPELINE_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fcommon/jobs/artifacts/master/download?job=common" -o artifacts-common.zip
 
