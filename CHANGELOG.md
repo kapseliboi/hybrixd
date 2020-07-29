@@ -1,3 +1,20 @@
+# v0.7.27
+## Merry Pink Pixie
+## 29-07-2020
+
+* Handle numeric fee in transaction
+* Hide web-wallet ychan clutter in log
+* Restore default port values
+* fix web-wallet/api alias to help page
+* qrtz: add shell to release version
+* hybrix-jslib: ensure proper urls (no double slashes)
+* hybrix-jslib: improve session restore
+* web-wallet: catch malfunctioning local storage
+* web-wallet: handle multi addresses in transaction history
+* web-wallet: use encrypted y channel communication (to ensure encryption even on http connections)
+
+
+
 # v0.7.26
 ## Cosy Pink Griffin
 ## 17-07-2020
