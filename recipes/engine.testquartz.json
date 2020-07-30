@@ -457,7 +457,7 @@
     ],
     "sort13" : [
       "data [{a:3},{a:1},{a:7},{a:2}]",
-      "sort asc '.a'",
+      "sort asc .a",
       "flow [{'a': 1},{'a': 2},{'a': 3},{'a': 7}] 1 2",
       "done $OK",
       "fail"
@@ -494,6 +494,13 @@
       "data []",
       "sort asc",
       "flow [] 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "sort19" : [
+      "data [{a:3},{a:1},{a:7},{a:2}]",
+      "sort desc .a",
+      "flow [{'a': 7},{'a': 3},{'a': 2},{'a': 1}] 1 2",
       "done $OK",
       "fail"
     ],
@@ -671,7 +678,7 @@
     "tran1" : [
       "data [{a:x},{a:y}]",
       "tran [].a 1 4",
-      "jstr string",
+      "jstr",
       "flow '[\"x\",\"y\"]' 1 2",
       "done '$OK'",
       "fail"
@@ -679,8 +686,16 @@
     "tran2" : [
       "data [{a:x},{a:y}]",
       "tran []{b:.a} 1 4",
-      "jstr string",
+      "jstr",
       "flow '[{\"b\":\"x\"},{\"b\":\"y\"}]' 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "tran3" : [
+      "data [{a:1,b:2},{a:3,b:4}]",
+      "tran [][.a,.b] 1 4",
+      "jstr",
+      "flow '[[1,2],[3,4]]' 1 2",
       "done '$OK'",
       "fail"
     ],
