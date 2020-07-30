@@ -638,7 +638,36 @@
       "done '$OK'",
       "fail"
     ],
-
+    "shuf1" : [
+      "data [1,2,3]",
+      "shuf 1",
+      "join",
+      "flow '312' 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "shuf2" : [
+      "data [1,2,3]",
+      "shuf -1",
+      "join",
+      "flow '231' 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "shuf3" : [
+      "data '123'",
+      "shuf 1",
+      "flow '312' 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "shuf4" : [
+      "data '123'",
+      "shuf -1",
+      "flow '231' 1 2",
+      "done '$OK'",
+      "fail"
+    ],
     "tran1" : [
       "data [{a:x},{a:y}]",
       "tran [].a 1 4",
