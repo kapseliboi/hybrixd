@@ -1,3 +1,16 @@
+# v0.7.28
+## Bouncy Pink Unicorn
+## 30-07-2020
+
+* Improve local var loading
+* Improve parsing error messages.
+* qrtz: shuffle elements left or right
+* qrtz: desc sort for properties
+
+
+
+
+
 # v0.7.27
 ## Merry Pink Pixie
 ## 29-07-2020
