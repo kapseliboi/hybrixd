@@ -140,7 +140,7 @@ deploy:
     - VERSION_COMMIT="$CI_COMMIT_REF_NAME"
     - echo "[i] Bumping cluster version to $VERSION_COMMIT"
     - "VERSION_COMMIT_BASE64=$(echo $VERSION_COMMIT | base64)"
-    - "curl --location --request PUT --header \"PRIVATE-TOKEN: $HYBRIX_BOT_GITLAB_CLUSTER_PUBLISH_WRITE_TOKEN\" \"https://www.gitlab.com/api/v4/projects/16837143/repository/files/version?branch=master&encoding=base64&author_email=bot%40hybrix.io&author_name=hybrix-bot&commit_message=bump%20version%20to%20$VERSION\" --data-urlencode \"content=$VERSION_COMMIT_BASE64\""
+    - "curl --location --request PUT --header \"PRIVATE-TOKEN: $HYBRIX_BOT_GITLAB_CLUSTER_PUBLISH_WRITE_TOKEN\" \"https://www.gitlab.com/api/v4/projects/16837143/repository/files/version?branch=master&encoding=base64&author_email=bot%40hybrix.io&author_name=hybrix-bot&commit_message=bump%20version%20to%20$VERSION_COMMIT\" --data-urlencode \"content=$VERSION_COMMIT_BASE64\""
   only:
     refs:
       - tags

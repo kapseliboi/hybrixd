@@ -382,6 +382,7 @@
     },
     "hosts" : {
       "_ui" : "report/hosts",
+      "_access" : "root",
       "_this" : "View the host test report. Requires test data to be available. Run /report/hosts/test to gather data or ensure enable_daily_asset_report is set to true.",
       "cron" : {
         "_this":"Run tests and return json report ",
@@ -420,8 +421,7 @@
         "_access" : "root"
       },
       "html" : {
-        "_this":"Return test results in HTML format.",
-        "_access" : "root"
+        "_this":"Return test results in HTML format."
       },
       "xml" : "Return test results in xml format.",
       "json" : {

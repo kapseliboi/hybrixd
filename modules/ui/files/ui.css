@@ -4,6 +4,7 @@ body {
   line-height: 1.4em;
   margin: 0;
   width: 100%;
+  padding-top:100px;
 }
 
 header {
@@ -54,6 +55,29 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+.login {
+  padding:5px;
+  position:absolute;
+  width:300px;
+  height:100px;
+  border-radius:2px;
+  background-color:white;
+  border-color:lightgrey;
+  border-style:solid;
+  border-width:1px;
+
+  right:0;
+  top:0;
+  z-index:10000;
+}
+
+.login a {
+  float:right;
+  cursor:pointer;
+  margin-left:25px;
+}
+
 
 @media screen and (min-width: 48em) {
   header .logo svg {
