@@ -1,18 +1,41 @@
+let privateToken; // used to upgrade session to root
+
 const fetchQuery = (query) => {
   return new Promise((resolve, reject) => {
     request(query, resolve, reject);
   });
 };
 
+function setCookie (fields, exdays) {
+  const d = new Date();
+  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+  const expires = 'expires=' + d.toUTCString();
+
+  for (let key in fields) {
+    document.cookie = key + '=' + fields[key] + ';' + expires + ';path=/';
+  }
+}
+
+function getCookie () {
+  if (document.cookie === '') { return null; }
+  const fields = document.cookie.split(';');
+  const r = {};
+  for (let i = 0; i < fields.length; i++) {
+    let values = fields[i].split('=');
+    r[values[0].trim()] = values[1].trim();
+  }
+  return r;
+}
+
 const cleanEmpty = obj => {
   if (Array.isArray(obj)) {
     return obj
       .map(v => (v && typeof v === 'object') ? cleanEmpty(v) : v)
-      .filter(v => !(JSON.stringify(v) == '{}'));
+      .filter(v => !(JSON.stringify(v) === '{}'));
   } else {
     return Object.entries(obj)
       .map(([k, v]) => [k, v && typeof v === 'object' ? cleanEmpty(v) : v])
-      .reduce((a, [k, v]) => (JSON.stringify(v) == '{}' ? a : {...a, [k]: v}), {});
+      .reduce((a, [k, v]) => (JSON.stringify(v) === '{}' ? a : {...a, [k]: v}), {});
   }
 };
 
@@ -55,28 +78,29 @@ const paths = (obj, prop, str) => {
 };
 
 const DEFAULT_RETRIES = 60;
-const DEFAULT_PAGE_SIZE = 10;
 const FIRST_RETRY_DELAY = 100;
 const DEFAULT_RETRY_DELAY = 500;
 
-function determineHost(){
-  return window.location.origin + (window.location.pathname.startsWith('/api') ? '/api':'');
+function determineHost () {
+  return window.location.origin + (window.location.pathname.startsWith('/api') ? '/api' : '');
 }
 
 const host = determineHost();
 
-function request (url, dataCallback, errorCallback, progressCallback, debug=false, retries) {
+function request (url, dataCallback, errorCallback, progressCallback, debug = false, retries) {
   if (typeof retries === 'undefined') { retries = DEFAULT_RETRIES; }
 
   const xhr = new XMLHttpRequest();
   xhr.open('GET', host + url, true);
+  if (privateToken) xhr.setRequestHeader('private-token', privateToken);
 
   xhr.onreadystatechange = (e) => {
-    if (xhr.readyState == 4) {
+    if (xhr.readyState === 4) {
       let result;
 
       if (xhr.getResponseHeader('Content-Type') === 'text/html') {
         dataCallback({html: xhr.responseText});
+        return;
       }
 
       try { // Catch bad parse
@@ -104,16 +128,16 @@ function request (url, dataCallback, errorCallback, progressCallback, debug=fals
       }
 
       if (result.hasOwnProperty('id') && result.id === 'id') { // requires follow up
-        request('/p/' + (debug?'debug/':'') + result.data, dataCallback, errorCallback, progressCallback, debug);
+        request('/p/' + (debug ? 'debug/' : '') + result.data, dataCallback, errorCallback, progressCallback, debug);
       } else if (result.stopped !== null) { // done
         dataCallback(result.data);
       } else { // not yet finished
         if (typeof progressCallback === 'function') {
           progressCallback(1.0 - retries / DEFAULT_RETRIES, result.progress);
         }
-        if (retries === 0) {
+        if (retries === 0) { // Max retries exceeded
           errorCallback('Timeout');
-        } else {
+        } else { // retry
           setTimeout(() => {
             request(url, dataCallback, errorCallback, progressCallback, debug, retries - 1);
           }, retries === DEFAULT_RETRIES ? FIRST_RETRY_DELAY : DEFAULT_RETRY_DELAY);
@@ -124,6 +148,8 @@ function request (url, dataCallback, errorCallback, progressCallback, debug=fals
   xhr.send();
 }
 
+window.request = request;
+
 function menuWithEndpoints (obj, prop) {
   return paths(
     cleanEmpty(
@@ -131,13 +157,59 @@ function menuWithEndpoints (obj, prop) {
     prop, '');
 }
 
+function logout () {
+  privateToken = undefined;
+  const navLogin = document.getElementById('login');
+  navLogin.innerHTML = 'login';
+  navLogin.onclick = showLogin;
+}
+
+function showLogin () {
+  const DIV = document.createElement('DIV');
+  DIV.classList.add('login');
+  const INPUT = document.createElement('INPUT');
+  DIV.appendChild(INPUT);
+
+  const ALogin = document.createElement('A');
+  ALogin.innerHTML = 'login';
+  ALogin.onclick = () => {
+    setCookie({'private-token': INPUT.value});
+    privateToken = INPUT.value;
+    document.body.removeChild(DIV);
+    const navLogin = document.getElementById('login');
+    navLogin.innerHTML = 'logout';
+    navLogin.onclick = logout;
+  };
+  DIV.appendChild(ALogin);
+  const ACancel = document.createElement('A');
+  ACancel.innerHTML = 'cancel';
+  ACancel.onclick = () => document.body.removeChild(DIV);
+  DIV.appendChild(ACancel);
+
+  document.body.appendChild(DIV);
+}
+
 function renderMenu (items) {
+  const hasRootAccess = items.hasOwnProperty('debug');
   Object.keys(items).reverse().forEach(function (key) {
     const a = document.createElement('A');
     a.innerHTML = key;
-    a.href = items[key]['_ui'];
+    a.href = host + items[key]['_ui'];
     document.querySelector('.navModuleHeader > .navModuleNavigation').insertAdjacentElement('afterbegin', a);
   });
+
+  if (!hasRootAccess || privateToken) {
+    const a = document.createElement('A');
+    a.id = 'login';
+    if (privateToken) {
+      a.innerHTML = 'logout';
+      a.onclick = logout;
+    } else {
+      a.innerHTML = 'login';
+      a.onclick = showLogin;
+    }
+    document.querySelector('.navModuleHeader > .navModuleNavigation').appendChild(a);
+  }
 }
 
 function renderHeader () {
@@ -223,19 +295,21 @@ function mkLinks () {
     { path: '', name: 'documentation' },
     { path: '/s/web-wallet/', name: 'wallet' },
     { path: '/s/web-blockexplorer/', name: 'block explorer' }
-  ]
+  ];
 
-  return links.reduce((htmlStr, link) => `${htmlStr}<a href="${determineHost() + link.path}">${link.name}</a>`, '')
+  return links.reduce((htmlStr, link) => `${htmlStr}<a href="${host + link.path}">${link.name}</a>`, '');
 }
 
-function determineHost() {
-  return window.location.origin + (window.location.pathname.startsWith('/api') ? '/api':'')
+function checkCookie () {
+  const cookie = getCookie();
+  if (cookie && cookie['private-token']) privateToken = cookie['private-token'];
 }
 
 window.onload = () => {
+  checkCookie();
   renderHeader();
   fetchQuery('/meta')
     .then(meta => menuWithEndpoints(meta, '_ui'))
     .then(renderMenu)
     .catch(e => console.log('error:', e));
-}
+};

@@ -19,6 +19,10 @@
       "default" : 300,
       "info" : "Set the amount of listners for the http server socket",
       "type" : "int"
+    },
+    "private-token" : {
+      "info" : "Set the private token to access root function through non root servers.",
+      "type" : "password"
     }
   },
   "scheduler" : {
