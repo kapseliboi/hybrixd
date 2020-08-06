@@ -1,19 +1,20 @@
 {
   "engine":"asset",
   "quartz" : {
-    "balance" : [
+    "balance/address" : [
       "fail 'Not yet implemented!'"
     ],
-    "push" : [
+    "subbalances/address" : [
+      "call balance/$address",
+      "done [{symbol:'$symbol', address:'$address', balance:'$'}]"
+    ],
+    "push/transaction" : [
       "fail 'Not yet implemented!'"
     ],
     "history" : [
       "fail 'Not yet implemented!'"
     ],
-    "transaction" : [
-      "fail 'Not yet implemented!'"
-    ],
-    "attachment" : [
+    "transaction/transactionId" : [
       "fail 'Not yet implemented!'"
     ],
     "init" : [
@@ -25,8 +26,8 @@
     "mode" : [
       "done '$mode'"
     ],
-    "confirmed/txID" : [
-      "call transaction/$txID",
+    "confirmed/transactionId" : [
+      "call transaction/$transactionId",
       "tran .confirmed 1 2",
       "done",
       "fail 'Could not get confirmations'"
@@ -111,8 +112,8 @@
       "data 'never'",
       "done"
     ],
-    "message" : [
-      "call attachment/$1",
+    "message/transactionId" : [
+      "call attachment/$transactionId",
       "data '$'",
       "flow 'null' 1 2",
       "done ''",
@@ -136,7 +137,7 @@
     "report" : [
       "rout '/r/asset/$symbol'"
     ],
-   "test" : [
+    "test" : [
       "done {}"
     ],
     "test-hosts" : [
@@ -165,15 +166,13 @@
       "done $",
       "fail $"
     ],
-
-
-    "validate" : [
+    "validate/address" : [
       "data '$addressRegex'",
       "flow 'undefined' 1 4",
-      "rout '/source/wavalidator/validate/$symbol/$1' 2 1",
+      "rout '/source/wavalidator/validate/$symbol/$address' 2 1",
       "fail",
       "done",
-      "data '$1'",
+      "data '$address'",
       "regx '$addressRegex' 1 2",
       "done 'valid'",
       "done 'invalid'"
