@@ -7,7 +7,6 @@
   "contract" :"main",
   "factor":8,
   "fee":0.15,
-  "host":"none",
   "cache":10000,
   "throttle":10,
   "quartz":{

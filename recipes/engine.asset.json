@@ -142,6 +142,9 @@
     ],
     "test-hosts" : [
       "time 45000",
+      "data '$host'",
+      "flow 'undefined' 1 2",
+      "done []",
       "peek host",
       "type",
       "flow {string:@fromString, array: @fromArray, object: @fromObject} 1",
