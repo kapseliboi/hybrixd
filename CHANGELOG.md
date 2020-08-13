@@ -1,3 +1,23 @@
+# v0.7.29
+## Shiny Pink Ogre
+## 13-08-2020
+
+* Do not expose processIds for other sessions
+* Add stop command to daemon control
+* Improve error message on port already in use.
+* Catch connection reset error in hcmd
+* Improvements to host reports
+* Remove faulty xem host
+* Improve subbalances
+* Upgrade session using token
+* add login using token to report pages
+* return html 403/404 error pages for html endpoints
+* qrtz: add fork and rout for javascript modules
+* hybrix-jslib: refreshAsset now automatically adds the asset if required 
+* web-wallet: do not wait for balances during load
+* web-wallet: view sub balances for multi assets
+
+
 # v0.7.28
 ## Bouncy Pink Unicorn
 ## 30-07-2020
