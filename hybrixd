@@ -33,8 +33,12 @@ if [ "$1" = "" ]; then
     node hybrixd.js 2>&1 | tee -a "$NODE/var/log/hybrixd.log"
     echo "[i] stopped hybrixd"
     echo
+#TODO restart
 elif [ "$1" = "start" ] || [ "$1" = "/c/start" ] || [ "$1" = "/command/start" ]; then
     ./hybrixd.start
+elif [ "$1" = "stop" ]; then
+    cd "$NODE/lib"
+    node hcmd.js "/command/stop"
 else
     cd "$NODE/lib"
     node hcmd.js $@
