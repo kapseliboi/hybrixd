@@ -24,7 +24,7 @@
     "marketinfo" :
     [
       "curl('source://$source','/marketinfo/$1_$2','GET')",
-      "tran({rate:''.rate',limit:''.limit',min:''.min',minerFee:''.minerFee',},1,2)",
+      "tran({rate:''.rate',limit:''.limit',min:''.min',minerFee:''.minerFee'},1,2)",
       "stop(0,data)",
       "stop(1,'Error: ${.error}')"
     ],

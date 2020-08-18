@@ -636,12 +636,72 @@
       "done '$OK'",
       "fail"
     ],
-     "peek2" : [
+    "peek2" : [
       "data a",
       "poke local::b",
       "data x",
       "peek local::b",
       "flow a 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "peek3" : [
+      "peek OK",
+      "flow OK 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "peek4" : [
+      "hook @fail",
+      "peek nonExistingVariable",
+      "fail",
+      "@fail",
+      "done '$OK'"
+    ],
+    "peek5" : [
+      "data '$nonExistingVariable'",
+      "flow 'undefined' 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "peek6" : [
+      "peek nonExistingVariable fallback",
+      "flow fallback 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "peek7" : [
+      "data {a:1}",
+      "peek [a]",
+      "flow 1 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "peek8" : [
+      "data {a:1}",
+      "peek .a",
+      "flow 1 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "peek9" : [
+      "data {'a.b':1}",
+      "peek [a.b]",
+      "flow 1 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "peek10" : [
+      "data {'a.b':1}",
+      "data ${.[a.b]}",
+      "flow 1 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "peek11" : [
+      "data {a:{'a.b':1}}",
+      "peek .a[a.b]",
+      "flow 1 1 2",
       "done '$OK'",
       "fail"
     ],
@@ -672,6 +732,20 @@
       "data '123'",
       "shuf -1",
       "flow '231' 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "spread1" : [
+      "data [1,2,...[3,4],5]",
+      "join",
+      "flow '12345' 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "spread3" : [
+      "data {a:1,...[1,2],b:2}",
+      "jstr",
+      "flow '{\"0\":1,\"1\":2,\"a\":1,\"b\":2}' 1 2",
       "done '$OK'",
       "fail"
     ],

@@ -101,7 +101,7 @@
       "with signer [data,$] [tran,'.transaction.signer']",
       "curl /account/get/forwarded/from-public-key?publicKey=$signer {'content-type':'application/json'} 2 1",
       "fail 'Could not connect to host'",
-      "with reformatSource [data, $data] [tran,'.account.address', 2, 1] [data, 'undefined'] [case,'upper'] [push,'-',[6,12,18,24,30,36]]",
+      "with reformatSource [data, $] [tran,'.account.address', 2, 1] [data, 'undefined'] [case,'upper'] [push,'-',[6,12,18,24,30,36]]",
       "tran { id:'$reformatId', timestamp:'$reformatTimestamp', amount:'$reformatAmount', symbol:'$symbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'$reformatSource', target:'$reformatRecipient', confirmed: 'true' } @tranSuccess @tranFail",
       "@tranSuccess",
       "done",
