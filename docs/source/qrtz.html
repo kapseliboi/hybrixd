@@ -34,7 +34,7 @@
           <p>Here is an example of some qrtz steps and the resulting data flow.</p>
 
 <pre><code class="language-html">data 'Hello dog!'       // data 'Hello dog!'    - set the data of the process
-pull -4                 // data 'Hello '        - pulls the last 4 characters
+drop -4                 // data 'Hello '        - drops the last 4 characters
 repl ' ' 'world!'       // data 'Hello world!'  - replaces the ' ' (space) by 'world!'
 </code></pre>
 
