@@ -141,7 +141,7 @@
       "@engineFail",
       "peek 'res'",
       "tran '.result.engine_result_message' 1 @fail",
-      "fail 'Transaction failed with the following error: \"$data\"'",
+      "fail 'Transaction failed with the following error: \"$\"'",
       "tran '.result.tx_json.hash' @success2 @fail",
       "@success2",
       "done"
