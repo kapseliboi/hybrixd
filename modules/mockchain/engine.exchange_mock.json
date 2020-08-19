@@ -1,0 +1,158 @@
+{
+  "engine":"exchange_mock",
+  "name":"Engine for pushing commands to mock exchange (orders, cancels, etc.)",
+  "import" : "exchange",
+  "cron_disabled": 5,
+  "module":"mockchain",
+  "quartz" : {
+    "cron" : [
+      "func cron"
+    ],
+    "balance/symbol" : [
+      "peek local::balance[$symbol] 0"
+    ],
+    "mine/symbol/amount" : [
+      "peek 'local::balance[$symbol]'",
+      "flow undefined 1 2",
+      "data 0",
+      "math +$amount",
+      "poke 'local::balance[$symbol]'",
+      "data '$symbol balance is now $ $symbol'"
+    ],
+    "price/symbol/base" : [
+      "peek local::price[${symbol}_$base] 1"
+    ],
+    "orderList/symbol/base" : [
+      "peek local::orderBook[${symbol}_${base}]",
+      "flat",
+      "pick 1",
+      "filt .account you"
+    ],
+    "orderCreateInternal/side/symbol/amount/base/price/account" : [
+      "peek amount",
+      "ship 2 1 1 1",
+      "fail 'Positive amount expected'",
+      "peek price",
+      "ship 2 1 1 1",
+      "fail 'Positive price expected'",
+      "rand 10000",
+      "data '${symbol}_${base}_$'",
+      "poke orderId",
+      "data {side: '$side', $symbol:'$symbol',amount:'$amount',base:$base,price:'$price', id:'$orderId', account: '$account'}",
+      "poke local::orderBook[${symbol}_${base}][$orderId]"
+    ],
+    "orderCreate/side/symbol/amount/base/price" : [
+      "call orderCreateInternal/$side/$symbol/$amount/$base/$price/you"
+    ],
+    "orderCancelInternal/orderId" : [
+      "peek orderId",
+      "splt _",
+      "poke [symbol,base,rand]",
+      "peek local::orderBook[${symbol}_${base}]",
+      "peek local::orderBook[${symbol}_${base}][$orderId]",
+      "flow undefined 1 2",
+      "stop 404 'Order $orderId not found'",
+      "with local::orderBook[${symbol}_${base}] drop $orderId",
+      "done 'Order $orderId cancelled.'"
+    ],
+    "orderCancel/orderId" : [
+      "peek orderId",
+      "splt _",
+      "poke [symbol,base,rand]",
+      "peek local::orderBook[${symbol}_${base}]",
+      "peek local::orderBook[${symbol}_${base}][$orderId]",
+      "flow undefined 1 2",
+      "stop 404 'Order $orderId not found'",
+      "flow .account you 2 1",
+      "stop 403 'You cannot cancel an order you do not own'",
+      "with local::orderBook[${symbol}_${base}] drop $orderId",
+      "done 'Order $orderId cancelled.'"
+    ],
+    "orderCancelAll/symbol/base" : [
+      "peek local::orderBook[${symbol}_${base}]",
+      "filt .account other",
+      "poke local::orderBook[${symbol}_${base}]",
+      "done 'All your ${symbol}_${base}_* orders cancelled.'"
+    ],
+    "orderBook/symbol/base" : [
+      "peek local::orderBook[${symbol}_${base}]",
+      "flat",
+      "pick 1",
+      "poke orders",
+      "filt .side ask",
+      "tran [][.price,.amount]",
+      "sort .0 DESC",
+      "poke asks",
+      "peek orders",
+      "filt .side bid",
+      "tran [][.price,.amount]",
+      "sort .0 ASC",
+      "data {asks: $asks, bids: $}"
+    ],
+    "history/symbol/base" :[
+      "math ' (-1) - $local::time'",
+      "poke shift",
+      "peek 'local::history[${symbol}_$base]'",
+      "jstr",
+      "jpar",
+      "shuf $shift"
+    ],
+    "_root":[
+      "sync serve"
+    ],
+    "reset/symbol/base" :[
+      "data []",
+      "poke 'local::history[${symbol}_$base]'",
+      "data 1",
+      "poke 'local::price[${symbol}_$base]'",
+      "data 0",
+      "poke 'local::balance[${symbol}_$base]'",
+      "data {}",
+      "poke 'local::orderBook[${symbol}_$base]'"
+    ]
+  },
+  "router" : {
+    "_this": "Overview of the mock exchange",
+    "_ui" : "exchange_mock",
+    "reset" : {
+      "_ref" : {
+        "_list" : "symbol",
+        "_help" : "Specify the asset to reset.",
+        "_ref" : {
+          "_list" : "base",
+          "_this" : "Against the base pair that is being traded."
+        }
+      }
+    },
+    "price" : {
+      "_ref" : {
+        "_list" : "symbol",
+        "_help" : "Specify the asset to list price for.",
+        "_ref" : {
+          "_list" : "base",
+          "_this" : "Against the base pair that is being traded."
+        }
+      }
+    },
+    "history" : {
+      "_ref" : {
+        "_list" : "symbol",
+        "_help" : "Specify the asset to list spread history for.",
+        "_ref" : {
+          "_list" : "base",
+          "_this" : "Against the base pair that is being traded."
+        }
+      }
+    },
+    "mine": {
+      "_ref" : {
+        "_list" : "symbol",
+        "_help" : "Specify the asset to mine.",
+        "_ref" : {
+          "_list" : "amount",
+          "_this" : "Specify the amount to mine."
+        }
+      }
+    }
+  }
+}

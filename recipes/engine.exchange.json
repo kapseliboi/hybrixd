@@ -1,0 +1,113 @@
+{
+  "engine":"exchange",
+  "name":"Abstract Engine for pushin commands to an exchange (orders, cancels, etc.)",
+  "quartz" : {
+    "balance/symbol" : [
+      "fail 'Not yet implemented'"
+    ],
+    "orderList/symbol/base" : [
+      "fail 'Not yet implemented'"
+    ],
+    "orderCreate/side/symbol/amount/base/price" : [
+      "fail 'Not yet implemented'"
+    ],
+    "orderCancel/orderId" : [
+     "fail 'Not yet implemented'"
+    ],
+    "orderCancelAll/symbol/base" : [
+     "fail 'Not yet implemented'"
+    ],
+    "orderBook/symbol/base" : [
+      "fail 'Not yet implemented'"
+    ],
+    "spread/symbol/base" : [
+      "call orderBook/$symbol/$base",
+      "with bestAsk [data,$] [tran,'.asks'] [pick] [pick]",
+      "with bestBid [data,$] [tran,'.bids'] [pick] [pick]",
+      "data [ $bestAsk , $bestBid ]"
+    ]
+  },
+  "router" : {
+    "balance": {
+      "_ref" : {
+        "_list" : "symbol",
+        "_this" : "Get the balance of an exchange asset."
+      }
+    },
+    "orderBook": {
+      "_ref" : {
+        "_list" : "symbol",
+        "_help" : "Specify the asset to list orderbook for.",
+        "_ref" : {
+          "_list" : "base",
+          "_this" : "Against the base pair that is being traded."
+        }
+      }
+    },
+    "spread": {
+      "_ref" : {
+        "_list" : "symbol",
+        "_help" : "Specify the asset to return spread for.",
+        "_ref" : {
+          "_list" : "base",
+          "_this" : "Against the base pair that is being traded."
+        }
+      }
+    },
+    "orderList": {
+      "_ref" : {
+        "_list" : "symbol",
+        "_help" : "Specify the asset to list orders.",
+        "_ref" : {
+          "_list" : "base",
+          "_this" : "Against the base pair that they are traded for."
+        }
+      }
+    },
+    "orderData": {
+      "_ref" : {
+        "_list" : "orderId",
+        "_this" : "Get the data of an order."
+      }
+    },
+    "orderCreate": {
+      "_ref" : {
+        "_list" : "side",
+        "_options":["ask","bid"],
+        "_help" : "Market side, ask (sell) or bid (buy).",
+        "_ref" : {
+          "_list" : "symbol",
+          "_help" : "Asset symbol to buy or sell.",
+          "_ref" : {
+            "_list" : "amount",
+            "_help" : "Amount of the asset to buy or sell.",
+            "_ref" : {
+              "_list" : "base",
+              "_help" : "Base asset symbol to define order price.",
+              "_ref" : {
+                "_list" : "price",
+                "_this" : "Base asset price to buy or sell for."
+              }
+            }
+          }
+        }
+      }
+    },
+    "orderCancel": {
+      "_ref" : {
+        "_list" : "orderId",
+        "_this" : "Cancel an order."
+      }
+    },
+    "orderCancelAll": {
+      "_ref" : {
+        "_list" : "symbol",
+        "_help" : "Asset symbol for which to cancel orders.",
+        "_ref" : {
+          "_list" : "base",
+          "_this" : "Asset base for which to cancel orders."
+        }
+      }
+    }
+  }
+}
