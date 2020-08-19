@@ -4,6 +4,8 @@
 
 const fs = require('fs');
 const Decimal = require('../../common/crypto/decimal-light.js');
+const TIME_RANGE = 30; // number of time intervals before exchange history is looped
+const MAX_NONYOU_ORDERS = 20;
 
 // exports
 exports.mine = mine;
@@ -12,6 +14,8 @@ exports.push = push;
 exports.history = history;
 exports.transaction = transaction;
 exports.message = message;
+exports.cron = cron;
+exports.serve = serve;
 
 const filePath = '../modules/mockchain/test.mockchain.json';
 
@@ -28,10 +32,7 @@ function getMockchain () {
 
 function mine (proc) {
   const mockchain = getMockchain();
-  if (mockchain === null) {
-    proc.fail('This node does not support mockchain.');
-    return;
-  }
+  if (mockchain === null) return proc.fail('This node does not support mockchain.');
 
   const contract = proc.command[1];
   const target = Number(proc.command[2]);
@@ -42,7 +43,7 @@ function mine (proc) {
   mockchain.push(newTransaction);
   fs.writeFileSync(filePath, JSON.stringify(mockchain));
 
-  proc.done(newTransaction);
+  return proc.done(newTransaction);
 }
 
 function getSymbol (contract) {
@@ -69,10 +70,7 @@ function getBalance (mockchain, contract, address) {
 
 function balance (proc) {
   const mockchain = getMockchain();
-  if (mockchain === null) {
-    proc.fail('This node does not support mockchain.');
-    return;
-  }
+  if (mockchain === null) return proc.fail('This node does not support mockchain.');
 
   const contract = proc.command[1];
   const address = Number(proc.command[2]);
@@ -87,20 +85,15 @@ const fromInt = function (input, factor) {
 
 function push (proc) {
   const mockchain = getMockchain();
-  if (mockchain === null) {
-    proc.fail('This node does not support mockchain.');
-    return;
-  }
+  if (mockchain === null) return proc.fail('This node does not support mockchain.');
 
   const newTransaction = JSON.parse(proc.command[2]);
   const source = Number(newTransaction.source);
   const target = Number(newTransaction.target);
   const contract = newTransaction.contract;
   const contract_ = proc.command[1];
-  if (contract_ !== contract) {
-    proc.fail(`pushed ${contract} to ${contract_}`);
-    return;
-  }
+  if (contract_ !== contract) return proc.fail(`pushed ${contract} to ${contract_}`);
+
   const symbol = getSymbol(contract);
   const factor = proc.peek(symbol + '::factor');
 
@@ -127,24 +120,17 @@ function push (proc) {
   const signature = newTransaction.signature;
 
   const expectedSignature = Number(source) * Number(target) + Number(atomicAmount) + totalAtomicFee * 3.14 + contract.length * 1001 + message.length * 123;
-  if (signature !== expectedSignature) {
-    proc.fail('illegal signature');
-  } else {
+  if (signature !== expectedSignature) return proc.fail('illegal signature');
+  else {
     // check if has sufficient base balance
     const baseBalance = getBalance(mockchain, contract, source);
-    if (baseBalance < amount + baseFee) {
-      proc.fail('insufficient ' + symbol.toUpperCase() + ' balance. Required ' + (amount + baseFee) + ', Available ' + baseBalance);
-      return;
-    }
+    if (baseBalance < amount + baseFee) return proc.fail('insufficient ' + symbol.toUpperCase() + ' balance. Required ' + (amount + baseFee) + ', Available ' + baseBalance);
     // check if sufficient fee balances
     for (let feeSymbol in fees) {
       if (feeSymbol !== symbol) {
         const feeBalance = getBalance(mockchain, getContract(feeSymbol), source);
         const feeAmount = fees[feeSymbol];
-        if (feeBalance < feeAmount) {
-          proc.fail('insufficient ' + feeSymbol.toUpperCase() + ' balance. Required ' + feeAmount + ', Available ' + feeBalance);
-          return;
-        }
+        if (feeBalance < feeAmount) return proc.fail('insufficient ' + feeSymbol.toUpperCase() + ' balance. Required ' + feeAmount + ', Available ' + feeBalance);
       }
     }
 
@@ -158,16 +144,13 @@ function push (proc) {
     newTransaction.type = 'tran';
     mockchain.push(newTransaction);
     fs.writeFileSync(filePath, JSON.stringify(mockchain));
-    proc.done(newTransaction.id);
+    return proc.done(newTransaction.id);
   }
 }
 
 function history (proc) {
   const mockchain = getMockchain();
-  if (mockchain === null) {
-    proc.fail('This node does not support mockchain.');
-    return;
-  }
+  if (mockchain === null) return proc.fail('This node does not support mockchain.');
 
   const contract = proc.command[1];
   const address = Number(proc.command[2]);
@@ -184,24 +167,20 @@ function history (proc) {
   if (!isNaN(offset)) history.splice(0, offset);
   if (!isNaN(length) && length < history.length) history.length = length;
 
-  proc.done(history);
+  return proc.done(history);
 }
 
 function transaction (proc) {
   const mockchain = getMockchain();
-  if (mockchain === null) {
-    proc.fail('This node does not support mockchain.');
-    return;
-  }
+  if (mockchain === null) return proc.fail('This node does not support mockchain.');
 
   const contract = proc.command[1];
   const transactionId = Number(proc.command[2]);
 
   if (transactionId < mockchain.length) {
     const transaction = mockchain[transactionId];
-    if (transaction.contract !== contract) {
-      proc.fail('transaction belongs to ' + transaction.contract + ' mockchain');
-    } else {
+    if (transaction.contract !== contract) return proc.fail('transaction belongs to ' + transaction.contract + ' mockchain');
+    else {
       const normalizedTransaction = {
         id: transaction.id,
         timestamp: transaction.timestamp,
@@ -213,24 +192,145 @@ function transaction (proc) {
         target: transaction.target || 'unknown',
         confirmed: 1
       };
-      proc.done(normalizedTransaction);
+      return proc.done(normalizedTransaction);
     }
-  } else proc.fail('unknown transaction2');
+  } else return proc.fail('unknown transaction2');
 }
 
 // message/attachment
 function message (proc) {
   const mockchain = getMockchain();
-  if (mockchain === null) {
-    proc.fail('This node does not support mockchain.');
-    return;
-  }
+  if (mockchain === null) return proc.fail('This node does not support mockchain.');
 
   const transactionId = Number(proc.command[2]);
   if (transactionId < mockchain.length) {
     const contract = proc.command[1];
     const transaction = mockchain[transactionId];
-    if (transaction.contract !== contract) proc.fail('unknown transaction');
-    else proc.done(transaction.message);
-  } else proc.fail('unknown transaction');
+    if (transaction.contract !== contract) return proc.fail('unknown transaction');
+    else return proc.done(transaction.message);
+  } else return proc.fail('unknown transaction');
+}
+
+function resolveOrders (proc, price, pair, asks, bids) {
+  for (let i = 0; i < asks.length; ++i) {
+    const ask = asks[i];
+    for (let j = 0; j < bids.length; ++j) {
+      const bid = bids[j];
+      if (ask.price <= bid.price) {
+        price = bid.price;
+        const amount = Math.min(ask.amount, bid.amount);
+        let delta = 0;
+        if (ask.account === 'you' && bid.account === 'you') delta = 0;
+        else if (ask.account === 'you') delta = Number(price) * Number(amount); // TODO tx fee?
+        else if (bid.account === 'you') delta = -Number(price) * Number(amount);// TODO tx fee?
+
+        if (Number(ask.amount) === Number(bid.amount)) {
+          asks.splice(i, 1);
+          bids.splice(j, 1);
+        } else if (Number(ask.amount) < Number(bid.amount)) {
+          bid.amount = Number(bid.amount) - Number(ask.amount);
+          asks.splice(i, 1);
+        } else {
+          ask.amount = Number(ask.amount) - Number(bid.amount);
+          bids.splice(j, 1);
+        }
+        const [symbol, base] = pair.split('_');
+        proc.logs('Sale:', amount + ' ' + symbol, '@', price + ' ' + base);
+        if (delta) { // add/deduct moneys for you
+          const balance = proc.peek(`local::balance[${pair}]`, 0);
+          proc.poke(`local::balance[${pair}]`, Number(balance) + delta);
+        }
+        return resolveOrders(proc, price, pair, asks, bids);
+      }
+    }
+  }
+  return price;
+}
+
+function updatePrice (proc, price, pair, time) {
+  proc.poke(`local::price[${pair}]`, price);
+  proc.poke(`local::history[${pair}][${time % TIME_RANGE}]`, price);
+}
+
+function rebuildOrderBook (proc, pair, asks, bids) {
+  const orderBook = {};
+  for (let ask of asks) orderBook[ask.id] = ask;
+  for (let bid of bids) orderBook[bid.id] = bid;
+  proc.poke(`local::orderBook[${pair}]`, orderBook);
+}
+
+function randPrice (side, price) {
+  // TODO improve
+  if (side === 'ask') return Number(price) * (Math.random() + 0.1);
+  else return Number(price) * (Math.random() * 0.9 + 0.1);
+}
+
+function createOrders (proc, pair, orders, price, asks, bids) {
+  const nonYouOrders = orders.filter(order => order.account !== 'you');
+  if (nonYouOrders.length > 0) { // Cancel a random order
+    const orderId = nonYouOrders[Math.floor(Math.random() * nonYouOrders.length)].id;
+    proc.fork(`orderCancelInternal/${orderId}`);
+  }
+
+  if (nonYouOrders.length < MAX_NONYOU_ORDERS) { // at some random orders
+    const [symbol, base] = pair.split('_');
+    for (let i = 0; i < 3; ++i) {
+      const side = Math.random() < 0.5 ? 'ask' : 'bid';
+      const amount = Math.floor(Math.random() * 20 + 1); // TODO improve
+      const createPrice = randPrice(side, price);
+      proc.fork(`orderCreateInternal/${side}/${symbol}/${amount}/${base}/${createPrice}/other`);
+    }
+  }
+}
+
+function cron (proc) {
+  const time = proc.peek('local::time', -1) + 1;
+  proc.poke('local::time', time);
+  const orderBook = proc.peek('local::orderBook');
+  for (let pair in orderBook) {
+    const orders = Object.values(orderBook[pair]);
+
+    const asks = orders
+      .filter(order => order.side === 'ask')
+      .sort((order1, order2) => order1.price - order2.price);
+
+    const bids = orders
+      .filter(order => order.side === 'bid')
+      .sort((order1, order2) => order2.price - order1.price);
+    let price = proc.peek(`local::price[${pair}]`, 1);
+    price = resolveOrders(proc, price, pair, asks, bids);
+    rebuildOrderBook(proc, pair, asks, bids);
+    updatePrice(proc, price, pair, time);
+    createOrders(proc, pair, orders, price, asks, bids);
+  }
+  proc.done();
+}
+
+function serve (proc) {
+  const source = 'mockchain';
+
+  const command = proc.command;
+  command.shift();
+  const fileName = command.length === 0
+    ? 'modules/' + source + '/files/index.html'
+    : 'modules/' + source + '/files/' + command.join('/');
+
+  const mimeTypes = {
+    css: 'text/css',
+    ico: 'image/x-icon',
+    js: 'text/javascript',
+    json: 'application/json',
+    svg: 'image/svg+xml',
+    html: 'text/html',
+    ttf: 'application/x-font-ttf',
+    woff2: 'application/x-font-woff',
+    eot: 'application/vnd.ms-fontobject'
+  };
+
+  const fileNameSplitByDot = fileName.split('.');
+  const extension = fileNameSplitByDot[fileNameSplitByDot.length - 1];
+  const mimeType = mimeTypes.hasOwnProperty(extension) ? mimeTypes[extension] : 'text/html';
+
+  proc.mime('file:' + mimeType);
+  proc.done(fileName.split('?')[0]);
 }

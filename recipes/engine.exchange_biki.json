@@ -1,7 +1,7 @@
 {
   "engine":"exchange_biki",
   "name":"Engine for pushing Biki commands to exchange (orders, cancels, etc.)",
-  "module":"quartz",
+  "import":"exchange",
   "host":["https://openapi.biki.cc","https://openapi.biki.com"],
   "timeout":10000,
   "cache":3000,
@@ -49,7 +49,7 @@
       "data 'side=$side&type=1&volume=$amount&price=$price&symbol=$pair&fee_is_user_exchange_coin=0'",
       "call signBiki/$",
       "curl '/open/api/create_order' POST {'Content-Type':'application/x-www-form-urlencoded'} 2 1",
-      "fail 'Bad response from Biki!'",      
+      "fail 'Bad response from Biki!'",
       "tran '.data.order_id' 1 2",
       "done '$pair.$'",
       "tran '.msg'",
@@ -65,7 +65,7 @@
       "data 'symbol=$pair&order_id=$orderId'",
       "call signBiki/$",
       "curl '/open/api/cancel_order' POST {'Content-Type':'application/x-www-form-urlencoded'} 2 1",
-      "fail 'Bad response from Biki!'",      
+      "fail 'Bad response from Biki!'",
       "tran '.msg' 1 @failed",
       "flow 'suc' 1 @failed",
       "done 'Order $orderId cancelled.'",
@@ -77,12 +77,12 @@
       "data 'symbol=$pair'",
       "call signBiki/$",
       "curl '/open/api/cancel_order_all' POST {'Content-Type':'application/x-www-form-urlencoded'} 2 1",
-      "fail 'Bad response from Biki!'",      
+      "fail 'Bad response from Biki!'",
       "tran '.msg' 1 @failed",
       "flow 'suc' 1 @failed",
       "done 'All $pair.* orders cancelled.'",
       "@failed",
-      "fail 'Cannot cancel all orders! Error: $'"    
+      "fail 'Cannot cancel all orders! Error: $'"
     ],
     "orderBook/symbol/base" : [
       "with pair [data,'$symbol$base'] [case,lower]",
@@ -97,12 +97,6 @@
       "jstr",
       "excl '\"'",
       "jpar"
-    ],
-    "spread/symbol/base" : [
-      "call orderBook/$symbol/$base",
-      "with bestAsk [data,$] [tran,'.asks'] [pick] [pick]",
-      "with bestBid [data,$] [tran,'.bids'] [pick] [pick]",
-      "data [ $bestAsk , $bestBid ]"
     ],
     "signBiki/query" : [
       "date now",
@@ -123,78 +117,5 @@
       "hash md5",
       "done '$getString&sign=$'"
     ]
-  },
-  "router" : {
-    "_hidden" : true,
-    "balance": {
-      "_ref" : {
-        "_list" : "symbol",
-        "_this" : "Get the balance of an exchange asset."
-      }
-    },
-    "orderBook": {
-      "_ref" : {
-        "_list" : "symbol",
-        "_help" : "Specify the asset to list orderbook for.",
-        "_ref" : {
-          "_list" : "base",
-          "_this" : "Against the base pair that is being traded."
-        }
-      }
-    },
-    "orderList": {
-      "_ref" : {
-        "_list" : "symbol",
-        "_help" : "Specify the asset to list orders.",
-        "_ref" : {
-          "_list" : "base",
-          "_this" : "Against the base pair that they are traded for."
-        }
-      }
-    },
-    "orderData": {
-      "_ref" : {
-        "_list" : "orderId",
-        "_this" : "Get the data of an order."
-      }
-    },
-    "orderCreate": {
-      "_ref" : {
-        "_list" : "side",
-        "_help" : "Market side, ask (sell) or bid (buy).",
-        "_ref" : {
-          "_list" : "symbol",
-          "_help" : "Asset symbol to buy or sell.",
-          "_ref" : {
-            "_list" : "amount",
-            "_help" : "Amount of the asset to buy or sell.",
-            "_ref" : {
-              "_list" : "base",
-              "_help" : "Base asset symbol to define order price.",
-              "_ref" : {
-                "_list" : "price",
-                "_this" : "Base asset price to buy or sell for."
-              }
-            }
-          }
-        }
-      }
-    },
-    "orderCancel": {
-      "_ref" : {
-        "_list" : "orderId",
-        "_this" : "Cancel an order."
-      }
-    },
-    "orderCancelAll": {
-      "_ref" : {
-        "_list" : "symbol",
-        "_help" : "Asset symbol for which to cancel orders.",
-        "_ref" : {
-          "_list" : "base",
-          "_this" : "Asset base for which to cancel orders."
-        }
-      }
-    }    
-  }  
+  }
 }

@@ -1,0 +1,94 @@
+<html>
+  <head>
+    <script>
+      function priceFromSpread(spread){
+      if(!(spread instanceof Array)) return null;
+      let [ask,bid] = spread;
+      if(typeof bid==='undefined') bid=ask;
+      if(typeof ask === 'undefined') return null;
+      return (Number(ask)+Number(bid))/2;
+      }
+
+      function renderRelativePrice(relativePrice){
+      return `<div class="price" style="height:${relativePrice*100}%"></div>`
+      }
+      function renderHistory(prices){
+      let r='';
+      const maxPrice = Math.max(...prices.filter(price=>price!==null))+0.1;
+      const minPrice = Math.min(...prices.filter(price=>price!==null))-0.1;
+      const relativePrices = prices.map(price => price === null ? 0
+      : (price - minPrice)/(maxPrice-minPrice));
+      document.getElementById('history').innerHTML
+      =relativePrices.map(renderRelativePrice).join('');
+      }
+      function renderOrderbook(orderBook){
+      const price = document.getElementById('price')?
+      document.getElementById('price').innerHTML : '?';
+
+      document.getElementById('orderBook').innerHTML = `
+      <table>
+        <tr><td>Price (USDT)</td><td>Amount (HY)</td></tr>
+${orderBook.asks.map(ask=>`<tr class="ask"><td>${ask[0]}</td><td class="right">${ask[1]}</td><tr>`).join('')}
+
+        <tr><td id="price"><b>${price}</b></td></tr>
+${orderBook.bids.sort((a,b)=>b[0]-a[0]).map(bid=>`<tr class="bid"><td>${bid[0]}</td><td class="right">${bid[1]}</td><tr>`).join('')}
+      </table>
+      `
+      }
+
+      function renderPrice(price){
+      if(document.getElementById('price')) document.getElementById('price').innerHTML='<b>'+price+'</b>';
+      }
+      function updateExchangeView(){
+      request('/e/exchange_mock/price/hy/usdt', renderPrice,console.error);
+      request('/e/exchange_mock/history/hy/usdt', renderHistory,console.error);
+      request('/e/exchange_mock/orderBook/hy/usdt', renderOrderbook,console.error);
+      }
+
+      function initializeExchangeView(){
+      setInterval(updateExchangeView,1000);
+      }
+      window.addEventListener('load', initializeExchangeView)
+    </script>
+    <style>
+      .price{
+      width:2vw;
+      background-color:rgb(240,240,240);
+      border-top-style:solid;
+      border-top-color:black;
+
+      margin:0;
+      display:inline-block;
+      }
+      .right{
+      text-align:right;
+      }
+      .ask {
+      color:red;
+      }
+      .bid {
+      color:green;
+      }
+      #orderBook{
+      position:absolute;
+      right:0;
+      top:0;
+      width:25vw;
+      padding-top:200px;
+      }
+      #history{
+      padding-left:100px;
+      position:absolute;
+      left:0;
+      top:0;
+      width:75vw;
+      height:50vh;
+      padding-top:200px;
+      }
+      </style>
+  </head>
+  <body>
+    <div id="orderBook"></div>
+    <div id="history"></div>
+  </body>
+</html>
