@@ -69,7 +69,6 @@
       "done $txData"
     ],
     "saveTransactionData/txID": [
-      "data $",
       "poke txData",
       "data ${txID}-${symbol}-transaction",
       "poke fileName",
@@ -77,22 +76,22 @@
       "save $fileName $txData",
       "done $1"
     ],
-    "retrieveLatestTransactions/addr/count_/offset": [
-      "data $count_",
-      "math '+1'",
-      "poke count",
-      "call getHistory/$addr/$count/$offset",
+    "retrieveLatestTransactions/addr/count/offset": [
+      "peek count",
+      "math +1",
+      "poke countPlusOne",
+      "call getHistory/$addr/$countPlusOne/$offset",
       "each reformatTx",
-      "sort 'desc' '.timestamp'",
+      "sort desc .timestamp",
       "poke txs",
-      "fork 'cacheHistory/$addr'",
-      "data $txs",
+      "fork cacheHistory/$addr",
+      "peek txs",
       "tran '[].id'",
       "poke idx",
-      "fork 'saveNewTransactionIds/$addr/$count/$offset/false'",
+      "fork 'saveNewTransactionIds/$addr/$countPlusOne/$offset/false'",
       "peek idx",
-      "test '$count>12' 2 3",
       "#TODO: find proper workaround",
+      "true $countPlusOne>12 1 2",
       "drop -1",
       "done"
     ],
