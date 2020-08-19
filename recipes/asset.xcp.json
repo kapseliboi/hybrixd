@@ -45,7 +45,7 @@
       "data {'jsonrpc':'2.0','id':0,'method':'broadcast_tx','params':{'signed_tx_hex':'$1'}}",
       "curl /_api POST {'content-type':'text/plain'} 2 1",
       "fail 'Could not connect to host'",
-      "test $ 2 1",
+      "test 2 1",
       "fail 'Broadcast failed!'",
       "tran '.result' 2 1",
       "fail 'No result!'",

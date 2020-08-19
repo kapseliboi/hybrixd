@@ -6,20 +6,20 @@
   "quartz"  : {
     "get":[
       "data {key:'$1'}",
-      "func 'load'",
-      "mime 'file:data'",
+      "func load",
+      "mime file:data",
       "file",
       "done"
     ],
     "load":[
       "data {key:'$1'}",
-      "func 'load'",
-      "mime 'file:data'",
+      "func load",
+      "mime file:data",
       "file",
       "done"
     ],
     "set":[
-      "test $ @dataPost @dataGet",
+      "test @dataPost @dataGet",
       "@dataPost",
       "data {key:'$1',value:'$'}",
       "jump 2",
@@ -31,7 +31,7 @@
       "done"
     ],
     "save":[
-      "test $ @dataPost @dataGet",
+      "test @dataPost @dataGet",
       "@dataPost",
       "data {key:'$1',value:'$'}",
       "jump 2",
