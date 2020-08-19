@@ -780,6 +780,24 @@
       "done '$OK'",
       "fail"
     ],
+    "test6" : [
+      "data true",
+      "poke a",
+      "data true",
+      "poke b",
+      "test [a,b] 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "test7" : [
+      "data true",
+      "poke a",
+      "data false",
+      "poke b",
+      "test [a,b] 2 1",
+      "done '$OK'",
+      "fail"
+    ],
     "tran1" : [
       "data [{a:x},{a:y}]",
       "tran [].a 1 4",
