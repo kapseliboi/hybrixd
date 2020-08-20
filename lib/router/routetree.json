@@ -16,6 +16,15 @@
           "_response": {"error":0,"info":"Process data.","id":"1519829438958324","progress":1,"started":1519829438958,"stopped":1519829440606,"data":"0.025106200000000000"}
         }
       },
+      "fee-balance":{
+        "_help":"Get the fee balance of an asset.",
+        "_ref" : {
+          "_list" : "address",
+          "_sample" : "_dummyaddress_",
+          "_this": "Query an address to get its fee balance.",
+          "_response": {"error":0,"info":"Process data.","id":"1519829438958324","progress":1,"started":1519829438958,"stopped":1519829440606,"data":"0.025106200000000000"}
+        }
+      },
       "subbalances":{
         "_help":"Get detailed balances of an asset.",
         "_ref" : {

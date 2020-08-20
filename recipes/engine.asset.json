@@ -4,6 +4,12 @@
     "balance/address" : [
       "fail 'Not yet implemented!'"
     ],
+    "fee-balance/address":[
+      "call fee-symbol",
+      "poke feeSymbol",
+      "rout /a/$feeSymbol/balance/$address",
+      "done {'$feeSymbol':$}"
+    ],
     "subbalances/address" : [
       "call balance/$address",
       "done [{symbol:'$symbol', address:'$address', balance:'$'}]"
@@ -21,10 +27,10 @@
       "done"
     ],
     "unspent" : [
-      "done {'unspents':[],'change':'0.00000000'}"
+      "done {}"
     ],
     "mode" : [
-      "done '$mode'"
+      "peek mode default"
     ],
     "confirmed/transactionId" : [
       "call transaction/$transactionId",
@@ -39,16 +45,18 @@
       "done"
     ],
     "info" : [
-      "done '$info'"
+      "peek info ''"
     ],
     "factor" : [
-      "done '$factor'"
+      "peek factor"
     ],
     "fee" : [
-      "data '$fee'"
+      "peek fee",
+      "#TODO in case of default multi fees call fee-symbol",
+      "#data {'$':'$fee'}"
     ],
     "icon" : [
-      "data $symbol",
+      "peek symbol",
       "splt .",
       "pick -1",
       "data '../files/icons/$.svg'",
@@ -56,7 +64,7 @@
       "file 1 2",
       "done",
       "mime blob",
-      "data $symbol",
+      "peek symbol",
       "splt .",
       "pick -1",
       "pick 0",
@@ -105,13 +113,6 @@
       "peek amount",
       "form '$subFactor'"
     ],
-
-    "generated" : [
-      "data '$generated'",
-      "flow 'undefined' 1 2",
-      "data 'never'",
-      "done"
-    ],
     "message/transactionId" : [
       "call attachment/$transactionId",
       "data '$'",
@@ -123,7 +124,7 @@
     "keygen-base" : [
       "data '$keygen-base'",
       "flow 'undefined' 1 2",
-      "data '$symbol'",
+      "peek symbol",
       "splt '.'",
       "pick 0",
       "done"
@@ -166,8 +167,8 @@
     ],
     "pingHost" : [
       "curl ${.key} {} {ping:true} 1 2",
-      "done $",
-      "fail $"
+      "done",
+      "fail"
     ],
     "validate/address" : [
       "data '$addressRegex'",
@@ -181,9 +182,13 @@
       "done 'invalid'"
     ],
     "details" : [
-      "data {'contract':null,'factor':null,'fee':null,'fee-factor':null,'fee-symbol':null,'generated':null,'mode':null,'keygen-base':null,'unified-symbols':null}",
+      "data {'contract':null,'factor':null,'fee':null,'fee-factor':null,'fee-symbol':null,'mode':null,'keygen-base':null,'unified-symbols':null}",
       "each subdetails",
-      "done {symbol:'$symbol',name:'$name',fee:'${.fee}',factor:'${.factor}',contract:'${.contract}',mode:'${.mode}','unified-symbols':${.unified-symbols},'fee-symbol':'${.fee-symbol}','fee-factor':'${.fee-factor}','keygen-base':'${.keygen-base}', generated:'${.generated}'}"
+      "done {symbol:'$symbol',name:'$name',fee:'${.fee}',factor:'${.factor}',contract:'${.contract}',mode:'${.mode}','unified-symbols':${.unified-symbols},'fee-symbol':'${.fee-symbol}','fee-factor':'${.fee-factor}','keygen-base':'${.keygen-base}'}",
+      "#TODO remove fee, fee-symbol, fee-factor after multi fees have been fully implemented",
+      "#data {'contract':null,'factor':null,'mode':null,'keygen-base':null,'unified-symbols':null}",
+      "#each subdetails",
+      "#done {symbol:'$symbol',name:'$name',factor:'${.factor}',contract:'${.contract}',mode:'${.mode}','unified-symbols':${.unified-symbols},'keygen-base':'${.keygen-base}'}"
     ],
     "subdetails" : [
       "call '${.key}'"
