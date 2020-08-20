@@ -1,3 +1,23 @@
+# v0.7.30
+## Curly Green Leprechaun
+## 20-08-2020
+
+* Added fee-balance endpoint to determine available fee balance
+* Use stack trace in logs and return to root callers 
+* Added a work in progress mock exchange (sandbox) module
+* Updated dependencies
+* hybrix-jslib: Add option for partial source address
+* hybrix-jslib: Updated dependencies
+* qrtz: improve math error handling
+* qrtz: improve sort for arrays of arrays
+* qrtz: test by variable or multiple variables
+* qrtz: dollar and peek property parse methods
+* qrtz: fix flip for string (remove commas)
+* qrtz: fail rout if no onFail is defined
+
+
+
+
 # v0.7.29
 ## Shiny Pink Ogre
 ## 13-08-2020
