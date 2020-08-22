@@ -1,0 +1,136 @@
+{
+  "engine":"exchange_folgory",
+  "name":"Engine for pushing Folgory commands to exchange (orders, cancels, etc.)",
+  "import":"exchange",
+  "host":"https://folgory.com",
+  "timeout":10000,
+  "cache":3000,
+  "clientId":"your_Folgory_API_key",
+  "secretKey":"your_Folgory_secret_key",
+  "quartz" : {
+    "balance/symbol" : [
+      "with symbol case upper",
+      "call headerFolgory",
+      "curl '/order/get_profile_wallets' GET $ 2 1",
+      "fail 'Bad response from Folgory!'",
+      "tran '.data'",
+      "find {'currency_symbol':'$symbol'}",
+      "with walletbal [data,$] [tran,'[].walletbal',1,3] [pick] [done] [done,0]",
+      "with frozen [data,$] [tran,'[].frozen',1,3] [pick] [done] [done,0]",
+      "done '$walletbal + $frozen'"
+    ],
+    "getOrderList/symbol/base" : [
+      "with pair [data,'${symbol}_${base}'] [case,upper]",
+      "call headerFolgory",
+      "poke header",
+      "data {'pair_symbol':'$pair'}",
+      "curl '/order/get_trading_orders_currencyPairId' POST $header 2 1",
+      "fail 'Bad response from Folgory!'",
+      "tran '.data' 1 2",
+      "done",
+      "fail"
+    ],
+    "prefixOrderIds/pair" : [
+      "tran .value",
+      "data '$pair.$'"
+    ],
+    "orderList/symbol/base" : [
+      "call getOrderList/$symbol/$base",
+      "with pairId [data,$] [tran,'[0].currency_pair_id']",
+      "tran '[].order_id'",
+      "void 'null' @empty",
+      "each prefixOrderIds/$pairId",
+      "sort",
+      "done",
+      "@empty",
+      "done []"
+    ],
+    "orderCreate/side/symbol/amount/base/price" : [
+      "with pair [data,'${symbol}_${base}'] [case,upper]",
+      "with side [flow,'bid',1,2] [done,'buy'] [done,'sell']",
+      "with amount [form,8]",
+      "with price [form,8]",
+      "call headerFolgory",
+      "poke header",
+      "data {'type':'$side','pair_symbol':'$pair','quantity':'$amount','price':'$price'}",
+      "curl '/order/post_order' POST $header 2 1",
+      "fail 'Bad response from Folgory!'",
+      "# get last order placed to be able to return orderId",
+      "call getOrderList/$symbol/$base",
+      "sort .time desc",
+      "head 5",
+      "find {'amount':'$price'}",
+      "find {'qty':'$amount'}",
+      "find {'Type':'$side'}",
+      "pick",
+      "have .order_id 1 @failed",
+      "have .currency_pair_id 1 @failed",
+      "done '${.currency_pair_id}.${.order_id}'",
+      "@failed",
+      "fail 'Order posted, but could not retrieve orderId!'"
+    ],
+    "orderCancel/orderId" : [
+      "data '$orderId'",
+      "splt '.'",
+      "poke pairId",
+      "copy pairId orderId",
+      "with pairId [pick,0]",
+      "with orderId [pick,1]",
+      "call headerFolgory",
+      "poke header",
+      "data {'currency_pair_id':'$pairId','order_id':'$orderId'}",
+      "curl '/order/cancel_order' POST $header 2 1",
+      "fail 'Bad response from Folgory!'",
+      "with message [data,$] [tran,'.message']",
+      "tran '.status' 1 @unexpectedResponse",
+      "flow '200' 1 @failed",
+      "done 'Order $pairId.$orderId cancelled.'",
+      "@failed",
+      "fail 'Cannot cancel the order! Error: $message'",
+      "@unexpectedResponse",
+      "fail 'Cannot cancel the order! Error: Unexpected API response!'"
+    ],
+    "orderCancelAll/symbol/base" : [
+      "time 120000",
+      "call orderList/$symbol/$base",
+      "with pairId [data,$] [pick] [splt,'.'] [pick]",
+      "poke orders",
+      "size",
+      "poke arraySize",
+      "poke n 0",
+      "@loopStart",
+      "peek orders",
+      "pick $n",
+      "# logs 'Cancelling $...'",
+      "call orderCancel/$",
+      "wait 200",
+      "loop @loopStart n <$arraySize",
+      "done 'All $pairId.* orders attempted cancelled.'"
+    ],
+    "flipData" : [
+      "tran '.value'",
+      "flip"
+    ],
+    "orderBook/symbol/base" : [
+      "with pair [data,'${symbol}_${base}'] [case,upper]",
+      "call headerFolgory",
+      "poke header",
+      "data {'pair_symbol':'$pair','limit':50}",
+      "curl '/order/get_trading_orders' POST $header 2 1",
+      "fail 'Bad response from Folgory!'",
+      "have '.data' 1 @failed",
+      "tran '.data' 1 @failed",
+      "# seems that folgory has bid and ask confused, so we rightfully turn them around",
+      "with asks [data,$] [tran,'.bids'] [each,flipData] [sort,'[0]','asc']",
+      "with bids [data,$] [tran,'.asks'] [each,flipData] [sort,'[0]','desc']",
+      "done { 'asks':$asks , 'bids':$bids }",
+      "@failed",
+      "fail 'Cannot get orderbook. Error: ${.message}'"
+    ],
+    "headerFolgory" : [
+      "date now",
+      "done {'Content-Type':'application/json','FLG-ACCESS-CLIENTID':'$clientId','FLG-ACCESS-SECRETID':'$secretKey','FLG-ACCESS-TIMESTAMP':'$'}"
+    ]
+  }
+}
+
