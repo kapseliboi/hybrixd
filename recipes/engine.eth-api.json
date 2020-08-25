@@ -159,7 +159,8 @@
       "with txHeight [data,'${.blockNumber}'] [code,'hex','dec']",
       "with fee-symbol [call,'fee-symbol']",
       "with timestamp [call,'blockRaw/${.blockNumber}'] [tran,'.result.timestamp',2,1] [data,0] [code,'hex','dec'] [done]",
-      "tran { id:'=.hash', timestamp:'$timestamp', height:'$txHeight', amount:'$txAmount', symbol:'$symbol', fee:'$txFee', 'fee-symbol':'$fee-symbol', source:'.from', target:'$txTarget', confirmed:true } @okayData @failData",
+      "with confirmed [call,'height'] [void,'false',3,1] [math,'-$txHeight'] [done] [done,0]",
+      "tran { id:'=.hash', timestamp:'$timestamp', height:'$txHeight', amount:'$txAmount', symbol:'$symbol', fee:'$txFee', 'fee-symbol':'$fee-symbol', source:'.from', target:'$txTarget', confirmed:'$confirmed' } @okayData @failData",
       "@failData",
       "fail 'Cannot interpret transaction data!'",
       "@notTokenTx",
@@ -194,7 +195,19 @@
       "rand 10000",
       "data {jsonrpc: '2.0', method: 'eth_getBlockByNumber', params: ['$blockId',false], id: $}",
       "curl POST {'Content-Type': 'application/json'} 2 1",
-      "fail",
+      "fail 'Error when not querying host!'",
+      "done"
+    ],
+    "block/blockId" : [
+      "call blockRaw/$blockId",
+      "tran .result",
+      "done"
+    ],
+    "height" : [
+      "call block/latest",
+      "tran .number 2 1",
+      "fail 'Cannot get height!'",
+      "code hex dec",
       "done"
     ],
     "balance/address" : [
