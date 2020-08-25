@@ -1,0 +1,22 @@
+{
+  "symbol":"tomo",
+  "name":"Tomochain",
+  "info":"<p>TomoChain is a scalable blockchain-powered via Proof-of-Stake Voting consensus which is used commercially by companies globally. Its mission is to accelerate the onboarding of millions of users by empowering today’s applications with technology that masks the friction of Blockchain, all while retaining its underlying benefits. TomoChain’s technology and DeFi-focused flagship products include: Fast & Near-Zero Fees: 2000 TPS, 2-second blocktime, ~$0 gas fees, and EVM compatible. An array of original features and protocols is designed to support speed, privacy, usability, and liquidity needs all in one platform.</p>",
+  "module":"ethereum",
+  "import":"eth-api",
+  "mode":"ethereum.main",
+  "throttle":6,
+  "host": {
+    "default": ["https://rpc.tomochain.com"],
+    "history": "https://scan.tomochain.com/api"
+  },
+  "cron":300,
+  "quartz":{
+    "sample":[
+      "done {address:'0x0000000000000000000000000000000000000099',transaction:'0x321e8e4ff431dfefa87cebdc170f8ffdc4ac052dc531b48616249fea4c3bac10'}"
+    ],
+    "test" : [
+      "done {hash:dynamic}"
+    ]
+  }
+}
