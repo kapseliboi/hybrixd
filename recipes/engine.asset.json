@@ -17,6 +17,9 @@
     "push/transaction" : [
       "fail 'Not yet implemented!'"
     ],
+    "height" : [
+      "fail 'Not yet implemented!'"
+    ],
     "history" : [
       "fail 'Not yet implemented!'"
     ],
@@ -31,6 +34,9 @@
     ],
     "mode" : [
       "peek mode default"
+    ],
+    "block/blockNumber" : [
+      "fail 'Not yet implemented!'"
     ],
     "confirmed/transactionId" : [
       "call transaction/$transactionId",

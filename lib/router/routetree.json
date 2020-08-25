@@ -33,6 +33,14 @@
           "_this": "Query an address to get its sub balance details."
         }
       },
+      "block":{
+        "_help" : "Get data from a block.",
+        "_ref" : {
+          "_list" : "block_number",
+          "_sample" : "$BLOCK_NUMBER",
+          "_this": "Retrieve block information."
+        }
+      },
       "confirmed":{
         "_help" : "Get confiramation status for a transaction information.",
         "_ref" : {
@@ -78,6 +86,7 @@
         "_this": "Retrieve the mode for proper initialization of deterministic code blobs on the client-side.",
         "_response": "bitcoinjslib.bitcoin"
       },
+      "height" :  "Return the height of the asset ledger, denominated in its own measurable unit (e.g. blocks, parts or consensus decisions).",
       "history": {
         "_help": "Retrieve the transaction history for an asset.",
         "_ref": {
