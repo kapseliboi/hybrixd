@@ -14,10 +14,11 @@
       "fail 'Bad response from Biki!'",
       "tran '.data.coin_list'",
       "find {'coin':'$symbol'}",
-      "tran '[].normal' @success",
+      "tran '[]' @success",
       "fail",
       "@success",
-      "pick"
+      "pick",
+      "math '${.normal}+${.locked}'"
     ],
     "getOrderList/symbol/base" : [
       "with pair [data,'$symbol$base'] [case,lower]",

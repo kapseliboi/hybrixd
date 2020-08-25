@@ -17,7 +17,7 @@
       "find {'currency_symbol':'$symbol'}",
       "with walletbal [data,$] [tran,'[].walletbal',1,3] [pick] [done] [done,0]",
       "with frozen [data,$] [tran,'[].frozen',1,3] [pick] [done] [done,0]",
-      "done '$walletbal + $frozen'"
+      "math '$walletbal + $frozen'"
     ],
     "getOrderList/symbol/base" : [
       "with pair [data,'${symbol}_${base}'] [case,upper]",
