@@ -199,7 +199,19 @@
       "done"
     ],
     "block/blockId" : [
-      "call blockRaw/$blockId",
+      "peek blockId",
+      "void 1 3",
+      "data 'latest'",
+      "jump @getRawBlock",
+      "indx '0x'",
+      "flow -1 1 5",
+      "peek blockId",
+      "code dec hex",
+      "push '0x' 0",
+      "jump @getRawBlock",
+      "peek blockId",
+      "@getRawBlock",
+      "call blockRaw/$",
       "tran .result",
       "done"
     ],
