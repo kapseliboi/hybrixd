@@ -144,21 +144,17 @@
       "@fail",
       "fail "
     ],
-    "fee" : [
-      "poke opreturnFee 0",
-      "data $1",
-      "void @finalize 1",
-      "data '$1'",
+    "fee/bytes" : [
+      "poke bytesFee 0",
+      "test bytes 1 @finalize",
+      "peek bytes",
       "ship 2 2 2 1",
       "size",
-      "math '$*$feePerByte'",
-      "poke opreturnFee",
+      "math *$feePerByte",
+      "poke bytesFee",
       "@finalize",
       "peek local::fee $fee",
-      "math '$+$opreturnFee'",
-      "flow 'null' 1 2",
-      "data '$fee'",
-      "@feeDone"
+      "math +$bytesFee"
     ],
     "experimental_A" : [
       "# get latest block hash",
