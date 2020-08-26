@@ -11,10 +11,10 @@
       "time $syncTimeout",
       "call autosync"
     ],
-    "selectGetPeerIDs":[
+    "selectGetPeerIDs/nodeList":[
       "data ${.value}",
       "poke key",
-      "data $1",
+      "data $nodeList",
       "jpar",
       "tran '.$key' 1 4",
       "flat",
@@ -45,9 +45,9 @@
       "fail 'No peers connected!'",
       "done"
     ],
-    "list":[
+    "list/nodeID":[
       "time $readTimeout",
-      "rout e/transport/rout/$1/e/synchronize/pull",
+      "rout e/transport/rout/$nodeID/e/synchronize/pull",
       "# sort by last/first to pull newest stuff first!",
       "sort",
       "poke syncList",
@@ -78,32 +78,33 @@
       "loop @syncLoop cnt <$syncMax",
       "done $needUpdate"
     ],
-    "sync":[
+    "sync/nodeID":[
       "time $syncTimeout",
-      "# first get a list of items that need synchronization",
-      "poke nodeID $1",
       "call list/$nodeID",
       "# foreach through the list and synchronize the items",
-      "each syncItem/$nodeID",
+      "each syncItemWithPeer/$nodeID",
       "poke syncResult",
       "copy syncResult syncSuccess syncFailure",
       "with syncSuccess [excl,0] [size]",
       "with syncFailure [excl,1] [size]",
       "done {synced:$syncSuccess,failed:$syncFailure}"
     ],
-    "syncItem":[
+    "syncItemWithPeer/nodeID":[
       "time $readTimeout",
-      "data '${.value}'",
+      "tran .value",
       "void 'empty' @syncFail",
       "regx '^[\\w\\-]+$$' 1 @syncFail",
       "poke key",
-      "rout e/transport/rout/$1/e/storage/get/$key 1 @syncFail",
+      "rout e/transport/rout/$nodeID/e/storage/load/$key 1 @syncFail",
       "jpar",
       "save $key",
       "func sync/$key",
       "done 1",
       "@syncFail",
       "done 0"
+    ],
+    "sync-item/key":[
+      "func sync/$key"
     ],
     "autosync":[
       "time $syncTimeout",
@@ -116,8 +117,8 @@
       "@noPeers",
       "fail 'There are currently no peers connected to this node!'"
     ],
-    "queue": ["func queue/$1"],
-    "pull": ["func pull/$1"]
+    "queue/key": ["func queue/$key"],
+    "pull": ["func pull"]
   },
   "router" : {
     "_help" : "Control the storage synchronization engine.",
@@ -143,6 +144,13 @@
       "_ref" : {
         "_list" : "peer_ID",
         "_this" : "Specify the ID of the peer to synchronize with."
+      }
+    },
+    "sync-item":{
+      "_help" : "Synchronize a specific item.",
+      "_ref" : {
+        "_list" : "key",
+        "_this" : "Specify the key of the item to synchronize."
       }
     },
     "queue":{

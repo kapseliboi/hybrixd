@@ -15,7 +15,7 @@ function pullList () {
   return list;
 }
 
-function pull (proc, data) {
+function pull (proc) {
   const list = pullList();
   const result = [];
   for (let fileName of list) {
