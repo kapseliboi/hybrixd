@@ -38,11 +38,16 @@
     "block/blockNumber" : [
       "fail 'Not yet implemented!'"
     ],
+    "confirm/transactionId" : [
+      "call confirmed/$transactionId",
+      "true '$>=$confirmed' 1 2",
+      "done true",
+      "done false"
+    ],
     "confirmed/transactionId" : [
-      "call transaction/$transactionId",
-      "tran .confirmed 1 2",
-      "done",
-      "fail 'Could not get confirmations'"
+      "true transactionId 2 1",
+      "done $confirmed",
+      "fail 'Not yet implemented!'"
     ],
     "contract" : [
       "data '$contract'",
