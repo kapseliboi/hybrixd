@@ -56,6 +56,11 @@ function queue (proc, data) {
   writeSyncFile({key: key}, proc.done, proc.fail);
 }
 
-exports.writeSyncFile = writeSyncFile;
+function sync (proc) {
+  const key = proc.command[1];
+  writeSyncFile({key}, proc.done, proc.fail);
+}
+
 exports.queue = queue;
 exports.pull = pull;
+exports.sync = sync;
