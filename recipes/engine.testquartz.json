@@ -120,12 +120,23 @@
       "done $OK",
       "fail"
     ],
-
-    "find" : [
+     "find1" : [
       "data [{id:1,test:2},{id:3,test:4},{id:5,test:6}]",
       "find {id:5}",
       "data ${[0].test}",
       "flow 6 1 2",
+      "done $OK",
+      "fail"
+     ],
+    "find2" : [
+      "data 'hello world'",
+      "find hello 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "find3" : [
+      "data 'hello world'",
+      "find foobar 2 1",
       "done $OK",
       "fail"
     ],
@@ -862,6 +873,46 @@
       "true '2>1' 2 1",
       "fail",
       "done '$OK'"
+    ],
+    "type1":[
+      "data 1",
+      "type",
+      "flow number 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "type2":[
+      "data [1,2]",
+      "type",
+      "flow array 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "type3":[
+      "data [1,2]",
+      "type array 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "type4":[
+      "data [1,2]",
+      "type {array:1} 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "type5":[
+      "data [1,2]",
+      "poke tmp",
+      "type array 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "type6":[
+      "data [1,2]",
+      "poke tmp",
+      "type tmp {array:1} 2",
+      "done '$OK'",
+      "fail"
     ],
     "with1":[
       "data '$NOT_OK'",
