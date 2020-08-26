@@ -1,9 +1,10 @@
 {
   "symbol":"mock",
-  "name":"Mock coin (test coin for Internet of Coins)",
+  "name":"Mock coin (test coin for hybrix)",
   "module":"quartz",
   "mode":"mockcoin.main",
   "addressRegex":"^\\d{1,3}$",
+  "confirmed":1,
   "contract" :"main",
   "factor":8,
   "fee":0.15,
@@ -13,41 +14,36 @@
     "unspent" : [
       "done {}"
     ],
-    "balance" : [
-      "rout /engine/mockchain/balance/$contract/$1 1 3",
+    "balance/address" : [
+      "rout /engine/mockchain/balance/$contract/$address 1 3",
       "form",
       "done",
       "fail"
     ],
-    "push" : [
-      "data $1",
-      "with .factor data $factor",
-      "rout /engine/mockchain/push/$contract/$ 1 2",
-      "done",
-      "fail"
+    "push/rawTransaction" : [
+      "peek rawTransaction",
+      "with .factor peek factor",
+      "rout /engine/mockchain/push/$contract/$"
     ],
     "sample" : [
       "done {address:'123',transaction:'0'}"
     ],
-    "transaction" : [
-      "rout /engine/mockchain/transaction/$contract/$1 1 2",
-      "done",
-      "fail"
+    "transaction/transactionId" : [
+      "rout /engine/mockchain/transaction/$contract/$transactionId",
+      "done"
     ],
-    "message" : [
-      "rout /engine/mockchain/message/$contract/$1 1 2",
-      "done",
-      "fail"
+    "confirmed/transactionId" : [
+      "call transaction/$transactionId",
+      "done 1"
     ],
-    "attachment" : [
-      "rout /engine/mockchain/attachment/$contract/$1 1 2",
-      "done",
-      "fail"
+    "message/transactionId" : [
+      "rout /engine/mockchain/message/$contract/$transactionId"
     ],
-    "history" : [
-      "rout /engine/mockchain/history/$contract/$1/$2/$3 1 2",
-      "done",
-      "fail"
+    "history/address/count=12/offset=0" : [
+      "rout /engine/mockchain/history/$contract/$address/$count/$offset"
+    ],
+    "block/blockId" : [
+      "rout /engine/mockchain/block/$contract/$blockId"
     ]
   }
 }

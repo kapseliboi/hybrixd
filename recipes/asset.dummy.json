@@ -3,46 +3,56 @@
   "name":"Dummycoin (test coin for hybrix)",
   "module":"quartz",
   "mode":"dummycoin",
-  "addressRegex":"^_dummyaddress_$",
+  "addressRegex":"^_dummyaddress_$$",
   "factor":8,
-  "confirmed":2,
+  "confirmed":1,
   "fee-factor":8,
   "fee":0.15,
   "cache":10000,
   "throttle":10,
   "quartz":{
     "unspent" : [
-      "done [{amount:'$3',txid:'TXIDTXIDTXIDTXIDTXIDTXIDTXID',txn:1}]"
+      "done [{amount:'$3',txid:TXIDTXIDTXIDTXIDTXIDTXIDTXID,txn:1}]"
     ],
     "balance" : [
       "data '10000.00000000'"
     ],
     "push" : [
       "wait 3000",
-      "done 'TXIDTXIDTXIDTXIDTXIDTXIDTXID'"
+      "done TXIDTXIDTXIDTXIDTXIDTXIDTXID"
     ],
     "test": [
       "done {hash:'2698591A'}"
     ],
     "sample" : [
-      "stop {address:'_dummyaddress_',transaction:'TXIDTXIDTXIDTXIDTXIDTXIDTXID'}"
+      "stop {address:'_dummyaddress_',transaction:TXIDTXIDTXIDTXIDTXIDTXIDTXID}"
     ],
-    "transaction" : [
-      "data '$1'",
-      "flow 'TXIDTXIDTXIDTXIDTXIDTXIDTXID' 1 3",
-      "data {id:'TXIDTXIDTXIDTXIDTXIDTXIDTXID',timestamp:123456789,amount:'10', fee:'$fee', source:'_dummyaddress_',target:'_dummyaddress_', symbol:'$symbol','fee-symbol':'$symbol',confirmed:1}",
+    "confirmed/transactionId" : [
+      "flow transactionId TXIDTXIDTXIDTXIDTXIDTXIDTXID 2 1",
+      "fail 'Illegal transaction id.'",
+      "done 1"
+    ],
+    "block/blockId":[
+      "test blockId 2 1",
+      "done {transactions:[TXIDTXIDTXIDTXIDTXIDTXIDTXID], blockId:0}",
+      "peek blockId",
+      "ship 1 -2 1 1",
+      "fail 'Illegal block id.'"
+    ],
+    "transaction/transactionId" : [
+      "flow transactionId TXIDTXIDTXIDTXIDTXIDTXIDTXID 1 3",
+      "data {id:TXIDTXIDTXIDTXIDTXIDTXIDTXID,timestamp:123456789,amount:'10', fee:'$fee', source:_dummyaddress_,target:_dummyaddress_, symbol:$symbol,'fee-symbol':$symbol}",
       "jump @done",
       "fail 'Illegal transaction id.'",
       "@done"
     ],
-    "message" : [
-      "data '$1'",
-      "flow 'TXIDTXIDTXIDTXIDTXIDTXIDTXID' 1 2",
+    "message/transactionId" : [
+      "flow transactionId TXIDTXIDTXIDTXIDTXIDTXIDTXID 1 2",
       "done 'Hello World!'",
       "fail 'Illegal transaction id.'"
     ],
-    "history" : [
-      "done ['TXIDTXIDTXIDTXIDTXIDTXIDTXID']"
+    "history/address" : [
+      "done [TXIDTXIDTXIDTXIDTXIDTXIDTXID]"
     ]
   }
 }

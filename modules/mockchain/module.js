@@ -5,8 +5,9 @@
 const fs = require('fs');
 const Decimal = require('../../common/crypto/decimal-light.js');
 const TIME_RANGE = 30; // number of time intervals before exchange history is looped
-const MAX_NONYOU_ORDERS = 20;
+const MAX_NONYOU_ORDERS = 20; // for random order generation on the mockchange
 
+const BLOCK_SIZE = 5; // Size of a mock "block"
 // exports
 exports.mine = mine;
 exports.balance = balance;
@@ -16,6 +17,7 @@ exports.transaction = transaction;
 exports.message = message;
 exports.cron = cron;
 exports.serve = serve;
+exports.block = block;
 
 const filePath = '../modules/mockchain/test.mockchain.json';
 
@@ -168,6 +170,21 @@ function history (proc) {
   if (!isNaN(length) && length < history.length) history.length = length;
 
   return proc.done(history);
+}
+
+function block (proc) {
+  const contract = proc.command[1];
+  const mockchain = getMockchain();
+  const transactionIds = [];
+  if (mockchain === null) return proc.fail('This node does not support mockchain.');
+  for (let transactionId = 0; transactionId < mockchain.length; ++transactionId) {
+    const transaction = mockchain[transactionId];
+    if (transaction.contract === contract) transactionIds.push(transactionId);
+  }
+  let blockId = proc.command[2];
+  if (typeof blockId === 'undefined') blockId = Math.floor(transactionIds.length / BLOCK_SIZE);
+  const transactions = transactionIds.slice(Number(blockId) * BLOCK_SIZE, 5);
+  return proc.done({transactions, blockId});
 }
 
 function transaction (proc) {
