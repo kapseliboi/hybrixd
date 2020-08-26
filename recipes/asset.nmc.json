@@ -4,6 +4,7 @@
   "module":"quartz",
   "mode":"bitcoinjslib.namecoin",
   "factor":8,
+  "confirmed":6,
   "fee":0.001,
   "host": ["tcp://aristotle.coinomi.net:5016","tcp://plato.coinomi.net:5016"],
   "host_nohistory":["tcp://electrum2.cipig.net:10066","tcp://electrum1.cipig.net:10066"],

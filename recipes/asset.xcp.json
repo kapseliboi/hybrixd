@@ -4,6 +4,7 @@
   "module":"quartz",
   "mode":"bitcoinjslib.counterparty",
   "factor":8,
+  "confirmed":6,
   "longtimeout":60000,
   "feeCounterpartyTX":0.00000546,
   "fee-symbol":"btc",

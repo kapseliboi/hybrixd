@@ -5,6 +5,7 @@
   "import":"insight",
   "mode":"digibyte.livenet",
   "factor":8,
+  "confirmed":6,
   "fee":0.001,
   "host": {
     "default": ["https://digiexplorer.info/api"],

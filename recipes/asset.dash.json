@@ -5,6 +5,7 @@
   "module":"quartz",
   "mode":"dash.livenet",
   "factor":8,
+  "confirmed":6,
   "fee":0.0005,
   "feePerByte":0.00000001,
   "host": ["tcp://dash-1.indexer.coinomi.net:5013","tcp://dash-2.indexer.coinomi.net:5013"],

@@ -5,6 +5,7 @@
   "mode":"lisk.rise",
   "addressRegex":"^\\d{19}\\d?R$",
   "factor":8,
+  "confirmed":20,
   "fee":0.1,
   "fee-symbol":"rise",
   "contract":null,

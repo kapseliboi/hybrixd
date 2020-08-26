@@ -6,6 +6,7 @@
   "mode":"lisk.lisk",
   "addressRegex":"^\\d{19,20}L$",
   "factor":8,
+  "confirmed":100,
   "fee":0.1,
   "fee-symbol":"lsk",
   "contract":null,

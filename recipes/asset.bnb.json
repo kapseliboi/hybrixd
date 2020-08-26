@@ -5,6 +5,7 @@
   "module":"quartz",
   "addressRegex":"^bnb[A-Za-z0-9]{39}$",
   "factor":8,
+  "confirmed":2,
   "fee":"0.000375",
   "listOfHosts":[
     "https://testnet-dex.binance.org/api/v1/",

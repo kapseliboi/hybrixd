@@ -5,6 +5,7 @@
   "mode":"dummycoin",
   "addressRegex":"^_dummyaddress_$",
   "factor":8,
+  "confirmed":2,
   "fee-factor":8,
   "fee":0.15,
   "cache":10000,

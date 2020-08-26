@@ -6,6 +6,7 @@
   "mode":"nxt.elastic",
   "addressRegex":"^XEL(-[A-HJ-N-P-Z2-9]{4}){4}[A-HJ-N-P-Z2-9]$",
   "factor":8,
+  "confirmed":3,
   "fee":1,
   "fee-symbol":"xel",
   "host": ["http://mr-hyde.xeline.org:17876/nxt","https://wallet.xel.org/nxt"],

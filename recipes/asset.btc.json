@@ -5,6 +5,7 @@
   "module":"quartz",
   "mode":"bitcoinjslib.bitcoin",
   "factor":8,
+  "confirmed":6,
   "fee":0.000025,
   "feePerByte":0.0000002,
   "host": "https://insight.bitpay.com/api",

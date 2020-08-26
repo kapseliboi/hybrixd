@@ -4,8 +4,9 @@
   "module":"ethereum",
   "import":"eth-api",
   "mode":"ethereum.main",
-  "fee":0.00005,
   "factor":18,
+  "confirmed":12,
+  "fee":0.00005,
   "host": {
     "default": ["https://pyrus2.ubiqscan.io/","https://pyrus1.ubiqscan.io/"],
     "history": "https://v3.ubiqscan.io"

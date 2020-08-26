@@ -5,6 +5,7 @@
   "mode":"bitcoinjslib.florincoin",
   "addressRegex":"^\\F[a-zA-Z0-9]{33}$",
   "factor":8,
+  "confirmed":6,
   "fee":0.001,
   "byteFee":0.00001024,
   "host": "https://livenet.flocha.in/api",
