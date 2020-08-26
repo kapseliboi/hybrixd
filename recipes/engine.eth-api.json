@@ -6,6 +6,7 @@
   "throttle":1,
   "timeout":30000,
   "factor":18,
+  "confirmed":12,
   "fee":"0.0005",
   "feeContractTx":"0.0025",
   "gasPriceDefault":"0.000000020",
@@ -159,8 +160,7 @@
       "with txHeight [data,'${.blockNumber}'] [code,'hex','dec']",
       "with fee-symbol [call,'fee-symbol']",
       "with timestamp [call,'blockRaw/${.blockNumber}'] [tran,'.result.timestamp',2,1] [data,0] [code,'hex','dec'] [done]",
-      "with confirmed [call,'height'] [void,'false',3,1] [math,'-$txHeight'] [done] [done,0]",
-      "tran { id:'=.hash', timestamp:'$timestamp', height:'$txHeight', amount:'$txAmount', symbol:'$symbol', fee:'$txFee', 'fee-symbol':'$fee-symbol', source:'.from', target:'$txTarget', confirmed:'$confirmed' } @okayData @failData",
+      "tran { id:'=.hash', timestamp:'$timestamp', height:'$txHeight', amount:'$txAmount', symbol:'$symbol', fee:'$txFee', 'fee-symbol':'$fee-symbol', source:'.from', target:'$txTarget' } @okayData @failData",
       "@failData",
       "fail 'Cannot interpret transaction data!'",
       "@notTokenTx",
@@ -172,6 +172,21 @@
       "time $timeout",
       "call 'transactionData/$transactionId'",
       "call 'reformatTx/$transactionId'"
+    ],
+    "confirmed/transactionId" : [
+      "test transactionId @returnNumber",
+      "done $confirmed",
+      "@returnNumber",
+      "call transactionData/$transactionId",
+      "tran .blockNumber 1 @failed",
+      "code hex dec",
+      "poke txHeight",
+      "call height",
+      "void 'false' @failed 1",
+      "math '-$txHeight'",
+      "done",
+      "@failed",
+      "fail 'Cannot get confirmations!'"
     ],
     "attachment/transactionId" : [
       "time $timeout",
@@ -216,7 +231,7 @@
       "done"
     ],
     "height" : [
-      "call block/latest",
+      "call block",
       "tran .number 2 1",
       "fail 'Cannot get height!'",
       "code hex dec",
