@@ -5,6 +5,7 @@
   "mode":"nxt.burst",
   "addressRegex":"^(BURST-)?([A-HJ-N-P-Z2-9]{4}-){3}[A-Z0-9]{5}$",
   "factor":8,
+  "confirmed":3,
   "fee":1,
   "host": ["https://wallet1.burst-team.us:2083/burst","https://wallet.burst.cryptoguru.org:8125/burst","https://wallet2.burst-team.us:2083/burst"],
   "api-documentation":"https://burstwiki.org/en/",

@@ -6,6 +6,7 @@
   "import":"rise",
   "addressRegex":"^\\d{19}\\d?S$",
   "factor":8,
+  "confirmed":20,
   "fee":"0.1",
   "host": "https://wallet.shiftnrg.org",
   "cache":15000,

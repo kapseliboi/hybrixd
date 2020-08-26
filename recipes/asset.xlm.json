@@ -6,6 +6,7 @@
   "module": "quartz",
   "mode": "stellar",
   "factor": 7,
+  "confirmed":1,
   "fee": 0.001,
   "host": "https://horizon.stellar.org",
   "import": "transaction-history",

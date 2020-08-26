@@ -5,6 +5,7 @@
   "mode":"tron",
   "addressRegex":"^\\T[a-zA-Z0-9]{33}$",
   "factor":6,
+  "confirmed":20,
   "fee":0,
   "fee-symbol":"trx",
   "contract":null,

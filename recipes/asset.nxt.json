@@ -5,6 +5,7 @@
   "mode":"nxt.main",
   "addressRegex":"^NXT(-[A-HJ-N-P-Z2-9]{4}){4}[A-HJ-N-P-Z2-9]$",
   "factor":8,
+  "confirmed":3,
   "fee":1,
   "fee-symbol":"nxt",
   "chain":"",

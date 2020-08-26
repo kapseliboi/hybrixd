@@ -5,6 +5,7 @@
   "module":"quartz",
   "mode":"bitcoinjslib.dogecoin",
   "factor":8,
+  "confirmed":20,
   "fee":5,
   "host": ["tcp://doge-2.indexer.coinomi.net:5003","tcp://doge-1.indexer.coinomi.net:5003"],
   "hostOLD":["tcp://doge-2.indexer.coinomi.net:5003","tcp://electrum2.cipig.net:10060","tcp://doge-1.indexer.coinomi.net:5003","tcp://electrum1.cipig.net:10060"],

@@ -4,6 +4,7 @@
   "mode":"ark.main",
   "addressRegex":"^A\\w{33}$",
   "factor":8,
+  "confirmed":3,
   "fee":0.1,
   "fee-symbol":"ark",
   "contract":null,

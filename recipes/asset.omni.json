@@ -4,6 +4,7 @@
   "module":"quartz",
   "mode":"bitcoinjslib.omni",
   "factor":8,
+  "confirmed":6,
   "feeOmniTX":0.00000546,
   "fee-symbol":"btc",
   "keygen-base":"btc",

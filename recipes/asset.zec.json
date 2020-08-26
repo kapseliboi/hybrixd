@@ -7,6 +7,7 @@
   "addressRegex": "^t[13][a-km-zA-HJ-NP-Z1-9]{33}$",
   "mode":"zcash.livenet",
   "factor":8,
+  "confirmed":24,
   "fee":0.00001,
   "host": ["https://zcash.plutomonkey.com/api","https://explorer.zecmate.com/api"],
   "host_electrum_OLD":["tcp://electrum3.cipig.net:10058","tcp://electrum2.cipig.net:10058","tcp://electrum1.cipig.net:10058"],
