@@ -17,6 +17,9 @@
     "push/transaction" : [
       "fail 'Not yet implemented!'"
     ],
+    "height" : [
+      "fail 'Not yet implemented!'"
+    ],
     "history" : [
       "fail 'Not yet implemented!'"
     ],
@@ -31,6 +34,9 @@
     ],
     "mode" : [
       "peek mode default"
+    ],
+    "block/blockNumber" : [
+      "fail 'Not yet implemented!'"
     ],
     "confirmed/transactionId" : [
       "call transaction/$transactionId",
@@ -50,7 +56,7 @@
     "factor" : [
       "peek factor"
     ],
-    "fee" : [
+    "fee/bytes" : [
       "peek fee",
       "#TODO in case of default multi fees call fee-symbol",
       "#data {'$':'$fee'}"
@@ -184,7 +190,7 @@
     "details" : [
       "data {'contract':null,'factor':null,'fee':null,'fee-factor':null,'fee-symbol':null,'mode':null,'keygen-base':null,'unified-symbols':null}",
       "each subdetails",
-      "done {symbol:'$symbol',name:'$name',fee:'${.fee}',factor:'${.factor}',contract:'${.contract}',mode:'${.mode}','unified-symbols':${.unified-symbols},'fee-symbol':'${.fee-symbol}','fee-factor':'${.fee-factor}','keygen-base':'${.keygen-base}'}",
+      "done {symbol:'$symbol',name:'$name',fee:${.fee},factor:'${.factor}',contract:'${.contract}',mode:'${.mode}','unified-symbols':${.unified-symbols},'fee-symbol':'${.fee-symbol}','fee-factor':'${.fee-factor}','keygen-base':'${.keygen-base}'}",
       "#TODO remove fee, fee-symbol, fee-factor after multi fees have been fully implemented",
       "#data {'contract':null,'factor':null,'mode':null,'keygen-base':null,'unified-symbols':null}",
       "#each subdetails",

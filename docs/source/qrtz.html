@@ -9,11 +9,9 @@
             spawns a process that follows qrtz steps to a result, or a failure.</p>
 
           <p>A qrtz command always consists of 4 characters. The parameters are
-            appended in either a space or a comma-separated fashion:</p>
+            separated by spaces:</p>
 
           <p><code>head parameter1 parameter2 ...</code></p>
-
-          <p><code>head(parameter1,parameter2,...)</code></p>
 
           <h2><a id="recipe"></a>Recipe</h2>
 
@@ -35,18 +33,20 @@
 
 <pre><code class="language-html">data 'Hello dog!'       // data 'Hello dog!'    - set the data of the process
 drop -4                 // data 'Hello '        - drops the last 4 characters
-repl ' ' 'world!'       // data 'Hello world!'  - replaces the ' ' (space) by 'world!'
+repl ' ' ' world!'       // data 'Hello world!'  - replaces the ' '  (space) by ' world!'
 </code></pre>
 
-          <h2><a id="var-and-scope"></a>Variables & Scopes</h2>
+          <h2><a id="var-and-scope"></a>Variables and scopes</h2>
 
           <p><code>$</code> the main stream variable it is the output of the previous step. Use <code>$$</code> to escape the dollar sign (for example in regular expressions). </p>
-          <p><code>$.property</code></p>
+          <p><code>$variable</code>  Retrieve a property from the recipe scope (read only)or process scope if no recipe variable is found.</p>
+          <p><code>$local::variable</code> Use a local scope (maintained between all processes spawned from the same recipe).</p>
+          <p><code>$otherRecipe::variable</code> the recipe scope of another recipe (read-only)</p>
 
-          <p><code>$variable</code>  Retrieve a property from the recipe.(read only) (falls back to proc:: scope if no recipe variable is found)</p>
-          <p><code>$local::variable</code>  or <code>$::variable</code> Use a local scope (maintained between all processes spawned from the same recipe).</p>
-          <p><code>$proc::variable</code> process scope.</p>
-          <p><code>$otherRecipe::variable</code> the local scope of another recipe (read-only)</p>
+        <p><code>${.property}</code>  To retrieve a sub properties
+        of objects and arrays. For example: if data
+        is <code>{a:{b:1}}}</code> then <code>${.a.b}</code> will
+        return <code>1</code> </p>
 
           <h2><a id="debugging"></a>Debugging</h2>
 
@@ -100,7 +100,7 @@ pid: 1575447893066808
 This interface is similar to the cli interface but includes live updated progress views.
 
 
-          <h2><a id="shell"></a>Shell</h2>
+<h2><a id="shell"></a>Shell</h2>
 
 <p>qrtz can be ran as a shell and interactive mode.</p>
 
@@ -154,4 +154,4 @@ $
 </pre></p>
 
 
-          <h2><a id="reference"></a>Reference</h2>
+<h2><a id="reference"></a>Reference</h2>
