@@ -3,24 +3,26 @@
   "name":"Mockchain Explorer.",
   "module":"mockchain",
   "quartz":{
-    "mine" : ["func 'mine/$1/$2/$3'"],
-    "balance" : [
-      "data '$1'",
-      "flow {'main':1} 3",
-      "rout '/asset/mock/factor'",
+    "mine/contract/address/amount" : ["func 'mine/$contract/$address/$amount'"],
+    "balance/contract/address" : [
+      "flow contract {main:1} 3",
+      "rout /asset/mock/factor",
       "jump 2",
-      "rout '/asset/mock.$1/factor'",
-      "poke 'factorValue'",
-      "func 'balance/$1/$2'",
+      "rout '/asset/mock.$contract/factor'",
+      "poke factorValue",
+      "func balance/$contract/$address",
       "form '$factorValue'",
       "done"
     ],
-    "history" : ["func 'history/$1/$2/$3/$4'"],
-    "push" : ["func 'push/$1/$2'"],
-    "transaction" : [
-      "func 'transaction/$1/$2'"
+    "history/contract/address/count/offset" : ["func 'history/$contract/$address/$count/$offset'"],
+    "push/contract/rawTransaction" : ["func 'push/$contract/$rawTransaction'"],
+    "transaction/contract/transactionId" : [
+      "func 'transaction/$contract/$transactionId'"
     ],
-    "message" : ["func 'message/$1/$2'"]
+    "block/contract/blockId" : [
+      "func 'block/$contract/$blockId'"
+    ],
+    "message/contract/transactionId" : ["func 'message/$contract/$transactionId'"]
   },
   "router" : {
     "balance" : {
@@ -66,9 +68,21 @@
         }
       }
     },
+    "block" : {
+      "_ref" : {
+        "_list" : "contract",
+        "_this" : "Retrieve latest block details",
+        "_sample": "btc",
+        "_ref" : {
+          "_list" : "blockId",
+          "_sample": "0",
+          "_this" : "Retrieve block details"
+        }
+      }
+    },
     "history" : {
       "_ref" : {
-        "_list" : "symbol",
+        "_list" : "contract",
         "_sample": "btc",
         "_ref" : {
           "_list" : "address",
@@ -98,6 +112,5 @@
         }
       }
     }
-
   }
 }
