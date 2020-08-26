@@ -46,7 +46,7 @@
         "_help" : "Get confirmation status.",
         "_ref" : {
           "_list" : "transaction_id",
-          "_sample" : "$TRANSACTION_ID",
+          "_sample" : "0xe0cd97b697857b5a8e07f9208366511e212ef42e315bfb2f8ee5e473ac346695",
           "_this": "Retrieve the confirmation status for a given a transaction ID.",
           "_response": {"error":0,"info":"Process data.","id":"1519829794295742","progress":1,"started":1519829799292,"stopped":1519829799316,"data":true}
         }
@@ -55,7 +55,7 @@
         "_this" : "Get confirmation count. No input returns needed confirmations in general for the ledger.",
         "_ref" : {
           "_list" : "transaction_id",
-          "_sample" : "$TRANSACTION_ID",
+          "_sample" : "0xe0cd97b697857b5a8e07f9208366511e212ef42e315bfb2f8ee5e473ac346695",
           "_this": "Retrieve the confirmation count for a given a transaction ID.",
           "_response": {"error":0,"info":"Process data.","id":"1519829794295742","progress":1,"started":1519829799292,"stopped":1519829799316,"data":"500"}
         }
