@@ -19,9 +19,10 @@
       "@dataGet",
       "data {key:'$key',value:'$value'}",
       "func save",
+      "poke work",
       "rout /e/synchronize/sync-item/$key 2 1",
       "warn 'Sync failed for $key'",
-      "done"
+      "peek work"
     ],
     "work/key/proof": ["func work/$key/$proof"],
     "size": ["func size"],
