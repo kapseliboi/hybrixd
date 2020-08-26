@@ -47,7 +47,10 @@
     "confirmed/transactionId" : [
       "true transactionId 2 1",
       "done $confirmed",
-      "fail 'Not yet implemented!'"
+      "call transaction/$transactionId",
+      "tran .confirmed 1 2",
+      "done",
+      "fail 'Could not get confirmations!'"
     ],
     "contract" : [
       "data '$contract'",
