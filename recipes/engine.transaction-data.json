@@ -24,7 +24,7 @@
       "fork 'save/$1'",
       "done $tx"
     ],
-    "confirmed/txID" : [
+    "getConfirmed/txID" : [
       "poke fileName ${txID}-${symbol}-transaction",
       "seek $fileName 1 @retrieve",
       "meta $fileName",

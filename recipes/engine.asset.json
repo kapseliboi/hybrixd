@@ -45,8 +45,11 @@
       "done false"
     ],
     "confirmed/transactionId" : [
-      "true transactionId 2 1",
+      "test transactionId 2 1",
       "done $confirmed",
+      "call getConfirmed/$transactionId"
+    ],
+    "getConfirmed/transactionId" : [
       "call transaction/$transactionId",
       "tran .confirmed 1 2",
       "done",
