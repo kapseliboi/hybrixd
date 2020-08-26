@@ -39,15 +39,24 @@
           "_list" : "block_number",
           "_sample" : "1",
           "_this": "Retrieve block information by specifying the block number. Omitting this input will return the latest block.",
-	  "_response": {"difficulty": "0x942",  "transactions": [ "0xe0cd97b697857b5a8e07f9208366511e212ef42e315bfb2f8ee5e473ac346695", "0xa58e8947fbeb41dc92d8ee043e540ffcbac6b3df0db43d05c392b2ac5d4ad8d6" ],
+	  "_response": {"timestamp":"1515829438958","transactions":["0xe0cd97b697857b5a8e07f9208366511e212ef42e315bfb2f8ee5e473ac346695","0xa58e8947fbeb41dc92d8ee043e540ffcbac6b3df0db43d05c392b2ac5d4ad8d6"]}
         }
       },
-      "confirmed":{
-        "_help" : "Get confirmation status for a transaction information.",
+      "confirm":{
+        "_help" : "Get confirmation status.",
         "_ref" : {
           "_list" : "transaction_id",
           "_sample" : "$TRANSACTION_ID",
           "_this": "Retrieve the confirmation status for a given a transaction ID.",
+          "_response": {"error":0,"info":"Process data.","id":"1519829794295742","progress":1,"started":1519829799292,"stopped":1519829799316,"data":true}
+        }
+      },
+      "confirmed":{
+        "_this" : "Get confirmation count. No input returns needed confirmations in general for the ledger.",
+        "_ref" : {
+          "_list" : "transaction_id",
+          "_sample" : "$TRANSACTION_ID",
+          "_this": "Retrieve the confirmation count for a given a transaction ID.",
           "_response": {"error":0,"info":"Process data.","id":"1519829794295742","progress":1,"started":1519829799292,"stopped":1519829799316,"data":"500"}
         }
       },
