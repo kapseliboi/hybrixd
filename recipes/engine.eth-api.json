@@ -173,10 +173,7 @@
       "call 'transactionData/$transactionId'",
       "call 'reformatTx/$transactionId'"
     ],
-    "confirmed/transactionId" : [
-      "test transactionId @returnNumber",
-      "done $confirmed",
-      "@returnNumber",
+    "getConfirmed/transactionId" : [
       "call transactionData/$transactionId",
       "tran .blockNumber 1 @failed",
       "code hex dec",

@@ -202,7 +202,7 @@
       "with txSources [excl,null] [excl,$txTargets] [uniq]",
       "with txSources [join,',']",
       "with txTargets [join,',']",
-      "data {'sources':$txSources,'targets':$txTargets}",
+      "data {'sources':'$txSources','targets':'$txTargets'}",
       "done"
     ],
     "attachment" : [
@@ -215,8 +215,7 @@
       "splt '\"'",
       "tran '[0]' 2 @empty",
       "@empty",
-      "data null",
-      "done"
+      "data null"
     ],
     "message" : [
       "time $longtimeout",
@@ -224,15 +223,7 @@
       "data '$'",
       "flow 'null' 1 2",
       "done ''",
-      "code hex utf8",
-      "done"
-    ],
-    "confirmed" : [
-      "time $longtimeout",
-      "call transactionData/$1",
-      "tran .vout 1 @empty",
-      "tran '=.confirmations|0'",
-      "done"
+      "code hex utf8"
     ],
     "getHistory" : [
       "poke count $2 12",
@@ -245,8 +236,7 @@
       "tran '.result' 1 -1",
       "sort 'desc' '.height'",
       "tran '[].tx_hash'",
-      "take $offset $count",
-      "done"
+      "take $offset $count"
     ],
     "status" : [
       "time $timeout",
