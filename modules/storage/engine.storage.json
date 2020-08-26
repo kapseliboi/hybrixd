@@ -4,54 +4,35 @@
   "module":"storage",
   "cron" : 300,
   "quartz"  : {
-    "get":[
-      "data {key:'$1'}",
+    "load/key":[
+      "data {key:'$key'}",
       "func load",
       "mime file:data",
       "file",
       "done"
     ],
-    "load":[
-      "data {key:'$1'}",
-      "func load",
-      "mime file:data",
-      "file",
-      "done"
-    ],
-    "set":[
+    "save/key/value":[
       "test @dataPost @dataGet",
       "@dataPost",
-      "data {key:'$1',value:'$'}",
+      "data {key:'$key',value:'$'}",
       "jump 2",
       "@dataGet",
-      "data {key:'$1',value:'$2'}",
-      "func 'save'",
-      "sync '$1' 2 1",
-      "warn 'Sync failed for $1'",
+      "data {key:'$key',value:'$value'}",
+      "func save",
+      "rout /e/synchronize/sync-item/$key 2 1",
+      "warn 'Sync failed for $key'",
       "done"
     ],
-    "save":[
-      "test @dataPost @dataGet",
-      "@dataPost",
-      "data {key:'$1',value:'$'}",
-      "jump 2",
-      "@dataGet",
-      "data {key:'$1',value:'$2'}",
-      "func 'save'",
-      "sync '$1' 2 1",
-      "warn 'Sync failed for $1'",
-      "done"
-    ],
-    "work": ["func work/$1/$2"],
-    "size": ["func size/$1"],
-    "seek": ["func seek/$1"],
-    "seek": ["func seek/$1"],
-    "burn": ["func burn/$1"],
-    "meta": ["func meta/$1"]
+    "work/key/proof": ["func work/$key/$proof"],
+    "size": ["func size"],
+    "seek/key": ["func seek/$key"],
+    "burn/key": ["func burn/$key"],
+    "meta/key": ["func meta/$key"]
   },
   "router" : {
     "_help" : "Control the decentralized storage engine.",
     "size":{
+      "_access" : "root",
       "_this" : "Return total size of local storage."
     },
     "seek":{
@@ -68,7 +49,6 @@
         "_this" : "Specify the ID key to get storage from."
       }
     },
-    "get":{"_alias":"load"},
     "save":{
       "_help" : "Save data to storage.",
       "_ref" : {
@@ -80,7 +60,6 @@
         }
       }
     },
-    "set":{"_alias":"save"},
     "burn":{
       "_access" : "root",
       "_help" : "Delete data from storage.",
