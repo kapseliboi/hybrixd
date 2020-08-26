@@ -100,7 +100,7 @@
       "rout e/transport/rout/$1/e/storage/get/$key 1 @syncFail",
       "jpar",
       "save $key",
-      "sync $key",
+      "func sync/$key",
       "done 1",
       "@syncFail",
       "done 0"
@@ -117,7 +117,7 @@
       "fail 'There are currently no peers connected to this node!'"
     ],
     "queue": ["func queue/$1"],
-    "pull": ["func pull/$1"]    
+    "pull": ["func pull/$1"]
   },
   "router" : {
     "_help" : "Control the storage synchronization engine.",
