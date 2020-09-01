@@ -746,6 +746,19 @@
       "done '$OK'",
       "fail"
     ],
+    "regx1" : [
+      "data applepie",
+      "regx ^apple 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "regx2" : [
+      "data applepie",
+      "poke tmp",
+      "regx tmp ^apple 1 2",
+      "done '$OK'",
+      "fail"
+    ],
     "shuf1" : [
       "data [1,2,3]",
       "shuf 1",
@@ -787,6 +800,36 @@
       "data {a:1,...[1,2],b:2}",
       "jstr",
       "flow '{\"0\":1,\"1\":2,\"a\":1,\"b\":2}' 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "take1" : [
+      "data abcdefg",
+      "take 2",
+      "flow cdefg 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "take2" : [
+      "data abcdefg",
+      "take 2 3",
+      "flow cde 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "take3" : [
+      "data [a,b,c,d,e,f,g]",
+      "take 2",
+      "join ,",
+      "flow c,d,e,f,g 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "take4" : [
+      "data [a,b,c,d,e,f,g]",
+      "take 2 3",
+      "join ,",
+      "flow c,d,e 1 2",
       "done '$OK'",
       "fail"
     ],
