@@ -1,3 +1,25 @@
+# v0.7.31
+## Happy Purple Gremlin
+## 01-09-2020
+
+* Added syscoin token, thanks LucidLunacy!
+* Added support for tomo
+* Added support for Folgory exchange
+* Remove standalone sync command
+* Update to /confirmed and /confirm endpoints
+* Added /block endpoint
+* Added history tests
+* Added storage tests
+* qrtz: Add help and import to qrtz cli
+* qrtz: type flow
+* qrtz: improve find for string
+* qrzt: Handle empty string not as number
+* qrtz: ship with variable name
+
+
+
+
+
 # v0.7.30
 ## Curly Green Leprechaun
 ## 20-08-2020
