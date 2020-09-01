@@ -24,6 +24,15 @@
       "warn 'Sync failed for $key'",
       "peek work"
     ],
+    "get/key" : [
+      "#TODO depriciated",
+      "call load/$key"
+    ],
+    "set/key/value" : [
+      "#TODO depriciated",
+      "call save/$key/$value"
+    ],
+
     "work/key/proof": ["func work/$key/$proof"],
     "size": ["func size"],
     "seek/key": ["func seek/$key"],
@@ -61,6 +70,27 @@
         }
       }
     },
+    "get":{
+      "_hidden":true,
+      "_help" : "Load data from storage.",
+      "_ref" : {
+        "_list" : "storage_id",
+        "_this" : "Specify the ID key to get storage from."
+      }
+    },
+    "set":{
+      "_hidden":true,
+      "_help" : "Save data to storage.",
+      "_ref" : {
+        "_list" : "storage_id",
+        "_this" : "Specify the ID key to save storage to.",
+        "_ref" : {
+          "_list" : "data",
+          "_this" : "Specify the data string value to be saved."
+        }
+      }
+    },
+
     "burn":{
       "_access" : "root",
       "_help" : "Delete data from storage.",
