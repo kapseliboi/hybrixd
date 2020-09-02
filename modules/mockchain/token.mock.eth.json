@@ -5,10 +5,5 @@
   "factor":8,
   "fee":"0.0",
   "fee-symbol": "mock.eth",
-  "import":"mock",
-  "quartz":{
-    "sample":[
-      "stop(0,{address:'638',transaction:'1'})"
-    ]
-  }
+  "import":"mock"
 }

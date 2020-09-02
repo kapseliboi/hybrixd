@@ -22,7 +22,8 @@
     "block/contract/blockId" : [
       "func 'block/$contract/$blockId'"
     ],
-    "message/contract/transactionId" : ["func 'message/$contract/$transactionId'"]
+    "message/contract/transactionId" : ["func 'message/$contract/$transactionId'"],
+    "sample/contract" : ["func 'sample/$contract'"]
   },
   "router" : {
     "balance" : {
@@ -34,6 +35,13 @@
           "_sample": "123",
           "_this" : "Retrieve the balance for a given contract asset. Use the mine command to fill the balance."
         }
+      }
+    },
+    "sample" : {
+      "_ref" : {
+        "_list" : "contract",
+        "_this" : "Retrieve a valid sample for this asset.",
+        "_sample": "btc"
       }
     },
     "push" : {

@@ -26,7 +26,7 @@
       "rout /engine/mockchain/push/$contract/$"
     ],
     "sample" : [
-      "done {address:'123',transaction:'0'}"
+      "rout /engine/mockchain/sample/$contract"
     ],
     "transaction/transactionId" : [
       "rout /engine/mockchain/transaction/$contract/$transactionId",
