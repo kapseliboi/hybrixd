@@ -12,7 +12,8 @@ echo "[i] Running hybrix-jslib tests"
 
 cd $NODE/scripts/test
 
-node "$NODE/scripts/test/hybrix-jslib.js"
+#Pass optional debug argument
+node "$NODE/scripts/test/hybrix-jslib.js" $@
 
 if [ "$?" -ne 0  ]; then
     echo "[!] hybrix-jslib tests failed!"
