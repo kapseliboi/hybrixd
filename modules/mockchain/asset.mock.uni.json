@@ -1,0 +1,6 @@
+{
+  "symbol":"mock.uni",
+  "name":"Unified test asset for hybrix",
+  "import":"unified-asset",
+  "unified-symbols" : {"mock.btc":1,"mock.eth":1}
+}

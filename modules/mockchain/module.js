@@ -18,6 +18,7 @@ exports.message = message;
 exports.cron = cron;
 exports.serve = serve;
 exports.block = block;
+exports.sample = sample;
 
 const filePath = '../modules/mockchain/test.mockchain.json';
 
@@ -163,7 +164,7 @@ function history (proc) {
   for (let transactionId = 0; transactionId < mockchain.length; ++transactionId) {
     const transaction = mockchain[transactionId];
     if ((Number(transaction.target) === address || Number(transaction.source) === address) && transaction.contract === contract) {
-      history.unshift(transactionId);
+      history.unshift(String(transactionId));
     }
   }
   if (!isNaN(offset)) history.splice(0, offset);
@@ -187,6 +188,16 @@ function block (proc) {
   return proc.done({transactions, blockId});
 }
 
+function sample (proc) {
+  const contract = proc.command[1];
+  const mockchain = getMockchain();
+  for (let transactionId = 0; transactionId < mockchain.length; ++transactionId) {
+    const transaction = mockchain[transactionId];
+    if (transaction.contract === contract) return proc.done({address: String(transaction.address), transaction: String(transactionId)});
+  }
+  return proc.done({address: 123, transaction: 1});
+}
+
 function transaction (proc) {
   const mockchain = getMockchain();
   if (mockchain === null) return proc.fail('This node does not support mockchain.');
@@ -199,14 +210,14 @@ function transaction (proc) {
     if (transaction.contract !== contract) return proc.fail('transaction belongs to ' + transaction.contract + ' mockchain');
     else {
       const normalizedTransaction = {
-        id: transaction.id,
+        id: String(transaction.id),
         timestamp: transaction.timestamp,
         amount: transaction.amount,
         symbol: transaction.contract === 'main' ? 'mock' : 'mock.' + transaction.contract,
         fee: transaction.fee || '0',
         'fee-symbol': transaction.contract === 'main' ? 'mock' : 'mock.' + transaction.contract,
-        source: transaction.source || 'unknown',
-        target: transaction.target || 'unknown',
+        source: String(transaction.source) || 'unknown',
+        target: String(transaction.target) || 'unknown',
         confirmed: 1
       };
       return proc.done(normalizedTransaction);

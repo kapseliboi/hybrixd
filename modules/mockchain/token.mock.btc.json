@@ -7,9 +7,6 @@
   "fee-symbol": "mock.btc",
   "import":"mock",
   "quartz":{
-    "sample":[
-      "done {address:'638',transaction:'1'}"
-    ],
     "test":[
       "done {hash:'dynamic'}"
     ]
