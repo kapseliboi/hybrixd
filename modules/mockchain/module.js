@@ -26,7 +26,7 @@ function getMockchain () {
   try {
     const mockchain = fs.existsSync(filePath)
       ? JSON.parse(fs.readFileSync(filePath, 'utf8'))
-      : [{'type': 'mine', 'timestamp': 1590486950, 'contract': 'btc', 'target': 543, 'amount': 100, 'id': 0}, {'type': 'mine', 'timestamp': 1590487060, 'contract': 'btc', 'target': 543, 'amount': 100, 'id': 1}, {'source': 543, 'target': 123, 'contract': 'btc', 'amount': 10.2, 'fee': {'mock.btc': 0.01}, 'signature': 1023209792, 'message': '', 'timestamp': 1591096822, 'id': 2, 'type': 'tran'}, {'source': 543, 'target': 123, 'contract': 'btc', 'amount': 10.3, 'fee': {'mock.btc': 0.01}, 'signature': 1033209792, 'message': '', 'timestamp': 1591097334, 'id': 3, 'type': 'tran'}, {'source': 543, 'target': 123, 'contract': 'btc', 'amount': 32, 'fee': {'mock.btc': 0.01}, 'signature': 3203209792, 'message': '', 'timestamp': 1591097773, 'id': 4, 'type': 'tran'}];
+      : [{'type': 'mine', 'timestamp': 1590486950, 'contract': 'btc', 'source': 'unknown', 'target': 543, 'amount': 100, 'id': 0}, {'type': 'mine', 'source': 'unknown', 'timestamp': 1590487060, 'contract': 'btc', 'target': 543, 'amount': 100, 'id': 1}, {'source': 543, 'target': 123, 'contract': 'btc', 'amount': 10.2, 'fee': {'mock.btc': 0.01}, 'signature': 1023209792, 'message': '', 'timestamp': 1591096822, 'id': 2, 'type': 'tran'}, {'source': 543, 'target': 123, 'contract': 'btc', 'amount': 10.3, 'fee': {'mock.btc': 0.01}, 'signature': 1033209792, 'message': '', 'timestamp': 1591097334, 'id': 3, 'type': 'tran'}, {'source': 543, 'target': 123, 'contract': 'btc', 'amount': 32, 'fee': {'mock.btc': 0.01}, 'signature': 3203209792, 'message': '', 'timestamp': 1591097773, 'id': 4, 'type': 'tran'}];
     return mockchain;
   } catch (e) {
     return null;
@@ -41,7 +41,7 @@ function mine (proc) {
   const target = Number(proc.command[2]);
   const amount = Number(proc.command[3]);
   const timestamp = Math.round(Date.now() * 0.001);
-  const newTransaction = {type: 'mine', timestamp, contract, target, amount, id: mockchain.length};
+  const newTransaction = {type: 'mine', timestamp, contract, source: 'unknown', target, amount, id: mockchain.length};
 
   mockchain.push(newTransaction);
   fs.writeFileSync(filePath, JSON.stringify(mockchain));
@@ -217,8 +217,7 @@ function transaction (proc) {
         fee: transaction.fee || '0',
         'fee-symbol': transaction.contract === 'main' ? 'mock' : 'mock.' + transaction.contract,
         source: String(transaction.source) || 'unknown',
-        target: String(transaction.target) || 'unknown',
-        confirmed: 1
+        target: String(transaction.target) || 'unknown'
       };
       return proc.done(normalizedTransaction);
     }

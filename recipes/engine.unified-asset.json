@@ -125,8 +125,8 @@
       "poke [subSymbol,subTransactionId]",
       "rout /a/$subSymbol/transaction/$subTransactionId",
       "with .id push '$subSymbol:' 0",
-      "with .source push '$subSymbol:' 0",
-      "with .target push '$subSymbol:' 0",
+      "with .source [flow, unknown, 1, 2] [done] [push,'$subSymbol:',0]",
+      "with .target [flow, unknown, 1, 2] [done] [push,'$subSymbol:',0]",
       "poke .symbol $symbol",
       "done"
     ],
