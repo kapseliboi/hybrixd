@@ -193,7 +193,7 @@ function sample (proc) {
   const mockchain = getMockchain();
   for (let transactionId = 0; transactionId < mockchain.length; ++transactionId) {
     const transaction = mockchain[transactionId];
-    if (transaction.contract === contract) return proc.done({address: String(transaction.address), transaction: String(transactionId)});
+    if (transaction.contract === contract) return proc.done({address: String(transaction.target || transaction.source || 123), transaction: String(transactionId)});
   }
   return proc.done({address: 123, transaction: 1});
 }
