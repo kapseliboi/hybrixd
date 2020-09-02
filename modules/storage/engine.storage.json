@@ -37,7 +37,8 @@
     "size": ["func size"],
     "seek/key": ["func seek/$key"],
     "burn/key": ["func burn/$key"],
-    "meta/key": ["func meta/$key"]
+    "meta/key": ["func meta/$key"],
+    "list/pattern": ["func list/$pattern"]
   },
   "router" : {
     "_help" : "Control the decentralized storage engine.",
@@ -123,6 +124,14 @@
       "_ref" : {
         "_list" : "storage_id",
         "_this" : "Specify the ID key to get metadata for."
+      }
+    },
+    "list":{
+      "_access":"root",
+      "_help" : "Get list of matching storage ids.",
+      "_ref" : {
+        "_list" : "pattern",
+        "_this" : "Specify the pattern to seek matching storage ids."
       }
     }
   }

@@ -3,6 +3,7 @@ const http = require('http');
 const Hybrix = require('../../interface/hybrix-lib.nodejs.js');
 const TEST_DIRECTORY = './hybrix-jslib/';
 
+if (process.argv[2] === 'debug') DEBUG = true;
 const testResults = {};
 let failed = 0;
 
@@ -40,7 +41,6 @@ function runTest (fileName) {
     }
   };
   hybrix.sequential([
-    'init',
     {host: 'http://localhost:1111'}, 'addHost'
 
   ].concat(steps), handleResponse(true), handleResponse(false));
