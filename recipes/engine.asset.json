@@ -209,6 +209,55 @@
     ],
     "subdetails" : [
       "call '${.key}'"
+    ],
+    "transaction-details/source/amount/target/bytes/publicKey" : [
+      "test target 1 3",
+      "call validate/$target",
+      "jump 2",
+      "data 'n/a'",
+      "poke targetValid",
+
+      "call validate/$source",
+      "poke sourceValid",
+      "flow invalid 1 2",
+      "done {source:invalid,target:$targetValid,unspent:'n/a',balances:'n/a',max-amount:0, fee:'n/a'}",
+      "call balance/$source",
+      "poke balance",
+
+      "call fee-balance/$source",
+      "poke balances",
+
+      "call fee/$bytes",
+      "type {object:2} 1",
+      "data {$fee-symbol:$}",
+      "poke feeObject",
+      "pick $symbol",
+      "flow 'undefined' @noFeeInOwnSymbol 1",
+      "math ${balance}-$",
+      "jump @storeMaxAmount",
+      "@noFeeInOwnSymbol",
+      "peek balance",
+      "poke balances[$symbol] $",
+      "@storeMaxAmount",
+      "form",
+      "poke max-amount",
+
+      "#determine if balance - fee < 0 for any fee symbol",
+      "data [$balances,$feeObject]",
+      "merg -",
+      "flat",
+      "pick 1",
+      "math min",
+      "true <0 1 @hasSufficientFees",
+      "data 0",
+      "form",
+      "poke max-amount",
+      "@hasSufficientFees",
+      "call unspent/$source/$amount/$target/$publickKey",
+      "poke unspent",
+      "flow targetValid invalid 1 2",
+      "done {source:$sourceValid,target:$targetValid,unspent:$unspent, balances:$balances, max-amount:0, fee: 'n/a'}",
+      "done {source:$sourceValid,target:$targetValid,unspent:$unspent, balances:$balances, max-amount:$max-amount, fee: $feeObject}"
     ]
   }
 }

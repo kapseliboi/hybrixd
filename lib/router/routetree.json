@@ -33,13 +33,41 @@
           "_this": "Query an address to get its sub balance details."
         }
       },
+      "transaction-details":{
+        "_help":"Get details required to prepare a transaction.",
+        "_ref" : {
+          "_this": "Specify the source address from which you wish to retrieve transaction details.",
+          "_list" : "source_address",
+          "_sample" : "_dummyaddress_",
+          "_ref" : {
+            "_list" : "amount",
+            "_sample" : "100",
+            "_this" : "Specify the amount to retrieve transaction details for.",
+            "_ref" : {
+              "_list" : "target_address",
+              "_sample" : "_dummyaddress_",
+              "_this" : "Specify the target address to retrieve transaction details for.",
+              "_ref" : {
+                "_list" : "public_key",
+                "_sample" : "_dummypublickey_",
+                "_this" : "Optional: specify the public key (needed for certain cryptocurrencies, like NXT for example).",
+                "_ref" : {
+                  "_list" : "message",
+                  "_sample" : "My transaction message",
+                  "_this" : "Optional: specify a message to be send with the transaction."
+                }
+              }
+            }
+          }
+        }
+      },
       "block":{
         "_this" : "Get data from a block.",
         "_ref" : {
           "_list" : "block_number",
           "_sample" : "1",
           "_this": "Retrieve block information by specifying the block number. Omitting this input will return the latest block.",
-	  "_response": {"timestamp":"1515829438958","transactions":["0xe0cd97b697857b5a8e07f9208366511e212ef42e315bfb2f8ee5e473ac346695","0xa58e8947fbeb41dc92d8ee043e540ffcbac6b3df0db43d05c392b2ac5d4ad8d6"]}
+          "_response": {"timestamp":"1515829438958","transactions":["0xe0cd97b697857b5a8e07f9208366511e212ef42e315bfb2f8ee5e473ac346695","0xa58e8947fbeb41dc92d8ee043e540ffcbac6b3df0db43d05c392b2ac5d4ad8d6"]}
         }
       },
       "confirm":{
