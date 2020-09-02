@@ -5,6 +5,7 @@
   "module":"ethereum",
   "import":"eth-api",
   "mode":"ethereum.main",
+  "keygen-base":"eth",
   "throttle":6,
   "host": {
     "default": ["https://rpc.tomochain.com"],
