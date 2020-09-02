@@ -1,3 +1,12 @@
+# v0.7.32
+## Furry Purple Elf
+## 02-09-2020
+
+* Patch to ship 
+
+
+
+
 # v0.7.31
 ## Happy Purple Gremlin
 ## 01-09-2020
