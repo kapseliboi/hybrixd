@@ -20,8 +20,9 @@ function hystat (proc) {
     case 'supplyFactor': proc.done(proc.peek('factor', DEFAULT_FACTOR)); return;
     case 'currentPrice': proc.done(proc.peek('local::rate', DEFAULT_RATE)); return;
     case 'currentVolume': proc.done(proc.peek('local::volume', DEFAULT_VOLUME)); return;
+    case 'ethTokenList': proc.done(proc.peek('local::ethTokenList', null)); return;
   }
-  proc.fail('Unknown command');
+  proc.fail('Unknown command!');
 }
 
 // exports

@@ -1,0 +1,11 @@
+{
+    "symbol":"eth.yfi",
+    "name":"yearn.finance (ETH)",
+    "info":"<p>yearn.finance is a decentralized ecosystem of aggregators that utilize lending services such as Aave, Compound, Dydx, and Fulcrum to optimize your token lending.</p>",
+    "module":"ethereum",
+    "import":"eth",
+    "mode":"ethereum.token",
+    "contract":"0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e",
+    "originator":"0x2d407ddb06311396fe14d4b49da5f0471447d45c",
+    "factor":18
+}

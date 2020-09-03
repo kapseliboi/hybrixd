@@ -1,0 +1,12 @@
+{
+    "symbol":"eth.usdc",
+    "name":"USD Coin Stablecoin (ETH)",
+    "info":"<p>USD Coin (USDC) is a cryptocurrency with a value meant to mirror the value of the U.S. dollar. USDC is a fully collateralized US dollar stablecoin. It is an Ethereum powered coin and is the brainchild of CENTRE, an open source project bootstrapped by contributions from Circle and Coinbase. USDCs are issued by regulated and licensed financial institutions that maintain full reserves of the equivalent fiat currency in a 1 USDC:1 USD ratio. Issuers are required to report their USD reserve holdings frequently, and Grant Thornton LLP issues reports on those holdings every month.</p>",
+    "module":"ethereum",
+    "import":"eth",
+    "mode":"ethereum.token",
+    "contract":"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    "originator":"0x95ba4cf87d6723ad9c0db21737d862be80e93911",
+    "factor":6
+}
+

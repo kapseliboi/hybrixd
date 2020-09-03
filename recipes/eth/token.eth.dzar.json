@@ -1,0 +1,11 @@
+{
+    "symbol":"eth.dzar",
+    "name":"South African Digital Rand (ETH)",
+    "info":"<p>The Digital Rand (DZAR) project claims to issue a digital asset pegged 1:1 to the South African Rand.</p>",
+    "module":"ethereum",
+    "import":"eth",
+    "mode":"ethereum.token",
+    "contract":"0x9cb2f26a23b8d89973f08c957c4d7cdf75cd341c",
+    "originator":"0xb67cff0ed07a50f690638731dce80bc4fe312c83",
+    "factor":6
+}
