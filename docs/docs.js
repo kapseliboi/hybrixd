@@ -1,7 +1,7 @@
-let commands = [];
+const commands = [];
 let commandIndex = -1;
 
-let menuItems = {
+const menuItems = {
   'introduction': './introduction',
   'getting-started': './getting-started',
   'run': '',
@@ -16,7 +16,7 @@ let menuItems = {
   'cli': './cli'
 };
 
-let menuLabels = {
+const menuLabels = {
   'introduction': 'introduction',
   'getting-started': 'getting started',
   'run': 'run',
@@ -31,7 +31,7 @@ let menuLabels = {
   'cli': 'command-line wallet'
 };
 
-let menuIcons = {
+const menuIcons = {
   'introduction': '<?xml version="1.0" encoding="UTF-8"?> <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g transform="translate(-144.000000, -117.000000)" fill="#000000"> <path d="M153.91368,137 C148.438506,137 144,132.522847 144,127 C144,121.477153 148.438506,117 153.91368,117 C159.388854,117 163.82736,121.477153 163.82736,127 C163.82736,132.522847 159.388854,137 153.91368,137 Z M154,121 L147,127.068966 L148.3125,128.206897 L149.625,127.068966 L149.625,132 L153.125,132 L153.125,129.724138 L154.875,129.724138 L154.875,132 L158.375,132 L158.375,127.068966 L159.6875,128.206897 L161,127.068966 L154,121 Z"></path> </g> </g> </svg>',
   'getting-started': '<?xml version="1.0" encoding="UTF-8"?> <svg width="20px" height="20px" viewBox="0 0 20 21" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g transform="translate(-144.000000, -168.000000)" fill="#000000"> <path d="M154,188.174143 C148.477153,188.174143 144,183.658007 144,178.087072 C144,172.516136 148.477153,168 154,168 C159.522847,168 164,172.516136 164,178.087072 C164,183.658007 159.522847,188.174143 154,188.174143 Z M154,184 C157.313708,184 160,181.313708 160,178 C160,174.686292 157.313708,172 154,172 C150.686292,172 148,174.686292 148,178 C148,181.313708 150.686292,184 154,184 Z M154,182 C151.790861,182 150,180.209139 150,178 C150,175.790861 151.790861,174 154,174 C156.209139,174 158,175.790861 158,178 C158,180.209139 156.209139,182 154,182 Z M154,180 C155.104569,180 156,179.104569 156,178 C156,176.895431 155.104569,176 154,176 C152.895431,176 152,176.895431 152,178 C152,179.104569 152.895431,180 154,180 Z"></path> </g> </g> </svg>',
   'run': '<?xml version="1.0" encoding="UTF-8"?> <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g transform="translate(-144.000000, -219.000000)" fill="#000000"> <path d="M158.679026,233.935747 L158.672961,232.724806 C158.16756,232.937074 157.61364,233.054328 157.031417,233.058371 C154.785413,233.0705 152.925536,231.358201 152.707203,229.166782 L155.383809,229.152631 C155.571818,229.880409 156.234905,230.418155 157.019288,230.414112 C157.769303,230.410069 158.404087,229.912754 158.614334,229.231474 L158.654767,228.970687 L158.654767,228.843326 L158.654767,228.778634 L158.652745,228.255039 L158.632529,224.401861 L161.282854,224.38771 L161.30307,228.240888 L161.307113,229.122307 L161.319243,229.122307 C161.3152,229.160718 161.311156,229.199128 161.307113,229.235517 L161.331372,233.921596 L161.34148,235.79158 C163.00324,233.996395 164.012021,231.590686 164,228.950471 C163.971589,223.427448 159.471495,218.971832 153.948469,219 C152.262449,219.008221 150.675489,219.434779 149.284624,220.178729 L149.302819,223.575025 L149.308884,224.743512 C149.816307,224.529222 150.37427,224.409947 150.958514,224.407926 C153.19441,224.395796 155.048222,226.091922 155.280707,228.26919 L152.600058,228.283341 C152.40194,227.571737 151.74694,227.048141 150.972665,227.052184 C150.19839,227.056227 149.547433,227.585888 149.357402,228.299514 C149.357402,228.299514 149.321013,228.687662 149.333143,228.79885 C149.333143,228.806937 149.333143,228.813002 149.3291,228.819066 L149.331121,229.178912 L149.351337,233.149343 L146.705056,233.163494 L146.68484,229.193063 L146.680796,228.311644 L146.674732,228.311644 C146.676753,228.293449 146.678775,228.273233 146.680796,228.255039 L146.656537,223.587154 L146.650472,222.216507 C144.992756,224.011691 143.985996,226.415379 144,229.049529 C144.02845,234.572552 148.528544,239.028168 154.05157,239 C155.733546,238.991779 157.316464,238.567243 158.705307,237.827335 L158.679026,233.935747 Z"></path> </g> </g> </svg>',
@@ -106,13 +106,12 @@ function display (result) {
 function rout (path, noHistory) {
   // make console visible
   const consoleWrapper = document.getElementById('console-wrapper');
-  if (consoleWrapper) {
-    consoleWrapper.style.display = 'block';
-  }
+  if (consoleWrapper) consoleWrapper.style.display = 'block';
 
   // update history
   if (!noHistory) {
-    commands.push(path); commandIndex = commands.length;
+    commands.push(path);
+    commandIndex = commands.length;
   }
 
   // make call to hybrixd
@@ -183,9 +182,9 @@ function search () {
   let es = document.getElementsByClassName('command-body');
   let collapseAll = document.getElementById('collapseAll');
 
-  console.log('value:' + search.value);
+  const categories = document.getElementsByClassName('category');
 
-  if (search.value == '') {
+  if (search.value === '') {
     // Show all items
     for (let i = 0; i < es.length; ++i) {
       es[i].previousSibling.style.display = 'block';
@@ -196,7 +195,6 @@ function search () {
     collapseAll.style.visibility = 'hidden';
 
     // Show category section headers
-    var categories = document.getElementsByClassName('category');
     for (let i = 0; i < categories.length; ++i) {
       categories[i].style.display = 'block';
     }
@@ -213,7 +211,6 @@ function search () {
     }
 
     // Hide category section headers
-    var categories = document.getElementsByClassName('category');
     for (let i = 0; i < categories.length; ++i) {
       categories[i].style.display = 'none';
     }
@@ -240,25 +237,23 @@ function search () {
   }
 }
 
-function toggleCommand (id) {
-  let e = document.querySelector(`#${id}.command-body`);
-  if (e.style.display === 'block') {
-    foldItem(e);
-  } else {
-    unfoldItem(e);
-  }
+function toggleCommand (id, display) {
+  const e = document.querySelector(`#${id}.command-body`);
+  if (!e) return;
+  if ((e.style.display === 'block' && display !== true) || display === false) foldItem(e);
+  else unfoldItem(e);
 }
 
 function collapseAll () {
-  let es = document.getElementsByClassName('command-body');
+  const es = document.getElementsByClassName('command-body');
   for (let i = 0; i < es.length; ++i) {
     foldItem(es[i]);
   }
 }
 
 function toggleConsole () {
-  let e = document.getElementById('console-results');
-  let c = document.getElementById('console-close');
+  const e = document.getElementById('console-results');
+  const c = document.getElementById('console-close');
   if (e.style.height === '150px') {
     c.innerHTML = 'Show';
     e.style.height = '0';
@@ -278,7 +273,7 @@ const copyToClipboard = str => {
 };
 
 function initAPIConsole () {
-  let consoleWrapper = document.getElementById('console-wrapper');
+  const consoleWrapper = document.getElementById('console-wrapper');
   if (consoleWrapper) {
     consoleWrapper.innerHTML = '<span class="title">REST API Console</span><span id="console-close" onclick = "toggleConsole()" class="close">Show</span></div><div id="console-results"><div class="result">[?] Try our REST API. For example: /asset/btc/balance/$YOUR_ADDRESS.</div></div><div class="prompt"> >> <input class="text" type="text" onkeyup="if(event.keyCode===13){rout(event.target.value);event.target.value=\'\';}else if(event.keyCode===38 && commandIndex>0){ commandIndex--; event.target.value=commands[commandIndex];}else if(event.keyCode===40 && commandIndex<commands.length-1){ commandIndex++; event.target.value=commands[commandIndex];}"/></div>';
   }
@@ -310,7 +305,8 @@ function initNavigation (currentMenuItem) {
   if (window.innerWidth > 1024) { document.getElementById('navigation').classList.add('mobile-off'); }
   if (window.innerWidth <= 1024) { document.getElementById('navigation').classList.add('mobile-on'); }
 
-  let filterBox = document.getElementById('filterBox');
+  const hash = window.location.hash.substr(1);
+  if (hash) setTimeout(() => toggleCommand(hash, true), 100);
 
   setTimeout(initAPIConsole, 100);
 }
@@ -332,21 +328,21 @@ function initSubNavigation (currentMenuItem) {
 }
 
 function runExample (event) {
-  let script = document.createElement('script');
+  const script = document.createElement('script');
   script.onload = function () {
-    let hybrix = new Hybrix.Interface({XMLHttpRequest: XMLHttpRequest});
-    let progressBar = document.getElementById('progress');
-    let onProgress = progress => {
+    const hybrix = new Hybrix.Interface({XMLHttpRequest: XMLHttpRequest});
+    const progressBar = document.getElementById('progress');
+    const onProgress = progress => {
       progressBar.style.width = (progress * 100) + '%';
       progressBar.innerHTML = Math.floor(progress * 100) + '%';
     };
-    let onSuccess = data => {
+    const onSuccess = data => {
       onProgress(1);
       let result = document.getElementById('result');
       result.classList.remove('error');
       result.innerHTML = typeof data === 'string' ? data : JSON.stringify(data);
     };
-    let onError = error => {
+    const onError = error => {
       let result = document.getElementById('result');
       result.classList.add('error');
       result.innerHTML = 'Error: ' + (typeof error === 'string' ? error : JSON.stringify(error));
