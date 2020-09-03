@@ -5,7 +5,15 @@
 
           <h1>hybrix-jslib</h1>
 
-          <p>This Javascript library can be used to connect software to leverage the capabilities of the hybrix platform. It serves two purposes: first to facilitate the logistics of interfacing with the hybrixd REST API, secondly to handle all client-side operations securely and privately. This ensures that keys required for transaction never leave the users device and communication over an encrypted channel.</p>
+          <p>This Javascript library can be used to connect software
+          to leverage the capabilities of the hybrix platform. It
+          serves two purposes: first to facilitate the logistics of
+          interfacing with
+          the <a href="./api">hybrixd
+          API</a>, secondly to handle all client-side operations
+          securely and privately. This ensures that keys required for
+          transactions never leave the users device and communication
+          happens over an encrypted channel.</p>
 
 
           <a href="https://storage.googleapis.com/hybrix-dist/interface/latest/hybrix-lib.web.js" target="_blank" download>
@@ -61,13 +69,13 @@
 &nbsp;&lt;/head&gt;
 &nbsp;&lt;body&gt;
  &nbsp;&lt;script&gt;
-   var hybrix = new Hybrix.Interface({XMLHttpRequest:XMLHttpRequest});
+   var hybrix = new Hybrix.Interface();
    hybrix.sequential(
     [
-     'init'                                                        // Initialize hybrix
+     {host:'https://api.hybrix.io/'}, 'addHost'                     //  Connect to host
     ],
-    ()=>{alert('Hello World!');},                                   // Define action to execute on successfull completion
-    error=>{alert('Oops, something went wrong: '+error);}           // Define action to exectue when an error is encountered
+    host => alert('Connected to '+ host),                           // Define action to execute on successfull completion
+    error => alert('Oops, something went wrong: '+error)           // Define action to exectue when an error is encountered
    );
  &nbsp;&lt;/script&gt;
 &nbsp;&lt;/body&gt;
@@ -77,47 +85,96 @@
           <p>For nodejs projects:</p>
 
           <pre><code class="language-js">const Hybrix = require('./hybrix-lib.nodejs.js');
-const hybrix = new Hybrix.Interface({http:require('http')});
+const hybrix = new Hybrix.Interface();
 hybrix.sequential(
-[
- 'init',                                                        // Initialize hybrix
-],
-()=>{console.log('Hello World!');},                             // Define action to execute on successfull completion
-error=>{console.log('Oops, something went wrong: '+error);}     // Define action to exectue when an error is encountered
-              );</code></pre>
+  [
+   {host:'https://api.hybrix.io/'}, 'addHost'                     //  Connect to host
+  ],
+  host => console.log('Connected to '+ host),                     // Define action to execute on successfull completion
+  error => console.error('Oops, something went wrong: ' + error)  // Define action to exectue when an error is encountered
+);</code></pre>
 
-<p>Or Using npm</p>
+<p>Or using npm:</p>
 
- Install using npm
-            <p><code class="prompt">npm install hybrix-jslib</code></p>
+ <p> Install the package using npm
+   <code class="prompt">npm install hybrix-jslib</code>
+ </p>
 
-  <pre><code class="language-js">const Hybrix = require('./hybrix-jslib.js');
-const hybrix = new Hybrix.Interface({http:require('http')});
+  <pre><code class="language-js">const Hybrix = require('hybrix-jslib');
+const hybrix = new Hybrix.Interface();
 hybrix.sequential(
-[
- 'init',                                                        // Initialize hybrix
-],
-()=>{console.log('Hello World!');},                             // Define action to execute on successfull completion
-error=>{console.log('Oops, something went wrong: '+error);}     // Define action to exectue when an error is encountered
-      );</code></pre>
+  [
+   {host:'https://api.hybrix.io/'}, 'addHost'                     //  Connect to host
+  ],
+  host => console.log('Connected to '+ host),                     // Define action to execute on successfull completion
+  error => console.error('Oops, something went wrong: ' + error)  // Define action to exectue when an error is encountered
+);</code></pre>
 
 
           <h2><a id="callbacks"></a>Callbacks</h2>
 
           <p>Each command is implemented as a member function of the Hybrix.Interface class. Adding a host can be done as follows.</p>
 
-            <h3>Connectors</h3>
+          <pre><code class="language-js">hybrix.addHost({host:'https://www.example.com'});</code></pre>
+
+          <p>Here only one parameter is passed but each member function has four parameters: data, onSuccess, onError and onProgress.</p>
+
+          <p>The first is used to pass parameter data to the function. The last three are callback functions. onSuccess is called once when the method has finished successfully. onError is called once when an error is encountered. onProgress is called whenever a progress update is available, passing a number between 0 and 1, and 1 upon completion.</p>
+
+          <p>To first add a host and then query for asset balance one could try the following:</p>
+
+
+<pre><code class="language-js">hybrix.addHost({host:'https://www.example.com'});  // This is an asynchronous function. It can take some time to complete.
+hybrix.rout({query: 'Query for asset balance'});   // Problem! This will try to request routing before the addition of the host is done.</code></pre>
+
+
+          <p>This results in serious problems due to asynchronicity. One could use the callbacks to ensure the execution order.</p>
+
+          <pre><code class="language-js">hybrix.addHost({host:'https://www.example.com'},
+  function(){
+    hybrix.rout({query:'/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'});     //  This will now be called after the addition of the host is successfully completed.
+  }
+);
+</code></pre>
+
+          <p>But adding more steps or error handling will end up with code that is both very hard to read and maintain. (This is sometimes dubbed <i>callback hell</i>.) To mitigate this the library comes equiped with a sequential and a parallel command to handle these asynchronious call flows. With an added bonus of handling the progress for combined commands as well.</p>
+
+          <pre><code class="language-js">hybrix.sequential([
+{host: 'http://localhost:1111/'}, 'addHost',                   // Add and initialize the host
+{query: '/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'}, 'rout'  // Query for asset balance
+],
+onSuccess,                                                      // Define action to execute on successfull completion
+onError,                                                        // Define action to execute when an error is encountered
+onProgress                                                      // Define action to execute whenever there is a progress update
+);</code></pre>
+
+          <pre id="exampleHelloWorld" style="display: none">hybrix.sequential([
+{host: 'http://localhost:1111/'}, 'addHost',                   // Add and initialize the host
+{query: '/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'}, 'rout'  // Query for asset balance
+],
+onSuccess,                                                      // Define action to execute on successfull completion
+onError,                                                        // Define action to execute when an error is encountered
+onProgress                                                      // Define action to execute whenever there is a progress update
+);</pre>
+
+          <p>For even more complex behaviour we advice you to implement your own favourite flavour method of handling the call flow, be it <i>promises</i>, <i>streams</i>, or <i>async</i>, etc.</p>
+
+<!--
+
+
+
+         <h3>Connectors</h3>
 
             <p>The connector is the method that is used to make calls to the host. For NodeJS the http and/or https modules can be used:
 
 <pre><code class="language-js">const hybrix = new Hybrix.Interface({http:require('http')}); // Provide a http connector
 const hybrix = new Hybrix.Interface({https:require('https')}); // Provide a https connector
-const hybrix = new Hybrix.Interface({http:require('http'),https:require('https')}); // Provide http and https connectors for mixed usage
+const hybrix = new Hybrix.Interface({http:require('http'),https:require('https')}); // Default. Provide http and https connectors for mixed usage
 </code></pre>
 
               <p>For web/html implementations the XMLHttpRequest method is used which is supplied by the browser.</p>
 
-              <pre><code class="language-js">const hybrix = new Hybrix.Interface({XMLHttpRequest:XMLHttpRequest});</code></pre>
+              <pre><code class="language-js">const hybrix = new Hybrix.Interface({XMLHttpRequest:XMLHttpRequest}); // Default</code></pre>
 
               <p>There is also the option to define a custom connector which should be a function with the following signature:</p>
 
@@ -131,58 +188,7 @@ const hybrix = new Hybrix.Interface({http:require('http'),https:require('https')
 }
 </code></pre>
 
-
-            <h3>Callbacks</h3>
-
-          <p>Here only one parameter is passed but each member function has four parameters: data, onSuccess, onError and onProgress.</p>
-
-          <p>The first is used to pass parameter data to the function. The last three are callback functions. onSuccess is called once when the method has finished successfully. onError is called once when an error is encountered. onProgress is called whenever a progress update is available, passing a number between 0 and 1, and 1 upon completion.</p>
-
-          <p>To first initialize the interface, add a host, and then query for asset balance one could try the following:</p>
-
-
-<pre><code class="language-js">hybrix.init();                                     // This is an asynchronous function. It can take some time to complete.
-hybrix.addHost({host:'https://www.example.com'});  // Problem! This will try to add the host before the initialization is done.
-hybrix.rout({query: 'Query for asset balance'});   // Problem! This will try to request routing before the initialization and/or addition of the host is done.</code></pre>
-
-
-          <p>This results in serious problems due to asynchronicity. One could use the callbacks to ensure the execution order.</p>
-
-          <pre><code class="language-js">hybrix.init(null,
-  function(){
-    hybrix.addHost({host:'https://www.example.com'}, // This will now be called after initialization is successfully completed.
-      function(){
-        hybrix.rout({query: '/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'});     // Query for asset balance
-      }
-    );
-  }
-);</code></pre>
-
-          <p>But adding more steps or error handling will end up with code that is both very hard to read and maintain. (This is sometimes dubbed <i>callback hell</i>.) To mitigate this the library comes equiped with a sequential and a parallel command to handle these asynchronious call flows. With an added bonus of handling the progress for combined commands as well.</p>
-
-          <pre><code class="language-js">hybrix.sequential([
-'init',                                                        // Initialize hybrix
-{host: 'http://localhost:1111/'}, 'addHost',                   // Add and initialize the host
-{query: '/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'}, 'rout'  // Query for asset balance
-],
-onSuccess,                                                      // Define action to execute on successfull completion
-onError,                                                        // Define action to execute when an error is encountered
-onProgress                                                      // Define action to execute whenever there is a progress update
-);</code></pre>
-
-          <pre id="exampleHelloWorld" style="display: none">hybrix.sequential([
-'init',                                                        // Initialize hybrix
-{host: 'http://localhost:1111/'}, 'addHost',                   // Add and initialize the host
-{query: '/asset/btc/balance/32FCGFdRGeho2HBeWQPaAYawJfPqHHvsCJ'}, 'rout'  // Query for asset balance
-],
-onSuccess,                                                      // Define action to execute on successfull completion
-onError,                                                        // Define action to execute when an error is encountered
-onProgress                                                      // Define action to execute whenever there is a progress update
-);</pre>
-
-          <p>For even more complex behaviour we advice you to implement your own favourite flavour method of handling the call flow, be it <i>promises</i>, <i>streams</i>, or <i>async</i>, etc.</p>
-
-
+-->
 
 
           <h2><a id="live-example"></a>Live example</h2>
@@ -263,7 +269,3 @@ onProgress                                                      // Define action
           </div>
 
           <h2 style="margin-bottom: 20px;"><a id="reference"></a>Reference</h2>
-
-          <div id="filterBox"><input id="search" onkeyup="search(event)" placeholder="Apply filter..." onclick="search"><input type="submit" value="&#215;" onclick="clearSearch()"/></div>
-
-          <div id="noResults">No results. Change your search filter or <a onclick="clearSearch()" style="cursor: pointer;">reset the filter</a>.</div>
