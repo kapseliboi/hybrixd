@@ -1,3 +1,15 @@
+# v0.7.33
+## Little Turquoise Griffin
+## 03-09-2020
+
+* Implement transaction-details endpoint
+* Add list endpoint for storage
+* Improve sample and transaction for unified assets
+* Update documentation
+
+
+
+
 # v0.7.32
 ## Furry Purple Elf
 ## 02-09-2020
