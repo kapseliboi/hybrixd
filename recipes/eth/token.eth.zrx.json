@@ -1,10 +1,11 @@
 {
   "symbol":"eth.zrx",
   "name":"0x Protocol",
+  "info":"<p>0x (ZRX) is an open-source protocol that provides smart contract infrastructure and liquidity to enable the peer-to-peer exchange of tokens on the Ethereum blockchain. ZRX is the token that allows 0x users to vote on Improvement Proposals that evolve the system over time. ZRX token holders can also delegate ZRX to market maker staking pools to earn protocol liquidity rewards (in ETH).</p>",
   "module":"ethereum",
-    "import":"eth",
+  "import":"eth",
   "mode":"ethereum.token",
   "contract":"0xE41d2489571d322189246DaFA5ebDe1F4699F498",
-  "originator":"0xa3b2d1087bCEBe59d188a23F75620612d967DF72",  
+  "originator":"0xa3b2d1087bCEBe59d188a23F75620612d967DF72",
   "factor":18
 }

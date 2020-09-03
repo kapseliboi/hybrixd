@@ -1,0 +1,11 @@
+{
+    "symbol":"eth.pax",
+    "name":"US dollar Pax Stablecoin (ETH)",
+    "info":"<p>Paxos Standard (PAX) is a crypto asset with a value meant to mirror the value of the U.S. dollar. The idea was to create a stable cryptocurrency that can be used like digital dollars. Coins that serve this purpose of being a stable dollar substitute are called “stable coins.” Paxos Standard (PAX) is a stablecoin that allows users to exchange US dollars for Paxos Standard Tokens to 'transact at the speed of the internet'. It aims to meld the stability of the dollar with blockchain technology. Paxos, the company behind PAX, has a charter from the New York State Department of Financial Services, which allows it to offer regulated services in the cryptoasset space.</p>",
+    "module":"ethereum",
+    "import":"eth",
+    "mode":"ethereum.token",
+    "contract":"0x8e870d67f660d95d5be530380d0ec0bd388289e1",
+    "originator":"0x51e15804cf7ff061410193512b499f071ecf9c4b",
+    "factor":18
+}

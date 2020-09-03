@@ -1,0 +1,11 @@
+{
+    "symbol":"eth.ampl",
+    "name":"Ampleforth",
+    "info":"<p>Ampleforth describes itself as smart commodity money. It claims to be chain-agnostic and reportedly less-correlated to Bitcoin and other digital assets.</p>",
+    "module":"ethereum",
+    "import":"eth",
+    "mode":"ethereum.token",
+    "contract":"0xd46ba6d942050d489dbd938a2c909a5d5039a161",
+    "originator":"0xd8461bd73f19e3d789ac0e5dbf1ad62fbbd15c22",
+    "factor":9
+}

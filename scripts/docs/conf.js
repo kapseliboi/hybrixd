@@ -39,8 +39,6 @@ const recipeFiles = collectRecipesRecursivelySync(recipesDirectory);
 recipeFiles.concat(moduleDirectories).forEach(filePath => {
   const recipe = JSON.parse(fs.readFileSync(filePath));
   if (recipe.hasOwnProperty('conf')) {
-    console.log(filePath);
-
     const id = recipe.asset || recipe.engine || recipe.source;
     meta[id] = recipe.conf;
   }

@@ -4,6 +4,7 @@
   "name" : "Provide hy statistics",
   "cron" : 60,
   "cronOffset" : 30,
+  "timeout" : 120000,
   "totalSupply" : 21000000,
   "tradeSupply" : 7000000,
   "reservedSupply" : 1000000,
@@ -13,6 +14,7 @@
       "sync hystat"
     ],
     "cron" : [
+      "time 240000",
       "rout /e/valuations/rate/hy/usd",
       "poke local::rate",
       "rout /e/valuations/volume/hy",
@@ -28,7 +30,8 @@
       "call getCirculatingSupplyWithoutReserve",
       "poke local::circulatingSupplyWithoutReserve",
       "atom true 18",
-      "poke local::circulatingSupplyWithoutReserveAtom"
+      "poke local::circulatingSupplyWithoutReserveAtom",
+      "call maybeUpdateEthList"
     ],
     "details" : [
       "done { rate:'$local::rate', volume:'$local::volume', maximumSupply:'$local::maximumSupply', reservedSupply:'$local::reservedSupply', circulatingSupply:'$local::circulatingSupply', circulatingSupplyWithoutReserve:'$local::circulatingSupplyWithoutReserve' }"
@@ -50,6 +53,51 @@
       "peek local::circulatingSupply",
       "math '- $reservedSupply'",
       "form"
+    ],
+    "getTokenDetails" : [
+      "time 30000",
+      "rout /asset/$/details",
+      "with tokenSymbol [data,$] [tran,'.symbol'] [splt,'.'] [pick,-1]",
+      "done {'chainId':1,'address':'${.contract}','name':'${.name}','symbol':'$tokenSymbol','decimals':${.factor}}"
+    ],
+    "maybeUpdateEthList" : [
+      "peek local::ethTokenList ",
+      "tran .timestamp 1 @update",
+      "date epoch",
+      "math +(3600*24)",
+      "poke nextupdate",
+      "date now",
+      "true <$nextupdate @skipUpdate",
+      "@update",
+      "call getEthTokenList",
+      "poke local::ethTokenList",
+      "done 'Ethereum DeFi token list updated.'",
+      "@skipUpdate",
+      "done 'Skipped Ethereum DeFi token list update.'"
+    ],
+    "getEthTokenList" : [
+      "time 240000",
+      "# start with a curated list, to enable double checking against scams",
+      "#   semantic versioning:",
+      "#     - increment major version when tokens are removed",
+      "#     - increment minor version when tokens are added",
+      "#     - increment patch version when tokens already on the list have minor details changed",
+      "poke version {'major':0,'minor':0,'patch':0}",
+      "data ['eth.hy','eth.ampl','eth.ant','eth.dai','eth.dzar','eth.link','eth.pax','eth.paxg','eth.rep','eth.ring','eth.swap','eth.tusd','eth.uma','eth.usdc','eth.usdt','eth.wbtc','eth.yfi','eth.zrx']",
+      "# rout /asset",
+      "# find 'eth.'",
+      "poke assetList",
+      "size",
+      "poke listSize",
+      "data []",
+      "@loopStart",
+      "with element [peek,assetList] [pick,$cnt] [call,getTokenDetails]",
+      "push $element",
+      "loop @loopStart cnt <$listSize",
+      "# sort '.name'",
+      "poke tokens",
+      "with timestamp [date,'isoUtcDateTime','now']",
+      "done {'name':'hybrix.io','logoURI':'https://hybrix.io/user/themes/hybrix-theme/images/icon.png','keywords':['defi','hybrix','multiledger','hy'],'timestamp':'$timestamp','tokens':$tokens,'version':$version}"
     ]
   },
   "router":{
@@ -62,6 +110,8 @@
     "circulatingSupplyWithoutReserveAtom" :"Get the circulating supply of HY without reserve.",
     "supplyFactor" :"Get the factor (nr of decimals).",
     "currentPrice" :"Get the current price of HY in USD.",
-    "currentVolume" :"Get the current exchange volume for HY."
+    "currentVolume" :"Get the current exchange volume for HY.",
+    "ethTokenList" :"Provide a curated hybrix tokenlist for Uniswap.",
+    "maybeUpdateEthList" :"Provide a curated hybrix tokenlist for Uniswap."
   }
 }

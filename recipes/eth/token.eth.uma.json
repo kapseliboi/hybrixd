@@ -1,0 +1,11 @@
+{
+    "symbol":"eth.uma",
+    "name":"UMA Voting Token V1 (ETH)",
+    "info":"<p>UMA describes itself as a protocol for building synthetic assets. It aims to allow users to write self-enforcing smart contracts with economic guarantees. UMA is designed to power the financial innovations made possible by permissionless, public blockchains, like Ethereum. Using concepts borrowed from fiat financial derivatives, UMA defines an open-source protocol that allows any two counterparties to design and create their own financial contracts. But unlike traditional derivatives, UMA contracts are secured with economic incentives alone, making them self-enforcing and universally accessible.</p>",
+    "module":"ethereum",
+    "import":"eth",
+    "mode":"ethereum.token",
+    "contract":"0x04Fa0d235C4abf4BcF4787aF4CF447DE572eF828",
+    "originator":"0x2baaa41d155ad8a4126184950b31f50a1513ce25",
+    "factor":18
+}

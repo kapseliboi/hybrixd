@@ -1,0 +1,11 @@
+{
+    "symbol":"eth.ring",
+    "name":"Darwinia Network Native Token (ETH)",
+    "info":"<p>Darwinia Network is a decentralized heterogeneous cross-chain bridge protocol built on Substrate, focusing on decentralized cross-chain token swap, exchange, and market. Darwinia also serves as critical infrastructure for single-chain application upgrade to cross-chain version, including Defi, Game, DEX, NFT market, etc. Its vision is to build the future Internet of Tokens.</p>",
+    "module":"ethereum",
+    "import":"eth",
+    "mode":"ethereum.token",
+    "contract":"0x9469d013805bffb7d3debe5e7839237e535ec483",
+    "originator":"0x52386be2397e8eac26298f733b390684203fb580",
+    "factor":18
+}

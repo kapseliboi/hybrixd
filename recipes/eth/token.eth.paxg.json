@@ -1,0 +1,11 @@
+{
+    "symbol":"eth.paxg",
+    "name":"Gold Pax Stablecoin (ETH)",
+    "info":"<p>Paxos Standard Gold (PAXG) is a digital asset where one token is backed by one fine troy ounce (t oz) of a 400 oz London Good Delivery gold bar, stored in Brink’s gold vaults. Anyone who owns PAXG owns the underlying physical gold, held in custody by Paxos Trust Company.</p>",
+    "module":"ethereum",
+    "import":"eth",
+    "mode":"ethereum.token",
+    "contract":"0x45804880de22913dafe09f4980848ece6ecbaf78",
+    "originator":"0x36c2e652a6c774f4c48f6d3ae747c17916aeb537",
+    "factor":18
+}
