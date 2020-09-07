@@ -13,6 +13,7 @@
   "gasPerByte":625,
   "gasBaseUsage":21000,
   "gasErc20Usage":35000,
+  "messageSeparatorBytes":3,
   "contract":"0x0000000000000000000000000000000000000000",
   "histPage":25,
   "import": "transaction-history",
@@ -306,7 +307,7 @@
       "ship 3 3 3 1",
       "rout '/engine/evm-interpreter/get/gas/$'",
       "done",
-      "math 'round( $gasBaseUsage+($gasPerByte * $) )'",
+      "math 'round( $gasBaseUsage+$gasErc20Usage+($gasPerByte * ($ + $messageSeparatorBytes)) )'",
       "done"
     ],
     "getGasPrice" : [
@@ -319,7 +320,8 @@
       "splt .",
       "pick",
       "rout '/asset/$/fee'",
-      "math $/$gasBaseUsage"
+      "math '$/$gasBaseUsage'",
+      "form"
     ],
     "fee/message":[
       "call estimateGasUsage/$message",
