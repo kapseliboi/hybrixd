@@ -11,7 +11,12 @@
     "default": ["https://rpc.tomochain.com"],
     "history": "https://scan.tomochain.com/api"
   },
-  "cron":300,
+  "fee":"0.00002",
+  "feeContractTx":"0.0001",
+  "gasPriceDefault":"0.000000025",
+  "gasBaseUsage":56000,
+  "gasErc20Usage":112000,
+  "cron":60,
   "quartz":{
     "sample":[
       "done {address:'0x0000000000000000000000000000000000000099',transaction:'0x321e8e4ff431dfefa87cebdc170f8ffdc4ac052dc531b48616249fea4c3bac10'}"
