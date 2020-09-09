@@ -1,0 +1,6 @@
+{
+  "symbol":"hy",
+  "name":"hybrix unified asset",
+  "import":"unified-asset",
+  "unified-symbols" : {"eth.hy":1,"tomo.hy":1}
+}
