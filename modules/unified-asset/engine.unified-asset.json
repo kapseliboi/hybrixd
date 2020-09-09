@@ -1,0 +1,299 @@
+{
+  "engine":"unified-asset",
+  "name":"Engine to unify assets",
+  "module":"unified-asset",
+  "quartz":{
+
+    "getSubFee" :[
+      "poke {subSymbol:key,weight:value}",
+      "rout /a/$subSymbol/fee/$1"
+    ],
+
+    "fee" : [
+      "peek unified-symbols",
+      "each getSubFee/$1",
+      "type array",
+      "math max",
+      "done"
+    ],
+
+    "fee-factor" : [
+      "call factor"
+    ],
+
+    "getSubFactor" :[
+      "rout /a/${.key}/factor/"
+    ],
+
+    "factor" : [
+      "peek unified-symbols",
+      "each getSubFactor",
+      "type array",
+      "math min"
+    ],
+
+    "getSubBalance" :[
+      "tran .value",
+      "splt ':'",
+      "poke [subSymbol,subAddress]",
+      "peek 'unified-symbols[$subSymbol]'",
+      "poke weight",
+      "rout /a/$subSymbol/balance/$subAddress",
+      "math *$weight"
+    ],
+
+    "balance/address":[
+      "peek address",
+      "func decompressUnifiedAddress",
+      "splt ','",
+      "each getSubBalance",
+      "math sum",
+      "with xfactor call factor",
+      "form $xfactor",
+      "done"
+    ],
+
+    "getSubFeeBalance" :[
+      "tran .value",
+      "splt ':'",
+      "poke [subSymbol,subAddress]",
+      "rout /a/$subSymbol/fee-balance/$subAddress"
+    ],
+
+    "fee-balance/address":[
+      "peek address",
+      "func decompressUnifiedAddress",
+      "splt ','",
+      "each getSubFeeBalance",
+      "merg",
+      "done"
+    ],
+
+    "getSubBalance2" :[
+      "tran .value",
+      "splt ':'",
+      "poke [subSymbol,subAddress]",
+      "peek 'unified-symbols[$subSymbol]'",
+      "poke weight",
+      "rout /a/$subSymbol/balance/$subAddress",
+      "math *$weight",
+      "done {symbol:'$subSymbol', address:'$subAddress',balance:'$'}"
+    ],
+
+    "subbalances/address":[
+      "peek address",
+      "func decompressUnifiedAddress",
+      "splt ','",
+      "each getSubBalance2"
+    ],
+
+    "_unspents":[
+      "#TODO"
+    ],
+
+    "getSubValidate" :[
+      "data ${.value}",
+      "splt ':'",
+      "poke [subSymbol,subAddress]",
+      "peek 'unified-symbols'",
+      "have '[$subSymbol]' 2 1",
+      "done 'invalid'",
+      "rout /a/$subSymbol/validate/$subAddress"
+    ],
+
+    "validate/address":[
+      "peek address",
+      "func decompressUnifiedAddress",
+      "splt ','",
+      "each getSubValidate",
+      "find invalid 1 2",
+      "done invalid",
+      "done valid"
+    ],
+    "subPush":[
+      "tran .value",
+      "poke tx",
+      "splt :",
+      "pick 0",
+      "poke subSymbol",
+      "size",
+      "poke subSymbolSize",
+      "peek unified-symbols",
+      "have '[$subSymbol]' 2 1",
+      "fail 'Subsymbol $subSymbol not found for $symbol'",
+      "peek tx",
+      "drop $subSymbolSize",
+      "drop",
+      "unpk",
+      "rout /a/$subSymbol/push/$"
+    ],
+    "push/transaction" : [
+      "peek transaction",
+      "splt ,",
+      "each subPush"
+    ],
+    "_history":[
+      "#TODO merge and sort somehow"
+    ],
+
+    "transaction/transactionId":[
+      "peek transactionId",
+      "splt ':'",
+      "poke [subSymbol,subTransactionId]",
+      "rout /a/$subSymbol/transaction/$subTransactionId",
+      "with .id push '$subSymbol:' 0",
+      "with .source [flow, unknown, 1, 2] [done] [push,'$subSymbol:',0]",
+      "with .target [flow, unknown, 1, 2] [done] [push,'$subSymbol:',0]",
+      "poke .symbol $symbol",
+      "done"
+    ],
+
+    "getSubSample" :[
+      "poke subSymbol ${.key}",
+      "rout /a/$subSymbol/sample",
+      "data '$subSymbol:${.address}'"
+    ],
+
+    "sample" :[
+      "peek unified-symbols",
+      "flat",
+      "pick 0",
+      "pick 0",
+      "poke firstSubSymbol",
+      "rout /a/$firstSubSymbol/sample",
+      "tran .transaction 2 1",
+      "data unknown",
+      "poke transactionId",
+      "peek unified-symbols",
+      "each getSubSample",
+      "type array",
+      "join ','",
+      "func compressUnifiedAddress",
+      "done {address: '$symbol:$',transaction:'$firstSubSymbol:$transactionId'}"
+    ],
+
+    "getSubFeeObject/bytes" : [
+      "tran .key",
+      "rout /a/$/fee/$bytes"
+    ],
+
+    "getFeeObject/$bytes" : [
+      "peek unified-symbols",
+      "each getSubFeeObject"
+    ],
+
+    "getSubBalance3" :[
+      "poke {fee-object:meta}",
+      "tran .value",
+      "splt ':'",
+      "poke [subSymbol,subAddress]",
+      "peek 'unified-symbols[$subSymbol]'",
+      "poke weight",
+      "peek fee-object",
+      "tran '[$subSymbol]' 1 3",
+      "poke subFee",
+      "jump @getSubBalance",
+      "data 0",
+      "poke subFee",
+      "@getSubBalance",
+      "rout /a/$subSymbol/balance/$subAddress",
+      "math '$-$subFee'",
+      "math *$weight"
+    ],
+
+    "getSubBalance4" :[
+      "tran .value",
+      "splt ':'",
+      "poke [subSymbol,subAddress]",
+      "peek 'unified-symbols[$subSymbol]'",
+      "poke weight",
+      "rout /a/$subSymbol/balance/$subAddress",
+      "math *$weight",
+      "done {$subSymbol: $}"
+    ],
+
+    "transaction-details3/source/amount/target/bytes/publicKey" :[
+      "with fee-balance call fee-balance/$source",
+      "call multiAddressToObject/$source",
+      "poke sourceObject",
+      "call getFeeObject/$bytes",
+      "isct $sourceObject",
+      "poke fee-object",
+      "data [$fee-balance, $fee-object]",
+      "merg -",
+      "flat",
+      "pick 1",
+      "math min",
+      "true <0 1 @sufficientFee",
+      "data 0",
+      "poke max-amount",
+      "jump @getBalances",
+      "@sufficientFee",
+      "peek source",
+      "splt ,",
+      "each getSubBalance3 $fee-object",
+      "type array",
+      "math sum",
+      "poke max-amount",
+      "@getBalances",
+      "peek source",
+      "splt ,",
+      "each getSubBalance4 {}",
+      "merg",
+      "poke balances",
+      "call unspent/$source/$amount//$publicKey",
+      "done {source:valid,unspent:$,balances:$balances,max-amount:$max-amount,fee:$fee-object}"
+    ],
+
+    "transaction-details2/source/amount/bytes/publicKey" : [
+      "call validate/$source",
+      "poke sourceValid",
+      "flow invalid 1 2",
+      "done {source:invalid,target:'n/a',unspent:'n/a',balances:'n/a',max-amount:0, fee:'n/a'}",
+      "call transaction-details3/$source/$amount//$bytes/$publicKey",
+      "data [$, {target:'n/a'}]",
+      "merg"
+    ],
+
+    "splitSubAddress" : [
+      "tran .value",
+      "splt :",
+      "poke [subSymbol, subAddress]",
+      "done {$subSymbol:$subAddress}"
+    ],
+
+    "multiAddressToObject/address":[
+      "peek address",
+      "func decompressUnifiedAddress",
+      "splt ,",
+      "each splitSubAddress",
+      "merg"
+    ],
+
+    "getSourceForTarget/source/target":[
+      "call multiAddressToObject/$target",
+      "poke targetSubSymbols",
+      "call multiAddressToObject/$source",
+      "isct $targetSubSymbols",
+      "join , :"
+    ],
+
+    "transaction-details/source/amount/target/bytes/publicKey" : [
+      "test target 3 1",
+      "call transaction-details2/$source/$amount/$bytes/$publicKey",
+      "done",
+      "call validate/$target",
+      "poke targetValid",
+
+      "call validate/$source",
+      "poke sourceValid",
+      "flow invalid 1 2",
+      "done {source:invalid,target:'$targetValid',unspent:'n/a',balances:'n/a',max-amount:0, fee:'n/a'}",
+
+      "call getSourceForTarget/$source/$target",
+      "call transaction-details3/$/$amount/$target/$bytes/$publicKey",
+      "data [$, {target:'$targetValid'}]",
+      "merg"
+    ]
+  }
+}
