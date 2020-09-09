@@ -56,6 +56,7 @@
     ],
     "getTokenDetails" : [
       "time 30000",
+      "tran .value",
       "rout /asset/$/details",
       "with tokenSymbol [data,$] [tran,'.symbol'] [splt,'.'] [pick,-1]",
       "done {'chainId':1,'address':'${.contract}','name':'${.name}','symbol':'$tokenSymbol','decimals':${.factor}}"
@@ -76,6 +77,7 @@
       "done 'Skipped Ethereum DeFi token list update.'"
     ],
     "getEthTokenList" : [
+      "with timestamp [date,'isoUtcDateTime','now']",
       "time 240000",
       "# start with a curated list, to enable double checking against scams",
       "#   semantic versioning:",
@@ -86,18 +88,8 @@
       "data ['eth.hy','eth.ampl','eth.ant','eth.dai','eth.dzar','eth.link','eth.pax','eth.paxg','eth.rep','eth.ring','eth.swap','eth.tusd','eth.uma','eth.usdc','eth.usdt','eth.wbtc','eth.yfi','eth.zrx']",
       "# rout /asset",
       "# find 'eth.'",
-      "poke assetList",
-      "size",
-      "poke listSize",
-      "data []",
-      "@loopStart",
-      "with element [peek,assetList] [pick,$cnt] [call,getTokenDetails]",
-      "push $element",
-      "loop @loopStart cnt <$listSize",
-      "# sort '.name'",
-      "poke tokens",
-      "with timestamp [date,'isoUtcDateTime','now']",
-      "done {'name':'hybrix.io','logoURI':'https://hybrix.io/user/themes/hybrix-theme/images/icon.png','keywords':['defi','hybrix','multiledger','hy'],'timestamp':'$timestamp','tokens':$tokens,'version':$version}"
+      "each getTokenDetails",
+      "done {'name':'hybrix.io','logoURI':'https://hybrix.io/user/themes/hybrix-theme/images/icon.png','keywords':['defi','hybrix','multiledger','hy'],'timestamp':'$timestamp','tokens':$,'version':$version}"
     ]
   },
   "router":{
