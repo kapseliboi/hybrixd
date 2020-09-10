@@ -426,6 +426,14 @@
         "_list" : "proc",
         "_this" : "Specify the process ID to get its queue status."
       }
+    },
+    "busy":{
+      "_access":"owner",
+      "_this" : "Display busy processes."
+    },
+    "finished":{
+      "_access":"owner",
+      "_this" : "Display finished processes."
     }
   },
   "r":{"_alias":"report"},
