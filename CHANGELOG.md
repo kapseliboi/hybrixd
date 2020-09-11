@@ -1,3 +1,20 @@
+# v0.8.0
+## Happy Magenta Elf
+## 11-09-2020
+
+* Ripple: use x addresses and dash seperated tags
+* Update unified assets
+* Automatically import base asset recipes for tokens
+* Fix duplicate PIDs
+* Add messages for eth and tomo tokens
+* qrtz : add option parameters for unpk
+* web-wallet: improve login speed
+* web-wallet: notify errors during login
+* web-wallet: improve logout speed
+
+
+
+
 # v0.7.33
 ## Little Turquoise Griffin
 ## 03-09-2020
