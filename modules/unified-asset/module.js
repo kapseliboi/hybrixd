@@ -6,22 +6,18 @@
 const compressUnifiedAddress = require('../../common/compress-unified-address');
 
 // functions
-function compress (proc,data) {
-  proc.done( compressUnifiedAddress.encode(data) );
+function compress (proc, data) {
+  proc.done(compressUnifiedAddress.encode(data));
 }
 
-function decompress (proc,data) {
-  const targetArray = data.split(':'); // remove unified symbol prefix i.e. hy:... , and decompress ?
-  if (targetArray.length < 3) {
-    const decoded = compressUnifiedAddress.decode(targetArray.splice(targetArray.length - 1, targetArray.length)[0]);
-    if(decoded === null) {
-      proc.fail('Could not parse unified asset address!');
-    } else {
-      proc.done( decoded );
-    }
-  } else {
-    proc.done( data ); // apparently not a proper or expanded unified address, return input
-  }
+function decompress (proc, address) {
+  const symbol = proc.peek('symbol');
+  if (address.startsWith(symbol + ':')) { // `${symbol}:${encoded}`
+    const encoded = address.split(':')[1]; // `${symbol}:${encoded}` -> encoded
+    const decoded = compressUnifiedAddress.decode(encoded);
+    if (decoded === null) return proc.fail('Could not parse unified asset address!');
+    else return proc.done(decoded);
+  } else return proc.done(address); // `${subSymbol}:${subAddress},...`
 }
 
 // exports
