@@ -124,8 +124,11 @@
       "peek tx",
       "drop $subSymbolSize",
       "drop",
-      "unpk",
-      "rout /a/$subSymbol/push/$"
+      "unpk 1 @failed false",
+      "rout /a/$subSymbol/push/$",
+      "done '$subSymbol:$'",
+      "@failed",
+      "fail '$subSymbol:null'"
     ],
     "push/transaction" : [
       "peek transaction",
