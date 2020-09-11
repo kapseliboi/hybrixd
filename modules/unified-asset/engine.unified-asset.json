@@ -133,7 +133,8 @@
     "push/transaction" : [
       "peek transaction",
       "splt ,",
-      "each subPush"
+      "each subPush",
+      "join ','"
     ],
     "_history":[
       "#TODO merge and sort somehow"
