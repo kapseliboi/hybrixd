@@ -1,6 +1,7 @@
 {
   "engine":"unified-asset",
   "name":"Engine to unify assets",
+  "module":"unified-asset",
   "quartz":{
 
     "getSubFee" :[
@@ -43,6 +44,7 @@
 
     "balance/address":[
       "peek address",
+      "func decompressUnifiedAddress",
       "splt ','",
       "each getSubBalance",
       "math sum",
@@ -60,6 +62,7 @@
 
     "fee-balance/address":[
       "peek address",
+      "func decompressUnifiedAddress",
       "splt ','",
       "each getSubFeeBalance",
       "merg",
@@ -79,6 +82,7 @@
 
     "subbalances/address":[
       "peek address",
+      "func decompressUnifiedAddress",
       "splt ','",
       "each getSubBalance2"
     ],
@@ -99,10 +103,11 @@
 
     "validate/address":[
       "peek address",
+      "func decompressUnifiedAddress",
       "splt ','",
       "each getSubValidate",
       "find invalid 1 2",
-      "done 'invalid'",
+      "done invalid",
       "done valid"
     ],
     "subPush":[
@@ -119,13 +124,17 @@
       "peek tx",
       "drop $subSymbolSize",
       "drop",
-      "unpk",
-      "rout /a/$subSymbol/push/$"
+      "unpk 1 @failed false",
+      "rout /a/$subSymbol/push/$",
+      "done '$subSymbol:$'",
+      "@failed",
+      "fail '$subSymbol:null'"
     ],
     "push/transaction" : [
       "peek transaction",
       "splt ,",
-      "each subPush"
+      "each subPush",
+      "join ','"
     ],
     "_history":[
       "#TODO merge and sort somehow"
@@ -163,7 +172,8 @@
       "each getSubSample",
       "type array",
       "join ','",
-      "done {address: '$',transaction:'$firstSubSymbol:$transactionId'}"
+      "func compressUnifiedAddress",
+      "done {address: '$symbol:$',transaction:'$firstSubSymbol:$transactionId'}"
     ],
 
     "getSubFeeObject/bytes" : [
@@ -258,6 +268,7 @@
 
     "multiAddressToObject/address":[
       "peek address",
+      "func decompressUnifiedAddress",
       "splt ,",
       "each splitSubAddress",
       "merg"
