@@ -62,8 +62,13 @@ function bestTransactionChain (exchangeRates, startSymbol, targetSymbol, maxHops
 }
 
 function valuate (proc, data) {
-  const source = data.source.toUpperCase();
-  const target = data.target.toUpperCase();
+  let source = data.source.toUpperCase();
+  let target = data.target.toUpperCase();
+
+  // TODO fix hardcoded override for HY unified asset market
+  if (source.split('.')[1] === 'HY') { source = 'HY'; }
+  if (target.split('.')[1] === 'HY') { target = 'HY'; }
+
   const amount = data.amount === 'undefined' || typeof data.amount === 'undefined' ? 1 : Number(data.amount);
   let mode = 'median_rate';
   if (data.mode === 'max') {
