@@ -1,3 +1,12 @@
+# v0.8.1
+## Furry Magenta Sphinx
+## 12-09-2020
+
+* web-wallet : unified assets
+
+
+
+
 # v0.8.0
 ## Happy Magenta Elf
 ## 11-09-2020
