@@ -1,3 +1,12 @@
+# v0.8.2
+## Little Green Fairy
+## 14-09-2020
+
+* web-wallet: fix local storage bug
+
+
+
+
 # v0.8.1
 ## Furry Magenta Sphinx
 ## 12-09-2020
