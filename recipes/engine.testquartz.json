@@ -25,7 +25,7 @@
       "date now",
       "data '$'",
       "head 2",
-      "flow '15' 1 2",
+      "flow '16' 1 2",
       "done $OK",
       "fail"
     ],
