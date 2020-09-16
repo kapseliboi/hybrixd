@@ -7,7 +7,7 @@
       "type" : "array"
     },
     "servers" : {
-      "default" : { "http://127.0.0.1:1111" : "/root", "http://127.0.0.1:8080" : "/source/web-wallet" },
+      "default" : { "http://127.0.0.1:1111" : "/root", "http://127.0.0.1:8080" : "/source/web-wallet", "http://127.0.0.1:8090" : "/source/web-blockexplorer" },
       "info" : "Define the servers",
       "type" : "object"
     },
