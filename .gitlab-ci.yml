@@ -329,14 +329,11 @@ deploy:
         --name="$CI_CONTAINER_NAME" -v "$(pwd):/tmp/app:ro" registry.gitlab.com/hybrix/hybrixd/base-images/build-image:stable
       docker commit "$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
       docker rm "$CI_CONTAINER_NAME" >/dev/null
-      echo ""
       docker create --entrypoint "entrypoint" --expose 5000 --env PORT=5000 --name="$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
 
-      # replace port for api root (1111) with 5000 in config
-      sed -i -e "s#1111#5000#g" hybrixd.conf
-
-      # replace /root with empty string in config
-      sed -i -e "s#\"/root\"#\"\"#g" hybrixd.conf
+      echo "[.] Configure servers (non root to 5000)"
+      echo "[host]" >> hybrixd.conf
+      echo "servers = {\"http://127.0.0.1:5000\" : \"\", \"http://127.0.0.1:8080\" : \"/source/web-wallet\", \"http://127.0.0.1:8090\" : \"/source/web-blockexplorer\"}" >> hybrixd.conf
 
       echo "[.] Enable Asset reporting"
       echo "[report]" >> hybrixd.conf

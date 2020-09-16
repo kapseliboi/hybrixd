@@ -1,0 +1,15 @@
+{
+  "source":"resources",
+  "name":"resources",
+  "module":"resources",
+  "router" : {
+    "powered-by-hybrix.svg":"The powered by hybrix logo.",
+    "hybrix-lib.web.js":"The hybrix javascript library for web applications",
+    "hybrix-lib.node.js":"The hybrix javascript library for NodeJS applications"
+  },
+  "quartz" :{
+    "_root" : [
+      "sync serve"
+    ]
+  }
+}
