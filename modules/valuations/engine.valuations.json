@@ -52,7 +52,7 @@
       "each download",
       "func parse",
       "poke 'local::prices'",
-      "date",
+      "date now",
       "poke 'local::pricesTimestamp'",
       "done 'valuations downloaded'"
     ],
