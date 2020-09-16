@@ -48,8 +48,7 @@ hybrixd:
 test:
   stage: test
   script:
-     #- sh ./scripts/pipeline/test.sh
-     - exit 0
+     - sh ./scripts/pipeline/test.sh
   coverage: /SUCCESS RATE[^|]*\:[^|]*\s+([\d\.]+)/
   except:
    refs:
