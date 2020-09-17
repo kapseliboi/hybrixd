@@ -1,3 +1,15 @@
+# v0.8.3
+## Cosy Magenta Unicorn
+## 17-09-2020
+
+* hybrixd.conf is now optional
+* Add confirmed to details endpoint
+* Deprecation of XHY tokens in favor of HY token
+* web-wallet: Removed JQuery dependencies
+* web-wallet: Improve QR address scanning
+
+
+
 # v0.8.2
 ## Little Green Fairy
 ## 14-09-2020
