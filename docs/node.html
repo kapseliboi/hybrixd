@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>docs | hybrix</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Documentation for API, javascript libraries and other hybrix multi ledger products.">
+
+    <link rel="icon" type="image/png" href="./icon.png" />
+
+    <script>
+      const x = window.location.href.split('/help');
+      //  if(window.location.pathname.endsWith('/help')){
+      document.write('<base href="' +x[0]+ '/help/"/>');
+      // }
+    </script>
+
+    <!-- CSS -->
+    <link rel=stylesheet href="./codemirror.css">
+    <link rel="stylesheet" type="text/css" href="./docs.css">
+
+    <!-- JS -->
+    <script src="./docs.js"></script>
+    <script src="./codemirror.js"></script>
+    <script src="./javascript.js"></script>
+  </head>
+  <body>
+
+    <div class="header" id="header">
+    <div class="wrapper padding">
+      <a class="logo left no-styling" href="/">
+        <img class="logo" src="./hybrix-logo.svg" alt="hybrix" />
+      </a>
+
+      <nav class="main-nav" id="main-nav">
+        <ul>
+          <li class="">
+            <a class="no-styling" href="https://hybrix.io/products">
+              products
+            </a>
+          </li>
+          <li class="has-children  dropdown">
+            <a href="" class="no-styling trigger-drop">
+              resources
+            </a>
+
+            <!-- start dropdown menu -->
+            <ul class="drop">
+              <div class="arrow-up"></div>
+              <li class="">
+                <a class="no-styling" href="https://api.hybrix.io/help/introduction">
+                  documentation
+                </a>
+              </li>
+              <li class="">
+                <a class="no-styling" href="https://hybrix.io/docs/papers">
+                  papers
+                </a>
+              </li>
+              <li class="">
+                <a class="no-styling" href="https://hybrix.io/docs/supported-crypto-assets">
+                  supported assets
+                </a>
+              </li>
+            </ul>
+            <!-- end dropdown menu -->
+
+          </li>
+          <li class="has-children selected dropdown">
+            <a href="" class="no-styling trigger-drop">
+              community
+            </a>
+
+            <!-- start dropdown menu -->
+            <ul class="drop">
+              <div class="arrow-up"></div>
+              <li class="">
+                <a class="no-styling" href="https://hybrix.io/community/about-us">
+                  about us
+                </a>
+              </li>
+              <li class="">
+                <a class="no-styling" href="https://hybrix.io/community/press">
+                  press
+                </a>
+              </li>
+              <li class="">
+                <a class="no-styling" href="https://hybrix.io/community/newsletter-subscribe">
+                  newsletter
+                </a>
+              </li>
+
+              <div class="socials">
+                <div class="social-icons social-icons-dark">
+                  <a class="link social-link" href="https://github.com/hybrix-io" target="_BLANK" rel="noreferrer" title="Github">
+                    <svg viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                      <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                        <path d="M2,9.17792451 C2,12.3499203 4.0055,15.0396794 6.78625,15.9875548 C7.13625,16.0552922 7.2644375,15.8332391 7.2644375,15.6425873 C7.2644375,15.4721223 7.25875,15.0203899 7.2556875,14.4224164 C5.308375,14.855308 4.898,13.4592889 4.898,13.4592889 C4.5795,12.630739 4.11925,12.409583 4.11925,12.409583 C3.4853125,11.9645795 4.16825,11.9735514 4.16825,11.9735514 C4.8713125,12.0237937 5.2405625,12.7128314 5.2405625,12.7128314 C5.864875,13.8105366 6.879,13.4933819 7.2793125,13.3099077 C7.3423125,12.8456147 7.5225625,12.5293572 7.7225,12.3499203 C7.31436216,12.3028068 6.90073504,12.2255099 6.51263798,12.0873442 C5.42262489,11.699291 4.534,10.8310883 4.534,8.80290139 C4.534,8.01921074 4.80525,7.3795182 5.2545625,6.87709489 C5.1758125,6.69586362 4.9395625,5.96600404 5.3158125,4.97730673 C5.3158125,4.97730673 5.9020625,4.78486066 7.2408125,5.71299801 C7.8008125,5.55329917 8.3958125,5.47434694 8.9908125,5.4707582 C9.5858125,5.47434694 10.1808125,5.55329917 10.7408125,5.71299801 C12.0708125,4.78486066 12.6570625,4.97730673 12.6570625,4.97730673 C13.0333125,5.96600404 12.7970625,6.69586362 12.7270625,6.87709489 C13.1733125,7.3795182 13.4445625,8.01965933 13.4445625,8.80290139 C13.4445625,11.5603979 11.8083125,12.1673432 10.2508125,12.34364 C10.4958125,12.5589643 10.7233125,12.9990332 10.7233125,13.671473 C10.7233125,14.631909 10.7145625,15.4034877 10.7145625,15.6367556 C10.7145625,15.8251644 10.8370625,16.0494605 11.1958125,15.9776858 C13.99625,15.0360906 16,12.3445372 16,9.17747592 C16,5.21371484 12.86575,2 9,2 C5.1325,2.00044859 2,5.21416343 2,9.17792451 Z" fill="#000000" fill-rule="nonzero"></path>
+                      </g>
+                    </svg>
+                  </a>
+                  <a class="link social-link" href="https://twitter.com/hybrix_io" target="_BLANK" rel="noreferrer" title="Twitter">
+                    <svg viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                      <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                        <path d="M15.9728758,4.35490599 C15.456642,4.58188992 14.9054092,4.73627398 14.3248648,4.80668711 C14.9163464,4.45024799 15.3713321,3.88869238 15.5865754,3.21867431 C15.0318428,3.54231228 14.4171745,3.77804318 13.7626949,3.90924776 C13.2398988,3.34987889 12.495297,3 11.6680104,3 C10.0829974,3 8.79810006,4.28449287 8.79810006,5.86725749 C8.79810006,6.09467877 8.82434924,6.31335307 8.87203525,6.52284305 C6.4864223,6.41044446 4.37161339,5.26502845 2.9567826,3.5335653 C2.70785288,3.95473202 2.56829474,4.44368776 2.56829474,4.97681572 C2.56829474,5.97397055 3.07577888,6.85041716 3.84444236,7.36517648 C3.37370707,7.34986928 2.93097091,7.22041409 2.54467048,7.00611327 L2.54467048,7.04153851 C2.54467048,8.43230709 3.53207712,9.5921556 4.84628605,9.85631416 C4.60523109,9.92104175 4.35105153,9.95602964 4.09030968,9.95602964 C3.90700291,9.95602964 3.73157089,9.9385357 3.55613887,9.90573455 C3.92406487,11.0445903 4.9823443,11.8751153 6.24186744,11.8982948 C5.26189807,12.667591 4.01987438,13.1259324 2.68247867,13.1259324 C2.45498578,13.1259324 2.22793038,13.1123746 2,13.0870083 C3.27702259,13.9000394 4.78110059,14.375 6.40811225,14.375 C11.6894472,14.375 14.5737946,10.0037006 14.5737946,6.21932312 C14.5737946,6.09730286 14.5737946,5.9744079 14.5650448,5.85195029 C15.1254648,5.45002691 15.615012,4.94226518 16,4.36627706 L15.9724384,4.35446865 L15.9728758,4.35490599 Z" fill="#000000" fill-rule="nonzero"></path>
+                      </g>
+                    </svg>
+                  </a>
+                  <a class="link social-link" href="https://t.me/hybrix_io" rel="noreferrer" target="_BLANK" title="Telegram">
+                    <svg viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                      <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                        <path d="M13.3687289,14.0499182 L15.4856924,4.07060563 C15.6727815,3.19230079 15.1686548,2.8466929 14.5926416,3.06235222 L2.15075742,7.85754647 C1.30102281,8.18840842 1.31576875,8.66396488 2.00698454,8.8796242 L5.18934203,9.87313168 L12.5770564,5.22171031 C12.9226643,4.99130505 13.2397019,5.12125362 12.9807264,5.35165888 L7.00493551,10.7514365 L6.77453024,14.0351723 C7.1053922,14.0351723 7.25008671,13.8913994 7.42242984,13.7181346 L8.97720456,12.2205005 L12.2028782,14.5964395 C12.7936373,14.9273014 13.2111317,14.7549583 13.3696505,14.0489966 L13.3687289,14.0499182 Z" fill="#000000" fill-rule="nonzero"></path>
+                      </g>
+                    </svg>
+                  </a>
+                  <a class="link social-link" href="https://discord.gg/WbDfAWb" target="_BLANK" rel="noreferrer" title="Discord">
+                    <svg viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                      <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                        <path d="M10.8786577,4.00309821 L10.8779036,4 L10.8213467,4.02091291 C11.0928202,4.02091291 12.6311705,4.06816059 14.2750937,5.32216063 C14.2750937,5.32216063 16.0999994,8.57527992 16.0999994,12.5719694 C16.0396719,12.4952887 14.9681055,14.2922498 12.2088782,14.354214 C12.2088782,14.354214 11.7413405,13.8027328 11.4095394,13.3217359 C13.023299,12.8384153 13.6265735,11.8717741 13.6265735,11.8717741 C13.096446,12.2203227 12.6138263,12.4263535 12.2216978,12.633159 C11.6184232,12.9096741 11.0151486,13.0459953 10.411874,13.1854147 C9.19099708,13.3922202 8.11943056,13.3248341 7.18435491,13.1854147 C6.44534356,13.0475444 5.84282303,12.8399644 5.37453112,12.6316099 C5.10305755,12.4976123 4.77125652,12.3589675 4.43945549,12.2187735 C4.40929176,12.2187735 4.39496399,12.204057 4.37912803,12.1877915 L4.37912803,12.181595 C4.36329207,12.166104 4.3489643,12.1506129 4.31880057,12.1506129 L4.25847311,12.1506129 C4.05637612,12.0119681 3.92139343,11.9438075 3.92139343,11.9438075 C3.92139343,11.9438075 4.52466803,12.9104487 6.07282146,13.3937692 C5.66561112,13.8778644 5.26367941,14.428571 5.26367941,14.428571 C2.5052063,14.3604104 1.5,12.5634493 1.5,12.5634493 C1.5,8.56056343 3.31510245,5.31364056 3.31510245,5.31364056 C5.1302049,3.93648672 6.81107875,4.00232366 6.81107875,4.00232366 L6.94681556,4.14174305 C4.72676502,4.69399878 3.71929644,5.72880054 3.71929644,5.72880054 C3.71929644,5.72880054 3.98850772,5.5917048 4.45830782,5.38180115 C5.80587247,4.82954542 6.81107875,4.62273998 7.28389522,4.62273998 L7.48523812,4.62273998 C8.22424952,4.55690304 9.09899768,4.48332058 9.97374584,4.62273998 C11.1840655,4.76215938 12.3951393,5.10683511 13.7381794,5.79696114 C13.7381794,5.79696114 12.7299567,4.82954542 10.6456429,4.20990365 L10.848494,4.00309821 L10.8786577,4.00309821 Z M11.1464282,8.17142839 L11.1464282,8.17493677 C10.4311194,8.17493677 9.84516674,8.87397554 9.84285682,9.73966096 C9.84285682,10.5983297 10.4280395,11.2999997 11.1464282,11.2999997 C11.8648169,11.2999997 12.4499995,10.5983297 12.4499995,9.73264424 C12.4499995,8.87309845 11.8678968,8.17142839 11.1464282,8.17142839 Z M6.4574211,8.17142839 L6.45357121,8.17493677 C5.73518252,8.17493677 5.14999985,8.87397554 5.14999985,9.73966096 C5.14999985,10.5983297 5.73518252,11.2999997 6.45357121,11.2999997 C7.17195995,11.2999997 7.7571426,10.5983297 7.7571426,9.73264424 C7.7571426,8.87309845 7.17580984,8.17142839 6.4574211,8.17142839 Z" fill="#000000" fill-rule="nonzero"></path>
+                      </g>
+                    </svg>
+                  </a>
+                  <a class="link social-link" href="https://riot.im/app/#/room/#hybrix:matrix.org" target="_BLANK" rel="noreferrer" title="Riot.im">
+                    <svg viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                          <g transform="translate(4.000000, 2.000000)">
+                            <path d="M3.66135611,3.83291771 L3.66135611,5.78526655 L5.50726312,5.78322544 C5.53070419,5.78322544 5.55209288,5.78254504 5.57337354,5.78107091 C6.05872348,5.74671172 6.43810233,5.31931999 6.43810233,4.80812824 C6.43810233,4.27028828 6.02145537,3.83291771 5.50909948,3.83291771 L3.66135611,3.83291771 Z M1.83575756,13.4759358 C0.827573467,13.4759358 0.0101590184,12.6179773 0.0101590184,11.5595336 L0.0101590184,7.9071433 C0.00356958225,7.84091972 -2.14165256e-09,7.77356214 -2.14165256e-09,7.70541078 C-0.000103221176,7.63601209 0.00335353604,7.56752056 0.0101590184,7.49993618 L0.0101590184,1.91651555 C0.0101590184,0.858071895 0.827573467,0 1.83575756,0 L5.50909948,0 C8.03469087,0 10.0894074,2.15691629 10.0894074,4.80812824 C10.0894074,7.32882073 8.213902,9.43584254 5.81966729,9.60503022 C5.71790906,9.61240102 5.61301817,9.61614311 5.50909948,9.61614311 L3.66135611,9.61807084 L3.66135611,11.5595336 C3.66135611,12.6179773 2.84404967,13.4759358 1.83575756,13.4759358 Z" stroke="#000000" stroke-width="0.5"></path>
+                            <path d="M7.17777193,6.59331385 L9.75859062,10.4591322 C10.3374245,11.3260662 10.1369883,12.5213329 9.31114787,13.1286631 C8.9921788,13.363316 8.62663937,13.4759358 8.26477366,13.4759358 C7.68928948,13.4759358 7.12309772,13.1912675 6.7677151,12.6590171 L4.18689645,8.79319879 C3.60817068,7.92626471 3.8086069,6.73099803 4.63444724,6.12366783 C5.46028762,5.51588394 6.59904615,5.72637972 7.17777193,6.59331385 Z M3.32482628,0.816577229 C3.60478862,1.23586756 3.71230027,1.74464128 3.62758761,2.24853822 C3.54276689,2.75277539 3.27587876,3.19202653 2.87608692,3.48565452 C2.05067875,4.09185058 0.90889472,3.88078774 0.330925317,3.01510121 C0.0509629482,2.59581088 -0.0565486563,2.08715057 0.0282720552,1.5830268 C0.112984717,1.07890304 0.379872814,0.639538492 0.779772746,0.346023913 C1.60518091,-0.260172149 2.74685687,-0.0491093108 3.32482628,0.816577229 Z" fill="#000000" fill-rule="nonzero"></path>
+                          </g>
+                        </g>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </ul>
+          </li>
+
+          <li>
+            <div class="social-icons">
+              <a class="link social-link" href="https://github.com/hybrix-io" target="_BLANK" title="Github" >
+                <svg width="24px" height="24px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                  <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <g transform="translate(-1.000000, -1.000000)" fill="#000000" fill-rule="nonzero">
+                      <g transform="translate(1.000000, 1.000000)">
+                        <path d="M0,16.396 C0,23.467 4.584,29.463 10.94,31.576 C11.74,31.727 12.033,31.232 12.033,30.807 C12.033,30.427 12.02,29.42 12.013,28.087 C7.562,29.052 6.624,25.94 6.624,25.94 C5.896,24.093 4.844,23.6 4.844,23.6 C3.395,22.608 4.956,22.628 4.956,22.628 C6.563,22.74 7.407,24.276 7.407,24.276 C8.834,26.723 11.152,26.016 12.067,25.607 C12.211,24.572 12.623,23.867 13.08,23.467 C12.1471135,23.3619748 11.2016801,23.1896648 10.3146011,22.8816666 C7.8231426,22.0166199 5.792,20.081226 5.792,15.56 C5.792,13.813 6.412,12.387 7.439,11.267 C7.259,10.863 6.719,9.236 7.579,7.032 C7.579,7.032 8.919,6.603 11.979,8.672 C13.259,8.316 14.619,8.14 15.979,8.132 C17.339,8.14 18.699,8.316 19.979,8.672 C23.019,6.603 24.359,7.032 24.359,7.032 C25.219,9.236 24.679,10.863 24.519,11.267 C25.539,12.387 26.159,13.814 26.159,15.56 C26.159,21.707 22.419,23.06 18.859,23.453 C19.419,23.933 19.939,24.914 19.939,26.413 C19.939,28.554 19.919,30.274 19.919,30.794 C19.919,31.214 20.199,31.714 21.019,31.554 C27.42,29.455 32,23.455 32,16.395 C32,7.559 24.836,0.395 16,0.395 C7.16,0.396 0,7.56 0,16.396 Z"></path>
+                      </g>
+                    </g>
+                  </g>
+                </svg>
+              </a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="mobile-nav">
+        <a id="nav-btn" onclick="toggleNav()">
+          <svg width="20px" height="14px" viewBox="0 0 20 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <g fill="#000000">
+                <path d="M19,6 L1,6 C0.4,6 0,6.4 0,7 C0,7.6 0.4,8 1,8 L19,8 C19.6,8 20,7.6 20,7 C20,6.4 19.6,6 19,6 Z"></path>
+                <path d="M1,2 L19,2 C19.6,2 20,1.6 20,1 C20,0.4 19.6,0 19,0 L1,0 C0.4,0 0,0.4 0,1 C0,1.6 0.4,2 1,2 Z"></path>
+                <path d="M19,12 L1,12 C0.4,12 0,12.4 0,13 C0,13.6 0.4,14 1,14 L19,14 C19.6,14 20,13.6 20,13 C20,12.4 19.6,12 19,12 Z"></path>
+              </g>
+            </g>
+          </svg>
+        </a>
+      </div>
+
+    </div>
+
+    <a id="collapseAll" onclick="collapseAll()">
+      Collapse all blocks
+      <svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+          <path d="M9,0 C11.4848182,0 13.7356364,1.00881818 15.3638182,2.63618182 C16.992,4.26354545 18,6.51518182 18,9 C18,11.4848182 16.9911818,13.7356364 15.3638182,15.3638182 C13.7364545,16.992 11.4848182,18 9,18 C6.51518182,18 4.26436364,16.9911818 2.63618182,15.3638182 C1.008,13.7364545 0,11.4848182 0,9 C0,6.51518182 1.00881818,4.26436364 2.63618182,2.63618182 C4.26354545,1.008 6.51518182,0 9,0 Z M9,4.90909091 C8.89363636,4.90909091 8.78645455,4.92954545 8.68663636,4.97127273 C8.59009091,5.01136364 8.50009091,5.07027273 8.42154545,5.14881818 L5.14881818,8.42154545 C4.82890909,8.74145455 4.82890909,9.25936364 5.14881818,9.57845455 C5.46872727,9.89754545 5.98663636,9.89836364 6.30572727,9.57845455 L8.18181818,7.70236364 L8.18181818,12.2727273 C8.18181818,12.7243636 8.54836364,13.0909091 9,13.0909091 C9.45163636,13.0909091 9.81818182,12.7243636 9.81818182,12.2727273 L9.81818182,7.70236364 L11.6942727,9.57845455 C12.0141818,9.89836364 12.5320909,9.89836364 12.8511818,9.57845455 C13.1702727,9.25854545 13.1710909,8.74063636 12.8511818,8.42154545 L9.57845455,5.14881818 C9.49990909,5.07027273 9.40990909,5.01136364 9.31336364,4.97127273 C9.21681818,4.93118182 9.11127273,4.90909091 9,4.90909091 Z" fill="#FFFFFF" fill-rule="nonzero"></path>
+        </g>
+      </svg>
+    </a>
+  </div>
+
+    <div class="main" id="main">
+      <div class="pure-g">
+        <div class="pure-u-1 pure-u-lg-1-5 sidebar">
+          <div id="navigation" class="toggle-off"></div>
+          <div id="mobile-sub-nav" onclick="toggleSubNav()">
+            show navigation <img src="./icon-arrow-right.svg" alt=">" style="transform: rotate(90deg);" />
+          </div>
+
+        </div>
+        <div class="pure-u-1 pure-u-lg-3-5 content">
+          <div id="console-wrapper" style="display:none;"></div>
+<h1>Node side modules (Recipes)</h1>
+
+
+<p>A recipe file is a json file describing the properties of an
+  asset (also token), a (data) source or an engine implementation. </p>
+
+<p>For example: when you query hybrixd for the balance of your waves address:  <code>/asset/waves/$ADDRESS</code>
+  this will be routed to the Node side  module defined in
+  <code>recipes/asset.waves.json</code>. <br/>
+  The logic there (written in qrtz) will reformat the request to
+  <u>https://nodes.wavesplatform.com/addresses/balance/details/$YOUR_ADDRESS</u> <br/>
+  it will retrieve the result, extract the required information, reformat that and return the standardized end result.
+</p>
+
+
+<p>Recipes are stored in the <code>$HYBRIXD/node/recipes</code>
+  folder. <a href="https://github.com/hybrix-io/hybrixd/tree/master/recipes">View on github </a></p>
+
+<p>For a token only a basic recipe is required that will import an existing chain's properties.</p>
+
+<p>Example for an asset foo with properties host and cache and quartz program for balance that
+  does something and returns something: </p>
+
+
+<pre>
+asset.foo.json
+{
+  "symbol" :"foo",
+  "host" : "http://foo.bar",
+  "quartz" : {
+    "balance" : ["dosomething", "returnsomething"]
+  },
+  "router" : {
+    "balance" : "Does something and then returns something to the user."
+  }
+}
+</pre>
+
+<p>A recipe defines either an asset/token or a source. For assets (and tokens) a symbol is required, for sources an id. </p>
+
+
+
+<p> To facilitate some common standards there are qrtz engines
+  available for Insight and Electrum rpc's. Import these to use their functionality</p>
+
+
+<h2>Filename</h2>
+
+<p>For assets the filename is defined as <code>/recipes/asset.$SYMBOL.json</code> or <code>/recipes/token.$SYMBOL.json</code></p>
+
+<p>For sources the filename is defined as <code>/recipes/source.$TYPE.$ID.json</code></p>
+
+<p>For engines the filename is defined as <code>/recipes/engine.$NAME.json</code></p>
+
+<h2>Properties</h2>
+
+<table>
+  <tr><td>symbol</td><td>
+    (Only required for assets)
+    Discription: A string containing the symbol. This is used as the main idenitfier.
+    Format: <code>"$BASE[.$TOKEN]"</code>
+    Examples: <code>"BTC"</code>, <code>"ETH.SHIFT"</code>
+  </td></tr>
+
+  <tr><td>source</td><td>
+    (Only required for sources)
+    Discription:
+    Examples: <code>"abe.bitcoin"</code>, <code>"insight.litecoin"</code>, <code>"deterministic"</code>
+  </td></tr>
+
+  <tr><td>engine</td><td>
+    (Only required for engines)
+    Discription:
+    Examples: <code>"storage"</code>
+  </td></tr>
+
+  <tr><td>name</td><td>
+    Discription: A string containing the display name (for pretty printing).
+    Example: <code>"Bitcoin"</code>
+  </td></tr>
+
+  <tr><td>mode</td><td>
+    Discription: A string containing the deterministic mode.
+    Format: <code>"$DETERMINISTIC_MODULE.$SUBMODE"</code>
+    Example: <code>"bitjoinjslib.bitcoin"</code>
+  </td></tr>
+
+  <tr><td>contract</td><td>
+    (Only required for token assets)
+    Description: The unique identifier for an asset token
+  </td></tr>
+
+  <tr><td>originator</td><td>
+    (Only required for token assets)
+    Description: The creator or origin address for an asset token
+  </td></tr>
+
+  <tr><td>import</td><td>
+    Discription: A string or array of strings containing the id's /
+    symbols of the recipes from which this recipe should inherit
+    properties. Cf Import section below
+    Example: <code>"btc"</code>, <code>["btc","eth"]</code> , <code>"btc::host"</code>
+  </td></tr>
+
+  <tr><td>module</td><td>
+    Discription:  The name of the server/node side code implementation
+  </td></tr>
+
+  <tr><td>module-deterministic</td><td>
+    (Only required for assets)
+    Discription: The name of the client side code implementation  (TODO TO BE RENAMED!)
+  </td></tr>
+
+  <tr><td>factor</td><td>
+    (Only required for assets)
+    Discription: The number of decimal digits used for this asset.
+  </td></tr>
+
+  <tr><td>fee</td><td>
+    (Only required for assets)
+    Discription: A number representing the fee associated with
+    transfering assets
+  </td></tr>
+
+  <tr><td>fee-symbol</td><td>
+    (Optional for assets)
+    Discription: the symbol in which the fee is calculated
+  </td></tr>
+
+  <tr><td>host</td><td>                  A string or array of strings containing the hosts
+
+    <dl>
+      <dt>[cache]</dt><dd>              The ammount of time in miliseconds that data should be cached (Defaults to 12000)</dd>
+      <dt>[throttle]</dt><dd>            Defaults to 5</dd>
+      <dt>[retry]         </dt><dd>   Defaults to 3</dd>
+      <dt>[timeout]     </dt><dd>        Defaults to 15000</dd>
+      <dt>[interval]    </dt><dd>        Defaults to 2000</dd>
+    </dl>
+
+    The following properties are used to initialize the connection: (cf
+    https://www.npmjs.com/package/node-rest-client#options-parameters )
+    <dl>
+      <dt>[user]</dt><dd></dd>
+      <dt>[pass]</dt><dd></dd>
+      <dt>[proxy]</dt><dd></dd>
+      <dt>[connection]</dt><dd></dd>
+      <dt>[mimetypes]</dt><dd></dd>
+      <dt>[requestConfig]</dt><dd></dd>
+      <dt>[responseConfig]</dt><dd></dd>
+
+    </dl>
+  </td></tr>
+
+  <tr><td>quartz    </td><td><p>Defines the Qrtz code. A function is defined by an array of qrtz statements.</p>
+
+  </td></tr>
+
+  <tr><td>router    </td><td>Defines the routing definitions. Used to expose functions as API endpoints and to generate documentation.</td></tr>
+
+</table>
+
+
+<h2>Asset Endpoints</h2>
+
+An asset should provide the following endpoints:
+
+TODO
+
+TODO mention default.qrtz
+<table>
+  <tr><td>Endpoint</td><td>Description</td><td>Expected output</td></tr>
+  <tr><td><code>/balance/$ADDRESS</code></td><td></td><td></td></tr>
+  <tr><td><code>/transaction/$TRANSACTION_ID</code></td><td></td><td></td></tr>
+  <tr><td><code>/validate/$ADDRESS</code></td><td></td><td></td></tr>
+  <tr><td><code>/sample/$ADDRESS</code></td><td></td><td></td></tr>
+  <tr><td><code>/details/$ADDRESS</code></td><td></td><td></td></tr>
+  <tr><td><code>/fee</code></td><td></td><td></td></tr>
+  <tr><td><code>/factor</code></td><td></td><td></td></tr>
+  <tr><td><code>/unspent/$ADDRESS</code></td><td></td><td></td></tr>
+</table>
+
+<h2>qrtz</h2>
+
+<p>Browse to <a href="https://api.hybrix.io/help/qrtz">https://api.hybrix.io/help/qrtz</a> for more help on qrtz.</p>
+
+<h3> $ Operator  $PROPERTY</h3>
+
+<p>For qrtz commands the <code>$</code> is used (inspired by posix) to retrieve variables:</p>
+
+
+<p>Calling <code>/asset/foo/balance/bar</code> on</p>
+
+<pre>
+asset.foo.json
+{
+  "id" :"foo",
+  "a" : 1,
+  "b" : 2,
+  "quartz" : {
+  "balance" : ["dosomething with $a, $b, $0", "returns $1"]
+}
+}
+</pre>
+
+<p>Results in</p>
+
+<pre>
+asset.foo.json
+{
+  "id" :"foo",
+  "a" : 1,
+  "b" : 2,
+  "quartz" : {
+    "balance" : ["dosomething with 1, 2, balance", "returns bar"]
+  }
+}
+</pre>
+
+<h3> Cross recipe variables  $RECIPE::PROPERTY</h3>
+
+<p>The <code>$foo::bar</code> notation can be used to reference variables in other
+  (non imported files)</p>
+
+<p>Given</p>
+
+<pre>
+asset.foo.json
+{
+  "id" :"foo",
+  "a" : 1,
+}
+ </pre>
+
+ <p>then</p>
+
+ <pre>
+asset.bar.json
+{
+  "id" :"bar",
+  "a" : -1,
+  "quartz" : {
+    "balance" : ["dosomething with $a, $foo::a", "returnsomething"]
+  }
+}
+ </pre>
+
+ <p>Compiles to:</p>
+
+
+ <pre>
+{
+  "id" :"bar",
+  "a" : -1,
+  "quartz" : {
+    "balance" : ["dosomething with -1, 1", "returnsomething"]
+  }
+}
+ </pre>
+
+ <h3>Import</h3>
+
+ <p>Inheritance using <code>"import"</code>:</p>
+
+<p>Given foo.json</p>
+
+<pre>
+asset.foo.json
+{
+  "id" :"foo",
+  "a" : 1,
+  "b" : 2,
+}
+  </pre>
+
+
+  <p><code>bar.json</code> can inherit <code>foo.json</code> by using</p>
+
+  <pre>
+asset.bar.json
+{
+"id" :"bar",
+"a" : -1,
+"c" : 3,
+"import" : "foo"
+}
+  </pre>
+
+
+  <p>which compiles to</p>
+
+  <pre>
+asset.bar.json
+{
+  "id" :"bar",
+  "a" : -1,
+  "b" : 2,
+  "c" : 3,
+  "import" : "foo"
+}
+  </pre>
+
+
+  <p>Note that the value of <code>a</code> is retained, bu <code>b</code> is added.</p>
+
+
+  <h3>Multi-inheritance</h3>
+
+  <p>Multi-inheritance can be defined by using:</p>
+
+  <pre>
+asset.bar.json
+{
+  "id" :"bar",
+  "a" : -1,
+  "c" : 3,
+  "import" : ["foo1","foo2","foo3"]
+}
+  </pre>
+
+
+  <p>They are imported from left to right (values in <code>foo3</code> overwrite those of <code>foo1</code> and <code>foo2</code>)</p>
+
+
+<h3>Token inheritance</h3>
+
+<p>A token asset, identified by a two part symbol <code>"$BASE.$TOKEN"</code>, for
+example: <code>"eth.shift"</code> will automatically inherit the qrtz code from its
+  base asset <code>"eth"</code>.</p>
+
+
+<h2>Javascript modules</h2>
+
+<p>To run your javascript code directly you can use the
+qrtz <a href="./qrtz#func">func</a> method.</p>
+
+<p>To create a helloworld module create a folder in the <code>modules</code> folder with the following
+files:</p>
+
+<p><ul>
+  <li><code>modules/</code></li>
+  <li>
+    <ul>
+      <li><code>helloworld/</code></li>
+      <li>
+        <ul>
+          <li><code>engine.helloworld.json</code></li>
+          <li><code>module.js</code></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul></p>
+
+<p> With the following content: </p>
+
+<p><pre><code>modules/helloworld/engine.helloworld.json:
+{
+    "engine":"helloworld"
+    "name":"Hello World",
+    "module":"helloworld",
+    "router":{
+      "example" : "Returns the text 'example'",
+      "hello" : "Returns the text 'hello world'"
+    },
+    "quartz": {
+      "example" : [
+       "done example"
+     ],
+      "hello" : [
+        "func hello"
+      ]
+    }
+}   </code></pre></p>
+
+<p> The router defines the api endpoints and their corresponding api
+endpoints. With this module you can now
+call <code>/engine/helloworld/example</code> and <code>/engine/helloworld/hello</code>
+and view the automatically generated help page on <code>/help/api/engine/helloworld</code></p>
+
+<p> The qrtz function <code>example</code> returns 'example'
+immediatly by using qrtz directly. The function hello will call the
+hello function in de module.js: </p>
+
+<p><pre><code>modules/helloworld/module.js:
+
+function hello(proc, data){ // proc, the process handle and the data from the data stream are passed (data is unused in this example
+
+  proc.done('hello world'); // pass 'hello world' as output
+
+  // proc.fail('Oops! Someting gone wrong'); // return a failure
+  // proc.peek('myVariable'); // retrieve the content of the variable named myVariable
+  // proc.poke('myVariable',123); // set the content of the myVariable variable
+}
+
+exports.hello = hello; // export the function so it can be used by qrtz func</code></pre></p>
+
+<p>Check out the existing modules:  <a href="https://github.com/hybrix-io/hybrixd/tree/master/modules">View on github </a></p>
+<script>initNavigation("node")</script>          <br/><br/><hr>
+          <div class="footer">
+            <div class="wrapper padding">
+              <div class="social-icons">
+                <a class="social-link" href="https://github.com/hybrix-io" target="_BLANK" title="Github">
+                  <svg width="22px" height="24px" viewBox="0 0 22 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                      <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                          <g transform="translate(-1.000000, 0.000000)" fill="#000000">
+                              <path d="M22.5,9.5 C22.5,8 22,6.7 21.1,5.5 C21.4,4.2 21.3,2.8 20.8,1.6 C20.7,1.3 20.5,1.1 20.2,1 C19.8,0.9 18.5,0.7 15.8,2.4 C13.6,1.9 11.3,1.9 9.2,2.4 C6.5,0.7 5.2,0.9 4.8,1 C4.5,1.1 4.3,1.3 4.2,1.6 C3.6,2.9 3.5,4.2 3.9,5.5 C3,6.7 2.5,8.1 2.5,9.5 C2.5,14.9 5.5,16.6 8.3,17.2 C8.1,17.9 8,18.5 8,19.1 L8,19.2 C5.9,19.6 5.2,18.8 4.4,17.7 C3.9,17 3.3,16.2 2.2,16 C1.7,15.9 1.1,16.2 1,16.7 C0.9,17.2 1.2,17.8 1.7,17.9 C2,18 2.4,18.4 2.8,18.9 C3.7,20.1 5,21.7 8,21.3 L8,23 C8,23.6 8.4,24 9,24 C9.6,24 10,23.6 10,23 L10,20.1 C10,20.1 10,20 10,20 L10,19.1 C10,18.4 10.2,17.8 10.7,17.3 C11,17 11.1,16.6 10.9,16.3 C10.8,15.9 10.5,15.7 10.1,15.6 C7.2,15.2 4.5,14.3 4.5,9.6 C4.5,8.4 4.9,7.4 5.7,6.5 C6,6.2 6,5.8 5.9,5.5 C5.6,4.6 5.6,3.8 5.8,3 C6.3,3.1 7.2,3.4 8.4,4.3 C8.7,4.5 9,4.5 9.3,4.4 C11.4,3.8 13.7,3.8 15.8,4.4 C16.1,4.5 16.4,4.4 16.6,4.3 C17.9,3.4 18.8,3.1 19.2,3 C19.4,3.8 19.4,4.6 19.1,5.4 C19,5.8 19,6.2 19.3,6.4 C20.1,7.2 20.5,8.3 20.5,9.5 C20.5,14.2 17.8,15.2 14.9,15.5 C14.5,15.5 14.2,15.8 14.1,16.2 C14,16.6 14.1,17 14.3,17.2 C14.8,17.7 15,18.4 15,19.1 L15,23 C15,23.6 15.4,24 16,24 C16.6,24 17,23.6 17,23 L17,19.2 C17.1,18.5 17,17.9 16.7,17.3 C19.1,16.8 22.5,15.2 22.5,9.5 Z"></path>
+                          </g>
+                      </g>
+                  </svg>
+                </a>
+                <a class="social-link" href="https://twitter.com/hybrix_io" target="_BLANK" title="Twitter">
+                    <svg width="26px" height="21px" viewBox="0 0 26 21" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <g id="twitter" transform="translate(-1.000000, -1.000000)" fill="#000000" fill-rule="nonzero">
+                                <path d="M26.4195266,1.25714286 C26.0973373,1.04761905 25.560355,1.04761905 25.2381657,1.25714286 C24.4863905,1.78095238 23.6272189,2.2 22.7680473,2.51428571 C20.6201183,0.628571429 17.2908284,0.523809524 15.035503,2.40952381 C13.6393491,3.56190476 12.887574,5.13333333 12.887574,6.80952381 C9.77307692,6.6 6.98076923,5.02857143 5.15502959,2.51428571 C4.94023669,2.2 4.61804734,2.0952381 4.18846154,2.0952381 C3.75887574,2.0952381 3.43668639,2.40952381 3.32928994,2.72380952 C3.22189349,2.82857143 2.14792899,5.34285714 2.25532544,8.38095238 C2.36272189,11 3.43668639,14.352381 7.41035503,16.7619048 C5.79940828,17.4952381 3.97366864,17.8095238 2.14792899,17.8095238 C1.7183432,17.8095238 1.18136095,18.1238095 1.0739645,18.5428571 C0.966568047,18.9619048 1.18136095,19.4857143 1.61094675,19.6952381 C4.29585799,21.1619048 7.19556213,21.8952381 9.88047337,21.8952381 C12.5653846,21.8952381 15.1428994,21.2666667 17.5056213,19.9047619 C22.1236686,17.3904762 24.7011834,12.5714286 24.7011834,6.80952381 C24.7011834,6.6 24.7011834,6.4952381 24.7011834,6.28571429 C25.7751479,5.13333333 26.5269231,3.77142857 26.8491124,2.3047619 C26.9565089,1.88571429 26.741716,1.46666667 26.4195266,1.25714286 Z M22.7680473,5.23809524 C22.5532544,5.44761905 22.445858,5.86666667 22.445858,6.18095238 C22.5532544,6.39047619 22.5532544,6.6 22.5532544,6.80952381 C22.5532544,11.8380952 20.297929,15.9238095 16.4316568,18.1238095 C13.4245562,19.8 9.88047337,20.2190476 6.33639053,19.3809524 C7.73254438,18.9619048 9.02130178,18.4380952 10.2026627,17.6 C10.6322485,17.3904762 10.739645,17.0761905 10.739645,16.6571429 C10.739645,16.2380952 10.4174556,15.9238095 10.0952663,15.8190476 C3.86627219,13.0952381 4.08106509,7.96190476 4.72544379,5.34285714 C7.08816568,7.64761905 10.4174556,9.00952381 13.9615385,8.9047619 C14.4985207,8.9047619 15.035503,8.38095238 15.035503,7.85714286 L15.035503,6.80952381 C15.035503,5.76190476 15.4650888,4.71428571 16.3242604,3.98095238 C17.8278107,2.61904762 20.297929,2.82857143 21.5866864,4.2952381 C21.9088757,4.60952381 22.3384615,4.71428571 22.6606509,4.60952381 C22.8754438,4.5047619 23.1976331,4.5047619 23.412426,4.4 C23.1976331,4.71428571 22.9828402,4.92380952 22.7680473,5.23809524 Z"></path>
+                            </g>
+                        </g>
+                    </svg>
+                </a>
+                <a class="social-link" href="https://t.me/hybrix_io" target="_BLANK" title="Telegram">
+                  <svg width="22px" height="24px" viewBox="0 0 22 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <g  stroke="none" stroke-width="1.5" fill="none" fill-rule="evenodd">
+                      <g>
+                        <path d="M18.270895,20.9152499 L21.4405973,5.63888651 C21.7207234,4.29437466 20.9659009,3.765317 20.1034438,4.09544898 L1.47437071,11.4359476 C0.202074012,11.9424321 0.224152914,12.6704154 1.25910142,13.0005474 L6.02400434,14.5214118 L17.085534,7.4010012 C17.6030082,7.0482961 18.0777046,7.24722178 17.6899439,7.59992688 L8.74246908,15.8659237 L8.39748625,20.8926768 C8.8928816,20.8926768 9.10953082,20.6725888 9.36757798,20.4073546 L11.6955222,18.1147714 L16.5252819,21.7518664 C17.4098178,22.2583509 18.0349267,21.9945275 18.2722749,20.9138391 L18.270895,20.9152499 Z" stroke="#000000" fill-rule="nonzero"></path>
+                      </g>
+                    </g>
+                  </svg>
+                </a>
+                <a class="social-link" href="https://discord.gg/WbDfAWb" target="_BLANK" title="Discord">
+                  <svg style="width: 26px !important;" viewBox="0 0 31 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                      <g id="discord" transform="translate(1.000000, 1.000000)" fill="#000000" fill-rule="nonzero" stroke="#000000" stroke-width="0.9">
+                        <path d="M10.3178712,0.232747625 C10.2283528,0.234537875 10.1370445,0.243489583 10.0457358,0.264973958 C8.06380208,0.6875 6.18033854,1.37679025 4.44726563,2.31315104 C4.01399763,2.54768892 3.66666667,2.92366525 3.46614583,3.37483713 C1.94433617,6.81949858 0.821777458,11.3455403 0.307942708,16.1168622 C0.225586167,16.8706056 0.528157667,17.6153972 1.113607,18.1095379 C2.87174479,19.5901695 4.89664725,20.7592775 7.13102225,21.5828452 C7.29036458,21.6419271 7.45328788,21.6705729 7.61442046,21.6705729 C8.12467471,21.6705729 8.60986317,21.3876955 8.84977225,20.9114583 L9.93473296,18.7397462 C11.470866,19.0763347 13.0499673,19.25 14.6666667,19.25 C16.283366,19.25 17.8624673,19.0763347 19.3986004,18.7397462 L20.4835611,20.9114583 C20.7234702,21.3876955 21.2086591,21.6705729 21.7189129,21.6705729 C21.8800455,21.6705729 22.0429688,21.6419271 22.2023111,21.5828452 C24.4366861,20.7592775 26.4615885,19.5901695 28.2197268,18.1077476 C28.8051757,17.613607 29.1077476,16.8688153 29.0253906,16.1168622 C28.5115559,11.3455403 27.3907879,6.82128929 25.8671875,3.37483713 C25.6666667,2.92366525 25.3193362,2.54768892 24.8860677,2.31315104 C23.1529948,1.37679025 21.2695313,0.68929025 19.2893883,0.264973958 C18.5553385,0.107421875 17.8374025,0.551432292 17.6565758,1.27473958 L17.4596354,2.06966146 C16.6217448,1.92822254 15.6925455,1.83333333 14.6666667,1.83333333 C13.6407879,1.83333333 12.7115885,1.92822254 11.8754882,2.06966146 L11.676758,1.27473958 C11.519206,0.64095075 10.9498698,0.222005208 10.3178712,0.232747625 Z M10.4181316,1.15657575 C10.5935871,1.18701183 10.7421875,1.31591808 10.7869465,1.49674479 L10.9731444,2.24690767 C8.55078125,2.80550142 7.15608713,3.7400715 7.07373058,3.79557292 C6.86604829,3.93880208 6.81233713,4.22347017 6.95377604,4.43294271 C7.0432945,4.56184896 7.18652367,4.63167329 7.33333333,4.63167329 C7.42285179,4.63167329 7.51236979,4.60481771 7.59114583,4.55289725 C7.61800142,4.53499338 10.2963868,2.75 14.6666667,2.75 C19.0369465,2.75 21.7153319,4.53499338 21.7421875,4.55289725 C21.9498698,4.69433617 22.2345379,4.640625 22.377767,4.43294271 C22.5209962,4.22347017 22.4654948,3.93880208 22.2578125,3.79557292 C22.175456,3.7400715 20.7807618,2.80729167 18.3583987,2.24869792 L18.5463868,1.49853504 C18.607259,1.25683617 18.8489583,1.10644554 19.0978191,1.16015625 C20.9938153,1.56656913 22.7949219,2.22542329 24.451009,3.12060558 C24.705241,3.25846354 24.911133,3.48046875 25.0292969,3.74723296 C26.5152997,7.10774763 27.6110028,11.5353191 28.1158854,16.2153319 C28.1624351,16.6647135 27.981608,17.1105142 27.6289062,17.407715 C25.953125,18.8203125 24.0195312,19.9357097 21.8854167,20.7234702 C21.6580402,20.8058267 21.4091799,20.7109375 21.3053385,20.501465 L20.3134768,18.5195312 C21.4252931,18.222331 22.5084635,17.8356122 23.5629882,17.3611652 C23.7939455,17.2573243 23.8959962,16.9869792 23.7921548,16.7560222 C23.6883139,16.5232746 23.4161785,16.4230142 23.1870118,16.5268556 C20.5247396,17.7246094 17.658366,18.3333333 14.6666667,18.3333333 C11.6749673,18.3333333 8.8068035,17.7246094 6.1463215,16.5268556 C5.91536458,16.4230142 5.64501942,16.5250653 5.5411785,16.7560222 C5.43554688,16.9851889 5.53938825,17.2573243 5.77034517,17.3611652 C6.82307954,17.8356122 7.90804025,18.222331 9.019857,18.5195312 L8.02799479,20.501465 C7.92415388,20.7109375 7.67350283,20.8076174 7.44791667,20.7234702 C5.31380208,19.9357097 3.38020833,18.8203125 1.70442708,17.407715 C1.35172538,17.1105142 1.16910796,16.6647135 1.21744792,16.2135417 C1.72233096,11.5353191 2.81803408,7.10595692 4.30403646,3.74544271 C4.42220075,3.48046875 4.62809233,3.25846354 4.88232433,3.12060558 C6.53841146,2.22542329 8.33951846,1.56656913 10.2355142,1.16015625 C10.2981771,1.14762358 10.3590497,1.14583333 10.4181316,1.15657575 Z M10.0833333,8.70833333 C8.56689442,8.70833333 7.33333333,10.1477865 7.33333333,11.9166667 C7.33333333,13.6855469 8.56689442,15.125 10.0833333,15.125 C11.5997723,15.125 12.8333333,13.6855469 12.8333333,11.9166667 C12.8333333,10.1477865 11.5997723,8.70833333 10.0833333,8.70833333 Z M19.25,8.70833333 C17.7335611,8.70833333 16.5,10.1477865 16.5,11.9166667 C16.5,13.6855469 17.7335611,15.125 19.25,15.125 C20.7664389,15.125 22,13.6855469 22,11.9166667 C22,10.1477865 20.7664389,8.70833333 19.25,8.70833333 Z M10.0833333,9.625 C11.0948892,9.625 11.9166667,10.6526695 11.9166667,11.9166667 C11.9166667,13.1806643 11.0948892,14.2083333 10.0833333,14.2083333 C9.07177746,14.2083333 8.25,13.1806643 8.25,11.9166667 C8.25,10.6526695 9.07177746,9.625 10.0833333,9.625 Z M19.25,9.625 C20.2615559,9.625 21.0833333,10.6526695 21.0833333,11.9166667 C21.0833333,13.1806643 20.2615559,14.2083333 19.25,14.2083333 C18.2384441,14.2083333 17.4166667,13.1806643 17.4166667,11.9166667 C17.4166667,10.6526695 18.2384441,9.625 19.25,9.625 Z"></path>
+                      </g>
+                    </g>
+                  </svg>
+                </a>
+                <a class="social-link" href="https://riot.im/app/#/room/#hybrix:matrix.org" target="_BLANK" title="Riot.im">
+                  <svg width="20px" height="24px" viewBox="0 0 20 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                      <g id="riot" transform="translate(1.000000, 1.000000)">
+                        <path d="M6.23718815,6.25739023 L6.23718815,9.44467724 L9.38172702,9.441345 C9.4216594,9.441345 9.4580954,9.44023426 9.49434742,9.43782763 C10.3211506,9.38173493 10.9674299,8.684001 10.9674299,7.84946018 C10.9674299,6.9714151 10.2576636,6.25739023 9.38485533,6.25739023 L6.23718815,6.25739023 Z M3.12724513,22 C1.40978368,22 0.0173020917,20.5993487 0.0173020917,18.8713974 L0.0173020917,12.9087252 C0.00607685346,12.8006126 4.18355729e-06,12.6906487 4.18355729e-06,12.5793889 C-0.00017983667,12.4660927 0.00570881301,12.3542776 0.0173020917,12.2439434 L0.0173020917,3.12878769 C0.0173020917,1.40083642 1.40978368,0 3.12724513,0 L9.38485533,0 C13.6872499,0 17.1875,3.52125143 17.1875,7.84946018 C17.1875,11.9645907 13.9925396,15.4043874 9.91391371,15.680593 C9.74056655,15.6926261 9.5618829,15.6987352 9.38485533,15.6987352 L6.23718815,15.7018823 L6.23718815,18.8713974 C6.23718815,20.5993487 4.84489058,22 3.12724513,22 Z" stroke="#000000" stroke-width="1.8"></path>
+                        <path d="M5.66390696,1.33309473 C6.14082836,2.01760284 6.32397651,2.84819612 6.17966681,3.67082786 C6.03517306,4.49401506 5.58052394,5.21110998 4.8994706,5.69046932 C3.49337155,6.68010847 1.54832003,6.33553998 0.563737788,4.92227237 C0.0868163819,4.23776427 -0.0963317456,3.40735613 0.0481620033,2.58435407 C0.192471685,1.76135204 0.647120807,1.04407197 1.32835821,0.564897769 C2.73445725,-0.424741359 4.67932471,-0.0801728986 5.66390696,1.33309473 Z M14.0792045,22 C13.0988558,22 12.134337,21.5352676 11.5289358,20.6663478 L7.13246043,14.3552459 C6.1465897,12.9399416 6.48803673,10.9886214 7.89487204,9.99713072 C9.30170737,9.00489943 11.241605,9.34854217 12.2274757,10.7638465 L16.6239511,17.0749483 C17.6100059,18.4902526 17.2685589,20.4415729 15.8617236,21.4330635 C15.3183534,21.8161437 14.6956498,22 14.0792045,22 Z" fill="#000000" fill-rule="nonzero"></path>
+                      </g>
+                    </g>
+                  </svg>
+                </a>
+              </div>
+
+              <span class="copyright">&copy;
+                <script>
+                  var CurrentYear = new Date().getFullYear()
+                  document.write(CurrentYear)
+                </script>
+              </span>
+              <a class="footer-link" href="/">hybrix</a>
+              <a class="footer-link" href="https://www.hybrix.io/privacy-policy">Privacy Policy</a>
+              <a class="footer-link" href="https://www.hybrix.io/terms-and-conditions">Terms and Conditions</a>
+              <a class="footer-link" href="https://www.hybrix.io/disclaimer">Disclaimer</a>
+              <a class="footer-link" href="https://www.hybrix.io/cookies-policy">Cookies Policy</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pure-u-1 pure-u-lg-1-5 secondary-sidebar">
+          <div id="subnavigation"></div>
+        </div>
+        <script>if(typeof id !== 'undefined'){initSubNavigation(id)}</script>
+      </div>
+    </div>
+  </body>
+</html>

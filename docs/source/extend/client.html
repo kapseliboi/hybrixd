@@ -12,7 +12,7 @@
 <h2>Types</h2>
 
 <p>Most client side modules will be asset modules. For example the client
-  module <code>bitcoinjsli</code>` to handle bitcoin key and address generation and transaction signing.
+  module <code>bitcoinjslib</code> to handle bitcoin key and address generation and transaction signing.
   Other custom client side modules can also be provided. For example to
   provide connectivity to (decentralized) exchanges.</p>
 
@@ -32,10 +32,11 @@
     </dd>
 </dl>
 
-The artifact (compilation result) is build in the
+<p>The artifact (compilation result) is build in the
 <code>$HYBRIXD/deterministic/dist/$MY_ASSET_NAME/</code> folder. It will consist of a LZMA
-compressed code blob file named <code>deterministic.js.lzma</code>
+compressed code blob file named <code>deterministic.js.lzma</code></p>
 
+<p>For examples see the existing modules: <a href="https://github.com/hybrix-io/deterministic/tree/master/modules">github</a>.</p>
 
 <h2>Grocery List</h2>
 
@@ -62,34 +63,34 @@ to a github repository or npm module which you can download.
 
 To install npm modules: please use supplied npm to ensure version compatibility:
 
-<pre>
-cd $HYBRIXD/deterministic/modules/$YOUR_ASSET
-$HYBRIXD/deterministic node_binaries/bin/npm i $MY_ASSETS_NPM_MODULE
-</pre>
+<p>
+<code class="prompt">cd $HYBRIXD/deterministic/modules/$YOUR_ASSET</code></br>
+<code class="prompt">npm i $MY_ASSETS_NPM_MODULE</code>
+</p>
 
-Each asset module will have its own <code>package.json</code> and <code>node_modules</code>
-folder. Only dev dependencies(webpack, eslint) are stored in <code>$HYBRIXD/deterministic/node_modules</code>
+<p>Each asset module will have its own <code>package.json</code> and <code>node_modules</code>
+folder. Only dev dependencies(webpack, eslint) are stored in <code>$HYBRIXD/deterministic/node_modules</code></p>
 
-To then include the npm module in your <code>deterministic.js</code>:
+<p>To use them include the npm module in your <code>deterministic.js</code>:</p>
 
 <pre>
 const myAssetLib = require("$MY_ASSETS_NPM_MODULE")
 </pre>
 
-To include a js library file:
+<p>To include a js library file place the file in the module folder:</p>
 
-Place the file in the module folder:
-<code>$HYBRIXD/deterministic/modules/$MY_ASSET_NAME/$MY_ASSET_LIBRARY/$SOME_FILE.js</code>
+<p><code>$HYBRIXD/deterministic/modules/$MY_ASSET_NAME/$MY_ASSET_LIBRARY/$SOME_FILE.js</code></p>
 
-To then include the js library in your `deterministic.js`:
+<p>To then include the js library in your <code>deterministic.js</code>:</p>
 
-<code>const myAssetLib = require("$MY_ASSET_LIBRARY/$SOME_FILE")</code>
+<p><code>const myAssetLib = require("$MY_ASSET_LIBRARY/$SOME_FILE")</code></p>
 
 <h2>deterministic.js Template</h2>
 
-<code>deterministic.js</code> must provide the functions: <code>keys</code>, <code>importKeys</code>,
-<code>address</code> and <code>transaction</code>.
+<p><code>deterministic.js</code> must provide the functions: <code>keys</code>, <code>importKeys</code>,
+<code>address</code> and <code>transaction</code>.</p>
 
+<p>
 <pre>
 const wrapperlib = require("$MY_ASSET_LIBRARY/$SOME_FILE")
 
@@ -121,32 +122,37 @@ const wrapper = {
 
 // export the wrapper
 window.deterministic = wrapper;
-</pre>
+</pre></p>
 
-<p>The `keys' function expects a data parameter containing the seed
+<p>The <code>keys</code> function expects a data parameter containing the seed
 property and returns an keys object with a key.</p>
 
+<p>
 <pre>
 keys : function({seed: ..}){
   return  {privateKey:...}; // or {privateKey: ..., publicKey: ...} or { WIF: wif }
 }
 </pre>
+</p>
 
-<p>The `address` function expects a data parameter containing the seed,
+<p>The <code>address</code> function expects a data parameter containing the seed,
 the keys, and the mode. (The mode is used to distinguish between
 assets using the same deterministic module. For example
 bitcoinjslib.bitcoin and bitcoinjslib.omni) It returns a string
 containing the address</p>
 
+<p>
 <pre>
 address : function({seed: .. , keys: ..., mode: ...}){
  return "ABC123";
 }
 </pre>
+</p>
 
-<p>The `transaction` function expects a data parameter of the following
+<p>The <code>transaction</code> function expects a data parameter of the following
   format:</p>
 
+<p>
 <pre>
 {
   keys:
@@ -163,29 +169,31 @@ address : function({seed: .. , keys: ..., mode: ...}){
   message: [optional]
 }
 </pre>
+</p>
 
 <p>and an optional callback parameter in case the transaction generation
   is asynchronious. The function will return the stringified signed transaction.</p>
 
 <h2>Result</h2>
 
-A possible module folder could look like this:
+<p> A possible module folder could look like this: </p>
 
-<pre>node_modules
+<p>
+<pre>node_modules/
 deterministic.js
 package.json
 package-lock.json
 precompile.sh</pre>
-
+</p>
 
 <h2>Compilation</h2>
 <p>All deterministic modules (which source files are modified more recent
 than the corresponding LZMA) are compiled by executing:</p>
 
-<code>$HYBRIXD/deterministic/npm run build</code>
+<p><code>$HYBRIXD/deterministic/npm run build</code></p>
 
 <h3>Pipeline</h3>
-The following steps are performed to create the client code blob:
+<p>The following steps are performed to create the client code blob:
 <dl>
   <dt>[Optional] Precompile </dt><dd> automatic modification are made to third
     party libraries.</dd>
@@ -195,7 +203,7 @@ The following steps are performed to create the client code blob:
   <dt> Webpack </dt><dd> create a package that can be used by browsers</dd>
   <dt> Compress </dt><dd> compress the result using lmza</dd>
 </dl>
-
+</p>
 
 <h3>Precompile</h3>
 <p>The precompile step is only executed if there's a precompile.sh
@@ -211,7 +219,7 @@ making in the module folder.</p>
 
 <h2>Testing</h2>
 
-<p>Use <code>$HYBRIXD/interface/test/run test.js --symbol $YOUR_ASSET_NAME</code> to
+<p>Use <code>$HYBRIXD/interface/test/test --symbol $YOUR_ASSET_NAME</code> to
   test your implementation for nodejs or browse to:</p>
 
 <p><code>file://$HYBRIXD/interface/test/test.html?symbol=$YOUR_ASSET_NAME</code></p>
@@ -221,4 +229,4 @@ making in the module folder.</p>
 <p>If you encounter issues you can do a partial testing (without webpack)
   by running:</p>
 
-<p><code>$HYBRIXD/deterministic/test/run test.js --symbol $YOUR_ASSET_NAME</code></p>
+<p><code>$HYBRIXD/deterministic/test/test --symbol $YOUR_ASSET_NAME</code></p>

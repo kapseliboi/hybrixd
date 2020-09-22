@@ -14,8 +14,15 @@ to hybrix.
 <h3>Tokens</h3>
 
 <p>For the first case, if the asset is a token based on an existing base chain, only a simplified <i>Node side
-    module</i> or <i>recipe</i> needs to be defined. (Without qrtz / API endpoints definition
-  as those will already be defined in the base asset recipe.). You
+    module</i> or <i>recipe</i> needs to be defined.</p>
+
+<p>You can also use the online recipe form to add your token without
+  writing any code: <a href="../s/recipe-editor"> add a token</a>.</p>
+
+
+
+<p> If you want to write the recipe yourself then you do no have write
+  define any qrtz code (API endpoints definitions)   as those will already be defined in the base asset recipe. You
   can import the base recipe using the import property. See below for
     an example:</p>
 
@@ -31,7 +38,8 @@ recipes/token.burst.lex.json
 }
 </pre>
 
-<p>TODO link to token editor</p>
+
+<p>For more examples check out <a href="https://github.com/hybrix-io/hybrixd/tree/master/recipes">all recipes in the repository on github</a>.</p>
 
 <h3>New chains and derived chains</h3>
 
@@ -39,7 +47,7 @@ recipes/token.burst.lex.json
   module</i> for deterministic cryptography and a <i>Node side module</i> or <i>recipe</i> to handle information requests. For derived chains you may be able to reuse either or both of the client and node side modules.</p>
 
 <p>The <i>Client side module</i> will handle address and key generation and transaction signing.
-  See <a href="./client.html">Client.</a> for more information.</p>
+  See <a href="./client">Client.</a> for more information.</p>
 
 <p>The <i>Node side module</i> defines API endpoints in hybrixd that enables users and wallets to interact with
   other blockchains by translating and relaying calls
@@ -55,13 +63,11 @@ recipes/token.burst.lex.json
     and Node side module.</dd>
 </dl>
 
-TODO link to hybrix setup dev environment
-
 <h2>Setup local dev environment</h2>
 
 To build client side modules you will need to setup your local hybrix development environment. Including the deterministic modules.
 
-See <a href="./dev.html">Setup local dev environment.</a>
+See <a href="./setup">Setup local dev environment.</a>
 
 <h2>Grocery List</h2>
 
@@ -113,8 +119,8 @@ See <a href="./dev.html">Setup local dev environment.</a>
 
 </dl>
 
-<p>Browse to <a href="https://api.hybrix.io">https://api.hybrix.io</a>
-  and view 'asset' for more details on the API endpoints for assets.</p>
+<p>For more details on the API endpoints for assets
+  see: <a href="https://api.hybrix.io/help/api/asset">help on asset api</a>.</p>
 
 <h2>Client - Node separation</h2>
 
@@ -129,7 +135,7 @@ See <a href="./dev.html">Setup local dev environment.</a>
 <p>For example: when you query hybrixd for the balance of your waves address:  <code>/asset/waves/$ADDRESS</code>
   this will be routed to the Node side  module defined in
   <code>recipes/asset.waves.json</code>. <br/>
-  The logic there (written in Qrtz) will reformat the request to
+  The logic there (written in qrtz) will reformat the request to
   <u>https://nodes.wavesplatform.com/addresses/balance/details/$YOUR_ADDRESS</u> <br/>
   it will retrieve the result, extract the required information, reformat that and return the standardized end result.
 </p>
@@ -137,7 +143,7 @@ See <a href="./dev.html">Setup local dev environment.</a>
 <p>The Node side module is defined using a json recipe containing the
   asset properties and the logic implemented in qrtz ("Quartz") .</p>
 
-See <a href="./node.html">Node side modules / Recipes </a>
+See <a href="./node">Node side modules / Recipes </a>
 
 <h2>Client side module</h2>
 
@@ -149,4 +155,4 @@ See <a href="./node.html">Node side modules / Recipes </a>
   javascript code that can be executed on the client side.</p>
 
 
-See <a href="./client.html">Client side modules (deterministic)</a>
+See <a href="./client">Client side modules (deterministic)</a>

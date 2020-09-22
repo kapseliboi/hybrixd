@@ -1,20 +1,26 @@
-let fs = require('fs');
+const fs = require('fs');
 
-let files = {
+const files = {
   'introduction': '../../docs/source/introduction.html',
   'getting-started': '../../docs/source/getting-started.html',
   'hybrixd': '../../docs/source/hybrixd.html',
-  'hybrix-jslib': '../../../interface/lib/interface.js',
-  'qrtz': '../../lib/scheduler/quartz.js',
+  'hybrix-jslib': '../../docs/source/hybrix-jslib.html',
+  'qrtz': '../../docs/source/qrtz.html',
   'block-explorer': '../../docs/source/block-explorer.html',
   'web-wallet': '../../docs/source/web-wallet.html',
-  '404': '../../docs/source/404.html'
+  '404': '../../docs/source/404.html',
+
+  'asset': '../../docs/source/extend/asset.html',
+  'client': '../../docs/source/extend/client.html',
+  'index': '../../docs/source/extend/index.html',
+  'node': '../../docs/source/extend/node.html',
+  'setup': '../../docs/source/extend/setup.html'
 };
 
 function getMatches (re, body) {
   re.lastIndex = 0;
   let m;
-  let array = [];
+  const array = [];
   do {
     m = re.exec(body);
     if (m) {
@@ -57,7 +63,7 @@ for (let id in files) {
 
   let data = fs.readFileSync('../../docs/source/header.html').toString();
 
-  let intro = fs.readFileSync('../../docs/source/' + id + '.html').toString();
+  const intro = fs.readFileSync(files[id]).toString();
   data += intro;
   data += '<script>initNavigation("' + id + '")</script>';
 
@@ -68,7 +74,7 @@ for (let id in files) {
 <div id="noResults">No results. Change your search filter or <a onclick="clearSearch()" style="cursor: pointer;">reset the filter</a>.</div>`;
   }
 
-  if (files[id].substr(-5) !== '.html') {
+  if (id === 'hybrix-jslib' || id === 'qrtz') {
     let re;
     if (id === 'hybrix-jslib' || id === 'qrtz') {
       re = /\/\*\*([\s\S]+?)exports\.(\w*)/g; // match jsdoc templates
@@ -80,16 +86,16 @@ for (let id in files) {
 
     let funcs = [];
     for (let i = 0; i < f.length; ++i) {
-      let m = f[i];
-      let name = m[2];
-      let content = m[1].replace(/\*\//g, '').replace(/\n \*/g, '\n');
-      let lines = content.split(' @');
-      let description = lines[0].replace(/\*/g, '');
-      let parameters = [];
-      let examples = [];
+      const m = f[i];
+      const name = m[2];
+      const content = m[1].replace(/\*\//g, '').replace(/\n \*/g, '\n');
+      const lines = content.split(' @');
+      const description = lines[0].replace(/\*/g, '');
+      const parameters = [];
+      const examples = [];
       let category = 'Misc';
       for (let j = 0; j < lines.length; ++j) {
-        let line = lines[j];
+        const line = lines[j];
         if (line.startsWith('param')) {
           parameters.push(line.substr(6));
         } else if (line.startsWith('category')) {
@@ -99,11 +105,11 @@ for (let id in files) {
         }
       }
       for (let j = 0; j < parameters.length; ++j) {
-        let parameter = parameters[j].substr(1);
-        let elements = parameter.split(' '); // "{Integer} offset - the offset" -> ["{Integer}", "offset", ...]
-        let type = elements[0].substr(0, elements[0].length - 1);
+        const parameter = parameters[j].substr(1);
+        const elements = parameter.split(' '); // "{Integer} offset - the offset" -> ["{Integer}", "offset", ...]
+        const type = elements[0].substr(0, elements[0].length - 1);
         let pname = elements[1];
-        let pDescription = elements.slice(2).join(' ').replace(/\*/g, '');
+        const pDescription = elements.slice(2).join(' ').replace(/\*/g, '');
         let optional = false;
         if (pname.startsWith('[')) {
           optional = true;
@@ -139,13 +145,13 @@ for (let id in files) {
 
       data += '<span class="quickDescription">';
 
-      if (id === 'hybrix-jslib') { data += '{'; }
+      if (id === 'hybrix-jslib') data += '{';
 
       for (let j = 0; j < func.parameters.length; ++j) {
-        let parameter = func.parameters[j];
+        const parameter = func.parameters[j];
         if (parameter.name.indexOf('.') !== -1 || id === 'qrtz') {
           let name;
-          if (id === 'hybrix-jslib' && j > 1) { data += ', '; }
+          if (id === 'hybrix-jslib' && j > 1) data += ', ';
 
           if (id === 'qrtz') {
             data += ' ';
@@ -166,9 +172,9 @@ for (let id in files) {
       data += '<table class="parameters">';
       data += '<tr><th>Name</th><th>Type</th><th>Description</th></tr>';
       for (let j = 0; j < func.parameters.length; ++j) {
-        let parameter = func.parameters[j];
-        let type = typeConverter(parameter.type);
-        let dataTest = /data./.test(parameter.name) || id !== 'hybrix-jslib';
+        const parameter = func.parameters[j];
+        const type = typeConverter(parameter.type);
+        const dataTest = /data./.test(parameter.name) || id !== 'hybrix-jslib';
         if (parameter.optional && dataTest) {
           data += '<tr><td>' + parameter.name + '</td><td>' + type + '</td><td><span style="color:grey;">[Optional';
           if (parameter.default) {

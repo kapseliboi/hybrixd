@@ -24,21 +24,16 @@ Clone the development repository:
 
 `$ git clone https://github.com/hybrix-io/hybrixd.git`
 
+Enter the newly created folder:
+
+`$ cd hybrixd`
+
 To setup and install development dependencies run:
 
 `$ npm run setup`
 
+For more information see https://api.hybrix.io/help/setup
+
 ## Overview
 
-For the configuration and addition of tokens please see the recipe folder located in:
-
-```
-recipes/
-```
-
-More information about how to create recipe files to add your own
-assets can be found in the the readme files:
-
-`./README-add-asset.md`
-`./recipes/README-recipes.md`
-`./modules/README-modules.md`
+For more information about extending hybrixd see https://api.hybrix.io/help/overview
