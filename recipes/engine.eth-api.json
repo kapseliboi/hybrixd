@@ -55,9 +55,10 @@
       "peek symbol",
       "flow {etc: @etc, eth: @eth} @other",
       "@etc",
+      "poke token false",
       "poke etc true",
       "jump @start",
-      "flow eth 1 4",
+      "flow eth 1 @other",
       "@eth",
       "poke token false",
       "poke etc false",
@@ -93,6 +94,7 @@
       "sort 'desc' '.timeStamp'",
       "tran '[].hash' 2 1",
       "fail 'Cannot interpret history data!'",
+      "uniq",
       "with offset [math,'$offset - ($histPage*$pageOffset)']",
       "take $offset $count",
       "done",
@@ -102,9 +104,9 @@
     "test" : [
       "done {hash:dynamic}"
     ],
-    "push/signedTransactiom":[
+    "push/signedTransaction":[
       "rand 1000",
-      "data {'jsonrpc': '2.0', 'method': 'eth_sendRawTransaction', 'params': ['$signedTransactiom'], 'id': $}",
+      "data {'jsonrpc': '2.0', 'method': 'eth_sendRawTransaction', 'params': ['$signedTransaction'], 'id': $}",
       "curl POST {'Content-Type': 'application/json'} 2 1",
       "fail 'Could not connect to host'",
       "tran '.result' 1 3",
@@ -144,7 +146,7 @@
       "with txGasPrice [data,'${.gasPrice}'] [code,'hex','dec']",
       "data $symbol",
       "find '.' @sectionA",
-      "with txFee [math,'$txGas*$txGasPrice'] [atom]",
+      "with txFee [math,'$txGas*$txGasPrice'] [atom] [done]",
       "with txAmount [peek,'txData'] [tran,'=.amount|.value'] [code,'hex','dec'] [atom]",
       "with txTarget [peek,'txData'] [tran,'=.to']",
       "jump @sectionB",

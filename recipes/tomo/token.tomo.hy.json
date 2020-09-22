@@ -2,6 +2,7 @@
   "symbol" : "tomo.hy",
   "fee-symbol" : "tomo.hy",
   "fee" : 0.002,
+  "fee-override" : 0.002,
   "name" : "hybrix multi-chain asset (TOMO)",
   "module" : "ethereum",
   "import" : "tomo",
@@ -12,7 +13,7 @@
   "quartz" : {
     "fee/message" : [
       "# TODO: message option not used at this time!",
-      "# Note that the token fee in Tomo is fixed.",
+      "# note that the token fee in Tomo is fixed.",
       "peek fee",
       "form"
     ]

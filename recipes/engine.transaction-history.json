@@ -1,169 +1,171 @@
 {
-  "engine":"transaction-history",
-  "name":"Transaction history engine",
+  "engine": "transaction-history",
+  "name": "Transaction history engine",
   "cacheHistoryTime": "60000",
   "import": "transaction-data",
+  "historyScanPageSize": 12,
+  "historyScanPageRange": 2,
+
   "quartz" : {
-    "checkTimestampForUpdate": [
-      "list $1-${symbol}-history-*",
-      "void {'array':15} 1",
-      "jpar",
-      "pick",
-      "poke fileName",
-      "data $1",
-      "filt '-'",
-      "size",
-      "math '+3'",
-      "poke hyphenCount",
-      "peek fileName",
-      "splt '-' $hyphenCount",
+    "getHistory": [
+      "fail 'Abstract method getHistory not implemented!'",
+      "#Expects an address and optional count + offset.",
+      "#Returns an Array of tx data or tx ID's. (depending on apiProvidesFullTx)"
+    ],
+    "reformatTx": [
+      "fail 'Abstract method reformatTx not implemented!'",
+      "#Expects an object with property 'value', which contains the actual transaction data. Will return the tx in the following format: {'id':'7756785777154630495','timestamp':'1546213988','amount':'0.00002019','symbol':'lsk','fee':'0.1','fee-symbol':'lsk','source':'7851760003822400855L','target':'5920921428156130553L','confirmed':'3818508'}"
+    ],
+
+    "checkIsItTimeToCheckForUpdate/address": [
+      "poke fileName ${address}-${symbol}-history",
+      "seek $fileName 2 1",
+      "done true",
+      "meta $fileName",
+      "tran .mod 2 1",
+      "done true",
+      "math /1000",
       "poke timestamp",
-      "date 'now'",
-      "math '-$timestamp'",
-      "done",
-      "@fail",
-      "done 999999999999"
+      "date now",
+      "math $-$timestamp>$cacheHistoryTime"
     ],
-    "greaterThanCache/address/count/offset": [
-      "list ${address}-${symbol}-history-* 2 1 1" ,
+    "checkMoreItemsRequestedThanAvailableInCache/address/count/offset": [
+      "poke fileName ${address}-${symbol}-history",
+      "seek $fileName 2 1",
       "done false",
-      "pick",
-      "load",
+      "load $fileName",
       "jpar",
       "size",
-      "math '<$count*($offset+1)'"
+      "math <($offset+$count)"
     ],
+
+    "getHistoryOnlyIDs/address/count=12/offset=0" : [
+      "call getHistory/$address/$count/$offset",
+      "flow apiProvidesFullTx false 1 2",
+      "done",
+      "each reformatTx",
+      "poke transactions",
+      "# if the api returns full transaction data, let's store it",
+      "fork saveTransactionsFromFullHistory",
+      "peek transactions",
+      "tran [].id"
+    ],
+
+    "saveTransactionFromFullHistory" : [
+      "tran .value",
+      "call saveTransactionToCache/${.id}"
+    ],
+
+    "saveTransactionsFromFullHistory": [
+      "each saveTransactionFromFullHistory"
+    ],
+
     "history/address/count=12/offset=0/checkCache=true": [
-      "flow checkCache {true: 1} @retrieve",
-      "call greaterThanCache/$address/$count/$offset",
-      "true '$' @retrieve 1",
-      "call checkTimestampForUpdate/$1",
-      "true '$<${cacheHistoryTime}' @returnCachedHistory @retrieve",
-      "@retrieve",
-      "peek apiProvidesFullTx",
-      "flow false @idx @full",
-      "@full",
-      "call retrieveLatestTransactions/$address/$count/$offset",
-      "done",
-      "@idx",
-      "call retrieveNewTransactionIds/$address/$count/$offset",
-      "done",
+      "flow checkCache {true: 1} @retrieveFromChain",
+      "call checkMoreItemsRequestedThanAvailableInCache/$address/$count/$offset",
+      "flow true @retrieveFromChain 1",
+      "call checkIsItTimeToCheckForUpdate/$address",
+      "flow true @retrieveFromChain @returnCachedHistory",
+      "@retrieveFromChain",
+      "call getCachedTransactionIds/$address/99999999/0",
+      "poke cachedTransationIds",
+      "call getHistoryOnlyIDs/$address/$count/$offset",
+      "poke retrievedTransactionIDs",
+      "data {newIDs: $retrievedTransactionIDs, cachedIDs: $cachedTransationIds}",
+      "call concatHistoryChunks/$address/$count/$offset",
+      "done $retrievedTransactionIDs",
       "@returnCachedHistory",
       "call getCachedTransactionIds/$address/$count/$offset"
     ],
-    "retrieveNewTransactionIds": [
-      "call getHistory/$1/$2/$3",
-      "poke idx",
-      "fork 'saveNewTransactionIds/$1/$2/$3/false'",
-      "data $idx",
-      "done"
-    ],
-    "removeFile": [
-      "tran .value",
-      "burn $ @done @fail",
-      "@fail",
-      "fail 'Could not remove legacy file.'",
-      "@done",
-      "done"
-    ],
-    "removeTransactionFile": [
-      "data $1-${symbol}-$2*",
-      "poke tx",
-      "seek 1 @fail",
-      "list $tx",
+
+    "getCachedTransactionIds/address/count/offset": [
+      "poke fileName ${address}-${symbol}-history",
+      "seek $fileName 2 1",
+      "done []",
+      "load $fileName",
       "jpar",
-      "each removeFile",
-      "@fail",
-      "done"
+      "take $offset $count"
     ],
-    "saveNewTransactionIds": [
-      "poke txs",
-      "call getCachedTransactionIds/$1/1000/0",
-      "fuse $txs",
-      "uniq",
-      "poke idx",
-      "peek apiProvidesFullTx",
-      "flow true 1 4",
-      "peek idx",
-      "call sortIdxByTimestamp",
-      "poke idx",
-      "peek idx",
-      "void {'array':1} 3",
-      "peek idx",
-      "jump 2",
-      "poke idx",
-      "data $1-${symbol}-history-*",
-      "list $",
-      "poke history",
-      "void {'array': 2} 1",
-      "data '$4'",
-      "flow {true:7} 1",
-      "@update",
-      "date now",
-      "poke timestamp",
-      "data $1-${symbol}-history-$timestamp",
-      "jump @save",
-      "@used",
-      "data $history",
-      "pick",
-      "@save",
-      "poke fileName",
-      "call removeTransactionFile/$1/history/$idx",
-      "data $fileName",
-      "save $ $idx",
-      "poke count $2 12",
-      "poke offset $3 0",
-      "math '$count+$offset'",
-      "poke endingIndex",
-      "data $idx",
-      "pick $offset $endingIndex",
-      "poke idx",
-      "@done",
-      "done $idx"
-    ],
-    "sortIdxByTimestamp": [
-      "each getTxData",
-      "sort desc '.timestamp'",
-      "tran '[].id'"
-    ],
-    "getTxData": [
-      "tran .value",
-      "list $-${symbol}-transaction",
-      "void {'array':6} 1",
-      "pick",
-      "load",
-      "jpar",
+
+    "concatHistoryChunks/address/count/offset": [
+      "poke {newIDs:newIDs,cachedIDs:cachedIDs}",
+      "peek cachedIDs",
+      "void {array:1} @concatenate",
+      "@noCache",
+      "peek newIDs",
+      "call saveHistoryToCache/$address",
       "done",
-      "@fail",
-      "done []"
+      "@concatenate",
+      "data {newIDs:$newIDs,cachedIDs:$cachedIDs}",
+      "call getPreviousChunks/$address/$count/$offset",
+      "poke {newIDs:newIDs,cachedIDs:cachedIDs,overlapFound:overlapFound}",
+      "flow .overlapFound true @skipNext 1",
+      "call getNextChunks/$address/$count/$offset",
+      "@skipNext",
+      "tran .newIDs",
+      "call saveHistoryToCache/$address"
     ],
-    "getCachedTransactionIds": [
-      "math $2+$3",
-      "poke endingIndex",
-      "list $1-${symbol}-history-*",
-      "void {'array':6} 1",
-      "pick",
-      "load",
-      "jpar",
-      "pick $3 $endingIndex",
-      "done",
-      "done []"
+    "saveHistoryToCache/address":[
+      "save ${address}-${symbol}-history"
     ],
-    "cacheTransactionData": [
-      "tran '.value' 1 4",
-      "poke txData",
-      "tran '.id' 2 1",
-      "fail 'Incorrect transaction data format.'",
-      "poke txID",
-      "peek txData",
-      "call saveTransactionData/$txID",
+    "getPreviousChunks/address/count/offset": [
+      "poke {newIDs:newIDs,cachedIDs:cachedIDs}",
+      "poke cnt 0",
+      "@countLoop",
+      "with prevOffset math $cnt*$historyScanPageSize+$offset+$count",
+      "call getHistoryOnlyIDs/$address/$historyScanPageSize/$prevOffset",
+      "void {array:@done} 1",
+      "with newIDs fuse $",
+      "isct $cachedIDs",
+      "# if the retrieved ids overlap with cache, we're done",
+      "void {array:1} @stitch",
+      "loop @countLoop cnt <$historyScanPageRange",
       "@done",
-      "done $txData"
+      "done {newIDs:$newIDs,cachedIDs:$cachedIDs, overlapFound:false}",
+      "@stitch",
+      "data {newIDs:$newIDs,cachedIDs:$cachedIDs,intersection:$}",
+      "call stitch"
     ],
-    "cacheHistory": [
-      "poke txs",
-      "each cacheTransactionData/$1",
-      "done $txs"
+
+    "getNextChunks/address/count/offset": [
+      "poke {newIDs:newIDs,cachedIDs:cachedIDs}",
+      "poke cnt 0",
+      "@countLoop",
+      "with nextOffset math ${offset}-$cnt*$historyScanPageSize",
+      "true $nextOffset+$historyScanPageSize<=0 @done 1",
+      "true $nextOffset<0 1 @positive",
+      "with remainingSize math $nextOffset+$historyScanPageSize",
+      "with nextOffset math max(nextOffset,0)",
+      "call getHistoryOnlyIDs/$address/$remainingSize/$nextOffset",
+      "jump @concatenate",
+      "@positive",
+      "call getHistoryOnlyIDs/$address/$historyScanPageSize/$nextOffset",
+      "@concatenate",
+      "with newIDs fuse $ 0",
+      "isct $cachedIDs",
+      "# if the retrieved ids overlap with cache, we're done",
+      "void {array:1} @stitch",
+      "loop @countLoop cnt <$historyScanPageRange",
+      "@done",
+      "done {newIDs:$newIDs,cachedIDs:$cachedIDs, overlapFound:false}",
+      "@stitch",
+      "data {newIDs:$newIDs,cachedIDs:$cachedIDs,intersection:$}",
+      "call stitch"
+    ],
+
+    "stitch": [
+      "# newIDs = 345 , cacheIDs = 567 ,     intersection = 5",
+      "# newIDs = 345 , cacheIDs = 123 ,     intersection = 3",
+      "# newIDs = 345 , cacheIDs = 4 ,       intersection = 4",
+      "# newIDs = 345 , cacheIDs = 1234567 , intersection = 345",
+      "# cut the intersection from cacheIDs and splice newIDs into it",
+      "poke {newIDs:newIDs,cachedIDs:cachedIDs,intersection:intersection}",
+      "with intersectionSize [peek,intersection] [size]",
+      "with needle [peek, intersection] [pick]",
+      "with index [peek, cachedIDs] [indx, '$needle']",
+      "peek cachedIDs",
+      "fuse $newIDs $index $intersectionSize",
+      "done {newIDs:$,cachedIDs:$cachedIDs, overlapFound:true}"
     ]
   }
 }
