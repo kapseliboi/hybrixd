@@ -4,9 +4,10 @@
   "module":"update",
   "quartz":{
     "check" :[
-      "curl https://storage.googleapis.com/hybrix-dist/",
+      "curl https://storage.googleapis.com/hybrix-dist/ 2 1",
+      "fail 'Could not connect to source'",
       "func check"
-      ]
+    ]
   },
   "router" : {
     "_access" : "root",

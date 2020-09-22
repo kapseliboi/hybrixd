@@ -308,6 +308,10 @@
         "_this" : "Specify the file containing the code to execute."
       }
     },
+    "update" : {
+      "_this" : "Update hybrixd to latest release version",
+      "check" : "Check if update is available"
+    },
     "reload" : {
       "_help":"Commands to reload hybrixd or specific components",
       "_this":"Reload hybrixd.",
@@ -334,7 +338,8 @@
         }
       }
     },
-    "start" : "Start hybrixd (only available through CLI)",
+    "start" : "Start hybrixd (only available through CLI).",
+    "restart" : "Restart hybrixd.",
     "stop" : "Stop hybrixd."
   },
   "e":{"_alias":"engine"},
