@@ -119,6 +119,22 @@ dist:
     paths:
       - ./
 
+public_build_test:
+  stage: test
+  script:
+     - sh ./scripts/pipeline/public_build_test.sh
+  coverage: /SUCCESS RATE[^|]*\:[^|]*\s+([\d\.]+)/
+  only:
+   refs:
+     - tags
+  only:
+    variables:
+      - $TEST_ENABLED
+  artifacts:
+    reports:
+      junit: test*.xml
+
+
 publish:
   cache: {}
   dependencies:

@@ -104,10 +104,10 @@ This interface is similar to the cli interface but includes live updated progres
 
 <p>qrtz can be ran as a shell and interactive mode.</p>
 
-<p><code>$./qrtz</code> Start qrtz in interactive mode</p>
-<p><code>$ cat data ./qrtz -i </code> or <code>$ ./qrtz &lt; cat data </code> Pipe data to interactive mode</p>
-<p><code>$ qrtz script.qrtz $1 $2</code> or <code>$ qrtz -s script.qrtz $1 $2</code> Execute script with command parameters 1,2</p>
-<p><code>$ qrtz $1 $2 &lt; cat script.qrtz</code> or <code>$ cat script.qrtz | qrtz $1 $2</code> Execute script provided trough pipe with command parameters 1,2</p>
+<p><code class="prompt">./qrtz</code> Start qrtz in interactive mode</p>
+<p><code class="prompt">cat data ./qrtz -i </code> or <code class="prompt">./qrtz &lt; cat data </code> Pipe data to interactive mode</p>
+<p><code class="prompt">qrtz script.qrtz $1 $2</code> or <code class="prompt">./qrtz -s script.qrtz $1 $2</code> Execute script with command parameters 1,2</p>
+<p><code class="prompt">qrtz $1 $2 &lt; cat script.qrtz</code> or <code class="prompt">cat script.qrtz | qrtz $1 $2</code> Execute script provided trough pipe with command parameters 1,2</p>
 
 
 <h3>Script Example </h3>
@@ -119,7 +119,7 @@ data "hello $1"
 done</pre></p>
 <p> Then use the following to execute:</p>
 
-<p><code>$ ./qrtz script.qrtz "world"</code></p>
+<p><code class="prompt">./qrtz script.qrtz "world"</code></p>
 
 <p>This results in:</p>
 
@@ -132,7 +132,7 @@ data "hello $1"
 done</pre></p>
 <p> Then use the following to execute:</p>
 
-<p><code>$ ./script.qrtz "world"</code></p>
+<p><code class="prompt">./script.qrtz "world"</code></p>
 
 
 

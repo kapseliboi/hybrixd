@@ -67,17 +67,14 @@ rsync -avq "$NODE/interface" "$DIST/"
 # Copy interface
 rsync -avq "$NODE/files" "$DIST/"
 
-# Copy test scripts
+# Copy npm setup and test scripts
 mkdir -p "$DIST/scripts/npm/"
 cp "$NODE/scripts/npm/test.sh" "$DIST/scripts/npm/test.sh"
+cp "$NODE/scripts/npm/setup.sh" "$DIST/scripts/npm/setup.sh"
 cp -r "$NODE/scripts/test" "$DIST/scripts/test"
 
-mkdir -p "$DIST/scripts/pipeline/"
-cp "$NODE/scripts/pipeline/build.sh" "$DIST/scripts/pipeline/build.sh"
-cp "$NODE/scripts/pipeline/test.sh" "$DIST/scripts/pipeline/test.sh"
-cp "$NODE/scripts/pipeline/dist.sh" "$DIST/scripts/pipeline/dist.sh"
-cp "$NODE/scripts/pipeline/publish.sh" "$DIST/scripts/pipeline/publish.sh"
-cp "$NODE/scripts/pipeline/clean.sh" "$DIST/scripts/pipeline/clean.sh"
+# Copy pipeline scripts
+rsync -avq "$NODE/scripts/pipeline" "$DIST/scripts/"
 
 # Copy common
 rsync -avq "$NODE/common/crypto" "$DIST/common/"

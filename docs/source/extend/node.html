@@ -7,13 +7,14 @@
 <p>For example: when you query hybrixd for the balance of your waves address:  <code>/asset/waves/$ADDRESS</code>
   this will be routed to the Node side  module defined in
   <code>recipes/asset.waves.json</code>. <br/>
-  The logic there (written in Qrtz) will reformat the request to
+  The logic there (written in qrtz) will reformat the request to
   <u>https://nodes.wavesplatform.com/addresses/balance/details/$YOUR_ADDRESS</u> <br/>
   it will retrieve the result, extract the required information, reformat that and return the standardized end result.
 </p>
 
 
-<p>Recipes are stored in the <code>$HYBRIXD/node/recipes</code> folder.</p>
+<p>Recipes are stored in the <code>$HYBRIXD/node/recipes</code>
+  folder. <a href="https://github.com/hybrix-io/hybrixd/tree/master/recipes">View on github </a></p>
 
 <p>For a token only a basic recipe is required that will import an existing chain's properties.</p>
 
@@ -57,31 +58,31 @@ asset.foo.json
   <tr><td>symbol</td><td>
     (Only required for assets)
     Discription: A string containing the symbol. This is used as the main idenitfier.
-    Format: "$base[.$token]"
-    Examples: "BTC", "ETH.SHIFT"
+    Format: <code>"$BASE[.$TOKEN]"</code>
+    Examples: <code>"BTC"</code>, <code>"ETH.SHIFT"</code>
   </td></tr>
 
   <tr><td>source</td><td>
     (Only required for sources)
     Discription:
-    Examples: "abe.bitcoin", "insight.litecoin", "deterministic"
+    Examples: <code>"abe.bitcoin"</code>, <code>"insight.litecoin"</code>, <code>"deterministic"</code>
   </td></tr>
 
   <tr><td>engine</td><td>
     (Only required for engines)
     Discription:
-    Examples: "storage"
+    Examples: <code>"storage"</code>
   </td></tr>
 
   <tr><td>name</td><td>
     Discription: A string containing the display name (for pretty printing).
-    Example: "Bitcoin"
+    Example: <code>"Bitcoin"</code>
   </td></tr>
 
   <tr><td>mode</td><td>
     Discription: A string containing the deterministic mode.
-    Format: "$DeterministicModule.$modus"
-    Example: "bitjoinjslib.bitcoin"
+    Format: <code>"$DETERMINISTIC_MODULE.$SUBMODE"</code>
+    Example: <code>"bitjoinjslib.bitcoin"</code>
   </td></tr>
 
   <tr><td>contract</td><td>
@@ -98,7 +99,7 @@ asset.foo.json
     Discription: A string or array of strings containing the id's /
     symbols of the recipes from which this recipe should inherit
     properties. Cf Import section below
-    Example: "btc", ["btc","eth"] , "btc::host"
+    Example: <code>"btc"</code>, <code>["btc","eth"]</code> , <code>"btc::host"</code>
   </td></tr>
 
   <tr><td>module</td><td>
@@ -126,18 +127,6 @@ asset.foo.json
     Discription: the symbol in which the fee is calculated
   </td></tr>
 
-  <tr><td>generated</td><td>
-    Discription: A string indicating whether an address needs to
-    be generated
-    never : no generation needed,
-    once : generation only needed once,
-    always : generation each time you want to receive a transferr
-    Example: "never", "once", "always"
-  </td></tr>
-
-
-
-
   <tr><td>host</td><td>                  A string or array of strings containing the hosts
 
     <dl>
@@ -155,9 +144,9 @@ asset.foo.json
       <dt>[pass]</dt><dd></dd>
       <dt>[proxy]</dt><dd></dd>
       <dt>[connection]</dt><dd></dd>
-      <dt>  [mimetypes]</dt><dd></dd>
+      <dt>[mimetypes]</dt><dd></dd>
       <dt>[requestConfig]</dt><dd></dd>
-      <dt> [responseConfig]</dt><dd></dd>
+      <dt>[responseConfig]</dt><dd></dd>
 
     </dl>
   </td></tr>
@@ -179,16 +168,18 @@ TODO
 
 TODO mention default.qrtz
 <table>
-  <tr><td>Endpoint</td><td>Description</td><td>Expected output</td></tr   <tr><td>/balance/$ADDRESS</td><td></td><td></td></tr>                                                                          <tr><td>/transaction/$TRANSACTION_ID</td><td></td><td></td></tr>
-  <tr><td>/validate/$ADDRESS</td><td></td><td></td></tr>
-  <tr><td>/sample/$ADDRESS</td><td></td><td></td></tr>
-  <tr><td>/details/$ADDRESS</td><td></td><td></td></tr>
-  <tr><td>/fee</td><td></td><td></td></tr>
-  <tr><td>/factor</td><td></td><td></td></tr>
-  <tr><td>/unspent/$ADDRESS</td><td></td><td></td></tr>
+  <tr><td>Endpoint</td><td>Description</td><td>Expected output</td></tr>
+  <tr><td><code>/balance/$ADDRESS</code></td><td></td><td></td></tr>
+  <tr><td><code>/transaction/$TRANSACTION_ID</code></td><td></td><td></td></tr>
+  <tr><td><code>/validate/$ADDRESS</code></td><td></td><td></td></tr>
+  <tr><td><code>/sample/$ADDRESS</code></td><td></td><td></td></tr>
+  <tr><td><code>/details/$ADDRESS</code></td><td></td><td></td></tr>
+  <tr><td><code>/fee</code></td><td></td><td></td></tr>
+  <tr><td><code>/factor</code></td><td></td><td></td></tr>
+  <tr><td><code>/unspent/$ADDRESS</code></td><td></td><td></td></tr>
 </table>
 
-<h2>Qrtz</h2>
+<h2>qrtz</h2>
 
 <p>Browse to <a href="https://api.hybrix.io/help/qrtz">https://api.hybrix.io/help/qrtz</a> for more help on qrtz.</p>
 
@@ -330,47 +321,77 @@ asset.bar.json
   <p>They are imported from left to right (values in <code>foo3</code> overwrite those of <code>foo1</code> and <code>foo2</code>)</p>
 
 
-  <h3>Specific inheritance</h3>
-
-  <p>Specific inheritance can be defined by using</p>
-
-  <pre>
-asset.foo.json
-{
-  "id" :"foo",
-  "a" : 1,
-  "b" : 2,
-  "c" : 3
-}
-  </pre>
-
-
-  <p><code>bar.json</code> can inherit <code>foo.json</code> by using</p>
-
-  <pre>
-asset.bar.json
-{
-  "id" :"bar",
-  "a" : -1,
-  "import" : "foo::b"
-}
-  </pre>
-
-
-  <p>which compiles to</p>
-
-  <pre>
-asset.bar.json
-{
-  "id" :"bar",
-  "a" : -1,
-  "b" : 2,
-  "import" : "foo::b"
-}
-  </pre>
-
 <h3>Token inheritance</h3>
 
-<p>A token asset, identified by a two part symbol "$base.$token", for
-example: "eth.shift" will automatically inherit the Quartz code from its
-  base asset "eth".</p>
+<p>A token asset, identified by a two part symbol <code>"$BASE.$TOKEN"</code>, for
+example: <code>"eth.shift"</code> will automatically inherit the qrtz code from its
+  base asset <code>"eth"</code>.</p>
+
+
+<h2>Javascript modules</h2>
+
+<p>To run your javascript code directly you can use the
+qrtz <a href="./qrtz#func">func</a> method.</p>
+
+<p>To create a helloworld module create a folder in the <code>modules</code> folder with the following
+files:</p>
+
+<p><ul>
+  <li><code>modules/</code></li>
+  <li>
+    <ul>
+      <li><code>helloworld/</code></li>
+      <li>
+        <ul>
+          <li><code>engine.helloworld.json</code></li>
+          <li><code>module.js</code></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul></p>
+
+<p> With the following content: </p>
+
+<p><pre><code>modules/helloworld/engine.helloworld.json:
+{
+    "engine":"helloworld"
+    "name":"Hello World",
+    "module":"helloworld",
+    "router":{
+      "example" : "Returns the text 'example'",
+      "hello" : "Returns the text 'hello world'"
+    },
+    "quartz": {
+      "example" : [
+       "done example"
+     ],
+      "hello" : [
+        "func hello"
+      ]
+    }
+}   </code></pre></p>
+
+<p> The router defines the api endpoints and their corresponding api
+endpoints. With this module you can now
+call <code>/engine/helloworld/example</code> and <code>/engine/helloworld/hello</code>
+and view the automatically generated help page on <code>/help/api/engine/helloworld</code></p>
+
+<p> The qrtz function <code>example</code> returns 'example'
+immediatly by using qrtz directly. The function hello will call the
+hello function in de module.js: </p>
+
+<p><pre><code>modules/helloworld/module.js:
+
+function hello(proc, data){ // proc, the process handle and the data from the data stream are passed (data is unused in this example
+
+  proc.done('hello world'); // pass 'hello world' as output
+
+  // proc.fail('Oops! Someting gone wrong'); // return a failure
+  // proc.peek('myVariable'); // retrieve the content of the variable named myVariable
+  // proc.poke('myVariable',123); // set the content of the myVariable variable
+}
+
+exports.hello = hello; // export the function so it can be used by qrtz func</code></pre></p>
+
+<p>Check out the existing modules:  <a href="https://github.com/hybrix-io/hybrixd/tree/master/modules">View on github </a></p>

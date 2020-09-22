@@ -1,0 +1,112 @@
+<h1>Setting up your local development environment</h1>
+
+<h2>GitHub</h2>
+
+<p>The required code can be downloaded from our github
+  repositories:</p>
+
+<p><a href="https://github.com/hybrix-io">github.com/hybrix-io</a></p>
+
+<p>To download (clone) the code from github please use:</p>
+
+
+<p><code class="prompt">git clone https://github.com/hybrix-io/hybrixd.git</code></p>
+
+<p>Enter the newly created folder</p>
+
+<p><code class="prompt">cd hybrixd</code></p>
+
+<p>To setup and install development dependencies run:</p>
+
+<p><code class="prompt">npm run setup</code></p>
+
+This will automaticall clone several other repositories that are
+required. An overview of the folder structure that will be created follows below:
+
+
+<h2>Folder structure</h2>
+
+<p>The development environment expects all repositories to be cloned into a common base folder, you can choose any name. Here we will use <code>$HYBRIXD</code> as an placeholder ($ are shell variable prefixes)</p>
+
+<h3>Required</h3>
+
+<ul>
+<li><code>$HYBRIXD/node</code>: contains the hybrixd deamon (required
+  for all development) <a href="https://github.com/hybrix-io/hybrixd">github.com/hybrix-io/hybrixd</a></li>
+<li><code>$HYBRIXD/common</code> files that are used by several of the
+  above projects (required) <a href="https://github.com/hybrix-io/common">github.com/hybrix-io/common</a></li>
+<li><code>$HYBRIXD/node_modules</code> The node_modules (required) <a href="https://github.com/hybrix-io/node_modules">github.com/hybrix-io/node_modules</a></li>
+<li><code>$HYBRIXD/hybrix-jslib</code> (interface) contains  everything required to compile the hybrix client
+  libraries. (required) <a href="https://github.com/hybrix-io/hybrix-jslib">github.com/hybrix-io/hybrix-jslib</a></li>
+</li>
+</ul>
+
+<h3>Optional</h3>
+<ul>
+  <li><code>$HYBRIXD/web-wallet</code>: contains everything required to compile the web-wallet module (required for front-end development)</li>
+  <li><code>$HYBRIXD/deterministic</code> : contains  everything
+  required to compile deterministic client modules (required for
+   determistic development) <a href="https://github.com/hybrix-io/deterministic">github.com/hybrix-io/deterministic</a></li></li>
+<li><code>$HYBRIXD/node</code> NodeJS run times  <a href="https://github.com/hybrix-io/nodejs">github.com/hybrix-io/nodejs</a></li>
+</ul>
+
+<h3>Per project</h3>
+<ul>
+  <li><code>$HYBRIXD/$PROJECT/dist</code> : The compiled distributable files if applicable.</li>
+  <li><code>$HYBRIXD/$PROJECT/docs</code> : Documentation</li>
+  <li><code>$HYBRIXD/$PROJECT/node_binaries</code> : A link to <code>$HYBRIXD/nodejs/$SYSTEM</code> where <code>$SYSTEM</code> depends on your system architecture (Linux, Mac, 32 or 64 bit)</li>
+  <li><code>$HYBRIXD/$PROJECT/node_modules</code> : The node modules needed for this project.</li>
+  <li><code>$HYBRIXD/$PROJECT/package.json</code> : The npm package file.</li>
+  <li><code>$HYBRIXD/$PROJECT/common</code> : A link to <code>$HYBRIXD/common</code></li>
+  <li><code>$HYBRIXD/$PROJECT/scripts</code> : tool scripts</li>
+  <li><code>$HYBRIXD/$PROJECT/scripts/npm</code> : npm command scripts
+  e.g <code class="prompt">npm run build</code>will run <code>HYBRIXD/$PROJECT/scripts/npm/build.sh</code></li>
+</ul>
+
+
+<h2>npm commands</h2>
+
+<p>npm (Node Package Manager) is used to manage the node packages per project (located in the <code>$HYBRIXD/$PROJECT/node_modules</code> folders)
+  The configuration is stored in <code>$HYBRIXD/$PROJECT/package.json</code></p>
+
+<p>Important! Please do not use you global npm but the one located in <code>$HYBRIXD/$PROJECT/node_binaries/bin/npm</code> This ensures version compatibility.</p>
+
+<p>The following commands can be used from the <code>$HYBRIXD/$PROJECT</code> project folders:</p>
+
+<ul>
+  <li><code class="prompt">npm run setup</code> : Run all tasks to setup the dev environment for this project. For example link dependencies and implement git hooks.</li>
+  <li><code class="prompt">npm run compile</code> : Run all tasks to compile the project into the <code>$HYBRIXD/$PROJECT/dist</code> distributables folder.</li>
+  <li><code class="prompt">npm run dist</code> : Distribute the compiled files to the Node</li>
+  <li><code class="prompt">npm run clean</code> : Clean the <code>$HYBRIXD/$PROJECT/dist</code> distributables folder.</li>
+  <li><code class="prompt">npm run build</code> : Run the setup, compile and dist commands sequentially.</li>
+  <li><code class="prompt">npm run docs</code> : Compile documentation.</li>
+  <li><code class="prompt">npm run diag</code> : Run a diagnostic on all project folders to check linkage and git status.</li>
+  <li><code class="prompt">npm run lint</code> : Run the linting on all project files that have been modified with respect to master branch.</li>
+</ul>
+
+
+<h2>Troubleshooting</h2>
+
+<ul>
+  <li> Run <code class="prompt">npm run diag</code> to validate all components and linkage.</li>
+  <li> Run <code class="prompt">npm run setup</code> to correct linkage problems</li>
+  <li>Run <code class="prompt">npm run lint</code> to identify linting problems</li>
+</ul>
+
+<h2>node</h2>
+
+The following extra commands can be used from the <code>$HYBRIXD/node</code>project folder:
+
+<ul>
+  <li><code class="prompt">npm run start</code> : Start HYBRIXD (equivalent to <code>./HYBRIXD</code>)</li>
+  <li><code class="prompt">npm run cluster:start</code> : Initialize and start a cluster of 2 local hybrixd nodes.</li>
+  <li><code class="prompt">npm run cluster:start -- $N</code> : Initialize and start a cluster of N local hybrixd nodes. (note the spaces)</li>
+</ul>
+
+    <h2>web-wallet</h2>
+
+<p>The following extra commands can be used from the <code>$HYBRIXD/web-wallet</code> project folder:</p>
+
+<ul>
+  <li><code class="prompt">npm run build:fast</code> : Run all tasks to compile the views in the <code>dist</code> folder and migrate them to <code>$HYBRIXD/node/modules/web-wallet</code></li>
+</ul>
