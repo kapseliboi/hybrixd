@@ -71,6 +71,7 @@ rsync -avq "$NODE/files" "$DIST/"
 mkdir -p "$DIST/scripts/npm/"
 cp "$NODE/scripts/npm/test.sh" "$DIST/scripts/npm/test.sh"
 cp "$NODE/scripts/npm/setup.sh" "$DIST/scripts/npm/setup.sh"
+cp "$NODE/scripts/npm/update.sh" "$DIST/scripts/npm/update.sh"
 cp -r "$NODE/scripts/test" "$DIST/scripts/test"
 
 # Copy pipeline scripts
@@ -83,8 +84,6 @@ rsync -avq "$NODE/common/node_modules" "$DIST/common/"
 cp "$NODE"/common/*.js "$DIST/common/"
 cp "$NODE"/common/*.json "$DIST/common/"
 #TODO node runtime
-#TODO default dummy conf??
-
 
 mkdir -p "$DIST/recipes"
 rsync -aq --include="*.json" --include="*/" --exclude="*" "./recipes/" "$DIST/recipes/"
@@ -106,6 +105,5 @@ cd "$DIST/common"
 "$NPMINST" prune --production
 
 echo "[.] Release created in node/dist"
-echo "[.] Make sure you have a proper hybrixd.conf and node binaries."
 export PATH="$OLDPATH"
 cd "$WHEREAMI"

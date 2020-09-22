@@ -9,6 +9,30 @@ WHEREAMI=`pwd`
 export PATH=$NODE/node_binaries/bin:"$PATH"
 NODEINST=`which node`
 
+startHybrixd(){
+    cd "$NODE/lib"
+    mkdir -p "$NODE/var/log"
+    node hybrixd.js 2>&1 | tee -a "$NODE/var/log/hybrixd.log"
+
+    if [ -f "$NODE/var/onstop" ]; then
+        ON_STOP_ACTION=$(cat "$NODE/var/onstop")
+        if [ "$ON_STOP_ACTION" = "restart" ]; then
+            echo "[i] restarting hybrixd..."
+            sleep 1;
+            startHybrixd
+        elif [ "$ON_STOP_ACTION" = "update" ]; then
+            sh "$NODE/scripts/npm/update.sh"
+            startHybrixd
+        else
+            echo "[!] Unsupported onstop action."
+            echo "[i] stopped hybrixd"
+        fi
+        rm -rf "$NODE/var/onstop" || true;
+    else
+        echo "[i] stopped hybrixd"
+    fi;
+}
+
 if [ "$1" = "" ]; then
     echo "[i] starting hybrixd..."
     NODE_VERSION=$($NODEINST --version)
@@ -28,17 +52,15 @@ if [ "$1" = "" ]; then
         echo "[i] using node executable $NODEINST @ $NODE_VERSION "
     fi
 
-    cd "$NODE/lib"
-    mkdir -p "$NODE/var/log"
-    node hybrixd.js 2>&1 | tee -a "$NODE/var/log/hybrixd.log"
-    echo "[i] stopped hybrixd"
-    echo
-#TODO restart
+    startHybrixd
+
 elif [ "$1" = "start" ] || [ "$1" = "/c/start" ] || [ "$1" = "/command/start" ]; then
     ./hybrixd.start
-elif [ "$1" = "stop" ]; then
+elif [ "$1" = "version" ]; then
+    npm version patch
+elif [ "$1" = "stop" ] || [ "$1" = "restart" ] || [ "$1" = "update" ] || [ "$1" = "reload" ]; then
     cd "$NODE/lib"
-    node hcmd.js "/command/stop"
+    node hcmd.js "/command/$1"
 else
     cd "$NODE/lib"
     node hcmd.js $@

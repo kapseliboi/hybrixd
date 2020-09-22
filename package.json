@@ -29,6 +29,7 @@
     "test": "sh ./scripts/npm/test.sh",
     "setup": "sh scripts/npm/setup.sh",
     "build": "",
+    "update": "sh scripts/npm/update.sh",
     "compile": "sh scripts/npm/compile.sh",
     "docs": "sh scripts/docs/docs.sh",
     "icons": "sh scripts/icons/icons.sh",
