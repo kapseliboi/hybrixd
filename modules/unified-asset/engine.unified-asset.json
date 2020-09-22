@@ -2,7 +2,43 @@
   "engine":"unified-asset",
   "name":"Engine to unify assets",
   "module":"unified-asset",
+  "import": "transaction-history",
+  "apiProvidesFullTx": true,
+
   "quartz":{
+
+    "getSubTransaction/subSymbol" :[
+      "rout /a/$subSymbol/transaction/${.value}"
+    ],
+
+    "getSubHistory/count" :[
+      "tran .value",
+      "splt ':'",
+      "poke [subSymbol,subAddress]",
+      "rout /a/$subSymbol/history/$subAddress/$count/0",
+      "each getSubTransaction/$subSymbol"
+    ],
+
+    "getHistory/address/count=12/offset=0":[
+      "with totalCount math $count+$offset",
+      "peek address",
+      "func decompressUnifiedAddress",
+      "splt ','",
+      "each getSubHistory/$totalCount",
+      "flat",
+      "sort .timestamp desc",
+      "take $offset $count"
+    ],
+
+    "reformatTx" : [
+      "tran .value",
+      "poke transaction",
+      "with subSymbol peek transaction.symbol",
+      "with .id push '$subSymbol:' 0",
+      "with .source [flow, unknown, 1, 2] [done] [push,'$subSymbol:',0]",
+      "with .target [flow, unknown, 1, 2] [done] [push,'$subSymbol:',0]",
+      "poke .symbol $symbol"
+    ],
 
     "getSubFee" :[
       "poke {subSymbol:key,weight:value}",
@@ -136,19 +172,15 @@
       "each subPush",
       "join ','"
     ],
-    "_history":[
-      "#TODO merge and sort somehow"
-    ],
 
-    "transaction/transactionId":[
+
+    "getTransaction/transactionId":[
       "peek transactionId",
       "splt ':'",
       "poke [subSymbol,subTransactionId]",
       "rout /a/$subSymbol/transaction/$subTransactionId",
-      "with .id push '$subSymbol:' 0",
-      "with .source [flow, unknown, 1, 2] [done] [push,'$subSymbol:',0]",
-      "with .target [flow, unknown, 1, 2] [done] [push,'$subSymbol:',0]",
-      "poke .symbol $symbol",
+      "data {value: $}",
+      "call reformatTx",
       "done"
     ],
 

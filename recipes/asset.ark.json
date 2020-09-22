@@ -25,8 +25,8 @@
     "test":[
       "done {hash:'4BD494E3'}"
     ],
-    "balance":[
-      "curl '/api/v2/wallets/$1' {'Content-Type': 'application/json'} @curlSuccess @curlFail",
+    "balance/address":[
+      "curl '/api/v2/wallets/$address' {'Content-Type': 'application/json'} @curlSuccess @curlFail",
       "@curlFail",
       "regx '404' 2 1",
       "fail 'Error from $symbol host : $'",
@@ -70,10 +70,8 @@
       "@tranFail",
       "fail 'Could not parse transaction'"
     ],
-    "getHistory":[
-      "poke count $2 12",
-      "poke offset $3 0",
-      "curl '/api/v2/wallets/$1/transactions?orderBy=timestamp:desc&limit=$count&offset=$offset' {'Content-Type': 'application/json'} @curlSuccess @curlFail",
+    "getHistory/address/count=12/offset=0": [
+      "curl '/api/v2/wallets/$address/transactions?orderBy=timestamp:desc&limit=$count&offset=$offset' {'Content-Type': 'application/json'} @curlSuccess @curlFail",
       "@curlSuccess",
       "tran '.data' @tranSuccess @tranFail",
       "@tranSuccess",
@@ -85,19 +83,19 @@
       "@tranFail",
       "fail 'Could not parse history'"
     ],
-    "push":[
+    "push/rawTransaction":[
       "curl '/api/v2/node/configuration' GET",
       "tran('.data.nethash',2,1)",
       "fail 'Error from $symbol host : $'",
       "poke 'nethash'",
-      "data '{\"transactions\": [$1]}'",
+      "data '{\"transactions\": [$rawTransaction]}'",
       "curl POST '/api/v2/transactions' {'Content-Type': 'application/json', 'version': '$version', 'port': 1, 'nethash': '$nethash'} 1 2",
       "tran '.data.accept[0]' 2 1",
       "fail",
       "done"
     ],
-    "getTransaction":[
-      "curl '/api/v2/transactions/$1' {'Content-Type': 'application/json'} @curlSuccess @curlFail",
+    "getTransaction/transactionId":[
+      "curl '/api/v2/transactions/$transactionId' {'Content-Type': 'application/json'} @curlSuccess @curlFail",
       "@curlSuccess",
       "tran '.data' @dataTranSuccess @dataTranFail",
       "@dataTranFail",

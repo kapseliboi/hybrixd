@@ -3,29 +3,37 @@
   "name":"Transaction data history engine",
   "cacheConfirmed": "60000",
   "quartz": {
-    "transaction/txID/checkCache=true": [
-      "flow checkCache {true: 1} @retrieve",
-      "poke fileName ${txID}-${symbol}-transaction",
-      "seek $fileName @returnCachedHistory @retrieve",
-      "@retrieve",
-      "call getTransaction/$txID",
-      "poke tx",
-      "fork 'save/$txID'",
-      "done $tx",
-      "@returnCachedHistory",
-      "list $fileName",
-      "void {'array':4} 1",
-      "pick",
-      "load $",
-      "jpar",
-      "done",
-      "call getTransaction/$txID",
-      "poke tx",
-      "fork 'save/$1'",
-      "done $tx"
+    "getTransaction": [
+      "fail 'Abstract method getTransaction not implemented!'",
+      "#Expects an transactionId and returns a transaction.",
+      "#Can be send to reformatTx in a {value: $} to get proper data formatting."
     ],
-    "getConfirmed/txID" : [
-      "poke fileName ${txID}-${symbol}-transaction",
+    "getMessage":  [
+      "fail 'Abstract method getMessage not implemented!'",
+      "#Expects an transactionId and returns a transaction.",
+      "#Can be send to reformatTx in a {value: $} to get proper data formatting."
+    ],
+    "transaction/transactionID/checkCache=true": [
+      "flow checkCache {true: 1} @retrieveFromChain",
+      "poke fileName ${transactionID}-${symbol}-transaction",
+      "seek $fileName @returnCachedTransaction @retrieveFromChain",
+      "@retrieveFromChain",
+      "call getTransaction/$transactionID",
+      "poke tx",
+      "fork saveTransactionToCache/$transactionID",
+      "done $tx",
+      "@returnCachedTransaction",
+      "load $fileName",
+      "jpar",
+      "done"
+    ],
+
+    "saveTransactionToCache/transactionID": [
+      "save ${transactionID}-${symbol}-transaction"
+    ],
+
+    "getConfirmed/transactionID" : [
+      "poke fileName ${transactionID}-${symbol}-transaction",
       "seek $fileName 1 @retrieve",
       "meta $fileName",
       "tran .mod 1 @retrieve",
@@ -39,74 +47,21 @@
       "jpar",
       "jump @skipRetrieve",
       "@retrieve",
-      "call getTransaction/$txID",
-      "poke tx",
-      "fork 'save/$txID'",
-      "peek tx",
+      "call transaction/$transactionID/false",
       "@skipRetrieve",
-      "tran .confirmed 1 2",
-      "done",
+      "tran .confirmed 2 1",
       "fail 'Could not get confirmations!'"
     ],
-    "save/txID": [
-      "poke txData",
-      "date now",
-      "data '${txID}-${symbol}-transaction'",
-      "poke fileName",
-      "call removeTransactionFile/$txID/transaction",
-      "save $fileName $txData",
-      "data $txData",
-      "tran .source 1 @fail",
-      "poke sourceAddress",
-      "data $txData",
-      "tran .target 1 @fail",
-      "poke targetAddress",
-      "data ['$txID']",
-      "call saveNewTransactionIds/$sourceAddress/1/1/true",
-      "data ['$txID']",
-      "call saveNewTransactionIds/$targetAddress/1/1/true",
-      "@fail",
-      "done $txData"
-    ],
-    "saveTransactionData/txID": [
-      "poke txData",
-      "data ${txID}-${symbol}-transaction",
-      "poke fileName",
-      "call removeTransactionFile/$txID/transaction",
-      "save $fileName $txData",
-      "done $1"
-    ],
-    "retrieveLatestTransactions/addr/count/offset": [
-      "peek count",
-      "math +1",
-      "poke countPlusOne",
-      "call getHistory/$addr/$countPlusOne/$offset",
-      "each reformatTx",
-      "sort desc .timestamp",
-      "poke txs",
-      "fork cacheHistory/$addr",
-      "peek txs",
-      "tran '[].id'",
-      "poke idx",
-      "fork 'saveNewTransactionIds/$addr/$countPlusOne/$offset/false'",
-      "peek idx",
-      "#TODO: find proper workaround",
-      "true $countPlusOne>12 1 2",
-      "drop -1",
-      "done"
-    ],
-    "message/txID" : [
-      "poke fileName ${txID}-${symbol}-message",
+    "message/transactionID" : [
+      "poke fileName ${transactionID}-${symbol}-message",
       "seek $fileName 1 @retrieve",
       "load $fileName",
-      "jump @done",
+      "done",
       "@retrieve",
-      "call getMessage/$txID",
+      "call getMessage/$transactionID",
       "poke message",
       "save $fileName $message",
-      "peek message",
-      "@done",
-      "done"
+      "peek message"
     ]
   }
 }
