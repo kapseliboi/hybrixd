@@ -127,9 +127,6 @@ public_build_test:
   only:
    refs:
      - tags
-  only:
-    variables:
-      - $TEST_ENABLED
   artifacts:
     reports:
       junit: test*.xml
