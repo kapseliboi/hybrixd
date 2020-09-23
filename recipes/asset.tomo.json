@@ -6,7 +6,7 @@
   "import":"eth-api",
   "mode":"ethereum.main",
   "keygen-base":"eth",
-  "throttle":6,
+  "throttle":3,
   "histPage":25,
   "host": {
     "default": "https://rpc.tomochain.com",
@@ -23,7 +23,7 @@
     "sample" : [
       "done {address:'0xa7551ba0d52c763fb6f8866de63827aa593f20bc',transaction:'0x194630a7ba8cc8905751ca5ae1c5c4695c2dc414d6978ef02a6743ee9c6176a4'}"
     ],
-    "history/address/count=12/offset=0" : [
+    "getHistory/address/count=12/offset=0" : [
       "peek symbol",
       "flow tomo 1 @token",
       "poke token false",
@@ -39,11 +39,14 @@
       "fail 'Cannot retrieve history for Tomo asset or token.'",
       "@start",
       "time $timeout",
-      "with pageOffset [data,'$offset'] [math,'/$histPage'] ['math','floor']",
-      "with pages [data,'$count'] [math,'/$histPage'] ['math','floor']",
-      "poke page '$pageOffset'",
+      "with pageOffset math floor($offset/$histPage)",
+      "# Tomoscan needs pages+1, this is different from ETH!",
+      "with pages math floor($count/$histPage)+1",
+      "# Tomoscan needs page+1, this is different from ETH!",
+      "with page math $pageOffset+1",
       "poke resultArray []",
       "@countLoop",
+      "logs /txs/listByAccount/$address?page=$page&limit=$histPage&tx_type=$txType",
       "curl ${host.history} /txs/listByAccount/$address?page=$page&limit=$histPage&tx_type=$txType GET {'Content-Type': 'application/json'} 1 @failHost",
       "tran '.items' 2 1",
       "fail 'Tomoscan node returning unexpected result!'",
@@ -54,7 +57,6 @@
       "sort 'desc' '.timestamp'",
       "tran '[].hash' 2 1",
       "fail 'Cannot interpret history data!'",
-      "uniq",
       "with offset [math,'$offset - ($histPage*$pageOffset)']",
       "take $offset $count",
       "done",

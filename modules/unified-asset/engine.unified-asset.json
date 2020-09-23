@@ -2,8 +2,10 @@
   "engine":"unified-asset",
   "name":"Engine to unify assets",
   "module":"unified-asset",
-  "import": "transaction-history",
-  "apiProvidesFullTx": true,
+  "import":"transaction-history",
+  "timeout":120000,
+  "cache":15000,
+  "apiProvidesFullTx":true,
 
   "quartz":{
 
