@@ -63,10 +63,12 @@
     "history/address/count=12/offset=0/checkCache=true": [
       "flow checkCache {true: 1} @retrieveFromChain",
       "call checkMoreItemsRequestedThanAvailableInCache/$address/$count/$offset",
+      "poke moreItemsRequestedThanAvailableInCache",
       "flow true @retrieveFromChain 1",
       "call checkIsItTimeToCheckForUpdate/$address",
       "flow true @retrieveFromChain @returnCachedHistory",
       "@retrieveFromChain",
+      "hook @failedToRetrieveFallbackToCache",
       "call getCachedTransactionIds/$address/99999999/0",
       "poke cachedTransationIds",
       "call getHistoryOnlyIDs/$address/$count/$offset",
@@ -75,7 +77,11 @@
       "call concatHistoryChunks/$address/$count/$offset",
       "done $retrievedTransactionIDs",
       "@returnCachedHistory",
-      "call getCachedTransactionIds/$address/$count/$offset"
+      "call getCachedTransactionIds/$address/$count/$offset",
+      "done",
+      "@failedToRetrieveFallbackToCache",
+      "flow moreItemsRequestedThanAvailableInCache true 1 @returnCachedHistory",
+      "fail"
     ],
 
     "getCachedTransactionIds/address/count/offset": [
