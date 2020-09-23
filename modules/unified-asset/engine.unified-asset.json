@@ -3,7 +3,6 @@
   "name":"Engine to unify assets",
   "module":"unified-asset",
   "import":"transaction-history",
-  "timeout":120000,
   "cache":15000,
   "apiProvidesFullTx":true,
 
@@ -22,6 +21,7 @@
     ],
 
     "getHistory/address/count=12/offset=0":[
+      "time 45000",
       "with totalCount math $count+$offset",
       "peek address",
       "func decompressUnifiedAddress",
