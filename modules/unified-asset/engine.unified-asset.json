@@ -173,6 +173,20 @@
       "join ','"
     ],
 
+    "subConfirmed" : [
+      "rout /a/${.key}/confirmed"
+    ],
+
+    "confirmed/transactionId" : [
+      "test transactionId 1 3",
+      "call getConfirmed/$transactionId",
+      "done",
+      "peek 'unified-symbols'",
+      "each subConfirmed",
+      "type array",
+      "math max"
+    ],
+
 
     "getTransaction/transactionId":[
       "peek transactionId",
