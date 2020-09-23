@@ -132,7 +132,7 @@ function routeMessage (proc, handle, nodeIdTarget, messageId, messageContent) {
     let nodeIdSource = messageContent.split('/')[0];
     let messageResponseId = shaHash(nodeIdSource + messageId).substr(16, 8); // response messageId
     let xpath = '/' + messageContent.substr(messageContent.indexOf('/') + 1, messageContent.length);
-    if (xpath && xpath !== '/') {
+    if (xpath && xpath !== '/' && xpath.indexOf('\') === -1) {
       let routeResult = router.route({url: xpath, sessionID: sessionID});
       let response = '#|' + JSON.stringify(routeResult);
       sendMessage(
