@@ -6,7 +6,8 @@
   "import":"eth-api",
   "mode":"ethereum.main",
   "keygen-base":"eth",
-  "throttle":3,
+  "throttle":6,
+  "historyThrottle":3,
   "histPage":25,
   "host": {
     "default": "https://rpc.tomochain.com",
