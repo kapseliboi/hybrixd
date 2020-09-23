@@ -33,7 +33,6 @@
       "done"
     ],
     "confirmed/transactionId" : [
-      "call transaction/$transactionId",
       "done 1"
     ],
     "message/transactionId" : [
