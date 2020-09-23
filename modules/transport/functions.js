@@ -131,7 +131,7 @@ function routeMessage (proc, handle, nodeIdTarget, messageId, messageContent) {
     let sessionID = 0; // do we want to give special session ID? At the moment this doesn't work: nodeIdTarget;
     let nodeIdSource = messageContent.split('/')[0];
     let messageResponseId = shaHash(nodeIdSource + messageId).substr(16, 8); // response messageId
-    let xpath = '/' + messageContent.substr(messageContent.indexOf('/') + 1, messageContent.length);
+    let xpath = ( '/' + messageContent.substr(messageContent.indexOf('/') + 1, messageContent.length) ).replace(/[^a-z0-9 _-\.]/gi,'');
     if (xpath && xpath !== '/') {
       let routeResult = router.route({url: xpath, sessionID: sessionID});
       let response = '#|' + JSON.stringify(routeResult);
