@@ -23,7 +23,8 @@
       "done {address:'AQYZJ6Mkv4DhnXhrXdxXwNKRKGvgrkhnRF',transaction:'f70e8f32e8a16c1dd1a0e97fa4075f96d8e8e16065d1a4406851252832d8e608'}"
     ],
     "test":[
-      "done {hash:'4BD494E3'}"
+      "#update from 4BD494E3 to 4EA93EBF on 23-09-202",
+      "done {hash:'4EA93EBF'}"
     ],
     "balance/address":[
       "curl '/api/v2/wallets/$address' {'Content-Type': 'application/json'} @curlSuccess @curlFail",
