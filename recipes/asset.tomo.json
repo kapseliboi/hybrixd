@@ -47,7 +47,6 @@
       "with page math $pageOffset+1",
       "poke resultArray []",
       "@countLoop",
-      "logs /txs/listByAccount/$address?page=$page&limit=$histPage&tx_type=$txType",
       "curl ${host.history} /txs/listByAccount/$address?page=$page&limit=$histPage&tx_type=$txType GET {'Content-Type': 'application/json'} 1 @failHost",
       "tran '.items' 2 1",
       "fail 'Tomoscan node returning unexpected result!'",
