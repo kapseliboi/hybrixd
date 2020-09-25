@@ -1,3 +1,28 @@
+# v0.8.4
+## Fluffy Magenta Pegasus
+## 25-09-2020
+
+* Use cached as fallback for history and improve hook
+* Pass timeout to all child and parent processes
+* transport: ignore bad requests
+* transport: remove any characters that are not properly routable
+* Tomoscan history and throttle fix
+* Add confirmed threshold for xem
+* Fix eth history throttle issues
+* Let debug wait for process to finish
+* Fix list failure and on empty
+* Confirmed endpoint for unified asset
+* Improve debug
+* Add update mechanism
+* Add history to unified assets  
+* Add extend documentation
+* qrtz: Make jpar failure non silent
+* qrzt: remove sort from uniq
+* qrzt: fail each if any fails
+* web-wallet: add unified asset ui extensions
+
+
+
 # v0.8.3
 ## Cosy Magenta Unicorn
 ## 17-09-2020
