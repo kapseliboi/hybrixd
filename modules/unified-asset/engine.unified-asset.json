@@ -132,6 +132,11 @@
     "getSubValidate" :[
       "data ${.value}",
       "splt ':'",
+      "poke subSymbolsubAddress",
+      "size",
+      "flow 2 2 1",
+      "done invalid",
+      "peek subSymbolsubAddress",
       "poke [subSymbol,subAddress]",
       "peek 'unified-symbols'",
       "have '[$subSymbol]' 2 1",
