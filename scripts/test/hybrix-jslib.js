@@ -17,8 +17,32 @@ fs.readdir(TEST_DIRECTORY, function (err, files) {
   files.forEach(runTest);
 });
 
+const mockStorage = {};
+
+const mockStorageConnector = {
+  seek: ({key}, dataCallback) => {
+    dataCallback(mockStorage.hasOwnProperty(key));
+  },
+  save: ({key, value}, dataCallback) => {
+    mockStorage[key] = value;
+    dataCallback(key);
+  },
+  load: ({key}, dataCallback, errorCallback) => {
+    if (mockStorage.hasOwnProperty(key)) return dataCallback(mockStorage[key]);
+    else return errorCallback('File not found');
+  },
+  burn: ({key}, dataCallback) => {
+    delete mockStorage[key];
+    dataCallback(key);
+  },
+  list: ({pattern}, dataCallback, errorCallback) => {
+    return errorCallback('Not yet implemented');
+  }
+};
+
 function runTest (fileName) {
-  const hybrix = new Hybrix.Interface({http});
+  const hybrix = new Hybrix.Interface({http, storage: mockStorageConnector});
+  console.log(`[.] hybrix-jslib: test '${fileName}' started`);
 
   const {steps, validate} = require(TEST_DIRECTORY + fileName);
 
