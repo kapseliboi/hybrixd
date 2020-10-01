@@ -64,7 +64,7 @@
       "_help" : "Save data to storage.",
       "_ref" : {
         "_list" : "storage_id",
-        "_this" : "Specify the ID key to save storage to.",
+        "_help" : "Specify the ID key to save storage to.",
         "_ref" : {
           "_list" : "data",
           "_this" : "Specify the data string value to be saved."
