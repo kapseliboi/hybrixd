@@ -49,10 +49,6 @@ cp "$NODE/README.npm.md" "$DIST/README.npm.md"
 # Copy package.json
 cp "$NODE/package.json" "$DIST/"
 
-# Copy configuration
-# TODO create a default here
-cp "$NODE/hybrixd.conf" "$DIST/"
-
 # Copy node_modules
 rsync -avq "$NODE/node_modules" "$DIST/"
 
