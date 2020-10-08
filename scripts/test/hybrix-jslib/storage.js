@@ -54,13 +54,13 @@ const storageTests = (local, remote) => [
 ];
 
 // TODO test work, queue
-// TODO  test mergeStrategy & sync
+// TODO test mergeStrategy & sync
 // TODO test list
 
 exports.steps = [
-  {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session'
-/*  ...storageTests(true, true),
+  {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
+  ...storageTests(true, true),
   ...storageTests(false, true),
-  ...storageTests(true, false) */
+  ...storageTests(true, false)
 ];
 exports.validate = (success, data) => success;
