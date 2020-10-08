@@ -4,7 +4,7 @@ const ENCRYPTED_VALUE = 'RVlSZ3BnYkFaZ1RBeGdaZ0J4Z0N3SFlTb25BaGdWblRCbnhpUUFZQk9
 const LEGACY_KEY = '4cae9df3edf7df66973a03bc0e7e101b0008baca997dd1147019fac56850304e-test832uiwe3';
 
 const storageTests = (local, remote) => [
-// SAVE/LOAD ENCRYTPED
+  // SAVE/LOAD ENCRYTPED
   {key: KEY, value: VALUE, local, remote}, 'save',
   {key: KEY, local, remote}, 'load',
 
@@ -27,7 +27,7 @@ const storageTests = (local, remote) => [
 
   // SEEK (should fail)
   {key: KEY, local, remote}, 'seek',
-  keyFound => ({condition: !keyFound, message: 'Key found when it should have been deleted'}), 'assert',
+  keyFound => ({condition: !keyFound, message: 'Key found when it should have been deleted :' + JSON.stringify(keyFound)}), 'assert',
 
   // SAVE/LOAD LEGACY
   {key: KEY, value: VALUE, legacy: true, local, remote}, 'save',
@@ -49,7 +49,7 @@ const storageTests = (local, remote) => [
 
   // SEEK LEGACY (should fail)
   {key: KEY, legacy: true, local, remote}, 'seek',
-  keyFound => ({condition: !keyFound, message: 'Legacy key found when it should have been deleted'}), 'assert'
+  keyFound => ({condition: !keyFound, message: 'Legacy key found when it should have been deleted :' + JSON.stringify(keyFound)}), 'assert'
 
 ];
 
@@ -58,9 +58,9 @@ const storageTests = (local, remote) => [
 // TODO test list
 
 exports.steps = [
-  {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session',
-  //  ...storageTests(true, true),
-  //  ...storageTests(false, true),
-  ...storageTests(true, false)
+  {username: 'DUMMYDUMMYDUMMY0', password: 'DUMMYDUMMYDUMMY0'}, 'session'
+/*  ...storageTests(true, true),
+  ...storageTests(false, true),
+  ...storageTests(true, false) */
 ];
 exports.validate = (success, data) => success;
