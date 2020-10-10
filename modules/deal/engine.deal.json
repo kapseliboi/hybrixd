@@ -1,0 +1,295 @@
+{
+  "engine" : "deal",
+  "name" : "Create a deal between provider (node) and client",
+  "timeout" : 120000,
+  "proposalListPrefix" : "bf70896b41c1555612fb332d274d4e4b",
+  "cron" : 10,
+  "permissions":{
+    "nodeKeys":true
+  },
+  "quartz" : {
+    "cron" : [
+      "call proposalHandler",
+      "void 2 1",
+      "logs"
+    ],
+    "proposalHandler" : [
+      "call selectFromProposalList",
+      "void @notexist",
+      "poke proposalKey",
+      "load $proposalKey 1 @removeFromQueue",
+      "decr 1 @removeFromQueue",
+      "jpar 1 @removeFromQueue",
+      "have .accountID 1 @removeFromQueue",
+      "poke accountID ${.accountID}",
+      "call dealStatus",
+      "poke proposalID ${.id}",
+      "# check if end-user has sent their transaction, and it is confirmed",
+      "with txTimeout [data,${.status}] [flow,'timeout',1,2] [done,1] [done,0]",
+      "with txRejected [data,${.status}] [flow,'rejected',1,2] [done,1] [done,0]",
+      "with txDone [data,${.status}] [flow,'done',2,1] [done,0] [true,'${.progress}==1',1,-1] [done,1]",
+      "test txDone @removeFromQueue",
+      "with typeAuto [data,${.type}] [flow,'autonomous',1,2] [done,1] [done,0]",
+      "test typeAuto 1 @defer",
+      "with txConfirmed [data,${.bid.txid}] [void,2,1] [done,0] [data,${.status}] [flow,'accepted',2,1] [done,0] [true,'${.progress}==0.5',1,-1] [done,1]",
+      "test txConfirmed 1 @defer",
+      "data [$accountID,${.bid.symbol},${.bid.amount},${.bid.target}]",
+      "jstr",
+      "encr",
+      "rout '/e/allocation/push/$' 1 @defer",
+      "call remitted/$proposalID/$",
+      "done",
+      "@defer",
+      "test txTimeout @removeFromQueueWithRebalance",
+      "test txRejected @removeFromQueueWithRebalance",
+      "done 'proposal $proposalID with status ${.status} is pending...'",
+      "@removeFromQueueWithRebalance",
+      "with rebalanceValue [math,'${.bid.amount} + ${.fees.network}']",
+      "fork rebalanceCall/${allocation.accountID}/${.bid.symbol}/$rebalanceValue",
+      "@removeFromQueue",
+      "call deleteFromProposalList/$proposalKey",
+      "with itemSpec [data,'$proposalID'] [flow,{'undefined':1},2] [done,'storage key $proposalKey'] [done,'proposal $proposalID']",
+      "done '$itemSpec removed from queue'",
+      "@notexist",
+      "done null"
+    ],
+		"proposal/fromBase/toSymbol/amount/target" : [
+			"# 1. find best allocator available for this proposal",
+			"rout /e/allocation/pair/select/$fromBase/$toSymbol/$amount",
+			"have .accountID 2 1",
+			"fail 'Proposal cannot continue: No allocator accepts this proposal!'",
+      "poke allocation",
+      "with allocation.fee [excl,'%']",
+      "# 2. gather some extra variables",
+			"with timestamp [date,now] [math,'round']",
+			"# 3. get conversion rate",
+			"with valBase [data,$fromBase] [splt,'.'] [pick,-1]",
+			"with valSymbol [data,$toSymbol] [splt,'.'] [pick,-1]",
+			"rout /e/valuations/rate/$valSymbol/$valBase/1 2 1",
+			"fail 'Proposal cannot continue: Cannot calculate conversion rate!'",
+			"poke rate",
+			"# 4. calculate conversion",
+      "call calcNetworkFeesBaseDenominated/$fromBase/$toSymbol",
+      "void 1 2",
+      "fail 'Proposal cannot continue: Cannot get network fee data!'",
+      "poke networkFee",
+			"with allocatorFee [math,'$amount * $rate * (${allocation.fee} / 100)'] [form,$fromBase]",
+			"with baseAmount [math,'$amount * $rate'] [form,$fromBase]",
+			"with baseAmountPlusFee [math,'$baseAmount + $allocatorFee + $networkFee'] [form,$fromBase]",
+			"with creation [date,now] [math,round]",
+			"with deadline math '$creation+${allocation.deadline}' round",
+			"# 5. return target to accept payment, reserve needed amount, and adjust feelevel",
+			"with recipient [rout,/e/allocation/account/address/${allocation.accountID}/$fromBase]",
+      "fork rebalanceCall/${allocation.accountID}/$toSymbol/-$amount",
+      "# 6. save and return proposal object",
+      "with proposalIDa [data,'deal ${allocation.accountID} $fromBase $baseAmountPlusFee $recipient'] [hash,djb2] [case,lower]",
+      "with proposalIDb [data,'deal ${allocation.accountID} $toSymbol $amount $target $deadline'] [hash,djb2] [case,lower]",
+      "poke proposal { id: '${proposalIDa}${proposalIDb}', ask: {symbol:'$fromBase',amount:'$baseAmountPlusFee',target:'$recipient',txid:null}, bid: {symbol:'$toSymbol',amount:'$amount',target:'$target',txid:null}, fees: {symbol:'$fromBase',allocator:'${allocatorFee}',network:'$networkFee'}, type: ${allocation.type}, creation:$creation, deadline:$deadline }",
+      "data { accountID: '${allocation.accountID}', timestamp: '$timestamp', deal: $proposal }",
+      "jstr",
+      "encr",
+      "with keyHash [data,'deal ${allocation.accountID}'] [hash] [take,-16] [push,'$proposalIDb',0] [push,'$proposalIDa',0]",
+      "save $keyHash",
+      "call addToProposalList/$keyHash",
+      "done $proposal"
+		],
+    "addToProposalList/key" : [
+      "peek local::proposalList []",
+      "push $key",
+      "uniq",
+      "poke local::proposalList"
+    ],
+    "selectFromProposalList" : [
+      "with listSize [peek,local::proposalList,[]] [size]",
+      "true '$listSize==0' @finished",
+      "with listCount [peek,local::proposalCount,0]",
+      "true '$listCount<$listSize' 2 1",
+      "poke listCount 0",
+      "peek local::proposalList",
+      "pick $listCount",
+      "with listCount [math,'+1'] [poke,local::proposalCount]",
+      "@finished"
+    ],
+    "deleteFromProposalList/key" : [
+      "peek local::proposalList []",
+      "excl $key",
+      "uniq",
+      "poke local::proposalList",
+      "# add to the completed deals list",
+      "call addToCompleteList/$key"
+    ],
+    "addToCompleteList/key" : [
+      "peek local::completeList []",
+      "push $key 0",
+      "uniq",
+      "poke local::completeList"
+    ],
+    "deleteFromCompleteList/key" : [
+      "peek local::completeList []",
+      "excl $key",
+      "uniq",
+      "poke local::completeList"
+    ],
+    "calcNetworkFeesBaseDenominated/source/target" : [
+      "rout /a/$target/details",
+      "poke targetFee ${.fee}",
+			"with targetFeeSymbol [data,${.fee-symbol}] [splt,'.'] [pick,-1]",
+			"with denominatedFeeSymbol [data,$source] [splt,'.'] [pick,-1]",
+      "# recalculate target network fee into source network denomination",
+      "rout /e/valuations/rate/$targetFeeSymbol/$denominatedFeeSymbol/$targetFee 2 1",
+      "done null"
+    ],
+    "getProposal/proposalID" : [
+      "list $proposalID*",
+      "pick",
+      "poke key",
+      "test 1 @failure",
+      "load 1 @failure",
+      "decr 1 @failure",
+      "jpar 1 @failure",
+      "poke .key $key",
+      "done",
+      "@failure",
+      "done null"
+    ],
+		"claim/proposalID/transactionID" : [
+      "data '$transactionID'",
+      "regx '^[a-zA-Z0-9]+$$' 2 1",
+      "fail 'Transaction ID must be in alphanumeric format!'",
+      "peek local::claimList []",
+      "find $transactionID @submitted",
+      "with listSize [data,$] [size]",
+      "true '$listSize<250' 2",
+      "take -1",
+      "push $transactionID 0",
+      "uniq",
+      "poke local::claimList",
+      "call getProposal/$proposalID",
+      "void @notExist",
+      "test .deal.ask.txid @submitted",
+      "poke .deal.ask.txid $transactionID",
+      "poke keyHash ${.key}",
+      "drop key",
+      "jstr",
+      "encr",
+      "save $keyHash",
+      "done 'Claim for $proposalID submitted.'",
+      "@submitted",
+      "fail 'Claim for $proposalID already submitted!'",
+      "@notExist",
+      "fail 'Proposal $proposalID does not exist!'"
+    ],
+		"remitted/proposalID/transactionID" : [
+      "call getProposal/$proposalID",
+      "void @notExist",
+      "poke askAmount ${.deal.ask.amount}",
+      "poke bidAmount ${.deal.ask.amount}",
+      "test .deal.bid.txid @submitted",
+      "poke .deal.bid.txid $transactionID",
+      "poke keyHash ${.key}",
+      "drop key",
+      "jstr",
+      "encr",
+      "save $keyHash",
+      "fork rebalanceCall/${allocation.accountID}/$fromBase/$askAmount",
+      "fork rebalanceCall/${allocation.accountID}/$toSymbol/$bidAmount",
+      "@submitted",
+      "done 'pushed remittance transaction for $proposalID'",
+      "@notExist",
+      "fail 'Proposal $proposalID does not exist!'"
+    ],
+    "rebalanceCall/allocationID/symbol/amount" : [
+      "rout /e/allocation/pair/rebalance/$allocationID/$symbol/$amount"
+    ],
+    "dealStatus": [
+      "tran .deal 1 @failure",
+      "test .ask.txid 1 @zeroAskProgress",
+      "with askTx [rout,/a/${.ask.symbol}/transaction/${.ask.txid},2,1] [done,null]",
+      "with targetEqual [data,${askTx.target}] [flow,${.ask.target},1,2] [done,1] [done,0]",
+      "with txPremature [true,'${askTx.timestamp}<${.creation}',1,2] [done,1] [done,0]",
+      "with txRejected [true,'$txPremature',1,2] [done,1] [true,'$targetEqual and ${askTx.amount}==${.ask.amount}',1,-1] [done,0]",
+      "true '$txRejected' @zeroAskProgress",
+      "# true check transaction deadline",
+      "with askConfirmsMax rout /a/${.ask.symbol}/confirmed",
+      "with askConfirmsNow [rout,/a/${.ask.symbol}/confirmed/${.ask.txid},2,1] [done,0]",
+      "with askProgress [math,'$askConfirmsNow / $askConfirmsMax'] [true,'>1',1,2] [done,1]",
+      "jump @calcBidProgress",
+      "@zeroAskProgress",
+      "poke askProgress 0",
+      "@calcBidProgress",
+      "test .bid.txid 3",
+      "poke bidProgress 0",
+      "jump @finalize",
+      "with bidConfirmsMax rout /a/${.bid.symbol}/confirmed",
+      "with bidConfirmsNow [rout,/a/${.bid.symbol}/confirmed/${.bid.txid},2,1] [done,0]",
+      "with bidProgress [math,'($bidConfirmsNow / $bidConfirmsMax) + 0.05'] [true,'>1',1,2] [done,1]",
+      "@finalize",
+      "with progress math 'round(($askProgress + $bidProgress) / 0.0002) / 10000'",
+      "poke .progress $progress",
+      "with timenow date now",
+      "with status [true,'$txRejected',1,2] [done,'rejected'] [true,'$progress>=1',1,2] [done,'done'] [true,'$progress<0.5 and ${.deadline}<$timenow',1,2] [done,'timeout'] [true,'$progress>0 and $progress<0.5',1,2] [done,'confirming'] [true,'$progress==0.5',1,2] [done,'accepted'] [true,'$progress>=0.5 and $progress<1',1,2] [done,'remitting'] [done,'open']",
+      "poke .status $status",
+      "done",
+      "@failure",
+      "done null"
+    ],
+    "status/proposalID" : [
+      "call getProposal/$proposalID",
+      "void @failure",
+      "call dealStatus",
+      "void @failure",
+      "done",
+      "@failure",
+      "fail 'Cannot read proposal data of $proposalID!'"
+    ]
+  },
+  "router" : {
+    "_help" : "Deal engine for deals between node and clients.",
+    "proposal" : {
+      "_help" : "Propose a deal to trade.",
+      "_ref" : {
+        "_list" : "base",
+        "_help" : "Specify the base symbol to offer in trade.",
+        "_ref" : {
+          "_help" : "Specify the desired symbol to receive units in.",
+          "_list" : "symbol",
+          "_ref" : {
+            "_help" : "Specify the amount of base symbol to trade.",
+            "_list" : "amount",
+            "_ref" : {
+              "_help" : "The target address at which to receive the incoming amount.",
+              "_list" : "target",
+              "_this" : "target"
+            }
+          }
+        }
+      }
+    },
+    "claim" : {
+      "_help" : "Claim payment proof for proposal ID. Necessary for a swap to complete, and adds security to the swap.",
+      "_ref" : {
+        "_list" : "proposalID",
+        "_help" : "Specify the proposal ID to call the claim for.",
+        "_ref" : {
+          "_list" : "transactionID",
+          "_this" : "The transaction ID which shall contain the proof."
+        }
+      }
+    },
+    "status" : {
+      "_help" : "Check the status of a proposal.",
+      "_ref" : {
+        "_list" : "proposalID",
+        "_this" : "Specify the proposal ID to check the status of."
+      }
+    },
+    "proposalHandler" : {
+      "_help" : "Fire up the proposal handler.",
+      "_this" : "Fire up the proposal handler.",
+      "_ref" : {
+        "_list" : "proposalID",
+        "_this" : "Specify the proposal ID to check the status of."
+      }
+    }
+  }
+}

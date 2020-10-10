@@ -20,6 +20,7 @@ exports.cron = cron;
 exports.serve = serve;
 exports.block = block;
 exports.sample = sample;
+exports.reset = reset;
 
 const filePath = '../modules/mockchain/test.mockchain.json';
 
@@ -378,4 +379,9 @@ function serve (proc) {
 
   proc.mime('file:' + mimeType);
   proc.done(fileName.split('?')[0]);
+}
+
+function reset (proc) {
+  fs.writeFileSync(filePath, '[]');
+  proc.done('Mockchain reset.');
 }

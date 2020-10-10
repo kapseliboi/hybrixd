@@ -26,9 +26,14 @@
       "func 'block/$contract/$blockId'"
     ],
     "message/contract/transactionId" : ["func 'message/$contract/$transactionId'"],
-    "sample/contract" : ["func 'sample/$contract'"]
+    "sample/contract" : ["func 'sample/$contract'"],
+    "reset" : ["func reset"]
   },
   "router" : {
+    "reset": {
+      "_access":"root",
+      "_this":"reset all mockchains, clear all data."
+    },
     "balance" : {
       "_ref" : {
         "_list" : "contract",
