@@ -8,10 +8,15 @@
   "confirmed":6,
   "fee":0.000025,
   "feePerByte":0.0000002,
-  "host": "https://insight.bitpay.com/api",
+  "host": {
+    "default": "https://api.bitcore.io/api/BTC/mainnet",
+    "push": "https://rest.bitcoin.com/v2"
+  },
+  "old_host": "https://insight.bitpay.com/api",
   "cache":60000,
   "throttle":10,
-  "import":"insight",
+  "prefix":"bitcoin:",
+  "import":"bitcore",
   "quartz":{
     "sample" : [
       "done {address:'13JQwoSLLR3ffXwswe2HCTK9oq4i8MWK3q',transaction:'b4132e9dcaf7899baf66bc86ad065def10e5df8b4bc13f93bf778c22d14ba5cd'}"
