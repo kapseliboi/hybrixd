@@ -25,7 +25,7 @@
       "done TX01"
     ],
     "test": [
-      "done {hash:'2698591A'}"
+      "done {hash:'1AC939DA'}"
     ],
     "sample" : [
       "stop {address:'_dummyaddress_',transaction:TX01}"

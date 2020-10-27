@@ -22,7 +22,7 @@
       "done {address:'13JQwoSLLR3ffXwswe2HCTK9oq4i8MWK3q',transaction:'b4132e9dcaf7899baf66bc86ad065def10e5df8b4bc13f93bf778c22d14ba5cd'}"
     ],
     "test":[
-      "done {hash:'746C739D',unspent:{'unspents':[{'script':'76a91493b4fa1cbfc9b379bee71ef2c9112d3bab6c9d688ac','amount':'1010','txid':'8169bee7dda515a24912023485497cb100ad4730b58d8be0bb963acd91b29c1f','txn':0}],'change':'0'}}"
+      "done {hash:'5EF9BCED',unspent:{'unspents':[{'script':'76a91493b4fa1cbfc9b379bee71ef2c9112d3bab6c9d688ac','amount':'1010','txid':'8169bee7dda515a24912023485497cb100ad4730b58d8be0bb963acd91b29c1f','txn':0}],'change':'0'}}"
     ]
   }
 }
