@@ -1,3 +1,15 @@
+# v0.8.5
+## Sparkling Turqoise Mermaid
+## 27-10-2020
+
+* Implement btc using bitcore engine
+* handle prefixless unified asset vaildation
+* Improve storage tests
+* qrtz: skip empty lines
+
+
+
+
 # v0.8.4
 ## Fluffy Magenta Pegasus
 ## 25-09-2020
