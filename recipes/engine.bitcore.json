@@ -74,7 +74,7 @@
     ],
     "push/transaction" : [
       "time $timeout",
-      "curl '${host.push}' /rawtransactions/sendRawTransaction/$1 {Accept:'application/json, text/plain, */*',Content-Type:'application/json;charset=utf-8',DNT:1,Connection:'keep-alive'} {timeout:$shortTimeout} @curlSuccess @curlFail",
+      "curl /rawtransactions/sendRawTransaction/$1 {Accept:'application/json, text/plain, */*',Content-Type:'application/json;charset=utf-8',DNT:1,Connection:'keep-alive'} {timeout:$shortTimeout, host:push} @curlSuccess @curlFail",
       "@curlFail",
       "fail 'Could not connect to host.'",
       "@curlSuccess",
@@ -108,7 +108,11 @@
     "reformatTx" : [
       "tran .value 2 1",
       "fail 'Could not parse transaction'",
-      "tran { id:._id, timestamp:.blockTimeNormalized, amount: '.value', symbol:'$symbol', fee:.fee, 'fee-symbol':'$symbol', source:.source, target:.target, confirmed:.confirmations } 1 1 "
+      "tran { id:.txid, timestamp:.blockTimeNormalized, amount: '.value', symbol:'$symbol', fee:.fee, 'fee-symbol':'$symbol', source:.source, target:.target, confirmed:.confirmations } 2 1 ",
+      "fail 'Failed to transform transaction data'",
+      "with .fee atom false $factor",
+      "with .amount atom false $factor",
+      "with .timestamp date"
     ],
     "getTransaction/txId" : [
       "time $timeout",
