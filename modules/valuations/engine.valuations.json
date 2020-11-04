@@ -92,13 +92,14 @@
       "_help" : "Calculate a valuation using a multi-currency rate table.",
       "_ref" : {
         "_list" : "Source_Symbol",
+        "_sample": "btc",
         "_ref" : {
           "_list" : "Target_Symbol",
-          "_sample" : "btc",
+          "_sample" : "usd",
           "_this" : "Retrieve the median exchange-rate for one coin in another coin.",
           "_ref" : {
             "_list" : "Amount",
-            "_sample" : "usd",
+            "_sample" : "10",
             "_this" : "Retrieve the median exchange-rate for a given amount of one coin in another coin.",
             "max" : "Retrieve the highest exchange-rate data for a given amount of one coin in another coin.",
             "median" : "Retrieve the median exchange-rate data for a given amount of one coin in another coin.",
