@@ -1,0 +1,18 @@
+{
+  "symbol":"test_bch",
+  "name":"Test BitcoinCash",
+  "module":"quartz",
+  "mode":"bitcoin_cash.bchtest",
+  "factor":8,
+  "confirmed":15,
+  "fee":0.00001,
+  "feePerByte":0.0000002,
+  "host": {
+    "default": "https://api.bitcore.io/api/BTC/testnet"
+  },
+  "cache":60000,
+  "throttle":10,
+  "import":"bch",
+  "quartz":{
+  }
+}

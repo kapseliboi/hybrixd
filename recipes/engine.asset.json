@@ -226,10 +226,12 @@
 
       "call fee-balance/$source",
       "poke balances",
+      "call fee-symbol",
+      "poke feeSymbol",
 
       "call fee/$bytes",
       "type {object:2} 1",
-      "data {$fee-symbol:$}",
+      "data {$feeSymbol:$}",
       "poke feeObject",
       "pick $symbol",
       "flow 'undefined' @noFeeInOwnSymbol 1",
