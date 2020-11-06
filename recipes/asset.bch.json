@@ -7,8 +7,7 @@
   "confirmed":15,
   "fee":0.00001,
   "host": {
-    "default": "https://api.bitcore.io/api/BCH/mainnet",
-    "push": "https://rest.bitcoin.com/v2"
+    "default": "https://api.bitcore.io/api/BCH/mainnet"
   },
   "oldHosts": ["https://bch.blockdozer.com/api", "https://bch-insight.bitpay.com/api"],
   "cache":60000,
