@@ -1,3 +1,14 @@
+# v0.8.6
+## Happy Violet Ogre
+## 06-11-2020
+
+* Update bitcore engine
+* Add bitcoin and bitcoincash testnet connectors
+* Improve valuation samples and api help copy
+
+
+
+
 # v0.8.5
 ## Sparkling Turqoise Mermaid
 ## 27-10-2020
