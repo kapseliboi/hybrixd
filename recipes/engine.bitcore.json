@@ -87,13 +87,15 @@
     "transactionData/txId" : [
       "time $timeout",
       "curl /tx/$txId/coins GET 1 @fail",
-      "tran {source: .inputs[].address,target: .outputs[].address}",
+      "tran {source: .inputs[].address,target: .outputs[].address, spends: .outputs[][.address, =atom(.value)]}",
       "with .source [uniq] [join,',']",
       "with .target [uniq] [join,',']",
+      "with .spends type object",
       "poke sourceAndTarget",
       "curl /tx/$txId GET 1 @fail",
       "with .source peek sourceAndTarget.source",
       "with .target peek sourceAndTarget.target",
+      "with .spends peek sourceAndTarget.spends ",
       "done",
       "@fail",
       "fail 'Could not connect to host'"
@@ -101,7 +103,7 @@
     "reformatTx" : [
       "tran .value 2 1",
       "fail 'Could not parse transaction'",
-      "tran { id:.txid, timestamp:.blockTimeNormalized, amount: '.value', symbol:'$symbol', fee:.fee, 'fee-symbol':'$symbol', source:.source, target:.target, confirmed:.confirmations } 2 1 ",
+      "tran { id:.txid, timestamp:.blockTimeNormalized, amount: '.value', symbol:'$symbol', fee:.fee, 'fee-symbol':'$symbol', source:.source, target:.target, confirmed:.confirmations, spends: .spends} 2 1 ",
       "fail 'Failed to transform transaction data'",
       "with .fee atom false $factor",
       "with .amount atom false $factor",
