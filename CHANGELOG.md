@@ -1,3 +1,12 @@
+# v0.8.7
+## Furry Violet Goblin
+## 11-11-2020
+
+* Loading data from storage would fail if meta data was corrupt. Made this more resilient. 
+
+
+
+
 # v0.8.6
 ## Happy Violet Ogre
 ## 06-11-2020
