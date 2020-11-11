@@ -2,6 +2,7 @@
 // depends on localforage.nopromises.min.js
 const SECONDS_IN_A_DAY = 5184000;
 const SYNC_RANDOM_ID_RANGE = 250;
+const STORAGE_LIMIT = 131072; // TODO value to conf
 
 let fs = require('fs');
 let glob = require('glob');
@@ -42,22 +43,42 @@ const seek = function (data, dataCallback, errorCallback) {
   list(data, successCallback, errorCallback);
 };
 
+// if .meta file does not exist, return empty object
+function getMetaOrEmpty (filePath) {
+  let meta;
+  if (fs.existsSync(filePath + '.meta')) {
+    try {
+      meta = JSON.parse(String(fs.readFileSync(filePath + '.meta')));
+    } catch (e) {
+      meta = {};
+    }
+  } else meta = {};
+  return meta;
+}
+
 const load = function (data, dataCallback, errorCallback) {
   const fold = data.key.substr(0, 2) + '/';
   const filePath = storagePath + fold + data.key;
 
   if (fs.existsSync(filePath)) {
-    // update meta data with last time read
-    let meta = JSON.parse(String(fs.readFileSync(filePath + '.meta')));
-    meta.read = Date.now();
-    fs.writeFileSync(filePath + '.meta', JSON.stringify(meta));
+    const meta = getMetaOrEmpty(filePath);
 
-    if (typeof data.readFile !== 'undefined' && data.readFile) {
-      dataCallback(fs.readFileSync(filePath).toString());
+    let value;
+    if (data.readFile) {
+      value = fs.readFileSync(filePath).toString();
+      dataCallback(value);
     } else {
-      let fileKey = 'storage/' + fold + data.key;
+      const fileKey = 'storage/' + fold + data.key;
       dataCallback(fileKey);
     }
+    // do this after so we don't slow stuff down
+    const now = Date.now();
+    if (!meta.time) meta.time = now; // if meta data not available, set now
+    if (!meta.mod) meta.mod = now; // if meta data not available, set now
+    if (!meta.hash && typeof value === 'string') meta.hash = DJB2.hash(value); // if meta data not available, set now
+
+    meta.read = now; // update meta data with last time read
+    fs.writeFileSync(filePath + '.meta', JSON.stringify(meta));
   } else {
     errorCallback('File not found');
   }
@@ -94,7 +115,8 @@ const createFile = (key, value, dataCallback, errorCallback) => {
 const updateFile = (key, value, dataCallback, errorCallback) => {
   const fold = key.substr(0, 2) + '/';
   const filePath = storagePath + fold + key;
-  const meta = JSON.parse(String(fs.readFileSync(filePath + '.meta')));
+  const meta = getMetaOrEmpty(filePath);
+
   const hash = DJB2.hash(value);
   if (hash === meta.hash) { // value has not changed
     dataCallback({action: 'none', hash, expire: meta.expire, challenge: meta.challenge, difficulty: meta.difficulty});
@@ -108,30 +130,27 @@ const updateFile = (key, value, dataCallback, errorCallback) => {
       }
     }
 
+    const now = Date.now();
+    if (!meta.time) meta.time = now; // if meta data not available, set now
+    meta.mod = now;
     meta.hash = hash;
 
     fs.writeFileSync(filePath, value);
     fs.writeFileSync(filePath + '.meta', JSON.stringify(meta));
-
     dataCallback({action: 'update', hash, expire: meta.expire, challenge: meta.challenge, difficulty: meta.difficulty});
   }
 };
 
 const save = function (data, dataCallback, errorCallback) {
-  const storageLimit = 131072;
-  if (data.value.length > 131072) { // TODO value to conf
-    errorCallback('Storage limit is ' + storageLimit + ' bytes!');
-  } else {
+  if (data.value.length > STORAGE_LIMIT) return errorCallback('Storage limit is ' + STORAGE_LIMIT + ' bytes!');
+  else {
     const fold = data.key.substr(0, 2) + '/';
 
     makeDir(storagePath + fold);
 
     const filePath = storagePath + fold + data.key;
-    if (fs.existsSync(filePath + '.meta')) {
-      updateFile(data.key, data.value, dataCallback, errorCallback);
-    } else {
-      createFile(data.key, data.value, dataCallback, errorCallback);
-    }
+    if (fs.existsSync(filePath)) return updateFile(data.key, data.value, dataCallback, errorCallback);
+    else return createFile(data.key, data.value, dataCallback, errorCallback);
   }
 };
 
@@ -160,13 +179,9 @@ const list = function (data, dataCallback, errorCallback) {
 const burn = function (key, dataCallback, errorCallback) {
   const fold = key.substr(0, 2) + '/';
   const filePath = storagePath + fold + key;
-  if (fs.existsSync(filePath)) {
-    fs.unlinkSync(filePath);
-  }
-  if (fs.existsSync(filePath + '.meta')) {
-    fs.unlinkSync(filePath + '.meta');
-  }
-  dataCallback('Burned key ' + key);
+  if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+  if (fs.existsSync(filePath + '.meta')) fs.unlinkSync(filePath + '.meta');
+  return dataCallback('Burned key ' + key);
 };
 
 const provideProof = function (data, dataCallback, errorCallback) {
