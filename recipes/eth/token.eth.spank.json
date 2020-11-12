@@ -1,5 +1,5 @@
 {
-    "symbol":"eth.SPANK",
+    "symbol":"eth.spank",
     "name":"SPANK",
     "module":"ethereum",
     "import":"eth",

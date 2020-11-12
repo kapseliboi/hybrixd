@@ -2,8 +2,7 @@
 ## Furry Violet Goblin
 ## 11-11-2020
 
-* Loading data from storage would fail if meta data was corrupt. Made this more resilient. 
-
+* Loading data from storage would fail if meta data was corrupt. Bad, made this more resilient.
 
 
 
@@ -12,7 +11,7 @@
 ## 06-11-2020
 
 * Update bitcore engine
-* Add bitcoin and bitcoincash testnet connectors
+* Add bitcoin and bitcoincash testnet connectors. Test all the things!
 * Improve valuation samples and api help copy
 
 
@@ -22,10 +21,10 @@
 ## Sparkling Turqoise Mermaid
 ## 27-10-2020
 
-* Implement btc using bitcore engine
-* handle prefixless unified asset vaildation
-* Improve storage tests
-* qrtz: skip empty lines
+* Implement btc using bitcore engine. New and improved!
+* handle prefixless unified asset validation.  #unify!
+* Improve storage tests. Failing ain't bad, as long as you know what to do better.
+* qrtz: skip empty lines instead of crashing, which is nice.
 
 
 
@@ -46,7 +45,7 @@
 * Confirmed endpoint for unified asset
 * Improve debug
 * Add update mechanism
-* Add history to unified assets  
+* Add history to unified assets
 * Add extend documentation
 * qrtz: Make jpar failure non silent
 * qrzt: remove sort from uniq
@@ -118,7 +117,7 @@
 ## Furry Purple Elf
 ## 02-09-2020
 
-* Patch to ship 
+* Patch to ship
 
 
 
@@ -150,7 +149,7 @@
 ## 20-08-2020
 
 * Added fee-balance endpoint to determine available fee balance
-* Use stack trace in logs and return to root callers 
+* Use stack trace in logs and return to root callers
 * Added a work in progress mock exchange (sandbox) module
 * Updated dependencies
 * hybrix-jslib: Add option for partial source address
@@ -180,7 +179,7 @@
 * add login using token to report pages
 * return html 403/404 error pages for html endpoints
 * qrtz: add fork and rout for javascript modules
-* hybrix-jslib: refreshAsset now automatically adds the asset if required 
+* hybrix-jslib: refreshAsset now automatically adds the asset if required
 * web-wallet: do not wait for balances during load
 * web-wallet: view sub balances for multi assets
 
@@ -259,7 +258,7 @@
 * New ETH token: Tokentuber
 * Added Biki trade engine
 * Fix unspents for uninitialized burst addresses
-* Fixes for NXT tokens 
+* Fixes for NXT tokens
 * Autofocus for debug ui
 * Fix searching beyond cached history
 * docs: fix folding items.
@@ -292,7 +291,7 @@
 ## 11-06-2020
 
 * Added 'check for update' endpoint. Use /e/update/check to see if you're running the latest version
-* Improve configuration handling of hybrixd.conf. 
+* Improve configuration handling of hybrixd.conf.
 * Add y and z channel tests. These channels can be used as (extra) encryption layer. For example when http instead of https is used.
 * Return errors if session creation fails.
 * SEO/metadata improvements for html endpoints
