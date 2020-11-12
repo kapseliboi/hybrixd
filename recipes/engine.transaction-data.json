@@ -3,35 +3,36 @@
   "name":"Transaction data history engine",
   "cacheConfirmed": "60000",
   "quartz": {
-    "getTransaction": [
+    "getTransaction/transactionID": [
       "fail 'Abstract method getTransaction not implemented!'",
-      "#Expects an transactionId and returns a transaction.",
+      "#Expects an transactionID and returns a transaction.",
       "#Can be send to reformatTx in a {value: $} to get proper data formatting."
     ],
-    "getMessage":  [
+    "getMessage/transactionID":  [
       "fail 'Abstract method getMessage not implemented!'",
-      "#Expects an transactionId and returns a transaction.",
+      "#Expects an transactionID and returns a transaction.",
       "#Can be send to reformatTx in a {value: $} to get proper data formatting."
     ],
-    "transaction/transactionID/checkCache=true": [
-      "flow checkCache {true: 1} @retrieveFromChain",
+    "transaction/transactionID/target": [
       "poke fileName ${transactionID}-${symbol}-transaction",
       "seek $fileName @returnCachedTransaction @retrieveFromChain",
       "@retrieveFromChain",
-      "call getTransaction/$transactionID",
-      "poke tx",
-      "fork saveTransactionToCache/$transactionID",
-      "done $tx",
+      "call retrieveTransactionFromChain/$transactionID",
+      "jump @done",
       "@returnCachedTransaction",
       "load $fileName",
       "jpar",
-      "done"
+      "@done"
     ],
-
+    "retrieveTransactionFromChain/transactionID" :[
+      "call getTransaction/$transactionID",
+      "poke tx",
+      "fork saveTransactionToCache/$transactionID",
+      "done $tx"
+    ],
     "saveTransactionToCache/transactionID": [
       "save ${transactionID}-${symbol}-transaction"
     ],
-
     "getConfirmed/transactionID" : [
       "poke fileName ${transactionID}-${symbol}-transaction",
       "seek $fileName 1 @retrieve",
@@ -47,7 +48,7 @@
       "jpar",
       "jump @skipRetrieve",
       "@retrieve",
-      "call transaction/$transactionID/false",
+      "call retrieveTransactionFromChain/$transactionID",
       "@skipRetrieve",
       "tran .confirmed 2 1",
       "fail 'Could not get confirmations!'"
