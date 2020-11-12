@@ -166,30 +166,20 @@
         "_help" : "Get transaction information.",
         "_ref" : {
           "_list" : "transaction_id",
-          "_sample" : "$TRANSACTION_ID",
+          "_sample" : "TX01",
           "_this": "Retrieve the details belonging to a transaction ID.",
           "_ref" : {
-            "_list": "checkCache",
-            "_access" : "root",
-            "_sample": "false",
-            "_this": "Specify whether to use any cached result."
+            "_list": "target",
+            "_sample": "_dummyaddress_",
+            "_this": "Specify a specific target address."
           }
-        }
-      },
-      "attachment":{
-        "_help" : "Get transaction attachment data.",
-        "_hidden" : true,
-        "_ref" : {
-          "_list" : "transaction_id",
-          "_sample" : "$TRANSACTION_ID",
-          "_this": "Retrieve the attachment data belonging to a transaction ID."
         }
       },
       "message":{
         "_help" : "Get transaction attachment data, and decode its message.",
         "_ref" : {
           "_list" : "transaction_id",
-          "_sample" : "$TRANSACTION_ID",
+          "_sample" : "TX01",
           "_this": "The message belonging to a transaction ID is decoded."
         }
       },
@@ -197,7 +187,7 @@
         "_help" : "Get status hash of an address. When the hash changes, a transaction has gone in or out.",
         "_ref" : {
           "_list" : "address",
-          "_sample" : "$ADDRESS",
+          "_sample" : "_dummyaddress_",
           "_this": "Retrieve the status hash belonging to the history of an address."
         }
       },
@@ -206,8 +196,7 @@
         "_ref" : {
           "_list" : "transaction",
           "_this":"Signed transaction data pushed into the network will return a transaction ID.",
-          "_sample" : "$HEXADECIMAL_TRANSACTION_DATA",
-          "_response" : "$TRANSACTION_ID"
+          "_sample" : "_dummytransaction_100000000_15000000"
         }
       },
       "keygen-base":{
@@ -249,8 +238,7 @@
         "_ref" : {
           "_list" : "address",
           "_this":"Validate an address for this symbol.",
-          "_sample" : "_dummyaddress_",
-          "_response" : "$TRANSACTION_ID"
+          "_sample" : "_dummyaddress_"
         }
       }
     }
