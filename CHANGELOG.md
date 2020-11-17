@@ -1,3 +1,15 @@
+# v0.8.8
+## Little Violet Leprechaun
+## 17-11-2020
+
+* Add spends  to transaction. See all different target addresses in a multi spend transaction in /a/SYMBOL/transaction.
+* Get the spend for a specific target with /a/SYMBOL/transaction/TARGET.
+* Prevent duplicate default steps which could make processes slow. Made them mean and lean again.
+* Remove broken zcash (ZEC) host
+* explorer: Add value conversion method to search bar. 
+
+
+
 # v0.8.7
 ## Furry Violet Goblin
 ## 11-11-2020
