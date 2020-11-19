@@ -152,15 +152,19 @@
       },
       "info" :  "Retrieve info about the asset.",
       "icon" :  "Retrieve the svg icon for this asset.",
-      "report" :  "Retrieve test results.",
       "sample" : {
         "_this": "Retrieve a sample address and transaction id for test purposes.",
         "_response": {"address":"1J3St3rp3hVsuLGhegbLWicyPL3NRD3YJ7","transaction":"2c0832c153cf33327dae0e95a3bc39f4b02ae887725a32c07b1be47a2faffc55"}
       },
+      "report" :  "Retrieve test results.",
       "test" : "Retrieve data used for testing.",
       "test-hosts" : {
         "_access":"root",
         "_this" : "Tests the hosts used for this asset"
+      },
+      "test-cli" : {
+        "_access":"root",
+        "_this" : "Tests the asset methods."
       },
       "transaction":{
         "_help" : "Get transaction information.",
@@ -375,13 +379,35 @@
         "_this" : "test",
         "hidden" : true
       },
-      "_this" : "Debug UI.",
+      "_this" : "Debug Web UI.",
       "_ref" : {
         "_access":"root",
         "_list" : "proc",
         "_this" : "Specify the process ID to debug."
       },
-      "_ui" : "debug"
+      "_ui" : "proc/debug"
+    },
+    "code" :{
+      "_this" : "Code Web UI.",
+      "_ui" : "proc/code",
+      "_access":"root",
+
+      "_ref":{
+        "_this" :"asset, engine or source",
+        "_list" : "id",
+        "_ref":{
+          "_list" : "id",
+          "_this" : "Retrieve qrtz code for given recipe.",
+          "_ref":{
+            "_list" : "method",
+            "_this" : "Retrieve qrtz code for given recipe method."
+          }
+        }
+      },
+      "code.js":{
+        "_this" : "test",
+        "hidden" : true
+      }
     },
    "exec":{
      "_ellipsis": true,
@@ -497,7 +523,12 @@
       "_ref":{
         "_list" : "symbol",
         "_sample" : "dummy",
-        "_this" : "Return test results for $SYMBOL."
+        "_this" : "Return test results for $SYMBOL as html.",
+        "json" :  "Return test results for $SYMBOL for json.",
+        "cli" : {
+          "_this":"Run and return test results for $SYMBOL.",
+          "_access" : "root"
+        }
       }
     },
     "log" :{
