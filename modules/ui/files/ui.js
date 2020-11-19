@@ -46,6 +46,7 @@ function findNodes (obj, property) {
     .keys(obj)
     .reduce((obj_, key) => {
       const value = obj[key];
+      if (key === '_hidden' && value === true) for (let x in obj) delete obj[x]; // hide hidden _ui points
       if (typeof value === 'object' && value !== null) {
         obj_[key] = findNodes(value, p);
       } else if (key === p) {
@@ -189,14 +190,23 @@ function showLogin () {
   document.body.appendChild(DIV);
 }
 
+function addUIlinks (items) {
+  const NAV = document.querySelector('.navModuleHeader > .navModuleNavigation');
+  Object.keys(items).reverse().forEach(function (key) {
+    const item = items[key];
+    if (item.hasOwnProperty('_ui')) {
+      const a = document.createElement('A');
+      a.innerHTML = key;
+      a.href = host + item['_ui'];
+      NAV.insertAdjacentElement('afterbegin', a);
+    } else addUIlinks(item);
+  });
+}
+
 function renderMenu (items) {
   const hasRootAccess = items.hasOwnProperty('debug');
-  Object.keys(items).reverse().forEach(function (key) {
-    const a = document.createElement('A');
-    a.innerHTML = key;
-    a.href = host + items[key]['_ui'];
-    document.querySelector('.navModuleHeader > .navModuleNavigation').insertAdjacentElement('afterbegin', a);
-  });
+
+  addUIlinks(items);
 
   if (!hasRootAccess || privateToken) {
     const a = document.createElement('A');
@@ -294,7 +304,7 @@ function mkLinks () {
   const links = [
     { path: '', name: 'documentation' },
     { path: '/s/web-wallet/', name: 'wallet' },
-    { path: '/s/web-blockexplorer/', name: 'block explorer' }
+    { path: '/s/web-blockexplorer/', name: 'explorer' }
   ];
 
   return links.reduce((htmlStr, link) => `${htmlStr}<a href="${host + link.path}">${link.name}</a>`, '');

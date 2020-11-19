@@ -37,7 +37,7 @@
       "with inputval atom 1",
       "time $timeout",
       "curl /addr/$1/utxo 2 1 ",
-      "fail 'Could not connect to host'",
+      "fail __HOST_FAILURE__",
       "tran []{script:.scriptPubKey,amount:=atom(.amount,true)|.satoshis,txid:.txid,txn:.vout}",
       "sort 'asc' '.amount'",
       "scan 'cnt<($inputval+val.amount)' '+val.amount'",
@@ -55,7 +55,7 @@
       "poke inputval '$2' '1000000000000'",
       "time $timeout",
       "curl /addr/$1/utxo 2 1",
-      "fail 'Could not connect to host'",
+      "fail __HOST_FAILURE__",
       "tran []{script:.scriptPubKey,amount:=atom(.amount,true)|.satoshis,txid:.txid,txn:.vout} 2 1",
       "fail 'Could not parse unspents'",
       "poke 'selected'",
@@ -72,7 +72,7 @@
       "data {'rawtx':'$1'}",
       "curl /tx/send POST {Accept:'application/json, text/plain, */*',Content-Type:'application/json;charset=utf-8',DNT:1,Connection:'keep-alive'} {timeout:$shortTimeout} @curlSucces @curlFail",
       "@curlFail",
-      "fail 'Could not connect to host'",
+      "fail __HOST_FAILURE__",
       "@curlSucces",
       "tran '.txid' @succes @noId",
       "@noId",
@@ -89,7 +89,7 @@
     "transactionData" : [
       "time $timeout",
       "curl /tx/$1 GET {'Content-Type': 'application/json'} {timeout:$shortTimeout} 2 1",
-      "fail 'Could not connect to host'",
+      "fail __HOST_FAILURE__",
       "have .txid 2 1",
       "fail 'Could not read transaction data!'"
     ],
@@ -138,7 +138,7 @@
       "time $longTimeout",
       "with countTo [data,'$count'] [math,'+$offset']",
       "curl /addrs/$1/txs?from=$offset&to=$countTo 2 1",
-      "fail 'Could not connect to host'",
+      "fail __HOST_FAILURE__",
       "tran '.items' 1 @fail",
       "done",
       "@fail",
@@ -159,7 +159,7 @@
     "experimental_A" : [
       "# get latest block hash",
       "curl /blocks?limit=3 2 1",
-      "fail 'Could not connect to host'",
+      "fail __HOST_FAILURE__",
       "tran .blocks[].hash 2 1",
       "fail 'Cannot get fee!'",
       "# get at least 10 tx hashes",
@@ -180,7 +180,7 @@
     "experimental_getBlock" : [
       "data ${.value}",
       "curl /txs/?block=$ 2 1",
-      "fail 'Could not connect to host'",
+      "fail __HOST_FAILURE__",
       "tran .txs[].txid",
       "done"
     ],
@@ -196,7 +196,7 @@
     "getFee" : [
       "time $timeout",
       "curl /utils/estimatefee 2 1",
-      "fail 'Could not connect to host'",
+      "fail __HOST_FAILURE__",
       "tran '.2' 1 3",
       "ship 1 2 2 2",
       "poke local::fee",
