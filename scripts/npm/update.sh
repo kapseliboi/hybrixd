@@ -6,7 +6,7 @@ OLDPATH=$PATH
 SCRIPTDIR=$(dirname "$0")
 NODE=$(cd "$SCRIPTDIR/../.." && pwd)
 
-if [ -e "$NODE/README.release.mdTODO" ]; then
+if [ -e "$NODE/README.release.md" ]; then
     echo "[!] You are trying to update a developer version of hybrixd. Please us git pull to retrieve updates. Only release versions can be updated using the update command."
     cd "$WHEREAMI"
     export PATH="$OLDPATH"
