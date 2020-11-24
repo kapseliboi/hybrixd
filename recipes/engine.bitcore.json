@@ -24,9 +24,8 @@
       "time $timeout",
       "curl /address/$address/balance 2 1",
       "fail 'Connection to host failed'",
-      "tran {confirmed:'.balance',unconfirmed:'.unconfirmed'} 2 1",
+      "tran .balance 2 1",
       "fail 'Result from host invalid'",
-      "math '${.confirmed}+${.unconfirmed}'",
       "atom"
     ],
     "unspent/source/amount/target=/publicKey/message" : [
