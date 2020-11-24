@@ -21,6 +21,14 @@ then
     exit 1
 fi
 
+if ! command -v curl > /dev/null 2>&1
+then
+    echo "[!] curl command not available."
+    cd "$WHEREAMI"
+    export PATH="$OLDPATH"
+    exit 1
+fi
+
 TMP="$NODE/tmp"
 TMP_LATEST="$TMP/latest"
 CURRENT_VERSION=$(cat "$NODE/package.json" \
@@ -36,10 +44,8 @@ VERSION_XML=$(cat "$TMP/versions.xml")
 
 LATEST_VERSION=$(echo "console.log(require('$NODE/common/update').getLatestVersion(\`$VERSION_XML\`,'node'))" | node);
 
-
 echo "[i] Current version: $CURRENT_VERSION"
 echo "[i] Latest version: $LATEST_VERSION"
-
 
 if [ "$CURRENT_VERSION" = "$LATEST_VERSION" ]; then
     echo "[i] Already up to date with latest version. Nothing to do."
@@ -53,7 +59,6 @@ echo "[i] Updating hybrixd."
 rm -rf "$TMP_LATEST" > /dev/null 2>&1 || true
 echo "[i] Downloading latest package"
 mkdir -p "$TMP_LATEST"
-
 
 echo "[i] Retrieving latest package"
 URLPATH="https://storage.googleapis.com/hybrix-dist/node/latest"
@@ -72,10 +77,13 @@ echo "[i] Creating backup"
 mkdir -p "$NODE/tmp/backup.tmp"
 
 rsync -a \
+      --exclude "node_binaries" \
       --exclude "storage" \
       --exclude "dist" \
       --exclude "var" \
       --exclude "tmp" \
+      --exclude "hybrixd.conf" \
+      --exclude "hybrixd.keys" \
       "$NODE/" "$NODE/tmp/backup.tmp/"
 
 mv "$NODE/tmp/backup.tmp/" "$NODE/tmp/backup/"
@@ -91,6 +99,7 @@ if [ -n "$pid" ]; then
 fi
 
 rsync -a --delete \
+      --exclude "node_binaries" \
       --exclude "storage" \
       --exclude "dist" \
       --exclude "var" \
