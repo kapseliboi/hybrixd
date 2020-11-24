@@ -361,10 +361,6 @@
   "p":{"_alias":"proc"},
   "proc":{
     "_this" : "List all processes.",
-    "_ref" : {
-      "_list" : "proc",
-      "_this" : "Specify a process ID to see its details."
-    },
     "kill":{
       "_access":"root",
       "_help" : "Kill a process and all child processes.",
@@ -373,18 +369,16 @@
         "_this" : "Specify the process ID to kill."
       }
     },
-    "debug":{
-      "_access":"root",
+    "debug": {
+      "_ref" : {
+        "_list" : "proc",
+        "_this" : "Specify the process ID to debug."
+      },
       "debug.js":{
         "_this" : "test",
         "hidden" : true
       },
       "_this" : "Debug Web UI.",
-      "_ref" : {
-        "_access":"root",
-        "_list" : "proc",
-        "_this" : "Specify the process ID to debug."
-      },
       "_ui" : "proc/debug"
     },
     "code" :{
@@ -453,6 +447,10 @@
     "finished":{
       "_access":"owner",
       "_this" : "Display finished processes."
+    },
+    "_ref" : {
+      "_list" : "proc",
+      "_this" : "Specify a process ID to see its details."
     }
   },
   "r":{"_alias":"report"},
