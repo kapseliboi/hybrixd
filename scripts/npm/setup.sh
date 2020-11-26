@@ -9,17 +9,21 @@ COMMON="$HYBRIXD/common"
 NODEJS="$HYBRIXD/nodejs"
 
 if [ -e "$HYBRIXD/hybrixd" ]; then
+    URL_INTERFACE="https://github.com/hybrix-io/hybrix-jslib.git"
     URL_COMMON="https://github.com/hybrix-io/common.git"
     URL_NODEJS="https://github.com/hybrix-io/nodejs.git"
     URL_NODE_MODULES="https://github.com/hybrix-io/node_modules.git"
     NODE="$HYBRIXD/hybrixd"
+    INTERFACE="$HYBRIXD/hybrix-jslib"
     ENVIRONMENT="public"
     echo "[i] Environment is public..."
 elif [ -e "$HYBRIXD/node" ]; then
+    URL_INTERFACE="https://github.com/hybrix-io/interface.git"
     URL_COMMON="https://gitlab.com/hybrix/hybrixd/common.git"
     URL_NODEJS="https://www.gitlab.com/hybrix/hybrixd/dependencies/nodejs.git"
     URL_NODE_MODULES="https://gitlab.com/hybrix/hybrixd/dependencies/node_modules.git"
     NODE="$HYBRIXD/node"
+    INTERFACE="$HYBRIXD/interface"
     ENVIRONMENT="dev"
     echo "[i] Environment is development..."
 else
@@ -78,6 +82,20 @@ if [ ! -e "$NODE/common" ];then
     fi
     echo "[i] Link common files"
     ln -sf "$COMMON" "$NODE/common"
+fi
+
+# INTERFACE
+if [ ! -e "$NODE/interface" ];then
+
+    echo "[!] $NODE/interface not found."
+
+    if [ ! -e "$INTERFACE" ];then
+        cd "$HYBRIXD"
+        echo "[i] Clone interface files"
+        git clone "$URL_INTERFACE"
+    fi
+    echo "[i] Link interface files"
+    ln -sf "$INTERFACE/dist" "$NODE/interface"
 fi
 
 # NODE_MODULES
