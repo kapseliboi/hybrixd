@@ -1,3 +1,19 @@
+# v0.8.9
+## Cosy Violet Sprite
+## 26-11-2020
+
+* Do not use btc unconfirmed balances as they provided wrong results. Thanks to mehrdd!
+* qrtz: code browser. Browse to process/code on your local node and view and debug the qrtz 'api as code' methods.
+* Add option to delay scheduled jobs for all you procrastinators
+* Updated hy icon. New, nice and spiffy!
+* Add cli quick test endpoint for assets /asset/SYMBOL/test-cli. 
+* hybrix-jslib: add more hashing and encryption options.
+* hybrix-jslib: add getBalance method and implement throttle for refreshAsset.
+* hybrix-jslib: add file storage connector. Synchronize local and storages for nodejs projects.
+
+
+
+
 # v0.8.8
 ## Little Violet Leprechaun
 ## 17-11-2020
