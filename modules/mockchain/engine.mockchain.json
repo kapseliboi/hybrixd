@@ -19,6 +19,9 @@
     "transaction/contract/transactionId" : [
       "func 'transaction/$contract/$transactionId'"
     ],
+    "confirm/contract/transactionId" : [
+      "func 'confirm/$contract/$transactionId'"
+    ],
     "block/contract/blockId" : [
       "func 'block/$contract/$blockId'"
     ],
@@ -73,6 +76,17 @@
           "_list" : "transactionid",
           "_sample": "0",
           "_this" : "Retrieve transaction details"
+        }
+      }
+    },
+    "confirm" : {
+      "_ref" : {
+        "_list" : "contract",
+        "_sample": "btc",
+        "_ref" : {
+          "_list" : "transactionid",
+          "_sample": "0",
+          "_this" : "Retrieve number of confirmations. (1 immediatly, 2 after five minutes)"
         }
       }
     },

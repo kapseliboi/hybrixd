@@ -14,6 +14,7 @@ exports.balance = balance;
 exports.push = push;
 exports.history = history;
 exports.transaction = transaction;
+exports.confirm = confirm;
 exports.message = message;
 exports.cron = cron;
 exports.serve = serve;
@@ -220,6 +221,23 @@ function transaction (proc) {
         target: String(transaction.target) || 'unknown'
       };
       return proc.done(normalizedTransaction);
+    }
+  } else return proc.fail('unknown transaction2');
+}
+
+function confirm (proc) {
+  const mockchain = getMockchain();
+  if (mockchain === null) return proc.fail('This node does not support mockchain.');
+
+  const contract = proc.command[1];
+  const transactionId = Number(proc.command[2]);
+
+  if (transactionId < mockchain.length) {
+    const transaction = mockchain[transactionId];
+    if (transaction.contract !== contract) return proc.fail('transaction belongs to ' + transaction.contract + ' mockchain');
+    else {
+      const confirmations = transaction.timestamp < Date.now() - 1000 * 60 * 5 ? 1 : 2; // gets second confirmation after five minutes
+      return proc.done(confirmations);
     }
   } else return proc.fail('unknown transaction2');
 }
