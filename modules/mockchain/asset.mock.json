@@ -4,7 +4,7 @@
   "module":"quartz",
   "mode":"mockcoin.main",
   "addressRegex":"^\\d{1,3}$",
-  "confirmed":1,
+  "confirmed":2,
   "contract" :"main",
   "factor":8,
   "fee":0.15,
@@ -29,11 +29,13 @@
       "rout /engine/mockchain/sample/$contract"
     ],
     "transaction/transactionId" : [
-      "rout /engine/mockchain/transaction/$contract/$transactionId",
-      "done"
+      "rout /engine/mockchain/transaction/$contract/$transactionId"
     ],
     "confirmed/transactionId" : [
-      "done 1"
+      "done 2"
+    ],
+    "confirm/transactionId" : [
+      "rout /engine/mockchain/confirm/$contract/$transactionId"
     ],
     "message/transactionId" : [
       "rout /engine/mockchain/message/$contract/$transactionId"
