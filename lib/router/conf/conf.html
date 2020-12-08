@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>conf | hybrixd</title>
+    <meta charset="UTF-8">
+    <script src="./conf/conf.js"></script>
+
+    <style>
+      span.variable{
+      color:blue;
+      }
+
+      a.label, a.label:visited{
+      cursor:default;
+      color:green;
+      }
+
+      a.reference, a.reference:visited{
+      color:green;
+      }
+
+      .notStarted span.variable{
+      color:rgb(100,100,150);
+      }
+
+      .notStarted a.reference, .notStarted a.reference:visited{
+      color:rgb(100,150,100);
+      }
+
+      body{
+        background: #f7fafc;
+      }
+      input[type="text"]{
+      margin:0;
+      width:100%;
+      }
+      input[type="submit"]{
+      margin:0;
+      width:10vw;
+      }
+
+      .notStarted {
+      color:lightgrey;
+      }
+
+      .done {
+      background-color:green;
+      }
+      .fail {
+      color:red;
+      }
+
+      .debug {
+        font-family: monospace;
+      }
+
+      .debug, table {
+        margin-left: 32px;
+      }
+
+      #output table {
+        width: 100%;
+      }
+
+      #output td {
+        word-break: break-all;
+      }
+
+      div.progress {
+      margin:0;
+      display:inline-block;
+      background-color:green;
+      }
+      td.pid {
+      position: relative;
+      padding:0;
+      overflow: hidden;
+      }
+      div.pid {
+      display:inline-block;
+      position:absolute;
+      left:1em;
+      color:black;
+      }
+      tr.fail div.progress {
+      background-color:red;
+      }
+
+      .data{
+        width: 43ch;
+        max-width: 43ch;
+        text-overflow: ellipsis;
+      }
+
+      tr:nth-child(even) {background: #EEE}
+      tr:nth-child(odd) {background: #FFF}
+
+      #output,
+      table {
+      max-width:90%;
+      width:90%;
+      }
+
+      #output table {
+        width: 100%;
+        max-width: 100%;
+      }
+
+
+      #output {
+        font-family: monospace;
+      }
+
+      #output tr > td:nth-child(2) {
+        width: 50%;
+        max-width: 50%;
+        padding: 0 2%;
+      }
+
+      input {
+      border-radius:5px;
+      border-width:1px;
+      height:24px;
+      padding-left:5px;
+      }
+      button {
+cursor:pointer;
+      margin-left:10px;
+      font-size: 16px;
+      color:white;
+      background-color: #5DBDC9;
+      border-style:none;
+      border-radius:5px;
+      padding-bottom: 5px;
+      padding-left: 20px;
+      padding-right: 20px;
+      padding-top: 5px;
+      }
+
+      tr.header {
+        color: white;
+        background-color:#5DBDC9;
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <div id="conf"></div>
+  </body>
+</html>

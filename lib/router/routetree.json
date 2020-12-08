@@ -290,7 +290,13 @@
             "_this":"Set configuration details"
           }
         }
-      }
+      },
+      "conf.js":{
+        "_this" : "test",
+        "hidden" : true
+      },
+      "_this" : "Configuration Web UI.",
+      "_ui" : "conf"      
     },
     "exec" :{
       "_help" : "Execute a Qrtz script.",
