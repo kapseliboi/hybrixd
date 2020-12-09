@@ -236,7 +236,7 @@ function confirm (proc) {
     const transaction = mockchain[transactionId];
     if (transaction.contract !== contract) return proc.fail('transaction belongs to ' + transaction.contract + ' mockchain');
     else {
-      const confirmations = transaction.timestamp < Date.now() - 1000 * 60 * 5 ? 1 : 2; // gets second confirmation after five minutes
+      const confirmations = transaction.timestamp * 1000 < Date.now() - 1000 * 60 * 5 ? 2 : 1; // gets second confirmation after five minutes
       return proc.done(confirmations);
     }
   } else return proc.fail('unknown transaction2');

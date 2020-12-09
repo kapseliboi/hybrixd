@@ -32,9 +32,8 @@
       "rout /engine/mockchain/transaction/$contract/$transactionId"
     ],
     "confirmed/transactionId" : [
-      "done 2"
-    ],
-    "confirm/transactionId" : [
+      "test transactionId 2 1",
+      "done $confirmed",
       "rout /engine/mockchain/confirm/$contract/$transactionId"
     ],
     "message/transactionId" : [
