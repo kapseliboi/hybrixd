@@ -164,6 +164,20 @@
       "done $OK",
       "fail"
     ],
+    "form1" :[
+      "data 12.3",
+      "form 8",
+      "flow '12.30000000' 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "form2" :[
+      "data 12.3",
+      "form btc",
+      "flow '12.30000000' 1 2",
+      "done $OK",
+      "fail"
+    ],
     "fuse1" : [
       "data appel!",
       "fuse taart 5",
@@ -1007,7 +1021,21 @@
       "with with_test peek test",
       "peek with_test"
     ],
-
+    "with4":[
+      "poke [a,b] [x,y]",
+      "with [a,b] case upper",
+      "data '$a$b'",
+      "flow XY 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "with5":[
+      "with {a:x,b:y} case upper",
+      "data '$a$b'",
+      "flow XY 1 2",
+      "done $OK",
+      "fail"
+    ],
     "test" : [
       "qrtz",
       "excl [test,subtest] true",
