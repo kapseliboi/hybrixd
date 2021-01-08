@@ -1,3 +1,29 @@
+# v0.9.0
+## Cosy Cyan Kobold
+## 08-01-2021
+
+* Modules for cross-ledger value swapping and allocation. 
+* Automatic Ethereum nonce caching. Submit multiple transactions even when network is slow.
+* Add nowNodes API connector.
+* Add artificial delays to mockchain confirms for testing purposes.
+* Conf overview. Check your node configuration at /c/conf.
+* Improve module error feedback. Full stack trace to help with the bug hunting.
+* Decode Ethereum transactions. 
+* Add valuations for mockchain test coins.
+* Limit logging of long routing request to prevent log clogging.
+* hybrix-jslib: upgraded to webpack 5.
+* hybrix-jslib: track pending transactions. Keep an overview of your pending transactions.
+* hybrix-jslib: update session checks before methods.
+* qrtz: bank method : secure handeling and delegated handling of transactions.
+* qrtz: multi with : do more with less code.
+* qrtz: you can now use tran to transform object values or keys.
+* qrtz: form and atom by symbol. Easier to make prettier numbers.
+* qrtz: multi step math. Handle complex math in multiple steps.
+* qrtz: root method. Run code based on whether user has root access.
+
+
+
+
 # v0.8.9
 ## Cosy Violet Sprite
 ## 26-11-2020
