@@ -112,6 +112,7 @@
       "call saveHistoryToCache/$address"
     ],
     "saveHistoryToCache/address":[
+      "type array 1 2",
       "save ${address}-${symbol}-history"
     ],
     "getPreviousChunks/address/count/offset": [
