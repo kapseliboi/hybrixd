@@ -14,7 +14,6 @@
       "#Can be send to reformatTx in a {value: $} to get proper data formatting."
     ],
     "transaction/transactionID/target": [
-      "jump @retrieveFromChain",
       "poke fileName ${transactionID}-${symbol}-transaction",
       "seek $fileName @returnCachedTransaction @retrieveFromChain",
       "@retrieveFromChain",
