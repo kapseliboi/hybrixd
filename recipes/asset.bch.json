@@ -7,13 +7,14 @@
   "confirmed":15,
   "fee":0.00001,
   "host": {
-    "default": "https://bch.nownodes.io"
-  },
+      "default": "https://api.bitcore.io/api/BCH/mainnet"
+    },
+  "futureNowNodeHost": "https://bch.nownodes.io",
   "oldHosts": ["https://bch.blockdozer.com/api", "https://bch-insight.bitpay.com/api","https://api.bitcore.io/api/BCH/mainnet"],
   "cache":60000,
   "throttle":1,
   "prefix":"bitcoincash:",
-  "import":"nownodes",
+  "import":"bitcore",
   "quartz":{
     "validate/address" : [
       "peek address",
