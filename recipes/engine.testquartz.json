@@ -7,6 +7,12 @@
   "OK":"OK",
   "NOT_OK":"NOT_OK",
   "quartz":{
+    "bank1":[
+      "data {symbol:dummy}",
+      "bank getBalance {username:DUMMYDUMMYDUMMY0,password:DUMMYDUMMYDUMMY0} 1 2",
+      "done $OK",
+      "fail"
+    ],
     "case" : [
       "data abc123",
       "case upper",
@@ -58,8 +64,30 @@
       "done $OK",
       "fail"
     ],
-
-
+    "drop5" : [
+      "data abcde",
+      "drop [1,3]",
+      "flow ace 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "drop6" : [
+      "data {a:1,b:2,c:3}",
+      "drop [b,c]",
+      "jstr",
+      "flow '{\"a\":1}' 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "encr":[
+      "with keys keys",
+      "data message",
+      "encr $keys",
+      "decr $keys",
+      "flow message 1 2",
+      "done $OK",
+      "fail"
+    ], 
     "excl1" : [
       "data gloves",
       "excl g",
@@ -192,6 +220,30 @@
       "flow '5' 1 2",
       "done $OK",
       "fail"
+    ],
+    "have1" : [
+      "data {foo:bar}",
+      "have .foo 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "have2" : [
+      "data {apple:pie}",
+      "have .foo 1 2",
+      "fail",
+      "done $OK"
+    ],
+    "have3" : [
+      "data 1",
+      "poke myVar",
+      "have myVar 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "have4" : [
+      "have nonExistingVariable 1 2",
+      "fail",
+      "done $OK"
     ],
     "head" : [
       "data appeltaart",
@@ -420,6 +472,14 @@
       "done $OK",
       "fail"
     ],
+    "sign":[
+      "keys",
+      "poke {secretKey:secretKey,publicKey:publicKey}",
+      "data message",
+      "sign $secretKey",
+      "sign $publicKey",
+      "done $OK"
+    ],
     "size" : [
       "data '1234'",
       "size",
@@ -599,6 +659,12 @@
     "math6" : [
       "math floor(1.2)",
       "flow 1 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "math7" : [
+      "math 2 +2 *2",
+      "flow 8 1 2",
       "done $OK",
       "fail"
     ],
@@ -950,6 +1016,31 @@
       "done '$OK'",
       "fail"
     ],
+    "tran8" : [
+      "data {a:{x:1},b:{x:2}}",
+      "tran {}.x 1 4",
+      "jstr",
+      "flow '{\"a\":1,\"b\":2}' 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "tran9" : [
+      "data {a:1,b:2}",
+      "tran {*:} 1 4",
+      "join",
+      "flow 'ab' 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+    "tran10" : [
+      "data {a:1,b:2}",
+      "tran {:*} 1 4",
+      "join",
+      "flow '12' 1 2",
+      "done '$OK'",
+      "fail"
+    ],
+
     "true1":[
       "data 2",
       "true '<1' 1 2",

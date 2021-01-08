@@ -70,6 +70,7 @@ function valuate (proc, data) {
   if (target.split('.')[1] === 'HY') { target = 'HY'; }
 
   const amount = data.amount === 'undefined' || typeof data.amount === 'undefined' ? 1 : Number(data.amount);
+
   let mode = 'median_rate';
   if (data.mode === 'max') {
     mode = 'highest_rate';
@@ -82,29 +83,34 @@ function valuate (proc, data) {
   const whitelist = ['BTC', 'ETH', 'USD', 'EUR'];
   let r;
   if (mode === 'meta') {
-    const resultLow = bestTransactionChain(data.prices, source, target, 5, true, 'lowest_rate', whitelist, true);
-    const resultMedian = bestTransactionChain(data.prices, source, target, 5, true, 'median_rate', whitelist, true);
-    const resultHigh = bestTransactionChain(data.prices, source, target, 5, true, 'highest_rate', whitelist, true);
-
-    if (resultLow.error) {
-      proc.fail(resultLow.error, 'Failed to compute rate');
-    } else {
+    if (source.startsWith('MOCK.') && target.startsWith('MOCK.')) {
       r = {
-        min: {rate: resultLow.rate * amount, path: JSON.parse(JSON.stringify(resultLow.transactionPath))},
-        median: {rate: resultMedian.rate * amount, path: JSON.parse(JSON.stringify(resultMedian.transactionPath))},
-        max: {rate: resultHigh.rate * amount, path: JSON.parse(JSON.stringify(resultHigh.transactionPath))}
+        min: {rate: amount, path: []},
+        median: {rate: amount, path: []},
+        max: {rate: amount, path: []}
       };
+    } else {
+      const resultLow = bestTransactionChain(data.prices, source, target, 5, true, 'lowest_rate', whitelist, true);
+      const resultMedian = bestTransactionChain(data.prices, source, target, 5, true, 'median_rate', whitelist, true);
+      const resultHigh = bestTransactionChain(data.prices, source, target, 5, true, 'highest_rate', whitelist, true);
+      if (resultLow.error) return proc.fail(resultLow.error, 'Failed to compute rate');
+      else {
+        r = {
+          min: {rate: resultLow.rate * amount, path: JSON.parse(JSON.stringify(resultLow.transactionPath))},
+          median: {rate: resultMedian.rate * amount, path: JSON.parse(JSON.stringify(resultMedian.transactionPath))},
+          max: {rate: resultHigh.rate * amount, path: JSON.parse(JSON.stringify(resultHigh.transactionPath))}
+        };
+      }
     }
   } else {
-    const result = bestTransactionChain(data.prices, source, target, 5, true, mode, whitelist, true);
-    if (result.error) {
-      proc.fail(result.error, 'Failed to compute rate');
-      return;
-    } else {
-      r = result.rate * amount;
+    if (source.startsWith('MOCK.') && target.startsWith('MOCK.')) r = amount;
+    else {
+      const result = bestTransactionChain(data.prices, source, target, 5, true, mode, whitelist, true);
+      if (result.error) return proc.fail(result.error, 'Failed to compute rate');
+      else r = result.rate * amount;
     }
   }
-  proc.done(r);
+  return proc.done(r);
 }
 
 exports.valuate = valuate;

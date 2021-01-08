@@ -58,6 +58,12 @@
         "_list" : "bytecode",
         "_this" : "Decompile bytecode into readable Solidity-like pseudocode."
       }
+    },
+    "decode": {
+      "_ref" : {
+        "_list" : "rawTransaction",
+        "_this" : "Decode raw transaction."
+      }
     }
   },
   "quartz" :{
@@ -69,6 +75,9 @@
     ],
     "decompile":[
       "func decompile/$1"
+    ],
+    "decode":[
+      "func decode/$1"
     ]
   }
 }

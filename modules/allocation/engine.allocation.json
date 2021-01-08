@@ -1,0 +1,437 @@
+{
+  "engine" : "allocation",
+  "name" : "Allocation management engine",
+  "timeout" : 30000,
+  "defaultDeadline" : 36000,
+  "quartz" : {
+    "pair/command/accountID/A/B/C/D/E/F" : [
+      "call ${command}Pair/$accountID/$A/$B/$C/$D/$E/$F"
+    ],
+    "deletePair/accountID/fromBase/toSymbol" : [
+      "with fromBase case lower",
+      "with toSymbol case lower",
+      "flow toSymbol {$fromBase:1} 2",
+      "fail 'Cannot provide two identical symbols.'",
+      "with key [data,'allocation $accountID pair $fromBase $toSymbol'] [hash]",
+      "burn $key",
+      "with key [data,'allocation $accountID pair $toSymbol BALANCE'] [hash]",
+      "burn $key",
+      "done 'Pair allocation $fromBase/$toSymbol deleted.'"
+    ],
+    "setPair/accountID/fromBase/toSymbol/feePercent/type/deadline" : [
+      "# TODO: signed?",
+      "with fromBase case lower",
+      "with toSymbol case lower",
+      "flow toSymbol {$fromBase:1} 2",
+      "fail 'Cannot provide two identical symbols.'",
+      "with keypair [call,account/keys/$accountID]",
+      "with balance [call,account/balance/$accountID/$toSymbol]",
+      "with deadline [flow,'undefined',1,2] [done,$defaultDeadline]",
+      "with type [flow,'undefined',1,2]  [done,'autonomous']",
+      "data { active:true,rx:'$fromBase',tx:'$toSymbol',fee:'$feePercent',type:'$type',deadline:$deadline }",
+      "poke result",
+      "jstr",
+      "encr $keypair",
+      "with key [data,'allocation $accountID pair $fromBase $toSymbol'] [hash]",
+      "save $key",
+      "with key [data,'allocation $accountID pair $toSymbol BALANCE'] [hash]",
+      "save $key '$balance'",
+      "peek result",
+      "poke .balance '$balance'"
+    ],
+    "getPair/accountID/fromBase/toSymbol" : [
+      "with fromBase case lower",
+      "with toSymbol case lower",
+      "flow toSymbol {$fromBase:1} 2",
+      "fail 'Cannot provide two identical symbols.'",
+      "with keypair [call,account/keys/$accountID]",
+      "with key [data,'allocation $accountID pair $fromBase $toSymbol'] [hash]",
+      "load $key 2 1",
+      "fail 'Allocator does not offer the pair $fromBase/$toSymbol!'",
+      "decr $keypair",
+      "jpar",
+      "with balance [data,'allocation $accountID pair $toSymbol BALANCE'] [hash] [load,2,1] [done,0]",
+      "poke .balance $balance"
+    ],
+    "rebalancePair/accountID/symbol/amount" : [
+      "with key [data,'allocation $accountID pair $symbol BALANCE'] [hash]",
+      "with symbolFactor [rout,/a/$symbol/details] [tran,.factor,2,1] [done,8]",
+      "peek amount",
+      "flow 'undefined' 1 3",
+      "call account/balance/$accountID/$symbol",
+      "jump @saveBalance",
+      "load $key 1 2",
+      "ship 2 2",
+      "data 0",
+      "math '+$amount'",
+      "ship 2 2",
+      "data 0",
+      "form $symbolFactor",
+      "@saveBalance",
+      "poke balance",
+      "save $key",
+      "done 'Pair available balance is now $balance $symbol.'"
+    ],
+    "selectPair/fromBase/toSymbol/amount" : [
+      "call findPair/$fromBase/$toSymbol",
+      "each minimumBalance/$amount",
+      "excl null",
+      "sort .fee",
+      "pick"
+    ],
+    "minimumBalance/amount" : [
+      "poke proposal ${.value}",
+      "true '${.value.balance} >= $amount' 1 2 # TODO: take along transaction fee and network fee",
+      "done ${.value}",
+      "done null"
+    ],
+    "findPair/fromBase/toSymbol" : [
+      "with fromBase case lower",
+      "with toSymbol case lower",
+      "flow toSymbol {$fromBase:1} 2",
+      "fail 'Cannot provide two identical symbols.'",
+      "call account/list",
+      "each findPairEach/$fromBase/$toSymbol",
+      "excl null"
+    ],
+    "findPairEach/fromBase/toSymbol" : [
+      "poke accountID ${.value}",
+      "data 'allocation $accountID pair $fromBase $toSymbol'",
+      "hash",
+      "load 2 1",
+      "done null",
+      "with keypair [call,account/keys/$accountID]",
+      "decr $keypair",
+      "jpar 2 1",
+      "done null",
+      "data [{id:'$accountID'},$]",
+      "merg"
+    ],
+
+    "account/command/accountID/A/B/C/D/E/F" : [
+      "call ${command}Account/$accountID/$A/$B/$C/$D/$E/$F"
+    ],
+    "initAccount/accountID/secretKey" : [
+      "with accountHash [data,'account $secretKey'] [hash] [code,hex,base58]",
+      "flow accountID '$accountHash' 1 @failure",
+      "peek local::$accountID null",
+      "void 1 @finished",
+      "with secretKey [code,hex,base58] [encr]",
+      "with timeStamp [date,now] [math,round]",
+      "data '$timeStamp:$secretKey'",
+      "poke local::$accountID",
+      "call listAdd/$accountID",
+      "@finished",
+      "done $accountID",
+      "@failure",
+      "fail 'Non-matching account ID and secret key!'"
+    ],
+    "listAccount" : [
+      "peek local::accounts []"
+    ],
+    "listAdd/accountID" : [
+      "peek local::$accountID null",
+      "void 1 2",
+      "fail 'Account does not exist!'",
+      "peek local::accounts []",
+      "push $accountID",
+      "uniq",
+      "sort",
+      "poke local::accounts"
+    ],
+    "listRemove/accountID" : [
+      "peek local::$accountID null",
+      "void 1 2",
+      "fail 'Account does not exist!'",
+      "peek local::accounts null",
+      "void 1 2",
+      "done []",
+      "excl $accountID",
+      "uniq",
+      "sort",
+      "poke local::accounts"
+    ],
+    "loadAccount/accountID" : [
+      "peek local::$accountID null",
+      "void 1 2",
+      "fail 'Account does not exist!'",
+      "splt :",
+      "with time [data,$] [pick]",
+      "with sK [data,$] [pick,-1] [decr] [code,base58,hex]",
+      "with pK [data,$sK] [tail,64]",
+      "done {timestamp:'$time',keys:{publicKey:'$pK', secretKey:'$sK'}}"
+    ],
+    "keysAccount/accountID" : [
+      "call loadAccount/$accountID",
+      "tran .keys"
+    ],
+    "detailsAccount/accountID" : [
+      "call loadAccount/$accountID",
+      "tran .timestamp 2 1",
+      "fail 'Could not get account details!'",
+      "done {id:'$accountID',created:'$'}"
+    ],
+    "existsAccount/accountID" : [
+      "peek local::$accountID null",
+      "void 1 2",
+      "done false",
+      "done true"
+    ],
+    "addressAccount/accountID/symbol" : [
+      "with auth call keysAccount/$accountID",
+      "data {symbol:$symbol}",
+      "bank getAddress $auth 2 1",
+      "fail 'Could not derive account address!'"
+    ],
+    "balanceAccount/accountID/symbol" : [
+      "with auth call keysAccount/$accountID",
+      "data {symbol:$symbol}",
+      "bank getBalance $auth 2 1",
+      "fail 'Could not retrieve account balance! $'"
+    ],
+    "withdrawAccount/accountID/symbol/amount" : [
+      "# withdrawal address should be preset, else deny withdrawal and notify!",
+      "with keyHash [data,'account $accountID withdraw $symbol'] [hash] [code,hex,base58]",
+      "peek local::$keyHash null",
+      "void 1 2",
+      "fail 'Withdraw cancelled: address is not set!'",
+      "poke withdrawAddress",
+      "with auth call keysAccount/$accountID",
+      "rout /a/$symbol/balance/$withdrawAddress",
+      "true '$amount<$' 2 1",
+      "fail 'Withdraw cancelled: amount requested higher than available balance!'",
+      "data {symbol:$symbol,amount:$amount,target:$withdrawAddress}",
+      "bank transaction $auth 2 1",
+      "fail 'Withdraw cancelled: transaction failed!'",
+      "done"
+    ],
+    "setWithdrawAccount/accountID/symbol/address" : [
+      "peek local::$accountID null",
+      "void 1 2",
+      "fail 'Account does not exist!'",
+      "# address can be set only once for now - TODO: signed",
+      "with keyHash [data,'account $accountID withdraw $symbol'] [hash] [code,hex,base58]",
+      "peek local::$keyHash null",
+      "void 2 1",
+      "fail 'Withdraw address cannot be changed!'",
+      "poke local::$keyHash $address",
+      "done '$symbol:$address'"
+    ],
+
+    "push/transaction" : [
+      "data $transaction",
+      "void @failure",
+      "decr",
+      "jpar",
+      "with arraySize [data,$] [size]",
+      "true '$arraySize!=4' @failure",
+      "with accountID [data,$] [pick,0]",
+      "with symbol [data,$] [pick,1]",
+      "with amount [data,$] [pick,2]",
+      "with target [data,$] [pick,3]",
+      "with auth call keysAccount/$accountID",
+      "data {symbol:$symbol,amount:$amount,target:$target}",
+      "bank transaction $auth 1 @failure",
+      "done",
+      "@failure",
+      "done null"
+    ]
+
+  },
+
+  "router" : {
+    "_help" : "Account engine for sequestration actions between node and clients.",
+    "pair" : {
+      "_help" : "Manage swap pairs.",
+      "list" : {
+        "_help" : "List all available swap pairs that are offered.",
+        "_ref" : {
+          "_list" : "fromBase",
+          "_help" : "Base source symbol for the pair.",
+          "_ref" : {
+            "_list" : "toSymbol",
+            "_this" : "Swap target symbol for the pair."
+          }
+        }
+      },
+      "find" : {
+        "_help" : "Find allocated swap pairs that are offered.",
+        "_root" : true,
+        "_ref" : {
+          "_list" : "fromBase",
+          "_help" : "Base source symbol for the pair.",
+          "_ref" : {
+            "_list" : "toSymbol",
+            "_this" : "Swap target symbol for the pair."
+          }
+        }
+      },
+      "select" : {
+        "_help" : "Select an allocated swap pair according to available amount and cheapest fee.",
+        "_root" : true,
+        "_ref" : {
+          "_list" : "fromBase",
+          "_help" : "Base source symbol for the pair.",
+          "_ref" : {
+            "_list" : "toSymbol",
+            "_this" : "Swap target symbol for the pair.",
+            "_ref" : {
+              "_list" : "amount",
+              "_this" : "Amount of target asset you wish to receive."
+            }
+          }
+        }
+      },
+      "get" : {
+        "_help" : "Get information about an allocation swap pair.",
+        "_ref" : {
+          "_list" : "accountID",
+          "_help" : "Provide the account ID to check for its existance.",
+          "_ref" : {
+            "_list" : "fromBase",
+            "_help" : "Base source symbol for the pair.",
+            "_ref" : {
+              "_list" : "toSymbol",
+              "_this" : "Swap target symbol for the pair."
+            }
+          }
+        }
+      },
+      "set" : {
+        "_help" : "Set information for an allocation swap pair, or create a new pair.",
+        "_ref" : {
+          "_list" : "accountID",
+          "_help" : "Provide the account ID to check for its existance.",
+          "_ref" : {
+            "_list" : "fromBase",
+            "_help" : "Base source symbol for the pair.",
+            "_ref" : {
+              "_list" : "toSymbol",
+              "_help" : "Swap target symbol for the pair.",
+              "_ref" : {
+                "_list" : "feePercent",
+                "_this" : "Fee to ask for a swap on this pair.",
+                "_ref" : {
+                  "_list" : "type",
+                  "_this" : "Type of swap mechanism.",
+                  "_ref" : {
+                    "_list" : "deadline",
+                    "_this" : "Deadline in seconds for swap completion."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "_help" : "Delete an allocation swap pair.",
+        "_ref" : {
+          "_list" : "accountID",
+          "_help" : "Provide the account ID to check for its existance.",
+          "_ref" : {
+            "_list" : "fromBase",
+            "_help" : "Base source symbol for the pair.",
+            "_ref" : {
+              "_list" : "toSymbol",
+              "_this" : "Swap target symbol for the pair."
+            }
+          }
+        }
+      },
+      "rebalance" : {
+        "_help" : "Rebalance a swap pair.",
+        "_root" : true,
+        "_ref" : {
+          "_list" : "accountID",
+          "_help" : "Provide the account ID to check for its existance.",
+          "_ref" : {
+            "_list" : "symbol",
+            "_this" : "Target symbol to rebalance.",
+            "_ref" : {
+              "_list" : "amount",
+              "_this" : "Amount to rebalance available funds with. For example for reserving a balance. Without this option the amount is checked on the blockchain."
+            }
+          }
+        }
+      }
+    },
+    "account" : {
+      "_help" : "Manage derived keypair sequestrated accounts.",
+      "list" : {
+        "_this": "List all accountIDs",
+        "_access":"root"
+      },
+      "init" : {
+        "_help" : "Initialize a new account.",
+        "_ref" : {
+          "_list" : "accountID",
+          "_help" : "You must specify an account ID that matches the secret key input.",
+          "_ref" : {
+            "_list" : "secret_key",
+            "_this" : "Secret key to use for the newly initialized account."
+          }
+        }
+      },
+      "exists" : {
+        "_help" : "Check if an account exists.",
+        "_ref" : {
+          "_list" : "accountID",
+          "_this" : "Provide the account ID to check for its existance."
+        }
+      },
+      "details" : {
+        "_help" : "Get the details of an account.",
+        "_ref" : {
+          "_list" : "accountID",
+          "_this" : "Provide the account ID to get the details."
+        }
+      },
+      "address" : {
+        "_help" : "Get the address of an account belonging to a symbol.",
+        "_ref" : {
+          "_list" : "accountID",
+          "_help" : "Provide the account ID to get the details.",
+          "_ref" : {
+            "_list" : "symbol",
+            "_this" : "Symbol to get the address of."
+          }
+        }
+      },
+      "balance" : {
+        "_help" : "Get the address balance of an account belonging to a symbol.",
+        "_ref" : {
+          "_list" : "accountID",
+          "_help" : "Provide the account ID to get the details.",
+          "_ref" : {
+            "_list" : "symbol",
+            "_this" : "Symbol to get the balance of."
+          }
+        }
+      },
+      "setWithdraw.DISABLED" : {
+        "_help" : "Set the withdrawal address of an account.",
+        "_root" : true,
+        "_ref" : {
+          "_list" : "accountID",
+          "_help" : "Provide the account ID to get the details.",
+          "_ref" : {
+            "_list" : "symbol",
+            "_help" : "Symbol to set withdraw for.",
+            "_ref" : {
+              "_list" : "address",
+              "_this" : "Address of the withdrawal account."
+            }
+          }
+        }
+      }
+    },
+    "push" : {
+      "_help" : "Push an allocation transaction.",
+      "_ref" : {
+        "_list" : "transaction",
+        "_this" : "Encoded transaction data to be pushed."
+      }
+    }
+  }
+}
