@@ -2,249 +2,343 @@
   "engine" : "allocation",
   "name" : "Allocation management engine",
   "timeout" : 30000,
-  "defaultDeadline" : 36000,
+  "defaultDeadline" : 3600,
+  "permissions":{
+    "nodeKeys":true
+  },
+  "conf" :{
+    "securitySymbol" : {"default":"tomo.hy"},
+    "securityFee" : {"default":"0.5"},
+    "securityRiskFactor" : {"default":"7"},
+    "securityMinimalDeposit" : {"default":10}
+  },
   "quartz" : {
     "pair/command/accountID/A/B/C/D/E/F" : [
       "call ${command}Pair/$accountID/$A/$B/$C/$D/$E/$F"
     ],
-    "deletePair/accountID/fromBase/toSymbol" : [
-      "with fromBase case lower",
-      "with toSymbol case lower",
-      "flow toSymbol {$fromBase:1} 2",
-      "fail 'Cannot provide two identical symbols.'",
-      "with key [data,'allocation $accountID pair $fromBase $toSymbol'] [hash]",
-      "burn $key",
-      "with key [data,'allocation $accountID pair $toSymbol BALANCE'] [hash]",
-      "burn $key",
-      "done 'Pair allocation $fromBase/$toSymbol deleted.'"
+    "checkSignature/accountID/signature/message":[
+      "call keysAccount/$accountID",
+      "root 1 2",
+      "done",
+      "data '${message}-${.secretKey}'",
+      "hash",
+      "flow '$signature' 2 1",
+      "fail 'Incorrect signature'"
     ],
-    "setPair/accountID/fromBase/toSymbol/feePercent/type/deadline" : [
-      "# TODO: signed?",
-      "with fromBase case lower",
-      "with toSymbol case lower",
+    "deletePair/accountID/fromBase/toSymbol/signature" : [
+
+      "call checkSignature/$accountID/$signature/deletePair-${accountID}-${fromBase}-${toSymbol}",
+      "done",
+      "have local::accounts[$accountID].pairs[$fromBase:$toSymbol] 2 1",
+      "fail 'Pair does not exist'",
+      "peek local::accounts[$accountID].pairs",
+      "drop $fromBase:$toSymbol",
+      "poke local::accounts[$accountID].pairs"
+    ],
+    "setPair/accountID/fromBase/toSymbol/feePercent/type/deadline/signature" : [
+      "call checkSignature/$accountID/$signature/setPair-${accountID}-${fromBase}-${toSymbol}-${feePercent}-${type}-${deadline}",
+      "with [fromBase,toSymbol] case lower",
       "flow toSymbol {$fromBase:1} 2",
       "fail 'Cannot provide two identical symbols.'",
-      "with keypair [call,account/keys/$accountID]",
-      "with balance [call,account/balance/$accountID/$toSymbol]",
+      "call getSecurityDepositBalance/$accountID",
+      "true <$conf::securityMinimalDeposit 1 2",
+      "fail 'A minimal security deposit of $conf::securityMinimalDeposit $conf::securitySymbol is required to setup this pair, currently only $ $conf::securitySymbol is available.'",
+      "call getAccountBalance/$accountID/$toSymbol",
+      "true >0 2 1 ",
+      "fail 'A non zero balance of $toSymbol is required to setup this pair, currently $ $toSymbol is available.'",
       "with deadline [flow,'undefined',1,2] [done,$defaultDeadline]",
-      "with type [flow,'undefined',1,2]  [done,'autonomous']",
-      "data { active:true,rx:'$fromBase',tx:'$toSymbol',fee:'$feePercent',type:'$type',deadline:$deadline }",
-      "poke result",
-      "jstr",
-      "encr $keypair",
-      "with key [data,'allocation $accountID pair $fromBase $toSymbol'] [hash]",
-      "save $key",
-      "with key [data,'allocation $accountID pair $toSymbol BALANCE'] [hash]",
-      "save $key '$balance'",
-      "peek result",
-      "poke .balance '$balance'"
+      "with type [flow,'undefined',1,2] [done,'autonomous']",
+      "data {ask:'$fromBase',bid:'$toSymbol',fee:'${feePercent}%',type:'$type',deadline:$deadline}",
+      "poke local::accounts[$accountID].pairs[$fromBase:$toSymbol]"
     ],
-    "getPair/accountID/fromBase/toSymbol" : [
-      "with fromBase case lower",
-      "with toSymbol case lower",
+    "getPair/accountID/fromBase/toSymbol/signature" : [
+      "call checkSignature/$accountID/$signature/getPair-${accountID}-${fromBase}-${toSymbol}",
+      "with [fromBase,toSymbol] case lower",
       "flow toSymbol {$fromBase:1} 2",
       "fail 'Cannot provide two identical symbols.'",
-      "with keypair [call,account/keys/$accountID]",
-      "with key [data,'allocation $accountID pair $fromBase $toSymbol'] [hash]",
-      "load $key 2 1",
-      "fail 'Allocator does not offer the pair $fromBase/$toSymbol!'",
-      "decr $keypair",
-      "jpar",
-      "with balance [data,'allocation $accountID pair $toSymbol BALANCE'] [hash] [load,2,1] [done,0]",
-      "poke .balance $balance"
+      "have local::accounts[$accountID].pairs[$fromBase:$toSymbol] 2 1",
+      "fail 'Pair does not exist'",
+      "peek local::accounts[$accountID].pairs[$fromBase:$toSymbol]",
+      "call addPairDetails/$accountID/$fromBase/$toSymbol",
+      "drop accountID"
     ],
-    "rebalancePair/accountID/symbol/amount" : [
-      "with key [data,'allocation $accountID pair $symbol BALANCE'] [hash]",
-      "with symbolFactor [rout,/a/$symbol/details] [tran,.factor,2,1] [done,8]",
-      "peek amount",
-      "flow 'undefined' 1 3",
-      "call account/balance/$accountID/$symbol",
-      "jump @saveBalance",
-      "load $key 1 2",
-      "ship 2 2",
-      "data 0",
-      "math '+$amount'",
-      "ship 2 2",
-      "data 0",
-      "form $symbolFactor",
-      "@saveBalance",
+    "getFeeModifier/accountID/symbol" : [
+      "peek local::accounts[$accountID].feeModifiers[$symbol] 0"
+    ],
+    "doRebalancePair/accountID/symbol/amount" :[
+      "with symbol case lower",
+      "rout /a/$symbol/details",
+      "poke feeSymbol ${.fee-symbol}",
+      "poke feeAmount ${.fee}",
+      "call rebalanceMutate/$accountID/$symbol/$amount",
       "poke balance",
-      "save $key",
-      "done 'Pair available balance is now $balance $symbol.'"
+      "call feeModifierMutate/$accountID/$symbol/-$amount/$balance",
+      "poke feeMutation",
+      "# also rebalance with fee amounts if an amount has been subtracted",
+      "ship amount @reportBalance @reportBalance 1 @reportBalance",
+      "call rebalanceMutate/$accountID/$feeSymbol/-$feeAmount",
+      "flow feeSymbol {$symbol:1} 2",
+      "poke balance",
+      "call feeModifierMutate/$accountID/$feeSymbol/$feeAmount/$balance",
+      "@reportBalance",
+      "with balance form $symbol",
+      "done 'Pair available balance is now $balance $symbol. Fee mutation is $feeMutation $symbol.'"
+    ],
+    "rebalancePair/accountID/symbol/amount/signature" : [
+      "#TODO call checkSignature/$accountID/$signature/rebalancePair-${accountID}-${symbol}-${amount}",
+      "call doRebalancePair/$accountID/$symbol/$amount"
+    ],
+    "rebalanceMutate/accountID/symbol/amount" : [
+      "call getAccountBalance/$accountID/$symbol",
+      "math '+$amount'",
+      "poke local::accounts[$accountID].balances[$symbol]"
+    ],
+    "feeModifierMutate/accountID/symbol/amount/total" : [
+      "call getFeeModifier/$accountID/$symbol",
+      "math '+ ($amount / $total)'",
+      "poke local::accounts[$accountID].feeModifiers[$symbol] 0"
     ],
     "selectPair/fromBase/toSymbol/amount" : [
       "call findPair/$fromBase/$toSymbol",
-      "each minimumBalance/$amount",
+      "each selectEligibility/$amount",
       "excl null",
       "sort .fee",
-      "pick"
+      "pick",
+      "void 1 2",
+      "fail 'There are no selectable pairs!'",
+      "with .fee [push,'%']"
     ],
-    "minimumBalance/amount" : [
-      "poke proposal ${.value}",
-      "true '${.value.balance} >= $amount' 1 2 # TODO: take along transaction fee and network fee",
-      "done ${.value}",
+    "selectEligibility/amount" : [
+      "# eligibility to be selected: enough balance, enough security sufficiency",
+      "data ${.value}",
+      "# take along transaction fee and then some 5% for the network fee",
+      "with .fee [excl,'%']",
+      "with needed math '($amount * (1 + 0.05 + (${.fee} / 100)))'",
+      "true '${.balance} >= $needed and ${.sufficiency} >= $needed' 1 2",
+      "done",
       "done null"
     ],
+
+    "listPair" : [
+      "peek local::accounts {}",
+      "tran {:*}.pairs{*:} 2 1",
+      "fail 'Could not retreive pairs'",
+      "flat",
+      "uniq"
+    ],
+
     "findPair/fromBase/toSymbol" : [
-      "with fromBase case lower",
-      "with toSymbol case lower",
+      "with [fromBase,toSymbol] case lower",
       "flow toSymbol {$fromBase:1} 2",
       "fail 'Cannot provide two identical symbols.'",
-      "call account/list",
+      "peek local::accounts",
+      "void 1 2",
+      "done []",
       "each findPairEach/$fromBase/$toSymbol",
+      "type array",
       "excl null"
     ],
     "findPairEach/fromBase/toSymbol" : [
-      "poke accountID ${.value}",
-      "data 'allocation $accountID pair $fromBase $toSymbol'",
-      "hash",
-      "load 2 1",
+      "poke accountID ${.key}",
+      "have local::accounts[$accountID].pairs[$fromBase:$toSymbol] 2 1",
       "done null",
-      "with keypair [call,account/keys/$accountID]",
-      "decr $keypair",
-      "jpar 2 1",
-      "done null",
-      "data [{id:'$accountID'},$]",
-      "merg"
+      "peek local::accounts[$accountID].pairs[$fromBase:$toSymbol]",
+      "call addPairDetails/$accountID/$fromBase/$toSymbol"
+    ],
+    "addPairDetails/accountID/fromBase/toSymbol":[
+      "with .accountID peek accountID",
+      "with .balance call getAccountBalance/$accountID/$toSymbol",
+      "with .sufficiency call getSufficiency/$accountID/$toSymbol",
+      "with .active math '${.balance}>0.001 and ${.sufficiency}>0.001'",
+      "with feeModifier call getFeeModifier/$accountID/$toSymbol",
+      "with .fee [excl,'%'] [math,'* (1 + $feeModifier)'] [push,'%']"
     ],
 
     "account/command/accountID/A/B/C/D/E/F" : [
+      "flow command {securityReserve: 1} @other",
+      "flow A {withdraw:@withdraw,deposit:@deposit,details:@details,balance:@balance}",
+      "@balance",
+      "call securityReserveAccountBalance/$accountID/$B",
+      "done",
+      "@details",
+      "call securityReserveAccountDetails/$accountID/$B",
+      "done",
+      "@withdraw",
+      "call securityReserveAccountWithdraw/$accountID/$B/$C",
+      "done",
+      "@deposit",
+      "call securityReserveAccountDeposit/$accountID/$B/$C",
+      "done",
+      "@other",
       "call ${command}Account/$accountID/$A/$B/$C/$D/$E/$F"
     ],
     "initAccount/accountID/secretKey" : [
       "with accountHash [data,'account $secretKey'] [hash] [code,hex,base58]",
-      "flow accountID '$accountHash' 1 @failure",
-      "peek local::$accountID null",
-      "void 1 @finished",
-      "with secretKey [code,hex,base58] [encr]",
-      "with timeStamp [date,now] [math,round]",
-      "data '$timeStamp:$secretKey'",
-      "poke local::$accountID",
-      "call listAdd/$accountID",
-      "@finished",
+      "flow accountID '$accountHash' 2 1",
+      "fail 'Non-matching account ID and secret key!'",
+      "have local::accounts[$accountID] 1 2",
       "done $accountID",
-      "@failure",
-      "fail 'Non-matching account ID and secret key!'"
+      "with secretKey [code,hex,base58] [encr]",
+      "with created [date,now] [math,round]",
+      "data {created:$created,secretKey:$secretKey, pairs:{}, feeModifiers:{}, balances:{}, securityDepositBalances:{}}",
+      "poke local::accounts[$accountID]",
+      "call getAccountBalance/$accountID/${conf::securitySymbol}",
+      "poke local::accounts[$accountID].balances[${conf::securitySymbol}]",
+      "peek local::accounts[$accountID]"
     ],
     "listAccount" : [
-      "peek local::accounts []"
+      "peek local::accounts {}"
     ],
-    "listAdd/accountID" : [
-      "peek local::$accountID null",
-      "void 1 2",
-      "fail 'Account does not exist!'",
-      "peek local::accounts []",
-      "push $accountID",
-      "uniq",
-      "sort",
-      "poke local::accounts"
-    ],
-    "listRemove/accountID" : [
-      "peek local::$accountID null",
-      "void 1 2",
-      "fail 'Account does not exist!'",
-      "peek local::accounts null",
-      "void 1 2",
-      "done []",
-      "excl $accountID",
-      "uniq",
-      "sort",
+    "removeAccount/accountID/signature" : [
+      "call checkSignature/$accountID/$signature/removeAccount-${accountID}",
+      "peek local::accounts {}",
+      "drop $accountID",
       "poke local::accounts"
     ],
     "loadAccount/accountID" : [
-      "peek local::$accountID null",
-      "void 1 2",
+      "have local::accounts[$accountID] 2 1",
       "fail 'Account does not exist!'",
-      "splt :",
-      "with time [data,$] [pick]",
-      "with sK [data,$] [pick,-1] [decr] [code,base58,hex]",
-      "with pK [data,$sK] [tail,64]",
-      "done {timestamp:'$time',keys:{publicKey:'$pK', secretKey:'$sK'}}"
+      "peek local::accounts[$accountID]",
+      "with secretKey [data,${.secretKey}] [decr,2,1] [done,''] [code,base58,hex]",
+      "with keys keys $secretKey",
+      "done {created:'${.created}',keys:$keys, pairs:${.pairs}, balances:${.balances}, feeModifiers: ${.feeModifiers}, securityDepositBalances:${.securityDepositBalances}}"
     ],
     "keysAccount/accountID" : [
       "call loadAccount/$accountID",
-      "tran .keys"
+      "tran .keys 2 1",
+      "done null"
     ],
-    "detailsAccount/accountID" : [
+    "detailsAccount/accountID/signature" : [
+      "call checkSignature/$accountID/$signature/detailsAccount-${accountID}",
       "call loadAccount/$accountID",
-      "tran .timestamp 2 1",
-      "fail 'Could not get account details!'",
-      "done {id:'$accountID',created:'$'}"
+      "tran {id:'$accountID', created:.created, pairs:.pairs, balances:.balances, feeModifiers: .feeModifiers, securityDepositBalances:.securityDepositBalances} 2 1",
+      "fail 'Could not get account details!'"
     ],
     "existsAccount/accountID" : [
-      "peek local::$accountID null",
-      "void 1 2",
-      "done false",
-      "done true"
+      "have local::accounts[$accountID] 1 2",
+      "done true",
+      "done false"
     ],
-    "addressAccount/accountID/symbol" : [
+    "addressAccount/accountID/symbol/signature" : [
+      "#TODO call checkSignature/$accountID/$signature/adressAccount-${accountID}-${symbol}",
       "with auth call keysAccount/$accountID",
       "data {symbol:$symbol}",
       "bank getAddress $auth 2 1",
       "fail 'Could not derive account address!'"
     ],
-    "balanceAccount/accountID/symbol" : [
+    "balanceAccount/accountID/symbol/signature" : [
+      "call checkSignature/$accountID/$signature/balanceAccount-${accountID}-${symbol}",
+      "call getAccountBalance/$accountID/$symbol"
+    ],
+    "getAccountBalance/accountID/symbol":[
+      "have local::accounts[$accountID].balances[$symbol] @peek @retrieve",
+      "@peek",
+      "peek local::accounts[$accountID].balances[$symbol] 0",
+      "ship 1 1 2 2",
+      "done",
+      "@retrieve",
       "with auth call keysAccount/$accountID",
       "data {symbol:$symbol}",
-      "bank getBalance $auth 2 1",
-      "fail 'Could not retrieve account balance! $'"
+      "bank getBalance $auth"
     ],
-    "withdrawAccount/accountID/symbol/amount" : [
-      "# withdrawal address should be preset, else deny withdrawal and notify!",
-      "with keyHash [data,'account $accountID withdraw $symbol'] [hash] [code,hex,base58]",
-      "peek local::$keyHash null",
-      "void 1 2",
-      "fail 'Withdraw cancelled: address is not set!'",
-      "poke withdrawAddress",
+    "securityReserveAccountBalance/accountID/signature":[
+      "call checkSignature/$accountID/$signature/securityReserveAccount-${accountID}-balance",
+      "call getSecurityDepositBalance/$accountID"
+    ],
+    "securityReserveAccountDetails/accountID/signature":[
+      "call checkSignature/$accountID/$signature/securityReserveAccount-${accountID}-details",
+      "call getSecurityDepositBalance/$accountID",
+      "done { symbol:${conf::securitySymbol}, balance:'$', fee:'${conf::securityFee}%' }"
+    ],
+    "securityReserveAccountDeposit/accountID/amount/signature":[
+      "call checkSignature/$accountID/$signature/securityReserveAccount-${accountID}-deposit-${amount}",
+      "ship amount 2 1 1 1",
+      "fail 'You must specify a positive amount to deposit!'",
+      "data {symbol:${conf::securitySymbol}}",
+      "bank getAddress {auth:node} 2 1",
+      "fail 'Security deposit error: cannot derive target!'",
+      "poke target",
       "with auth call keysAccount/$accountID",
-      "rout /a/$symbol/balance/$withdrawAddress",
-      "true '$amount<$' 2 1",
-      "fail 'Withdraw cancelled: amount requested higher than available balance!'",
-      "data {symbol:$symbol,amount:$amount,target:$withdrawAddress}",
+      "data {symbol:${conf::securitySymbol},amount:$amount,target:$target}",
       "bank transaction $auth 2 1",
-      "fail 'Withdraw cancelled: transaction failed!'",
-      "done"
+      "fail 'Security deposit error: $'",
+      "poke txid",
+      "with regAmount math '$amount * (1 - (${conf::securityFee} / 100))'",
+      "with paidFee math '$amount - $regAmount'",
+      "call setSecurityDepositBalance/$accountID/$regAmount",
+      "fork doRebalancePair/$accountID/${conf::securitySymbol}/-$amount",
+      "done { action: 'deposit', symbol: ${conf::securitySymbol},balance: $, deposited: $regAmount, fee: $paidFee, txid: $txid }",
+      "# todo: keep track of txids to later check if balances are correct!"
     ],
-    "setWithdrawAccount/accountID/symbol/address" : [
-      "peek local::$accountID null",
-      "void 1 2",
+    "securityReserveAccountWithdraw/accountID/amount/signature":[
+      "call checkSignature/$accountID/$signature/securityReserveAccount-${accountID}-withdraw-${amount}",
+      "ship amount 2 1 1 1",
+      "fail 'You must specify a positive amount to withdraw!'",
+      "with auth call keysAccount/$accountID",
+      "data {symbol:${conf::securitySymbol}}",
+      "bank getAddress $auth 2 1",
+      "fail 'Security withdrawal error: cannot derive target!'",
+      "poke target",
+      "data {symbol:${conf::securitySymbol},amount:$amount,target:$target}",
+      "bank transaction {auth:node} 2 1",
+      "fail 'Security withdrawal error: $'",
+      "poke txid",
+      "call setSecurityDepositBalance/$accountID/-$amount",
+      "fork doRebalancePair/$accountID/${conf::securitySymbol}/+$amount",
+      "done { action: 'withdraw', symbol: ${conf::securitySymbol}, balance: $, withdrawn: $amount, txid: $txid }",
+      "# todo: keep track of txids to later check if balances are correct!"
+    ],
+
+    "setSecurityDepositBalance/accountID/amount" : [
+      "call getSecurityDepositBalance/$accountID",
+      "math '+$amount'",
+      "call securityForceDepositBalanceAccount/$accountID/$"
+    ],
+    "getSecurityDepositBalance/accountID" : [
+      "have local::accounts[$accountID] 2 1",
       "fail 'Account does not exist!'",
-      "# address can be set only once for now - TODO: signed",
-      "with keyHash [data,'account $accountID withdraw $symbol'] [hash] [code,hex,base58]",
-      "peek local::$keyHash null",
-      "void 2 1",
-      "fail 'Withdraw address cannot be changed!'",
-      "poke local::$keyHash $address",
-      "done '$symbol:$address'"
+      "peek local::accounts[$accountID].securityDepositBalances[$conf::securitySymbol] 0"
+    ],
+    "securityForceDepositBalanceAccount/accountID/amount" : [
+      "have local::accounts[$accountID] 2 1",
+      "fail 'Account does not exist!'",
+      "peek amount",
+      "form ${conf::securitySymbol}",
+      "poke local::accounts[$accountID].securityDepositBalances[$conf::securitySymbol]"
+    ],
+    "getSufficiency/accountID/symbol" : [
+      "call getSecurityDepositBalance/$accountID",
+      "rout /e/valuations/rate/${conf::securitySymbol}/$symbol/$",
+      "math '/ ${conf::securityRiskFactor}'",
+      "form ${conf::securitySymbol}"
     ],
 
     "push/transaction" : [
-      "data $transaction",
-      "void @failure",
-      "decr",
+      "peek transaction",
+      "void 1 2",
+      "fail 'Missing transaction.'",
+      "decr 1 -1",
       "jpar",
-      "with arraySize [data,$] [size]",
-      "true '$arraySize!=4' @failure",
-      "with accountID [data,$] [pick,0]",
-      "with symbol [data,$] [pick,1]",
-      "with amount [data,$] [pick,2]",
-      "with target [data,$] [pick,3]",
+      "poke [accountID,symbol,amount,target]",
       "with auth call keysAccount/$accountID",
       "data {symbol:$symbol,amount:$amount,target:$target}",
-      "bank transaction $auth 1 @failure",
+      "bank transaction $auth 1 2",
       "done",
-      "@failure",
-      "done null"
-    ]
+      "fail"
+    ],
 
+    "security-symbol" : [
+      "peek conf::securitySymbol"
+    ]
   },
 
   "router" : {
     "_help" : "Account engine for sequestration actions between node and clients.",
     "pair" : {
       "_help" : "Manage swap pairs.",
-      "list" : {
-        "_help" : "List all available swap pairs that are offered.",
+      "list" : "List all available swap pairs on offer.",
+      "find" : {
+        "_help" : "Find allocated swap pairs on offer.",
         "_ref" : {
           "_list" : "fromBase",
           "_help" : "Base source symbol for the pair.",
@@ -254,21 +348,27 @@
           }
         }
       },
-      "find" : {
-        "_help" : "Find allocated swap pairs that are offered.",
-        "_root" : true,
+      "rebalance" : {
+        "_help" : "Rebalance a swap pair, and mutate associated fees.",
         "_ref" : {
-          "_list" : "fromBase",
-          "_help" : "Base source symbol for the pair.",
+          "_list" : "accountID",
+          "_help" : "Provide the account ID to check for its existance.",
           "_ref" : {
-            "_list" : "toSymbol",
-            "_this" : "Swap target symbol for the pair."
+            "_list" : "symbol",
+            "_this" : "Target symbol to rebalance.",
+            "_ref" : {
+              "_list" : "amount",
+              "_this" : "Amount to rebalance available funds with. For example for reserving a balance. Without this option the amount is checked on the blockchain.",
+              "_ref" : {
+                "_list" : "signature",
+                "_this" : "Signature for the operation."
+              }
+            }
           }
         }
       },
       "select" : {
         "_help" : "Select an allocated swap pair according to available amount and cheapest fee.",
-        "_root" : true,
         "_ref" : {
           "_list" : "fromBase",
           "_help" : "Base source symbol for the pair.",
@@ -292,7 +392,11 @@
             "_help" : "Base source symbol for the pair.",
             "_ref" : {
               "_list" : "toSymbol",
-              "_this" : "Swap target symbol for the pair."
+              "_this" : "Swap target symbol for the pair.",
+              "_ref" : {
+                "_list" : "signature",
+                "_this" : "Signature for the operation."
+              }
             }
           }
         }
@@ -316,7 +420,11 @@
                   "_this" : "Type of swap mechanism.",
                   "_ref" : {
                     "_list" : "deadline",
-                    "_this" : "Deadline in seconds for swap completion."
+                    "_this" : "Deadline in seconds for swap completion.",
+                    "_ref" : {
+                      "_list" : "signature",
+                      "_this" : "Signature for the operation."
+                    }
                   }
                 }
               }
@@ -334,23 +442,11 @@
             "_help" : "Base source symbol for the pair.",
             "_ref" : {
               "_list" : "toSymbol",
-              "_this" : "Swap target symbol for the pair."
-            }
-          }
-        }
-      },
-      "rebalance" : {
-        "_help" : "Rebalance a swap pair.",
-        "_root" : true,
-        "_ref" : {
-          "_list" : "accountID",
-          "_help" : "Provide the account ID to check for its existance.",
-          "_ref" : {
-            "_list" : "symbol",
-            "_this" : "Target symbol to rebalance.",
-            "_ref" : {
-              "_list" : "amount",
-              "_this" : "Amount to rebalance available funds with. For example for reserving a balance. Without this option the amount is checked on the blockchain."
+              "_this" : "Swap target symbol for the pair.",
+              "_ref" : {
+                "_list" : "signature",
+                "_this" : "Signature for the operation."
+              }
             }
           }
         }
@@ -359,7 +455,7 @@
     "account" : {
       "_help" : "Manage derived keypair sequestrated accounts.",
       "list" : {
-        "_this": "List all accountIDs",
+        "_this": "List all accountIDs.",
         "_access":"root"
       },
       "init" : {
@@ -384,7 +480,11 @@
         "_help" : "Get the details of an account.",
         "_ref" : {
           "_list" : "accountID",
-          "_this" : "Provide the account ID to get the details."
+          "_this" : "Provide the account ID to get the details.",
+          "_ref" : {
+            "_list" : "signature",
+            "_this" : "Signature for the operation."
+          }
         }
       },
       "address" : {
@@ -394,7 +494,12 @@
           "_help" : "Provide the account ID to get the details.",
           "_ref" : {
             "_list" : "symbol",
-            "_this" : "Symbol to get the address of."
+            "_this" : "Symbol to get the address of.",
+            "_ref" : {
+              "_list" : "signature",
+              "_this" : "Signature for the operation."
+            }
+
           }
         }
       },
@@ -405,33 +510,53 @@
           "_help" : "Provide the account ID to get the details.",
           "_ref" : {
             "_list" : "symbol",
-            "_this" : "Symbol to get the balance of."
+            "_this" : "Symbol to get the balance of.",
+            "_ref" : {
+              "_list" : "signature",
+              "_this" : "Signature for the operation."
+            }
           }
         }
       },
-      "setWithdraw.DISABLED" : {
-        "_help" : "Set the withdrawal address of an account.",
-        "_root" : true,
+      "securityReserve" : {
         "_ref" : {
           "_list" : "accountID",
-          "_help" : "Provide the account ID to get the details.",
+          "_help" : "Provide the account ID to check for its existance.",
           "_ref" : {
-            "_list" : "symbol",
-            "_help" : "Symbol to set withdraw for.",
+            "_list" : "action",
+            "_this" : "The action to take: balance, details, deposit or withdraw.",
             "_ref" : {
-              "_list" : "address",
-              "_this" : "Address of the withdrawal account."
+              "_list" : "amount",
+              "_this" : "Amount to sequestrate between the allocation account and the security reserve.",
+              "_ref" : {
+                "_list" : "signature",
+                "_this" : "Signature for the operation."
+              }
             }
+          }
+        }
+      },
+      "securityForceDepositBalance" : {
+        "_ref" : {
+          "_root" : true,
+          "_list" : "accountID",
+          "_help" : "Provide the account ID to check for its existance.",
+          "_ref" : {
+            "_list" : "amount",
+            "_this" : "Amount to force set balance of the security reserve to."
           }
         }
       }
     },
+
     "push" : {
       "_help" : "Push an allocation transaction.",
+      "_root" : true,
       "_ref" : {
         "_list" : "transaction",
         "_this" : "Encoded transaction data to be pushed."
       }
-    }
+    },
+    "security-symbol" : "Get the used security symbol"
   }
 }
