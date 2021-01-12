@@ -1,3 +1,20 @@
+# v0.9.1
+## Fluffy White Gremlin
+## 12-01-2021
+
+* Enable inter module communication by safely exposing specific methods.
+* Improve custom configuration: (partial) recipes in var/recipes/delta overwrite the base recipes
+* Fix bug that prevented hybrixd cli command to connect to other hosts
+* Allow higher NodeJS versions.
+* qrtz: added hook without parameters to clear/reset hook
+* hybrix-jslib: Track pending swap deals
+* hybrix-jslib: Improve unified asset balance refresh
+
+
+
+
+
+
 # v0.9.0
 ## Cosy Cyan Kobold
 ## 08-01-2021
