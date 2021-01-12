@@ -36,10 +36,10 @@ startHybrixd(){
 if [ "$1" = "" ]; then
     echo "[i] starting hybrixd..."
     NODE_VERSION=$($NODEINST --version)
-    NODE_VERSION_MAJOR="`echo $NODE_VERSION | cut -d'.' -f1`"
-    NODE_VERSION_MINOR="`echo $NODE_VERSION | cut -d'.' -f2`"
+    NODE_VERSION_MAJOR=$(echo $NODE_VERSION | cut -d'.' -f1 | cut -c2-)
+    NODE_VERSION_MINOR=$(echo $NODE_VERSION | cut -d'.' -f2)
 
-    if [ "$NODE_VERSION_MAJOR" != "v12" ] || [ $NODE_VERSION_MINOR -lt 13 ]; then
+    if [ "$NODE_VERSION_MAJOR" -lt 12 ] || { [  "$NODE_VERSION_MAJOR" -eq 12 ] && [ $NODE_VERSION_MINOR -lt 13 ] ;}; then
         echo "[!] warning: hybrixd expects Node v12.13.0 or higher (found node $NODEINST @ $NODE_VERSION)"
         read -p "[?] Do you wish to continue? [y/N] " CONFIRM
         if [ "$CONFIRM" != "y" ]; then
