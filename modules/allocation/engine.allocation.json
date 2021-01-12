@@ -6,6 +6,9 @@
   "permissions":{
     "nodeKeys":true
   },
+  "expose" : {
+    "deal" : ["push","getAddressAcount","doRebalancePair"]
+  },
   "conf" :{
     "securitySymbol" : {"default":"tomo.hy"},
     "securityFee" : {"default":"0.5"},
@@ -85,7 +88,7 @@
       "done 'Pair available balance is now $balance $symbol. Fee mutation is $feeMutation $symbol.'"
     ],
     "rebalancePair/accountID/symbol/amount/signature" : [
-      "#TODO call checkSignature/$accountID/$signature/rebalancePair-${accountID}-${symbol}-${amount}",
+      "call checkSignature/$accountID/$signature/rebalancePair-${accountID}-${symbol}-${amount}",
       "call doRebalancePair/$accountID/$symbol/$amount"
     ],
     "rebalanceMutate/accountID/symbol/amount" : [
@@ -219,12 +222,15 @@
       "done true",
       "done false"
     ],
-    "addressAccount/accountID/symbol/signature" : [
-      "#TODO call checkSignature/$accountID/$signature/adressAccount-${accountID}-${symbol}",
+    "getAddressAcount/accountID/symbol" :[
       "with auth call keysAccount/$accountID",
       "data {symbol:$symbol}",
       "bank getAddress $auth 2 1",
       "fail 'Could not derive account address!'"
+    ],
+    "addressAccount/accountID/symbol/signature" : [
+      "call checkSignature/$accountID/$signature/adressAccount-${accountID}-${symbol}",
+      "call getAddressAcount/$accountID/$symbol"
     ],
     "balanceAccount/accountID/symbol/signature" : [
       "call checkSignature/$accountID/$signature/balanceAccount-${accountID}-${symbol}",
@@ -313,8 +319,7 @@
       "form ${conf::securitySymbol}"
     ],
 
-    "push/transaction" : [
-      "peek transaction",
+    "push" : [
       "void 1 2",
       "fail 'Missing transaction.'",
       "decr 1 -1",
@@ -546,15 +551,6 @@
             "_this" : "Amount to force set balance of the security reserve to."
           }
         }
-      }
-    },
-
-    "push" : {
-      "_help" : "Push an allocation transaction.",
-      "_root" : true,
-      "_ref" : {
-        "_list" : "transaction",
-        "_this" : "Encoded transaction data to be pushed."
       }
     },
     "security-symbol" : "Get the used security symbol"

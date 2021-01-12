@@ -37,7 +37,8 @@
       "data [$accountID,${.bid.symbol},${.bid.amount},${.bid.target}]",
       "jstr",
       "encr",
-      "rout '/e/allocation/push/$' 1 @defer",
+      "hook @defer",
+      "call 'allocation::push'",
       "call remitted/$proposalID/$",
       "done",
       "@defer",
@@ -80,7 +81,7 @@
 			"with creation [date,now] [math,round]",
 			"with deadline math '$creation+${allocation.deadline}' round",
 			"# 5. return target to accept payment, reserve needed amount, and adjust feelevel",
-			"with recipient [rout,/e/allocation/account/address/${allocation.accountID}/$fromBase]",
+			"with recipient call allocation::getAddressAcount/${allocation.accountID}/$fromBase",
       "fork rebalanceCall/${allocation.accountID}/$toSymbol/-$amount",
       "# 6. save and return proposal object",
       "with proposalIDa [data,'deal ${allocation.accountID} $fromBase $baseAmountPlusFee $recipient'] [hash,djb2] [case,lower]",
@@ -200,7 +201,7 @@
       "fail 'Proposal $proposalID does not exist!'"
     ],
     "rebalanceCall/allocationID/symbol/amount" : [
-      "rout /e/allocation/pair/rebalance/$allocationID/$symbol/$amount"
+      "call allocation::doRebalancePair/$allocationID/$symbol/$amount"
     ],
     "dealStatus": [
       "tran .deal 1 @failure",
