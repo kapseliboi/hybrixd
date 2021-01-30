@@ -1,3 +1,15 @@
+# v0.9.2
+## Bouncy Cyan Elf
+## 30-01-2021
+
+* Fix transaction-details for unified assets
+* Update download links and release locations to download.hybrix.io
+* hybrix-jslib: Add encryption by default option to rout and addHost methods
+* hybrix-jslib: Add specialized hosts. These will only be used when specified.
+
+
+
+
 # v0.9.1
 ## Fluffy White Gremlin
 ## 12-01-2021
