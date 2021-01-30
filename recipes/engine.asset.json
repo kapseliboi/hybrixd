@@ -214,10 +214,14 @@
       "call '${.key}'"
     ],
     "transaction-details/source/amount/target/bytes/publicKey" : [
-      "test target 1 3",
+      "test target @validateTarget @noTarget",
+      "flow target undefined @noTarget @validateTarget ",
+      "@validateTarget",
       "call validate/$target",
-      "jump 2",
+      "jump @saveTargetValid",
+      "@noTarget",
       "data 'n/a'",
+      "@saveTargetValid",
       "poke targetValid",
 
       "call validate/$source",
