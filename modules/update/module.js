@@ -3,33 +3,34 @@
 // required libraries in this context
 const {getLatestVersion, compareVersions} = require('../../common/update.js');
 const fs = require('fs');
-function check (proc, xmlString) {
-  const latestVersion = getLatestVersion(xmlString, 'node');
+
+function get (proc, htmlString) {
+  const latestVersion = getLatestVersion(htmlString);
+  return latestVersion === 'error'
+    ? proc.fail('Could not retrieve version information.')
+    : proc.done(latestVersion);
+}
+
+function check (proc, htmlString) {
+  const latestVersion = getLatestVersion(htmlString);
+  if (latestVersion === 'error') return proc.fail('Could not retrieve version information.');
+
   let currentVersion;
   if (fs.existsSync('../package.json')) {
     try {
       currentVersion = JSON.parse(fs.readFileSync('../package.json')).version;
     } catch (e) {
-      proc.fail('Could not parse version information.');
-      return;
+      return proc.fail('Could not parse version information.');
     }
-  } else {
-    proc.fail('No current version information available.');
-    return;
-  }
+  } else return proc.fail('No current version information available.');
+
   switch (compareVersions(latestVersion, currentVersion)) {
-    case 0:
-      proc.done('Up to date: v' + latestVersion);
-      return;
-    case -1:
-      proc.done('Update available: v' + latestVersion + ' (Now running v' + currentVersion + ')');
-      return;
-    case 1:
-      proc.done('Experimental: v' + latestVersion + ' (Now running v' + currentVersion + ')');
-      return;
-    default:
-      proc.fail('Could not compare versions. Latest: v' + latestVersion + ' Now running v' + currentVersion + '');
+    case 0 : return proc.done('Up to date: v' + latestVersion);
+    case -1 : return proc.done('Update available: v' + latestVersion + ' (Now running v' + currentVersion + ')');
+    case 1 : return proc.done('Experimental: v' + latestVersion + ' (Now running v' + currentVersion + ')');
+    default : return proc.fail('Could not compare versions. Latest: v' + latestVersion + ' Now running v' + currentVersion + '');
   }
 }
 
 exports.check = check;
+exports.get = get;

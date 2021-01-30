@@ -38,11 +38,11 @@ CURRENT_VERSION=$(cat "$NODE/package.json" \
   | sed 's/[",]//g' \
   | tr -d '[[:space:]]')
 
-curl --silent --location "https://storage.googleapis.com/hybrix-dist" -o "$TMP/versions.xml"
+curl --silent --location "https://download.hybrix.io/releases/hybrixd/" -o "$TMP/releases.html"
 
-VERSION_XML=$(cat "$TMP/versions.xml")
+RELEASES_HTML=$(cat "$TMP/releases.html")
 
-LATEST_VERSION=$(echo "console.log(require('$NODE/common/update').getLatestVersion(\`$VERSION_XML\`,'node'))" | node);
+LATEST_VERSION=$(echo "console.log(require('$NODE/common/update').getLatestVersion(\`$RELEASES_HTML\`))" | node);
 
 echo "[i] Current version: $CURRENT_VERSION"
 echo "[i] Latest version: $LATEST_VERSION"
@@ -61,8 +61,8 @@ echo "[i] Downloading latest package"
 mkdir -p "$TMP_LATEST"
 
 echo "[i] Retrieving latest package"
-URLPATH="https://storage.googleapis.com/hybrix-dist/node/latest"
-URLFILE="hybrixd.node.latest.tar.gz"
+URLPATH="https://download.hybrix.io/releases/hybrixd/latest"
+URLFILE="hybrixd.latest.tar.gz"
 rm "$TMP/$URLFILE" > /dev/null 2>&1 || true
 curl --silent --location "$URLPATH/$URLFILE" -o "$TMP/$URLFILE"
 

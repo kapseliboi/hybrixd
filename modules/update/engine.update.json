@@ -4,13 +4,27 @@
   "module":"update",
   "quartz":{
     "check" :[
-      "curl https://storage.googleapis.com/hybrix-dist/ 2 1",
+      "curl https://download.hybrix.io/releases/hybrixd/ 2 1",
       "fail 'Could not connect to source'",
       "func check"
+    ],
+    "get-latest-version/component" :[
+      "test component 2 1",
+      "poke component hybrixd",
+      "curl https://download.hybrix.io/releases/$component/ 2 1",
+      "fail 'Could not connect to source'",
+      "func get"
     ]
   },
   "router" : {
     "_access" : "root",
-    "check" :"Check if update available"
+    "check" :"Check if update available",
+    "get-latest-version" : {
+      "_this": "Get latest hybrixd version",
+      "hybrixd" : "Get latest hybrixd version",
+      "cli-wallet" : "Get latest hybrixd version",
+      "tui-wallet" : "Get latest hybrixd version",
+      "hybrix-jslib" : "Get latest hybrixd version"
+    }
   }
 }
