@@ -34,7 +34,7 @@ rsync -ra --rsh="$RELEASE_OPTIONS" "/dist/${FILE_NAME}.zip" "$RELEASE_TARGET/hyb
 rsync -ra --rsh="$RELEASE_OPTIONS" "/dist/${FILE_NAME}.tar.gz" "$RELEASE_TARGET/hybrixd/latest/$LATEST_FILE_NAME.tar.gz"
 
 echo "[.] Copying to version folder"
-rsync -ra --rsh="$RELEASE_OPTIONS" "/dist/${FILE_NAME}.zip" "$RELEASE_TARGET/hybrixd/$VERSION/$FILE_NAME.zip"
+rsync -ra --rsync-path="mkdir -p $RELEASE_DIR/hybrixd/$VERSION/ && rsync" --rsh="$RELEASE_OPTIONS" "/dist/${FILE_NAME}.zip" "$RELEASE_TARGET/hybrixd/$VERSION/$FILE_NAME.zip"
 rsync -ra --rsh="$RELEASE_OPTIONS" "/dist/${FILE_NAME}.tar.gz" "$RELEASE_TARGET/hybrixd/$VERSION/$FILE_NAME.tar.gz"
 
 export PATH="$OLDPATH"
