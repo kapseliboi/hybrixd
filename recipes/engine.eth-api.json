@@ -7,6 +7,7 @@
   "throttle":1,
   "timeout":30000,
   "factor":18,
+  "fee-factor":18,
   "confirmed":12,
   "fee":"0.0005",
   "feeContractTx":"0.0025",
@@ -45,7 +46,7 @@
       "@gasPriceOk",
       "code hex dec",
       "atom",
-      "form",
+      "form ${fee-factor}",
       "poke local::gasPrice",
       "logs 'module ethereum: updating fee for asset $symbol. Current gasprice: $local::gasPrice'",
       "done"
@@ -352,14 +353,14 @@
       "pick",
       "rout '/asset/$/fee'",
       "math '$/$gasBaseUsage'",
-      "form"
+      "form ${fee-factor}"
     ],
     "fee/message":[
       "call estimateGasUsage/$message",
       "poke gasUsageEstimation",
       "call getGasPrice",
       "math '$ * $gasUsageEstimation'",
-      "form"
+      "form ${fee-factor}"
     ]
   }
 }
