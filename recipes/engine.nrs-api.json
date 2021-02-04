@@ -11,6 +11,7 @@
   "import": "transaction-history",
   "apiProvidesFullTx": true,
   "chain":0,
+  "features": {"message":true},
   "quartz":{
     "balance":[
       "data '$symbol'",

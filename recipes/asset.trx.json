@@ -16,6 +16,7 @@
   },
   "import": "transaction-history",
   "cache":10000,
+  "features": {"message":false},
   "throttle":10,
   "quartz":{
     "balance" : [

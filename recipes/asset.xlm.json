@@ -19,6 +19,7 @@
     "url": "https://www.stellar.org/developers/horizon/reference/errors/rate-limit-exceeded.html",
     "rate-limit":"3600 per hour"
   },
+  "features": {"message":true},
   "quartz": {
     "balance": [
       "curl '/accounts/$1' 2 1",

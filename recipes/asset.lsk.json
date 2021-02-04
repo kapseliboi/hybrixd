@@ -16,6 +16,7 @@
   "apiProvidesFullTx": true,
   "throttle":5,
   "genesisBlockTime":1464116400,
+  "features": {"message":true},
   "quartz":{
     "balance" : [
       "curl /api/accounts?address=$1&limit=1&offset=0&sort=balance:asc {Accept:'application/json','Content-Type':'application/json'} 2 1",

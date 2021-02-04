@@ -12,6 +12,7 @@
   "host": ["http://mr-hyde.xeline.org:17876/nxt","https://wallet.xel.org/nxt"],
   "cache":15000,
   "throttle":5,
+  "features": {"message":true},
   "quartz":{
     "sample" : [
       "done {address:'XEL-WVUH-342G-KUK2-BJCAU',transaction:'0d3652122f89aade692663aa0b14e95dc1944bfea75eade75248d5f5400d20d5',publicKey:'ac98288464ff917788a49d2ca4ccf078b66e4090e2b81c8daef8b492bcc1ef0e'}"

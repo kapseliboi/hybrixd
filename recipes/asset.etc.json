@@ -17,6 +17,7 @@
   "cache":15000,
   "timeout":30000,
   "throttle":1,
+  "features": {"message":true},
   "cron":300,
   "quartz" : {
     "sample":[

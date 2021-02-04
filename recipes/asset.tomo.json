@@ -20,6 +20,7 @@
   "gasBaseUsage":56000,
   "gasErc20Usage":112000,
   "cron":60,
+  "features": {"message":true},
   "quartz":{
     "sample" : [
       "done {address:'0xa7551ba0d52c763fb6f8866de63827aa593f20bc',transaction:'0x194630a7ba8cc8905751ca5ae1c5c4695c2dc414d6978ef02a6743ee9c6176a4'}"

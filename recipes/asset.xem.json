@@ -19,6 +19,7 @@
   "timeout":32000,
   "cache":1000,
   "throttle":5,
+  "features": {"message":false},
   "genesisBlockTime":1427583985,
   "quartz":{
     "unspent" : [

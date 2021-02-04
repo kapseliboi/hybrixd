@@ -12,6 +12,7 @@
   "hostOLD":["tcp://dash-1.indexer.coinomi.net:5013","tcp://electrum2.cipig.net:10061","tcp://dash-2.indexer.coinomi.net:5013","tcp://electrum1.cipig.net:10061"],
   "cache":180000,
   "throttle":10,
+  "features": {"message":true},
   "import":"electrum-tcp",
   "quartz":{
     "sample" : [

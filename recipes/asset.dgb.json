@@ -14,6 +14,7 @@
   },
   "host_electrums_OLD":["tcp://electrum3.cipig.net:10059","tcp://electrum2.cipig.net:10059","tcp://electrum1.cipig.net:10059"],
   "cache":20000,
+  "features": {"message":true},
   "throttle":0.1,
   "quartz":{
     "cron" : [
