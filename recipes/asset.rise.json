@@ -15,6 +15,7 @@
   "cache":15000,
   "throttle":5,
   "version" : "3.0.2",
+  "features": {"message":true},
   "quartz":{
     "balance" :[
       "curl '/api/accounts/getBalance?address=$1' 2 1",

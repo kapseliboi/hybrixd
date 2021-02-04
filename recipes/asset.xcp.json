@@ -15,6 +15,7 @@
     "history": "https://xchain.io/api"
   },
   "timeout":32000,
+  "features": {"message":false},
   "cache":7500,
   "throttle":5,
   "api-documentation":"https://counterparty.io/docs/counterblock_api/",

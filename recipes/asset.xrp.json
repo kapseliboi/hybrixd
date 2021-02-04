@@ -20,6 +20,7 @@
     "url": "https://www.xrpchat.com/topic/20759-ripple-data-api-v2-rate-limit/",
     "rate-limit":"rumoured but no confirmation found"
   },
+  "features": {"message":true},
   "genesisBlockTime":946684800 ,
   "quartz" : {
     "init" : [

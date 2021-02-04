@@ -2,6 +2,7 @@
   "symbol":"ark",
   "name":"Ark",
   "mode":"ark.main",
+  "features": {"message":false},
   "addressRegex":"^A\\w{33}$",
   "factor":8,
   "confirmed":3,

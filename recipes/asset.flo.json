@@ -12,6 +12,7 @@
   "cache":15000,
   "throttle":10,
   "import":"insight",
+  "features": {"message":true},
   "quartz":{
     "sample" : [
       "done {address:'FEYWiz5brGLZQ5Wg9FS845dqb94mB1hHxe',transaction:'f9a1ce8f34d03261817b905c0d08034bc25b9fbb827c7ae58de4f724920138f5'}"

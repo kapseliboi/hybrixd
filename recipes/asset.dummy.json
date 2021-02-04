@@ -13,6 +13,7 @@
   "fee":0.15,
   "cache":10000,
   "throttle":10,
+  "features": {"message":false,"test":true},
   "quartz":{
     "unspent" : [
       "done [{amount:'$3',txid:TX01,txn:1}]"

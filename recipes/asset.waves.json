@@ -17,6 +17,7 @@
   "rejectUnauthorized":false,
   "cache":15000,
   "throttle":3,
+  "features": {"message":true},
   "contract":null,
   "quartz":{
     "balance" : [

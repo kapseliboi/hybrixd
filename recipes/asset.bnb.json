@@ -18,6 +18,7 @@
     "default": "https://dex.binance.org/api/v1",
     "explorer": "https://explorer.binance.org/api/v1"
   },
+  "features": {"message":false},
   "import": "transaction-history",
   "apiProvidesFullTx": true,
   "cache":10000,

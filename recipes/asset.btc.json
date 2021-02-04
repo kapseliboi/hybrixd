@@ -12,6 +12,7 @@
     "default": "https://api.bitcore.io/api/BTC/mainnet"
   },
   "old_host": ["https://insight.bitpay.com/api","https://api.bitcore.io/api/BTC/mainnet"],
+  "features": {"message":true},
   "cache":60000,
   "throttle":10,
   "prefix":"bitcoin:",

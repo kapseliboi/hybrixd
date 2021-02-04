@@ -10,6 +10,7 @@
   "fee":0.15,
   "cache":10000,
   "throttle":10,
+  "features": {"message":true, "test":true},
   "quartz":{
     "unspent" : [
       "done {}"

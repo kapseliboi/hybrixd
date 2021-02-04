@@ -16,6 +16,7 @@
   "timeout":30000,
   "throttle":1,
   "cron":300,
+  "features": {"message":false},
   "quartz" : {
     "sample":[
       "done {address:'0xbb1e3c386a01826bbae330870b96870d2b571d12',transaction:'0xa0cb3baf5105be78e4f52218f371592cd64cd154cdf75ac5eaeb114ff6da7a15'}"

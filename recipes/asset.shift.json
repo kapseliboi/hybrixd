@@ -12,6 +12,7 @@
   "cache":15000,
   "throttle":5,
   "version":"6.8.0",
+  "features": {"message":true},
   "quartz":{
     "sample" : [
       "done {address:'16296503595969372386S',transaction:'6908341461331361507'}"
