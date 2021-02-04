@@ -231,11 +231,11 @@
     "details" : [
       "data {'contract':null,'factor':null,features:null,fee:null,'fee-factor':null,'fee-symbol':null,'mode':null,'keygen-base':null,'unified-symbols':null, confirmed:null}",
       "each subdetails",
-      "done {symbol:'$symbol',name:'$name',fee:${.fee},factor:'${.factor}',contract:'${.contract}',mode:'${.mode}','unified-symbols':${.unified-symbols},'fee-symbol':'${.fee-symbol}','fee-factor':'${.fee-factor}','keygen-base':'${.keygen-base}', confirmed: ${.confirmed}}",
+      "done {symbol:'$symbol',name:'$name',fee:${.fee},factor:'${.factor}',features:${.features},contract:'${.contract}',mode:'${.mode}','unified-symbols':${.unified-symbols},'fee-symbol':'${.fee-symbol}','fee-factor':'${.fee-factor}','keygen-base':'${.keygen-base}', confirmed: ${.confirmed}}",
       "#TODO remove fee, fee-symbol, fee-factor after multi fees have been fully implemented",
       "#data {'contract':null,'factor':null,'mode':null,'keygen-base':null,'unified-symbols':null}",
       "#each subdetails",
-      "#done {symbol:'$symbol',name:'$name',factor:'${.factor}',contract:'${.contract}',mode:'${.mode}','unified-symbols':${.unified-symbols},'keygen-base':'${.keygen-base}'}"
+      "#done {symbol:'$symbol',name:'$name',factor:'${.factor}',features:'${.features}',contract:'${.contract}',mode:'${.mode}','unified-symbols':${.unified-symbols},'keygen-base':'${.keygen-base}'}"
     ],
     "subdetails" : [
       "call '${.key}'"
