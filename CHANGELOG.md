@@ -1,8 +1,18 @@
+# v0.9.3
+## Shiny Sapphire Sphinx
+## 05-02-2021
+
+* Asset features endpoint. Use /asset/SYMBOL/features to see which features an asset supports.
+* Fixed: eth token fees use fee-factor precision.
+
+
+
+
 # v0.9.2
 ## Bouncy Cyan Elf
 ## 30-01-2021
 
-* Fix transaction-details for unified assets
+* Fix transaction-details for unified assets. 
 * Update download links and release locations to download.hybrix.io
 * hybrix-jslib: Add encryption by default option to rout and addHost methods
 * hybrix-jslib: Add specialized hosts. These will only be used when specified.
