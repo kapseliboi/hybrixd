@@ -19,8 +19,17 @@
   "trimAddrHexR":"8",
   "cron":600,
   "quartz":{
+    "sanitizeAddres":[
+      "poke address",
+      "regx '^$prefix'",
+      "peek prefix",
+      "size",
+      "poke prefixLength",
+      "peek address",
+      "take $prefixLength"
+    ],
     "balance/address" : [
-      "with address [regx,'^$prefix',1,2] [take,12]",
+      "with address call sanitizeAddres",
       "time $timeout",
       "curl /address/$address/balance 2 1",
       "fail 'Connection to host failed'",
@@ -29,13 +38,13 @@
       "atom"
     ],
     "unspent/source/amount/target=/publicKey/message" : [
-      "with source [regx,'^$prefix',1,2] [take,12]",
+      "with source call sanitizeAddres",
       "data $amount",
       "ship @amountSpecified @amountSpecified 1 1",
       "call unspentAll/$source",
       "done",
       "@amountSpecified",
-      "with target [regx,'^$prefix',1,2] [take,12]",
+      "with target call sanitizeAddres",
       "poke inputval '$amount' '1000000000000'",
       "with inputval atom 1",
       "time $timeout",
@@ -138,7 +147,7 @@
       "done"
     ],
     "getHistory/address/count=12/offset=0" : [
-      "with address [regx,'^$prefix',1,2] [take,12]",
+      "with address call sanitizeAddres",
       "time $longTimeout",
       "with countTo [math,'$count+$offset']",
       "curl /address/$address/txs?limit=$countTo 2 1",

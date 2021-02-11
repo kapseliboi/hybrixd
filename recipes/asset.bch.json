@@ -19,7 +19,7 @@
   "quartz":{
     "validate/address" : [
       "peek address",
-      "regx '^bitcoincash:|1|q' @success @fail",
+      "regx '^($prefix|1|q)' @success @fail",
       "@success",
       "done valid",
       "@fail",
