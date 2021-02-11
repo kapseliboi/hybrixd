@@ -15,7 +15,7 @@
   "gasLimitContractTx":336000,
   "factor":18,
   "host": {
-    "default": ["http://eth1.hybrix.io:8546","http://eth2.hybrix.io:8546"],
+    "default": [],
     "history": "https://rinkeby.etherscan.io/api"
   },
   "cron":300,

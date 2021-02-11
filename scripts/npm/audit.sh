@@ -14,6 +14,14 @@ npm i
 npm update
 npm audit fix --force
 
+cd "$NODE/modules/transport/torrent/peer-network-fork/"
+
+echo "[.] Checking hybrixd: /modules/transport/torrent/peer-network-fork/..."
+npm i
+npm update
+npm audit fix --force
+
+
 cd "$NODE/modules"
 
 for D in *; do
