@@ -1,3 +1,15 @@
+# v0.9.4
+## Curly Auburn Fairy
+## 11-02-2021
+
+* Implement modified fees for TOMO tokens. Tomo chains allows fees to be paid in tokens themselves. A very nice feature that we're glad to support.
+* Fix bitcoin cash test address prefix parsing. Enable TEST_BCH (TBCH) bitcoin cash testnet. 
+* Add feature overview to list asset details. This will enable filtering assets in based on supported assets.
+* NPM Audit improvements and dependency updates. Made it easier to maintain the npm dependencies in the hybrix code.
+
+
+
+
 # v0.9.3
 ## Shiny Sapphire Sphinx
 ## 05-02-2021
@@ -12,9 +24,9 @@
 ## Bouncy Cyan Elf
 ## 30-01-2021
 
-* Fix transaction-details for unified assets. 
-* Update download links and release locations to download.hybrix.io
-* hybrix-jslib: Add encryption by default option to rout and addHost methods
+* Fix transaction-details for unified assets. Determine what amount you can transfer from complex unified addresses.
+* Update download links and release locations to download.hybrix.io. A one stop shop for all your hybrix downloads.
+* hybrix-jslib: Add encryption by default option to rout and addHost methods.
 * hybrix-jslib: Add specialized hosts. These will only be used when specified.
 
 
