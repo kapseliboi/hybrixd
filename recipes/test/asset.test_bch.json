@@ -13,6 +13,10 @@
   "cache":60000,
   "throttle":10,
   "import":"bch",
+  "prefix":"bchtest:",
   "quartz":{
+    "sample":[
+      "done {address:'bchtest:qq2ckhgcz4fvna8jvlqdu692ujtrqsue8yarpm648',transaction:'24430202a659049618985183072a0896898c8e7f3c50130dc97197873d324d45'}"
+    ]
   }
 }
