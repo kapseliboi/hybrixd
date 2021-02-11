@@ -8,6 +8,7 @@
   "timeout":30000,
   "factor":18,
   "fee-factor":18,
+  "fee-override":false,
   "confirmed":12,
   "fee":"0.0005",
   "feeContractTx":"0.0025",
@@ -184,7 +185,9 @@
     "getTransaction/transactionId" : [
       "time $timeout",
       "call 'transactionData/$transactionId'",
-      "call 'reformatTx/$transactionId'"
+      "call 'reformatTx/$transactionId'",
+      "test fee-override 1 2",
+      "with .fee [peek,fee-override] [form $fee-factor]"
     ],
     "getConfirmed/transactionId" : [
       "call transactionData/$transactionId",
@@ -356,10 +359,15 @@
       "form ${fee-factor}"
     ],
     "fee/message":[
+      "test fee-override 1 @useDefaultFee",
+      "peek fee-override",
+      "jump @finalize",
+      "@useDefaultFee",
       "call estimateGasUsage/$message",
       "poke gasUsageEstimation",
       "call getGasPrice",
       "math '$ * $gasUsageEstimation'",
+      "@finalize",
       "form ${fee-factor}"
     ]
   }

@@ -14,7 +14,6 @@
     "history": "https://scan.tomochain.com/api"
   },
   "fee":"0.00002",
-  "fee-override":false,
   "feeContractTx":"0.0001",
   "gasPriceDefault":"0.000000025",
   "gasBaseUsage":56000,
@@ -25,6 +24,31 @@
     "sample" : [
       "done {address:'0xa7551ba0d52c763fb6f8866de63827aa593f20bc',transaction:'0x194630a7ba8cc8905751ca5ae1c5c4695c2dc414d6978ef02a6743ee9c6176a4'}"
     ],
+
+    "balance/address" : [
+      "time 45000",
+      "@retryLoop",
+      "data $symbol",
+      "find '.' @token 1",
+      "rand 10000",
+      "data {jsonrpc: '2.0', method: 'eth_getBalance', params: ['$address','latest'], id: $}",
+      "curl POST {'Content-Type': 'application/json'} 1 @failHost",
+      "tran .result 1 @failure",
+      "regx '^0x' 1 @failure",
+      "code 'hex' 'dec'",
+      "jump @returnValue",
+      "@token",
+      "curl ${host.history} /tokens/$contract/holder/$address GET {'Content-Type': 'application/json'} 1 @failHost",
+      "tran .quantity 2 1",
+      "fail 'Could not interpret Tomoscan host response!'",
+      "@returnValue",
+      "atom",
+      "form",
+      "done",
+      "@failHost",
+      "fail 'Could not connect to host'"
+    ],
+
     "getHistory/address/count=12/offset=0" : [
       "peek symbol",
       "flow tomo 1 @token",
@@ -63,14 +87,7 @@
       "done",
       "@failHost",
       "fail 'Could not connect to host'"
-    ],
-    "getTransaction/transactionId" : [
-      "time $timeout",
-      "call 'transactionData/$transactionId'",
-      "call 'reformatTx/$transactionId'",
-      "test fee-override 1 2",
-      "poke .fee '${fee-override}'"
-    ],
+    ],    
     "test" : [
       "done {hash:dynamic}"
     ]
