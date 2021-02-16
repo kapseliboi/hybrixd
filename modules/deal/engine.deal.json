@@ -14,6 +14,12 @@
       "void 2 1",
       "logs"
     ],
+    "estimate/fromBase/toSymbol/amount" : [
+      "call proposalCreate/$fromBase/$toSymbol/$amount"
+    ],
+    "proposal/fromBase/toSymbol/amount/target" : [
+      "call proposalCreate/$fromBase/$toSymbol/$amount/$target"
+    ],
     "proposalHandler" : [
       "call selectFromProposalList",
       "void @notexist",
@@ -55,38 +61,51 @@
       "@notexist",
       "done null"
     ],
-		"proposal/fromBase/toSymbol/amount/target" : [
-			"# 1. find best allocator available for this proposal",
-			"rout /e/allocation/pair/select/$fromBase/$toSymbol/$amount",
-			"have .accountID 2 1",
-			"fail 'Proposal cannot continue: No allocator accepts this proposal!'",
+    "proposalCreate/fromBase/toSymbol/amount/target=null" : [
+      "# 1. find best allocator available for this proposal",
+      "rout /e/allocation/pair/select/$fromBase/$toSymbol/$amount",
+      "have .accountID 2 1",
+      "fail 'Proposal cannot continue: No allocator accepts this proposal!'",
       "poke allocation",
       "with allocation.fee [excl,'%']",
       "# 2. gather some extra variables",
-			"with timestamp [date,now] [math,'round']",
-			"# 3. get conversion rate",
-			"with valBase [data,$fromBase] [splt,'.'] [pick,-1]",
-			"with valSymbol [data,$toSymbol] [splt,'.'] [pick,-1]",
-			"rout /e/valuations/rate/$valSymbol/$valBase/1 2 1",
-			"fail 'Proposal cannot continue: Cannot calculate conversion rate!'",
-			"poke rate",
-			"# 4. calculate conversion",
+      "with timestamp [date,now] [math,'round']",
+      "# 3. get conversion rate",
+      "with valBase [data,$fromBase] [splt,'.'] [pick,-1]",
+      "with valSymbol [data,$toSymbol] [splt,'.'] [pick,-1]",
+      "rout /e/valuations/rate/$valSymbol/$valBase/1 2 1",
+      "fail 'Proposal cannot continue: Cannot calculate conversion rate!'",
+      "poke rate",
+      "# 4. calculate conversion",
       "call calcNetworkFeesBaseDenominated/$fromBase/$toSymbol",
       "void 1 2",
       "fail 'Proposal cannot continue: Cannot get network fee data!'",
       "poke networkFee",
-			"with allocatorFee [math,'$amount * $rate * (${allocation.fee} / 100)'] [form,$fromBase]",
-			"with baseAmount [math,'$amount * $rate'] [form,$fromBase]",
-			"with baseAmountPlusFee [math,'$baseAmount + $allocatorFee + $networkFee'] [form,$fromBase]",
-			"with creation [date,now] [math,round]",
-			"with deadline math '$creation+${allocation.deadline}' round",
-			"# 5. return target to accept payment, reserve needed amount, and adjust feelevel",
-			"with recipient call allocation::getAddressAcount/${allocation.accountID}/$fromBase",
+      "with allocatorFee [math,'$amount * $rate * (${allocation.fee} / 100)'] [form,$fromBase]",
+      "with baseAmount [math,'$amount * $rate'] [form,$fromBase]",
+      "with baseAmountPlusFee [math,'$baseAmount + $allocatorFee + $networkFee'] [form,$fromBase]",
+      "# !  skip reserving amount and defining creation, deadline and recipient values if only estimating",
+      "flow target null @estimateProposal",
+      "with creation [date,now] [math,round]",
+      "with deadline math '$creation+${allocation.deadline}' round",
+      "# 5. return target to accept payment, reserve needed amount, and adjust feelevel",
+      "with recipient call allocation::getAddressAccount/${allocation.accountID}/$fromBase",
       "fork rebalanceCall/${allocation.accountID}/$toSymbol/-$amount",
-      "# 6. save and return proposal object",
+      "# 6. define proposal/estimate contents",
+      "@estimateProposal",
+      "poke proposalData { ask: {symbol:'$fromBase',amount:'$baseAmountPlusFee'}, bid: {symbol:'$toSymbol',amount:'$amount'}, fees: {symbol:'$fromBase',allocator:'${allocatorFee}',network:'$networkFee'} }",
+      "flow target null 1 @saveProposal",
+      "done $proposalData",
+      "# 7. finalize, save and return proposal object",
+      "@saveProposal",
+      "poke proposalData.ask.target '$recipient'",
+      "poke proposalData.ask.txid null",
+      "poke proposalData.bid.target '$target'",
+      "poke proposalData.bid.txid null",
+      "poke proposalData.type '${allocation.type}'",
       "with proposalIDa [data,'deal ${allocation.accountID} $fromBase $baseAmountPlusFee $recipient'] [hash,djb2] [case,lower]",
       "with proposalIDb [data,'deal ${allocation.accountID} $toSymbol $amount $target $deadline'] [hash,djb2] [case,lower]",
-      "poke proposal { id: '${proposalIDa}${proposalIDb}', ask: {symbol:'$fromBase',amount:'$baseAmountPlusFee',target:'$recipient',txid:null}, bid: {symbol:'$toSymbol',amount:'$amount',target:'$target',txid:null}, fees: {symbol:'$fromBase',allocator:'${allocatorFee}',network:'$networkFee'}, type: ${allocation.type}, creation:$creation, deadline:$deadline }",
+      "poke proposal { id: '${proposalIDa}${proposalIDb}', ask: ${proposalData.ask}, bid: ${proposalData.bid}, fees: ${proposalData.fees}, type: ${proposalData.type}, creation:$creation, deadline:$deadline }",
       "data { accountID: '${allocation.accountID}', timestamp: '$timestamp', deal: $proposal }",
       "jstr",
       "encr",
@@ -263,8 +282,24 @@
   },
   "router" : {
     "_help" : "Deal engine for deals between node and clients.",
+    "estimate" : {
+      "_help" : "Estimate a deal.",
+      "_ref" : {
+        "_list" : "base",
+        "_help" : "Specify the base symbol to offer in trade.",
+        "_ref" : {
+          "_help" : "Specify the desired symbol to receive units in.",
+          "_list" : "symbol",
+          "_ref" : {
+            "_help" : "Specify the amount of base symbol to trade.",
+            "_list" : "amount",
+            "_this" : "amount"
+          }
+        }
+      }
+    },
     "proposal" : {
-      "_help" : "Propose a deal to trade.",
+      "_help" : "Propose a deal to trade on.",
       "_ref" : {
         "_list" : "base",
         "_help" : "Specify the base symbol to offer in trade.",

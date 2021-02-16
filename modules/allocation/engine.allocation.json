@@ -7,7 +7,7 @@
     "nodeKeys":true
   },
   "expose" : {
-    "deal" : ["push","getAddressAcount","doRebalancePair"]
+    "deal" : ["push","getAddressAccount","doRebalancePair"]
   },
   "conf" :{
     "securitySymbol" : {"default":"tomo.hy"},
@@ -72,10 +72,12 @@
       "with symbol case lower",
       "rout /a/$symbol/details",
       "poke feeSymbol ${.fee-symbol}",
+      "poke feeFactor ${.fee-factor}",
       "poke feeAmount ${.fee}",
       "call rebalanceMutate/$accountID/$symbol/$amount",
       "poke balance",
       "call feeModifierMutate/$accountID/$symbol/-$amount/$balance",
+      "form $feeFactor",
       "poke feeMutation",
       "# also rebalance with fee amounts if an amount has been subtracted",
       "ship amount @reportBalance @reportBalance 1 @reportBalance",
@@ -99,7 +101,7 @@
     "feeModifierMutate/accountID/symbol/amount/total" : [
       "call getFeeModifier/$accountID/$symbol",
       "math '+ ($amount / $total)'",
-      "poke local::accounts[$accountID].feeModifiers[$symbol] 0"
+      "poke local::accounts[$accountID].feeModifiers[$symbol]"
     ],
     "selectPair/fromBase/toSymbol/amount" : [
       "call findPair/$fromBase/$toSymbol",
@@ -222,7 +224,7 @@
       "done true",
       "done false"
     ],
-    "getAddressAcount/accountID/symbol" :[
+    "getAddressAccount/accountID/symbol" :[
       "with auth call keysAccount/$accountID",
       "data {symbol:$symbol}",
       "bank getAddress $auth 2 1",
@@ -230,7 +232,7 @@
     ],
     "addressAccount/accountID/symbol/signature" : [
       "call checkSignature/$accountID/$signature/adressAccount-${accountID}-${symbol}",
-      "call getAddressAcount/$accountID/$symbol"
+      "call getAddressAccount/$accountID/$symbol"
     ],
     "balanceAccount/accountID/symbol/signature" : [
       "call checkSignature/$accountID/$signature/balanceAccount-${accountID}-${symbol}",
