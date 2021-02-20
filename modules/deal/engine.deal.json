@@ -63,6 +63,14 @@
     ],
     "proposalCreate/fromBase/toSymbol/amount/target=null" : [
       "# 1. find best allocator available for this proposal",
+      "flow target null 1 @hasTarget # if estimating, take a fractional amount",
+      "ship amount 2 1 1 1",
+      "poke amount 1",
+      "poke reference $amount",
+      "with fromCent rout /e/valuations/rate/usdt/$fromBase/1",
+      "with toCent rout /e/valuations/rate/usdt/$toSymbol/1",
+      "with amount math $toCent",
+      "@hasTarget",
       "rout /e/allocation/pair/select/$fromBase/$toSymbol/$amount",
       "have .accountID 2 1",
       "fail 'Proposal cannot continue: No allocator accepts this proposal!'",
@@ -93,6 +101,9 @@
       "@estimateProposal",
       "poke proposalData { ask: {symbol:'$fromBase',amount:'$baseAmountPlusFee'}, bid: {symbol:'$toSymbol',amount:'$amount'}, fees: {symbol:'$fromBase',allocator:'${allocatorFee}',network:'$networkFee'} }",
       "flow target null 1 @saveProposal",
+      "with proposalData.bid.amount [math,'*$reference/$toCent'] [form,$toSymbol]",
+      "with proposalData.ask.amount [math,'*$reference/$toCent'] [form,$fromBase]",
+      "with proposalData.fees.allocator [math,'*$reference/$toCent'] [form,$fromBase]",
       "done $proposalData",
       "# 7. finalize, save and return proposal object",
       "@saveProposal",
@@ -110,6 +121,7 @@
       "with keyHash [data,'deal ${allocation.accountID}'] [hash] [take,-16] [push,'$proposalIDb',0] [push,'$proposalIDa',0]",
       "save $keyHash",
       "call addToProposalList/$keyHash",
+      "with proposal.bid.amount [form,$toSymbol]",
       "done $proposal"
 		],
     "addToProposalList/key" : [
@@ -288,6 +300,7 @@
         "_ref" : {
           "_help" : "Specify the desired symbol to receive units in.",
           "_list" : "symbol",
+          "_this" : "symbol",
           "_ref" : {
             "_help" : "Specify the amount of base symbol to trade.",
             "_list" : "amount",
