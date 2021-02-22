@@ -1,7 +1,8 @@
 {
   "engine" : "allocation",
   "name" : "Allocation management engine",
-  "timeout" : 30000,
+  "timeout" : 120000,
+  "cron" : 300,  
   "defaultDeadline" : 3600,
   "permissions":{
     "nodeKeys":true
@@ -16,6 +17,88 @@
     "securityMinimalDeposit" : {"default":10}
   },
   "quartz" : {
+    "compilePairStatus" : [
+      "call account/list",
+      "poke compileInputData",
+      "# first prepare a unique pair array",
+      "each compilePairs",
+      "flat",
+      "with compileAccounts [data,$] [tran,.[0]]",
+      "with compilePairs [data,$] [tran,.[1]] [flat] [uniq]",
+      "peek compilePairs",
+      "each compilePairStats $compileInputData",
+      "merg",
+      "done"
+    ],
+    "compilePairs" : [
+      "tran .value.pairs",
+      "flat",
+      "tran .[0]"
+    ],
+    "compilePairStats" : [
+      "copy .value pair",
+      "with symbols [data,$pair] [splt,':']",
+      "with fromBase [data,$symbols] [pick]",
+      "with toSymbol [data,$symbols] [pick,-1]",
+      "copy .meta dataObject",
+      "peek dataObject",
+      "call compileCalcStats/max/securityDepositBalances/$pair/$conf::securitySymbol",
+      "rout /engine/valuations/rate/$conf::securitySymbol/$fromBase/$ 2 1",
+      "data 0",
+      "poke sufficiency",
+      "peek dataObject",
+      "call compileCalcStats/add/balances/$pair",
+      "poke liquidity",
+      "with sufficiency [true,'<$liquidity',2] [done,$liquidity]",
+      "peek dataObject",
+      "call compileCalcStats/min/pair/$pair/fee",
+      "trim '%'",
+      "poke minfee",
+      "peek dataObject",
+      "call compileCalcStats/max/pair/$pair/fee",
+      "trim '%'",
+      "poke maxfee",
+      "with feerange [true,'$minfee==$maxfee',2] [done,'$minfee%-$maxfee%'] [done,'$minfee%']",
+      "# calculate price based on valuation * (1+feepercentage)",
+      "rout /engine/valuations/rate/$toSymbol/$fromBase/1 2 1",
+      "data 0",
+      "poke unitPrice",
+      "with ask [math,$unitPrice*(1-($minfee/100))]",
+      "with bidfee [peek,dataObject] [call,compileCalcStats/min/pair/$toSymbol:$fromBase/fee] [ship,2] [done,0] [trim,'%']",
+      "with bid [true,'$bidfee>0',2] [done,$ask] [math,$unitPrice*(1+($bidfee/100))]",
+      "done {'$pair':{symbol:'$fromBase',ask:'$ask',bid:'$bid',fee:'$feerange',sufficiency:'$sufficiency',liquidity:'$liquidity'}}"
+    ],
+    "compileCalcStats/action/var/pair/specifier" : [
+      "with specifier [void,2] [done] [peek,pair] [splt,':'] [pick,-1]",
+      "each compileGetStats {var:'$var',pair:$pair,specifier:$specifier}",
+      "type array",
+      "flow action {add:@add,min:@min,max:@max,average:@average}",
+      "@average",
+      "with total [data,$] [size]",
+      "math +",
+      "math /$total",
+      "done",
+      "@min",
+      "excl 0",
+      "sort",
+      "pick",
+      "done",
+      "@max",
+      "sort",
+      "pick -1",
+      "done",
+      "@add",
+      "math +"
+    ],
+    "compileGetStats" : [
+      "have .value.pairs.[${.meta.pair}] 2",
+      "done 0",
+      "have .value.pairs.[${.meta.pair}].[${.meta.specifier}] 1 3",
+      "peek .value.pairs.[${.meta.pair}].[${.meta.specifier}] 0",
+      "done",
+      "peek .value.[${.meta.var}].[${.meta.specifier}] 0"
+    ],
+
     "pair/command/accountID/A/B/C/D/E/F" : [
       "call ${command}Pair/$accountID/$A/$B/$C/$D/$E/$F"
     ],
@@ -29,7 +112,6 @@
       "fail 'Incorrect signature'"
     ],
     "deletePair/accountID/fromBase/toSymbol/signature" : [
-
       "call checkSignature/$accountID/$signature/deletePair-${accountID}-${fromBase}-${toSymbol}",
       "done",
       "have local::accounts[$accountID].pairs[$fromBase:$toSymbol] 2 1",
@@ -123,7 +205,6 @@
       "done",
       "done null"
     ],
-
     "listPair" : [
       "peek local::accounts {}",
       "tran {:*}.pairs{*:} 2 1",
@@ -131,7 +212,6 @@
       "flat",
       "uniq"
     ],
-
     "findPair/fromBase/toSymbol" : [
       "with [fromBase,toSymbol] case lower",
       "flow toSymbol {$fromBase:1} 2",
@@ -555,6 +635,10 @@
         }
       }
     },
-    "security-symbol" : "Get the used security symbol"
+    "security-symbol" : "Get the used security symbol",
+    "compilePairStatus" : {
+      "_root" : true,
+      "_this" : "Compiles a list of pair statistics. TODO: remove and use for cron only!"
+    }
   }
 }
