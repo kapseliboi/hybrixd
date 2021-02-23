@@ -17,18 +17,22 @@
     "securityMinimalDeposit" : {"default":10}
   },
   "quartz" : {
-    "compilePairStatus" : [
+    "cron" : [
+      "call cronPairStats 1 2",
+      "poke local::pairstats"
+    ],
+    "cronPairStats" : [
       "call account/list",
       "poke compileInputData",
       "# first prepare a unique pair array",
       "each compilePairs",
       "flat",
       "with compileAccounts [data,$] [tran,.[0]]",
+      "poke accounts",
       "with compilePairs [data,$] [tran,.[1]] [flat] [uniq]",
       "peek compilePairs",
       "each compilePairStats $compileInputData",
-      "merg",
-      "done"
+      "merg"
     ],
     "compilePairs" : [
       "tran .value.pairs",
@@ -66,7 +70,9 @@
       "with ask [math,$unitPrice*(1-($minfee/100))]",
       "with bidfee [peek,dataObject] [call,compileCalcStats/min/pair/$toSymbol:$fromBase/fee] [ship,2] [done,0] [trim,'%']",
       "with bid [true,'$bidfee>0',2] [done,$ask] [math,$unitPrice*(1+($bidfee/100))]",
-      "done {'$pair':{symbol:'$fromBase',ask:'$ask',bid:'$bid',fee:'$feerange',sufficiency:'$sufficiency',liquidity:'$liquidity'}}"
+      "# calculate 24 hour volume",
+      "with volume call compileVolume/$fromBase",
+      "done {'$pair':{symbol:'$fromBase',ask:'$ask',bid:'$bid',volume:'$volume',fee:'$feerange',sufficiency:'$sufficiency',liquidity:'$liquidity'}}"
     ],
     "compileCalcStats/action/var/pair/specifier" : [
       "with specifier [void,2] [done] [peek,pair] [splt,':'] [pick,-1]",
@@ -98,11 +104,26 @@
       "done",
       "peek .value.[${.meta.var}].[${.meta.specifier}] 0"
     ],
+    "compileVolume/fromBase" : [
+      "# get last 24 hour volume",
+      "call deal::readHistory/0/86400",
+      "each getVolumeAmount/$fromBase",
+      "math +"
+    ],
+    "getVolumeAmount/fromBase" : [
+      "peek .value",
+      "flow .deal.ask.symbol '$fromBase' 2 1",
+      "done 0",
+      "tran .deal.ask.amount 1 -1"
+    ],
 
     "pair/command/accountID/A/B/C/D/E/F" : [
       "call ${command}Pair/$accountID/$A/$B/$C/$D/$E/$F"
     ],
-    "checkSignature/accountID/signature/message":[
+    "statsPair" : [
+      "peek local::pairstats {}"
+    ],
+    "checkSignature/accountID/signature/message" : [
       "call keysAccount/$accountID",
       "root 1 2",
       "done",
@@ -424,6 +445,7 @@
     "pair" : {
       "_help" : "Manage swap pairs.",
       "list" : "List all available swap pairs on offer.",
+      "stats" : "Show pairs allocation status information.",
       "find" : {
         "_help" : "Find allocated swap pairs on offer.",
         "_ref" : {
@@ -635,10 +657,6 @@
         }
       }
     },
-    "security-symbol" : "Get the used security symbol",
-    "compilePairStatus" : {
-      "_root" : true,
-      "_this" : "Compiles a list of pair statistics. TODO: remove and use for cron only!"
-    }
+    "security-symbol" : "Get the used security symbol"
   }
 }
