@@ -93,7 +93,7 @@
       "with feesTotal math '$allocatorFee + $networkFee/($reference/$amount)'",
       "with baseAmount [math,'$amount * $rate']",
       "with baseAmountPlusFee [math,'$baseAmount + $feesTotal']",
-      "# include maximum tradable amounts",
+      "# ! include maximum tradable amounts",
       "with maxBidSufficiency [rout,/e/allocation/pair/stats/$fromBase/$toSymbol,2,1] [done,0] [tran,.sufficiency,1,-1] [math,'*$rate']",
       "with maxAskSufficiency [math,'$maxBidSufficiency/$rate'] [form,$fromBase]",
       "# !  skip reserving amount and defining creation, deadline and recipient values if only estimating",
@@ -128,8 +128,8 @@
       "jstr",
       "encr",
       "with keyHash [data,'deal ${allocation.accountID}'] [hash] [take,-16] [push,'$proposalIDb',0] [push,'$proposalIDa',0]",
-      "#save $keyHash",
-      "#call addToProposalList/$keyHash",
+      "save $keyHash",
+      "call addToProposalList/$keyHash",
       "done $proposal"
 		],
     "addToProposalList/key" : [
