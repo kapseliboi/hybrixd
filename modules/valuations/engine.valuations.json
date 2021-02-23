@@ -7,79 +7,107 @@
   "sources" : {
     "EUCentralBank" : {
       "notes" : "European central bank for fiat-exchange rates: https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml",
-      "type" : "none",
-      "site" : "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
+      "qrtz":"parseEUCentralBank",
+      "parsing" : "xml",
+      "url" : "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
+    },
+    "tomo_dex": {
+      "qrtz": "parseTomoDex",
+      "url":"https://dex.tomochain.com/api/market/stats/all"
     },
     "coinbase" : {
       "notes" : "coinbase: https://developers.coinbase.com/api/v2#exchange-rates",
-      "type" : "json",
-      "site" : "https://api.coinbase.com/v2/exchange-rates"
+      "url" : "https://api.coinbase.com/v2/exchange-rates"
     },
     "binance" : {
       "notes" : "https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md",
-      "type" : "json",
-      "site" : "https://api.binance.com/api/v1/ticker/price"
+      "url" : "https://api.binance.com/api/v1/ticker/price"
     },
     "hitbtc_symbols" : {
       "notes" : "hitbtc: https://api.hitbtc.com/",
-      "type" : "json",
-      "site" : "https://api.hitbtc.com/api/2/public/symbol"
+      "url" : "https://api.hitbtc.com/api/2/public/symbol"
     },
     "hitbtc_prices" : {
       "notes" : "hitbtc: https://api.hitbtc.com/",
-      "type" : "json",
-      "site" : "https://api.hitbtc.com/api/2/public/ticker"
+      "url" : "https://api.hitbtc.com/api/2/public/ticker"
     },
     "biki_hyusdt" : {
       "notes" : "https://github.com/code-biki/open-api/blob/master/README.us-en.md",
-      "type" : "json",
-      "site" : "https://openapi.biki.com/open/api/get_ticker?symbol=hyusdt"
+      "url" : "https://openapi.biki.com/open/api/get_ticker?symbol=hyusdt"
+    },
+    "uni_swap" : {
+      "url": "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2",
+      "data" : "{\"query\":\"{\\n  pairs(first: 1000) {\\n    token0 { symbol }\\n    token1 { symbol }\\n    token0Price\\n  }\\n}\\n\",\"variables\":null}",
+      "method": "POST",
+      "qrtz":"parseUniSwap"
     }
   },
+
   "quartz" : {
+    "parseTomoDex" : [
+      "tran .data[]{price:=.askPrice+.bidPrice, from:.pair.pairName, to: .pair.pairName}",
+      "with [].from [splt,'/'] [pick,0]",
+      "with [].to [splt,'/'] [pick,1]",
+      "with [].price math /(10^7*2)"
+    ],
+    "parseEUCentralBank" :[
+      "tran '.gesmes:Envelope.Cube[0].Cube[0].Cube[]{from:EUR,to:.attributes.currency,price:.attributes.rate}'"
+    ],
+    "parseUniSwap" :[
+      "tran .data.pairs[]{from:.token0.symbol,to:.token1.symbol,price:.token0Price}",
+      "with [].from [flow,WETH,1,2] [done,ETH] [push,'ETH.',0]",
+      "with [].to [flow,WETH,1,2] [done,ETH] [push,'ETH.',0]"
+    ],
+
     "cron" : [
       "# check if prices were recently updated",
       "with timeNow date now",
-      "peek 'local::pricesTimestamp'",
+      "peek local::pricesTimestamp",
       "ship 2 1 1",
       "data 0",
-      "math '+$refreshTime'",
-      "math '-$timeNow'",
+      "math +$refreshTime",
+      "math -$timeNow",
       "ship 1 1 @refreshValuations",
-      "done 'valuations up-to-date'",
+      "done",
       "@refreshValuations",
-      "data $sources",
-      "each download",
+      "peek sources",
+      "each handleSource",
       "func parse",
-      "poke 'local::prices'",
+      "poke local::prices",
       "date now",
-      "poke 'local::pricesTimestamp'",
-      "done 'valuations downloaded'"
-    ],
-    "download" : [
-      "poke 'key' ${.key}",
-      "poke 'site' ${.value.site}",
-      "poke 'type' ${.value.type}",
-      "curl '$site' {} {parsing:'$type'} 2 1",
-      "fail 'Could not connect to host'",
-      "done"
-    ],
-    "volume": [
-      "peek local::hy-volume",
-      "done"
+      "poke local::pricesTimestamp"
     ],
 
-    "rate" : [
-      "data '$3'",
-      "ship 2 2 2 1",
-      "data '1'",
-      "poke amount",
-      "data {source: '$1', target:'$2', amount:'$amount', mode: '$4',  prices: $local::prices}",
-      "func 'valuate'",
-      "done"
+    "handleSource" : [
+      "poke source ${.key}",
+      "poke qrtzFunction ${.value.qrtz} none",
+      "poke parsing ${.value.parsing} json",
+      "poke url ${.value.url}",
+      "have .value.data 1 4",
+      "data '${.value.data}'",
+      "curl POST $url {} {parsing:$parsing} @transform 3",
+      "jump 2",
+      "curl ${.value.url} {} {parsing:$parsing} @transform 1",
+      "logs 'Failed to retrieve data from $source'",
+      "done []",
+      "@transform",
+      "flow qrtzFunction none 3 1",
+      "call $qrtzFunction",
+      "with [].source peek source"
+    ],
+
+    "volume/symbol=hy": [
+      "peek local::hy-volume"
+    ],
+
+    "rate/from/to/amount=1/mode=median" : [
+      "data {source: '$from', target:'$to', amount:'$amount', mode: '$mode',  prices: $local::prices}",
+      "func rate"
     ],
     "list" : [
-      "done ['usd','eur','gbp','cad','nzd','jpy','cny','aud','krw','huf','pln','ron','sek','chf','isk','nok','hrk','rub','try','brl','hkd','idr','ils','inr','mxn','myr','php','sgd','thb','zar']"
+      "have local::symbols 2 1",
+      "done ['usd','eur','gbp','cad','nzd','jpy','cny','aud','krw','huf','pln','ron','sek','chf','isk','nok','hrk','rub','try','brl','hkd','idr','ils','inr','mxn','myr','php','sgd','thb','zar']",
+      "peek local::symbols"
     ]
   },
   "router" : {

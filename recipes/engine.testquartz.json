@@ -87,7 +87,7 @@
       "flow message 1 2",
       "done $OK",
       "fail"
-    ], 
+    ],
     "excl1" : [
       "data gloves",
       "excl g",
@@ -1124,6 +1124,22 @@
       "with {a:x,b:y} case upper",
       "data '$a$b'",
       "flow XY 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "with6":[
+      "data [{a:1},{a:2}]",
+      "with [].a math +1",
+      "jstr",
+      "flow '[{\"a\":\"2\"},{\"a\":\"3\"}]' 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "with7":[
+      "data {x:{a:1},y:{a:2}}",
+      "with {}.a math +1",
+      "jstr",
+      "flow '{\"x\":{\"a\":\"2\"},\"y\":{\"a\":\"3\"}}' 1 2",
       "done $OK",
       "fail"
     ],
