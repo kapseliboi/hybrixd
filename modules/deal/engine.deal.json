@@ -8,6 +8,9 @@
   "permissions":{
     "nodeKeys":true
   },
+  "expose" : {
+    "allocation" : ["readHistory"]
+  },
   "quartz" : {
     "cron" : [
       "call proposalHandler",
@@ -288,6 +291,23 @@
       "done",
       "@failure",
       "fail 'Cannot read proposal data of $proposalID!'"
+    ],
+    "readHistory/timeOffset/timeLimit" : [
+      "with timeUntil [date,now] [math,'-$timeOffset']",
+      "with timeFrom [math,'$timeUntil - $timeLimit']",
+      "peek local::completeList []",
+      "each readHistoryObject/$timeFrom/$timeUntil",
+      "# debug: add some bogus data",
+      "# push null",
+      "# push {'accountID': 'TESTpwK8wbN378A5sFrjD5kGEKjF7E954s2iUBiLBiDD','timestamp': '1610306857','deal': {'id': '451beef07d2d526e','ask': {'symbol': 'tomo.hy','amount': '15.229674706936153000','target': '0x47443e223afd74619e49cb619e63a66440bd32d0','txid': '0xf71eea46ececbe36631aff04485ec542e7081273b6d00372141f77e4e304bcd1'},'bid': {'symbol': 'eth.hy','amount': '3.335','target': '0x85fbc94b0b641425392e677cb29cda4314fd7839','txid': '0x1fe0492c532de9117a7cf9aa6fa6251434db741607316246871ce0044d890e95'},'fees': {'symbol': 'tomo.hy','allocator': '0.010005000000000000','network': '11.884669706936153'},'type': 'autonomous','creation': '1610106859','deadline': '1610110459'}}",
+      "excl null"
+    ],
+    "readHistoryObject/timeFrom/timeUntil" : [
+      "load ${.value} 2",
+      "done null",
+      "decr",
+      "jpar",
+      "true '${.timestamp}>=$timeUntil or ${.timestamp}<$timeFrom' -3"
     ]
   },
   "router" : {
