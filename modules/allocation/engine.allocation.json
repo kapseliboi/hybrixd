@@ -18,66 +18,74 @@
   },
   "quartz" : {
     "cron" : [
-      "call cronPairStats 1 2",
+      "time 300000",
+      "call compilePairStats"
+    ],
+    "compilePairStats" : [
+      "time 300000",
+      "call account/list",
+      "poke getInputData",
+      "# first prepare a unique pair array",
+      "each getPairs",
+      "flat",
+      "with getAccounts [data,$] [tran,.[0]]",
+      "poke accounts",
+      "with getPairs [data,$] [pick,1] [flat] [uniq]",
+      "peek getPairs",
+      "each getPairStats $getInputData",
+      "merg",
       "poke local::pairstats"
     ],
-    "cronPairStats" : [
-      "call account/list",
-      "poke compileInputData",
-      "# first prepare a unique pair array",
-      "each compilePairs",
-      "flat",
-      "with compileAccounts [data,$] [tran,.[0]]",
-      "poke accounts",
-      "with compilePairs [data,$] [pick 1] [flat] [uniq]",
-      "peek compilePairs",
-      "each compilePairStats $compileInputData",
-      "merg"
-    ],
-    "compilePairs" : [
+    "getPairs" : [
       "tran .value.pairs",
       "flat",
       "tran .[0]"
     ],
-    "compilePairStats" : [
+    "getPairStats" : [
       "copy .value pair",
       "with symbols [data,$pair] [splt,':']",
       "with fromBase peek symbols[0]",
       "with toSymbol peek symbols[1]",
       "copy .meta dataObject",
+      "# calculate sufficiency and liquidity values",
       "peek dataObject",
-      "call compileCalcStats/max/securityDepositBalances/$pair/$conf::securitySymbol",
+      "call getCalcStats/max/securityDepositBalances/$pair/$conf::securitySymbol",
       "rout /engine/valuations/rate/$conf::securitySymbol/$fromBase/$ 2 1",
       "data 0",
       "math '/$conf::securityRiskFactor'",
       "poke sufficiency",
       "peek dataObject",
-      "call compileCalcStats/add/balances/$pair",
+      "call getCalcStats/add/balances/$pair",
       "poke liquidity",
       "with sufficiency [true,'<$liquidity',2] [data,$liquidity] [form,8]",
+      "# calculate fee range",
       "peek dataObject",
-      "call compileCalcStats/min/pair/$pair/fee",
+      "call getCalcStats/min/pair/$pair/fee",
       "trim '%'",
       "poke minfee",
       "peek dataObject",
-      "call compileCalcStats/max/pair/$pair/fee",
+      "call getCalcStats/max/pair/$pair/fee",
       "trim '%'",
       "poke maxfee",
-      "with feerange [true,'$minfee==$maxfee',2] [done,'$minfee%-$maxfee%'] [done,'$minfee%']",
       "# calculate price based on valuation * (1+feepercentage)",
       "rout /engine/valuations/rate/$toSymbol/$fromBase/1 2 1",
       "data 0",
       "poke unitPrice",
-      "with bid [math,$unitPrice*(1-($minfee/100))]",
-      "with askfee [peek,dataObject] [call,compileCalcStats/min/pair/$toSymbol:$fromBase/fee] [ship,2] [done,0] [trim,'%']",
-      "with ask [true,'$askfee>0',2] [done,$bid] [math,$unitPrice*(1+($askfee/100))]",
+      "with bid [math,$unitPrice*(1-($minfee/100))] [form,$fromBase]",
+      "with askfee [peek,dataObject] [call,getCalcStats/min/pair/$toSymbol:$fromBase/fee] [ship,2] [done,0] [trim,'%']",
+      "with ask [true,'$askfee>0',2] [done,$bid] [math,$unitPrice*(1+($askfee/100))] [form,$fromBase]",
       "# calculate 24 hour volume",
-      "with volume call compileVolume/$fromBase",
+      "with volume call getVolume/$fromBase",
+      "# neatly present fee(s)",
+      "with minfee form $fromBase",
+      "with maxfee form $fromBase",
+      "with feerange [true,'$minfee==$maxfee',2] [done,'$minfee%-$maxfee%'] [done,'$minfee%']",      
+      "# all done",
       "done {'$pair':{base:'$fromBase',ask:'$ask',bid:'$bid',volume:'$volume',fee:'$feerange',sufficiency:'$sufficiency',liquidity:'$liquidity'}}"
     ],
-    "compileCalcStats/action/var/pair/specifier" : [
+    "getCalcStats/action/var/pair/specifier" : [
       "with specifier [void,2] [done] [peek,pair] [splt,':'] [pick,-1]",
-      "each compileGetStats {var:'$var',pair:$pair,specifier:$specifier}",
+      "each getCalcStatsHelper {var:'$var',pair:$pair,specifier:$specifier}",
       "type array",
       "flow action {add:@add,min:@min,max:@max,average:@average}",
       "@average",
@@ -97,7 +105,7 @@
       "@add",
       "math +"
     ],
-    "compileGetStats" : [
+    "getCalcStatsHelper" : [
       "have .value.pairs.[${.meta.pair}] 2",
       "done 0",
       "have .value.pairs.[${.meta.pair}].[${.meta.specifier}] 1 3",
@@ -105,7 +113,7 @@
       "done",
       "peek .value.[${.meta.var}].[${.meta.specifier}] 0"
     ],
-    "compileVolume/fromBase" : [
+    "getVolume/fromBase" : [
       "# get last 24 hour volume",
       "call deal::readHistory/0/86400",
       "each getVolumeAmount/$fromBase",
