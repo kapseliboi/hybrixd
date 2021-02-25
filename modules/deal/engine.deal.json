@@ -66,7 +66,7 @@
     ],
     "proposalCreate/fromBase/toSymbol/amount/target=null" : [
       "# 1. find best allocator available for this proposal",
-      "poke reference $amount",
+      "with reference [peek,amount] [ship,2,1,1,1] [done,1]",
       "flow target null 1 @hasTarget   # if estimating, take a fractional amount",
       "ship amount 2 1 1 1",
       "poke amount 1",
@@ -299,12 +299,9 @@
     ],
     "readHistory/timeOffset/timeLimit" : [
       "with timeUntil [date,now] [math,'-$timeOffset']",
-      "with timeFrom [math,'$timeUntil - $timeLimit']",
+      "with timeFrom math '$timeUntil - $timeLimit'",
       "peek local::completeList []",
       "each readHistoryObject/$timeFrom/$timeUntil",
-      "# debug: add some bogus data",
-      "# push null",
-      "# push {'accountID': 'TESTpwK8wbN378A5sFrjD5kGEKjF7E954s2iUBiLBiDD','timestamp': '1610306857','deal': {'id': '451beef07d2d526e','ask': {'symbol': 'tomo.hy','amount': '15.229674706936153000','target': '0x47443e223afd74619e49cb619e63a66440bd32d0','txid': '0xf71eea46ececbe36631aff04485ec542e7081273b6d00372141f77e4e304bcd1'},'bid': {'symbol': 'eth.hy','amount': '3.335','target': '0x85fbc94b0b641425392e677cb29cda4314fd7839','txid': '0x1fe0492c532de9117a7cf9aa6fa6251434db741607316246871ce0044d890e95'},'fees': {'symbol': 'tomo.hy','allocator': '0.010005000000000000','network': '11.884669706936153'},'type': 'autonomous','creation': '1610106859','deadline': '1610110459'}}",
       "excl null"
     ],
     "readHistoryObject/timeFrom/timeUntil" : [
