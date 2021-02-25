@@ -29,7 +29,7 @@
       "flat",
       "with compileAccounts [data,$] [tran,.[0]]",
       "poke accounts",
-      "with compilePairs [data,$] [tran,.[1]] [flat] [uniq]",
+      "with compilePairs [data,$] [pick 1] [flat] [uniq]",
       "peek compilePairs",
       "each compilePairStats $compileInputData",
       "merg"
@@ -42,8 +42,8 @@
     "compilePairStats" : [
       "copy .value pair",
       "with symbols [data,$pair] [splt,':']",
-      "with fromBase [data,$symbols] [pick]",
-      "with toSymbol [data,$symbols] [pick,-1]",
+      "with fromBase peek symbols[0]",
+      "with toSymbol peek symbols[1]",
       "copy .meta dataObject",
       "peek dataObject",
       "call compileCalcStats/max/securityDepositBalances/$pair/$conf::securitySymbol",
@@ -112,10 +112,9 @@
       "math +"
     ],
     "getVolumeAmount/fromBase" : [
-      "peek .value",
-      "flow .deal.ask.symbol '$fromBase' 2 1",
+      "flow .value.deal.ask.symbol '$fromBase' 2 1",
       "done 0",
-      "tran .deal.ask.amount 1 -1"
+      "tran .value.deal.ask.amount 1 -1"
     ],
 
     "pair/command/accountID/A/B/C/D/E/F" : [
