@@ -9,7 +9,8 @@
   "quartz":{
 
     "getSubTransaction/subSymbol" :[
-      "rout /a/$subSymbol/transaction/${.value}"
+      "rout /a/$subSymbol/transaction/${.value} 2 1",
+      "done null"
     ],
 
     "getSubHistory/count" :[
@@ -17,7 +18,8 @@
       "splt ':'",
       "poke [subSymbol,subAddress]",
       "rout /a/$subSymbol/history/$subAddress/$count/0",
-      "each getSubTransaction/$subSymbol"
+      "each getSubTransaction/$subSymbol",
+      "excl null"
     ],
 
     "getHistory/address/count=12/offset=0":[
