@@ -1,6 +1,7 @@
 
 function addQuote (accumulator, quoteCurrency, baseCurrency, price) {
   // Don't add quote if the input fails these requirements
+  if (typeof quoteCurrency !== 'string' || typeof baseCurrency !== 'string' || isNaN(price)) return accumulator;
   quoteCurrency = quoteCurrency.toUpperCase();
   baseCurrency = baseCurrency.toUpperCase();
   if (quoteCurrency === baseCurrency || price === 0 || !isFinite(price)) return accumulator;
@@ -45,10 +46,8 @@ function parseCoinbase (obj) {
   const name = 'coinbase';
   const quoteAccumulator = {};
   if (typeof obj !== 'object' || obj === null) return {name, quotes: quoteAccumulator};
-
   Object.keys(obj.data.rates).forEach(function (key, index) {
     const price = parseFloat(obj.data.rates[key]);
-
     addBiQuote(quoteAccumulator, 'USD', key, price);
   });
   return {name: name, quotes: quoteAccumulator};
@@ -56,7 +55,11 @@ function parseCoinbase (obj) {
 
 function parseBinance (obj) {
   const name = 'binance';
-  const baseCurrencies = ['BTC', 'ETH', 'USDT', 'BNB'];
+  const baseCurrencies = [
+    'BTC', 'ETH', 'BNB', 'TRX',
+    'USDT', 'USDC', 'BUSD', 'DAI',
+    'EUR', 'AUD', 'GBP', 'RUB', 'VAI', 'TRY', 'BRL', 'BIDR', 'PAX'
+  ];
   const quoteAccumulator = {};
   if (typeof obj !== 'object' || obj === null) return {name, quotes: quoteAccumulator};
 
@@ -73,26 +76,69 @@ function parseBinance (obj) {
   return {name: name, quotes: quoteAccumulator};
 }
 
-function parseHitbtc (prices, symbols) {
+// if symbol = 'BLA' and hybrix symbol BLA does not exists but ETH.BLA does, then use that
+function sanitizeSymbol (symbol, symbols) {
+  const lSymbol = symbol.toLowerCase();
+  if (symbols.includes(lSymbol)) return symbol.toUpperCase(); // 'BLA' exists
+  for (const hybrixSymbol of symbols) {
+    if (hybrixSymbol.endsWith('.' + lSymbol)) return hybrixSymbol.toUpperCase(); // return 'ETH.BLA'
+  }
+  if ([
+    'usd','usdt','tusd','dai',
+    'eur','eurs',
+    'aud','cad','gpb','jpy','rub','zar'
+  ].includes(lSymbol)) return symbol.toUpperCase(); // white list currencies
+  return null; // no matching symbol found
+}
+
+function parseHitbtc (priceObjects, symbolObjects, symbols) {
   const name = 'hitbtc';
-  // baseCurrencies are included in the downloaded data
-  const quoteAccumulator = {};
-  if (!(prices instanceof Array) || !(symbols instanceof Array)) return {name, quotes: quoteAccumulator};
+  const quotes = {};
+  if (!(priceObjects instanceof Array) || !(symbolObjects instanceof Array)) return {name, quotes};
 
-  const symbolsObj = {};
-  symbols.forEach(function (key) {
-    symbolsObj[key.id] = key;
-  });
-
-  prices.forEach(function (key, index) {
-    const exchangeSymbol = symbolsObj[key.symbol];
-    const baseCurrency = exchangeSymbol.baseCurrency;
-    const quoteCurrency = exchangeSymbol.quoteCurrency;
-    const price = parseFloat(key.last);
-
-    addBiQuote(quoteAccumulator, baseCurrency, quoteCurrency, price);
-  });
-  return {name: name, quotes: quoteAccumulator};
+  /*
+priceObjects [
+  {
+    id: 'BRDETH',
+    baseCurrency: 'BRD',
+    quoteCurrency: 'ETH',
+    quantityIncrement: '0.1',
+    tickSize: '0.00000001',
+    takeLiquidityRate: '0.0025',
+    provideLiquidityRate: '0.001',
+    feeCurrency: 'ETH'
+  }, ...
+  symbolObjects [
+    {
+      symbol: 'VEOBTC',
+      ask: '0.001519',
+      bid: '0.001300',
+      last: '0.001398',
+      low: '0.001398',
+      high: '0.001400',
+      open: '0.001516',
+      volume: '0.267',
+      volumeQuote: '0.000373268',
+      timestamp: '2021-02-24T08:55:00.001Z'
+    }, ...
+ */
+  const symbolObjectsByPair = {};
+  symbolObjects.forEach(symbolObject => { symbolObjectsByPair[symbolObject.symbol] = symbolObject; });
+  const priceObjectsByPair = {};
+  priceObjects.forEach(priceObject => { priceObjectsByPair[priceObject.id] = priceObject; });
+  for (const pair in priceObjectsByPair) {
+    const priceObject = priceObjectsByPair[pair];
+    if (symbolObjectsByPair.hasOwnProperty(pair)) {
+      const symbolObject = symbolObjectsByPair[pair];
+      const baseCurrency = sanitizeSymbol(priceObject.baseCurrency, symbols);
+      const quoteCurrency = sanitizeSymbol(priceObject.quoteCurrency, symbols);
+      if (quoteCurrency && baseCurrency) { // only if symbols are known in hybrix
+        const price = (parseFloat(symbolObject.bid) + parseFloat(symbolObject.ask)) * 0.5;
+        addBiQuote(quotes, baseCurrency, quoteCurrency, price);
+      }
+    }
+  }
+  return {name, quotes};
 }
 
 function parseDefault (data, name) {
@@ -153,7 +199,7 @@ function updateMinAndMedians (exchangeRates) {
 function parse (proc, data) {
   const sourcesOut = combineQuoteSources([
     parseDefault(data.EUCentralBank, 'EUCentralBank'),
-    parseHitbtc(data.hitbtc_symbols, data.hitbtc_prices),
+    parseHitbtc(data.hitbtc_symbols, data.hitbtc_prices, data.symbols),
     parseBinance(data.binance),
     parseCoinmarketcap(data.coinmarketcap),
     parseCoinbase(data.coinbase),
