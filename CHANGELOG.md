@@ -1,3 +1,17 @@
+# v0.9.6
+## Jolly Yellow Unicorn
+## 27-02-2021
+
+* Improve valuation engine. Added more sources, sanitize symbols.
+* Tweaks to recipe editor 
+* Fix to tomo token history and unified history
+* Swap deal engine: validate proposal target address
+* Swap deal engine: pair volume reporting and more statistics
+* Swap deal engine: added general estimate endpoint. 
+
+
+
+
 # v0.9.5
 ## Curly Auburn Fairy
 ## 11-02-2021
