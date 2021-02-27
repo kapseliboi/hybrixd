@@ -42,12 +42,11 @@
       "qrtz":"parseUniSwap"
     }
   },
-
   "quartz" : {
     "parseTomoDex" : [
       "tran .data[]{price:=.askPrice+.bidPrice, from:.pair.pairName, to: .pair.pairName}",
-      "with [].from [splt,'/'] [pick,0]",
-      "with [].to [splt,'/'] [pick,1]",
+      "with [].from [splt,'/'] [pick,0] [flow,{ETH:2,TOMO:2},1] [push,'TOMO.',0]",
+      "with [].to [splt,'/'] [pick,1] [flow,{ETH:2,TOMO:2},1] [push,'TOMO.',0]",
       "with [].price math /(10^7*2)"
     ],
     "parseEUCentralBank" :[
@@ -72,6 +71,7 @@
       "@refreshValuations",
       "peek sources",
       "each handleSource",
+      "with .symbols rout /a",
       "func parse",
       "poke local::prices",
       "date now",
