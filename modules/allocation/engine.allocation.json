@@ -2,7 +2,7 @@
   "engine" : "allocation",
   "name" : "Allocation management engine",
   "timeout" : 120000,
-  "cron" : 300,  
+  "cron" : 300,
   "defaultDeadline" : 3600,
   "permissions":{
     "nodeKeys":true
@@ -79,7 +79,7 @@
       "# neatly present fee(s)",
       "with minfee form $fromBase",
       "with maxfee form $fromBase",
-      "with feerange [true,'$minfee==$maxfee',2] [done,'$minfee%-$maxfee%'] [done,'$minfee%']",      
+      "with feerange [true,'$minfee==$maxfee',2] [done,'$minfee%-$maxfee%'] [done,'$minfee%']",
       "# all done",
       "done {'$pair':{base:'$fromBase',ask:'$ask',bid:'$bid',volume:'$volume',fee:'$feerange',sufficiency:'$sufficiency',liquidity:'$liquidity'}}"
     ],
@@ -231,8 +231,8 @@
       "# eligibility to be selected: enough balance, enough security sufficiency",
       "data ${.value}",
       "# take along transaction fee and then some 5% for the network fee",
-      "with .fee [excl,'%']",
-      "with needed math '($amount * (1 + 0.05 + (${.fee} / 100)))'",
+      "with feeFloat [data,${.fee}] [trim,'%'] [math,'/100']",
+      "with needed math '($amount * (1 + $conf::securityFee + $feeFloat))'",
       "true '${.balance} >= $needed and ${.sufficiency} >= $needed' 1 2",
       "done",
       "done null"
@@ -268,7 +268,7 @@
       "with .sufficiency call getSufficiency/$accountID/$toSymbol",
       "with .active math '${.balance}>0.001 and ${.sufficiency}>0.001'",
       "with feeModifier call getFeeModifier/$accountID/$toSymbol",
-      "with .fee [excl,'%'] [math,'* (1 + $feeModifier)'] [push,'%']"
+      "with .fee [trim,'%'] [math,'* (1 + $feeModifier)'] [push,'%']"
     ],
 
     "account/command/accountID/A/B/C/D/E/F" : [
