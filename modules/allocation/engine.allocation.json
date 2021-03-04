@@ -11,7 +11,7 @@
     "deal" : ["push","getAddressAccount","doRebalancePair"]
   },
   "conf" :{
-    "securitySymbol" : {"default":"tomo.hy"},
+    "securitySymbol" : {"default":"hy"},
     "securityFee" : {"default":"0.5"},
     "securityRiskFactor" : {"default":"7"},
     "securityMinimalDeposit" : {"default":10}
@@ -138,7 +138,7 @@
       "call keysAccount/$accountID",
       "root 1 2",
       "done",
-      "data '${message}-${.secretKey}'",
+      "data '${message}-${.entropy}'",
       "hash",
       "flow '$signature' 2 1",
       "fail 'Incorrect signature'"
@@ -289,15 +289,15 @@
       "@other",
       "call ${command}Account/$accountID/$A/$B/$C/$D/$E/$F"
     ],
-    "initAccount/accountID/secretKey" : [
-      "with accountHash [data,'account $secretKey'] [hash] [code,hex,base58]",
+    "initAccount/accountID/entropy" : [
+      "with accountHash [data,'account $entropy'] [hash] [code,hex,base58]",
       "flow accountID '$accountHash' 2 1",
-      "fail 'Non-matching account ID and secret key!'",
+      "fail 'Non-matching account ID and entropy!'",
       "have local::accounts[$accountID] 1 2",
       "done $accountID",
-      "with secretKey [code,hex,base58] [encr]",
+      "with entropy [code,hex,base58] [encr]",
       "with created [date,now] [math,round]",
-      "data {created:$created,secretKey:$secretKey, pairs:{}, feeModifiers:{}, balances:{}, securityDepositBalances:{}}",
+      "data {created:$created,entropy:$entropy, pairs:{}, feeModifiers:{}, balances:{}, securityDepositBalances:{}}",
       "poke local::accounts[$accountID]",
       "call getAccountBalance/$accountID/${conf::securitySymbol}",
       "poke local::accounts[$accountID].balances[${conf::securitySymbol}]",
@@ -316,8 +316,8 @@
       "have local::accounts[$accountID] 2 1",
       "fail 'Account does not exist!'",
       "peek local::accounts[$accountID]",
-      "with secretKey [data,${.secretKey}] [decr,2,1] [done,''] [code,base58,hex]",
-      "with keys keys $secretKey",
+      "with entropy [data,${.entropy}] [decr,2,1] [done,''] [code,base58,hex]",
+      "with keys keys $entropy",
       "done {created:'${.created}',keys:$keys, pairs:${.pairs}, balances:${.balances}, feeModifiers: ${.feeModifiers}, securityDepositBalances:${.securityDepositBalances}}"
     ],
     "keysAccount/accountID" : [
