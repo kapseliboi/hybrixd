@@ -2,7 +2,7 @@
   "engine" : "allocation",
   "name" : "Allocation management engine",
   "timeout" : 120000,
-  "cron" : 300,  
+  "cron" : 300,
   "defaultDeadline" : 3600,
   "permissions":{
     "nodeKeys":true
@@ -11,7 +11,7 @@
     "deal" : ["push","getAddressAccount","doRebalancePair"]
   },
   "conf" :{
-    "securitySymbol" : {"default":"tomo.hy"},
+    "securitySymbol" : {"default":"hy"},
     "securityFee" : {"default":"0.5"},
     "securityRiskFactor" : {"default":"7"},
     "securityMinimalDeposit" : {"default":10}
@@ -79,7 +79,7 @@
       "# neatly present fee(s)",
       "with minfee form $fromBase",
       "with maxfee form $fromBase",
-      "with feerange [true,'$minfee==$maxfee',2] [done,'$minfee%-$maxfee%'] [done,'$minfee%']",      
+      "with feerange [true,'$minfee==$maxfee',2] [done,'$minfee%-$maxfee%'] [done,'$minfee%']",
       "# all done",
       "done {'$pair':{base:'$fromBase',ask:'$ask',bid:'$bid',volume:'$volume',fee:'$feerange',sufficiency:'$sufficiency',liquidity:'$liquidity'}}"
     ],
@@ -231,8 +231,8 @@
       "# eligibility to be selected: enough balance, enough security sufficiency",
       "data ${.value}",
       "# take along transaction fee and then some 5% for the network fee",
-      "with .fee [excl,'%']",
-      "with needed math '($amount * (1 + 0.05 + (${.fee} / 100)))'",
+      "with feeFloat [data,${.fee}] [trim,'%'] [math,'/100']",
+      "with needed math '($amount * (1 + $conf::securityFee + $feeFloat))'",
       "true '${.balance} >= $needed and ${.sufficiency} >= $needed' 1 2",
       "done",
       "done null"
@@ -268,7 +268,7 @@
       "with .sufficiency call getSufficiency/$accountID/$toSymbol",
       "with .active math '${.balance}>0.001 and ${.sufficiency}>0.001'",
       "with feeModifier call getFeeModifier/$accountID/$toSymbol",
-      "with .fee [excl,'%'] [math,'* (1 + $feeModifier)'] [push,'%']"
+      "with .fee [trim,'%'] [math,'* (1 + $feeModifier)'] [push,'%']"
     ],
 
     "account/command/accountID/A/B/C/D/E/F" : [
@@ -289,15 +289,15 @@
       "@other",
       "call ${command}Account/$accountID/$A/$B/$C/$D/$E/$F"
     ],
-    "initAccount/accountID/secretKey" : [
-      "with accountHash [data,'account $secretKey'] [hash] [code,hex,base58]",
+    "initAccount/accountID/entropy" : [
+      "with accountHash [data,'account $entropy'] [hash] [code,hex,base58]",
       "flow accountID '$accountHash' 2 1",
-      "fail 'Non-matching account ID and secret key!'",
+      "fail 'Non-matching account ID and entropy!'",
       "have local::accounts[$accountID] 1 2",
       "done $accountID",
-      "with secretKey [code,hex,base58] [encr]",
+      "with entropy [code,hex,base58] [encr]",
       "with created [date,now] [math,round]",
-      "data {created:$created,secretKey:$secretKey, pairs:{}, feeModifiers:{}, balances:{}, securityDepositBalances:{}}",
+      "data {created:$created,entropy:$entropy, pairs:{}, feeModifiers:{}, balances:{}, securityDepositBalances:{}}",
       "poke local::accounts[$accountID]",
       "call getAccountBalance/$accountID/${conf::securitySymbol}",
       "poke local::accounts[$accountID].balances[${conf::securitySymbol}]",
@@ -316,8 +316,8 @@
       "have local::accounts[$accountID] 2 1",
       "fail 'Account does not exist!'",
       "peek local::accounts[$accountID]",
-      "with secretKey [data,${.secretKey}] [decr,2,1] [done,''] [code,base58,hex]",
-      "with keys keys $secretKey",
+      "with entropy [data,${.entropy}] [decr,2,1] [done,''] [code,base58,hex]",
+      "with keys keys $entropy",
       "done {created:'${.created}',keys:$keys, pairs:${.pairs}, balances:${.balances}, feeModifiers: ${.feeModifiers}, securityDepositBalances:${.securityDepositBalances}}"
     ],
     "keysAccount/accountID" : [
