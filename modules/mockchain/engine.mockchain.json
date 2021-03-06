@@ -3,7 +3,12 @@
   "name":"Mockchain Explorer.",
   "module":"mockchain",
   "quartz":{
-    "mine/contract/address/amount" : ["func 'mine/$contract/$address/$amount'"],
+    "mine/contract/address/amount" : [
+      "rout /a/mock.$contract/contract 1 2",
+      "flow $contract 2 1",
+      "fail 'Illegal contract $contract'",
+      "func 'mine/$contract/$address/$amount'"
+    ],
     "balance/contract/address" : [
       "flow contract {main:1} 3",
       "rout /asset/mock/factor",
