@@ -1,56 +1,71 @@
-
-function addQuote (accumulator, quoteCurrency, baseCurrency, price) {
-  // Don't add quote if the input fails these requirements
-  if (typeof quoteCurrency !== 'string' || typeof baseCurrency !== 'string' || isNaN(price)) return accumulator;
-  quoteCurrency = quoteCurrency.toUpperCase();
-  baseCurrency = baseCurrency.toUpperCase();
-  if (quoteCurrency === baseCurrency || price === 0 || !isFinite(price)) return accumulator;
-
-  if (!accumulator.hasOwnProperty(quoteCurrency)) accumulator[quoteCurrency] = {quotes: {}};
-
-  accumulator[quoteCurrency].quotes[baseCurrency] = price;
-  return accumulator;
+// if symbol = 'BLA' and hybrix symbol BLA does not exists but ETH.BLA does, then use that
+function sanitizeSymbol (symbol, symbols) {
+  const lSymbol = symbol.toLowerCase();
+  if (symbols.includes(lSymbol)) return symbol.toUpperCase(); // 'BLA' exists
+  for (const hybrixSymbol of symbols) {
+    if (hybrixSymbol.endsWith('.' + lSymbol)) return hybrixSymbol.toUpperCase(); // return 'ETH.BLA'
+  }
+  if ([
+    'usd', 'usdt', 'tusd', 'dai',
+    'eur', 'eurs',
+    'aud', 'cad', 'gpb', 'jpy', 'rub', 'zar'
+  ].includes(lSymbol)) return symbol.toUpperCase(); // white list currencies
+  return null; // no matching symbol found
 }
 
-function addBiQuote (accumulator, quoteCurrency, baseCurrency, price) {
-  addQuote(accumulator, quoteCurrency, baseCurrency, price);
-  addQuote(accumulator, baseCurrency, quoteCurrency, 1 / price);
+function addQuote (quotes, sourceSymbol, targetSymbol, price) {
+  // Don't add quote if the input fails these requirements
+  if (typeof sourceSymbol !== 'string' || typeof targetSymbol !== 'string' || isNaN(price)) return quotes;
+  sourceSymbol = sourceSymbol.toUpperCase();
+  targetSymbol = targetSymbol.toUpperCase();
+  if (sourceSymbol === targetSymbol || price === 0 || !isFinite(price)) return quotes;
+
+  if (!quotes.hasOwnProperty(sourceSymbol)) quotes[sourceSymbol] = {quotes: {}};
+
+  quotes[sourceSymbol].quotes[targetSymbol] = price;
+  return quotes;
+}
+
+function addBiQuote (quotes, sourceSymbol, targetSymbol, price) {
+  addQuote(quotes, sourceSymbol, targetSymbol, price);
+  addQuote(quotes, targetSymbol, sourceSymbol, 1 / price);
 }
 
 function parseCoinmarketcap (obj) {
   const name = 'coinmarketcap';
-  const quoteAccumulator = {};
-  if (typeof obj !== 'object' || obj === null || !obj.hasOwnProperty('data')) return {name, quotes: quoteAccumulator};
+  const quotes = {};
+  if (typeof obj !== 'object' || obj === null || !obj.hasOwnProperty('data')) return {name, quotes};
 
   Object.keys(obj.data).forEach(function (key, index) {
     const price = obj.data[key].quotes.USD.price;
-    const quoteCurrency = obj.data[key].symbol;
+    const targetSymbol = obj.data[key].symbol;
 
-    addBiQuote(quoteAccumulator, 'USD', quoteCurrency, 1 / price);
+    addBiQuote(quotes, 'USD', targetSymbol, 1 / price);
   });
-  return {name: name, quotes: quoteAccumulator};
+  return {name: name, quotes};
 }
 
 function parseBiki (obj) {
   // {"code":"0","msg":"suc","data":{"amount":"50834.305317","high":"3.4206","vol":"15804.03","last":3.2491000000000000,"low":"3.02","buy":3.0899,"sell":3.2734,"rose":"0.0338233422","time":1590480524000},"message":null}
   const name = 'biki';
-  const quoteAccumulator = {};
+  const quotes = {};
   if (typeof obj === 'object' && obj !== null && (obj.code === 0 || obj.code === '0')) {
     const price = (Number(obj.data.high) + Number(obj.data.low) + Number(obj.data.buy) + Number(obj.data.sell)) * 0.25; // average over all available data
-    addBiQuote(quoteAccumulator, 'HY', 'USD', price);
+    addBiQuote(quotes, 'HY', 'USD', price);
   }
-  return {name, quotes: quoteAccumulator};
+  return {name, quotes};
 }
 
 function parseCoinbase (obj) {
   const name = 'coinbase';
-  const quoteAccumulator = {};
-  if (typeof obj !== 'object' || obj === null) return {name, quotes: quoteAccumulator};
-  Object.keys(obj.data.rates).forEach(function (key, index) {
-    const price = parseFloat(obj.data.rates[key]);
-    addBiQuote(quoteAccumulator, 'USD', key, price);
+  const quotes = {};
+  if (typeof obj !== 'object' || obj === null || typeof obj.data !== 'object' || obj.data === null) return {name, quotes};
+
+  Object.keys(obj.data.rates).forEach(targetSymbol => {
+    const price = parseFloat(obj.data.rates[targetSymbol]);
+    addBiQuote(quotes, 'USD', targetSymbol, price);
   });
-  return {name: name, quotes: quoteAccumulator};
+  return {name, quotes};
 }
 
 function parseBinance (obj) {
@@ -60,35 +75,19 @@ function parseBinance (obj) {
     'USDT', 'USDC', 'BUSD', 'DAI',
     'EUR', 'AUD', 'GBP', 'RUB', 'VAI', 'TRY', 'BRL', 'BIDR', 'PAX'
   ];
-  const quoteAccumulator = {};
-  if (typeof obj !== 'object' || obj === null) return {name, quotes: quoteAccumulator};
+  const quotes = {};
+  if (typeof obj !== 'object' || obj === null) return {name, quotes};
 
-  Object.keys(obj).forEach(function (key, index) {
+  Object.keys(obj).forEach(key => {
     const symbolPair = obj[key].symbol;
-    const baseCurrency = baseCurrencies.find(function (currency) { return symbolPair.endsWith(currency); });
-    if (baseCurrency) {
-      const quoteCurrency = symbolPair.slice(0, symbolPair.length - baseCurrency.length);
+    const targetSymbol = baseCurrencies.find(currency => symbolPair.endsWith(currency));
+    if (targetSymbol) {
+      const sourceSymbol = symbolPair.slice(0, symbolPair.length - targetSymbol.length);
       const price = parseFloat(obj[key].price);
-
-      addBiQuote(quoteAccumulator, quoteCurrency, baseCurrency, price);
+      addBiQuote(quotes, sourceSymbol, targetSymbol, price);
     }
   });
-  return {name: name, quotes: quoteAccumulator};
-}
-
-// if symbol = 'BLA' and hybrix symbol BLA does not exists but ETH.BLA does, then use that
-function sanitizeSymbol (symbol, symbols) {
-  const lSymbol = symbol.toLowerCase();
-  if (symbols.includes(lSymbol)) return symbol.toUpperCase(); // 'BLA' exists
-  for (const hybrixSymbol of symbols) {
-    if (hybrixSymbol.endsWith('.' + lSymbol)) return hybrixSymbol.toUpperCase(); // return 'ETH.BLA'
-  }
-  if ([
-    'usd','usdt','tusd','dai',
-    'eur','eurs',
-    'aud','cad','gpb','jpy','rub','zar'
-  ].includes(lSymbol)) return symbol.toUpperCase(); // white list currencies
-  return null; // no matching symbol found
+  return {name, quotes};
 }
 
 function parseHitbtc (priceObjects, symbolObjects, symbols) {
@@ -142,52 +141,81 @@ priceObjects [
 }
 
 function parseDefault (data, name) {
-  // baseCurrencies are included in the downloaded data
-  const quoteAccumulator = {};
-  if (!(data instanceof Array)) return {name, quotes: quoteAccumulator};
-  for (const pair of data) addBiQuote(quoteAccumulator, pair.from, pair.to, Number(pair.price));
-  return {name: name, quotes: quoteAccumulator};
+  const quotes = {};
+  if (!(data instanceof Array)) return {name, quotes};
+  for (const pair of data) addBiQuote(quotes, pair.from, pair.to, Number(pair.price));
+  return {name, quotes};
 }
 
-function combineQuoteSources (sources) {
-  const combinedQuotes = sources.reduce(function (accumulatedSources, newSource) {
-    const newQuotes = newSource.quotes;
-    Object.keys(newQuotes).forEach(function (quoteCurrency, index) {
-      if (!accumulatedSources.hasOwnProperty(quoteCurrency)) {
-        accumulatedSources[quoteCurrency] = {quotes: {}};
-      }
-      Object.keys(newQuotes[quoteCurrency].quotes).forEach(function (baseCurrency, index) {
-        if (!accumulatedSources[quoteCurrency].quotes.hasOwnProperty(baseCurrency)) {
-          accumulatedSources[quoteCurrency].quotes[baseCurrency] = {sources: {}};
+/*
+exchangeRates =  {
+[sourceCurrency]: {
+ quotes: {
+   [targetCurrency]: {
+     sources,
+     highest_rate  {exchange, rate},
+     lowest_rate: {exchange, rate},
+     median_rate: {exchange, rate}
+     }
+   }
+ }
+}
+
+sources = [{name, quotes},...]
+ */
+function addUpdatedExchangeRates (proc, exchangeRates, sources) {
+  for (const source of sources) { // source = {name, quotes}
+    try {
+      const name = source.name;
+      for (const sourceSymbol in source.quotes) {
+        if (!exchangeRates.hasOwnProperty(sourceSymbol)) exchangeRates[sourceSymbol] = {quotes: {}};
+        const newQuotes = source.quotes[sourceSymbol].quotes;
+        for (const targetSymbol in newQuotes) {
+          if (!exchangeRates[sourceSymbol].quotes.hasOwnProperty(targetSymbol)) exchangeRates[sourceSymbol].quotes[targetSymbol] = {sources: {}};
+          exchangeRates[sourceSymbol].quotes[targetSymbol].sources[name] = newQuotes[targetSymbol];
         }
-        accumulatedSources[quoteCurrency].quotes[baseCurrency].sources[newSource.name] = newQuotes[quoteCurrency].quotes[baseCurrency];
-      });
-    });
-    return accumulatedSources;
-  }, {});
-
-  return combinedQuotes;
+      }
+    } catch (error) {
+      const name = typeof source === 'object' && source !== null ? source.name : 'unknown';
+      proc.logs(`Failed to add source ${name} : ${error}`);
+    }
+  }
+  return exchangeRates;
 }
 
-function updateMinAndMedians (exchangeRates) {
-  Object.keys(exchangeRates).forEach(function (sourceCurrency, _) {
-    const quotes = exchangeRates[sourceCurrency].quotes;
-    Object.keys(quotes).forEach(function (targetCurrency, _) {
-      const exchanges = quotes[targetCurrency].sources;
+/* IN exchangeRates =  {[sourceCurrency]: {quotes:{[targetCurrency] : {sources}}}} // might not all have rates yet
+ OUT exchangeRates =  {
+ [sourceCurrency]: {
+  quotes: {
+    [targetCurrency]: {
+      sources,
+      highest_rate  {exchange, rate},
+      lowest_rate: {exchange, rate},
+      median_rate: {exchange, rate}
+      }
+    }
+  }
+}
+*/
+function enrichExchangeRatesWithMinMaxAndMedians (exchangeRates) {
+  Object.keys(exchangeRates).forEach(sourceSymbol => {
+    const quotes = exchangeRates[sourceSymbol].quotes;
+    Object.keys(quotes).forEach(targetSymbol => {
+      const exchanges = quotes[targetSymbol].sources;
       const sortedExchanges = Object.keys(exchanges).sort(function (exchange1, exchange2) {
         return exchanges[exchange2] - exchanges[exchange1];
       });
 
-      exchangeRates[sourceCurrency].quotes[targetCurrency].highest_rate = {exchange: sortedExchanges[0], rate: exchanges[sortedExchanges[0]]};
+      exchangeRates[sourceSymbol].quotes[targetSymbol].highest_rate = {exchange: sortedExchanges[0], rate: exchanges[sortedExchanges[0]]};
       const lowPoint = sortedExchanges.length - 1;
-      exchangeRates[sourceCurrency].quotes[targetCurrency].lowest_rate = {exchange: sortedExchanges[lowPoint], rate: exchanges[sortedExchanges[lowPoint]]};
+      exchangeRates[sourceSymbol].quotes[targetSymbol].lowest_rate = {exchange: sortedExchanges[lowPoint], rate: exchanges[sortedExchanges[lowPoint]]};
       const midPoint = (sortedExchanges.length - 1) / 2;
       const floorExchange = sortedExchanges[Math.floor(midPoint)];
       const ceilExchange = sortedExchanges[Math.ceil(midPoint)];
 
       const exchange = floorExchange === ceilExchange ? ceilExchange : (floorExchange + '|' + ceilExchange);
 
-      exchangeRates[sourceCurrency].quotes[targetCurrency].median_rate = {
+      exchangeRates[sourceSymbol].quotes[targetSymbol].median_rate = {
         exchange,
         rate: (Number(exchanges[floorExchange]) + Number(exchanges[ceilExchange])) / 2
       };
@@ -196,8 +224,32 @@ function updateMinAndMedians (exchangeRates) {
   return exchangeRates;
 }
 
+function createAndStoreSymbolList (proc, enrichedExchangeRates) {
+  const symbols = [];
+  for (const sourceSymbol in enrichedExchangeRates) {
+    if (!symbols.includes(sourceSymbol)) symbols.push(sourceSymbol);
+    for (const targetSymbol in enrichedExchangeRates[sourceSymbol].quotes) {
+      if (!symbols.includes(targetSymbol)) symbols.push(targetSymbol);
+    }
+  }
+  proc.poke('local::symbols', symbols);
+}
+
+function storeBikiHyVolume (proc, data) {
+  if (typeof data.biki_hyusdt === 'object' && data.biki_hyusdt !== null && (data.biki_hyusdt.code === 0 || data.biki_hyusdt.code === '0') &&
+      typeof data.biki_hyusdt.data === 'object' && data.biki_hyusdt.data !== null && data.biki_hyusdt.data.hasOwnProperty('vol')
+  ) {
+    const hyVolume = data.biki_hyusdt.data.vol;
+    proc.poke('local::hy-volume', hyVolume);
+  }
+}
+
 function parse (proc, data) {
-  const sourcesOut = combineQuoteSources([
+  proc.logs('Updating sources.');
+
+  const currentExchangeRates = typeof data === 'object' && data !== null && typeof data.rates === 'object' && data.rates !== null ? data.rates : {};
+
+  const updatedExchangeRates = addUpdatedExchangeRates(proc, currentExchangeRates, [
     parseDefault(data.EUCentralBank, 'EUCentralBank'),
     parseHitbtc(data.hitbtc_symbols, data.hitbtc_prices, data.symbols),
     parseBinance(data.binance),
@@ -207,22 +259,13 @@ function parse (proc, data) {
     parseDefault(data.uni_swap, 'uni_swap'),
     parseDefault(data.tomo_dex, 'tomo_dex')
   ]);
-  const result = updateMinAndMedians(sourcesOut);
-  //  store hy volume
-  if (typeof data.biki_hyusdt === 'object' && (data.biki_hyusdt.code === 0 || data.biki_hyusdt.code === '0')) {
-    const hyVolume = data.biki_hyusdt.data.vol;
-    proc.poke('local::hy-volume', hyVolume);
-  }
-  const symbols = [];
-  for (const symbol1 in result) {
-    if (!symbols.includes(symbol1)) symbols.push(symbol1);
-    for (const symbol2 in result[symbol1].quotes) {
-      if (!symbols.includes(symbol2)) symbols.push(symbol2);
-    }
-  }
-  proc.poke('local::symbols', symbols);
 
-  proc.done(result);
+  const enrichedExchangeRates = enrichExchangeRatesWithMinMaxAndMedians(updatedExchangeRates);
+
+  storeBikiHyVolume(proc, data);
+  createAndStoreSymbolList(proc, enrichedExchangeRates);
+
+  proc.done(enrichedExchangeRates);
 }
 
 exports.parse = parse;
