@@ -6,6 +6,7 @@
   "command":{
     "_help":"Execute a direct command to hybrixd.",
     "_access":"root",
+    "events":"List all running event hooks.",
     "apiqueue" :{
       "_help" : "Commands to control and check the API Queue.",
       "pause":"Pause the API Queue",
