@@ -6,7 +6,7 @@
   "factor":8,
   "confirmed":6,
   "fee":0.001,
-  "host":"FATAL - Currently no known public hosts that offer Namecoin access.",
+  "host": ["tcps://electrum.namebrow.se:50002"],
   "cache":30000,
   "throttle":10,
   "import":"electrum-tcp",
