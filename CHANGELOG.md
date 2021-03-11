@@ -1,3 +1,20 @@
+# v0.9.7
+## Merry Cyan Noodlefish
+## 11-03-2021
+
+
+* Add tcps support. TLS over TCP is now supported. Nice and secure.
+* Refactor valuations for resilience. 
+* Swap deal engine : Improvements to sufficiency calculations
+* Catch non illegal mockchain contracts for testing
+* HY asset icon had wrong SVG format, compared to the other icons
+* Relocate Namecoin, until we get ElectrumX hosts from the community
+* Fix fee calculation edge cases.
+* Add event hook introspection using /c/events for debug purposes
+
+
+
+
 # v0.9.6
 ## Jolly Yellow Unicorn
 ## 27-02-2021
