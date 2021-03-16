@@ -53,10 +53,12 @@
       "@defer",
       "test txTimeout @removeFromQueueWithRebalance",
       "test txRejected @removeFromQueueWithRebalance",
-      "done 'proposal $proposalID with status ${.status} is pending...'",
+      "with report [flow,proposalID,null,2,1] [done,'proposal $proposalID with status ${.status} is pending...'] [done,null]",
+      "done $report",
       "@removeFromQueueWithRebalance",
       "with rebalanceValue [math,'${.bid.amount} + ${.fees.network}']",
       "fork rebalanceCall/${allocation.accountID}/${.bid.symbol}/$rebalanceValue",
+      "fork securityReserveLock/${allocation.accountID}/unlock",
       "@removeFromQueue",
       "call deleteFromProposalList/$proposalKey",
       "with itemSpec [data,'$proposalID'] [flow,{'undefined':1},2] [done,'storage key $proposalKey'] [done,'proposal $proposalID']",
@@ -105,9 +107,10 @@
       "fail 'Target $target is not a valid $toSymbol address.'",
       "with creation [date,now] [math,round]",
       "with deadline math '$creation+${allocation.deadline}' round",
-      "# 5. return target to accept payment, reserve needed amount, and adjust feelevel",
+      "# 5. return target to accept payment, reserve needed amounts, and adjust feelevel",
       "with recipient call allocation::getAddressAccount/${allocation.accountID}/$fromBase",
       "fork rebalanceCall/${allocation.accountID}/$toSymbol/-$amount",
+      "fork securityReserveLock/${allocation.accountID}/lock",
       "# 6. define proposal/estimate contents",
       "@estimateProposal",
       "poke proposalData { ask: {symbol:'$fromBase',amount:'$baseAmountPlusFee',sufficiency:'$maxAskSufficiency'}, bid: {symbol:'$toSymbol',amount:'$amount',sufficiency:'$maxBidSufficiency'}, fees: {symbol:'$fromBase',allocator:'$allocatorFee',network:'$networkFee'} }",
@@ -237,6 +240,7 @@
       "save $keyHash",
       "fork rebalanceCall/${allocation.accountID}/$fromBase/$askAmount",
       "fork rebalanceCall/${allocation.accountID}/$toSymbol/$bidAmount",
+      "fork securityReserveLock/${allocation.accountID}/unlockWithFee",
       "@submitted",
       "done 'pushed remittance transaction for $proposalID'",
       "@notExist",
@@ -244,6 +248,9 @@
     ],
     "rebalanceCall/allocationID/symbol/amount" : [
       "call allocation::doRebalancePair/$allocationID/$symbol/$amount"
+    ],
+    "securityReserveLock/accountID/action" : [
+      "call allocation::securityReserveAccountLock/$accountID/$action"
     ],
     "dealStatus": [
       "tran .deal 1 @failure",

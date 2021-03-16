@@ -3,16 +3,19 @@
   "name" : "Allocation management engine",
   "timeout" : 120000,
   "cron" : 300,
-  "defaultDeadline" : 3600,
+  "defaultDeadline" : 720,
+  "storageFactor" : 8,
   "permissions":{
     "nodeKeys":true
   },
   "expose" : {
-    "deal" : ["push","getAddressAccount","doRebalancePair"]
+    "deal" : ["push","getAddressAccount","doRebalancePair","securityReserveAccountLock"]
   },
   "conf" :{
+    "allocationBalanceCacheTime" : {"default":600},
     "securitySymbol" : {"default":"hy"},
-    "securityFee" : {"default":"0.5"},
+    "securityTransferFee" : {"default":"0.5"},
+    "securityContractFee" : {"default":"0.001"},
     "securityRiskFactor" : {"default":"7"},
     "securityMinimalDeposit" : {"default":10}
   },
@@ -57,7 +60,7 @@
       "peek dataObject",
       "call getCalcStats/add/balances/$pair",
       "poke liquidity",
-      "with sufficiency [true,'<$liquidity',2] [data,$liquidity] [form,8]",
+      "with sufficiency [true,'<$liquidity',2] [data,$liquidity] [form,$storageFactor]",
       "# calculate fee range",
       "peek dataObject",
       "call getCalcStats/min/pair/$pair/fee",
@@ -188,8 +191,7 @@
       "poke feeSymbol ${.fee-symbol}",
       "poke feeFactor ${.fee-factor}",
       "poke feeAmount ${.fee}",
-      "call rebalanceMutate/$accountID/$symbol/$amount",
-      "poke balance",
+      "with balance call rebalanceMutate/$accountID/$symbol/$amount",
       "call feeModifierMutate/$accountID/$symbol/-$amount/$balance",
       "form $feeFactor",
       "poke feeMutation",
@@ -232,7 +234,7 @@
       "data ${.value}",
       "# take along transaction fee and then some 5% for the network fee",
       "with feeFloat [data,${.fee}] [trim,'%'] [math,'/100']",
-      "with needed math '($amount * (1 + $conf::securityFee + $feeFloat))'",
+      "with needed math '($amount * (1 + $conf::securityTransferFee + $feeFloat))'",
       "true '${.balance} >= $needed and ${.sufficiency} >= $needed' 1 2",
       "done",
       "done null"
@@ -263,12 +265,14 @@
       "call addPairDetails/$accountID/$fromBase/$toSymbol"
     ],
     "addPairDetails/accountID/fromBase/toSymbol":[
+      "# decouple from locally stored vars",
+      "data {accountID:null,ask:${.ask},bid:${.bid},fee:${.fee},type:${.type},deadline:${.deadline},balance:${.balance},sufficiency:${.sufficiency},active:false}",
       "with .accountID peek accountID",
       "with .balance call getAccountBalance/$accountID/$toSymbol",
       "with .sufficiency call getSufficiency/$accountID/$toSymbol",
       "with .active math '${.balance}>0.001 and ${.sufficiency}>0.001'",
       "with feeModifier call getFeeModifier/$accountID/$toSymbol",
-      "with .fee [trim,'%'] [math,'* (1 + $feeModifier)'] [push,'%']"
+      "with .fee [trim,'%'] [math,'* (1 + $feeModifier)'] [form,$storageFactor] [push,'%']"
     ],
 
     "account/command/accountID/A/B/C/D/E/F" : [
@@ -351,27 +355,38 @@
       "call getAccountBalance/$accountID/$symbol"
     ],
     "getAccountBalance/accountID/symbol":[
-      "have local::accounts[$accountID].balances[$symbol] @peek @retrieve",
+      "with now [date,now] [math,round]",
+      "peek local::accounts[$accountID].lastsync[$symbol] 0",
+      "true '$ < ($now - $conf::allocationBalanceCacheTime)' @retrieve @peek",
       "@peek",
       "peek local::accounts[$accountID].balances[$symbol] 0",
       "ship 1 1 2 2",
       "done",
       "@retrieve",
+      "hook @peek",
       "with auth call keysAccount/$accountID",
       "data {symbol:$symbol}",
-      "bank getBalance $auth"
+      "bank getBalance $auth",
+      "poke local::accounts[$accountID].balances[$symbol]",
+      "poke local::accounts[$accountID].lastsync[$symbol] $now"
     ],
     "securityReserveAccountBalance/accountID/signature":[
       "call checkSignature/$accountID/$signature/securityReserveAccount-${accountID}-balance",
-      "call getSecurityDepositBalance/$accountID"
+      "with locked call getSecurityLockedBalance/$accountID",
+      "call getSecurityDepositBalance/$accountID",
+      "math '-$locked'"
     ],
     "securityReserveAccountDetails/accountID/signature":[
       "call checkSignature/$accountID/$signature/securityReserveAccount-${accountID}-details",
+      "with locked call getSecurityLockedBalance/$accountID",
       "call getSecurityDepositBalance/$accountID",
-      "done { symbol:${conf::securitySymbol}, balance:'$', fee:'${conf::securityFee}%' }"
+      "math '$ - $locked'",
+      "done { symbol:${conf::securitySymbol}, balance:'$', locked:'$locked', fees: { contract:'${conf::securityContractFee}%', transfer:'${conf::securityTransferFee}%' }}"
     ],
     "securityReserveAccountDeposit/accountID/amount/signature":[
       "call checkSignature/$accountID/$signature/securityReserveAccount-${accountID}-deposit-${amount}",
+      "with balance call getSecurityDepositBalance/$accountID",
+      "with locked call getSecurityLockedBalance/$accountID",
       "ship amount 2 1 1 1",
       "fail 'You must specify a positive amount to deposit!'",
       "data {symbol:${conf::securitySymbol}}",
@@ -383,17 +398,23 @@
       "bank transaction $auth 2 1",
       "fail 'Security deposit error: $'",
       "poke txid",
-      "with regAmount math '$amount * (1 - (${conf::securityFee} / 100))'",
+      "with regAmount math '$amount * (1 - (${conf::securityTransferFee} / 100))'",
       "with paidFee math '$amount - $regAmount'",
       "call setSecurityDepositBalance/$accountID/$regAmount",
       "fork doRebalancePair/$accountID/${conf::securitySymbol}/-$amount",
-      "done { action: 'deposit', symbol: ${conf::securitySymbol},balance: $, deposited: $regAmount, fee: $paidFee, txid: $txid }",
+      "with newBalance math '$balance - $locked + $amount'",
+      "done { action: 'deposit', symbol: ${conf::securitySymbol},balance: $newBalance, locked: $locked, deposited: $regAmount, fee: $paidFee, txid: $txid }",
       "# todo: keep track of txids to later check if balances are correct!"
     ],
     "securityReserveAccountWithdraw/accountID/amount/signature":[
       "call checkSignature/$accountID/$signature/securityReserveAccount-${accountID}-withdraw-${amount}",
       "ship amount 2 1 1 1",
       "fail 'You must specify a positive amount to withdraw!'",
+      "# is amount available to withdraw?",
+      "with balance call getSecurityDepositBalance/$accountID",
+      "with locked call getSecurityLockedBalance/$accountID",
+      "true '($balance - $locked)>=$amount' 2 1",
+      "fail 'Security lock error: Cannot unlock amount higher than locked balance!'",
       "with auth call keysAccount/$accountID",
       "data {symbol:${conf::securitySymbol}}",
       "bank getAddress $auth 2 1",
@@ -405,8 +426,30 @@
       "poke txid",
       "call setSecurityDepositBalance/$accountID/-$amount",
       "fork doRebalancePair/$accountID/${conf::securitySymbol}/+$amount",
-      "done { action: 'withdraw', symbol: ${conf::securitySymbol}, balance: $, withdrawn: $amount, txid: $txid }",
-      "# todo: keep track of txids to later check if balances are correct!"
+      "with newBalance math '$balance - $locked - $amount'",
+      "done { action: 'withdraw', symbol: ${conf::securitySymbol}, balance: $newBalance, locked: $locked, withdrawn: $amount, txid: $txid }",
+      "# todo nice-to-have: keep track of txids to later check if balances are correct!"
+    ],
+    "securityReserveAccountLock/accountID/request":[
+      "with balance call getSecurityDepositBalance/$accountID",
+      "with locked call getSecurityLockedBalance/$accountID",
+      "with amount math '($balance - $locked)/${conf::securityRiskFactor}'",
+      "flow request {'unlock':@unlock,'unlockWithFee':@unlockWithFee}",
+      "@lock",
+      "true '($balance - $locked)>=$amount' 2 1",
+      "fail 'Security lock error: Cannot lock amount higher than available balance!'",
+      "math '$locked + $amount'",
+      "call securityForceLockedBalanceAccount/$accountID/$",
+      "done",
+      "@unlockWithFee",
+      "# unlock amount, subtracting sequestration fee",
+      "with sequestrationFee [math,'$balance*${conf::securityContractFee}']",
+      "call setSecurityDepositBalance/$accountID/-$sequestrationFee",
+      "@unlock",
+      "true '$locked>=$amount' 2 1",
+      "fail 'Security lock error: Cannot unlock amount higher than locked balance!'",
+      "math '$locked - $amount'",
+      "call securityForceLockedBalanceAccount/$accountID/$"
     ],
 
     "setSecurityDepositBalance/accountID/amount" : [
@@ -426,12 +469,32 @@
       "form ${conf::securitySymbol}",
       "poke local::accounts[$accountID].securityDepositBalances[$conf::securitySymbol]"
     ],
+    "setSecurityLockedBalance/accountID/amount" : [
+      "call getSecurityLockedBalance/$accountID",
+      "math '+$amount'",
+      "call securityForceLockedBalanceAccount/$accountID/$"
+    ],
+    "getSecurityLockedBalance/accountID" : [
+      "have local::accounts[$accountID] 2 1",
+      "fail 'Account does not exist!'",
+      "peek local::accounts[$accountID].securityLockedBalances[$conf::securitySymbol] 0"
+    ],
+    "securityForceLockedBalanceAccount/accountID/amount" : [
+      "have local::accounts[$accountID] 2 1",
+      "fail 'Account does not exist!'",
+      "peek amount",
+      "form ${conf::securitySymbol}",
+      "poke local::accounts[$accountID].securityLockedBalances[$conf::securitySymbol]"
+    ],
     "getSufficiency/accountID/symbol" : [
-      "call getSecurityDepositBalance/$accountID",
+      "with depositBalance call getSecurityDepositBalance/$accountID",
+      "call getSecurityLockedBalance/$accountID",
+      "math '$depositBalance - $'",
       "rout /e/valuations/rate/${conf::securitySymbol}/$symbol/$",
       "math '/ ${conf::securityRiskFactor}'",
       "form ${conf::securitySymbol}"
     ],
+
 
     "push" : [
       "void 1 2",
