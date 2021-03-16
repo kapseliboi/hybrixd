@@ -1,7 +1,7 @@
 {
   "engine": "transaction-history",
   "name": "Transaction history engine",
-  "cacheHistoryTime": "60000",
+  "cacheHistoryTime": "60",
   "import": "transaction-data",
   "historyScanPageSize": 12,
   "historyScanPageRange": 2,
