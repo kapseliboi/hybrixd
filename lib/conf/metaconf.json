@@ -9,16 +9,19 @@
     "servers" : {
       "default" : { "http://127.0.0.1:1111" : "/root", "http://127.0.0.1:8080" : "/source/web-wallet", "http://127.0.0.1:8090" : "/source/web-blockexplorer" },
       "info" : "Define the servers",
-      "type" : "object"
+      "type" : "object",
+      "requiresRestart" : true
     },
     "ignoretlserror" : {
       "default" : true,
-      "type" : "boolean"
+      "type" : "boolean",
+      "requiresRestart" : true
     },
     "defaultmaxlisteners" : {
       "default" : 300,
       "info" : "Set the amount of listners for the http server socket",
-      "type" : "int"
+      "type" : "int",
+      "requiresRestart" : true
     },
     "private-token" : {
       "info" : "Set the private token to access root function through non root servers.",
@@ -35,19 +38,22 @@
     "maxparallelprocesses" :{
       "default" : 10000000,
       "type" : "int",
-      "info" : "Maximum number of qrtz processes"
+      "info" : "Maximum number of qrtz processes",
+      "requiresRestart" : true
     },
     "tick" : {
       "default" : 30,
       "info":"Tick frequency for process steps",
       "type" : "int",
-      "unit" : "milliseconds"
+      "unit" : "milliseconds",
+      "requiresRestart" : true
     },
     "maxusage" : {
       "default" : 80,
       "info" : "Maximum thread usage",
       "type" : "int",
-      "unit" : "%"
+      "unit" : "%",
+      "requiresRestart" : true
     }
   },
   "cache" : {
@@ -59,9 +65,9 @@
     "cleanupinterval" : {
       "default" : 1000,
       "type" : "int",
-      "unit" : "milliseconds"
+      "unit" : "milliseconds",
+      "requiresRestart" : true
     },
-
     "freshthreshold" : {
       "default" : 1000,
       "type" : "int",
@@ -73,23 +79,6 @@
       "info" : "Location(s) of the log files.",
       "type" : "string",
       "default" : "./var/log/hybrixd.log"
-    }
-  },
-  "storage" : {
-    "maxstoragesize" : {
-      "default" : 2000000000,
-      "type" : "int",
-      "unit" : "bytes"
-    },
-    "minstoragetime" : {
-      "default" : 30,
-      "type" : "int",
-      "unit" : "days"
-    },
-    "maxstoragetime" : {
-      "default" : 365,
-      "type" : "int",
-      "unit" : "days"
     }
   }
 }
