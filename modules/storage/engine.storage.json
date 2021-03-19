@@ -3,6 +3,23 @@
   "name":"Storage engine module",
   "module":"storage",
   "cron" : 300,
+  "conf" : {
+      "maxstoragesize" : {
+        "default" : 2000000000,
+        "type" : "int",
+        "unit" : "bytes"
+      },
+      "minstoragetime" : {
+        "default" : 30,
+        "type" : "int",
+        "unit" : "days"
+      },
+      "maxstoragetime" : {
+        "default" : 365,
+        "type" : "int",
+        "unit" : "days"
+      }    
+  },
   "quartz"  : {
     "load/key":[
       "data {key:'$key'}",
