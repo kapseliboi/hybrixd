@@ -1,3 +1,15 @@
+# v0.9.8
+## Chirpy Mustard Pegasus
+## 19-03-2021
+
+* Manage your configuration through ui instead of code. Making things easier.  /c/conf
+* Implement local vars for custom exec scripts. More powerful quartz scripting /c/exec
+* Extend api queue and process debug. Find out what went wrong quicker. /p/debug
+* Swap deal engine : Reserve deposit on swap. Lock and load!
+
+
+
+
 # v0.9.7
 ## Merry Cyan Noodlefish
 ## 11-03-2021
