@@ -128,7 +128,15 @@
       "tran .value.deal.ask.amount 1 -1"
     ],
 
+    "validateAccount/accountID" : [
+      "peek accountID",
+      "size",
+      "true '$==44' 2 1",
+      "fail 'Invalid account reference!'"
+    ],
+
     "pair/command/accountID/A/B/C/D/E/F" : [
+      "call validateAccount/$accountID",
       "call ${command}Pair/$accountID/$A/$B/$C/$D/$E/$F"
     ],
     "statsPair/fromBase/toSymbol" : [
@@ -183,7 +191,9 @@
       "drop accountID"
     ],
     "getFeeModifier/accountID/symbol" : [
-      "peek local::accounts[$accountID].feeModifiers[$symbol] 0"
+      "peek local::accounts[$accountID].feeModifiers[$symbol] 0",
+      "ship 2 2 1 1",
+      "data 0"
     ],
     "doRebalancePair/accountID/symbol/amount" :[
       "with symbol case lower",
@@ -276,6 +286,7 @@
     ],
 
     "account/command/accountID/A/B/C/D/E/F" : [
+      "call validateAccount/$accountID",
       "flow command {securityReserve: 1} @other",
       "flow A {withdraw:@withdraw,deposit:@deposit,details:@details,balance:@balance}",
       "@balance",
