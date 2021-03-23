@@ -136,7 +136,6 @@
     ],
 
     "pair/command/accountID/A/B/C/D/E/F" : [
-      "call validateAccount/$accountID",
       "call ${command}Pair/$accountID/$A/$B/$C/$D/$E/$F"
     ],
     "statsPair/fromBase/toSymbol" : [
@@ -146,6 +145,7 @@
       "tran .[${fromBase}:${toSymbol}]"
     ],
     "checkSignature/accountID/signature/message" : [
+      "call validateAccount/$accountID",
       "call keysAccount/$accountID",
       "root 1 2",
       "done",
@@ -193,9 +193,11 @@
     "getFeeModifier/accountID/symbol" : [
       "peek local::accounts[$accountID].feeModifiers[$symbol] 0",
       "ship 2 2 1 1",
+      "true >-1 2 1",
       "data 0"
     ],
     "doRebalancePair/accountID/symbol/amount" :[
+      "call validateAccount/$accountID",
       "with symbol case lower",
       "rout /a/$symbol/details",
       "poke feeSymbol ${.fee-symbol}",
@@ -220,11 +222,13 @@
       "call doRebalancePair/$accountID/$symbol/$amount"
     ],
     "rebalanceMutate/accountID/symbol/amount" : [
+      "call validateAccount/$accountID",
       "call getAccountBalance/$accountID/$symbol",
       "math '+$amount'",
       "poke local::accounts[$accountID].balances[$symbol]"
     ],
     "feeModifierMutate/accountID/symbol/amount/total" : [
+      "call validateAccount/$accountID",
       "call getFeeModifier/$accountID/$symbol",
       "math '+ ($amount / $total)'",
       "poke local::accounts[$accountID].feeModifiers[$symbol]"
