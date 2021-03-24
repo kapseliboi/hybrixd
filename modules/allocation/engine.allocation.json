@@ -156,12 +156,12 @@
     ],
     "deletePair/accountID/fromBase/toSymbol/signature" : [
       "call checkSignature/$accountID/$signature/deletePair-${accountID}-${fromBase}-${toSymbol}",
-      "done",
       "have local::accounts[$accountID].pairs[$fromBase:$toSymbol] 2 1",
       "fail 'Pair does not exist'",
       "peek local::accounts[$accountID].pairs",
       "drop $fromBase:$toSymbol",
-      "poke local::accounts[$accountID].pairs"
+      "poke local::accounts[$accountID].pairs",
+      "done 'Deleted pair $fromBase:$toSymbol'"
     ],
     "setPair/accountID/fromBase/toSymbol/feePercent/type/deadline/signature" : [
       "call checkSignature/$accountID/$signature/setPair-${accountID}-${fromBase}-${toSymbol}-${feePercent}-${type}-${deadline}",
