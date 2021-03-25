@@ -1,3 +1,12 @@
+# v0.9.9
+## Sparkling Crystal Mermaid
+## 25-03-2021
+
+* Handle when a broken regex is provided: Regex is hard enough as it is.
+* Improve caching: No need to retrieve everything all the time.
+
+
+
 # v0.9.8
 ## Chirpy Mustard Pegasus
 ## 19-03-2021
