@@ -132,6 +132,7 @@
       }
     },
     "debug": {
+      "_access":"root",
       "_ref" : {
         "_list" : "proc",
         "_this" : "Specify the process ID to debug."
