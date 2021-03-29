@@ -14,6 +14,10 @@
   "cache":10000,
   "throttle":10,
   "features": {"message":false,"test":true},
+  "notes":{
+    "send" : "Dummy send does not really work.",
+    "history" : "Dummy history does not really work."
+  },
   "quartz":{
     "unspent" : [
       "done [{amount:'$3',txid:TX01,txn:1}]"
