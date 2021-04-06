@@ -3,7 +3,7 @@
   "name":"Ripple",
   "module":"quartz",
   "fee-symbol":"xrp",
-  "addressRegex":"^(r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}|r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}-\\d+|X[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{46})$",
+  "addressRegex":"^(r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}|r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}-\\d{6,10}|X[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{46})$",
   "fee":"0.00001",
   "fee-factor":6,
   "cron":300,
@@ -16,6 +16,9 @@
   "apiProvidesFullTx": true,
   "cache":15000,
   "throttle":5,
+  "notes" : {
+    "send" : "Ripple destination tags can be added using a dash (-) separator: [address]-[destinationTag]. Addresses starting with X already have their destination tag embedded."
+  },
   "api-rate-info":{
     "url": "https://www.xrpchat.com/topic/20759-ripple-data-api-v2-rate-limit/",
     "rate-limit":"rumoured but no confirmation found"
