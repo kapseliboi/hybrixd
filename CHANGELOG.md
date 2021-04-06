@@ -1,3 +1,21 @@
+# v0.9.10
+## Happy Fuchsia Ogre
+## 06-04-2021
+
+* Add notes to asset details. To provide specifics about assets. 
+* Add Ripple (xrp) destination tag note.
+* Improvements to Ripple (xrp) tokens .
+* Fix unified /confirm and /confirmed endpoint.
+* hybrix-jslib: Smart handling of address prefixes. 
+* hybrix-jslib: Prevent passing expanded unified addresses for transaction review.
+* hybrix-jslib: Fix handling errors in decoding of unified addresses.
+* explorer: Error in confirmed broke entire transaction displaying. Bad UX.
+* Swap deal engine: Fully verify account ids.
+* Swap deal engine: Remove account.
+
+
+
+
 # v0.9.9
 ## Sparkling Crystal Mermaid
 ## 25-03-2021
