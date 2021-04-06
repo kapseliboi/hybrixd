@@ -128,6 +128,13 @@
       "tran .value.deal.ask.amount 1 -1"
     ],
 
+    "validateAccount/accountID" : [
+      "peek accountID",
+      "size",
+      "true '$==44' 2 1",
+      "fail 'Invalid account reference!'"
+    ],
+
     "pair/command/accountID/A/B/C/D/E/F" : [
       "call ${command}Pair/$accountID/$A/$B/$C/$D/$E/$F"
     ],
@@ -138,6 +145,7 @@
       "tran .[${fromBase}:${toSymbol}]"
     ],
     "checkSignature/accountID/signature/message" : [
+      "call validateAccount/$accountID",
       "call keysAccount/$accountID",
       "root 1 2",
       "done",
@@ -148,12 +156,12 @@
     ],
     "deletePair/accountID/fromBase/toSymbol/signature" : [
       "call checkSignature/$accountID/$signature/deletePair-${accountID}-${fromBase}-${toSymbol}",
-      "done",
       "have local::accounts[$accountID].pairs[$fromBase:$toSymbol] 2 1",
       "fail 'Pair does not exist'",
       "peek local::accounts[$accountID].pairs",
       "drop $fromBase:$toSymbol",
-      "poke local::accounts[$accountID].pairs"
+      "poke local::accounts[$accountID].pairs",
+      "done 'Deleted pair $fromBase:$toSymbol'"
     ],
     "setPair/accountID/fromBase/toSymbol/feePercent/type/deadline/signature" : [
       "call checkSignature/$accountID/$signature/setPair-${accountID}-${fromBase}-${toSymbol}-${feePercent}-${type}-${deadline}",
@@ -183,9 +191,13 @@
       "drop accountID"
     ],
     "getFeeModifier/accountID/symbol" : [
-      "peek local::accounts[$accountID].feeModifiers[$symbol] 0"
+      "peek local::accounts[$accountID].feeModifiers[$symbol] 0",
+      "ship 2 2 1 1",
+      "true >-1 2 1",
+      "data 0"
     ],
     "doRebalancePair/accountID/symbol/amount" :[
+      "call validateAccount/$accountID",
       "with symbol case lower",
       "rout /a/$symbol/details",
       "poke feeSymbol ${.fee-symbol}",
@@ -210,11 +222,13 @@
       "call doRebalancePair/$accountID/$symbol/$amount"
     ],
     "rebalanceMutate/accountID/symbol/amount" : [
+      "call validateAccount/$accountID",
       "call getAccountBalance/$accountID/$symbol",
       "math '+$amount'",
       "poke local::accounts[$accountID].balances[$symbol]"
     ],
     "feeModifierMutate/accountID/symbol/amount/total" : [
+      "call validateAccount/$accountID",
       "call getFeeModifier/$accountID/$symbol",
       "math '+ ($amount / $total)'",
       "poke local::accounts[$accountID].feeModifiers[$symbol]"
@@ -276,6 +290,7 @@
     ],
 
     "account/command/accountID/A/B/C/D/E/F" : [
+      "call validateAccount/$accountID",
       "flow command {securityReserve: 1} @other",
       "flow A {withdraw:@withdraw,deposit:@deposit,details:@details,balance:@balance}",
       "@balance",

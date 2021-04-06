@@ -7,8 +7,9 @@
   "mode":"ethereum.main",
   "throttle":6,
   "host": {
-    "default": ["https://nodes.mewapi.io/rpc/eth","https://cloudflare-eth.com","https://main-rpc.linkpool.io"],
-    "history": "https://api.etherscan.io/api"
+    "default": ["https://nodes.mewapi.io/rpc/eth","https://cloudflare-eth.com"],
+    "history": "https://api.etherscan.io/api",
+    "deprecated": "https://main-rpc.linkpool.io"
   },
   "features": {"message":true},
   "cron":300,
