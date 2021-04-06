@@ -1,0 +1,42 @@
+{
+  "symbol":"bsc",
+  "name":"Binance Smart Chain ",
+  "mode":"binance",
+  "addressRegex":".*",
+  "factor":18,
+  "confirmed":2,
+  "fee":"0.000375",
+  "notes" : {
+    "history" : "Powered by bscscan.com"
+  },
+  "host": {
+    "default" :[
+      "https://bsc-dataseed1.binance.org/",
+      "https://bsc-dataseed2.binance.org/",
+      "https://bsc-dataseed3.binance.org/",
+      "https://bsc-dataseed4.binance.org/",
+      "https://bsc-dataseed1.defibit.io/",
+      "https://bsc-dataseed2.defibit.io/",
+      "https://bsc-dataseed3.defibit.io/",
+      "https://bsc-dataseed4.defibit.io/",
+      "https://bsc-dataseed1.ninicoin.io/",
+      "https://bsc-dataseed2.ninicoin.io/",
+      "https://bsc-dataseed3.ninicoin.io/",
+      "https://bsc-dataseed4.ninicoin.io/"
+    ],
+    "history" : "https://api.bscscan.com/api"
+  },
+  "features": {"message":false},
+  "import": "eth-api",
+  "cache":10000,
+  "contract": "0x0000000000000000000000000000000000000000",
+  "throttle":5,
+  "historyThrottle": 2,
+  "rate-limit":"2 calls/second for bscscan",
+  "documentation":"https://bscscan.com/apis#rpc",
+  "quartz":{
+    "sample" : [
+      "done {address:'0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c',transaction:''}"
+    ]
+  }
+}

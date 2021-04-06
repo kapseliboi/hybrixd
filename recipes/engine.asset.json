@@ -1,5 +1,6 @@
 {
   "engine":"asset",
+  "notes" : {},
   "default-features":{
     "message":false,
     "test":false
@@ -67,6 +68,9 @@
     ],
     "info" : [
       "peek info ''"
+    ],
+    "notes" : [
+      "peek notes {}"
     ],
     "factor" : [
       "peek factor"
@@ -213,6 +217,7 @@
       "done ${.value}"
     ],
 
+
     "features" : [
       "peek features {}",
       "poke custom-features",
@@ -231,7 +236,7 @@
     "details" : [
       "data {'contract':null,'factor':null,features:null,fee:null,'fee-factor':null,'fee-symbol':null,'mode':null,'keygen-base':null,'unified-symbols':null, confirmed:null}",
       "each subdetails",
-      "done {symbol:'$symbol',name:'$name',fee:${.fee},factor:'${.factor}',features:${.features},contract:'${.contract}',mode:'${.mode}','unified-symbols':${.unified-symbols},'fee-symbol':'${.fee-symbol}','fee-factor':'${.fee-factor}','keygen-base':'${.keygen-base}', confirmed: ${.confirmed}}",
+      "done {symbol:'$symbol',name:'$name',fee:${.fee},factor:'${.factor}',features:${.features},contract:'${.contract}',mode:'${.mode}','unified-symbols':${.unified-symbols},'fee-symbol':'${.fee-symbol}','fee-factor':'${.fee-factor}','keygen-base':'${.keygen-base}', confirmed: ${.confirmed}, notes:$notes}",
       "#TODO remove fee, fee-symbol, fee-factor after multi fees have been fully implemented",
       "#data {'contract':null,'factor':null,'mode':null,'keygen-base':null,'unified-symbols':null}",
       "#each subdetails",
@@ -391,6 +396,10 @@
         "_this": "Retrieve detailed information of an asset.",
         "_response": {"fee":0.00011149,"factor":"8","contract":"undefined","symbol":"btc","name":"Bitcoin","mode":"bitcoinjslib.bitcoin","unified-symbols":"undefined","fee-symbol":"btc","fee-factor":"8","keygen-base":"btc","generated":"never"}
       },
+      "factor":{
+        "_this": "Retrieve the factor. The number of decimal digits used for this asset.",
+        "_response": {"error":0,"info":"Process data.","id":"1519829794292742","progress":1,"started":1519829794292,"stopped":1519829794316,"data":"18"}
+      },
       "features":{
         "_this": "Retrieve available features for this asset.",
         "_ref" : {
@@ -399,10 +408,6 @@
           "_this":"Check whether feature is enables for this asset."
         }
 
-      },
-      "factor":{
-        "_this": "Retrieve the factor. The number of decimal digits used for this asset.",
-        "_response": {"error":0,"info":"Process data.","id":"1519829794292742","progress":1,"started":1519829794292,"stopped":1519829794316,"data":"18"}
       },
       "fee":{
         "_this": "Retrieve the average transaction fee for sending an asset.",
@@ -456,6 +461,7 @@
       },
       "info" :  "Retrieve info about the asset.",
       "icon" :  "Retrieve the svg icon for this asset.",
+      "notes" :  "Retrieve any notes for this asset.",
       "sample" : {
         "_this": "Retrieve a sample address and transaction id for test purposes.",
         "_response": {"address":"1J3St3rp3hVsuLGhegbLWicyPL3NRD3YJ7","transaction":"2c0832c153cf33327dae0e95a3bc39f4b02ae887725a32c07b1be47a2faffc55"}
@@ -506,9 +512,6 @@
           "_this":"Signed transaction data pushed into the network will return a transaction ID.",
           "_sample" : "_dummytransaction_100000000_15000000"
         }
-      },
-      "keygen-base":{
-        "_this": "Retrieve the keygen-base. This is the asset that is used to generate keys."
       },
       "unified-symbols":{
         "_this": "Retrieve the unified symbols that form a hybrid asset.",
