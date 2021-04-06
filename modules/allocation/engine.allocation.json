@@ -5,6 +5,7 @@
   "cron" : 300,
   "defaultDeadline" : 720,
   "storageFactor" : 8,
+  "accountIdRegex" : "^[a-zA-Z0-9]{44}$",
   "permissions":{
     "nodeKeys":true
   },
@@ -130,8 +131,7 @@
 
     "validateAccount/accountID" : [
       "peek accountID",
-      "size",
-      "true '$==44' 2 1",
+      "regx '$accountIdRegex' 2 1",
       "fail 'Invalid account reference!'"
     ],
 
