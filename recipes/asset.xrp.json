@@ -209,6 +209,8 @@
       "with reformatTimestamp [data,'${.tx.date}'] [math, '+${genesisBlockTime}']",
       "tran {id:'=.tx.hash|unknown', fee:'=.tx.Fee|unknown', timestamp:'$reformatTimestamp', symbol:'$symbol', amount:'=.tx.Amount.value|.tx.Amount|unknown', source:'=.tx.Account|unknown', target:'=.tx.Destination|unknown', fee-symbol: ${fee-symbol}, confirmed:'=.tx.validated|unknown'} @tranSuccess @tranFail",
       "@tranSuccess",
+      "with .fee math '/10^$factor'",
+      "with .amount math '/10^$factor'",
       "done",
       "@tranFail",
       "fail 'Could not parse history'"
@@ -222,6 +224,7 @@
       "curl POST 2 1",
       "fail 'Could not connect to host'",
       "tran '.result.transactions[]' 1 @fail",
+      "sort .tx.date desc",
       "take '$offset'",
       "done",
       "@fail",
