@@ -196,6 +196,19 @@
       "math max"
     ],
 
+    "getConfirmed/transactionId" : [
+      "peek transactionId",
+      "splt ':'",
+      "poke [subSymbol,subTransactionId]",
+      "rout /a/$subSymbol/confirmed/$subTransactionId"
+    ],
+
+    "confirm/transactionId" : [
+      "peek transactionId",
+      "splt ':'",
+      "poke [subSymbol,subTransactionId]",
+      "rout /a/$subSymbol/confirm/$subTransactionId"
+    ],
 
     "getTransaction/transactionId":[
       "peek transactionId",
