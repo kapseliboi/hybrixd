@@ -53,7 +53,7 @@
       "with reformatFee [data, '${.fee}'] [atom]",
       "with reformatSymbol [data, $] [tran,'.assetId',1,4] [void, 3, 1] [call, getContractSymbol] [done] [data,'$symbol']",
       "poke txData",
-      "with reformatAmount [data, $txData] [tran,'.transfers[].amount',2,1] [done,0] [math,'+'] [atom]",
+      "with reformatAmount [data, $txData] [tran, .amount,4, 1] [tran,'.transfers[].amount',2,1] [done,0] [math,'+'] [atom]",
       "with reformatRecipient [data, $] [tran,'.recipient',3,1] [tran,'.transfers[0].recipient',2,1] [done,'undefined'] [done]",
       "tran { id:'.id', timestamp:'$reformatTimestamp', amount:'$reformatAmount', symbol:'$reformatSymbol', fee:'$reformatFee', 'fee-symbol':'${fee-symbol}', source:'.sender', target:'$reformatRecipient', confirmed:true } 2 1",
       "fail 'Cannot get transaction data!'"
