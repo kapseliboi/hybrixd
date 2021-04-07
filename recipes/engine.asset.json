@@ -246,8 +246,7 @@
       "call '${.key}'"
     ],
     "transaction-details/source/amount/target/bytes/publicKey" : [
-      "test target @validateTarget @noTarget",
-      "flow target undefined @noTarget @validateTarget ",
+      "flow target {undefined:@noTarget,'':@noTarget} @validateTarget ",
       "@validateTarget",
       "call validate/$target",
       "jump @saveTargetValid",

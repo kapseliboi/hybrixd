@@ -620,6 +620,13 @@
       "done $OK",
       "fail"
     ],
+    "sort20" : [
+      "data [{a:{b:3}},{a:{b:1}},{a:{b:7}},{a:{b:2}}]",
+      "sort desc .a.b",
+      "flow [{'a': {b:7}},{'a': {b:3}},{'a': {b:2}},{'a': {b:1}}] 1 2",
+      "done $OK",
+      "fail"
+    ],
     "math1" : [
       "math 1+1",
       "flow 2 1 2",
