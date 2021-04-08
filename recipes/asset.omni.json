@@ -14,7 +14,7 @@
   "apiProvidesFullTx": true,
   "timeout":60000,
   "cache":180000,
-  "throttle":0.1,
+  "throttle":0.05,
   "api-documentation": "https://api.omniexplorer.info",
   "api-rate-info":{
     "url": "https://api.omniexplorer.info",
