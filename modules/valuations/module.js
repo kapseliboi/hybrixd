@@ -39,9 +39,9 @@ function bestTransactionChain (exchangeRates, startSymbol, targetSymbol, maxHops
     let intermediarySymbols = Object.keys(transactionChains);
     if (useWhitelist) intermediarySymbols = Array.from(new Set([...intermediarySymbols].filter(i => whitelist.has(i))));
 
-    const accumulator = intermediarySymbols.map(function (currency, _) {
-      return singleHop(exchangeRates, currency, transactionChains[currency], rateMode);
-    }).concat(transactionChains);
+    const accumulator = intermediarySymbols
+      .map(currency => singleHop(exchangeRates, currency, transactionChains[currency], rateMode))
+      .concat(transactionChains);
     transactionChains = accumulator.reduce(function (history1, history2) { return optimalTransaction(history1, history2); }, {});
   }
   if (transactionChains.hasOwnProperty(targetSymbol)) return transactionChains[targetSymbol];
@@ -93,7 +93,8 @@ function rate (proc, data) {
       }
     }
   } else {
-    if (source.startsWith('MOCK.') && target.startsWith('MOCK.')) r = amount;
+    if (amount === 0) r = 0; // shortcut
+    else if (source.startsWith('MOCK.') && target.startsWith('MOCK.')) r = amount;
     else {
       const result = bestTransactionChain(data.prices, source, target, 5, true, mode, whitelist, true);
       if (result.error) return proc.fail(result.error, 'Failed to compute rate');
