@@ -1,3 +1,18 @@
+# v0.9.11
+## Furry Fuchsia Goblin
+## 09-04-2021
+
+* Add mechanism to trim logs. Keep things nice and tidy.
+* Provide transaction-details without target.  
+* Shortcut valuations for zero. Zero is zero
+* Fix missing waves amount in transactions. 
+* Sort xrp history. Top to bottom
+* hybrix-jslib: Define specific hosts per pending transaction type
+* hybrix-jslib:  Reset hosts on logout
+
+
+
+
 # v0.9.10
 ## Happy Fuchsia Ogre
 ## 06-04-2021
