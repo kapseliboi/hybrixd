@@ -6,7 +6,7 @@
   "addressRegex":"3[A-Za-z0-9]{34}$",
   "factor":8,
   "confirmed":10,
-  "fee":0.001,
+  "fee":0.005,
   "fee-symbol":"waves",
   "host": {
     "default": ["https://nodes.wavesplatform.com","https://nodes.wavesnodes.com"],
