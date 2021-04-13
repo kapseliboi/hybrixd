@@ -6,6 +6,7 @@
   "addressRegex":"^(r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}|r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}-\\d{6,10}|X[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{46})$",
   "fee":"0.00001",
   "fee-factor":6,
+  "activationBalance":20,
   "cron":300,
   "confirmed":1,
   "mode":"xrp",
@@ -167,6 +168,10 @@
       "with .amount math '/10^$factor'"
     ],
     "unspent" : [
+      "call balance/$1",
+      "true >=$activationBalance 3 1",
+      "with symbolUppercase [data,$symbol] [case,upper]",
+      "fail 'Not enough activation balance on account! Minimum required is ${activationBalance} ${symbolUppercase} to send transactions! Currently only $ ${symbolUppercase} available.'",
       "rand 10000",
       "data {'id': $,'command': 'account_info','account': '$1','strict': true,'ledger_index': 'current','queue': true}",
       "curl POST 2 1",
