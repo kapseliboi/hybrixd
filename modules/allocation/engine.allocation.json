@@ -13,6 +13,7 @@
     "deal" : ["push","getAddressAccount","doRebalancePair","securityReserveAccountLock"]
   },
   "conf" :{
+    "enabled" : {"default": false,"type": "boolean", "requiresRestart": true},
     "allocationBalanceCacheTime" : {"default":600},
     "securitySymbol" : {"default":"hy"},
     "securityTransferFee" : {"default":"0.5"},

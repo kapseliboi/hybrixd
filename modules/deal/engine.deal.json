@@ -8,6 +8,9 @@
   "permissions":{
     "nodeKeys":true
   },
+  "conf" :{
+    "enabled" : {"default": false,"type": "boolean", "requiresRestart": true}
+  },
   "expose" : {
     "allocation" : ["readHistory"]
   },
