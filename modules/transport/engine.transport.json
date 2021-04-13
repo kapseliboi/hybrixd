@@ -10,13 +10,7 @@
   "hashSalt":"Th1s1sS0m3S4lty3ntr0pyf0rTh0s3H4sh1ngFunct10ns!",
   "defaultChannel":"hybrixAnnouncements",
   "defaultIrcHost":"irc.freenode.net",
-  "defaultTorrentPasswd":"l3ts_b34t_th3_b4nks!",
-  "conf" :{
-    "enabled" :{
-      "default":true,
-      "info":"Whether to enable"
-    }
-  },
+  "defaultTorrentPasswd":"l3ts_b34t_th3_b4nks!",  
   "quartz" : {
     "init" :[
       "# open transports IRC and Torrent, unless already open",
