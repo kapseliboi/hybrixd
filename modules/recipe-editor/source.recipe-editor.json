@@ -20,6 +20,7 @@
       "sync recipe_editor"
     ],
     "submit":[
+      "time 60000",
       "jpar",
       "poke formData",
       "curl https://api.github.com /repos/hybrix-io/hybrixd/git/refs/heads GET $auth 2 1" ,
@@ -28,8 +29,11 @@
       "tran [0].object.sha 2 1",
       "fail 'Failed to retrieve master branch.'",
       "data {ref: refs/heads/${formData.base}_${formData.symbol}, sha: $}",
-      "curl https://api.github.com /repos/hybrix-io/hybrixd/git/refs POST $auth 2 1",
+      "curl https://api.github.com /repos/hybrix-io/hybrixd/git/refs POST $auth @postRecipe 1",
+      "indx 'Reference already exists'",
+      "true >-1 @postRecipe 1",
       "fail 'Failed to create branch.'",
+      "@postRecipe",
       "peek formData",
       "jpar",
       "tran {symbol:.symbol,name:.name,import:.base,info:.info,factor:.factor,contract:.contract,originator:.originator} 2 1",
