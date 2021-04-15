@@ -171,7 +171,7 @@
       "call balance/$1",
       "true >=$activationBalance 3 1",
       "with symbolUppercase [data,$symbol] [case,upper]",
-      "fail 'Not enough activation balance on account! Minimum required is ${activationBalance} ${symbolUppercase} to send transactions!'",
+      "fail 'Not enough activation balance on account! Minimum required is ${activationBalance} ${symbolUppercase} to send transactions! Currently only $ ${symbolUppercase} available.'",
       "rand 10000",
       "data {'id': $,'command': 'account_info','account': '$1','strict': true,'ledger_index': 'current','queue': true}",
       "curl POST 2 1",
