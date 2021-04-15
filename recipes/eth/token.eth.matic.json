@@ -1,0 +1,9 @@
+{
+  "symbol":"matic",
+  "name":"Polygon Network (formerly Matic)",
+  "import":"eth",
+  "info":"Polygon (previously Matic Network) is a structured, easy-to-use platform for Ethereum scaling and infrastructure development. Its core component is Polygon SDK, a modular, flexible framework that supports building multiple types of applications.",
+  "factor":"18",
+  "contract":"0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0",
+  "originator":"0x78655080b65f42e2cee5fa5673689cc44d4e1cfc"
+}
