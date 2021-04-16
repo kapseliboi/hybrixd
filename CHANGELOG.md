@@ -1,3 +1,16 @@
+# v0.9.12
+## Giant Yellow Leprechaun
+## 16-04-2021
+
+* Add Polygon Network (formerly Matic) token. Thanks Thomas Maij!
+* Handle Ripple minimum activation balance. As you can't leave less than 20 XRP on an account.
+* Waves: increase fee amount to account for smart accounts
+* Add enable conf toggle to all sources and engines
+* Improvements to recipe editor
+
+
+
+
 # v0.9.11
 ## Furry Fuchsia Goblin
 ## 09-04-2021
