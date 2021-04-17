@@ -2,7 +2,7 @@
   "engine" : "allocation",
   "name" : "Allocation management engine",
   "timeout" : 120000,
-  "cron" : 300,
+  "cron" : 30,
   "defaultDeadline" : 720,
   "storageFactor" : 8,
   "accountIdRegex" : "^[a-zA-Z0-9]{44}$",
@@ -19,43 +19,67 @@
     "securityTransferFee" : {"default":"0.5"},
     "securityContractFee" : {"default":"0.001"},
     "securityRiskFactor" : {"default":"7"},
+    "securityReleaseHours" : {"default":"48"},
     "securityMinimalDeposit" : {"default":10}
   },
   "quartz" : {
     "cron" : [
-      "time 300000",
-      "call compilePairStats"
+      "time 150000",
+      "call cronCompilePairStats",
+      "fork cron_10m"
     ],
-    "compilePairStats" : [
-      "time 300000",
+    "cron_10m" : [
+      "time 150000",
+      "with timeNow date now",
+      "peek local::cron10m 0",
+      "true '$timeNow > ($ + 300)' 2 1",
+      "poke local::cron10m",
+      "logs 'cron -> running regular tasks (10m)'",
+      "call cronUnlockReserves"
+   ],
+   "cronUnlockReserves" : [
+      "time 150000",
+      "call account/list",
+      "each cronUnlockAccountReserve"
+    ],
+    "cronUnlockAccountReserve" : [
+      "call securityReserveAccountLock/${.key}/cron"
+    ],
+    "cronCompilePairStats" : [
+      "time 60000",
       "call account/list",
       "poke getInputData",
       "# first prepare a unique pair array",
       "each getPairs",
       "flat",
       "with getAccounts [data,$] [tran,.[0]]",
-      "poke accounts",
       "with getPairs [data,$] [pick,1] [flat] [uniq]",
-      "peek getPairs",
-      "each getPairStats $getInputData",
-      "merg",
-      "poke local::pairstats"
+      "with getPairsSize [data,$getPairs] [size]",
+      "peek local::compilePairStatCount 0",
+      "with pairSelect [peek,local::compilePairStatLoopB,0] [have,getPairs[$],2,1] [data,0] [peek,getPairs[$]]",
+      "with count [data,$] [math,+1] [true,>=$getPairsSize,1,2] [done,0]",
+      "poke local::compilePairStatCount $count",
+      "peek getInputData",
+      "call getPairStats/$pairSelect",
+      "tran .[$pairSelect] 3 1",
+      "logs 'error: Failed to save pairstats for ${pairSelect}!'",
+      "fail 'WARNING: failing to save pairstats for ${pairSelect}!'",
+      "poke local::pairstats[$pairSelect]"
     ],
     "getPairs" : [
       "tran .value.pairs",
       "flat",
       "tran .[0]"
     ],
-    "getPairStats" : [
-      "copy .value pair",
+    "getPairStats/pair" : [
+      "time 120000",
       "with symbols [data,$pair] [splt,':']",
       "with fromBase peek symbols[0]",
       "with toSymbol peek symbols[1]",
-      "copy .meta dataObject",
+      "poke dataObject",
       "# calculate sufficiency and liquidity values",
-      "peek dataObject",
       "call getCalcStats/max/securityDepositBalances/$pair/$conf::securitySymbol",
-      "rout /engine/valuations/rate/$conf::securitySymbol/$fromBase/$ 2 1",
+      "rout /e/valuations/rate/$conf::securitySymbol/$fromBase/$ 2 1",
       "data 0",
       "math '/$conf::securityRiskFactor'",
       "poke sufficiency",
@@ -73,11 +97,11 @@
       "trim '%'",
       "poke maxfee",
       "# calculate price based on valuation * (1+feepercentage)",
-      "rout /engine/valuations/rate/$toSymbol/$fromBase/1 2 1",
+      "rout /e/valuations/rate/$toSymbol/$fromBase/1 2 1",
       "data 0",
       "poke unitPrice",
       "with bid [math,$unitPrice*(1-($minfee/100))] [form,$fromBase]",
-      "with askfee [peek,dataObject] [call,getCalcStats/min/pair/$toSymbol:$fromBase/fee] [ship,2] [done,0] [trim,'%']",
+      "with askfee [peek,dataObject] [call,getCalcStats/min/pair/$toSymbol:$fromBase/fee] [trim,'%'] [ship,2] [done,0]",
       "with ask [true,'$askfee>0',2] [done,$bid] [math,$unitPrice*(1+($askfee/100))] [form,$fromBase]",
       "# calculate 24 hour volume",
       "with volume call getVolume/$fromBase",
@@ -140,10 +164,15 @@
       "call ${command}Pair/$accountID/$A/$B/$C/$D/$E/$F"
     ],
     "statsPair/fromBase/toSymbol" : [
+      "peek fromBase",
+      "flow 'undefined' 1 3",
       "peek local::pairstats {}",
-      "test fromBase 1 3",
+      "done",
+      "peek local::pairstats {}",
       "poke pair '$fromBase:$toSymbol'",
-      "tran .[${fromBase}:${toSymbol}]"
+      "tran .[${fromBase}:${toSymbol}] 2 1",
+      "fail 'Stats are currently not available for this pair! $fromBase'",
+      "done { '$pair' : $ }"
     ],
     "checkSignature/accountID/signature/message" : [
       "call validateAccount/$accountID",
@@ -236,13 +265,14 @@
     ],
     "selectPair/fromBase/toSymbol/amount" : [
       "call findPair/$fromBase/$toSymbol",
+      "with amount [ship,2,2,1,1] [done,1]",
       "each selectEligibility/$amount",
       "excl null",
       "sort .fee",
       "pick",
       "void 1 2",
       "fail 'There are no selectable pairs!'",
-      "with .fee [push,'%']"
+      "#with .fee"
     ],
     "selectEligibility/amount" : [
       "# eligibility to be selected: enough balance, enough security sufficiency",
@@ -259,7 +289,8 @@
       "tran {:*}.pairs{*:} 2 1",
       "fail 'Could not retreive pairs'",
       "flat",
-      "uniq"
+      "uniq",
+      "sort"
     ],
     "findPair/fromBase/toSymbol" : [
       "with [fromBase,toSymbol] case lower",
@@ -291,6 +322,7 @@
     ],
 
     "account/command/accountID/A/B/C/D/E/F" : [
+      "flow command {list: 2} 1",
       "call validateAccount/$accountID",
       "flow command {securityReserve: 1} @other",
       "flow A {withdraw:@withdraw,deposit:@deposit,details:@details,balance:@balance}",
@@ -450,11 +482,15 @@
       "with balance call getSecurityDepositBalance/$accountID",
       "with locked call getSecurityLockedBalance/$accountID",
       "with amount math '($balance - $locked)/${conf::securityRiskFactor}'",
-      "flow request {'unlock':@unlock,'unlockWithFee':@unlockWithFee}",
+      "flow request {'unlock':@unlock,'unlockWithFee':@unlockWithFee,'cron':@cronUnlock}",
       "@lock",
       "true '($balance - $locked)>=$amount' 2 1",
       "fail 'Security lock error: Cannot lock amount higher than available balance!'",
       "math '$locked + $amount'",
+      "call securityForceLockedBalanceAccount/$accountID/$",
+      "done",
+      "@cronUnlock",
+      "math '$locked - ($amount / (6 * $conf::securityReleaseHours))'",
       "call securityForceLockedBalanceAccount/$accountID/$",
       "done",
       "@unlockWithFee",
@@ -499,6 +535,8 @@
       "have local::accounts[$accountID] 2 1",
       "fail 'Account does not exist!'",
       "peek amount",
+      "true '$amount>=0' 2 1",
+      "fail 'Cannot set locked balance lower than zero!'",
       "form ${conf::securitySymbol}",
       "poke local::accounts[$accountID].securityLockedBalances[$conf::securitySymbol]"
     ],
