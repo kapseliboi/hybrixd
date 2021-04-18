@@ -396,13 +396,15 @@
       "logs 'derived $symbol address for $accountID loaded from cache'",
       "done",
       "@deriveAddress",
-      "with auth [void,1,2] [call,keysAccount/$accountID]",
+      "with auth [void,1,3] [call,keysAccount/$accountID] [done] [jpar]",
       "data {symbol:$symbol}",
       "bank getAddress $auth 2 1",
       "fail 'Could not derive account address!'",
-      "encr",
+      "poke result",
       "logs 'caching derived $symbol address for $accountID'",
-      "save $keyHash"
+      "encr",
+      "save $keyHash",
+      "done $result"
     ],
     "addressAccount/accountID/symbol/signature" : [
       "call checkSignature/$accountID/$signature/adressAccount-${accountID}-${symbol}",
