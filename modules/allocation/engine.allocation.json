@@ -388,14 +388,14 @@
       "done true",
       "done false"
     ],
-    "getAddressAccount/accountID/symbol/auth"  : [
+    "getAddressAccount/accountID/symbol"  : [
       "with symbol case lower",
       "with keyHash [data,'allocationAddressCache $accountID $symbol'] [hash]",
       "load $keyHash 1 @deriveAddress",
       "decr 1 @deriveAddress",
       "done",
       "@deriveAddress",
-      "with auth [void,1,3] [call,keysAccount/$accountID] [done] [jpar]",
+      "with auth [flow,accountID,node,1,2] [done,{auth:node}] [call,keysAccount/$accountID]",
       "data {symbol:$symbol}",
       "bank getAddress $auth 2 1",
       "fail 'Could not derive account address!'",
@@ -447,9 +447,7 @@
       "with locked call getSecurityLockedBalance/$accountID",
       "ship amount 2 1 1 1",
       "fail 'You must specify a positive amount to deposit!'",
-      "data {symbol:${conf::securitySymbol}}",
-      "call getAddressAccount/$accountID/$symbol/{auth:node}",
-      "poke target",
+      "with target call getAddressAccount/node/${conf::securitySymbol}",
       "with auth call keysAccount/$accountID",
       "data {symbol:${conf::securitySymbol},amount:$amount,target:$target}",
       "bank transaction $auth 2 1",
@@ -472,8 +470,7 @@
       "with locked call getSecurityLockedBalance/$accountID",
       "true '($balance - $locked)>=$amount' 2 1",
       "fail 'Security lock error: Cannot unlock amount higher than locked balance!'",
-      "call getAddressAccount/$accountID/${conf::securitySymbol}",
-      "poke target",
+      "with target call getAddressAccount/$accountID/${conf::securitySymbol}",
       "data {symbol:${conf::securitySymbol},amount:$amount,target:$target}",
       "bank transaction {auth:node} 2 1",
       "fail 'Security withdrawal error: $'",
@@ -566,6 +563,7 @@
       "data {symbol:$symbol,amount:$amount,target:$target}",
       "bank transaction $auth 1 2",
       "done",
+      "logs 'ERROR: push failure - $'",
       "fail"
     ],
 
