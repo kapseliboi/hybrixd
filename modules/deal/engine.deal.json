@@ -399,15 +399,6 @@
         "_list" : "proposalID",
         "_this" : "Specify the proposal ID to check the status of."
       }
-    },
-    "proposalHandler" : {
-      "_help" : "Fire up the proposal handler.",
-      "_root" : true,
-      "_this" : "Fire up the proposal handler.",
-      "_ref" : {
-        "_list" : "proposalID",
-        "_this" : "Specify the proposal ID to check the status of."
-      }
     }
   }
 }

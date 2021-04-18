@@ -3,7 +3,7 @@
   "name" : "Allocation management engine",
   "timeout" : 120000,
   "cron" : 30,
-  "defaultDeadline" : 720,
+  "defaultDeadline" : 60,
   "storageFactor" : 8,
   "accountIdRegex" : "^[a-zA-Z0-9]{44}$",
   "permissions":{
@@ -356,7 +356,9 @@
       "peek local::accounts[$accountID]"
     ],
     "listAccount" : [
-      "peek local::accounts {}"
+      "peek local::accounts {}",
+      "flat",
+      "pick"
     ],
     "removeAccount/accountID/signature" : [
       "call checkSignature/$accountID/$signature/removeAccount-${accountID}",
@@ -785,17 +787,6 @@
                 "_this" : "Signature for the operation."
               }
             }
-          }
-        }
-      },
-      "securityForceDepositBalance" : {
-        "_ref" : {
-          "_root" : true,
-          "_list" : "accountID",
-          "_help" : "Provide the account ID to check for its existance.",
-          "_ref" : {
-            "_list" : "amount",
-            "_this" : "Amount to force set balance of the security reserve to."
           }
         }
       }
