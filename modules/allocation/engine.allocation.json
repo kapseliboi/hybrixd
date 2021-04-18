@@ -388,12 +388,22 @@
       "done true",
       "done false"
     ],
-    "getAddressAccount/accountID/symbol" :[
-      "with auth call keysAccount/$accountID",
+    "getAddressAccount/accountID/symbol/auth"  : [
+      "with symbol case lower",
+      "with keyHash [data,'allocationAddressCache $accountID $symbol'] [hash]",
+      "load $keyHash 1 @deriveAddress",
+      "decr 1 @deriveAddress",
+      "logs 'derived $symbol address for $accountID loaded from cache'",
+      "done",
+      "@deriveAddress",
+      "with auth [void,1,2] [call,keysAccount/$accountID]",
       "data {symbol:$symbol}",
       "bank getAddress $auth 2 1",
-      "fail 'Could not derive account address!'"
-    ],
+      "fail 'Could not derive account address!'",
+      "encr",
+      "logs 'caching derived $symbol address for $accountID'",
+      "save $keyHash"
+    ]
     "addressAccount/accountID/symbol/signature" : [
       "call checkSignature/$accountID/$signature/adressAccount-${accountID}-${symbol}",
       "call getAddressAccount/$accountID/$symbol"
@@ -438,8 +448,8 @@
       "ship amount 2 1 1 1",
       "fail 'You must specify a positive amount to deposit!'",
       "data {symbol:${conf::securitySymbol}}",
-      "bank getAddress {auth:node} 2 1",
-      "fail 'Security deposit error: cannot derive target!'",
+      "call getAddressAccount/$accountID/$symbol/{auth:node}",
+      "#fail 'Security deposit error: cannot derive target!'",
       "poke target",
       "with auth call keysAccount/$accountID",
       "data {symbol:${conf::securitySymbol},amount:$amount,target:$target}",
@@ -463,10 +473,7 @@
       "with locked call getSecurityLockedBalance/$accountID",
       "true '($balance - $locked)>=$amount' 2 1",
       "fail 'Security lock error: Cannot unlock amount higher than locked balance!'",
-      "with auth call keysAccount/$accountID",
-      "data {symbol:${conf::securitySymbol}}",
-      "bank getAddress $auth 2 1",
-      "fail 'Security withdrawal error: cannot derive target!'",
+      "call getAddressAccount/$accountID/${conf::securitySymbol}",
       "poke target",
       "data {symbol:${conf::securitySymbol},amount:$amount,target:$target}",
       "bank transaction {auth:node} 2 1",
