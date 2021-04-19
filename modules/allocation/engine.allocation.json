@@ -3,7 +3,7 @@
   "name" : "Allocation management engine",
   "timeout" : 120000,
   "cron" : 30,
-  "defaultDeadline" : 60,
+  "defaultDeadline" : 180,
   "storageFactor" : 8,
   "accountIdRegex" : "^[a-zA-Z0-9]{44}$",
   "permissions":{
