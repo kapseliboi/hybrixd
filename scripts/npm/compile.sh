@@ -14,13 +14,18 @@ NPMINST="`which npm`"
 
 
 # QUARTZ
-echo "[.] Generate Quartz documentation."
+echo "[.] Generate qrtz documentation."
 mkdir -p "$NODE/docs"
 cd "$NODE/scripts/docs"
 sh "$NODE/scripts/docs/docs.sh"
 
+echo "[.] Generate icons."
 sh "$NODE/scripts/icons/icons.sh"
 
+cd "$NODE"
+echo "[.] Bundle qrtz tests."
+node "$NODE/scripts/npm/compileQrtzTests.js"
+cd "$NODE"
 
 echo "[.] Creating hybrixd release..."
 
@@ -48,21 +53,20 @@ cp "$NODE/README.npm.md" "$DIST/README.npm.md"
 
 # Copy package.json
 cp "$NODE/package.json" "$DIST/"
-
+echo "[.] Copy node_modules..."
 # Copy node_modules
-rsync -avq "$NODE/node_modules" "$DIST/"
+cp -r "$NODE/node_modules" "$DIST/"
 
 echo "[.] Copy modules..."
-
-# Copy modules
 rsync -avq "$NODE/modules" "$DIST/"
 
-# Copy interface
+echo "[.] Copy hybrix-jslib..."
 rsync -avq "$NODE/interface" "$DIST/"
 
-# Copy interface
+echo "[.] Copy files..."
 rsync -avq "$NODE/files" "$DIST/"
 
+echo "[.] Copy scripts..."
 # Copy npm setup and test scripts
 mkdir -p "$DIST/scripts/npm/"
 cp "$NODE/scripts/npm/test.sh" "$DIST/scripts/npm/test.sh"
@@ -73,7 +77,7 @@ cp -r "$NODE/scripts/test" "$DIST/scripts/test"
 # Copy pipeline scripts
 rsync -avq "$NODE/scripts/pipeline" "$DIST/scripts/"
 
-# Copy common
+echo "[.] Copy common..."
 rsync -avq "$NODE/common/crypto" "$DIST/common/"
 rsync -avq "$NODE/common/byte" "$DIST/common/"
 rsync -avq "$NODE/common/node_modules" "$DIST/common/"
@@ -81,14 +85,17 @@ cp "$NODE"/common/*.js "$DIST/common/"
 cp "$NODE"/common/*.json "$DIST/common/"
 #TODO node runtime
 
+echo "[.] Copy recipes..."
 mkdir -p "$DIST/recipes"
 rsync -aq --include="*.json" --include="*/" --exclude="*" "./recipes/" "$DIST/recipes/"
 mkdir -p "$DIST/recipes.EXTRA"
 rsync -aq --include="*.json" --include="*/" --exclude="*" "./recipes.EXTRA/" "$DIST/recipes.EXTRA/"
 
+echo "[.] Copy lib..."
 mkdir -p "$DIST/lib"
 rsync -avq --include="*.js" --include="*.js.map" --include="*.css" --include="*.json" --include="*.html" --include="*.ico" --include="*.png" --include="*.svg" --include="*.lzma" --include="*.ttg" --include="*.woff" --include="*.woff2" --include="*.eot"  --include="*/" --exclude="*" "./lib/" "$DIST/lib/"
 
+echo "[.] Copy docs..."
 mkdir -p "$DIST/docs"
 rsync -avq --include="*.js" --include="*.js.map" --include="*.css" --include="*.json" --include="*.html" --include="*.ico" --include="*.png" --include="*.svg" --include="*.lzma" --include="*.ttg" --include="*.woff" --include="*.woff2" --include="*.eot"  --include="*/" --exclude="*" "./docs/" "$DIST/docs/"
 
