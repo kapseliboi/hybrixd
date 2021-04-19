@@ -627,6 +627,36 @@
       "done $OK",
       "fail"
     ],
+
+    "trim1" : [
+      "data ' hello '",
+      "trim",
+      "flow hello 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "trim2" : [
+      "data '_hello_'",
+      "trim _",
+      "flow hello 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "trim3" : [
+      "data '_hello-'",
+      "trim _ -",
+      "flow hello 1 2",
+      "done $OK",
+      "fail"
+    ],
+    "trim4" : [
+      "data '-_hello_-'",
+      "trim [_,-] -",
+      "flow hello_ 1 2",
+      "done $OK",
+      "fail"
+    ],
+        
     "math1" : [
       "math 1+1",
       "flow 2 1 2",
