@@ -19,7 +19,7 @@
     "securityTransferFee" : {"default":"0.5"},
     "securityContractFee" : {"default":"0.001"},
     "securityRiskFactor" : {"default":"7"},
-    "securityReleaseHours" : {"default":"48"},
+    "securityReleaseHours" : {"default":"12"},
     "securityMinimalDeposit" : {"default":10}
   },
   "quartz" : {
@@ -43,7 +43,7 @@
       "each cronUnlockAccountReserve"
     ],
     "cronUnlockAccountReserve" : [
-      "call securityReserveAccountLock/${.key}/cron"
+      "call securityReserveAccountLock/${.value}/cron"
     ],
     "cronCompilePairStats" : [
       "time 60000",
