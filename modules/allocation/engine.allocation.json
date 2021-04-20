@@ -425,8 +425,8 @@
       "@retrieve",
       "hook @peek",
       "with auth call keysAccount/$accountID",
-      "data {symbol:$symbol}",
-      "bank getBalance $auth",
+      "call getAddressAccount/$accountID/$symbol",
+      "rout /a/$symbol/balance/$",
       "poke local::accounts[$accountID].balances[$symbol]",
       "poke local::accounts[$accountID].lastsync[$symbol] $now"
     ],
