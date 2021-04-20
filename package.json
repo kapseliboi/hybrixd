@@ -1,6 +1,6 @@
 {
   "name": "hybrixd",
-  "version": "0.9.11",
+  "version": "0.9.12",
   "description": "Host your own wallet, be your own bank and have a powerful multi-blockchain system at your fingertips.",
   "main": "lib/hybrixd.js",
   "directories": {
@@ -18,7 +18,8 @@
     "teletype": "^0.2.0",
     "why-is-node-running": "^2.2.0",
     "ws": "^6.2.1",
-    "xml2js": "^0.4.23"
+    "xml2js": "^0.4.23",
+    "stackback": "*"
   },
   "devDependencies": {
     "cssmin": "^0.4.3",

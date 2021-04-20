@@ -103,7 +103,8 @@
 
     "rate/from/to/amount=1/mode=median" : [
       "data {source: '$from', target:'$to', amount:'$amount', mode: '$mode',  prices: $local::prices}",
-      "func rate"
+      "func rate",
+      "math 'round($,18)'"
     ],
     "list" : [
       "have local::symbols 2 1",

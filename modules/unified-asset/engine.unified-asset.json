@@ -26,7 +26,7 @@
       "time 45000",
       "with totalCount math $count+$offset",
       "peek address",
-      "func decompressUnifiedAddress",
+      "func decompressUnifiedAddress/$symbol",
       "splt ','",
       "each getSubHistory/$totalCount",
       "flat",
@@ -84,7 +84,7 @@
 
     "balance/address":[
       "peek address",
-      "func decompressUnifiedAddress",
+      "func decompressUnifiedAddress/$symbol",
       "splt ','",
       "each getSubBalance",
       "math sum",
@@ -102,7 +102,7 @@
 
     "fee-balance/address":[
       "peek address",
-      "func decompressUnifiedAddress",
+      "func decompressUnifiedAddress/$symbol",
       "splt ','",
       "each getSubFeeBalance",
       "merg",
@@ -122,7 +122,7 @@
 
     "subbalances/address":[
       "peek address",
-      "func decompressUnifiedAddress",
+      "func decompressUnifiedAddress/$symbol",
       "splt ','",
       "each getSubBalance2"
     ],
@@ -148,7 +148,7 @@
 
     "validate/address":[
       "peek address",
-      "func decompressUnifiedAddress",
+      "func decompressUnifiedAddress/$symbol",
       "splt ','",
       "each getSubValidate",
       "find invalid 1 2",
@@ -240,8 +240,8 @@
       "each getSubSample",
       "type array",
       "join ','",
-      "func compressUnifiedAddress",
-      "done {address: '$symbol:$',transaction:'$firstSubSymbol:$transactionId'}"
+      "func compressUnifiedAddress/$symbol",
+      "done {address:'$',transaction:'$firstSubSymbol:$transactionId'}"
     ],
 
     "getSubFeeObject/bytes" : [
@@ -336,7 +336,7 @@
 
     "multiAddressToObject/address":[
       "peek address",
-      "func decompressUnifiedAddress",
+      "func decompressUnifiedAddress/$symbol",
       "splt ,",
       "each splitSubAddress",
       "merg"
@@ -369,6 +369,39 @@
       "call transaction-details3/$/$amount/$target/$bytes/$publicKey",
       "data [$, {target:'$targetValid'}]",
       "merg"
+    ],
+    "decompress/symbol_/address":[
+      "peek address",
+      "func decompressUnifiedAddress/$symbol_"
+    ],
+    "compress/symbol_/address":[
+      "peek address",
+      "func compressUnifiedAddress/$symbol_"
     ]
+  },
+
+  "router" : {
+    "compress":{
+      "_ref" : {
+        "_list" : "symbol",
+        "_sample":"hy",
+        "_ref" : {
+          "_list" : "address",
+          "_sample":"",
+          "_this" : "Compress a unified address"
+        }
+      }
+    },
+    "decompress":{
+      "_ref" : {
+        "_list" : "symbol",
+        "_sample":"hy",
+        "_ref" : {
+          "_list" : "address",
+          "_sample":"",
+          "_this" : "Deompress a packed unified address"
+        }
+      }
+    }
   }
 }
