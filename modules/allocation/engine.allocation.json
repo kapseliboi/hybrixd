@@ -49,7 +49,6 @@
     "cronCompilePairStats" : [
       "time 60000",
       "peek local::accounts {}",
-      "poke getInputData",
       "# first prepare a unique pair array",
       "each getPairs",
       "flat",
@@ -60,12 +59,13 @@
       "with pairSelect [peek,local::compilePairStatLoopB,0] [have,getPairs[$],2,1] [data,0] [peek,getPairs[$]]",
       "with count [data,$] [math,+1] [true,>=$getPairsSize,1,2] [done,0]",
       "poke local::compilePairStatCount $count",
-      "peek getInputData",
+      "peek local::accounts {}",
       "call getPairStats/$pairSelect",
       "tran .[$pairSelect] 3 1",
       "logs 'error: Failed to save pairstats for ${pairSelect}!'",
       "fail 'WARNING: failing to save pairstats for ${pairSelect}!'",
-      "poke local::pairstats[$pairSelect]"
+      "poke local::pairstats[$pairSelect]",
+      "done { '$pairSelect' : $ }"
     ],
     "getPairs" : [
       "tran .value.pairs",
@@ -85,7 +85,9 @@
       "math '/$conf::securityRiskFactor'",
       "poke sufficiency",
       "peek dataObject",
-      "call getCalcStats/add/balances/$pair",
+      "call getCalcStats/add/balances/$pair/$toSymbol",
+      "true '>0' 1 2",
+      "rout /e/valuations/rate/$toSymbol/$fromBase/$",
       "poke liquidity",
       "with sufficiency [true,'<$liquidity',2] [data,$liquidity] [form,$storageFactor]",
       "# calculate fee range",
@@ -115,7 +117,7 @@
     ],
     "getCalcStats/action/var/pair/specifier" : [
       "with specifier [void,2] [done] [peek,pair] [splt,':'] [pick,-1]",
-      "each getCalcStatsHelper {var:'$var',pair:$pair,specifier:$specifier}",
+      "each getCalcStatsHelper {var:'$var',pair:'$pair',specifier:'$specifier'}",
       "type array",
       "flow action {add:@add,min:@min,max:@max,average:@average}",
       "@average",
@@ -317,6 +319,7 @@
       "with .accountID peek accountID",
       "with .balance call getAccountBalance/$accountID/$toSymbol",
       "with .sufficiency call getSufficiency/$accountID/$toSymbol",
+      "with .sufficiency [math,'min(${.sufficiency},${.balance})'] [ship,2,1,1,1] [done,0]",
       "with .active math '${.balance}>0.001 and ${.sufficiency}>0.001'",
       "with feeModifier call getFeeModifier/$accountID/$toSymbol",
       "with .fee [trim,'%'] [math,'* (1 + $feeModifier)'] [form,$storageFactor] [push,'%']"
@@ -792,6 +795,7 @@
         }
       }
     },
+    "cronCompilePairStats" : "TEST",
     "security-symbol" : "Get the used security symbol"
   }
 }
