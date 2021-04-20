@@ -36,7 +36,7 @@
       "@postRecipe",
       "peek formData",
       "jpar",
-      "tran {symbol:.symbol,name:.name,import:.base,info:.info,factor:.factor,contract:.contract,originator:.originator} 2 1",
+      "tran {symbol:'${.base}.${.symbol}',name:.name,import:.base,info:.info,factor:.factor,contract:.contract,originator:.originator} 2 1",
       "fail 'Failed to create recipe.'",
       "jstr",
       "code utf-8 base64",

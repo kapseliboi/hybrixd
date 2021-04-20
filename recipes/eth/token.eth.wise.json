@@ -1,0 +1,9 @@
+{
+  "symbol":"eth.wise",
+  "name":"Wise token",
+  "import":"eth",
+  "info":"WISE is an innovative cryptocurrency designed to be a highly secure store of value that can be easily staked to earn trustless interest.",
+  "factor":"18",
+  "contract":"0x66a0f676479cee1d7373f3dc2e2952778bff5bd6",
+  "originator":"0x641AD78BAca220C5BD28b51Ce8e0F495e85Fe689"
+}
