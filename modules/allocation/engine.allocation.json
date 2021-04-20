@@ -234,7 +234,7 @@
       "poke feeFactor ${.fee-factor}",
       "poke feeAmount ${.fee}",
       "with balance call rebalanceMutate/$accountID/$symbol/$amount",
-      "call feeModifierMutate/$accountID/$symbol/-$amount/$balance",
+      "call feeModifierMutate/$accountID/$symbol/$amount/$balance",
       "form $feeFactor",
       "poke feeMutation",
       "# also rebalance with fee amounts if an amount has been subtracted",
@@ -242,7 +242,7 @@
       "call rebalanceMutate/$accountID/$feeSymbol/-$feeAmount",
       "flow feeSymbol {$symbol:1} 2",
       "poke balance",
-      "call feeModifierMutate/$accountID/$feeSymbol/$feeAmount/$balance",
+      "call feeModifierMutate/$accountID/$feeSymbol/-$feeAmount/$balance",
       "@reportBalance",
       "with balance form $symbol",
       "done 'Pair available balance is now $balance $symbol. Fee mutation is $feeMutation $symbol.'"
