@@ -7,6 +7,7 @@
   "proposalListPrefix" : "bf70896b41c1555612fb332d274d4e4b",
   "cron" : 10,
   "TxidRegex" : "^[a-zA-Z0-9:.]+$",
+  "purgeTime" : 3600,
   "permissions":{
     "nodeKeys":true
   },
@@ -48,6 +49,7 @@
       "test typeAuto 1 @defer",
       "with txConfirmed [data,${.bid.txid}] [void,2,1] [done,0] [data,${.status}] [flow,'accepted',2,1] [done,0] [true,'${.progress}==0.5',1,-1] [done,1]",
       "test txConfirmed 1 @defer",
+      "poke deadline ${.deadline}",
       "data [$accountID,${.bid.symbol},${.bid.amount},${.bid.target}]",
       "jstr",
       "encr",
@@ -56,6 +58,8 @@
       "call remitted/$proposalID/$",
       "done",
       "@deferPush",
+      "with txStasis [date,now] [true,'>($deadline + $purgeTime)',1,2] [done,1] [done,0]",
+      "test txStasis @removeFromQueue 1",
       "logs 'proposal $proposalID with status accepted has a delayed remittance!'",
       "done",
       "@defer",
@@ -279,7 +283,6 @@
       "# reject the transaction if either premature or non-equal target",
       "with txRejected [true,'$txPremature',1,2] [done,1] [true,'$targetEqual and ${askTx.amount}==${.ask.amount}',1,-1] [done,0]",
       "true '$txRejected' @zeroAskProgress",
-      "# true check transaction deadline",
       "with askConfirmsMax rout /a/${.ask.symbol}/confirmed",
       "with askConfirmsNow [rout,/a/${.ask.symbol}/confirmed/${.ask.txid},2,1] [done,0]",
       "with askProgress math 'max($askConfirmsNow / $askConfirmsMax, 1)'",
