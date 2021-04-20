@@ -25,15 +25,16 @@
   "quartz" : {
     "cron" : [
       "time 150000",
-      "call cronCompilePairStats",
-      "fork cron_10m"
+      "call cron_10m",
+      "call cronCompilePairStats"
     ],
     "cron_10m" : [
       "time 150000",
       "with timeNow date now",
       "peek local::cron10m 0",
       "true '$timeNow > ($ + 300)' 2 1",
-      "poke local::cron10m",
+      "done",
+      "poke local::cron10m $timeNow",
       "logs 'cron -> running regular tasks (10m)'",
       "call cronUnlockReserves"
    ],
@@ -47,7 +48,7 @@
     ],
     "cronCompilePairStats" : [
       "time 60000",
-      "call account/list",
+      "peek local::accounts {}",
       "poke getInputData",
       "# first prepare a unique pair array",
       "each getPairs",
@@ -205,7 +206,7 @@
       "true >0 2 1 ",
       "fail 'A non zero balance of $toSymbol is required to setup this pair, currently $ $toSymbol is available.'",
       "with deadline [flow,'undefined',1,2] [done,$defaultDeadline]",
-      "with type [flow,'undefined',1,2] [done,'autonomous']",
+      "with type [flow,'undefined',1,2] [done,autonomous]",
       "data {ask:'$fromBase',bid:'$toSymbol',fee:'${feePercent}%',type:'$type',deadline:$deadline}",
       "poke local::accounts[$accountID].pairs[$fromBase:$toSymbol]"
     ],
@@ -541,7 +542,7 @@
       "fail 'Account does not exist!'",
       "peek amount",
       "true '$amount>=0' 2 1",
-      "fail 'Cannot set locked balance lower than zero!'",
+      "done 'Cannot subtract $amount from locked balance!'",
       "form ${conf::securitySymbol}",
       "poke local::accounts[$accountID].securityLockedBalances[$conf::securitySymbol]"
     ],
