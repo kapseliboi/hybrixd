@@ -31,7 +31,7 @@
     ],
     "proposalHandler" : [
       "call selectFromProposalList",
-      "void @notexist",
+      "void 'void' @notexist",
       "poke proposalKey",
       "load $proposalKey 1 @removeFromQueue",
       "decr 1 @removeFromQueue",
