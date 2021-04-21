@@ -1,32 +1,58 @@
-// if symbol = 'BLA' and hybrix symbol BLA does not exists but ETH.BLA does, then use that
-function sanitizeSymbol (symbol, symbols) {
-  const lSymbol = symbol.toLowerCase();
-  if (symbols.includes(lSymbol)) return symbol.toUpperCase(); // 'BLA' exists
-  for (const hybrixSymbol of symbols) {
-    if (hybrixSymbol.endsWith('.' + lSymbol)) return hybrixSymbol.toUpperCase(); // return 'ETH.BLA'
+const unifications = { // some more hardcoded sanitations
+  usd: [
+    'tusd', 'usdc', 'usdt',
+    'eth.eusd', 'eth.tusd', 'eth.usdc', 'eth.usdt', 'trx.usdt', 'waves.usd', 'xrp.usd'
+  ], // not included:  omni.usdt, tomo.usdt
+  eur: [
+    'eth.eurs', 'eth.eurt', 'waves.eur'
+  ], // not included omni.eurt
+  hy: [
+    'eth.hy', 'tomo.hy'
+  ]
+};
+
+const FIAT_SYMBOLS = ['usd', 'eur', 'aud', 'cad', 'gpb', 'jpy', 'rub', 'zar'];
+
+// if symbol = 'BLA' and hybrix symbol BLA does not exists but BASE.BLA does, then use that
+function sanitizeSymbol (symbol) {
+  if (typeof symbol !== 'string') return null;
+
+  symbol = symbol.toLowerCase();
+
+  for (const unifiedSymbol in unifications) {
+    if (unifications[unifiedSymbol].includes(symbol)) return unifiedSymbol.toUpperCase();
   }
-  if ([
-    'usd', 'usdt', 'tusd', 'dai',
-    'eur', 'eurs',
-    'aud', 'cad', 'gpb', 'jpy', 'rub', 'zar'
-  ].includes(lSymbol)) return symbol.toUpperCase(); // white list currencies
-  return null; // no matching symbol found
+
+  const hybrixSymbols = Object.keys(global.hybrixd.asset);
+  if (hybrixSymbols.includes(symbol)) return symbol.toUpperCase(); // 'BLA' exists as hybrix asset
+  else if (FIAT_SYMBOLS.includes(symbol)) return symbol.toUpperCase(); // 'BLA' exists as fiat currency
+  else {
+    const tokenSymbols = [];
+    for (const hybrixSymbol of hybrixSymbols) {
+      if (hybrixSymbol.endsWith('.' + symbol)) tokenSymbols.push(hybrixSymbol); // 'BASE.BLA' exists as hybrix asset
+    }
+    if (tokenSymbols.length === 1) return tokenSymbols[0].toUpperCase(); // return 'BASE.BLA'
+    // if both 'ETH.BLA' and 'WAVES.BLA' exist. Do not sanitize
+    return null; // no matching symbol found
+  }
 }
 
+exports.sanitizeSymbol = sanitizeSymbol;
+
 function addQuote (quotes, sourceSymbol, targetSymbol, price) {
-  // Don't add quote if the input fails these requirements
-  if (typeof sourceSymbol !== 'string' || typeof targetSymbol !== 'string' || isNaN(price)) return quotes;
-  sourceSymbol = sourceSymbol.toUpperCase();
-  targetSymbol = targetSymbol.toUpperCase();
-  if (sourceSymbol === targetSymbol || price === 0 || !isFinite(price)) return quotes;
+  if (isNaN(price) || price <= 0 || !isFinite(price)) return;
 
   if (!quotes.hasOwnProperty(sourceSymbol)) quotes[sourceSymbol] = {quotes: {}};
-
   quotes[sourceSymbol].quotes[targetSymbol] = price;
-  return quotes;
 }
 
 function addBiQuote (quotes, sourceSymbol, targetSymbol, price) {
+  sourceSymbol = sanitizeSymbol(sourceSymbol);
+  targetSymbol = sanitizeSymbol(targetSymbol);
+  if (!sourceSymbol || !targetSymbol) return; // only if symbols are known in hybrix
+  if (sourceSymbol === targetSymbol) return quotes;
+
+  price = Number(price);
   addQuote(quotes, sourceSymbol, targetSymbol, price);
   addQuote(quotes, targetSymbol, sourceSymbol, 1 / price);
 }
@@ -39,7 +65,6 @@ function parseCoinmarketcap (obj) {
   Object.keys(obj.data).forEach(function (key, index) {
     const price = obj.data[key].quotes.USD.price;
     const targetSymbol = obj.data[key].symbol;
-
     addBiQuote(quotes, 'USD', targetSymbol, 1 / price);
   });
   return {name: name, quotes};
@@ -62,7 +87,7 @@ function parseCoinbase (obj) {
   if (typeof obj !== 'object' || obj === null || typeof obj.data !== 'object' || obj.data === null) return {name, quotes};
 
   Object.keys(obj.data.rates).forEach(targetSymbol => {
-    const price = parseFloat(obj.data.rates[targetSymbol]);
+    const price = obj.data.rates[targetSymbol];
     addBiQuote(quotes, 'USD', targetSymbol, price);
   });
   return {name, quotes};
@@ -83,14 +108,14 @@ function parseBinance (obj) {
     const targetSymbol = baseCurrencies.find(currency => symbolPair.endsWith(currency));
     if (targetSymbol) {
       const sourceSymbol = symbolPair.slice(0, symbolPair.length - targetSymbol.length);
-      const price = parseFloat(obj[key].price);
+      const price = obj[key].price;
       addBiQuote(quotes, sourceSymbol, targetSymbol, price);
     }
   });
   return {name, quotes};
 }
 
-function parseHitbtc (priceObjects, symbolObjects, symbols) {
+function parseHitbtc (priceObjects, symbolObjects) {
   const name = 'hitbtc';
   const quotes = {};
   if (!(priceObjects instanceof Array) || !(symbolObjects instanceof Array)) return {name, quotes};
@@ -129,12 +154,9 @@ priceObjects [
     const priceObject = priceObjectsByPair[pair];
     if (symbolObjectsByPair.hasOwnProperty(pair)) {
       const symbolObject = symbolObjectsByPair[pair];
-      const baseCurrency = sanitizeSymbol(priceObject.baseCurrency, symbols);
-      const quoteCurrency = sanitizeSymbol(priceObject.quoteCurrency, symbols);
-      if (quoteCurrency && baseCurrency) { // only if symbols are known in hybrix
-        const price = (parseFloat(symbolObject.bid) + parseFloat(symbolObject.ask)) * 0.5;
-        addBiQuote(quotes, baseCurrency, quoteCurrency, price);
-      }
+      const price = (Number(symbolObject.bid) + Number(symbolObject.ask)) * 0.5;
+
+      addBiQuote(quotes, priceObject.baseCurrency, priceObject.quoteCurrency, price);
     }
   }
   return {name, quotes};
@@ -143,7 +165,9 @@ priceObjects [
 function parseDefault (data, name) {
   const quotes = {};
   if (!(data instanceof Array)) return {name, quotes};
-  for (const pair of data) addBiQuote(quotes, pair.from, pair.to, Number(pair.price));
+  for (const pair of data) {
+    addBiQuote(quotes, pair.from, pair.to, pair.price);
+  }
   return {name, quotes};
 }
 
@@ -202,16 +226,15 @@ function enrichExchangeRatesWithMinMaxAndMedians (exchangeRates) {
     const quotes = exchangeRates[sourceSymbol].quotes;
     Object.keys(quotes).forEach(targetSymbol => {
       const exchanges = quotes[targetSymbol].sources;
-      const sortedExchanges = Object.keys(exchanges).sort(function (exchange1, exchange2) {
-        return exchanges[exchange2] - exchanges[exchange1];
-      });
+      const sortedExchangePrices = Object.keys(exchanges)
+        .sort((exchange1, exchange2) => exchanges[exchange2] - exchanges[exchange1]);
 
-      exchangeRates[sourceSymbol].quotes[targetSymbol].highest_rate = {exchange: sortedExchanges[0], rate: exchanges[sortedExchanges[0]]};
-      const lowPoint = sortedExchanges.length - 1;
-      exchangeRates[sourceSymbol].quotes[targetSymbol].lowest_rate = {exchange: sortedExchanges[lowPoint], rate: exchanges[sortedExchanges[lowPoint]]};
-      const midPoint = (sortedExchanges.length - 1) / 2;
-      const floorExchange = sortedExchanges[Math.floor(midPoint)];
-      const ceilExchange = sortedExchanges[Math.ceil(midPoint)];
+      exchangeRates[sourceSymbol].quotes[targetSymbol].highest_rate = {exchange: sortedExchangePrices[0], rate: exchanges[sortedExchangePrices[0]]};
+      const lowPoint = sortedExchangePrices.length - 1;
+      exchangeRates[sourceSymbol].quotes[targetSymbol].lowest_rate = {exchange: sortedExchangePrices[lowPoint], rate: exchanges[sortedExchangePrices[lowPoint]]};
+      const midPoint = (sortedExchangePrices.length - 1) / 2;
+      const floorExchange = sortedExchangePrices[Math.floor(midPoint)];
+      const ceilExchange = sortedExchangePrices[Math.ceil(midPoint)];
 
       const exchange = floorExchange === ceilExchange ? ceilExchange : (floorExchange + '|' + ceilExchange);
 
@@ -251,7 +274,7 @@ function parse (proc, data) {
 
   const updatedExchangeRates = addUpdatedExchangeRates(proc, currentExchangeRates, [
     parseDefault(data.EUCentralBank, 'EUCentralBank'),
-    parseHitbtc(data.hitbtc_symbols, data.hitbtc_prices, data.symbols),
+    parseHitbtc(data.hitbtc_symbols, data.hitbtc_prices),
     parseBinance(data.binance),
     parseCoinmarketcap(data.coinmarketcap),
     parseCoinbase(data.coinbase),
