@@ -1,163 +1,42 @@
 {
   "symbol":"bnb",
-  "name":"Binance Coin",
+  "name":"Binance Smart Chain (BEP20)",
   "mode":"binance",
-  "module":"quartz",
-  "addressRegex":"^bnb[A-Za-z0-9]{39}$",
-  "factor":8,
+  "addressRegex":".*",
+  "factor":18,
   "confirmed":2,
   "fee":"0.000375",
-  "listOfHosts":[
-    "https://testnet-dex.binance.org/api/v1/",
-    "tcp://dataseed1.binance.org:80/api/v1/",
-    "wss://testnet-dex.binance.org/api/ws/",
-    "wss://dex.binance.org/api/ws/",
-    "https://dex.binance.org/api/v1/",
-    "https://dex.binance.org:443/api/v1/"],
+  "notes" : {
+    "history" : "Powered by bscscan.com"
+  },
   "host": {
-    "default": "https://dex.binance.org/api/v1",
-    "explorer": "https://explorer.binance.org/api/v1"
+    "default" :[
+      "https://bsc-dataseed1.binance.org/",
+      "https://bsc-dataseed2.binance.org/",
+      "https://bsc-dataseed3.binance.org/",
+      "https://bsc-dataseed4.binance.org/",
+      "https://bsc-dataseed1.defibit.io/",
+      "https://bsc-dataseed2.defibit.io/",
+      "https://bsc-dataseed3.defibit.io/",
+      "https://bsc-dataseed4.defibit.io/",
+      "https://bsc-dataseed1.ninicoin.io/",
+      "https://bsc-dataseed2.ninicoin.io/",
+      "https://bsc-dataseed3.ninicoin.io/",
+      "https://bsc-dataseed4.ninicoin.io/"
+    ],
+    "history" : "https://api.bscscan.com/api"
   },
   "features": {"message":false},
-  "import": "transaction-history",
-  "apiProvidesFullTx": true,
+  "import": "eth-api",
   "cache":10000,
-  "contract": null,
-  "throttle":1,
-  "rate-limit":"1 request per IP per second.",
-  "documentation":"https://docs.binance.org/api-reference/dex-api/paths.html",
+  "contract": "0x0000000000000000000000000000000000000000",
+  "throttle":5,
+  "historyThrottle": 2,
+  "rate-limit":"2 calls/second for bscscan",
+  "documentation":"https://bscscan.com/apis#rpc",
   "quartz":{
-    "balance" : [
-      "curl /account/$1 2 1",
-      "fail 'Could not connect to host'",
-      "tran '.balances' @success @fail",
-      "@fail",
-      "fail 'No Result'",
-      "@success",
-      "find {'symbol':'BNB'} 1 @fail",
-      "tran '[0].free'",
-      "done"
-    ],
-    "unspent" : [
-      "curl /account/$1 2 1",
-      "fail 'Could not connect to host'",
-      "tran {accountNumber : '.account_number', sequence : '.sequence'}",
-      "done"
-    ],
-    "push" : [
-      "data '$1'",
-      "curl /broadcast/?sync=true POST {'content-type': 'text/plain'} 2 1",
-      "fail 'Could not connect to host'",
-      "tran '[0].hash' 1 2",
-      "done",
-      "fail"
-    ],
-    "test": [
-      "done {hash:dynamic}"
-    ],
-    "factor" : [
-      "pass '$factor'"
-    ],
     "sample" : [
-      "done {address:'bnb177qrmvquh5flg6axap943clfm9cq09qcpwxc0m',transaction:'6F52B2DA41DC9E9EA91E16F1028F2C6D89B425A22A8E97CFAAA250375FC11E2D'}"
-    ],
-    "reformatTx" : [
-      "tran .value 2 1",
-      "fail 'failed reformatting transaction.'",
-      "with newTimestamp [data,$] [tran, '.timeStamp']",
-      "tran { id:'.txHash', timestamp: '$newTimestamp', amount:'.value', symbol:'.txAsset', fee:'.txFee', 'fee-symbol':'.txAsset', source:'.fromAddr', target:'.toAddr',confirmed:'yes' } @tranSuccess @tranFail",
-      "@tranSuccess",
-      "done",
-      "@tranFail",
-      "fail 'Could not parse transaction.'"
-    ],
-    "getTransaction" : [
-      "curl ${host.explorer} /tx?txHash=$1 2 1",
-      "fail 'Could not connect to host'",
-      "tran {value: $}",
-      "call reformatTx",
-      "done",
-      "@fail",
-      "fail 'Could not get transaction information!'"
-    ],
-    "transactionData" : [
-      "curl /tx/$1?format=json 2 1",
-      "fail 'Could not connect to host'",
-      "poke txData",
-      "tran { txData: $txData } 1 @fail",
-      "done",
-      "@fail",
-      "fail 'Could not get transaction information!'"
-    ],
-    "attachment" : [
-      "call transactionData/$1",
-      "tran '.txData.tx.value.data' 1 @fail",
-      "done",
-      "@fail",
-      "fail 'Could not get attachment information!'"
-    ],
-    "message" : [
-      "call transactionData/$1",
-      "tran '.txData.tx.value.memo' 1 @fail",
-      "done",
-      "@fail",
-      "fail 'Could not get message information!'"
-    ],
-    "subHistory": [
-      "tran '.value.txHash' 1 @fail",
-      "done",
-      "@fail",
-      "done 0"
-    ],
-    "callForHistory": [
-      "curl ${host.explorer} /txs?page=$3&rows=$2&address=$1 2 1",
-      "fail 'Could not connect to host'",
-      "tran '.txArray[]' 1 @fail",
-
-      "done",
-      "@fail",
-      "fail 'Could not retrieve transaction history.'"
-    ],
-    "historyPageByCountLoop": [
-      "poke result []",
-      "poke rowsForCall 100",
-      "with pageForCall [math, '$2/$rowsForCall'] [math, floor]",
-      "with decimalsOffset [data,'$2'] [tail, 2]",
-      "with countNumber [math, '$1 + $decimalsOffset']",
-      "@loopStart",
-      "with pageForCall [math, '+1']",
-      "call callForHistory/$3/$rowsForCall/$pageForCall",
-      "with result [fuse, $]",
-      "loop @loopStart 'countNumber' '>0' '$1' '-$rowsForCall'",
-      "data $result",
-      "take $decimalsOffset",
-      "pick 0 $1",
-      "done"
-    ],
-    "makeTime": [
-      "data $1",
-      "true '>100' 1 @default",
-      "math '/100'",
-      "math 'floor'",
-      "math '*10000'",
-      "done",
-      "@default",
-      "data 15000",
-      "done"
-    ],
-    "getHistory" : [
-      "poke count $2 12",
-      "poke offset $3 0",
-      "call makeTime/$count",
-      "poke timeToSpend",
-      "time $timeToSpend",
-      "with toBig [math, '$offset + $count']",
-      "true $toBig>10000 @toBig @next",
-      "@next",
-      "call historyPageByCountLoop/$count/$offset/$1",
-      "done",
-      "@toBig",
-      "fail 'Error range to big for the API to handle, please keep range (offset + count) under 10000'"
+      "done {address:'0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c',transaction:'0x57cdc405f0fe14fd7842c3508708f4efbf0736436411c2fe946bf006122de525'}"
     ]
   }
 }
