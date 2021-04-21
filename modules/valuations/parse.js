@@ -302,3 +302,4 @@ function parse (proc, data) {
 }
 
 exports.parse = parse;
+exports.sanitizeSymbol = sanitizeSymbol;
