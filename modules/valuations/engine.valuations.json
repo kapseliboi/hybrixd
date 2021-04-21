@@ -54,6 +54,7 @@
     ],
     "parseUniSwap" :[
       "tran .data.pairs[]{from:.token0.symbol,to:.token1.symbol,price:.token0Price}",
+      "with [].price math '^-1'",
       "with [].from [flow,WETH,1,2] [done,ETH] [push,'ETH.',0]",
       "with [].to [flow,WETH,1,2] [done,ETH] [push,'ETH.',0]"
     ],
