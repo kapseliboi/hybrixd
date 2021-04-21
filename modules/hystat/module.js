@@ -9,7 +9,6 @@ const DEFAULT_SUPPLYATOM = '7000000000000000000000000';
 function hystat (proc) {
   const command = proc.command;
   const endpoint = command[1];
-  proc.mime('text/plain');
   switch (endpoint) {
     case 'maximumSupply': proc.done(proc.peek('local::maximumSupply', DEFAULT_SUPPLY)); return;
     case 'reservedSupply': proc.done(proc.peek('local::reservedSupply', DEFAULT_SUPPLY)); return;
