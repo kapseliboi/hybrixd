@@ -54,6 +54,7 @@
     ],
     "parseUniSwap" :[
       "tran .data.pairs[]{from:.token0.symbol,to:.token1.symbol,price:.token0Price}",
+      "with [].price math '^-1'",
       "with [].from [flow,WETH,1,2] [done,ETH] [push,'ETH.',0]",
       "with [].to [flow,WETH,1,2] [done,ETH] [push,'ETH.',0]"
     ],
@@ -104,6 +105,7 @@
     "rate/from/to/amount=1/mode=median" : [
       "data {source: '$from', target:'$to', amount:'$amount', mode: '$mode',  prices: $local::prices}",
       "func rate",
+      "flow mode meta 2 1",
       "math 'round($,18)'"
     ],
     "list" : [

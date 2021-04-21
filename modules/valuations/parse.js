@@ -1,16 +1,42 @@
-// if symbol = 'BLA' and hybrix symbol BLA does not exists but ETH.BLA does, then use that
-function sanitizeSymbol (symbol, symbols) {
-  const lSymbol = symbol.toLowerCase();
-  if (symbols.includes(lSymbol)) return symbol.toUpperCase(); // 'BLA' exists
-  for (const hybrixSymbol of symbols) {
-    if (hybrixSymbol.endsWith('.' + lSymbol)) return hybrixSymbol.toUpperCase(); // return 'ETH.BLA'
+const ACCEPTED_RATE_RANGE_THRESHOLD = 1.2; // only a 20% difference between lowest and highest is accepted
+
+const unifications = { // some more hardcoded sanitations
+  usd: [
+    'tusd', 'usdc', 'usdt',
+    'eth.eusd', 'eth.tusd', 'eth.usdc', 'eth.usdt', 'trx.usdt', 'waves.usd', 'xrp.usd'
+  ], // not included:  omni.usdt, tomo.usdt
+  eur: [
+    'eth.eurs', 'eth.eurt', 'waves.eur'
+  ], // not included omni.eurt
+  hy: [
+    'eth.hy', 'tomo.hy'
+  ]
+};
+
+const FIAT_SYMBOLS = ['usd', 'eur', 'aud', 'cad', 'gpb', 'jpy', 'rub', 'zar'];
+
+// if symbol = 'BLA' and hybrix symbol BLA does not exists but BASE.BLA does, then use that
+function sanitizeSymbol (symbol) {
+  if (typeof symbol !== 'string') return null;
+
+  symbol = symbol.toLowerCase();
+
+  for (const unifiedSymbol in unifications) {
+    if (unifications[unifiedSymbol].includes(symbol)) return unifiedSymbol.toUpperCase();
   }
-  if ([
-    'usd', 'usdt', 'tusd', 'dai',
-    'eur', 'eurs',
-    'aud', 'cad', 'gpb', 'jpy', 'rub', 'zar'
-  ].includes(lSymbol)) return symbol.toUpperCase(); // white list currencies
-  return null; // no matching symbol found
+
+  const hybrixSymbols = Object.keys(global.hybrixd.asset);
+  if (hybrixSymbols.includes(symbol)) return symbol.toUpperCase(); // 'BLA' exists as hybrix asset
+  else if (FIAT_SYMBOLS.includes(symbol)) return symbol.toUpperCase(); // 'BLA' exists as fiat currency
+  else {
+    const tokenSymbols = [];
+    for (const hybrixSymbol of hybrixSymbols) {
+      if (hybrixSymbol.endsWith('.' + symbol)) tokenSymbols.push(hybrixSymbol); // 'BASE.BLA' exists as hybrix asset
+    }
+    if (tokenSymbols.length === 1) return tokenSymbols[0].toUpperCase(); // return 'BASE.BLA'
+    // if both 'ETH.BLA' and 'WAVES.BLA' exist. Do not sanitize
+    return null; // no matching symbol found
+  }
 }
 
 function addQuote (quotes, sourceSymbol, targetSymbol, price) {
@@ -197,28 +223,35 @@ function addUpdatedExchangeRates (proc, exchangeRates, sources) {
   }
 }
 */
-function enrichExchangeRatesWithMinMaxAndMedians (exchangeRates) {
+function enrichExchangeRatesWithMinMaxAndMedians (exchangeRates, proc) {
   Object.keys(exchangeRates).forEach(sourceSymbol => {
     const quotes = exchangeRates[sourceSymbol].quotes;
     Object.keys(quotes).forEach(targetSymbol => {
       const exchanges = quotes[targetSymbol].sources;
-      const sortedExchanges = Object.keys(exchanges).sort(function (exchange1, exchange2) {
-        return exchanges[exchange2] - exchanges[exchange1];
-      });
+      const sortedExchangePrices = Object.keys(exchanges).sort((exchange1, exchange2) => exchanges[exchange2] - exchanges[exchange1]);
 
-      exchangeRates[sourceSymbol].quotes[targetSymbol].highest_rate = {exchange: sortedExchanges[0], rate: exchanges[sortedExchanges[0]]};
-      const lowPoint = sortedExchanges.length - 1;
-      exchangeRates[sourceSymbol].quotes[targetSymbol].lowest_rate = {exchange: sortedExchanges[lowPoint], rate: exchanges[sortedExchanges[lowPoint]]};
-      const midPoint = (sortedExchanges.length - 1) / 2;
-      const floorExchange = sortedExchanges[Math.floor(midPoint)];
-      const ceilExchange = sortedExchanges[Math.ceil(midPoint)];
+      const lowPoint = sortedExchangePrices.length - 1;
+      const highestPrice = exchanges[sortedExchangePrices[0]];
+      const lowestPrice = exchanges[sortedExchangePrices[lowPoint]];
 
-      const exchange = floorExchange === ceilExchange ? ceilExchange : (floorExchange + '|' + ceilExchange);
+      if (lowestPrice * ACCEPTED_RATE_RANGE_THRESHOLD < highestPrice && sortedExchangePrices.length === 2) {
+        proc.warn(`Unstable pair ${sourceSymbol}:${targetSymbol} for sources: ${JSON.stringify(exchanges)}.`);
+        // in case of only two sources, the median will not filter any outliers and the pair must be considered unstable
+        delete exchangeRates[sourceSymbol].quotes[targetSymbol];
+      } else {
+        exchangeRates[sourceSymbol].quotes[targetSymbol].highest_rate = {exchange: sortedExchangePrices[0], rate: highestPrice};
+        exchangeRates[sourceSymbol].quotes[targetSymbol].lowest_rate = {exchange: sortedExchangePrices[lowPoint], rate: lowestPrice};
+        const midPoint = (sortedExchangePrices.length - 1) / 2;
+        const floorExchange = sortedExchangePrices[Math.floor(midPoint)];
+        const ceilExchange = sortedExchangePrices[Math.ceil(midPoint)];
 
-      exchangeRates[sourceSymbol].quotes[targetSymbol].median_rate = {
-        exchange,
-        rate: (Number(exchanges[floorExchange]) + Number(exchanges[ceilExchange])) / 2
-      };
+        const exchange = floorExchange === ceilExchange ? ceilExchange : (floorExchange + '|' + ceilExchange);
+
+        exchangeRates[sourceSymbol].quotes[targetSymbol].median_rate = {
+          exchange,
+          rate: (Number(exchanges[floorExchange]) + Number(exchanges[ceilExchange])) / 2
+        };
+      }
     });
   });
   return exchangeRates;
@@ -260,7 +293,7 @@ function parse (proc, data) {
     parseDefault(data.tomo_dex, 'tomo_dex')
   ]);
 
-  const enrichedExchangeRates = enrichExchangeRatesWithMinMaxAndMedians(updatedExchangeRates);
+  const enrichedExchangeRates = enrichExchangeRatesWithMinMaxAndMedians(updatedExchangeRates, proc);
 
   storeBikiHyVolume(proc, data);
   createAndStoreSymbolList(proc, enrichedExchangeRates);
@@ -269,3 +302,4 @@ function parse (proc, data) {
 }
 
 exports.parse = parse;
+exports.sanitizeSymbol = sanitizeSymbol;
