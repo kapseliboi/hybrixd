@@ -1,3 +1,5 @@
+const ACCEPTED_RATE_RANGE_THRESHOLD = 1.2; // only a 20% difference between lowest and highest is accepted
+
 const unifications = { // some more hardcoded sanitations
   usd: [
     'tusd', 'usdc', 'usdt',
@@ -37,22 +39,20 @@ function sanitizeSymbol (symbol) {
   }
 }
 
-exports.sanitizeSymbol = sanitizeSymbol;
-
 function addQuote (quotes, sourceSymbol, targetSymbol, price) {
-  if (isNaN(price) || price <= 0 || !isFinite(price)) return;
+  // Don't add quote if the input fails these requirements
+  if (typeof sourceSymbol !== 'string' || typeof targetSymbol !== 'string' || isNaN(price)) return quotes;
+  sourceSymbol = sourceSymbol.toUpperCase();
+  targetSymbol = targetSymbol.toUpperCase();
+  if (sourceSymbol === targetSymbol || price === 0 || !isFinite(price)) return quotes;
 
   if (!quotes.hasOwnProperty(sourceSymbol)) quotes[sourceSymbol] = {quotes: {}};
+
   quotes[sourceSymbol].quotes[targetSymbol] = price;
+  return quotes;
 }
 
 function addBiQuote (quotes, sourceSymbol, targetSymbol, price) {
-  sourceSymbol = sanitizeSymbol(sourceSymbol);
-  targetSymbol = sanitizeSymbol(targetSymbol);
-  if (!sourceSymbol || !targetSymbol) return; // only if symbols are known in hybrix
-  if (sourceSymbol === targetSymbol) return quotes;
-
-  price = Number(price);
   addQuote(quotes, sourceSymbol, targetSymbol, price);
   addQuote(quotes, targetSymbol, sourceSymbol, 1 / price);
 }
@@ -65,6 +65,7 @@ function parseCoinmarketcap (obj) {
   Object.keys(obj.data).forEach(function (key, index) {
     const price = obj.data[key].quotes.USD.price;
     const targetSymbol = obj.data[key].symbol;
+
     addBiQuote(quotes, 'USD', targetSymbol, 1 / price);
   });
   return {name: name, quotes};
@@ -87,7 +88,7 @@ function parseCoinbase (obj) {
   if (typeof obj !== 'object' || obj === null || typeof obj.data !== 'object' || obj.data === null) return {name, quotes};
 
   Object.keys(obj.data.rates).forEach(targetSymbol => {
-    const price = obj.data.rates[targetSymbol];
+    const price = parseFloat(obj.data.rates[targetSymbol]);
     addBiQuote(quotes, 'USD', targetSymbol, price);
   });
   return {name, quotes};
@@ -108,14 +109,14 @@ function parseBinance (obj) {
     const targetSymbol = baseCurrencies.find(currency => symbolPair.endsWith(currency));
     if (targetSymbol) {
       const sourceSymbol = symbolPair.slice(0, symbolPair.length - targetSymbol.length);
-      const price = obj[key].price;
+      const price = parseFloat(obj[key].price);
       addBiQuote(quotes, sourceSymbol, targetSymbol, price);
     }
   });
   return {name, quotes};
 }
 
-function parseHitbtc (priceObjects, symbolObjects) {
+function parseHitbtc (priceObjects, symbolObjects, symbols) {
   const name = 'hitbtc';
   const quotes = {};
   if (!(priceObjects instanceof Array) || !(symbolObjects instanceof Array)) return {name, quotes};
@@ -154,9 +155,12 @@ priceObjects [
     const priceObject = priceObjectsByPair[pair];
     if (symbolObjectsByPair.hasOwnProperty(pair)) {
       const symbolObject = symbolObjectsByPair[pair];
-      const price = (Number(symbolObject.bid) + Number(symbolObject.ask)) * 0.5;
-
-      addBiQuote(quotes, priceObject.baseCurrency, priceObject.quoteCurrency, price);
+      const baseCurrency = sanitizeSymbol(priceObject.baseCurrency, symbols);
+      const quoteCurrency = sanitizeSymbol(priceObject.quoteCurrency, symbols);
+      if (quoteCurrency && baseCurrency) { // only if symbols are known in hybrix
+        const price = (parseFloat(symbolObject.bid) + parseFloat(symbolObject.ask)) * 0.5;
+        addBiQuote(quotes, baseCurrency, quoteCurrency, price);
+      }
     }
   }
   return {name, quotes};
@@ -165,9 +169,7 @@ priceObjects [
 function parseDefault (data, name) {
   const quotes = {};
   if (!(data instanceof Array)) return {name, quotes};
-  for (const pair of data) {
-    addBiQuote(quotes, pair.from, pair.to, pair.price);
-  }
+  for (const pair of data) addBiQuote(quotes, pair.from, pair.to, Number(pair.price));
   return {name, quotes};
 }
 
@@ -221,27 +223,35 @@ function addUpdatedExchangeRates (proc, exchangeRates, sources) {
   }
 }
 */
-function enrichExchangeRatesWithMinMaxAndMedians (exchangeRates) {
+function enrichExchangeRatesWithMinMaxAndMedians (exchangeRates, proc) {
   Object.keys(exchangeRates).forEach(sourceSymbol => {
     const quotes = exchangeRates[sourceSymbol].quotes;
     Object.keys(quotes).forEach(targetSymbol => {
       const exchanges = quotes[targetSymbol].sources;
-      const sortedExchangePrices = Object.keys(exchanges)
-        .sort((exchange1, exchange2) => exchanges[exchange2] - exchanges[exchange1]);
+      const sortedExchangePrices = Object.keys(exchanges).sort((exchange1, exchange2) => exchanges[exchange2] - exchanges[exchange1]);
 
-      exchangeRates[sourceSymbol].quotes[targetSymbol].highest_rate = {exchange: sortedExchangePrices[0], rate: exchanges[sortedExchangePrices[0]]};
       const lowPoint = sortedExchangePrices.length - 1;
-      exchangeRates[sourceSymbol].quotes[targetSymbol].lowest_rate = {exchange: sortedExchangePrices[lowPoint], rate: exchanges[sortedExchangePrices[lowPoint]]};
-      const midPoint = (sortedExchangePrices.length - 1) / 2;
-      const floorExchange = sortedExchangePrices[Math.floor(midPoint)];
-      const ceilExchange = sortedExchangePrices[Math.ceil(midPoint)];
+      const highestPrice = exchanges[sortedExchangePrices[0]];
+      const lowestPrice = exchanges[sortedExchangePrices[lowPoint]];
 
-      const exchange = floorExchange === ceilExchange ? ceilExchange : (floorExchange + '|' + ceilExchange);
+      if (lowestPrice * ACCEPTED_RATE_RANGE_THRESHOLD < highestPrice && sortedExchangePrices.length === 2) {
+        proc.warn(`Unstable pair ${sourceSymbol}:${targetSymbol} for sources: ${JSON.stringify(exchanges)}.`);
+        // in case of only two sources, the median will not filter any outliers and the pair must be considered unstable
+        delete exchangeRates[sourceSymbol].quotes[targetSymbol];
+      } else {
+        exchangeRates[sourceSymbol].quotes[targetSymbol].highest_rate = {exchange: sortedExchangePrices[0], rate: highestPrice};
+        exchangeRates[sourceSymbol].quotes[targetSymbol].lowest_rate = {exchange: sortedExchangePrices[lowPoint], rate: lowestPrice};
+        const midPoint = (sortedExchangePrices.length - 1) / 2;
+        const floorExchange = sortedExchangePrices[Math.floor(midPoint)];
+        const ceilExchange = sortedExchangePrices[Math.ceil(midPoint)];
 
-      exchangeRates[sourceSymbol].quotes[targetSymbol].median_rate = {
-        exchange,
-        rate: (Number(exchanges[floorExchange]) + Number(exchanges[ceilExchange])) / 2
-      };
+        const exchange = floorExchange === ceilExchange ? ceilExchange : (floorExchange + '|' + ceilExchange);
+
+        exchangeRates[sourceSymbol].quotes[targetSymbol].median_rate = {
+          exchange,
+          rate: (Number(exchanges[floorExchange]) + Number(exchanges[ceilExchange])) / 2
+        };
+      }
     });
   });
   return exchangeRates;
@@ -274,7 +284,7 @@ function parse (proc, data) {
 
   const updatedExchangeRates = addUpdatedExchangeRates(proc, currentExchangeRates, [
     parseDefault(data.EUCentralBank, 'EUCentralBank'),
-    parseHitbtc(data.hitbtc_symbols, data.hitbtc_prices),
+    parseHitbtc(data.hitbtc_symbols, data.hitbtc_prices, data.symbols),
     parseBinance(data.binance),
     parseCoinmarketcap(data.coinmarketcap),
     parseCoinbase(data.coinbase),
@@ -283,7 +293,7 @@ function parse (proc, data) {
     parseDefault(data.tomo_dex, 'tomo_dex')
   ]);
 
-  const enrichedExchangeRates = enrichExchangeRatesWithMinMaxAndMedians(updatedExchangeRates);
+  const enrichedExchangeRates = enrichExchangeRatesWithMinMaxAndMedians(updatedExchangeRates, proc);
 
   storeBikiHyVolume(proc, data);
   createAndStoreSymbolList(proc, enrichedExchangeRates);
