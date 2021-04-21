@@ -19,21 +19,22 @@
     "securityTransferFee" : {"default":"0.5"},
     "securityContractFee" : {"default":"0.001"},
     "securityRiskFactor" : {"default":"7"},
-    "securityReleaseHours" : {"default":"48"},
+    "securityReleaseHours" : {"default":"12"},
     "securityMinimalDeposit" : {"default":10}
   },
   "quartz" : {
     "cron" : [
       "time 150000",
-      "call cronCompilePairStats",
-      "fork cron_10m"
+      "call cron_10m",
+      "call cronCompilePairStats"
     ],
     "cron_10m" : [
       "time 150000",
       "with timeNow date now",
       "peek local::cron10m 0",
       "true '$timeNow > ($ + 300)' 2 1",
-      "poke local::cron10m",
+      "done",
+      "poke local::cron10m $timeNow",
       "logs 'cron -> running regular tasks (10m)'",
       "call cronUnlockReserves"
    ],
@@ -43,12 +44,11 @@
       "each cronUnlockAccountReserve"
     ],
     "cronUnlockAccountReserve" : [
-      "call securityReserveAccountLock/${.key}/cron"
+      "call securityReserveAccountLock/${.value}/cron"
     ],
     "cronCompilePairStats" : [
       "time 60000",
-      "call account/list",
-      "poke getInputData",
+      "peek local::accounts {}",
       "# first prepare a unique pair array",
       "each getPairs",
       "flat",
@@ -59,12 +59,13 @@
       "with pairSelect [peek,local::compilePairStatLoopB,0] [have,getPairs[$],2,1] [data,0] [peek,getPairs[$]]",
       "with count [data,$] [math,+1] [true,>=$getPairsSize,1,2] [done,0]",
       "poke local::compilePairStatCount $count",
-      "peek getInputData",
+      "peek local::accounts {}",
       "call getPairStats/$pairSelect",
       "tran .[$pairSelect] 3 1",
       "logs 'error: Failed to save pairstats for ${pairSelect}!'",
       "fail 'WARNING: failing to save pairstats for ${pairSelect}!'",
-      "poke local::pairstats[$pairSelect]"
+      "poke local::pairstats[$pairSelect]",
+      "done { '$pairSelect' : $ }"
     ],
     "getPairs" : [
       "tran .value.pairs",
@@ -84,7 +85,9 @@
       "math '/$conf::securityRiskFactor'",
       "poke sufficiency",
       "peek dataObject",
-      "call getCalcStats/add/balances/$pair",
+      "call getCalcStats/add/balances/$pair/$toSymbol",
+      "true '>0' 1 2",
+      "rout /e/valuations/rate/$toSymbol/$fromBase/$",
       "poke liquidity",
       "with sufficiency [true,'<$liquidity',2] [data,$liquidity] [form,$storageFactor]",
       "# calculate fee range",
@@ -114,7 +117,7 @@
     ],
     "getCalcStats/action/var/pair/specifier" : [
       "with specifier [void,2] [done] [peek,pair] [splt,':'] [pick,-1]",
-      "each getCalcStatsHelper {var:'$var',pair:$pair,specifier:$specifier}",
+      "each getCalcStatsHelper {var:'$var',pair:'$pair',specifier:'$specifier'}",
       "type array",
       "flow action {add:@add,min:@min,max:@max,average:@average}",
       "@average",
@@ -205,7 +208,7 @@
       "true >0 2 1 ",
       "fail 'A non zero balance of $toSymbol is required to setup this pair, currently $ $toSymbol is available.'",
       "with deadline [flow,'undefined',1,2] [done,$defaultDeadline]",
-      "with type [flow,'undefined',1,2] [done,'autonomous']",
+      "with type [flow,'undefined',1,2] [done,autonomous]",
       "data {ask:'$fromBase',bid:'$toSymbol',fee:'${feePercent}%',type:'$type',deadline:$deadline}",
       "poke local::accounts[$accountID].pairs[$fromBase:$toSymbol]"
     ],
@@ -234,7 +237,7 @@
       "poke feeFactor ${.fee-factor}",
       "poke feeAmount ${.fee}",
       "with balance call rebalanceMutate/$accountID/$symbol/$amount",
-      "call feeModifierMutate/$accountID/$symbol/-$amount/$balance",
+      "call feeModifierMutate/$accountID/$symbol/$amount/$balance",
       "form $feeFactor",
       "poke feeMutation",
       "# also rebalance with fee amounts if an amount has been subtracted",
@@ -242,7 +245,7 @@
       "call rebalanceMutate/$accountID/$feeSymbol/-$feeAmount",
       "flow feeSymbol {$symbol:1} 2",
       "poke balance",
-      "call feeModifierMutate/$accountID/$feeSymbol/$feeAmount/$balance",
+      "call feeModifierMutate/$accountID/$feeSymbol/-$feeAmount/$balance",
       "@reportBalance",
       "with balance form $symbol",
       "done 'Pair available balance is now $balance $symbol. Fee mutation is $feeMutation $symbol.'"
@@ -316,6 +319,7 @@
       "with .accountID peek accountID",
       "with .balance call getAccountBalance/$accountID/$toSymbol",
       "with .sufficiency call getSufficiency/$accountID/$toSymbol",
+      "with .sufficiency [math,'min(${.sufficiency},${.balance})'] [ship,2,1,1,1] [done,0]",
       "with .active math '${.balance}>0.001 and ${.sufficiency}>0.001'",
       "with feeModifier call getFeeModifier/$accountID/$toSymbol",
       "with .fee [trim,'%'] [math,'* (1 + $feeModifier)'] [form,$storageFactor] [push,'%']"
@@ -425,8 +429,8 @@
       "@retrieve",
       "hook @peek",
       "with auth call keysAccount/$accountID",
-      "data {symbol:$symbol}",
-      "bank getBalance $auth",
+      "call getAddressAccount/$accountID/$symbol",
+      "rout /a/$symbol/balance/$",
       "poke local::accounts[$accountID].balances[$symbol]",
       "poke local::accounts[$accountID].lastsync[$symbol] $now"
     ],
@@ -541,7 +545,7 @@
       "fail 'Account does not exist!'",
       "peek amount",
       "true '$amount>=0' 2 1",
-      "fail 'Cannot set locked balance lower than zero!'",
+      "done 'Cannot subtract $amount from locked balance!'",
       "form ${conf::securitySymbol}",
       "poke local::accounts[$accountID].securityLockedBalances[$conf::securitySymbol]"
     ],
@@ -791,6 +795,7 @@
         }
       }
     },
+    "cronCompilePairStats" : "TEST",
     "security-symbol" : "Get the used security symbol"
   }
 }
