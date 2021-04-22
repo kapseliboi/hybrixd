@@ -1,3 +1,25 @@
+# v0.9.13
+## Sparkling Rainbow Caticorn
+## 22-04-2021
+
+* Added wise token. Thanks icobird!!
+* Handle plain text responses in cli.
+* Activated option to store by POST method.
+* Improved handling of outliers in valuations engine
+* Improve valuation symbol sanitation
+* Extend logging for local var. Disable async writes until improvements have been made to handle SIGINT.
+* Cache xrp sequence numbers locally.
+* Upgraded bitcore engine to properly filter change addresses, also in returned amount.
+* Refactor qrtz tests to method files.
+* Swap deal engine: unlimited deferral time on push failure for accepted swap deals.
+* Swap deal engine: cache derived addresses.
+* qrtz: Add variableName option to void.
+* hybrix-jslib: Added data option to rout method for POST requests.
+* hybrix-jslib: Use POST for large save requests.
+* hybrix-jslib: Improvement to unified transaction fee feedback.
+
+
+
 # v0.9.12
 ## Giant Yellow Leprechaun
 ## 16-04-2021
