@@ -1,0 +1,10 @@
+{
+  "symbol":"eth.hy",
+  "name":"hybrix multi-chain asset (BNB)",
+  "module":"ethereum",
+  "import":"bnb",
+  "mode":"ethereum.token",
+  "contract":"0x863ac3c0f90394c75d5f7776738bdbee80b19815",
+  "originator":"0x5bd95780827fa7da98a9f60013e401373bede6ba",
+  "factor":18
+}
