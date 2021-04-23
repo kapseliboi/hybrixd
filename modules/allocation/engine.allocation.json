@@ -317,7 +317,8 @@
       "# decouple from locally stored vars",
       "data {accountID:null,ask:${.ask},bid:${.bid},fee:${.fee},type:${.type},deadline:${.deadline},balance:${.balance},sufficiency:${.sufficiency},active:false}",
       "with .accountID peek accountID",
-      "with .balance call getAccountBalance/$accountID/$toSymbol",
+      "# balance returned for deals is halved to promote pair balancing!",
+      "with .balance [call,getAccountBalance/$accountID/$toSymbol] [math,'* 0.5']",
       "with .sufficiency call getSufficiency/$accountID/$toSymbol",
       "with .sufficiency [math,'min(${.sufficiency},${.balance})'] [ship,2,1,1,1] [done,0]",
       "with .active math '${.balance}>0.001 and ${.sufficiency}>0.001'",
@@ -795,7 +796,6 @@
         }
       }
     },
-    "cronCompilePairStats" : "TEST",
     "security-symbol" : "Get the used security symbol"
   }
 }
