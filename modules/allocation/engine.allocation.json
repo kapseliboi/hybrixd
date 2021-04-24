@@ -36,6 +36,7 @@
       "done",
       "poke local::cron10m $timeNow",
       "logs 'cron -> running regular tasks (10m)'",
+      "call cronCompilePairList",
       "call cronUnlockReserves"
    ],
    "cronUnlockReserves" : [
@@ -45,6 +46,16 @@
     ],
     "cronUnlockAccountReserve" : [
       "call securityReserveAccountLock/${.value}/cron"
+    ],
+    "cronCompilePairList" : [
+      "time 60000",
+      "peek local::accounts {}",
+      "tran {:*}.pairs{*:} 2 1",
+      "fail 'Could not retreive pairs'",
+      "flat",
+      "uniq",
+      "sort",
+      "poke local::pairlist"
     ],
     "cronCompilePairStats" : [
       "time 60000",
@@ -237,7 +248,7 @@
       "poke feeFactor ${.fee-factor}",
       "poke feeAmount ${.fee}",
       "with balance call rebalanceMutate/$accountID/$symbol/$amount",
-      "call feeModifierMutate/$accountID/$symbol/$amount/$balance",
+      "call feeModifierMutate/$accountID/$symbol/-$amount/$balance",
       "form $feeFactor",
       "poke feeMutation",
       "# also rebalance with fee amounts if an amount has been subtracted",
@@ -245,7 +256,7 @@
       "call rebalanceMutate/$accountID/$feeSymbol/-$feeAmount",
       "flow feeSymbol {$symbol:1} 2",
       "poke balance",
-      "call feeModifierMutate/$accountID/$feeSymbol/-$feeAmount/$balance",
+      "call feeModifierMutate/$accountID/$feeSymbol/$feeAmount/$balance",
       "@reportBalance",
       "with balance form $symbol",
       "done 'Pair available balance is now $balance $symbol. Fee mutation is $feeMutation $symbol.'"
@@ -288,12 +299,7 @@
       "done null"
     ],
     "listPair" : [
-      "peek local::accounts {}",
-      "tran {:*}.pairs{*:} 2 1",
-      "fail 'Could not retreive pairs'",
-      "flat",
-      "uniq",
-      "sort"
+      "peek local::pairlist {}"
     ],
     "findPair/fromBase/toSymbol" : [
       "with [fromBase,toSymbol] case lower",
