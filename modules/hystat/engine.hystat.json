@@ -45,8 +45,9 @@
       "form"
     ],
     "getCirculatingSupply" : [
-      "rout /asset/eth.hy/balance/0x6bcba1899e6f25a2369c99e5cac6943a9cfab287",
-      "math '$tradeSupply - $ + $reservedSupply'",
+      "# Tomo supply is accounted for in the Ethereum supply calculation",
+      "with supplyEth rout /asset/eth.hy/balance/0x6bcba1899e6f25a2369c99e5cac6943a9cfab287",
+      "math '$tradeSupply - $supplyEth + $reservedSupply'",
       "form"
     ],
     "getCirculatingSupplyWithoutReserve" : [

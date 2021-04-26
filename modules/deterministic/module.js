@@ -5,47 +5,73 @@
 const DJB2 = require('../../common/crypto/hashDJB2'); // fast DJB2 hashing
 const fs = require('fs');
 
-
 const assets = {};
 const modes = {};
 const hashes = {};
-
 // initialization function
+/**
+ * @param proc
+ */
 function init (proc) {
   // initialize available modes TODO get rid of global assets
-  for (let asset in global.hybrixd.asset) {
-    const mode = (typeof global.hybrixd.asset[asset].mode !== 'undefined' ? global.hybrixd.asset[asset].mode : false);
-    if (mode) {
+  for (const symbol in global.hybrixd.asset) {
+    if (global.hybrixd.asset[symbol].hasOwnProperty('mode')) {
+      const mode = global.hybrixd.asset[symbol].mode;
       // index the modes
-      assets[asset] = mode;
+      assets[symbol] = mode;
       if (typeof modes[mode] === 'undefined') modes[mode] = [];
-      modes[mode].push(asset);
+      modes[mode].push(symbol);
+      const baseMode = mode.split('.')[0];
+      updateBlobAndHash(proc,baseMode);
 
-      // hash the deterministic packages
-      const filename = '../modules/deterministic/' + mode.split('.')[0] + '/deterministic.js.lzma';
-      if (typeof hashes[mode.split('.')[0]] === 'undefined' && fs.existsSync(filename)) {
-        hashes[mode.split('.')[0]] = DJB2.hash(String(fs.readFileSync(filename)));
-        proc.logs('Hashed mode ' + mode.split('.')[0]);
-      }
     }
+  }
+  proc.done('Initialized');
+}
+
+exports.reload = proc => {
+  const baseMode = proc.command[1];
+  if(baseMode && baseMode !=='undefined'){
+    proc.logs('Reload ' + baseMode+'.');
+    if (hashes.hasOwnProperty(baseMode)) delete hashes[baseMode];
+    updateBlobAndHash(proc,baseMode);
+  }else{
+    proc.logs('Reload all blob hashes');
+    const baseModes = [...Object.keys(hashes)];
+    for(const baseMode of baseModes){
+      delete hashes[baseMode];
+      updateBlobAndHash(proc,baseMode);
+    }
+  }
+  proc.done('Reloaded');
+}
+
+function updateBlobAndHash(proc, baseMode){
+  if (hashes.hasOwnProperty(baseMode)) return; // already hashed
+  const filename = '../modules/deterministic/' + baseMode + '/deterministic.js.lzma';
+  if (!fs.existsSync(filename)) proc.warn('Could not find  ' + filename);
+  else { // hash the deterministic blob
+    hashes[baseMode] = DJB2.hash(String(fs.readFileSync(filename)));
   }
 }
 
-const [getAssets,getHashes,getModes] = [assets,hashes,modes].map(obj => proc => proc.done(obj))
+const [getAssets, getHashes, getModes] = [assets, hashes, modes].map(obj => proc => proc.done(obj));
 
+/**
+ * @param proc
+ */
 function getHash (proc) {
   const command = proc.command;
   const symbol = command[1].toLowerCase();
   const base = symbol.split('.')[0];
 
   let modetype = base;
-  for (let entry in modes) {
+  for (const entry in modes) {
     if (modes[entry].indexOf(symbol) !== -1) modetype = entry;
   }
-  const basemode = modetype.split('.')[0];
-  const hash = hashes[basemode];
-  if (typeof hashes[basemode] !== 'undefined')   proc.done({deterministic: modetype, hash});
-  else  proc.fail('Error: Mode or symbol does not exist!');
+  const baseMode = modetype.split('.')[0];
+  if (hashes.hasOwnProperty(baseMode)) proc.done({deterministic: modetype, hash: hashes[baseMode]});
+  else proc.fail(`Mode or symbol '${symbol}' does not exist!`);
 }
 
 // exports

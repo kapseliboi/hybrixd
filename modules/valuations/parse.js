@@ -235,7 +235,7 @@ function enrichExchangeRatesWithMinMaxAndMedians (exchangeRates, proc) {
       const lowestPrice = exchanges[sortedExchangePrices[lowPoint]];
 
       if (lowestPrice * ACCEPTED_RATE_RANGE_THRESHOLD < highestPrice && sortedExchangePrices.length === 2) {
-        proc.warn(`Unstable pair ${sourceSymbol}:${targetSymbol} for sources: ${JSON.stringify(exchanges)}.`);
+        // DEBUG: proc.warn(`Unstable pair ${sourceSymbol}:${targetSymbol} for sources: ${JSON.stringify(exchanges)}.`);
         // in case of only two sources, the median will not filter any outliers and the pair must be considered unstable
         delete exchangeRates[sourceSymbol].quotes[targetSymbol];
       } else {
