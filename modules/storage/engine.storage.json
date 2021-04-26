@@ -18,7 +18,7 @@
         "default" : 365,
         "type" : "int",
         "unit" : "days"
-      }    
+      }
   },
   "quartz"  : {
     "load/key":[
@@ -81,6 +81,7 @@
       "_help" : "Save data to storage.",
       "_ref" : {
         "_list" : "storage_id",
+        "_this" : "Add data string value to POST.",
         "_help" : "Specify the ID key to save storage to.",
         "_ref" : {
           "_list" : "data",
@@ -141,14 +142,6 @@
       "_ref" : {
         "_list" : "storage_id",
         "_this" : "Specify the ID key to get metadata for."
-      }
-    },
-    "list":{
-      "_access":"root",
-      "_help" : "Get list of matching storage ids.",
-      "_ref" : {
-        "_list" : "pattern",
-        "_this" : "Specify the pattern to seek matching storage ids."
       }
     }
   }

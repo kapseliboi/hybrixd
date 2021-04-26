@@ -19,7 +19,7 @@
     "securityTransferFee" : {"default":"0.5"},
     "securityContractFee" : {"default":"0.001"},
     "securityRiskFactor" : {"default":"7"},
-    "securityReleaseHours" : {"default":"12"},
+    "securityReleaseHours" : {"default":"48"},
     "securityMinimalDeposit" : {"default":10}
   },
   "quartz" : {
