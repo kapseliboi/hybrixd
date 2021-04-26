@@ -263,6 +263,14 @@
     "securityReserveLock/accountID/action" : [
       "call allocation::securityReserveAccountLock/$accountID/$action"
     ],
+    "addressMatches/$target1/$target2" :[
+      "#TODO Need to improve",
+      "call decodeUnifiedAddress/$target1",
+      "indx '$target2'",
+      "true '>-1' 1 2",
+      "done 1",
+      "done 0"
+    ],
     "dealStatus": [
       "time 60000",
       "tran .deal 1 @failure",
@@ -271,9 +279,7 @@
       "with askTx [rout,/a/${.ask.symbol}/transaction/${.ask.txid},2,1] [done,null]",
       "test askTx.timestamp 1 @failure",
       "# is our transaction target equal to the claimed target?",
-      "with askTarget [call,decodeUnifiedAddress/${.ask.target}]",
-      "with txnTarget [data,${askTx.target}] [splt,':'] [pick,-1]",
-      "with targetEqual [data,$askTarget] [indx,$txnTarget] [true,'>-1',1,2] [done,1] [done,0]",
+      "with targetEqual call addressMatches/${.ask.target}/${askTx.target}",
       "# is the transaction timestamp set before the proposal creation time?",
       "with txPremature [ship,askTx.timestamp,1,3,3,3] [true,'${askTx.timestamp}<${.creation}',1,2] [done,1] [done,0]",
       "# reject the transaction if either premature or non-equal target",
@@ -338,9 +344,11 @@
       "true '${.timestamp}>=$timeUntil or ${.timestamp}<$timeFrom' -3"
     ],
     "decodeUnifiedAddress/address" : [
-      "peek address",
-      "func decompressUnifiedAddress",
-      "done"
+      "hook @notUnifiedAddress",
+      "rout /e/unified-asset/decompress/undefined/$address",
+      "done",
+      "@notUnifiedAddress",
+      "peek address"
     ]
   },
   "router" : {
