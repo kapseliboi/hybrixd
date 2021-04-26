@@ -1,7 +1,6 @@
 {
-  "symbol":"eth.hy",
-  "name":"hybrix multi-chain asset (BNB)",
-  "module":"ethereum",
+  "symbol":"bnb.hy",
+  "name":"hybrix multi-chain asset (BSC)",
   "import":"bnb",
   "mode":"ethereum.token",
   "contract":"0x863ac3c0f90394c75d5f7776738bdbee80b19815",

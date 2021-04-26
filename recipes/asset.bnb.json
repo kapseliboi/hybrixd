@@ -1,7 +1,10 @@
 {
   "symbol":"bnb",
-  "name":"Binance Smart Chain (BEP20)",
-  "mode":"binance",
+  "name":"Binance Smart Chain token (BEP20)",
+  "module":"ethereum",
+  "import":"eth-api",
+  "mode":"ethereum.main",
+  "keygen-base":"eth",
   "addressRegex":".*",
   "factor":18,
   "confirmed":2,
@@ -26,8 +29,7 @@
     ],
     "history" : "https://api.bscscan.com/api"
   },
-  "features": {"message":false},
-  "import": "eth-api",
+  "features": {"message":true},
   "cache":10000,
   "contract": "0x0000000000000000000000000000000000000000",
   "throttle":5,

@@ -1,12 +1,11 @@
 {
-    "symbol":"bnb.usdt",
-    "name":"US dollar Tether Stablecoin (BNB)",
-    "info":"<p>Tether (USDT) is a cryptocurrency with a value meant to mirror the value of the U.S. dollar. The idea was to create a stable cryptocurrency that can be used like digital dollars. Coins that serve this purpose of being a stable dollar substitute are called “stable coins.” According to their site, Tether converts cash into digital currency, to anchor or “tether” the value of the coin to the price of national currencies like the US dollar, the Euro, and the Yen. Tether (USDT) is issued on the Omni, TRON, and ETH blockchains.</p>",
-    "module":"ethereum",
-    "import":"bnb",
-    "mode":"ethereum.token",
-    "contract":"0x55d398326f99059ff775485246999027b3197955",
-    "originator":"0x970609ba2c160a1b491b90867681918bdc9773af",
-    "factor":18
+  "symbol":"bnb.usdt",
+  "name":"US dollar Tether Stablecoin (BSC)",
+  "info":"<p>Tether (USDT) is a cryptocurrency with a value meant to mirror the value of the U.S. dollar. The idea was to create a stable cryptocurrency that can be used like digital dollars. Coins that serve this purpose of being a stable dollar substitute are called “stable coins.” According to their site, Tether converts cash into digital currency, to anchor or “tether” the value of the coin to the price of national currencies like the US dollar, the Euro, and the Yen. Tether (USDT) is issued on the Omni, TRON, and ETH blockchains.</p>",
+  "import":"bnb",
+  "mode":"ethereum.token",
+  "contract":"0x55d398326f99059ff775485246999027b3197955",
+  "originator":"0x970609ba2c160a1b491b90867681918bdc9773af",
+  "factor":18
 }
 
