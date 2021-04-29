@@ -1,0 +1,9 @@
+{
+  "symbol":"eth.agi",
+  "name":"SingularityNET",
+  "import":"eth",
+  "info":"https://singularitynet.io/",
+  "factor":"8",
+  "contract":"0x8eb24319393716668d768dcec29356ae9cffe285",
+  "originator":"0x9b9DE0C3bb10A7593E1C17036268B4dd4f3C81E1"
+}

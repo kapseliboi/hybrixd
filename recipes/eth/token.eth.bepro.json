@@ -1,0 +1,9 @@
+{
+  "symbol":"eth.bepro",
+  "name":"bepro.network",
+  "import":"eth",
+  "info":"API FOR DEFI GAMING 3.0\nBuild the future of DeFi Gaming",
+  "factor":"18",
+  "contract":"0xcf3c8be2e2c42331da80ef210e9b1b307c03d36a",
+  "originator":"0xb0242f6e1cac6727ff28789842f6593677118b0a"
+}
