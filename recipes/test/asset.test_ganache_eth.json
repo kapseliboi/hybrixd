@@ -1,0 +1,31 @@
+{
+  "symbol":"test_ganache_eth",
+  "name":"Ganache local testnet",
+  "info":"<p>Ethereum test net Ganache</p>",
+  "module":"ethereum",
+  "import":"eth-api",
+  "mode":"ethereum.main",
+  "fee":"0.0005",
+  "feeContractTx":"0.005",
+  "gasprice":"0.000000015",
+  "gasPerByte":625,
+  "gasPerNativeTx":21000,
+  "gasPerAvgERC20Tx":105000,
+  "gasLimitNativeTx":90000,
+  "gasLimitContractTx":336000,
+  "factor":18,
+  "host": {
+    "default": ["http://127.0.0.1:8545"]
+  },
+  "cron":300,
+  "quartz":{
+    "sample" :[
+      "rand 10000",
+      "data {jsonrpc: '2.0', method: 'personal_listAccounts', params: [], id: $}",
+      "curl POST {'Content-Type': 'application/json'} 2 1",
+      "fail __HOST_FAILURE__",
+      "tran .result[0]",
+      "done {address:'$',transaction:'0x5496d381d8b2c6ae028c69f90a643f1c453bbfd0381df9d0af0e20b09a04dadd'}"
+    ]
+  }
+}
