@@ -9,10 +9,10 @@ WHEREAMI=`pwd`
 export PATH=$NODE/node_binaries/bin:"$PATH"
 NODEINST=`which node`
 
-OUTPUT=$(grep  "output = true" hybrixd.conf)
+OUTPUT=$(grep -e 'output[ ]*=[ ]*true[ ]*$' hybrixd.conf)
 
 getPID(){
-  ps -ef | grep 'node hybrixd.js'  | grep -v grep | cut -d' ' -f4
+  ps -A -o pid,args | grep -e '^[0-9]\{2,5\} node hybrixd\.js$' | head -n 1 | cut -f1 -d' '
 }
 
 logger(){
@@ -54,6 +54,12 @@ startHybrixd(){
 
     trap _term INT
 
+    ALREADY_RUNNING_PID=$(getPID)
+    if [ -n "$ALREADY_RUNNING_PID" ]; then
+      echo "[!] $(date +%d-%m-%YT%T) "hybrixd "Another instance of hybrixd is already running." | tee -a "$NODE/var/log/hybrixd.log"
+      exit 1;
+    fi
+
     if [ -n "$OUTPUT" ]; then
       node hybrixd.js 2>&1 | tee -a "$NODE/var/log/hybrixd.log" &
     else
@@ -64,7 +70,7 @@ startHybrixd(){
 
     _term() {
       # Inserting line end because cntrl+c will add ugly chars
-      if [ -n "$OUTPUT" ];then
+      if [ -n "$OUTPUT" ]; then
         echo "\n"
       else
         echo "\nShutdown requested. Please wait..."
@@ -81,6 +87,7 @@ startHybrixd(){
     done
 
     handleShutDown;
+
 }
 
 if [ "$1" = "" ]; then
@@ -102,7 +109,7 @@ if [ "$1" = "" ]; then
     echo "    hybrixd $HYBRIXD_VERSION © hybrix 2021"
 
     echo "\n             Running..."
-    echo "\n       Press Cntrl+C to stop.\n"
+    echo "\n       Press Ctrl+C to stop.\n"
   #fi
 
   logger "[i]" "hybrixd" "Starting..."
