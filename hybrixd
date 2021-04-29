@@ -9,50 +9,122 @@ WHEREAMI=`pwd`
 export PATH=$NODE/node_binaries/bin:"$PATH"
 NODEINST=`which node`
 
+OUTPUT=$(grep  "output = true" hybrixd.conf)
+
+getPID(){
+  ps -ef | grep 'node hybrixd.js'  | grep -v grep | cut -d' ' -f4
+}
+
+logger(){
+  if [ -n "$OUTPUT" ]; then
+    echo "$1 $(date +%d-%m-%YT%T) $2 $3" | tee -a "$NODE/var/log/hybrixd.log"
+  else
+    echo "$1 $(date +%d-%m-%YT%T) $2 $3" >>  "$NODE/var/log/hybrixd.log" 2>&1
+  fi
+}
+
+handleShutDown(){
+  if [ -f "$NODE/var/onstop" ]; then
+      ON_STOP_ACTION=$(cat "$NODE/var/onstop")
+      if [ "$ON_STOP_ACTION" = "restart" ]; then
+          logger "[i]" "hybrixd" "Restarting..."
+          sleep 1;
+          startHybrixd
+      elif [ "$ON_STOP_ACTION" = "update" ]; then
+          sh "$NODE/scripts/npm/update.sh"
+          startHybrixd
+      else
+          logger "[!]" "hybrixd" "Unsupported onstop action."
+          logger "[i]" "hybrixd" "Stopped."
+      fi
+      rm -rf "$NODE/var/onstop" || true;
+  elif [ -z "$OUTPUT" ]; then
+    echo "hybrixd has been succesfully stopped."
+  else
+    logger "[i]" "hybrixd" "Stopped."
+  fi;
+}
+
 startHybrixd(){
     cd "$NODE/lib"
     mkdir -p "$NODE/var/log"
-    node hybrixd.js 2>&1 | tee -a "$NODE/var/log/hybrixd.log"
 
-    if [ -f "$NODE/var/onstop" ]; then
-        ON_STOP_ACTION=$(cat "$NODE/var/onstop")
-        if [ "$ON_STOP_ACTION" = "restart" ]; then
-            echo "[i] restarting hybrixd..."
-            sleep 1;
-            startHybrixd
-        elif [ "$ON_STOP_ACTION" = "update" ]; then
-            sh "$NODE/scripts/npm/update.sh"
-            startHybrixd
-        else
-            echo "[!] Unsupported onstop action."
-            echo "[i] stopped hybrixd"
-        fi
-        rm -rf "$NODE/var/onstop" || true;
+    # Remove lingering onstop actions
+    rm -rf "$NODE/var/onstop" || true;
+
+    trap _term INT
+
+    if [ -n "$OUTPUT" ]; then
+      node hybrixd.js 2>&1 | tee -a "$NODE/var/log/hybrixd.log" &
     else
-        echo "[i] stopped hybrixd"
-    fi;
+      node hybrixd.js >>  "$NODE/var/log/hybrixd.log" 2>&1 &
+    fi
+
+    CHILD_PID=$(getPID)
+
+    _term() {
+      # Inserting line end because cntrl+c will add ugly chars
+      if [ -n "$OUTPUT" ];then
+        echo "\n"
+      else
+        echo "\nShutdown requested. Please wait..."
+        echo "(Press Cntrl+C to force quit)"
+      fi
+      kill -TERM "$CHILD_PID" 2>/dev/null
+    }
+
+    # Since wait will fire whenever the child process receives a signal, not when the child exits
+    # we will keep waiting until the process/PID is gone. (wait -f does not work on macOs)
+    while [ -n "$(getPID)" ]
+    do
+      wait "$CHILD_PID"
+    done
+
+    handleShutDown;
 }
 
 if [ "$1" = "" ]; then
-    echo "[i] starting hybrixd..."
-    NODE_VERSION=$($NODEINST --version)
-    NODE_VERSION_MAJOR=$(echo $NODE_VERSION | cut -d'.' -f1 | cut -c2-)
-    NODE_VERSION_MINOR=$(echo $NODE_VERSION | cut -d'.' -f2)
+  HYBRIXD_VERSION=$(node -p -e "require('./package.json').version")
+  #if [ -z "$OUTPUT" ];then
+    echo "
+            ░░░░░░░░▒▒▒▒▒▒
+       ░    ░░░░░▒▒▒▒▒▒▒▒▒▒▒
+     ░░░    ░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+    ░░░░          ▒▒▒▒▒▒    ▓▓▓▓
+    ░░░░    ▒▒▒▒    ▒▒▒▒    ▓▓▓▓
+    ▒▒▒▒    ▒▒▒▒▒▒▒▒▒▒▓▓    ▓▓▓▓
+    ▒▒▒▒    ▒▒▒▒    ▓▓▓▓    ▓▓▓▓
+    ▒▒▒▒    ▒▒▒▒▓▓          ▓▓▓▓
+     ▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓     ▓▓▓
+       ▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓     ▓
+          ▓▓▓▓▓▓▓▓▓▓▓▓▓
+    "
+    echo "    hybrixd $HYBRIXD_VERSION © hybrix 2021"
 
-    if [ "$NODE_VERSION_MAJOR" -lt 12 ] || { [  "$NODE_VERSION_MAJOR" -eq 12 ] && [ $NODE_VERSION_MINOR -lt 13 ] ;}; then
-        echo "[!] warning: hybrixd expects Node v12.13.0 or higher (found node $NODEINST @ $NODE_VERSION)"
-        read -p "[?] Do you wish to continue? [y/N] " CONFIRM
-        if [ "$CONFIRM" != "y" ]; then
-            cd "$WHEREAMI"
-            export "PATH=$OLDPATH"
-            echo "[i] Stopped hybrixd."
-            exit 0
-        fi
-    else
-        echo "[i] using node executable $NODEINST @ $NODE_VERSION "
-    fi
+    echo "\n             Running..."
+    echo "\n       Press Cntrl+C to stop.\n"
+  #fi
 
-    startHybrixd
+  logger "[i]" "hybrixd" "Starting..."
+  logger "[i]" "hybrixd" "Version $HYBRIXD_VERSION."
+  NODE_VERSION=$($NODEINST --version)
+  NODE_VERSION_MAJOR=$(echo $NODE_VERSION | cut -d'.' -f1 | cut -c2-)
+  NODE_VERSION_MINOR=$(echo $NODE_VERSION | cut -d'.' -f2)
+
+  if [ "$NODE_VERSION_MAJOR" -lt 12 ] || { [  "$NODE_VERSION_MAJOR" -eq 12 ] && [ $NODE_VERSION_MINOR -lt 13 ] ;}; then
+      logger "[!]" "hybrixd" "Warning: hybrixd expects Node v12.13.0 or higher (found node $NODEINST @ $NODE_VERSION)"
+      read -p "[?] Do you wish to continue? [y/N] " CONFIRM
+      if [ "$CONFIRM" != "y" ]; then
+          cd "$WHEREAMI"
+          export "PATH=$OLDPATH"
+          logger "[.]" "hybrixd" "Stopped."
+          exit 0
+      fi
+  else
+    logger "[i]" "hybrixd" "Using node executable $NODEINST @ $NODE_VERSION."
+  fi
+
+  startHybrixd
 
 elif [ "$1" = "start" ] || [ "$1" = "/c/start" ] || [ "$1" = "/command/start" ]; then
     ./hybrixd.start
@@ -65,6 +137,5 @@ else
     cd "$NODE/lib"
     node hcmd.js $@
 fi
-
 cd "$WHEREAMI"
 export PATH="$OLDPATH"
