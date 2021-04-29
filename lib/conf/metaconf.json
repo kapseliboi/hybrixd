@@ -75,6 +75,11 @@
     }
   },
   "log" : {
+    "output":{
+      "info" : "Whether to output logs to stdout",
+      "default" : true,
+      "type" : "boolean"
+    },
     "maxfilesize":{
       "info" : "Max log file size",
       "default" : 500,

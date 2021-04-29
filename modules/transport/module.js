@@ -24,18 +24,18 @@ function open (proc) {
     if (typeof command[1] === 'undefined') return proc.done(['irc', 'torrent']);
     else {
       const protocol = proc.command[1];
-      let channel;
       switch (protocol) {
-        case 'irc':
-          channel = (command[3] || proc.peek('defaultChannel')).toLowerCase();
+        case 'irc': {
+          const channel = (command[3] || proc.peek('defaultChannel')).toLowerCase();
           const host = command[2] || proc.peek('defaultIrcHost');
           return transportIrc.open(proc, host, channel, proc.peek('hashSalt'));
-          break;
+        }
         case 'torrent':
-          channel = command[2] || proc.peek('defaultChannel');
+        {
+          const channel = command[2] || proc.peek('defaultChannel');
           const passwd = command[3] || proc.peek('defaultIrcHost');
           return transportTorrent.open(proc, channel, passwd, proc.peek('hashSalt'));
-          break;
+        }
         default:
           return proc.fail(`Unknown transport protocol '${protocol}'.`);
       }
@@ -79,7 +79,7 @@ function stop (proc) {
           }, data.handles[handleId]);
         }
       }
-      proc.logs('All sockets have been request to close.');
+      proc.logs('All sockets have been requested to close.');
       checkIfAllHandlesClosed();
     }, waitForBootstrap);
   } else {
@@ -117,11 +117,11 @@ function info (proc) {
 
 function list (proc) {
   switch (proc.command[1]) {
-    case 'endpoints':
+    case 'endpoints': {
       // list specific external peerURIs/endpoints or your own
       let endpoints = [];
       if (proc.command[2]) {
-        fromNodeId = proc.command[2];
+        const fromNodeId = proc.command[2];
         if (data.peersURIs[fromNodeId]) endpoints = data.peersURIs[fromNodeId].slice(0);
       } else endpoints = data.endpoints.slice(0); // clone the array
 
@@ -134,6 +134,7 @@ function list (proc) {
         }
       } else result = endpoints;
       return proc.done(result);
+    }
     case 'handles':
       return proc.done(data.handleIds);
     case 'peers':
@@ -152,7 +153,7 @@ function list (proc) {
         }
         return proc.done(peers);
       }
-    case 'nodes':
+    case 'nodes': {
       let nodes = [];
       let handleId;
       if (proc.command[2]) {
@@ -171,6 +172,7 @@ function list (proc) {
         }
       }
       return proc.done(sortAndUniq(nodes));
+    }
     default:
       return proc.fail(`Unknown list method ${proc.command[1]}.`);
   }
@@ -183,7 +185,6 @@ function sortAndUniq (a) {
 }
 
 function send (proc) {
-  const id = 'transport';
   const nodeId = global.hybrixd.node.publicKey;
 
   const command = proc.command;
@@ -191,7 +192,7 @@ function send (proc) {
   command.shift(); // remove 'send' portion
   const handleId = command.shift(); // get handle
   const nodeIdTarget = command.shift(); // if is *, sends broadcast to all targets
-  let message = command.join('/'); // unencrypted message
+  const message = command.join('/'); // unencrypted message
 
   // create unique message ID
   const openTime = (new Date()).getTime();
@@ -237,7 +238,7 @@ function read (proc) {
 
   if (messageId) {
     const messageResponseId = shaHash(nodeIdTarget + messageId).substr(16, 8); // if specified, read message response to previous messageId
-    const loopHandles = handleId === '*' ? data.handleIds : [ handleId ];
+    const loopHandles = handleId === '*' ? data.handleIds : [handleId];
 
     if (loopHandles.length > 0) {
       let timeoutHandle;
@@ -255,10 +256,12 @@ function read (proc) {
               if (timeoutHandle) clearTimeout(timeoutHandle);
               timeoutHandle = null;
               readInterval = null;
+              let messageData;
               try {
-                let messageData = JSON.parse(curHandle.buffer[idx].data);
+                messageData = JSON.parse(curHandle.buffer[idx].data);
                 curHandle.buffer.splice(idx, 1);
-              } catch (e) {
+              } catch (error) {
+                proc.warn(error);
                 return proc.fail(1, 'Cannot decode response message!');
               }
               return proc.done(messageData);
