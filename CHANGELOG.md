@@ -1,3 +1,19 @@
+# v0.9.14
+## Tiny Bouncy Sasquatch
+## 29-04-2021
+
+* Added BEPRO token. Thanks Mihn!
+* Added SingularityNET (AGI) token. Thanks Rasoul!
+* Implement graceful shutdown. Finish all tasks before stopping daemon.
+* Show ascii art splash logo on startup. Make terminal pretty :)  
+* Hide log stream unless output = true is defined. 
+* Add Ganache (ethereum test) connectors.
+* Swap deal engine: caching of pair list, extended fee calculation change
+* Swap deal engine: Handle reserve unlocking and rebalancing.
+
+
+
+
 # v0.9.13
 ## Sparkling Rainbow Caticorn
 ## 22-04-2021
