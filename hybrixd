@@ -17,9 +17,9 @@ getPID(){
 
 logger(){
   if [ -n "$OUTPUT" ]; then
-    echo "$1 $(date +%d-%m-%YT%T) $2 $3" | tee -a "$NODE/var/log/hybrixd.log"
+    echo "$1 $(date +%Y%-m-%dT%T) $2 $3" | tee -a "$NODE/var/log/hybrixd.log"
   else
-    echo "$1 $(date +%d-%m-%YT%T) $2 $3" >>  "$NODE/var/log/hybrixd.log" 2>&1
+    echo "$1 $(date +%Y%-m-%dT%T) $2 $3" >>  "$NODE/var/log/hybrixd.log" 2>&1
   fi
 }
 
@@ -56,7 +56,7 @@ startHybrixd(){
 
     ALREADY_RUNNING_PID=$(getPID)
     if [ -n "$ALREADY_RUNNING_PID" ]; then
-      echo "[!] $(date +%d-%m-%YT%T) "hybrixd "Another instance of hybrixd is already running." | tee -a "$NODE/var/log/hybrixd.log"
+      echo "[!] $(date +%Y%-m-%dT%T) "hybrixd "Another instance of hybrixd is already running." | tee -a "$NODE/var/log/hybrixd.log"
       exit 1;
     fi
 
