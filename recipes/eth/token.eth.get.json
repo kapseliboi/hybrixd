@@ -1,0 +1,9 @@
+{
+  "symbol":"eth.GET",
+  "name":"GET Protocol (GET)",
+  "import":"eth",
+  "info": "The GET Protocol offers a blockchain-based smart ticketing solution (like Ticketmaster) that can be used by everybody who needs to issue admission tickets for events in a transparent way.  Team is based in Amsterdam.",
+  "factor":"18",
+  "contract":"0x8a854288a5976036a725879164ca3e91d30c6a1b",
+  "originator":"0xf71eE2FA869E7B9708A7139703AA127C495162D6"
+}
