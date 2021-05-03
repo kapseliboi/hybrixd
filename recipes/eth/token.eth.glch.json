@@ -1,0 +1,9 @@
+{
+  "symbol":"eth.glch",
+  "name":"Glitch",
+  "import":"eth",
+  "info":"Glitch is a fast DPOS blockchain that is purpose built for finance and comes with associated dApps and specific tools for DeFi.",
+  "factor":"18",
+  "contract":"0x038a68ff68c393373ec894015816e33ad41bd564",
+  "originator":"0x9B2118D6C6C986B93cff0635AD6356d5B5c8eb71"
+}
