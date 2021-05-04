@@ -27,8 +27,8 @@
   "apiProvidesFullTx": true,
   "contract": null,
   "quartz":{
-    "balance" : [
-      "curl /account/$1 2 1",
+    "balance/address" : [
+      "curl /account/$address 2 1",
       "fail 'Could not connect to host'",
       "tran '.balances' @success @fail",
       "@fail",
@@ -38,14 +38,14 @@
       "tran '[0].free'",
       "done"
     ],
-    "unspent" : [
-      "curl /account/$1 2 1",
+    "unspent/address" : [
+      "curl /account/$address 2 1",
       "fail 'Could not connect to host'",
       "tran {accountNumber : '.account_number', sequence : '.sequence'}",
       "done"
     ],
-    "push" : [
-      "data '$1'",
+    "push/rawTransaction" : [
+      "peek rawTransaction",
       "curl /broadcast/?sync=true POST {'content-type': 'text/plain'} 2 1",
       "fail 'Could not connect to host'",
       "tran '[0].hash' 1 2",
@@ -72,8 +72,8 @@
       "@tranFail",
       "fail 'Could not parse transaction.'"
     ],
-    "getTransaction" : [
-      "curl ${host.explorer} /tx?txHash=$1 2 1",
+    "getTransaction/transactionId" : [
+      "curl ${host.explorer} /tx?txHash=$transactionId 2 1",
       "fail 'Could not connect to host'",
       "tran {value: $}",
       "call reformatTx",
@@ -81,8 +81,8 @@
       "@fail",
       "fail 'Could not get transaction information!'"
     ],
-    "transactionData" : [
-      "curl /tx/$1?format=json 2 1",
+    "transactionData/transactionId" : [
+      "curl /tx/$transactionId?format=json 2 1",
       "fail 'Could not connect to host'",
       "poke txData",
       "tran { txData: $txData } 1 @fail",
@@ -90,15 +90,8 @@
       "@fail",
       "fail 'Could not get transaction information!'"
     ],
-    "attachment" : [
-      "call transactionData/$1",
-      "tran '.txData.tx.value.data' 1 @fail",
-      "done",
-      "@fail",
-      "fail 'Could not get attachment information!'"
-    ],
-    "message" : [
-      "call transactionData/$1",
+    "message/transactionId" : [
+      "call transactionData/$transactionId",
       "tran '.txData.tx.value.memo' 1 @fail",
       "done",
       "@fail",
@@ -110,52 +103,45 @@
       "@fail",
       "done 0"
     ],
-    "callForHistory": [
-      "curl ${host.explorer} /txs?page=$3&rows=$2&address=$1 2 1",
+    "callForHistory/address/rows/page": [
+      "curl ${host.explorer} /txs?page=$page&rows=$rows&address=$address 2 1",
       "fail 'Could not connect to host'",
       "tran '.txArray[]' 1 @fail",
-
       "done",
       "@fail",
       "fail 'Could not retrieve transaction history.'"
     ],
-    "historyPageByCountLoop": [
+    "historyPageByCountLoop/count/offset/address": [
       "poke result []",
       "poke rowsForCall 100",
-      "with pageForCall [math, '$2/$rowsForCall'] [math, floor]",
-      "with decimalsOffset [data,'$2'] [tail, 2]",
-      "with countNumber [math, '$1 + $decimalsOffset']",
+      "with pageForCall math floor($offset/$rowsForCall)'",
+      "with decimalsOffset [data,'$offset'] [tail, 2]",
+      "with countNumber math '$count + $decimalsOffset'",
       "@loopStart",
-      "with pageForCall [math, '+1']",
-      "call callForHistory/$3/$rowsForCall/$pageForCall",
-      "with result [fuse, $]",
-      "loop @loopStart 'countNumber' '>0' '$1' '-$rowsForCall'",
-      "data $result",
+      "with pageForCall math '+1'",
+      "call callForHistory/$address/$rowsForCall/$pageForCall",
+      "with result fuse $",
+      "loop @loopStart 'countNumber' '>0' '$count' '-$rowsForCall'",
+      "peek result",
       "take $decimalsOffset",
-      "pick 0 $1",
+      "pick 0 $count",
       "done"
     ],
-    "makeTime": [
-      "data $1",
+    "makeTime/count": [
+      "peek count",
       "true '>100' 1 @default",
-      "math '/100'",
-      "math 'floor'",
-      "math '*10000'",
+      "math 'floor($/100)*10000'",
       "done",
       "@default",
       "data 15000",
       "done"
     ],
-    "getHistory" : [
-      "poke count $2 12",
-      "poke offset $3 0",
+    "getHistory/address/count=12/offset=0" : [
       "call makeTime/$count",
-      "poke timeToSpend",
-      "time $timeToSpend",
-      "with toBig [math, '$offset + $count']",
-      "true $toBig>10000 @toBig @next",
+      "time $",
+      "true '$offset + $count>10000' @toBig @next",
       "@next",
-      "call historyPageByCountLoop/$count/$offset/$1",
+      "call historyPageByCountLoop/$count/$offset/$address",
       "done",
       "@toBig",
       "fail 'Error range to big for the API to handle, please keep range (offset + count) under 10000'"
