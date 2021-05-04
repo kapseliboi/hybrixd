@@ -67,9 +67,13 @@ startHybrixd(){
     fi
 
     # Wait for child PID to be initialized
-    sleep 3
-
-    CHILD_PID=$(getPID)
+    while [ -z "$CHILD_PID" ]
+    do
+      CHILD_PID=$(getPID)
+      if [ -z "$CHILD_PID" ]; then
+        sleep 0.5
+      fi
+    done
 
     _term() {
       # Inserting line end because cntrl+c will add ugly chars
@@ -87,7 +91,6 @@ startHybrixd(){
     while [ -n "$(getPID)" ]
     do
       wait "$CHILD_PID"
-      sleep 3
     done
 
     handleShutDown;
