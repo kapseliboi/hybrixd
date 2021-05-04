@@ -4,7 +4,7 @@
   "module":"quartz",
   "fee-symbol":"xrp",
   "addressRegex":"^(r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}|r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}-\\d{6,10}|X[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{46})$",
-  "fee":"0.00001",
+  "fee":"0.000012",
   "fee-factor":6,
   "activationBalance":20,
   "cron":300,
