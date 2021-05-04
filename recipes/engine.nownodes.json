@@ -2,7 +2,7 @@
   "engine":"nownodes",
   "name":"NowNodes HTTP(S) engine",
   "documentation" : "https://documenter.getpostman.com/view/13630829/TVmFkLwy",
-  "APIkey": "yourApiKey",
+  "APIkey": "",
   "cache":1000,
   "import": "transaction-history",
   "apiProvidesFullTx": false,

@@ -9,6 +9,8 @@
   "factor":18,
   "confirmed":2,
   "fee":"0.000375",
+  "feeContractTx":"0.001875",
+  "gasPriceDefault":"0.000000006",
   "notes" : {
     "history" : "Powered by bscscan.com"
   },

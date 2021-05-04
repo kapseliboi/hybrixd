@@ -66,6 +66,9 @@ startHybrixd(){
       node hybrixd.js >>  "$NODE/var/log/hybrixd.log" 2>&1 &
     fi
 
+    # Wait for child PID to be initialized
+    sleep 3
+
     CHILD_PID=$(getPID)
 
     _term() {
@@ -84,6 +87,7 @@ startHybrixd(){
     while [ -n "$(getPID)" ]
     do
       wait "$CHILD_PID"
+      sleep 3
     done
 
     handleShutDown;
