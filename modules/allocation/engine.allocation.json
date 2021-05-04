@@ -4,6 +4,7 @@
   "timeout" : 120000,
   "cron" : 30,
   "defaultDeadline" : 180,
+  "defaultStatPurgeTime" : 172800,
   "storageFactor" : 8,
   "accountIdRegex" : "^[a-zA-Z0-9]{44}$",
   "permissions":{
@@ -37,7 +38,8 @@
       "poke local::cron10m $timeNow",
       "logs 'cron -> running regular tasks (10m)'",
       "call cronCompilePairList",
-      "call cronUnlockReserves"
+      "call cronUnlockReserves",
+      "call cronCleanPairStats"
    ],
    "cronUnlockReserves" : [
       "time 150000",
@@ -77,6 +79,21 @@
       "fail 'WARNING: failing to save pairstats for ${pairSelect}!'",
       "poke local::pairstats[$pairSelect]",
       "done { '$pairSelect' : $ }"
+    ],
+    "cronCleanPairStats" : [
+      "peek local::pairstats",
+      "each staleStatsPairsExclude",
+      "excl null",
+      "poke local::pairstats"
+    ],
+    "staleStatsPairsExclude" : [
+      "poke stats ${.value}",
+      "with timenow date now",
+      "tran .value.updated 1 @stale",
+      "true '$ > $timenow + $defaultStatPurgeTime' @stale 1",
+      "done $stats",
+      "@stale",
+      "done null"
     ],
     "getPairs" : [
       "tran .value.pairs",
@@ -118,13 +135,14 @@
       "with askfee [peek,dataObject] [call,getCalcStats/min/pair/$toSymbol:$fromBase/fee] [trim,'%'] [ship,2] [done,0]",
       "with ask [true,'$askfee>0',2] [done,$bid] [math,$unitPrice*(1+($askfee/100))] [form,$fromBase]",
       "# calculate 24 hour volume",
-      "with volume call getVolume/$fromBase",
+      "with volume call getVolume/$fromBase/$toSymbol",
       "# neatly present fee(s)",
       "with minfee form $fromBase",
       "with maxfee form $fromBase",
       "with feerange [true,'$minfee==$maxfee',2] [done,'$minfee%-$maxfee%'] [done,'$minfee%']",
       "# all done",
-      "done {'$pair':{base:'$fromBase',ask:'$ask',bid:'$bid',volume:'$volume',fee:'$feerange',sufficiency:'$sufficiency',liquidity:'$liquidity'}}"
+      "with timestamp [date,now] [math,round]",
+      "done {'$pair':{base:'$fromBase',ask:'$ask',bid:'$bid',volume:'$volume',fee:'$feerange',sufficiency:'$sufficiency',liquidity:'$liquidity',updated:'$timestamp'}}"
     ],
     "getCalcStats/action/var/pair/specifier" : [
       "with specifier [void,2] [done] [peek,pair] [splt,':'] [pick,-1]",
@@ -156,13 +174,14 @@
       "done",
       "peek .value.[${.meta.var}].[${.meta.specifier}] 0"
     ],
-    "getVolume/fromBase" : [
+    "getVolume/fromBase/toSymbol" : [
       "# get last 24 hour volume",
       "call deal::readHistory/0/86400",
-      "each getVolumeAmount/$fromBase",
+      "each getVolumeAmount/$fromBase/$toSymbol",
       "math +"
     ],
-    "getVolumeAmount/fromBase" : [
+    "getVolumeAmount/fromBase/toSymbol" : [
+      "flow .value.deal.bid.symbol '$toSymbol' 1 2",
       "flow .value.deal.ask.symbol '$fromBase' 2 1",
       "done 0",
       "tran .value.deal.ask.amount 1 -1"
@@ -299,7 +318,7 @@
       "done null"
     ],
     "listPair" : [
-      "peek local::pairlist {}"
+      "peek local::pairlist []"
     ],
     "findPair/fromBase/toSymbol" : [
       "with [fromBase,toSymbol] case lower",

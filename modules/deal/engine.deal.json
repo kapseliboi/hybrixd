@@ -1,7 +1,6 @@
 {
   "engine" : "deal",
   "name" : "Create a deal between provider (node) and client",
-  "module" : "deal",
   "cache" : 15000,
   "timeout" : 120000,
   "proposalListPrefix" : "bf70896b41c1555612fb332d274d4e4b",
