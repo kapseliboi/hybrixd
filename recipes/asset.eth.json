@@ -5,6 +5,7 @@
   "module":"ethereum",
   "import":"eth-api",
   "mode":"ethereum.main",
+  "fee-symbol":"eth",
   "throttle":6,
   "host": {
     "default": ["https://nodes.mewapi.io/rpc/eth","https://cloudflare-eth.com"],

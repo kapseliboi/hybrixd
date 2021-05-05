@@ -304,6 +304,12 @@
       "call unspentData/$source/$amount/$target/$publicKey"
     ],
     "unspentData/source/amount/target/publicKey" : [
+      "with nativeBalance rout /a/${fee-symbol}/balance/$source",
+      "with tokenFee [call,fee] [ship,2,1,1,1] [done,$feeContractTx]",
+      "true '$nativeBalance > $tokenFee' @enoughBalance 1",
+      "with msgSymbol [peek,fee-symbol] [case,upper]",
+      "fail 'Not enough $msgSymbol balance on account to pay transaction fee! Balance needed is $tokenFee $msgSymbol, while available only $nativeBalance $msgSymbol.'",
+      "@enoughBalance",
       "call getGasPrice",
       "poke gasPrice",
       "@retryLoop",
