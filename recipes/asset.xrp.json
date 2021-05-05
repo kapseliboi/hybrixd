@@ -134,28 +134,20 @@
       "@localFee",
       "done"
     ],
-    "push" : [
-      "data '$1'",
+    "push/rawtx" : [
+      "data '$rawtx'",
       "jpar",
       "curl POST 2 1",
-      "fail 'Could not connect to host'",
+      "fail 'Could not connect to Ripple host!'",
       "poke res",
-      "tran '.error' @fail @success",
-      "@fail",
-      "fail '$res'",
+      "tran '.error' @failure @success",
       "@success",
-      "tran '.result.engine_result' 1 @fail",
-      "flow 'tesSUCCESS' 1 @engineFail",
-      "peek res",
-      "tran '.result.tx_json.hash' 1 @fail",
+      "tran '.result.tx_json.hash' 1 2",
       "done",
-      "@engineFail",
-      "peek res",
-      "tran '.result.engine_result_message' 1 @fail",
-      "poke res 'Transaction failed with the following error: \"$\"'",
-      "tran '.result.tx_json.hash' @success2 @fail",
-      "@success2",
-      "done"
+      "@failure",
+      "tran '.result.engine_result_message' 2 1",
+      "fail 'Transaction failed! Object result: $'",
+      "fail 'Transaction failed with error: \"$\"'"
     ],
     "getTransaction" : [
       "rand 10000",
