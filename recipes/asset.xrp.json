@@ -139,7 +139,6 @@
       "jpar",
       "curl POST 2 1",
       "fail 'Could not connect to Ripple host!'",
-      "poke res",
       "tran '.error' @failure @success",
       "@success",
       "tran '.result.tx_json.hash' 1 2",
