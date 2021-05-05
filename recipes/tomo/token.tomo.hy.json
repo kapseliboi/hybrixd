@@ -5,7 +5,7 @@
   "fee-override" : 0.002,
   "name" : "hybrix multi-chain asset (TOMO)",
   "import" : "tomo",
-  "mode" : "ethereum.token",
+  "mode" : "ethereum.trc21",
   "contract" : "0xa7551ba0d52c763fb6f8866de63827aa593f20bc",
   "originator" : "0x16ff6f4dbd88a3b99b5dea9be01ce6257b1adab4",
   "factor" : 18,

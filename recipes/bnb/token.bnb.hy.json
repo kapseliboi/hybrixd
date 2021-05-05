@@ -2,7 +2,7 @@
   "symbol":"bnb.hy",
   "name":"hybrix multi-chain asset (BSC)",
   "import":"bnb",
-  "mode":"ethereum.token",
+  "mode":"ethereum.bep20",
   "contract":"0x8d3437e683004bd36bf21d4d075cc10165a863e8",
   "originator":"0x6bCBa1899E6F25a2369C99E5caC6943A9cFab287",
   "factor":9,
@@ -13,8 +13,8 @@
     "unspent/source/amount/target/publicKey" : [
       "with balance call balance/$source",
       "with spendAmount [peek,amount] [ship,2,1,1,1] [done,0] [math,'*1.03']",
-      "true '$balance > $amount' 2 1",
-      "fail 'Not enough balance on account to pay for 3% liquidity fee! Balance needed is $spendAmount BNB.HY, while only $amount BNB.HY available.'",
+      "true '$balance > $spendAmount' 2 1",
+      "fail 'Not enough balance on account to pay for 3% liquidity fee! Balance needed is $spendAmount BNB.HY, while only $balance BNB.HY available.'",
       "call unspentData/$source/$spendAmount/$target/$publicKey"
     ]
   }
