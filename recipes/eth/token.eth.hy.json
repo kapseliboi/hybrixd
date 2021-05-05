@@ -14,7 +14,7 @@
     "unspent/source/amount/target/publicKey" : [
       "with nativeBalance rout /a/${fee-symbol}/balance/$source",
       "true '$nativeBalance > $fee' 2 1",
-      "fail 'Not enough ETH balance on account to pay transaction fee! Balance needed is $fee ETH, while available only $nativeBalance ETH.",
+      "fail 'Not enough ETH balance on account to pay transaction fee! Balance needed is $fee ETH, while available only $nativeBalance ETH.'",
       "call unspentData/$source/$amount/$target/$publicKey"
     ]
   }
