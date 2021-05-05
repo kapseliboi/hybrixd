@@ -8,5 +8,8 @@
   "mode" : "ethereum.token",
   "contract" : "0xa7551ba0d52c763fb6f8866de63827aa593f20bc",
   "originator" : "0x16ff6f4dbd88a3b99b5dea9be01ce6257b1adab4",
-  "factor" : 18
+  "factor" : 18,
+  "notes":{
+    "send":"For payments HY on Tomochain is ideal: transaction fees are low, and payable in HY tokens (TRC21 standard)."
+  }
 }

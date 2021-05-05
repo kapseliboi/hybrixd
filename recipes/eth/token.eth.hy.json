@@ -6,5 +6,16 @@
   "mode":"ethereum.token",
   "contract":"0x9b53e429b0badd98ef7f01f03702986c516a5715",
   "originator":"0x6bCBa1899E6F25a2369C99E5caC6943A9cFab287",
-  "factor":18
+  "factor":18,
+  "notes":{
+    "send":"Note that HY on Ethereum has an expensive ETH transaction fee!"
+  },
+  "quartz":{
+    "unspent/source/amount/target/publicKey" : [
+      "with nativeBalance rout /a/${fee-symbol}/balance/$source",
+      "true '$nativeBalance > $fee' 2 1",
+      "fail 'Not enough ETH balance on account to pay transaction fee! Balance needed is $fee ETH, while available only $nativeBalance ETH.",
+      "call unspentData/$source/$amount/$target/$publicKey"
+    ]
+  }
 }
