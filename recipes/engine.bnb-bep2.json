@@ -114,7 +114,7 @@
     "historyPageByCountLoop/count/offset/address": [
       "poke result []",
       "poke rowsForCall 100",
-      "with pageForCall math floor($offset/$rowsForCall)'",
+      "with pageForCall math 'floor($offset/$rowsForCall)'",
       "with decimalsOffset [data,'$offset'] [tail, 2]",
       "with countNumber math '$count + $decimalsOffset'",
       "@loopStart",
