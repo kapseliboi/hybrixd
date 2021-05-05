@@ -10,7 +10,9 @@
   "confirmed":2,
   "fee":"0.000375",
   "feeContractTx":"0.001875",
-  "gasPriceDefault":"0.000000006",
+  "gasPriceDefault":"0.000000005",
+  "gasBaseUsage":21000,
+  "gasErc20Usage":250000,
   "notes" : {
     "history" : "Powered by bscscan.com"
   },
