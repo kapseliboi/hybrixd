@@ -10,6 +10,6 @@
   "originator" : "0x16ff6f4dbd88a3b99b5dea9be01ce6257b1adab4",
   "factor" : 18,
   "notes":{
-    "send":"For payments HY on Tomochain is ideal: transaction fees are low, and payable in HY tokens (TRC21 standard)."
+    "send":"Transaction fees are low, and payable in HY tokens (TRC21 standard). This makes HY on Tomochain useful for payments."
   }
 }
