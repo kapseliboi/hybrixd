@@ -5,6 +5,7 @@
   "throttle":1,
   "rate-limit":"1 request per IP per second.",
   "documentation":"https://docs.binance.org/api-reference/dex-api/paths.html",
+  "explorer":"https://explorer.binance.org",
   "mode":"binance",
   "module":"quartz",
   "addressRegex":"^bnb[A-Za-z0-9]{39}$",
@@ -27,27 +28,35 @@
   "apiProvidesFullTx": true,
   "contract": null,
   "quartz":{
-    "balance" : [
-      "curl /account/$1 2 1",
-      "fail 'Could not connect to host'",
+    "balance/account" : [
+      "curl /account/$account {} {retry:2} @getBalance 1",
+      "indx 'account not found'",
+      "true >0 @zeroBalance 1",
+      "fail 'Could not connect to host!'",
+      "@zeroBalance",
+      "data 0",
+      "form",
+      "done",
+      "@getBalance",
       "tran '.balances' @success @fail",
       "@fail",
-      "fail 'No Result'",
+      "fail 'Could not parse host response!'",
       "@success",
       "find {'symbol':'BNB'} 1 @fail",
       "tran '[0].free'",
-      "done"
+      "form"
     ],
     "unspent" : [
       "curl /account/$1 2 1",
-      "fail 'Could not connect to host'",
-      "tran {accountNumber : '.account_number', sequence : '.sequence'}",
-      "done"
+      "fail 'Account does not exist, or could not connect to host!'",
+      "tran {accountNumber : '.account_number', sequence : '.sequence'} 2 1",
+      "fail 'Unexpected response from host!'",
+      "with .sequence [ship,2,2,1,1] [data,0] [math,'+1']"
     ],
-    "push" : [
-      "data '$1'",
-      "curl /broadcast/?sync=true POST {'content-type': 'text/plain'} 2 1",
-      "fail 'Could not connect to host'",
+    "push/rawTx" : [
+      "data '$rawTx'",
+      "curl /broadcast?sync=true POST {'content-type': 'text/plain'} 2 1",
+      "fail 'Could not connect to host!'",
       "tran '[0].hash' 1 2",
       "done",
       "fail"
@@ -74,7 +83,7 @@
     ],
     "getTransaction" : [
       "curl ${host.explorer} /tx?txHash=$1 2 1",
-      "fail 'Could not connect to host'",
+      "fail 'Could not connect to host!'",
       "tran {value: $}",
       "call reformatTx",
       "done",
@@ -83,7 +92,7 @@
     ],
     "transactionData" : [
       "curl /tx/$1?format=json 2 1",
-      "fail 'Could not connect to host'",
+      "fail 'Could not connect to host!'",
       "poke txData",
       "tran { txData: $txData } 1 @fail",
       "done",
@@ -112,7 +121,7 @@
     ],
     "callForHistory": [
       "curl ${host.explorer} /txs?page=$3&rows=$2&address=$1 2 1",
-      "fail 'Could not connect to host'",
+      "fail 'Could not connect to host!'",
       "tran '.txArray[]' 1 @fail",
 
       "done",
