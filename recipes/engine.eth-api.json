@@ -301,6 +301,9 @@
       "math max($nonce+1,$retrievedNonce)"
     ],
     "unspent/source/amount/target/publicKey" : [
+      "call unspentData/$source/$amount/$target/$publicKey"
+    ],
+    "unspentData/source/amount/target/publicKey" : [
       "call getGasPrice",
       "poke gasPrice",
       "@retryLoop",
