@@ -10,14 +10,5 @@
   "feeContractTx":0.0025,
   "notes":{
     "send":"Note that HY on Ethereum has an expensive ETH transaction fee!"
-  },
-  "quartz":{
-    "unspent/source/amount/target/publicKey" : [
-      "with nativeBalance rout /a/eth/balance/$source",
-      "with tokenFee [call,fee] [ship,2,1,1,1] [done,$feeContractTx]",
-      "true '$nativeBalance > $tokenFee' 2 1",
-      "fail 'Not enough ETH balance on account to pay transaction fee! Balance needed is $tokenFee ETH, while available only $nativeBalance ETH.'",
-      "call unspentData/$source/$amount/$target/$publicKey"
-    ]
   }
 }
