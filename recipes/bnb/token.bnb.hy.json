@@ -3,7 +3,19 @@
   "name":"hybrix multi-chain asset (BSC)",
   "import":"bnb",
   "mode":"ethereum.token",
-  "contract":"0x863ac3c0f90394c75d5f7776738bdbee80b19815",
-  "originator":"0x5bd95780827fa7da98a9f60013e401373bede6ba",
-  "factor":18
+  "contract":"0x8d3437e683004bd36bf21d4d075cc10165a863e8",
+  "originator":"0x6bCBa1899E6F25a2369C99E5caC6943A9cFab287",
+  "factor":9,
+  "notes":{
+    "send":"HY on Binance Smart Chain has a 3% token transaction fee. Every holder of BNB.HY gets rewarded with fees."
+  },
+  "quartz":{
+    "unspent/source/amount/target/publicKey" : [
+      "with balance call balance/$source",
+      "with spendAmount [peek,amount] [ship,2,1,1,1] [done,0] [math,'*1.03']",
+      "true '$balance > $amount' 2 1",
+      "fail 'Not enough balance on account to pay for 3% liquidity fee! Balance needed is $spendAmount BNB.HY, while only $amount BNB.HY available.'",
+      "call unspentData/$source/$spendAmount/$target/$publicKey"
+    ]
+  }
 }
