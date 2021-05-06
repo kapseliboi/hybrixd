@@ -1,6 +1,6 @@
 {
   "symbol":"bnb",
-  "name":"Binance Smart Chain token (BEP20)",
+  "name":"Binance Smart Chain token (BEP20/BSC)",
   "module":"ethereum",
   "import":"eth-api",
   "mode":"ethereum.main",
