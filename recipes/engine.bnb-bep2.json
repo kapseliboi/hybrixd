@@ -5,6 +5,7 @@
   "throttle":1,
   "rate-limit":"1 request per IP per second.",
   "documentation":"https://docs.binance.org/api-reference/dex-api/paths.html",
+  "explorer":"https://explorer.binance.org",
   "mode":"binance",
   "module":"quartz",
   "addressRegex":"^bnb[A-Za-z0-9]{39}$",

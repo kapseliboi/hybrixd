@@ -8,6 +8,7 @@
   "factor":18,
   "confirmed":12,
   "fee":0.00005,
+  "fee-symbol":"etc",
   "host": {
     "default": ["https://www.ethercluster.com/etc"],
     "history": "https://blockscout.com/etc/mainnet/api"
