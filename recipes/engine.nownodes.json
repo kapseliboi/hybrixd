@@ -14,6 +14,7 @@
   "fee":0,
   "feePerByte":0,
   "confirmsRequired":6,
+  "prefix":"",
   "utxo_unspent_prefix":"76a914",
   "utxo_unspent_suffix":"88ac",
   "trimAddrHexL":"2",
@@ -21,26 +22,26 @@
   "cron":600,
   "quartz":{
     "balance/address" : [
-      "with address [regx,'^$prefix',1,2] [take,12]",
+      "with address [regx,'^$prefix',2,1] [done] [splt,':'] [pick,-1]",
       "time $timeout",
-      "curl {api-key:$APIkey} /api/v2/address/$address 2 1",
+      "curl {api-key:$APIkey} /api/v2/address/$prefix$address 2 1",
       "fail 'Connection to host failed'",
       "tran .balance 2 1",
       "fail 'Result from host invalid'",
       "atom"
     ],
-    "unspent/source/amount/target=/publicKey/message" : [
-      "with source [regx,'^$prefix',1,2] [take,12]",
+    "unspent/source/amount/target/publicKey/message" : [
+      "with source [regx,'^$prefix',2,1] [done] [splt,':'] [pick,-1]",
       "data $amount",
       "ship @amountSpecified @amountSpecified 1 1",
       "call unspentAll/$source",
       "done",
       "@amountSpecified",
-      "with target [regx,'^$prefix',1,2] [take,12]",
+      "with target [regx,'^$prefix',2,1] [done] [splt,':'] [pick,-1]",
       "poke inputval '$amount' '1000000000000'",
       "with inputval atom 1",
       "time $timeout",
-      "curl {api-key:$APIkey} /api/v2/utxo/$source?confirmed=true 2 1",
+      "curl {api-key:$APIkey} /api/v2/utxo/$prefix$source?confirmed=true 2 1",
       "fail 'Could not connect to host'",
       "tran []{script:.scriptPubKey,amount:=.value,txid:.txid,txn:.vout} 2 1",
       "fail 'Parsing failed for unspents'",
@@ -84,27 +85,45 @@
       "done"
     ],
     "transactionData/txId" : [
-      "curl {api-key:$APIkey} /tx/$txId 2 1",
-      "fail 'Could not connect to host'"
+      "curl {api-key:$APIkey} /api/v2/tx/$txId 2 1",
+      "fail 'Could not connect to host'",
+      "logs"
     ],
     "reformatTx" : [
       "tran .value 2 1",
       "fail 'Could not parse transaction'",
       "with vout [data,${.vout}] [filt,.isAddress,true]",
-      "with spends [peek,vout] [tran,[][.addresses, =atom(.value)]] [type,object]",
-      "with .vout [peek,vout] [tran,[].addresses] [flat] [uniq] [join,',']",
-      "with .vin [filt,.isAddress,true] [tran,[].addresses] [flat] [uniq] [join,',']",
-      "tran {id:.txid, amount:.value, fee:.fees, source: .vin, symbol:'$symbol', 'fee-symbol':'$symbol', target: .vout, timestamp:.blockTime, confirmed:.confirmations, spends: $spends, height: .blockHeight} 2 1",
+      "with spends [data,$vout] [tran,[][.addresses, =atom(.value)]] [type,object]",
+      "with sources [data,${.vin}] [filt,.isAddress,true] [tran,[].addresses] [flat] [uniq]",
+      "with source [data,$sources] [join,',']",
+      "with targets [data,${.vout}] [tran,[].addresses] [flat] [uniq]",
+      "with target [data,$targets] [excl,$sources,true] [void,'empty',1,2] [data,$targets] [join,',']",
+      "with timestamp [data,${.blockTime}] [true,==0,1,2] [data,${.coinSpecificData.blocktime}]",
+      "with txAmount [data,$spends] [each,transactionValueFilter/$sources] [flat] [pick,-1] [math,'+']",
+      "flow target '$source' 1 @skipSelfTarget",
+      "with txValue [data,${.value}] [atom,false,$factor]",
+      "with txPlus [data,$spends] [flat] [pick,-1] [math,'+']",
+      "with txAmount [math,'$txValue - $txPlus']",
+      "@skipSelfTarget",
+      "tran { id:.txid, timestamp: $timestamp, amount: '$txAmount', symbol:'$symbol', fee:.fees, 'fee-symbol':'${fee-symbol}', source:'$source', target:'$target', confirmed:.confirmations, spends:$spends} 2 1",
       "fail 'Failed to transform transaction data'",
       "with .fee atom false $factor",
-      "with .amount atom false $factor"
+      "with .amount form"
     ],
+    "transactionValueFilter/sources" : [
+      "poke key ${.key}",
+      "poke value ${.value}",
+      "peek sources",
+      "excl $key false @zero 1",
+      "done $value",
+      "@zero",
+      "done '0'"
+    ],    
     "getTransaction/txId" : [
       "time $timeout",
       "call transactionData/$txId",
       "data {value:$}",
-      "call reformatTx",
-      "done"
+      "call reformatTx"
     ],
     "parseOpReturn/content":[
       "tran .value",
@@ -122,7 +141,7 @@
       "join"
     ],
     "getHistory/address/count=12/offset=0" : [
-      "with address [regx,'^$prefix',1,2] [take,12]",
+      "with address [regx,'^$prefix',2,1] [done] [splt,':'] [pick,-1]",
       "#Some logic to efficiently convert count,offset to page,pageSize",
       "true '$offset%$count==0' @straightforward @complex",
       "@straightforward",
@@ -143,7 +162,7 @@
       "@curl",
       "with start math '$page*$pageSize'",
       "with end math '($page+1)*${pageSize}-1'",
-      "curl {api-key:$APIkey} /api/v2//address/$address?page=$page&pageSize=$pageSize&details=txids 2 1",
+      "curl {api-key:$APIkey} /api/v2/address/$prefix$address?page=$page&pageSize=$pageSize&details=txids 2 1",
       "fail 'Could not connect to host'",
       "tran .txids",
       "drop $drop",

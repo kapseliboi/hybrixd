@@ -8,6 +8,7 @@
   "factor":8,
   "confirmed":12,
   "fee":0.0001,
+  "fee-symbol":"ltc",
   "host":["tcp://ltc-1.indexer.coinomi.net:5002","tcp://ltc-2.indexer.coinomi.net:5002"],
   "cache":45000,
   "throttle":10,

@@ -6,7 +6,8 @@
   "factor":8,
   "features": {"message":true},
   "confirmed":15,
-  "fee":0.00001,
+  "fee":0.0001,
+  "fee-symbol":"bch",
   "host": {
       "default": "https://api.bitcore.io/api/BCH/mainnet"
     },
