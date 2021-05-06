@@ -111,9 +111,8 @@
     "reformatTx" : [
       "tran .value 2 1",
       "fail 'Could not parse transaction'",
-      "#with txAmount [data,$] [tran,.spends] [flat] [pick,-1] [drop,-1] [math,'+']",
       "with sources [data,${.source}] [splt,',']",
-      "with target [data,${.target}] [splt,','] [excl,$source] [join,',']",
+      "with target [data,${.target}] [splt,','] [excl,$sources,true] [join,',']",
       "with txAmount [data,${.spends}] [each,transactionValueFilter/$sources] [flat] [pick,-1] [math,'+']",
       "tran { id:.txid, timestamp:.blockTimeNormalized, amount: '$txAmount', symbol:'$symbol', fee:.fee, 'fee-symbol':'$symbol', source:.source, target:$target, confirmed:.confirmations, spends: .spends} 2 1 ",
       "fail 'Failed to transform transaction data'",
@@ -129,7 +128,6 @@
       "done $value",
       "@zero",
       "done '0'"
-      
     ],
     "getTransaction/txId" : [
       "time $timeout",
