@@ -28,35 +28,36 @@
   "contract": null,
   "quartz":{
     "balance/address" : [
-      "curl /account/$address 2 1",
-      "fail 'Could not connect to host'",
+      "curl /account/$address {} {ignore404:true} 2 1",
+      "fail __HOST_FAILURE__",
       "tran '.balances' @success @fail",
       "@fail",
+      "flow .code '404' 2 1 ",
       "fail 'No Result'",
+      "data 0",
+      "jump @done",
       "@success",
       "find {'symbol':'BNB'} 1 @fail",
       "tran '[0].free'",
-      "done"
+      "@done"
     ],
     "unspent/address" : [
-      "curl /account/$address 2 1",
-      "fail 'Could not connect to host'",
-      "tran {accountNumber : '.account_number', sequence : '.sequence'}",
-      "done"
+      "curl /account/$address {} {ignore404:true} @parse 1",
+      "fail __HOST_FAILURE__",
+      "@parse",
+      "flow .code '404' 1 2 ",
+      "done {accountNumber : 0, sequence : 0}",
+      "tran {accountNumber : '.account_number', sequence : '.sequence'}"
     ],
     "push/rawTransaction" : [
       "peek rawTransaction",
       "curl /broadcast/?sync=true POST {'content-type': 'text/plain'} 2 1",
-      "fail 'Could not connect to host'",
-      "tran '[0].hash' 1 2",
-      "done",
+      "fail __HOST_FAILURE__",
+      "tran '[0].hash' 2 1",
       "fail"
     ],
     "test": [
       "done {hash:dynamic}"
-    ],
-    "factor" : [
-      "pass '$factor'"
     ],
     "sample" : [
       "done {address:'bnb177qrmvquh5flg6axap943clfm9cq09qcpwxc0m',transaction:'6F52B2DA41DC9E9EA91E16F1028F2C6D89B425A22A8E97CFAAA250375FC11E2D'}"
@@ -74,7 +75,7 @@
     ],
     "getTransaction/transactionId" : [
       "curl ${host.explorer} /tx?txHash=$transactionId 2 1",
-      "fail 'Could not connect to host'",
+      "fail __HOST_FAILURE__",
       "tran {value: $}",
       "call reformatTx",
       "done",
@@ -83,7 +84,7 @@
     ],
     "transactionData/transactionId" : [
       "curl /tx/$transactionId?format=json 2 1",
-      "fail 'Could not connect to host'",
+      "fail __HOST_FAILURE__",
       "poke txData",
       "tran { txData: $txData } 1 @fail",
       "done",
@@ -105,7 +106,7 @@
     ],
     "callForHistory/address/rows/page": [
       "curl ${host.explorer} /txs?page=$page&rows=$rows&address=$address 2 1",
-      "fail 'Could not connect to host'",
+      "fail __HOST_FAILURE__",
       "tran '.txArray[]' 1 @fail",
       "done",
       "@fail",
