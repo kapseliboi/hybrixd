@@ -2,7 +2,7 @@
   "symbol":"hy",
   "name":"hybrix unified asset",
   "import":"unified-asset",
-  "unified-symbols" : {"eth.hy":1,"tomo.hy":1},
+  "unified-symbols" : {"bnb.hy":1,"eth.hy":1,"tomo.hy":1},
   "quartz": {
     "test" : ["done {hash:'5F9531DA'}"]
   }
