@@ -1,0 +1,9 @@
+{
+  "symbol":"eth.sand",
+  "name":"sandbox",
+  "import":"eth",
+  "info":"he Sandbox is a decentralized, community-driven platform, where creators can make voxel assets and gaming experiences and monetize them on the blockchain that aims at empowering Players & Creators, providing an easy way to create & own the content in the games they play through the use of NFTs.",
+  "factor":"18",
+  "contract":"0x3845badAde8e6dFF049820680d1F14bD3903a5d0",
+  "originator":"0x18dd4e0eb8699eA4FeE238dE41ECfb95e32272f8"
+}
