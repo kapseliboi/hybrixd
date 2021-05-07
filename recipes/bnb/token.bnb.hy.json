@@ -7,10 +7,10 @@
   "originator":"0x6bCBa1899E6F25a2369C99E5caC6943A9cFab287",
   "factor":9,
   "notes":{
-    "send":"HY on Binance Smart Chain has a 3% token transaction fee. Every holder of BNB.HY gets rewarded with fees."
+    "send":"On Binance Smart Chain HY has a 3% token transaction fee to redistribute. Example: if you send 100 BNB.HY the recipient will get 97 HY.BNB, since 3 HY.BNB is subtracted."
   },
   "quartz":{
-    "unspent/source/amount/target/publicKey" : [
+    "unspentBETA/source/amount/target/publicKey" : [
       "with balance call balance/$source",
       "with spendAmount [peek,amount] [ship,2,1,1,1] [done,0] [math,'*1.03']",
       "true '$balance > $spendAmount' 2 1",
