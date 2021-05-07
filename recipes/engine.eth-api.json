@@ -23,7 +23,7 @@
   "import": "transaction-history",
   "historyThrottle": 0.2,
   "apiProvidesFullTx": false,
-  "quartz":{
+  "quartz": {
     "init" : [
       "flow contract '0x0000000000000000000000000000000000000000' 1 @skipTokens",
       "peek gasPriceDefault",

@@ -10,7 +10,7 @@
     "send":"HY on Binance Smart Chain has a 3% token transaction fee. Every holder of BNB.HY gets rewarded with fees."
   },
   "quartz":{
-    "unspent/source/amount/target/publicKey" : [
+    "unspentTEST/source/amount/target/publicKey" : [
       "with balance call balance/$source",
       "with spendAmount [peek,amount] [ship,2,1,1,1] [done,0] [math,'*1.03']",
       "true '$balance > $spendAmount' 2 1",
