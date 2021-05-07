@@ -24,11 +24,11 @@ logger(){
 }
 
 handleShutDown(){
+  sleep 3
   if [ -f "$NODE/var/onstop" ]; then
       ON_STOP_ACTION=$(cat "$NODE/var/onstop")
       if [ "$ON_STOP_ACTION" = "restart" ]; then
           logger "[i]" "hybrixd" "Restarting..."
-          sleep 1;
           startHybrixd
       elif [ "$ON_STOP_ACTION" = "update" ]; then
           sh "$NODE/scripts/npm/update.sh"
@@ -71,7 +71,7 @@ startHybrixd(){
     do
       CHILD_PID=$(getPID)
       if [ -z "$CHILD_PID" ]; then
-        sleep 0.5
+        sleep 3
       fi
     done
 
