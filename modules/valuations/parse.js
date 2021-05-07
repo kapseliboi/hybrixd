@@ -9,7 +9,7 @@ const unifications = { // some more hardcoded sanitations
     'eth.eurs', 'eth.eurt', 'waves.eur'
   ], // not included omni.eurt
   hy: [
-    'eth.hy', 'tomo.hy'
+    'bnb.hy', 'eth.hy', 'tomo.hy'
   ]
 };
 
