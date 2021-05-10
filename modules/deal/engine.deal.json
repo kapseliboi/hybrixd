@@ -85,6 +85,7 @@
       "with fromNativeBase [data,'$fromBase'] [case,lower] [splt,'.'] [pick]",
       "indx '$fromNativeBase'",
       "true '>-1' 1 @unavailable",
+      "peek conf::supported []",
       "with toNativeSymbol [data,'$toSymbol'] [case,lower] [splt,'.'] [pick]",
       "indx '$toNativeSymbol'",
       "true '>-1' @supported @unavailable",
