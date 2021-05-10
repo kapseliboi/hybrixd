@@ -26,17 +26,20 @@
     "pairs" : [
       "call allocation::listPair",
       "each pairsEach $conf::ledgers",
-      "done"
+      "excl null"
     ],
     "pairsEach" : [
-      "with pair [data,'${.value}'] [splt,':']"
+      "with pair [data,'${.value}'] [splt,':']",
       "peek .meta",
-      "indx '${pair[0]}'",
+      "poke ledgers",
+      "with nativeA [data,'${pair[0]}'] [splt,'.'] [pick]",
+      "indx '$nativeA'",
       "true '>-1' 2 1",
       "done null",
-      "peek .meta",
-      "indx '${pair[1]}'",
-      "true '>-1' 2 -3",
+      "peek ledgers",
+      "with nativeB [data,'${pair[1]}'] [splt,'.'] [pick]",
+      "indx '$nativeB'",
+      "true '>-1' 1 -4",
       "done '${pair[0]}:${pair[1]}'"
     ],
     "estimate/fromBase/toSymbol/amount" : [
