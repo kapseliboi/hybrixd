@@ -304,8 +304,7 @@
       "sort .fee",
       "pick",
       "void 1 2",
-      "fail 'There are no selectable pairs!'",
-      "#with .fee"
+      "fail 'There are no selectable pairs!'"
     ],
     "selectEligibility/amount" : [
       "# eligibility to be selected: enough balance, enough security sufficiency",
