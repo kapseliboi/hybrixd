@@ -11,7 +11,7 @@
     "nodeKeys":true
   },
   "expose" : {
-    "deal" : ["push","getAddressAccount","doRebalancePair","securityReserveAccountLock"]
+    "deal" : ["push","getAddressAccount","doRebalancePair","securityReserveAccountLock","listPair"]
   },
   "conf" :{
     "enabled" : {"default": false,"type": "boolean", "requiresRestart": true},
