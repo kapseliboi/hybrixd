@@ -79,6 +79,17 @@
     ],
     "proposalCreate/fromBase/toSymbol/amount/target=null" : [
       "time 30000",
+      "# 0. check if ledgers systems are available",
+      "peek conf::swapNativeSymbols []",
+      "with fromNativeBase [data,'$fromBase'] [case,lower] [splt,'.'] [pick]",
+      "indx '$fromNativeBase'",
+      "true '>-1' 1 @unavailable",
+      "with toNativeSymbol [data,'$toSymbol'] [case,lower] [splt,'.'] [pick]",
+      "indx '$toNativeSymbol'",
+      "true '>-1' @supported @unavailable",
+      "@unavailable",
+      "fail 'Swap pair is unavailable or undergoing maintenance!'",
+      "@supported",
       "# 1. find best allocator available for this proposal",
       "with reference [peek,amount] [ship,2,1,1,1] [done,1]",
       "flow target null 1 @hasTarget   # if estimating, take a fractional amount",
@@ -267,7 +278,6 @@
       "call allocation::securityReserveAccountLock/$accountID/$action"
     ],
     "addressMatches/$target1/$target2" :[
-      "#TODO Need to improve",
       "call decodeUnifiedAddress/$target1",
       "indx '$target2'",
       "true '>-1' 1 2",
