@@ -80,7 +80,7 @@
     "proposalCreate/fromBase/toSymbol/amount/target=null" : [
       "time 30000",
       "# 0. check if ledgers systems are available",
-      "peek conf::swapNativeSymbols []",
+      "peek conf::supported []",
       "with fromNativeBase [data,'$fromBase'] [case,lower] [splt,'.'] [pick]",
       "indx '$fromNativeBase'",
       "true '>-1' 1 @unavailable",
