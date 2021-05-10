@@ -23,6 +23,22 @@
       "void 2 1",
       "logs"
     ],
+    "pairs" : [
+      "call allocation::listPair",
+      "each pairsEach $conf::ledgers",
+      "done"
+    ],
+    "pairsEach" : [
+      "with pair [data,'${.value}'] [splt,':']"
+      "peek .meta",
+      "indx '${pair[0]}'",
+      "true '>-1' 2 1",
+      "done null",
+      "peek .meta",
+      "indx '${pair[1]}'",
+      "true '>-1' 2 -3",
+      "done '${pair[0]}:${pair[1]}'"
+    ],
     "estimate/fromBase/toSymbol/amount" : [
       "call proposalCreate/$fromBase/$toSymbol/$amount"
     ],
@@ -367,6 +383,7 @@
   },
   "router" : {
     "_help" : "Deal engine for deals between node and clients.",
+    "pairs": "List swappable pairs.",
     "estimate": {
       "_help" : "Estimate a deal.",
       "_ref" : {
