@@ -11,7 +11,8 @@
     "nodeKeys":true
   },
   "conf" :{
-    "enabled" : {"default": false,"type": "boolean", "requiresRestart": true}
+    "enabled" : {"default": false,"type": "boolean", "requiresRestart": true},
+    "supported" : {"default": [], "type": "array", "requiresRestart": true}
   },
   "expose" : {
     "allocation" : ["readHistory"]
