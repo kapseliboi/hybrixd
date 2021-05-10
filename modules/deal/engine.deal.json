@@ -12,7 +12,7 @@
   },
   "conf" :{
     "enabled" : {"default": false,"type": "boolean", "requiresRestart": true},
-    "supported" : {"default": [], "type": "array", "requiresRestart": true}
+    "ledgers" : {"default": [], "type": "array", "requiresRestart": true}
   },
   "expose" : {
     "allocation" : ["readHistory"]
@@ -81,11 +81,11 @@
     "proposalCreate/fromBase/toSymbol/amount/target=null" : [
       "time 30000",
       "# 0. check if ledgers systems are available",
-      "peek conf::supported []",
+      "peek conf::ledgers []",
       "with fromNativeBase [data,'$fromBase'] [case,lower] [splt,'.'] [pick]",
       "indx '$fromNativeBase'",
       "true '>-1' 1 @unavailable",
-      "peek conf::supported []",
+      "peek conf::ledgers []",
       "with toNativeSymbol [data,'$toSymbol'] [case,lower] [splt,'.'] [pick]",
       "indx '$toNativeSymbol'",
       "true '>-1' @supported @unavailable",
