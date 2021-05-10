@@ -346,12 +346,14 @@
       "done null"
     ],
     "calculateAndSaveProgress/dealID/askProgress/bidProgress" : [
-      "have local::progress[$dealID] 1 @skipcompare",
-      "with savedProgress peek local::progress[$dealID]",
+      "with keyHash [data,'deal progress ${dealID}'] [hash]",
+      "seek $keyHash 1 @skipcompare",
+      "with savedProgress load $keyHash",
       "with askProgress math 'min( (round( max($askProgress,${savedProgress.ask})*10000 ) / 10000) ,1)'",
       "with bidProgress math 'min( (round( max($bidProgress,${savedProgress.bid})*10000 ) / 10000) ,1)'",
       "@skipcompare",
-      "poke local::progress[$dealID] {ask:$askProgress,bid:$bidProgress}",
+      "data {ask:$askProgress,bid:$bidProgress}",
+      "save $keyHash",
       "math 'round(($askProgress + $bidProgress) / 0.0002) / 10000'"
     ],
     "status/proposalID" : [
