@@ -26,7 +26,8 @@
     "pairs" : [
       "call allocation::listPair",
       "each pairsEach $conf::ledgers",
-      "excl null"
+      "excl null",
+      "sort"
     ],
     "pairsEach" : [
       "with pair [data,'${.value}'] [splt,':']",
