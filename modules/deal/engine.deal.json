@@ -348,7 +348,7 @@
     "calculateAndSaveProgress/dealID/askProgress/bidProgress" : [
       "with keyHash [data,'deal progress ${dealID}'] [hash]",
       "load $keyHash 1 @skipcompare",
-      "jpar 1 @skipcompare
+      "jpar 1 @skipcompare",
       "poke savedProgress",
       "with askProgress math 'min( (round( max($askProgress,${savedProgress.ask})*10000 ) / 10000) ,1)'",
       "with bidProgress math 'min( (round( max($bidProgress,${savedProgress.bid})*10000 ) / 10000) ,1)'",
