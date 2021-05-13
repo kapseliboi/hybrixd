@@ -1,12 +1,12 @@
 {
   "engine" : "deal",
   "name" : "Create a deal between provider (node) and client",
-  "cache" : 15000,
+  "cache" : 30000,
   "timeout" : 120000,
   "proposalListPrefix" : "bf70896b41c1555612fb332d274d4e4b",
   "cron" : 10,
   "TxidRegex" : "^[a-zA-Z0-9:.]+$",
-  "purgeTime" : 3600,
+  "purgeTime" : 10800,
   "permissions":{
     "nodeKeys":true
   },
@@ -366,6 +366,10 @@
       "@failure",
       "fail 'Cannot read proposal data of $proposalID!'"
     ],
+    "dispute/proposalID" : [
+      "call status/$proposalID",
+      "# handle dispute from here"
+    ],    
     "readHistory/timeOffset/timeLimit" : [
       "with timeUntil [date,now] [math,'-$timeOffset']",
       "with timeFrom math '$timeUntil - $timeLimit'",
@@ -440,10 +444,17 @@
       }
     },
     "status" : {
-      "_help" : "Check the status of a proposal.",
+      "_help" : "Check the status of a proposal or deal.",
       "_ref" : {
         "_list" : "proposalID",
-        "_this" : "Specify the proposal ID to check the status of."
+        "_this" : "Specify the proposal or deal ID to check the status of."
+      }
+    },
+    "dispute" : {
+      "_help" : "Dispute a deal.",
+      "_ref" : {
+        "_list" : "proposalID",
+        "_this" : "Specify the deal ID to dispute."
       }
     }
   }

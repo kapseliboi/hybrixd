@@ -51,13 +51,21 @@
     ],
     "cronCompilePairList" : [
       "time 60000",
+      "call pairListCompiler",
+      "poke local::pairlist"
+    ],
+    "pairListCompiler/accountID" : [
+      "peek accountID",
+      "regx '$accountIdRegex' 2 1",
+      "poke accountID '*'",
       "peek local::accounts {}",
-      "tran {:*}.pairs{*:} 2 1",
-      "fail 'Could not retreive pairs'",
+      "flow accountID '*' 1 2",
+      "tran {:*}.pairs{*:} 3 2",
+      "tran .${accountID}.pairs{*:} 2 1",
+      "fail 'Could not retrieve pairs'",
       "flat",
       "uniq",
-      "sort",
-      "poke local::pairlist"
+      "sort"
     ],
     "cronCompilePairStats" : [
       "time 60000",
@@ -316,8 +324,8 @@
       "done",
       "done null"
     ],
-    "listPair" : [
-      "peek local::pairlist []"
+    "listPair/accountID" : [
+      "call pairListCompiler/$accountID"
     ],
     "findPair/fromBase/toSymbol" : [
       "with [fromBase,toSymbol] case lower",
