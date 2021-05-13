@@ -1,3 +1,11 @@
+# v0.9.16
+## Shiny Fuchsia Sphinx
+## 13-05-2021
+
+* Fix to boot script to accommodate to the  jungle of linux, unix, bsd and macOs shells.
+
+
+
 # v0.9.15
 ## Bouncy Fuchsia Owlbear
 ## 07-05-2021
@@ -11,7 +19,7 @@
 * Adapt tomo to have a default fee-symbol
 * All eth-api engine assets now check native balance on unspent
 * Adjusted gas settings for Binance Smart Chain
-* update ETH-API engine to support alternative unspent routines
+* Update ETH-API engine to support alternative unspent routines
 * Simplify push tx, transaction hash always means Ripple host will attempt tx broadcast
 * Increase default XRP fee
 * Fix datestamp in startup log
