@@ -51,6 +51,17 @@ startHybrixd(){
     # Remove lingering onstop actions
     rm -rf "$NODE/var/onstop" || true;
 
+    _term() {
+      # Inserting line end because cntrl+c will add ugly chars
+      if [ -n "$OUTPUT" ]; then
+        echo "\n"
+      else
+        echo "\nShutdown requested. Please wait..."
+        echo "(Press Cntrl+C to force quit)"
+      fi
+      kill -TERM "$CHILD_PID" 2>/dev/null
+    }
+
     trap _term INT
 
     ALREADY_RUNNING_PID=$(getPID)
@@ -73,17 +84,6 @@ startHybrixd(){
         sleep 0.5
       fi
     done
-
-    _term() {
-      # Inserting line end because cntrl+c will add ugly chars
-      if [ -n "$OUTPUT" ]; then
-        echo "\n"
-      else
-        echo "\nShutdown requested. Please wait..."
-        echo "(Press Cntrl+C to force quit)"
-      fi
-      kill -TERM "$CHILD_PID" 2>/dev/null
-    }
 
     # Since wait will fire whenever the child process receives a signal, not when the child exits
     # we will keep waiting until the process/PID is gone. (wait -f does not work on macOs)
