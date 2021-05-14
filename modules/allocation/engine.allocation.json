@@ -16,10 +16,11 @@
   "conf" :{
     "enabled" : {"default": false,"type": "boolean", "requiresRestart": true},
     "allocationBalanceCacheTime" : {"default":600},
+    "sufficiencyPercentage" : {"default":15},
     "securitySymbol" : {"default":"hy"},
     "securityTransferFee" : {"default":"0.5"},
     "securityContractFee" : {"default":"0.001"},
-    "securityRiskFactor" : {"default":"7"},
+    "securityRiskFactor" : {"default":"2"},
     "securityReleaseCron" : {"default":"1"},
     "securityMinimalDeposit" : {"default":10}
   },
@@ -523,8 +524,7 @@
     "securityReserveAccountLock/accountID/request/amount":[
       "with balance call getSecurityDepositBalance/$accountID",
       "with locked call getSecurityLockedBalance/$accountID",
-      "with amount [ship,2,1,1,1] [done,0] [math,'*2']",
-      "logs 'DEBUG: security reserve $request amount $amount HY on account $accountID'",
+      "with amount [ship,2,1,1,1] [done,0] [math,'* $conf::securityRiskFactor']",
       "flow request {'unlock':@unlock,'unlockWithFee':@unlockWithFee,'cron':@cronUnlock}",
       "@lock",
       "true '($balance - $locked)>=$amount' 2 1",
@@ -534,15 +534,14 @@
       "done",
       "@cronUnlock",
       "math '$locked * ( 1 - ($conf::securityReleaseCron/100))'",
-      "logs 'DEBUG: security reserve cron percentage $conf::securityReleaseCron = $amount HY on account $accountID'",
       "call securityForceLockedBalanceAccount/$accountID/$",
       "done",
       "@unlockWithFee",
       "# unlock amount, subtracting sequestration fee",
-      "with sequestrationFee [math,'$balance*${conf::securityContractFee}']",
+      "with sequestrationFee [math,'$balance * ${conf::securityContractFee}']",
       "call setSecurityDepositBalance/$accountID/-$sequestrationFee",
       "@unlock",
-      "true '$locked>=$amount' 2 1",
+      "true '$locked >= $amount' 2 1",
       "fail 'Security lock error: Cannot unlock amount higher than locked balance!'",
       "math '$locked - $amount'",
       "call securityForceLockedBalanceAccount/$accountID/$"
@@ -589,7 +588,7 @@
       "call getSecurityLockedBalance/$accountID",
       "math '$depositBalance - $'",
       "rout /e/valuations/rate/${conf::securitySymbol}/$symbol/$",
-      "math '/ ${conf::securityRiskFactor}'",
+      "math '* (${conf::sufficiencyPercentage}/100)'",
       "form ${conf::securitySymbol}"
     ],
 
