@@ -7,22 +7,25 @@
   "defaultStatPurgeTime" : 172800,
   "storageFactor" : 8,
   "accountIdRegex" : "^[a-zA-Z0-9]{44}$",
+  "supplyOverrideSymbols" : {
+    "hy":"tomo.hy"
+  },
   "permissions":{
-    "nodeKeys":true
+  "nodeKeys":true
   },
   "expose" : {
     "deal" : ["push","getAddressAccount","doRebalancePair","securityReserveAccountLock","listPair"]
   },
   "conf" :{
     "enabled" : {"default": false,"type": "boolean", "requiresRestart": true},
-    "allocationBalanceCacheTime" : {"default":600},
-    "sufficiencyPercentage" : {"default":15},
+    "liquidityPercentage" : {"default":15},
     "securitySymbol" : {"default":"hy"},
     "securityTransferFee" : {"default":"0.5"},
     "securityContractFee" : {"default":"0.001"},
     "securityRiskFactor" : {"default":"2"},
     "securityReleaseCron" : {"default":"1"},
-    "securityMinimalDeposit" : {"default":10}
+    "securityMinimalDeposit" : {"default":10},
+    "allocationBalanceCacheTime" : {"default":600}
   },
   "quartz" : {
     "cron" : [
@@ -351,7 +354,7 @@
       "data {accountID:null,ask:${.ask},bid:${.bid},fee:${.fee},type:${.type},deadline:${.deadline},balance:${.balance},sufficiency:${.sufficiency},active:false}",
       "with .accountID peek accountID",
       "# balance returned for deals is halved to promote pair balancing!",
-      "with .balance [call,getAccountBalance/$accountID/$toSymbol] [math,'* 0.5']",
+      "with .balance [call,getAccountBalance/$accountID/$toSymbol] [math,'* ${conf::liquidityPercentage}']",
       "with .sufficiency call getSufficiency/$accountID/$toSymbol",
       "with .sufficiency [math,'min(${.sufficiency},${.balance})'] [ship,2,1,1,1] [done,0]",
       "with .active math '${.balance}>0.001 and ${.sufficiency}>0.001'",
@@ -453,6 +456,8 @@
       "call getAccountBalance/$accountID/$symbol"
     ],
     "getAccountBalance/accountID/symbol":[
+      "#with symbol repl $supplyOverrideSymbols.from $supplyOverrideSymbols.to true",
+      "#logs 'SYMBOL: $symbol'",
       "with now [date,now] [math,round]",
       "peek local::accounts[$accountID].lastsync[$symbol] 0",
       "true '$ < ($now - $conf::allocationBalanceCacheTime)' @retrieve @peek",
@@ -588,7 +593,8 @@
       "call getSecurityLockedBalance/$accountID",
       "math '$depositBalance - $'",
       "rout /e/valuations/rate/${conf::securitySymbol}/$symbol/$",
-      "math '* (${conf::sufficiencyPercentage}/100)'",
+      "ship 2 1 1 1",
+      "done 0",
       "form ${conf::securitySymbol}"
     ],
 
