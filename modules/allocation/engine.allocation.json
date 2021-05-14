@@ -310,13 +310,15 @@
     ],
     "selectPair/fromBase/toSymbol/amount" : [
       "call findPair/$fromBase/$toSymbol",
+      "void 1 2",
+      "fail 'This pair does not exist!'",
       "with amount [ship,2,2,1,1] [done,1]",
       "each selectEligibility/$amount",
       "excl null",
       "sort .fee",
       "pick",
       "void 1 2",
-      "fail 'There are no selectable pairs!'"
+      "fail 'No allocators are offering the needed liquidity!'"
     ],
     "selectEligibility/amount" : [
       "# eligibility to be selected: enough balance, enough security sufficiency",
@@ -354,7 +356,8 @@
       "data {accountID:null,ask:${.ask},bid:${.bid},fee:${.fee},type:${.type},deadline:${.deadline},balance:${.balance},sufficiency:${.sufficiency},active:false}",
       "with .accountID peek accountID",
       "# balance returned for deals is halved to promote pair balancing!",
-      "with .balance [call,getAccountBalance/$accountID/$toSymbol] [math,'* ${conf::liquidityPercentage}']",
+      "with balanceSymbol [peek,supplyOverrideSymbols.$toSymbol,null] [void,1,2] [done,$toSymbol]",
+      "with .balance [call,getAccountBalance/$accountID/$balanceSymbol] [math,'* ${conf::liquidityPercentage}']",
       "with .sufficiency call getSufficiency/$accountID/$toSymbol",
       "with .sufficiency [math,'min(${.sufficiency},${.balance})'] [ship,2,1,1,1] [done,0]",
       "with .active math '${.balance}>0.001 and ${.sufficiency}>0.001'",
@@ -456,8 +459,6 @@
       "call getAccountBalance/$accountID/$symbol"
     ],
     "getAccountBalance/accountID/symbol":[
-      "#with symbol repl $supplyOverrideSymbols.from $supplyOverrideSymbols.to true",
-      "#logs 'SYMBOL: $symbol'",
       "with now [date,now] [math,round]",
       "peek local::accounts[$accountID].lastsync[$symbol] 0",
       "true '$ < ($now - $conf::allocationBalanceCacheTime)' @retrieve @peek",
