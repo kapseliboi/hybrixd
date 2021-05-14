@@ -90,7 +90,7 @@
       "with rebalanceValue [math,'${.bid.amount} + ${.fees.network}']",
       "fork rebalanceCall/$accountID/${.bid.symbol}/$rebalanceValue",
       "@removeFromQueue",
-      "fork securityReserveLock/$accountID/unlock",
+      "fork securityReserveLock/$accountID/$proposalID/unlock",
       "@removeFromQueueNoReserveUnlock",
       "call deleteFromProposalList/$proposalKey",
       "with itemSpec [data,'$proposalID'] [flow,{'undefined':1},2] [done,'storage key $proposalKey'] [done,'proposal $proposalID']",
@@ -155,7 +155,6 @@
       "# 5. return target to accept payment, reserve needed amounts, and adjust feelevel",
       "with recipient call allocation::getAddressAccount/${allocation.accountID}/$fromBase",
       "fork rebalanceCall/${allocation.accountID}/$toSymbol/-$amount",
-      "fork securityReserveLock/${allocation.accountID}/lock",
       "# 6. define proposal/estimate contents",
       "@estimateProposal",
       "poke proposalData { ask: {symbol:'$fromBase',amount:'$baseAmountPlusFee',sufficiency:'$maxAskSufficiency'}, bid: {symbol:'$toSymbol',amount:'$amount',sufficiency:'$maxBidSufficiency'}, fees: {symbol:'$fromBase',allocator:'$allocatorFee',network:'$networkFee'} }",
@@ -178,7 +177,8 @@
       "encr",
       "with keyHash [data,'deal ${allocation.accountID}'] [hash] [take,-16] [push,'$proposalIDb',0] [push,'$proposalIDa',0]",
       "save $keyHash",
-      "call addToProposalList/$keyHash",
+      "fork securityReserveLock/${allocation.accountID}/${proposal.id}/lock",
+      "fork addToProposalList/$keyHash",
       "done $proposal"
     ],
     "addToProposalList/key" : [
@@ -283,7 +283,7 @@
       "save $keyHash",
       "fork rebalanceCall/${allocation.accountID}/$fromBase/$askAmount",
       "fork rebalanceCall/${allocation.accountID}/$toSymbol/$bidAmount",
-      "fork securityReserveLock/${allocation.accountID}/unlockWithFee",
+      "fork securityReserveLock/${allocation.accountID}/$proposalID/unlockWithFee",
       "@submitted",
       "done 'pushed remittance transaction for $proposalID'",
       "@notExist",
@@ -292,8 +292,14 @@
     "rebalanceCall/allocationID/symbol/amount" : [
       "call allocation::doRebalancePair/$allocationID/$symbol/$amount"
     ],
-    "securityReserveLock/accountID/action" : [
-      "call allocation::securityReserveAccountLock/$accountID/$action"
+    "securityReserveLock/accountID/proposalID/action" : [
+      "call getProposal/$proposalID",
+      "rout /e/valuations/rate/${.deal.ask.symbol}/hy/${.deal.ask.amount}",
+      "ship @lockAmount @lockAmount 1 1",
+      "logs 'WARNING: Cannot $action security reserve amount on account $accountID!'",
+      "fail 'Cannot $action security reserve amount on account $accountID!'",
+      "@lockAmount",
+      "call allocation::securityReserveAccountLock/$accountID/$action/$"
     ],
     "addressMatches/$target1/$target2" :[
       "call decodeUnifiedAddress/$target1",

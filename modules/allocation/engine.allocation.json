@@ -20,7 +20,7 @@
     "securityTransferFee" : {"default":"0.5"},
     "securityContractFee" : {"default":"0.001"},
     "securityRiskFactor" : {"default":"7"},
-    "securityReleaseHours" : {"default":"48"},
+    "securityReleaseCron" : {"default":"1"},
     "securityMinimalDeposit" : {"default":10}
   },
   "quartz" : {
@@ -520,10 +520,11 @@
       "done { action: 'withdraw', symbol: ${conf::securitySymbol}, balance: $newBalance, locked: $locked, withdrawn: $amount, txid: $txid }",
       "# todo nice-to-have: keep track of txids to later check if balances are correct!"
     ],
-    "securityReserveAccountLock/accountID/request":[
+    "securityReserveAccountLock/accountID/request/amount":[
       "with balance call getSecurityDepositBalance/$accountID",
       "with locked call getSecurityLockedBalance/$accountID",
-      "with amount math '($balance - $locked)/${conf::securityRiskFactor}'",
+      "with amount [ship,2,1,1,1] [done,0] [math,'*2']",
+      "logs 'DEBUG: security reserve $request amount $amount HY on account $accountID'",
       "flow request {'unlock':@unlock,'unlockWithFee':@unlockWithFee,'cron':@cronUnlock}",
       "@lock",
       "true '($balance - $locked)>=$amount' 2 1",
@@ -532,7 +533,8 @@
       "call securityForceLockedBalanceAccount/$accountID/$",
       "done",
       "@cronUnlock",
-      "math '$locked - ($amount / (6 * $conf::securityReleaseHours))'",
+      "math '$locked * ( 1 - ($conf::securityReleaseCron/100))'",
+      "logs 'DEBUG: security reserve cron percentage $conf::securityReleaseCron = $amount HY on account $accountID'",
       "call securityForceLockedBalanceAccount/$accountID/$",
       "done",
       "@unlockWithFee",
