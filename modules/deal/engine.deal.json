@@ -18,6 +18,19 @@
     "allocation" : ["readHistory"]
   },
   "quartz" : {
+    "ledgerExceptions/fromBase/toSymbol/amount/target" : [
+      "flow toSymbol {xrp:@xrp} @success",
+      "@success",
+      "done 'No ledger exceptions'",
+      "@xrp",
+      "true '$amount >= 20' @success",
+      "void target null @none 1",
+      "rout /a/$toSymbol/balance/$target 1 @failure",
+      "true '($ + $amount) >= 20' @success",
+      "fail 'Ripple requires an activation balance! Either swap 20 XRP or more to activate target.'",
+      "@failure",
+      "fail 'Error handling determine ledger exceptions for $toSymbol!'"
+    ],
     "cron" : [
       "call proposalHandler",
       "void 2 1",
@@ -99,7 +112,8 @@
       "done null"
     ],
     "proposalCreate/fromBase/toSymbol/amount/target=null" : [
-      "time 30000",
+      "call ledgerExceptions/$fromBase/$toSymbol/$amount/$target",
+      "time 40000",
       "# 0. check if ledgers systems are available",
       "peek conf::ledgers []",
       "with fromNativeBase [data,'$fromBase'] [case,lower] [splt,'.'] [pick]",
