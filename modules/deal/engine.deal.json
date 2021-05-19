@@ -114,6 +114,10 @@
       "done null"
     ],
     "proposalCreate/fromBase/toSymbol/amount/target=null" : [
+      "ship amount 3 1 1 2",
+      "fail 'Proposal amount must be higher than zero!",      
+      "poke amount 1",
+      "poke reference $amount",
       "call ledgerExceptions/$fromBase/$toSymbol/$amount/$target",
       "time 40000",
       "# 0. check if ledgers systems are available",
@@ -129,10 +133,7 @@
       "fail 'Swap pair is unavailable or undergoing maintenance!'",
       "@supported",
       "# 1. find best allocator available for this proposal",
-      "with reference [peek,amount] [ship,2,1,1,1] [done,1]",
       "flow target null 1 @hasTarget   # if estimating, take a fractional amount",
-      "ship amount 2 1 1 1",
-      "poke amount 1",
       "with toUnit rout /e/valuations/rate/usdt/$toSymbol/1",
       "poke amount $toUnit",
       "@hasTarget",
