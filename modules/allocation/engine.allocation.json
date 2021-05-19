@@ -858,7 +858,6 @@
         }
       }
     },
-    "security-symbol" : "Get the used security symbol",
-    "cronCompilePairStats" : "TEST"
+    "security-symbol" : "Get the used security symbol"
   }
 }
