@@ -319,7 +319,7 @@
     "feeModifierMutate/accountID/symbol/amount/total" : [
       "call validateAccount/$accountID",
       "call getFeeModifier/$accountID/$symbol",
-      "with amount [ship,3,3,2,1] [fail,'Fee modification amount must be a number!'] [math,'-1 / (2 - $amount)']",
+      "with amount [ship,3,3,2,1] [done,0] [math,'-1 / (2 - $amount)']",
       "math '+ ($amount / $total)'",
       "true <0.527 1 2",
       "done 0.527",
