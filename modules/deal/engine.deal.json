@@ -394,10 +394,10 @@
       "excl null"
     ],
     "readHistoryObject/timeFrom/timeUntil" : [
-      "load ${.value} 2",
+      "load ${.value} 2 1",
       "done null",
-      "decr",
-      "jpar",
+      "decr 1 -1",
+      "jpar 1 -2",
       "true '${.timestamp}>=$timeUntil or ${.timestamp}<$timeFrom' -3"
     ],
     "decodeUnifiedAddress/address" : [

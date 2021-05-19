@@ -3,20 +3,19 @@
   "name" : "Allocation management engine",
   "timeout" : 120000,
   "cron" : 30,
-  "defaultDeadline" : 180,
   "defaultStatPurgeTime" : 172800,
   "storageFactor" : 8,
   "accountIdRegex" : "^[a-zA-Z0-9]{44}$",
   "supplyOverrideSymbols" : {
-    "hy":"tomo.hy"
+    "hy" : "tomo.hy"
   },
   "permissions":{
-  "nodeKeys":true
+  "nodeKeys" : true
   },
   "expose" : {
     "deal" : ["push","getAddressAccount","doRebalancePair","securityReserveAccountLock","listPair"]
   },
-  "conf" :{
+  "conf" : {
     "enabled" : {"default": false,"type": "boolean", "requiresRestart": true},
     "liquidityPercentage" : {"default":15},
     "securitySymbol" : {"default":"hy"},
@@ -86,6 +85,7 @@
       "poke local::compilePairStatCount $count",
       "peek local::accounts {}",
       "call getPairStats/$pairSelect",
+      "done",
       "tran .[$pairSelect] 3 1",
       "logs 'error: Failed to save pairstats for ${pairSelect}!'",
       "fail 'WARNING: failing to save pairstats for ${pairSelect}!'",
@@ -128,6 +128,7 @@
       "call getCalcStats/add/balances/$pair/$toSymbol",
       "true '>0' 1 2",
       "rout /e/valuations/rate/$toSymbol/$fromBase/$",
+      "form $storageFactor",
       "poke liquidity",
       "with sufficiency [true,'<$liquidity',2] [data,$liquidity] [form,$storageFactor]",
       "# calculate fee range",
@@ -145,7 +146,7 @@
       "poke unitPrice",
       "with bid [math,$unitPrice*(1-($minfee/100))] [form,$fromBase]",
       "with askfee [peek,dataObject] [call,getCalcStats/min/pair/$toSymbol:$fromBase/fee] [trim,'%'] [ship,2] [done,0]",
-      "with ask [true,'$askfee>0',2] [done,$bid] [math,$unitPrice*(1+($askfee/100))] [form,$fromBase]",
+      "with ask [true,'$askfee>0',2] [done,$bid] [math,'$unitPrice * (1 + ($askfee / 100))'] [form,$fromBase]",
       "# calculate 24 hour volume",
       "with volume call getVolume/$fromBase/$toSymbol",
       "# neatly present fee(s)",
@@ -179,11 +180,22 @@
       "math +"
     ],
     "getCalcStatsHelper" : [
-      "have .value.pairs.[${.meta.pair}] 2",
-      "done 0",
-      "have .value.pairs.[${.meta.pair}].[${.meta.specifier}] 1 3",
-      "peek .value.pairs.[${.meta.pair}].[${.meta.specifier}] 0",
+      "have .value.pairs.[${.meta.pair}] 1 @peekVar",
+      "have .value.pairs.[${.meta.pair}].[${.meta.specifier}] 1 @peekVar",
+      "# apply fee modifiers if needed",
+      "flow .meta.specifier fee 1 3",
+      "poke accountID ${.key}",
+      "with feeSymbol [data,${.meta.pair}] [splt,':'] [pick]",
+      "peek .value.pairs.[${.meta.pair}].[${.meta.specifier}]",
+      "void feeSymbol @return 1",
+      "logs 'call getFeeModifier/$accountID/$feeSymbol'",
+      "with feeModifier call getFeeModifier/$accountID/$feeSymbol",
+      "logs 'modifyFee/$feeModifier'",
+      "call modifyFee/$feeModifier",
+      "logs",
+      "@return",
       "done",
+      "@peekVar",
       "peek .value.[${.meta.var}].[${.meta.specifier}] 0"
     ],
     "getVolume/fromBase/toSymbol" : [
@@ -238,8 +250,8 @@
       "poke local::accounts[$accountID].pairs",
       "done 'Deleted pair $fromBase:$toSymbol'"
     ],
-    "setPair/accountID/fromBase/toSymbol/feePercent/type/deadline/signature" : [
-      "call checkSignature/$accountID/$signature/setPair-${accountID}-${fromBase}-${toSymbol}-${feePercent}-${type}-${deadline}",
+    "setPair/accountID/fromBase/toSymbol/feePercent/type/signature" : [
+      "call checkSignature/$accountID/$signature/setPair-${accountID}-${fromBase}-${toSymbol}-${feePercent}-${type}",
       "with [fromBase,toSymbol] case lower",
       "flow toSymbol {$fromBase:1} 2",
       "fail 'Cannot provide two identical symbols.'",
@@ -248,13 +260,14 @@
       "fail 'A minimal security deposit of $conf::securityMinimalDeposit $conf::securitySymbol is required to setup this pair, currently only $ $conf::securitySymbol is available.'",
       "call getAccountBalance/$accountID/$toSymbol",
       "true >0 2 1 ",
-      "fail 'A non zero balance of $toSymbol is required to setup this pair, currently $ $toSymbol is available.'",
-      "with deadline [flow,'undefined',1,2] [done,$defaultDeadline]",
+      "fail 'A non zero balance of $toSymbol is required to setup this pair, currently only $ $toSymbol is available.'",
       "with type [flow,'undefined',1,2] [done,autonomous]",
-      "data {ask:'$fromBase',bid:'$toSymbol',fee:'${feePercent}%',type:'$type',deadline:$deadline}",
-      "poke local::accounts[$accountID].pairs[$fromBase:$toSymbol]"
+      "data {ask:'$fromBase',bid:'$toSymbol',fee:'${feePercent}%',type:'$type'}",
+      "poke local::accounts[$accountID].pairs[$fromBase:$toSymbol]",
+      "poke local::accounts[$accountID].feeModifiers[$toSymbol] 0"
     ],
     "getPair/accountID/fromBase/toSymbol/signature" : [
+      "time 30000",
       "call checkSignature/$accountID/$signature/getPair-${accountID}-${fromBase}-${toSymbol}",
       "with [fromBase,toSymbol] case lower",
       "flow toSymbol {$fromBase:1} 2",
@@ -267,10 +280,15 @@
     ],
     "getFeeModifier/accountID/symbol" : [
       "peek local::accounts[$accountID].feeModifiers[$symbol] 0",
-      "ship 2 2 1 1",
-      "true >-1 2 1",
-      "data 0"
+      "ship 2 1 1 1",
+      "done 1"
     ],
+    "modifyFee/modifier" : [
+      "trim '%'",
+      "math '* $modifier'",
+      "form $storageFactor",
+      "push '%'"
+    ],    
     "doRebalancePair/accountID/symbol/amount" :[
       "call validateAccount/$accountID",
       "with symbol case lower",
@@ -305,7 +323,12 @@
     "feeModifierMutate/accountID/symbol/amount/total" : [
       "call validateAccount/$accountID",
       "call getFeeModifier/$accountID/$symbol",
+      "with amount [ship,3,1,2,1] [fail,'Fee modification amount must be positive or negative!'] [math,'-1 / (2 - $amount)']",
       "math '+ ($amount / $total)'",
+      "true <0.527 1 2",
+      "done 0.527",
+      "true >10 1 2",
+      "done 10",
       "poke local::accounts[$accountID].feeModifiers[$symbol]"
     ],
     "selectPair/fromBase/toSymbol/amount" : [
@@ -351,20 +374,20 @@
       "peek local::accounts[$accountID].pairs[$fromBase:$toSymbol]",
       "call addPairDetails/$accountID/$fromBase/$toSymbol"
     ],
-    "addPairDetails/accountID/fromBase/toSymbol":[
+    "addPairDetails/accountID/fromBase/toSymbol" : [
       "# decouple from locally stored vars",
-      "data {accountID:null,ask:${.ask},bid:${.bid},fee:${.fee},type:${.type},deadline:${.deadline},balance:${.balance},sufficiency:${.sufficiency},active:false}",
+      "data {accountID:null,ask:${.ask},bid:${.bid},fee:${.fee},type:${.type},balance:${.balance},sufficiency:${.sufficiency},active:false}",
       "with .accountID peek accountID",
       "# balance returned for deals is halved to promote pair balancing!",
       "with balanceSymbol [peek,supplyOverrideSymbols.$toSymbol,null] [void,1,2] [done,$toSymbol]",
-      "with .balance [call,getAccountBalance/$accountID/$balanceSymbol] [math,'* ${conf::liquidityPercentage}']",
+      "with .balance [call,getAccountBalance/$accountID/$balanceSymbol] [math,'* (${conf::liquidityPercentage} / 100)']",
       "with .sufficiency call getSufficiency/$accountID/$toSymbol",
       "with .sufficiency [math,'min(${.sufficiency},${.balance})'] [ship,2,1,1,1] [done,0]",
       "with .active math '${.balance}>0.001 and ${.sufficiency}>0.001'",
       "with feeModifier call getFeeModifier/$accountID/$toSymbol",
-      "with .fee [trim,'%'] [math,'* (1 + $feeModifier)'] [form,$storageFactor] [push,'%']"
+      "with .fee call modifyFee/$feeModifier"
     ],
-
+    
     "account/command/accountID/A/B/C/D/E/F" : [
       "flow command {list: 2} 1",
       "call validateAccount/$accountID",
@@ -836,6 +859,7 @@
         }
       }
     },
-    "security-symbol" : "Get the used security symbol"
+    "security-symbol" : "Get the used security symbol",
+    "cronCompilePairStats" : "TEST"
   }
 }
