@@ -3,25 +3,28 @@
   "name" : "Allocation management engine",
   "timeout" : 120000,
   "cron" : 30,
-  "defaultDeadline" : 180,
   "defaultStatPurgeTime" : 172800,
   "storageFactor" : 8,
   "accountIdRegex" : "^[a-zA-Z0-9]{44}$",
+  "supplyOverrideSymbols" : {
+    "hy" : "tomo.hy"
+  },
   "permissions":{
-    "nodeKeys":true
+  "nodeKeys" : true
   },
   "expose" : {
-    "deal" : ["push","getAddressAccount","doRebalancePair","securityReserveAccountLock"]
+    "deal" : ["push","getAddressAccount","doRebalancePair","securityReserveAccountLock","listPair"]
   },
-  "conf" :{
+  "conf" : {
     "enabled" : {"default": false,"type": "boolean", "requiresRestart": true},
-    "allocationBalanceCacheTime" : {"default":600},
+    "liquidityPercentage" : {"default":15},
     "securitySymbol" : {"default":"hy"},
     "securityTransferFee" : {"default":"0.5"},
     "securityContractFee" : {"default":"0.001"},
-    "securityRiskFactor" : {"default":"7"},
-    "securityReleaseHours" : {"default":"48"},
-    "securityMinimalDeposit" : {"default":10}
+    "securityRiskFactor" : {"default":"2"},
+    "securityReleaseCron" : {"default":"1"},
+    "securityMinimalDeposit" : {"default":10},
+    "allocationBalanceCacheTime" : {"default":600}
   },
   "quartz" : {
     "cron" : [
@@ -51,14 +54,25 @@
     ],
     "cronCompilePairList" : [
       "time 60000",
-      "peek local::accounts {}",
-      "tran {:*}.pairs{*:} 2 1",
-      "fail 'Could not retreive pairs'",
-      "flat",
-      "uniq",
-      "sort",
+      "call pairListCompiler",
       "poke local::pairlist"
     ],
+    "pairListCompiler/accountID" : [
+      "peek local::accounts {}",
+      "regx accountID '$accountIdRegex' @single @all",
+      "#TODO fix silent failure for wrong accountIDs",
+      "@all",
+      "tran {:*}.pairs{*:} @finalize 1",
+      "fail 'Could not retrieve pairs'",
+      "@single",
+      "tran .${accountID}.pairs{*:} @finalize 1",
+      "fail 'Could not retrieve pairs for $accountID'",
+      "@finalize",
+      "flat",
+      "uniq",
+      "sort"
+    ],
+    
     "cronCompilePairStats" : [
       "time 60000",
       "peek local::accounts {}",
@@ -75,8 +89,8 @@
       "peek local::accounts {}",
       "call getPairStats/$pairSelect",
       "tran .[$pairSelect] 3 1",
-      "logs 'error: Failed to save pairstats for ${pairSelect}!'",
-      "fail 'WARNING: failing to save pairstats for ${pairSelect}!'",
+      "warn 'Failing to save pairstats for ${pairSelect}!'",
+      "fail 'Failing to save pairstats for ${pairSelect}!'",
       "poke local::pairstats[$pairSelect]",
       "done { '$pairSelect' : $ }"
     ],
@@ -116,6 +130,7 @@
       "call getCalcStats/add/balances/$pair/$toSymbol",
       "true '>0' 1 2",
       "rout /e/valuations/rate/$toSymbol/$fromBase/$",
+      "form $storageFactor",
       "poke liquidity",
       "with sufficiency [true,'<$liquidity',2] [data,$liquidity] [form,$storageFactor]",
       "# calculate fee range",
@@ -133,7 +148,7 @@
       "poke unitPrice",
       "with bid [math,$unitPrice*(1-($minfee/100))] [form,$fromBase]",
       "with askfee [peek,dataObject] [call,getCalcStats/min/pair/$toSymbol:$fromBase/fee] [trim,'%'] [ship,2] [done,0]",
-      "with ask [true,'$askfee>0',2] [done,$bid] [math,$unitPrice*(1+($askfee/100))] [form,$fromBase]",
+      "with ask [true,'$askfee>0',2] [done,$bid] [math,'$unitPrice * (1 + ($askfee / 100))'] [form,$fromBase]",
       "# calculate 24 hour volume",
       "with volume call getVolume/$fromBase/$toSymbol",
       "# neatly present fee(s)",
@@ -167,11 +182,19 @@
       "math +"
     ],
     "getCalcStatsHelper" : [
-      "have .value.pairs.[${.meta.pair}] 2",
-      "done 0",
-      "have .value.pairs.[${.meta.pair}].[${.meta.specifier}] 1 3",
-      "peek .value.pairs.[${.meta.pair}].[${.meta.specifier}] 0",
+      "have .value.pairs.[${.meta.pair}] 1 @peekVar",
+      "have .value.pairs.[${.meta.pair}].[${.meta.specifier}] 1 @peekVar",
+      "# apply fee modifiers if needed",
+      "flow .meta.specifier fee 1 3",
+      "poke accountID ${.key}",
+      "with feeSymbol [data,${.meta.pair}] [splt,':'] [pick]",
+      "peek .value.pairs.[${.meta.pair}].[${.meta.specifier}]",
+      "void feeSymbol @return 1",
+      "with feeModifier call getFeeModifier/$accountID/$feeSymbol",
+      "call modifyFee/$feeModifier",
+      "@return",
       "done",
+      "@peekVar",
       "peek .value.[${.meta.var}].[${.meta.specifier}] 0"
     ],
     "getVolume/fromBase/toSymbol" : [
@@ -226,8 +249,8 @@
       "poke local::accounts[$accountID].pairs",
       "done 'Deleted pair $fromBase:$toSymbol'"
     ],
-    "setPair/accountID/fromBase/toSymbol/feePercent/type/deadline/signature" : [
-      "call checkSignature/$accountID/$signature/setPair-${accountID}-${fromBase}-${toSymbol}-${feePercent}-${type}-${deadline}",
+    "setPair/accountID/fromBase/toSymbol/feePercent/type/signature" : [
+      "call checkSignature/$accountID/$signature/setPair-${accountID}-${fromBase}-${toSymbol}-${feePercent}-${type}",
       "with [fromBase,toSymbol] case lower",
       "flow toSymbol {$fromBase:1} 2",
       "fail 'Cannot provide two identical symbols.'",
@@ -236,13 +259,14 @@
       "fail 'A minimal security deposit of $conf::securityMinimalDeposit $conf::securitySymbol is required to setup this pair, currently only $ $conf::securitySymbol is available.'",
       "call getAccountBalance/$accountID/$toSymbol",
       "true >0 2 1 ",
-      "fail 'A non zero balance of $toSymbol is required to setup this pair, currently $ $toSymbol is available.'",
-      "with deadline [flow,'undefined',1,2] [done,$defaultDeadline]",
+      "fail 'A non zero balance of $toSymbol is required to setup this pair, currently only $ $toSymbol is available.'",
       "with type [flow,'undefined',1,2] [done,autonomous]",
-      "data {ask:'$fromBase',bid:'$toSymbol',fee:'${feePercent}%',type:'$type',deadline:$deadline}",
-      "poke local::accounts[$accountID].pairs[$fromBase:$toSymbol]"
+      "data {ask:'$fromBase',bid:'$toSymbol',fee:'${feePercent}%',type:'$type'}",
+      "poke local::accounts[$accountID].pairs[$fromBase:$toSymbol]",
+      "poke local::accounts[$accountID].feeModifiers[$toSymbol] 0"
     ],
     "getPair/accountID/fromBase/toSymbol/signature" : [
+      "time 30000",
       "call checkSignature/$accountID/$signature/getPair-${accountID}-${fromBase}-${toSymbol}",
       "with [fromBase,toSymbol] case lower",
       "flow toSymbol {$fromBase:1} 2",
@@ -255,10 +279,15 @@
     ],
     "getFeeModifier/accountID/symbol" : [
       "peek local::accounts[$accountID].feeModifiers[$symbol] 0",
-      "ship 2 2 1 1",
-      "true >-1 2 1",
-      "data 0"
+      "ship 2 1 1 1",
+      "done 1"
     ],
+    "modifyFee/modifier" : [
+      "trim '%'",
+      "math '* $modifier'",
+      "form $storageFactor",
+      "push '%'"
+    ],    
     "doRebalancePair/accountID/symbol/amount" :[
       "call validateAccount/$accountID",
       "with symbol case lower",
@@ -293,19 +322,25 @@
     "feeModifierMutate/accountID/symbol/amount/total" : [
       "call validateAccount/$accountID",
       "call getFeeModifier/$accountID/$symbol",
+      "with amount [ship,3,3,2,1] [done,0] [math,'-1 / (2 - $amount)']",
       "math '+ ($amount / $total)'",
+      "true <0.527 1 2",
+      "done 0.527",
+      "true >10 1 2",
+      "done 10",
       "poke local::accounts[$accountID].feeModifiers[$symbol]"
     ],
     "selectPair/fromBase/toSymbol/amount" : [
       "call findPair/$fromBase/$toSymbol",
+      "void 1 2",
+      "fail 'This pair does not exist!'",
       "with amount [ship,2,2,1,1] [done,1]",
       "each selectEligibility/$amount",
       "excl null",
       "sort .fee",
       "pick",
       "void 1 2",
-      "fail 'There are no selectable pairs!'",
-      "#with .fee"
+      "fail 'No allocators are offering the needed liquidity!'"
     ],
     "selectEligibility/amount" : [
       "# eligibility to be selected: enough balance, enough security sufficiency",
@@ -317,8 +352,8 @@
       "done",
       "done null"
     ],
-    "listPair" : [
-      "peek local::pairlist []"
+    "listPair/accountID" : [
+      "call pairListCompiler/$accountID"
     ],
     "findPair/fromBase/toSymbol" : [
       "with [fromBase,toSymbol] case lower",
@@ -338,19 +373,20 @@
       "peek local::accounts[$accountID].pairs[$fromBase:$toSymbol]",
       "call addPairDetails/$accountID/$fromBase/$toSymbol"
     ],
-    "addPairDetails/accountID/fromBase/toSymbol":[
+    "addPairDetails/accountID/fromBase/toSymbol" : [
       "# decouple from locally stored vars",
-      "data {accountID:null,ask:${.ask},bid:${.bid},fee:${.fee},type:${.type},deadline:${.deadline},balance:${.balance},sufficiency:${.sufficiency},active:false}",
+      "data {accountID:null,ask:${.ask},bid:${.bid},fee:${.fee},type:${.type},balance:${.balance},sufficiency:${.sufficiency},active:false}",
       "with .accountID peek accountID",
       "# balance returned for deals is halved to promote pair balancing!",
-      "with .balance [call,getAccountBalance/$accountID/$toSymbol] [math,'* 0.5']",
+      "with balanceSymbol [peek,supplyOverrideSymbols.$toSymbol,null] [void,1,2] [done,$toSymbol]",
+      "with .balance [call,getAccountBalance/$accountID/$balanceSymbol] [math,'* (${conf::liquidityPercentage} / 100)']",
       "with .sufficiency call getSufficiency/$accountID/$toSymbol",
       "with .sufficiency [math,'min(${.sufficiency},${.balance})'] [ship,2,1,1,1] [done,0]",
       "with .active math '${.balance}>0.001 and ${.sufficiency}>0.001'",
       "with feeModifier call getFeeModifier/$accountID/$toSymbol",
-      "with .fee [trim,'%'] [math,'* (1 + $feeModifier)'] [form,$storageFactor] [push,'%']"
+      "with .fee call modifyFee/$feeModifier"
     ],
-
+    
     "account/command/accountID/A/B/C/D/E/F" : [
       "flow command {list: 2} 1",
       "call validateAccount/$accountID",
@@ -513,10 +549,10 @@
       "done { action: 'withdraw', symbol: ${conf::securitySymbol}, balance: $newBalance, locked: $locked, withdrawn: $amount, txid: $txid }",
       "# todo nice-to-have: keep track of txids to later check if balances are correct!"
     ],
-    "securityReserveAccountLock/accountID/request":[
+    "securityReserveAccountLock/accountID/request/amount":[
       "with balance call getSecurityDepositBalance/$accountID",
       "with locked call getSecurityLockedBalance/$accountID",
-      "with amount math '($balance - $locked)/${conf::securityRiskFactor}'",
+      "with amount [ship,3,1,1,1] [warn,'Attempt to lock zero amount on security reserve!'] [done,0] [math,'* $conf::securityRiskFactor']",
       "flow request {'unlock':@unlock,'unlockWithFee':@unlockWithFee,'cron':@cronUnlock}",
       "@lock",
       "true '($balance - $locked)>=$amount' 2 1",
@@ -525,15 +561,15 @@
       "call securityForceLockedBalanceAccount/$accountID/$",
       "done",
       "@cronUnlock",
-      "math '$locked - ($amount / (6 * $conf::securityReleaseHours))'",
+      "math '$locked * ( 1 - ($conf::securityReleaseCron/100))'",
       "call securityForceLockedBalanceAccount/$accountID/$",
       "done",
       "@unlockWithFee",
       "# unlock amount, subtracting sequestration fee",
-      "with sequestrationFee [math,'$balance*${conf::securityContractFee}']",
+      "with sequestrationFee [math,'$balance * ${conf::securityContractFee}']",
       "call setSecurityDepositBalance/$accountID/-$sequestrationFee",
       "@unlock",
-      "true '$locked>=$amount' 2 1",
+      "true '$locked >= $amount' 2 1",
       "fail 'Security lock error: Cannot unlock amount higher than locked balance!'",
       "math '$locked - $amount'",
       "call securityForceLockedBalanceAccount/$accountID/$"
@@ -580,7 +616,8 @@
       "call getSecurityLockedBalance/$accountID",
       "math '$depositBalance - $'",
       "rout /e/valuations/rate/${conf::securitySymbol}/$symbol/$",
-      "math '/ ${conf::securityRiskFactor}'",
+      "ship 2 1 1 1",
+      "done 0",
       "form ${conf::securitySymbol}"
     ],
 

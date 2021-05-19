@@ -1,26 +1,62 @@
 {
   "engine" : "deal",
   "name" : "Create a deal between provider (node) and client",
-  "cache" : 15000,
+  "cache" : 30000,
   "timeout" : 120000,
   "proposalListPrefix" : "bf70896b41c1555612fb332d274d4e4b",
   "cron" : 10,
   "TxidRegex" : "^[a-zA-Z0-9:.]+$",
-  "purgeTime" : 3600,
+  "claimDeadline" : 180,
+  "asktxDeadline" : 3600,
+  "purgeDeadline" : 10800,
   "permissions":{
     "nodeKeys":true
   },
   "conf" :{
-    "enabled" : {"default": false,"type": "boolean", "requiresRestart": true}
+    "enabled" : {"default": false,"type": "boolean", "requiresRestart": true},
+    "ledgers" : {"default": [], "type": "array", "requiresRestart": true}
   },
   "expose" : {
     "allocation" : ["readHistory"]
   },
   "quartz" : {
+    "ledgerExceptions/fromBase/toSymbol/amount/target" : [
+      "flow toSymbol {xrp:@xrp} @success",
+      "@success",
+      "done 'No ledger exceptions'",
+      "@xrp",
+      "true '$amount >= 20' @success",
+      "void target null @none 1",
+      "rout /a/$toSymbol/balance/$target 1 @failure",
+      "true '($ + $amount) >= 20' @success",
+      "fail 'Ripple requires an activation balance! Either swap 20 XRP or more to activate target.'",
+      "@failure",
+      "fail 'Error handling determine ledger exceptions for $toSymbol!'"
+    ],
     "cron" : [
       "call proposalHandler",
       "void 2 1",
       "logs"
+    ],
+    "pairs" : [
+      "call allocation::listPair/*",
+      "each pairsEach $conf::ledgers",
+      "excl null",
+      "sort"
+    ],
+    "pairsEach" : [
+      "with pair [data,'${.value}'] [splt,':']",
+      "peek .meta",
+      "poke ledgers",
+      "with nativeA [data,'${pair[0]}'] [splt,'.'] [pick]",
+      "indx '$nativeA'",
+      "true '>-1' 2 1",
+      "done null",
+      "peek ledgers",
+      "with nativeB [data,'${pair[1]}'] [splt,'.'] [pick]",
+      "indx '$nativeB'",
+      "true '>-1' 1 -4",
+      "done '${pair[0]}:${pair[1]}'"
     ],
     "estimate/fromBase/toSymbol/amount" : [
       "call proposalCreate/$fromBase/$toSymbol/$amount"
@@ -57,7 +93,7 @@
       "call remitted/$proposalID/$",
       "done 'proposal $proposalID has remitted payment'",
       "@deferPush",
-      "with txStasis [date,now] [true,'>($deadline + $purgeTime)',1,2] [done,1] [done,0]",
+      "with txStasis [date,now] [true,'>($deadline + $purgeDeadline)',1,2] [done,1] [done,0]",
       "test txStasis @removeFromQueueNoReserveUnlock 1",
       "done 'proposal $proposalID with status accepted has a delayed remittance!'",
       "@defer",
@@ -69,7 +105,7 @@
       "with rebalanceValue [math,'${.bid.amount} + ${.fees.network}']",
       "fork rebalanceCall/$accountID/${.bid.symbol}/$rebalanceValue",
       "@removeFromQueue",
-      "fork securityReserveLock/$accountID/unlock",
+      "fork securityReserveLock/$accountID/$proposalID/unlock",
       "@removeFromQueueNoReserveUnlock",
       "call deleteFromProposalList/$proposalKey",
       "with itemSpec [data,'$proposalID'] [flow,{'undefined':1},2] [done,'storage key $proposalKey'] [done,'proposal $proposalID']",
@@ -78,7 +114,20 @@
       "done null"
     ],
     "proposalCreate/fromBase/toSymbol/amount/target=null" : [
-      "time 30000",
+      "call ledgerExceptions/$fromBase/$toSymbol/$amount/$target",
+      "time 40000",
+      "# 0. check if ledgers systems are available",
+      "peek conf::ledgers []",
+      "with fromNativeBase [data,'$fromBase'] [case,lower] [splt,'.'] [pick]",
+      "indx '$fromNativeBase'",
+      "true '>-1' 1 @unavailable",
+      "peek conf::ledgers []",
+      "with toNativeSymbol [data,'$toSymbol'] [case,lower] [splt,'.'] [pick]",
+      "indx '$toNativeSymbol'",
+      "true '>-1' @supported @unavailable",
+      "@unavailable",
+      "fail 'Swap pair is unavailable or undergoing maintenance!'",
+      "@supported",
       "# 1. find best allocator available for this proposal",
       "with reference [peek,amount] [ship,2,1,1,1] [done,1]",
       "flow target null 1 @hasTarget   # if estimating, take a fractional amount",
@@ -118,11 +167,10 @@
       "flow valid 2 1",
       "fail 'Target $target is not a valid $toSymbol address.'",
       "with creation [date,now] [math,round]",
-      "with deadline math '$creation+${allocation.deadline}' round",
+      "with deadline math '$creation+$claimDeadline' round",
       "# 5. return target to accept payment, reserve needed amounts, and adjust feelevel",
       "with recipient call allocation::getAddressAccount/${allocation.accountID}/$fromBase",
       "fork rebalanceCall/${allocation.accountID}/$toSymbol/-$amount",
-      "fork securityReserveLock/${allocation.accountID}/lock",
       "# 6. define proposal/estimate contents",
       "@estimateProposal",
       "poke proposalData { ask: {symbol:'$fromBase',amount:'$baseAmountPlusFee',sufficiency:'$maxAskSufficiency'}, bid: {symbol:'$toSymbol',amount:'$amount',sufficiency:'$maxBidSufficiency'}, fees: {symbol:'$fromBase',allocator:'$allocatorFee',network:'$networkFee'} }",
@@ -136,11 +184,7 @@
       "with proposalData.ask.amount form $fromBase",
       "with proposalData.bid.amount form $toSymbol",
       "with proposalData.fees.allocator form $fromBase",
-      "poke proposalData.ask.target '$recipient'",
-      "poke proposalData.ask.txid null",
-      "poke proposalData.bid.target '$target'",
-      "poke proposalData.bid.txid null",
-      "poke proposalData.type '${allocation.type}'",
+      "poke [proposalData.type,proposalData.ask.target,proposalData.bid.target,proposalData.ask.txid,proposalData.bid.txid] ['${allocation.type}','$recipient','$target',null,null]",
       "with proposalIDa [data,'deal ${allocation.accountID} $fromBase $baseAmountPlusFee $recipient'] [hash,djb2] [case,lower]",
       "with proposalIDb [data,'deal ${allocation.accountID} $toSymbol $amount $target $deadline'] [hash,djb2] [case,lower]",
       "poke proposal { id: '${proposalIDa}${proposalIDb}', ask: ${proposalData.ask}, bid: ${proposalData.bid}, fees: ${proposalData.fees}, type: ${proposalData.type}, creation:$creation, deadline:$deadline }",
@@ -149,7 +193,8 @@
       "encr",
       "with keyHash [data,'deal ${allocation.accountID}'] [hash] [take,-16] [push,'$proposalIDb',0] [push,'$proposalIDa',0]",
       "save $keyHash",
-      "call addToProposalList/$keyHash",
+      "fork securityReserveLock/${allocation.accountID}/${proposal.id}/lock",
+      "fork addToProposalList/$keyHash",
       "done $proposal"
     ],
     "addToProposalList/key" : [
@@ -254,7 +299,7 @@
       "save $keyHash",
       "fork rebalanceCall/${allocation.accountID}/$fromBase/$askAmount",
       "fork rebalanceCall/${allocation.accountID}/$toSymbol/$bidAmount",
-      "fork securityReserveLock/${allocation.accountID}/unlockWithFee",
+      "fork securityReserveLock/${allocation.accountID}/$proposalID/unlockWithFee",
       "@submitted",
       "done 'pushed remittance transaction for $proposalID'",
       "@notExist",
@@ -263,11 +308,16 @@
     "rebalanceCall/allocationID/symbol/amount" : [
       "call allocation::doRebalancePair/$allocationID/$symbol/$amount"
     ],
-    "securityReserveLock/accountID/action" : [
-      "call allocation::securityReserveAccountLock/$accountID/$action"
+    "securityReserveLock/accountID/proposalID/action" : [
+      "call getProposal/$proposalID",
+      "rout /e/valuations/rate/${.deal.ask.symbol}/hy/${.deal.ask.amount}",
+      "ship @lockAmount @lockAmount 1 1",
+      "warn 'Cannot $action security reserve amount on account $accountID!'",
+      "fail 'Cannot $action security reserve amount on account $accountID!'",
+      "@lockAmount",
+      "call allocation::securityReserveAccountLock/$accountID/$action/$"
     ],
     "addressMatches/$target1/$target2" :[
-      "#TODO Need to improve",
       "call decodeUnifiedAddress/$target1",
       "indx '$target2'",
       "true '>-1' 1 2",
@@ -280,7 +330,7 @@
       "poke dealID ${.id}",
       "test .ask.txid 1 @zeroAskProgress",
       "with askTx [rout,/a/${.ask.symbol}/transaction/${.ask.txid},2,1] [done,null]",
-      "test askTx.timestamp 1 @failure",
+      "test askTx.timestamp 1 @zeroAskProgress",
       "# is our transaction target equal to the claimed target?",
       "with targetEqual call addressMatches/${.ask.target}/${askTx.target}",
       "# is the transaction timestamp set before the proposal creation time?",
@@ -304,22 +354,26 @@
       "@finalize",
       "with progress call calculateAndSaveProgress/$dealID/$askProgress/$bidProgress",
       "# without proper blockchain-based timestamp keep the deal pending",
-      "with progress [have,askTx.timestamp,1,3] [ship,askTx.timestamp,2,1,1,1] [math,'-0.025'] [true,<0,1,2] [done,0]",
+      "with progress [true,'<0.05',1,5] [data,${.ask.txid}] [void,1,2] [done,0] [data,'0.025'] [true,'<0',1,2] [done,0] [true,'>1',1,2] [done,1]",
       "poke .progress $progress",
       "with timenow date now",
-      "with status [data,'stasis'] [true,'$txRejected',1,2] [done,'rejected'] [true,'$progress>=1',1,2] [done,'done'] [true,'$progress<0.5 and ${.deadline}<$timenow',1,2] [done,'timeout'] [true,'$progress>0 and $progress<0.5',1,2] [done,'confirming'] [true,'$progress==0.5',1,2] [done,'accepted'] [true,'$progress>=0.5 and $progress<1',1,2] [done,'remitting'] [done,'open']",
+      "with deadline math '${.creation}+$claimDeadline'",
+      "with status [data,'stasis'] [true,'$txRejected',1,2] [done,'rejected'] [true,'$progress>=1',1,2] [done,'done'] [true,'$progress==0 and $deadline<$timenow',1,2] [done,'timeout'] [true,'$progress>0 and $progress<=0.025',1,2] [done,'claimed'] [true,'$progress>0.025 and $progress<0.5',1,2] [done,'confirming'] [true,'$progress==0.5',1,2] [done,'accepted'] [true,'$progress>=0.5 and $progress<1',1,2] [done,'remitting'] [done,'open']",
       "poke .status $status",
       "done",
       "@failure",
       "done null"
     ],
     "calculateAndSaveProgress/dealID/askProgress/bidProgress" : [
-      "have local::progress[$dealID] 1 @skipcompare",
-      "with savedProgress peek local::progress[$dealID]",
+      "with keyHash [data,'deal progress ${dealID}'] [hash]",
+      "load $keyHash 1 @skipcompare",
+      "jpar 1 @skipcompare",
+      "poke savedProgress",
       "with askProgress math 'min( (round( max($askProgress,${savedProgress.ask})*10000 ) / 10000) ,1)'",
       "with bidProgress math 'min( (round( max($bidProgress,${savedProgress.bid})*10000 ) / 10000) ,1)'",
       "@skipcompare",
-      "poke local::progress[$dealID] {ask:$askProgress,bid:$bidProgress}",
+      "data {ask:$askProgress,bid:$bidProgress}",
+      "save $keyHash",
       "math 'round(($askProgress + $bidProgress) / 0.0002) / 10000'"
     ],
     "status/proposalID" : [
@@ -331,6 +385,11 @@
       "@failure",
       "fail 'Cannot read proposal data of $proposalID!'"
     ],
+    "dispute/proposalID" : [
+      "done 'Not yet supported!'",
+      "#call status/$proposalID",
+      "# handle dispute from here"
+    ],    
     "readHistory/timeOffset/timeLimit" : [
       "with timeUntil [date,now] [math,'-$timeOffset']",
       "with timeFrom math '$timeUntil - $timeLimit'",
@@ -339,10 +398,10 @@
       "excl null"
     ],
     "readHistoryObject/timeFrom/timeUntil" : [
-      "load ${.value} 2",
+      "load ${.value} 2 1",
       "done null",
-      "decr",
-      "jpar",
+      "decr 1 -1",
+      "jpar 1 -2",
       "true '${.timestamp}>=$timeUntil or ${.timestamp}<$timeFrom' -3"
     ],
     "decodeUnifiedAddress/address" : [
@@ -355,6 +414,7 @@
   },
   "router" : {
     "_help" : "Deal engine for deals between node and clients.",
+    "pairs": "List swappable pairs.",
     "estimate": {
       "_help" : "Estimate a deal.",
       "_ref" : {
@@ -404,10 +464,17 @@
       }
     },
     "status" : {
-      "_help" : "Check the status of a proposal.",
+      "_help" : "Check the status of a proposal or deal.",
       "_ref" : {
         "_list" : "proposalID",
-        "_this" : "Specify the proposal ID to check the status of."
+        "_this" : "Specify the proposal or deal ID to check the status of."
+      }
+    },
+    "dispute" : {
+      "_help" : "Dispute a deal.",
+      "_ref" : {
+        "_list" : "proposalID",
+        "_this" : "Specify the deal ID to dispute."
       }
     }
   }

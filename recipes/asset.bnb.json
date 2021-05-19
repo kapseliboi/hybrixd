@@ -13,7 +13,7 @@
   "feeContractTx":"0.001875",
   "gasPriceDefault":"0.000000005",
   "gasBaseUsage":21000,
-  "gasErc20Usage":250000,
+  "gasErc20Usage":300000,
   "notes" : {
     "history" : "Powered by bscscan.com"
   },
