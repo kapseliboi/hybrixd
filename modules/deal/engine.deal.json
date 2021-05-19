@@ -337,7 +337,7 @@
       "# is the transaction timestamp set before the proposal creation time?",
       "with txPremature [ship,askTx.timestamp,1,3,3,3] [true,'${askTx.timestamp}<${.creation}',1,2] [done,1] [done,0]",
       "# reject the transaction if either premature or non-equal target",
-      "with txRejected [true,'$txPremature',1,2] [done,1] [true,'${.ask.amount}>0 and $targetEqual and ${askTx.amount}==${.ask.amount}',1,-1] [done,0]",
+      "with txRejected [true,'$txPremature',1,2] [done,1] [true,'${.ask.amount}>0 and ${.bid.amount}>0 and $targetEqual and ${askTx.amount}==${.ask.amount}',1,-1] [done,0]",
       "true '$txRejected' @zeroAskProgress",
       "with askConfirmsMax rout /a/${.ask.symbol}/confirmed",
       "with askConfirmsNow [rout,/a/${.ask.symbol}/confirmed/${.ask.txid},2,1] [done,0]",
