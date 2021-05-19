@@ -358,7 +358,7 @@
       "poke .progress $progress",
       "with timenow date now",
       "with deadline math '${.creation}+$claimDeadline'",
-      "with status [data,'stasis'] [true,'$txRejected',1,2] [done,'rejected'] [true,'$progress>=1',1,2] [done,'done'] [true,'$progress==0 and $deadline<$timenow',1,2] [done,'timeout'] [true,'$progress>0 and $progress<0.5',1,2] [done,'confirming'] [true,'$progress==0.5',1,2] [done,'accepted'] [true,'$progress>=0.5 and $progress<1',1,2] [done,'remitting'] [done,'open']",
+      "with status [data,'stasis'] [true,'$txRejected',1,2] [done,'rejected'] [true,'$progress>=1',1,2] [done,'done'] [true,'$progress==0 and $deadline<$timenow',1,2] [done,'timeout'] [true,'$progress>0 and $progress<=0.025',1,2] [done,'claimed'] [true,'$progress>0.025 and $progress<0.5',1,2] [done,'confirming'] [true,'$progress==0.5',1,2] [done,'accepted'] [true,'$progress>=0.5 and $progress<1',1,2] [done,'remitting'] [done,'open']",
       "poke .status $status",
       "done",
       "@failure",
