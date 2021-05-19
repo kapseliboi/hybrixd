@@ -39,7 +39,7 @@
       "logs"
     ],
     "pairs" : [
-      "call allocation::listPair",
+      "call allocation::listPair/*",
       "each pairsEach $conf::ledgers",
       "excl null",
       "sort"
@@ -312,7 +312,7 @@
       "call getProposal/$proposalID",
       "rout /e/valuations/rate/${.deal.ask.symbol}/hy/${.deal.ask.amount}",
       "ship @lockAmount @lockAmount 1 1",
-      "logs 'WARNING: Cannot $action security reserve amount on account $accountID!'",
+      "warn 'Cannot $action security reserve amount on account $accountID!'",
       "fail 'Cannot $action security reserve amount on account $accountID!'",
       "@lockAmount",
       "call allocation::securityReserveAccountLock/$accountID/$action/$"

@@ -58,18 +58,21 @@
       "poke local::pairlist"
     ],
     "pairListCompiler/accountID" : [
-      "peek accountID",
-      "regx '$accountIdRegex' 2 1",
-      "poke accountID '*'",
       "peek local::accounts {}",
-      "flow accountID '*' 1 2",
-      "tran {:*}.pairs{*:} 3 2",
-      "tran .${accountID}.pairs{*:} 2 1",
+      "regx accountID '$accountIdRegex' @single @all",
+      "#TODO fix silent failure for wrong accountIDs",
+      "@all",
+      "tran {:*}.pairs{*:} @finalize 1",
       "fail 'Could not retrieve pairs'",
+      "@single",
+      "tran .${accountID}.pairs{*:} @finalize 1",
+      "fail 'Could not retrieve pairs for $accountID'",
+      "@finalize",
       "flat",
       "uniq",
       "sort"
     ],
+    
     "cronCompilePairStats" : [
       "time 60000",
       "peek local::accounts {}",
@@ -86,8 +89,8 @@
       "peek local::accounts {}",
       "call getPairStats/$pairSelect",
       "tran .[$pairSelect] 3 1",
-      "logs 'error: Failed to save pairstats for ${pairSelect}!'",
-      "fail 'WARNING: failing to save pairstats for ${pairSelect}!'",
+      "warn 'Failing to save pairstats for ${pairSelect}!'",
+      "fail 'Failing to save pairstats for ${pairSelect}!'",
       "poke local::pairstats[$pairSelect]",
       "done { '$pairSelect' : $ }"
     ],
@@ -549,7 +552,7 @@
     "securityReserveAccountLock/accountID/request/amount":[
       "with balance call getSecurityDepositBalance/$accountID",
       "with locked call getSecurityLockedBalance/$accountID",
-      "with amount [ship,2,1,1,1] [done,0] [math,'* $conf::securityRiskFactor']",
+      "with amount [ship,3,1,1,1] [warn,'Attempt to lock zero amount on security reserve!'] [done,0] [math,'* $conf::securityRiskFactor']",
       "flow request {'unlock':@unlock,'unlockWithFee':@unlockWithFee,'cron':@cronUnlock}",
       "@lock",
       "true '($balance - $locked)>=$amount' 2 1",
