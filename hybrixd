@@ -1,10 +1,10 @@
 #!/bin/sh
 OLDPATH=$PATH
 
-SCRIPTDIR="`dirname \"$0\"`"
-NODE="`cd \"$SCRIPTDIR\" && pwd`"
+SCRIPTDIR=$(dirname "$0")
+NODE=$(cd "$SCRIPTDIR" && pwd)
 
-WHEREAMI=`pwd`
+WHEREAMI=$(pwd)
 
 export PATH=$NODE/node_binaries/bin:"$PATH"
 NODEINST=`which node`
@@ -17,9 +17,9 @@ getPID(){
 
 logger(){
   if [ -n "$OUTPUT" ]; then
-    echo "$1 $(date +%Y%-m-%dT%T) $2 $3" | tee -a "$NODE/var/log/hybrixd.log"
+    echo "$1 $(date +%Y-%m-%dT%T) $2 $3" | tee -a "$NODE/var/log/hybrixd.log"
   else
-    echo "$1 $(date +%Y%-m-%dT%T) $2 $3" >>  "$NODE/var/log/hybrixd.log" 2>&1
+    echo "$1 $(date +%Y-%m-%dT%T) $2 $3" >>  "$NODE/var/log/hybrixd.log" 2>&1
   fi
 }
 
@@ -52,12 +52,13 @@ startHybrixd(){
     rm -rf "$NODE/var/onstop" || true;
 
     _term() {
-      # Inserting line end because cntrl+c will add ugly chars
+      # Inserting line end because ctrl+c will add ugly chars
       if [ -n "$OUTPUT" ]; then
         echo "\n"
+        logger "[i]" "hybrixd" "Ctrl+C pressed."
       else
         echo "\nShutdown requested. Please wait..."
-        echo "(Press Cntrl+C to force quit)"
+        echo "(Press Ctrl+C to force quit)"
       fi
       kill -TERM "$CHILD_PID" 2>/dev/null
     }
