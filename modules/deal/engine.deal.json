@@ -293,7 +293,7 @@
     ],
     "remitted/proposalID/transactionID" : [
       "time 60000",
-      "with timeNow date now",
+      "with timeNow [date,now] [math,'round']",
       "call getProposal/$proposalID",
       "void @notExist",
       "poke .deal.pushtime $timeNow",
