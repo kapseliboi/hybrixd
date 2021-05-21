@@ -172,10 +172,10 @@
       "math max($nonce+1,$retrievedNonce)"
     ],
     "unspent/address/amount/target" : [
-      "flow target undefined @noTarget 2",
-        "rout /a/xrp/balance/$target",
-        "true '<$activationBalance+$amount' 1 2",
-        "fail 'Target address $target has not been activated! Ripple ledger always requires at least $activationBalance XRP. Target currently holds only $ + $amount XRP sent.'",
+      "flow target undefined @noTarget 1",
+      "rout /a/xrp/balance/$target",
+      "true '< $activationBalance + $amount' 1 2",
+      "fail 'Target address $target has not been activated! Ripple ledger always requires at least $activationBalance XRP. Target currently holds only $ + $amount XRP sent.'",
       "@noTarget",
       "with balance rout /a/xrp/balance/$address",
       "peek amount 0",
