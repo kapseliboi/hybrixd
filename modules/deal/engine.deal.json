@@ -194,7 +194,7 @@
       "poke [proposalData.type,proposalData.ask.target,proposalData.bid.target,proposalData.ask.txid,proposalData.bid.txid] ['${allocation.type}','$recipient','$target',null,null]",
       "with proposalIDa [data,'deal ${allocation.accountID} $fromBase $baseAmountPlusFee $recipient'] [hash,djb2] [case,lower]",
       "with proposalIDb [data,'deal ${allocation.accountID} $toSymbol $amount $target $deadline'] [hash,djb2] [case,lower]",
-      "poke proposal { id: '${proposalIDa}${proposalIDb}', ask: ${proposalData.ask}, bid: ${proposalData.bid}, fees: ${proposalData.fees}, type: ${proposalData.type}, creation:$creation, deadline:$deadline }",
+      "poke proposal { id: '${proposalIDa}${proposalIDb}', ask: ${proposalData.ask}, bid: ${proposalData.bid}, fees: ${proposalData.fees}, type: ${proposalData.type}, creation:$creation, deadline:$deadline, pushtime:null }",
       "data { accountID: '${allocation.accountID}', timestamp: '$timestamp', deal: $proposal }",
       "jstr",
       "encr",
