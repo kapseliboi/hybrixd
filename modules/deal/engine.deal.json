@@ -98,7 +98,7 @@
       "call remitted/$proposalID/$",
       "done 'proposal $proposalID has remitted payment'",
       "@deferPush",
-      "call remitted/$proposalID"
+      "call remitted/$proposalID",
       "with txStasis [date,now] [true,'>($deadline + $purgeDeadline)',1,2] [done,1] [done,0]",
       "test txStasis @removeFromQueueNoReserveUnlock 1",
       "done 'proposal $proposalID is has a deferred remittance'",
