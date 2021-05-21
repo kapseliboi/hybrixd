@@ -296,7 +296,7 @@
       "with timeNow date now",
       "call getProposal/$proposalID",
       "void @notExist",
-      "poke .pushtime $timeNow",
+      "poke .deal.pushtime $timeNow",
       "test .deal.bid.txid @submitted",
       "void $transactionID 2 1",
       "poke .deal.bid.txid $transactionID",
