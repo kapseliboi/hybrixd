@@ -9,7 +9,7 @@
   "claimDeadline" : 180,
   "asktxDeadline" : 3600,
   "purgeDeadline" : 10800,
-  "retryPushTime" : 120,
+  "retryPushTime" : 300,
   "permissions":{
     "nodeKeys":true
   },
