@@ -1,0 +1,9 @@
+{
+  "symbol":"eth.exrd",
+  "name":"Radix DLT",
+  "import":"eth",
+  "info": "Layer 1 DeFi done right. Build fast, reward everyone, and scale without friction",
+  "factor":"18",
+  "contract":"0x6468e79a80c0eab0f9a2b574c8d5bc374af59414",
+  "originator":"0xd1D429F61e02DB829c08B1966aB025c02B8308C8"
+}
