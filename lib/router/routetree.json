@@ -94,7 +94,10 @@
     },
     "start" : "Start hybrixd (only available through CLI).",
     "restart" : "Restart hybrixd.",
-    "stop" : "Stop hybrixd."
+    "stop" : {
+        "_this": "Stop hybrixd.",
+        "debug" : "Stop hybrixd and debug the lingering processes"
+    }
   },
   "e":{"_alias":"engine"},
   "engine":{
