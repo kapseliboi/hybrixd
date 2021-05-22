@@ -1,3 +1,17 @@
+# v0.9.17
+## Fluffy Pink Minotaur
+## 22-05-2021
+
+* Added Radix, thanks h0ll0wstick!
+* Check for Ripple (XRP) target activation balance at unspent. 
+* Updates to default fee configurations.
+* qrtz: Add incl method to check array values or strings include needles.
+* swap: Enable request pairs of single account
+* swap: Implement ledger exceptions (handle activation balance of Ripple)
+* swap: Upgraded liquity availability handler, security lock and claim status
+
+
+
 # v0.9.16
 ## Shiny Fuchsia Sphinx
 ## 13-05-2021
