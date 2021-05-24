@@ -153,7 +153,9 @@
       "data {'id': $,'command': 'tx','transaction': '$1','binary': false}",
       "curl POST 2 1",
       "fail 'Could not connect to host'",
-      "tran {id:'=.result.hash|unknown',fee:'=.result.Fee|unknown',timestamp:'=.result.date+$genesisBlockTime|unknown',symbol:'xrp',amount:'.result.Amount',source:'=.result.Account|unknown',target:'=.result.Destination|unknown',fee-symbol: $fee-symbol, confirmed:.result.validated} @success @fail",
+      "#TODO does not handle token transactions yet.",
+      "tran {id:'=.result.hash|unknown',fee:'=.result.Fee|unknown',timestamp:'=.result.date+$genesisBlockTime|unknown',symbol:'xrp',amount:'=.result.Amount|0',source:'=.result.Account|unknown',target:'=.result.Destination|unknown',fee-symbol: $fee-symbol, confirmed:.result.validated} @success @fail",
+      "logs",
       "@fail",
       "fail 'error'",
       "@success",
@@ -222,7 +224,6 @@
       "done",
       "math '/10^$factor'"
     ],
-
     "reformatTx": [
       "tran .value 2 1",
       "fail 'failed reformatting transaction.'",
