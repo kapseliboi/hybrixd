@@ -153,12 +153,14 @@
       "data {'id': $,'command': 'tx','transaction': '$1','binary': false}",
       "curl POST 2 1",
       "fail 'Could not connect to host'",
-      "tran {id:'=.result.hash|unknown',fee:'=.result.Fee|unknown',timestamp:'=.result.date+$genesisBlockTime|unknown',symbol:'xrp',amount:'.result.Amount',source:'=.result.Account|unknown',target:'=.result.Destination|unknown',fee-symbol: $fee-symbol, confirmed:.result.validated} @success @fail",
+      "#TODO does not handle token transactions yet.",
+      "tran {id:'=.result.hash|unknown',fee:'=.result.Fee|unknown',timestamp:'=.result.date+$genesisBlockTime|unknown',symbol:'xrp',amount:'=.result.Amount|0',source:'=.result.Account|unknown',target:'=.result.Destination|unknown',fee-symbol: $fee-symbol, confirmed:.result.validated} @success @fail",
+      "logs",
       "@fail",
       "fail 'error'",
       "@success",
-      "with .fee math '/10^$factor'",
-      "with .amount math '/10^$factor'"
+      "with .fee call reformat",
+      "with .amount call reformat"
     ],
     "compareLocalNonce/source":[
       "poke retrievedNonce",
@@ -217,14 +219,19 @@
       "@fail",
       "done 0"
     ],
+    "reformat":[
+      "flow unknown 1 2",
+      "done",
+      "math '/10^$factor'"
+    ],
     "reformatTx": [
       "tran .value 2 1",
       "fail 'failed reformatting transaction.'",
       "with reformatTimestamp [data,'${.tx.date}'] [math, '+${genesisBlockTime}']",
       "tran {id:'=.tx.hash|unknown', fee:'=.tx.Fee|unknown', timestamp:'$reformatTimestamp', symbol:'$symbol', amount:'=.tx.Amount.value|.tx.Amount|unknown', source:'=.tx.Account|unknown', target:'=.tx.Destination|unknown', fee-symbol: ${fee-symbol}, confirmed:'=.tx.validated|unknown'} @tranSuccess @tranFail",
       "@tranSuccess",
-      "with .fee math '/10^$factor'",
-      "with .amount math '/10^$factor'",
+      "with .fee call reformat",
+      "with .amount call reformat",
       "done",
       "@tranFail",
       "fail 'Could not parse history'"
@@ -232,7 +239,7 @@
     "getHistory" : [
       "poke count $2 12",
       "poke offset $3 0",
-      "with limit [math,'$count+$offset']",
+      "with limit math '$count+$offset'",
       "rand 10000",
       "data {'id': $, 'command': 'account_tx', 'account': '$1', 'ledger_index_min': -1, 'ledger_index_max': -1, 'binary': false, 'forward': false, 'limit':'$limit'}",
       "curl POST 2 1",
