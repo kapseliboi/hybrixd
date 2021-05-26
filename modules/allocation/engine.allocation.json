@@ -221,7 +221,7 @@
     ],
     "statsPair/fromBase/toSymbol" : [
       "peek fromBase",
-      "void any 1 3",
+      "flow 'undefined' 1 3",
       "peek local::pairstats {}",
       "done",
       "peek local::pairstats {}",
