@@ -168,7 +168,7 @@
       "with maxBidSufficiency [rout,/e/allocation/pair/stats/$fromBase/$toSymbol,2,1] [done,0] [tran,.[$fromBase:$toSymbol].sufficiency,1,-1] [math,'/ $rate'] [form,$toSymbol]",
       "with maxAskSufficiency [math,'$maxBidSufficiency * $rate'] [form,$fromBase]",
       "# !  skip reserving amount and defining creation, deadline and recipient values if only estimating",
-      "void target any @estimateProposal 1",
+      "flow target null @estimateProposal 1",
       "# Validate target address",
       "rout /a/$toSymbol/validate/$target 2 1",
       "fail 'Could not validate target address'",
