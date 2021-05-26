@@ -88,7 +88,7 @@
       "poke deadline ${.deadline}",
       "with timeNow date now",
       "# here we make sure transaction push retries do not happen too fast",
-      "flow .pushtime null @pushTx 1",
+      "void .pushtime any @pushTx 1",
       "true '(${.pushtime} + $retryPushTime) < $timeNow' @pushTx @deferPush",
       "@pushTx",
       "with pushRecord call remitted/$proposalID/_",
@@ -106,7 +106,7 @@
       "@defer",
       "test txTimeout @removeFromQueueWithRebalance",
       "test txRejected @removeFromQueueWithRebalance",
-      "with report [flow,proposalID,null,2,1] [done,'proposal $proposalID with status ${.status} is pending...'] [done,null]",
+      "with report [void,proposalID,any,2,1] [done,'proposal $proposalID with status ${.status} is pending...'] [done,null]",
       "done $report",
       "@removeFromQueueWithRebalance",
       "with rebalanceValue [math,'${.bid.amount} + ${.fees.network}']",
@@ -115,7 +115,7 @@
       "fork securityReserveLock/$accountID/$proposalID/unlock",
       "@removeFromQueueNoReserveUnlock",
       "call deleteFromProposalList/$proposalKey",
-      "with itemSpec [data,'$proposalID'] [flow,{'undefined':1},2] [done,'storage key $proposalKey'] [done,'proposal $proposalID']",
+      "with itemSpec [data,$proposalID] [void,any,1,2] [done,'storage key $proposalKey'] [done,'proposal $proposalID']",
       "done '$itemSpec removed from queue'",
       "@notexist",
       "done null"
@@ -140,7 +140,7 @@
       "fail 'Swap pair is unavailable or undergoing maintenance!'",
       "@supported",
       "# 1. find best allocator available for this proposal",
-      "flow target null 1 @hasTarget   # if estimating, take a fractional amount",
+      "void target any 1 @hasTarget   # if estimating, take a fractional amount",
       "with toUnit rout /e/valuations/rate/usdt/$toSymbol/1",
       "poke amount $toUnit",
       "@hasTarget",
@@ -168,7 +168,7 @@
       "with maxBidSufficiency [rout,/e/allocation/pair/stats/$fromBase/$toSymbol,2,1] [done,0] [tran,.[$fromBase:$toSymbol].sufficiency,1,-1] [math,'/ $rate'] [form,$toSymbol]",
       "with maxAskSufficiency [math,'$maxBidSufficiency * $rate'] [form,$fromBase]",
       "# !  skip reserving amount and defining creation, deadline and recipient values if only estimating",
-      "flow target null @estimateProposal",
+      "void target any @estimateProposal 1",
       "# Validate target address",
       "rout /a/$toSymbol/validate/$target 2 1",
       "fail 'Could not validate target address'",
@@ -182,7 +182,7 @@
       "# 6. define proposal/estimate contents",
       "@estimateProposal",
       "poke proposalData { ask: {symbol:'$fromBase',amount:'$baseAmountPlusFee',sufficiency:'$maxAskSufficiency'}, bid: {symbol:'$toSymbol',amount:'$amount',sufficiency:'$maxBidSufficiency'}, fees: {symbol:'$fromBase',allocator:'$allocatorFee',network:'$networkFee'} }",
-      "flow target null 1 @saveProposal",
+      "void target any 1 @saveProposal",
       "with proposalData.ask.amount [math,'* ($reference / $toUnit)'] [form,$fromBase]",
       "with proposalData.bid.amount [math,'* ($reference / $toUnit)'] [form,$toSymbol]",
       "with proposalData.fees.allocator [math,'* ($reference / $toUnit)'] [form,$fromBase]",
@@ -230,6 +230,10 @@
       "# add to the completed deals list",
       "call addToCompleteList/$key"
     ],
+    "requeueToProposalList/key" : [
+      "call addToProposalList/$key",
+      "call deleteFromCompleteList/$key"      
+    ],
     "addToCompleteList/key" : [
       "peek local::completeList []",
       "push $key 0",
@@ -262,7 +266,7 @@
       "poke .key $key",
       "done",
       "@failure",
-      "done null"
+      "fail 'Proposal $proposalID cannot be read!'"
     ],
     "claim/proposalID/transactionID" : [
       "time 60000",
@@ -278,7 +282,6 @@
       "uniq",
       "poke local::claimList",
       "call getProposal/$proposalID",
-      "void @notExist",
       "test .deal.ask.txid @submitted",
       "poke .deal.ask.txid $transactionID",
       "poke keyHash ${.key}",
@@ -286,17 +289,14 @@
       "jstr",
       "encr",
       "save $keyHash",
-      "done 'Claim for $proposalID submitted.'",
+      "done 'Claim for $proposalID submitted'",
       "@submitted",
-      "fail 'Claim for $proposalID already submitted!'",
-      "@notExist",
-      "fail 'Proposal $proposalID does not exist!'"
+      "fail 'Claim for $proposalID already submitted!'"
     ],
     "remitted/proposalID/transactionID" : [
       "time 60000",
       "with timeNow [date,now] [math,'round']",
       "call getProposal/$proposalID",
-      "void @notExist",
       "poke .deal.pushtime $timeNow",
       "test .deal.bid.txid 1 2",
       "fail 'already pushed remittance transaction for $proposalID!'",
@@ -318,15 +318,15 @@
       "fork rebalanceCall/${allocation.accountID}/$fromBase/$askAmount",
       "fork rebalanceCall/${allocation.accountID}/$toSymbol/$bidAmount",
       "fork securityReserveLock/${allocation.accountID}/$proposalID/unlockWithFee",
-      "done 'pushed remittance transaction for $proposalID'",
-      "@notExist",
-      "fail 'proposal $proposalID does not exist!'"
+      "done 'pushed remittance transaction for $proposalID'"
     ],
     "rebalanceCall/allocationID/symbol/amount" : [
       "call allocation::doRebalancePair/$allocationID/$symbol/$amount"
     ],
     "securityReserveLock/accountID/proposalID/action" : [
       "call getProposal/$proposalID",
+      "void 1 2",
+      "fail 'proposal $proposalID does not exist!'",
       "rout /e/valuations/rate/${.deal.ask.symbol}/hy/${.deal.ask.amount}",
       "ship @lockAmount @lockAmount 1 1",
       "warn 'Cannot $action security reserve amount on account $accountID!'",
@@ -343,6 +343,7 @@
     ],
     "dealStatus": [
       "time 60000",
+      "with disputed [root,1,2] [done,${.dispute}] [data,'${.dispute.level}'] [ship,2,2,1,1] [done,null]",
       "tran .deal 1 @failure",
       "poke dealID ${.id}",
       "test .ask.txid 1 @zeroAskProgress",
@@ -369,6 +370,7 @@
       "with bidConfirmsNow [rout,/a/${.bid.symbol}/confirmed/${.bid.txid},2,1] [done,0]",
       "with bidProgress math 'max(($bidConfirmsNow / $bidConfirmsMax) + 0.05, 1)'",
       "@finalize",
+      "poke .disputed $disputed",
       "with progress call calculateAndSaveProgress/$dealID/$askProgress/$bidProgress",
       "# without proper blockchain-based timestamp keep the deal pending",
       "with progress [true,'< 0.05',1,5] [data,${.ask.txid}] [void,1,2] [done,0] [data,'0.025'] [true,'< 0',1,2] [done,0] [true,'> 1',1,2] [done,1]",
@@ -395,18 +397,47 @@
     ],
     "status/proposalID" : [
       "call getProposal/$proposalID",
-      "void @failure",
       "call dealStatus",
       "void @failure",
       "done",
       "@failure",
       "fail 'Cannot read proposal data of $proposalID!'"
     ],
-    "dispute/proposalID" : [
-      "done 'Not yet supported!'",
-      "#call status/$proposalID",
-      "# handle dispute from here"
-    ],    
+    "dispute/proposalID/transactionID=null" : [
+      "call getProposal/$proposalID",
+      "poke keyHash ${.key}",      
+      "# check if proposal deadline has passed + 2 hours",
+      "with timeNow [date,now] [math,round]",
+      "with waitHours math 'round($purgeDeadline / 3600)'",
+      "true '(${.deal.deadline} + $purgeDeadline) > $timeNow' 1 2",
+      "fail 'The deal you are trying to dispute is still pending! Please wait $waitHours hours for it to finish, before trying again.'",
+      "# is this a new dispute?",
+      "void .dispute any @newDispute @alreadyDisputed",
+      "@newDispute",
+      "poke .dispute {level:1,timestamp:$timeNow,txid:$transactionID,comment:$@}",
+      "with .dispute.comment [take,3] [join,'/']",
+      "jump @saveData",
+      "@alreadyDisputed",
+      "# was this recently disputed?",
+      "void .dispute.timestamp any @newDispute 1",
+      "true '${.dispute.timestamp} + $purgeDeadline < $timeNow' 2 1",
+      "fail 'This deal has already been disputed! To escalate the dispute, please wait $waitHours hours, and then file another dispute.'",
+      "poke .dispute.timestamp $timeNow",
+      "# check the dispute level",
+      "void .dispute.level any @newDispute 1",
+      "with .dispute.level math '+1'",
+      "fail 'Dispute to be escalated! This has not been implemented yet.'",
+      "@escalation",
+      "# write dispute status",
+      "@saveData",
+      "drop key",
+      "jstr",
+      "encr",
+      "save $keyHash",
+      "# requeue deal",
+      "call requeueToProposalList/$keyHash",
+      "done 'Dispute for $proposalID submitted'"
+    ],
     "readHistory/timeOffset/timeLimit" : [
       "with timeUntil [date,now] [math,'- $timeOffset']",
       "with timeFrom math '$timeUntil - $timeLimit'",
@@ -491,6 +522,7 @@
       "_help" : "Dispute a deal.",
       "_ref" : {
         "_list" : "proposalID",
+        "_ellipsis" : true,
         "_this" : "Specify the deal ID to dispute."
       }
     }
