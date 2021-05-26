@@ -260,7 +260,7 @@
       "call getAccountBalance/$accountID/$toSymbol",
       "true >0 2 1 ",
       "fail 'A non zero balance of $toSymbol is required to setup this pair, currently only $ $toSymbol is available.'",
-      "with type [void,any,1,2] [done,autonomous]",
+      "with type [flow,'undefined',1,2] [done,autonomous]",
       "data {ask:'$fromBase',bid:'$toSymbol',fee:'${feePercent}%',type:'$type'}",
       "poke local::accounts[$accountID].pairs[$fromBase:$toSymbol]",
       "poke local::accounts[$accountID].feeModifiers[$toSymbol] 0"
