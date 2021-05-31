@@ -1,0 +1,9 @@
+{
+  "symbol":"eth.clva",
+  "name":"CLEVER",
+  "import":"eth",
+  "info":"CLEVER is a DEFI (Decentralized Finance) Protocol which distributes automatic interest payments to all CLVA token holders on a pre-programmed routine cycle schedule over 888 fortnightly cycles, taking exactly 34.15 years to complete.",
+  "factor":"18",
+  "contract":"0xC52e23194476B1dD39408cB0B9D935dA8e6Db3d6",
+  "originator":"0x3cbBC1faB62896E74EF8fbd073dA3Ae86605E3a3"
+}
