@@ -18,7 +18,7 @@
     "stdio": "^0.2.7",
     "teletype": "^0.2.0",
     "why-is-node-running": "^2.2.0",
-    "ws": "^6.2.1",
+    "ws": "^7.4.6",
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
