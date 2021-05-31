@@ -9,21 +9,21 @@
   "dependencies": {
     "du": "^0.1.1",
     "evm": "^0.2.0",
-    "glob": "^7.1.6",
+    "glob": "^7.1.7",
     "js-sha256": "^0.9.0",
     "node-gyp": "^3.8.0",
     "progress": "^2.0.3",
     "solc": "^0.6.12",
+    "stackback": "*",
     "stdio": "^0.2.7",
     "teletype": "^0.2.0",
     "why-is-node-running": "^2.2.0",
     "ws": "^6.2.1",
-    "xml2js": "^0.4.23",
-    "stackback": "*"
+    "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "cssmin": "^0.4.3",
-    "eslint": "^7.20.0",
+    "eslint": "^7.27.0",
     "eslint-config-semistandard": "^15.0.1"
   },
   "engines": {
