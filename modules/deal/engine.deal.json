@@ -77,7 +77,7 @@
       "# check if end-user has sent their transaction, and what the status is",
       "call dealStatus",
       "poke proposalID ${.id}",
-      "with deadline [peek,.deadline,0]",
+      "with deadline peek .deadline 0",
       "with timeNow date now",
       "with txStasis [date,now] [true,'> ($deadline + $purgeDeadline)',1,2] [done,1] [done,0]",
       "with txTimeout [data,${.status}] [flow,'timeout',1,2] [done,1] [done,0]",
