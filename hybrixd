@@ -88,9 +88,13 @@ startHybrixd(){
 
     # Since wait will fire whenever the child process receives a signal, not when the child exits
     # we will keep waiting until the process/PID is gone. (wait -f does not work on macOs)
-    while [ -n "$(getPID)" ]
+    CHILD_PID=$(getPID)
+    while [ -n "$CHILD_PID" ]
     do
-      wait "$CHILD_PID"
+      CHILD_PID=$(getPID)
+      if [ -n "$CHILD_PID" ]; then
+         wait "$CHILD_PID"
+      fi
     done
 
     handleShutDown;
