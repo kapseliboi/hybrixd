@@ -120,7 +120,7 @@
       "jump @success",
       "tran '.error' 1 2",
       "fail",
-      "logs 2 'module ethereum: bad RPC response \"$\", retrying request...'",
+      "warn 'module ethereum: bad RPC response \"$\", retrying request...'",
       "wait 1500",
       "loop @retryLoop 'retries' '<9' '1'",
       "fail 'Error: Ethereum compatible network not responding. Cannot push transaction!'",
@@ -275,7 +275,7 @@
       "form",
       "done",
       "@failure",
-      "logs 2 'module ethereum: bad RPC response \"$\", retrying request...'",
+      "warn 'module ethereum: bad RPC response \"$\", retrying request...'",
       "wait 1500",
       "loop @retryLoop retries '<9' '1'",
       "fail 'Error: Ethereum compatible network not responding. Cannot get balance!'"
@@ -326,7 +326,7 @@
       "call estimateGasUsage",
       "done {'nonce':'$nonce', gasUsage: '$', gasPrice:'$gasPrice'}",
       "@fail",
-      "logs 2 'module ethereum: bad RPC response, retrying request...'",
+      "warn 'module ethereum: bad RPC response \"$\", retrying request...'",
       "wait 1500",
       "loop @retryLoop 'retries' '<9' '1'",
       "fail 'Error: Ethereum compatible network not responding. Cannot get nonce!'"
