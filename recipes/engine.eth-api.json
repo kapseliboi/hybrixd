@@ -28,14 +28,12 @@
       "flow contract '0x0000000000000000000000000000000000000000' 1 @skipTokens",
       "peek gasPriceDefault",
       "poke local::gasPrice",
-      "@skipTokens",
-      "done"
+      "@skipTokens"
     ],
     "cron" : [
       "flow contract '0x0000000000000000000000000000000000000000' 1 @skipTokens",
       "call updateGasPrice",
-      "@skipTokens",
-      "done"
+      "@skipTokens"
     ],
     "updateGasPrice" : [
       "time 45000",
@@ -47,11 +45,12 @@
       "fail",
       "@gasPriceOk",
       "code hex dec",
+      "ship 2 1 1 1",
+      "fail 'Gas price must be a positive number!'",
       "atom",
       "form ${fee-factor}",
       "poke local::gasPrice",
-      "logs 'module ethereum: updating fee for asset $symbol. Current gasprice: $local::gasPrice'",
-      "done"
+      "logs 'module ethereum: updating fee for asset $symbol. Current gasprice: $local::gasPrice'"
     ],
     "sample":[
       "done {address:'0x896a0b2b259d62fd27aeab05c81bb1897ecf767b',transaction:'0x5496d381d8b2c6ae028c69f90a643f1c453bbfd0381df9d0af0e20b09a04dadd'}"
@@ -121,7 +120,7 @@
       "jump @success",
       "tran '.error' 1 2",
       "fail",
-      "logs 2 'module ethereum: bad RPC response, retrying request...'",
+      "warn 'module ethereum: bad RPC response \"$\", retrying request...'",
       "wait 1500",
       "loop @retryLoop 'retries' '<9' '1'",
       "fail 'Error: Ethereum compatible network not responding. Cannot push transaction!'",
@@ -276,7 +275,7 @@
       "form",
       "done",
       "@failure",
-      "logs 2 'module ethereum: bad RPC response \"$\", retrying request...'",
+      "warn 'module ethereum: bad RPC response \"$\", retrying request...'",
       "wait 1500",
       "loop @retryLoop retries '<9' '1'",
       "fail 'Error: Ethereum compatible network not responding. Cannot get balance!'"
@@ -311,6 +310,8 @@
       "fail 'Not enough $msgSymbol balance on account to pay transaction fee! Balance needed is $tokenFee $msgSymbol, while available only $nativeBalance $msgSymbol.'",
       "@enoughBalance",
       "call getGasPrice",
+      "ship 2 1 1 1",
+      "fail 'Gas price currently unknown or calculated at zero!'",
       "poke gasPrice",
       "@retryLoop",
       "rand 1000",
@@ -325,7 +326,7 @@
       "call estimateGasUsage",
       "done {'nonce':'$nonce', gasUsage: '$', gasPrice:'$gasPrice'}",
       "@fail",
-      "logs 2 'module ethereum: bad RPC response, retrying request...'",
+      "warn 'module ethereum: bad RPC response \"$\", retrying request...'",
       "wait 1500",
       "loop @retryLoop 'retries' '<9' '1'",
       "fail 'Error: Ethereum compatible network not responding. Cannot get nonce!'"
@@ -359,12 +360,16 @@
       "flow contract '0x0000000000000000000000000000000000000000' @native @token",
       "@native",
       "peek local::gasPrice",
+      "ship 2 1 1 1",
+      "fail 'Gas price not initialized!'",
       "done",
       "@token",
       "peek symbol",
       "splt .",
       "pick",
       "rout '/asset/$/fee'",
+      "ship 2 1 1 1",
+      "fail 'Gas price not initialized!'",
       "math '$/$gasBaseUsage'",
       "form ${fee-factor}"
     ],
