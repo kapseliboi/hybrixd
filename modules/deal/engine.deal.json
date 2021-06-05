@@ -344,7 +344,7 @@
     ],
     "dealStatus": [
       "time 60000",
-      "with disputed [root,1,2] [done,${.dispute}] [data,'${.dispute.level}'] [ship,2,2,1,1] [done,null]",
+      "with disputed [root,1,3] [peek,.dispute,null] [done] [data,'${.dispute.level}'] [ship,2,2,1,1] [done,null]",
       "tran .deal 1 @failure",
       "void .creation any @failure 1",
       "poke dealID ${.id}",
@@ -407,10 +407,11 @@
     ],
     "dispute/proposalID/transactionID=null" : [
       "call getProposal/$proposalID",
-      "poke keyHash ${.key}",      
+      "poke keyHash ${.key}",
       "# check if proposal deadline has passed + 2 hours",
       "with timeNow [date,now] [math,round]",
       "with waitHours math 'round($purgeDeadline / 3600)'",
+      "root 3 1",
       "true '(${.deal.deadline} + $purgeDeadline) > $timeNow' 1 2",
       "fail 'The deal you are trying to dispute is still pending! Please wait $waitHours hours for it to finalize, before disputing again.'",
       "# is this a new dispute?",
