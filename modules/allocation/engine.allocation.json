@@ -1,6 +1,7 @@
 {
   "engine" : "allocation",
   "name" : "Allocation management engine",
+  "cache" : 60000,
   "timeout" : 120000,
   "cron" : 30,
   "defaultStatPurgeTime" : 172800,
