@@ -310,6 +310,8 @@
       "fail 'Not enough $msgSymbol balance on account to pay transaction fee! Balance needed is $tokenFee $msgSymbol, while available only $nativeBalance $msgSymbol.'",
       "@enoughBalance",
       "call getGasPrice",
+      "ship 2 1 1 1",
+      "fail 'Gas price currently unknown or calculated at zero!'",
       "poke gasPrice",
       "@retryLoop",
       "rand 1000",
