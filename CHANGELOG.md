@@ -1,3 +1,32 @@
+# v0.9.19
+## Jolly Fuchsia Unicorn
+## 05-06-2021
+
+* Update web-wallet
+
+
+
+
+# v0.9.18
+## Cheery Yellow Phoenix
+## 05-06-2021
+
+* Add Clever (CLVA) token. Thanks Hero!
+* Catch faulty 0x0 eth gasprice
+* Auto stop after 5 seconds
+* Improve restart
+* Upgrade ws
+* Init recipe vars on error
+* Purge lingering processes
+* Handle missing amount in xrp transaction
+* Catch unknown value in xrp transaction
+* Init log folder on first startup
+* qrtz: Fix void with object compare
+* qrtz: parse math results to proper types where possible
+
+
+
+
 # v0.9.17
 ## Fluffy Pink Minotaur
 ## 22-05-2021
