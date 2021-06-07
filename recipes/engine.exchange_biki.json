@@ -98,7 +98,10 @@
       " # DEPRECATED: ugly hack follows against stringification ",
       "jstr",
       "excl '\"'",
-      "jpar"
+      "jpar",
+      "done",
+      "@failed",
+      "fail 'Incorrect data received from biki!'"
     ],
     "signBiki/query" : [
       "date now",
