@@ -73,7 +73,7 @@
       "uniq",
       "sort"
     ],
-    
+
     "cronCompilePairStats" : [
       "time 60000",
       "peek local::accounts {}",
@@ -222,9 +222,11 @@
     ],
     "statsPair/fromBase/toSymbol" : [
       "peek fromBase",
-      "flow 'undefined' 1 3",
+      "flow 'undefined' 1 @onePair",
       "peek local::pairstats {}",
+      "sort .volume",
       "done",
+      "@onePair",
       "peek local::pairstats {}",
       "poke pair '$fromBase:$toSymbol'",
       "tran .[${fromBase}:${toSymbol}] 2 1",
