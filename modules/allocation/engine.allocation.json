@@ -230,7 +230,7 @@
       "peek local::pairstats {}",
       "poke pair '$fromBase:$toSymbol'",
       "tran .[${fromBase}:${toSymbol}] 2 1",
-      "fail 'Stats are currently not available for this pair! $fromBase'",
+      "fail 'Stats are currently not available for this pair!'",
       "done { '$pair' : $ }"
     ],
     "checkSignature/accountID/signature/message" : [
