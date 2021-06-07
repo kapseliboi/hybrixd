@@ -224,7 +224,6 @@
       "peek fromBase",
       "flow 'undefined' 1 @onePair",
       "peek local::pairstats {}",
-      "sort .volume",
       "done",
       "@onePair",
       "peek local::pairstats {}",
