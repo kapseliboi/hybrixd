@@ -28,6 +28,7 @@
       "done 'No ledger exceptions'",
       "@xrp",
       "true '$amount >= 20' @success",
+      "#TODO label @none not defined",
       "void target null @none 1",
       "rout /a/$toSymbol/balance/$target 1 @failure",
       "true '($ + $amount) >= 20' @success",
@@ -124,7 +125,7 @@
     ],
     "proposalCreate/fromBase/toSymbol/amount/target=null" : [
       "ship amount 3 1 1 2",
-      "fail 'Proposal amount must be higher than zero!'",      
+      "fail 'Proposal amount must be higher than zero!'",
       "poke amount 1",
       "poke reference $amount",
       "call ledgerExceptions/$fromBase/$toSymbol/$amount/$target",
@@ -234,7 +235,7 @@
     ],
     "requeueToProposalList/key" : [
       "call addToProposalList/$key",
-      "call deleteFromCompleteList/$key"      
+      "call deleteFromCompleteList/$key"
     ],
     "addToCompleteList/key" : [
       "peek local::completeList []",

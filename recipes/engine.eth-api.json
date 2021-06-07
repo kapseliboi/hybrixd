@@ -113,6 +113,7 @@
       "done {hash:dynamic}"
     ],
     "push/signedTransaction":[
+      "@retryLoop",
       "rand 1000",
       "data {'jsonrpc': '2.0', 'method': 'eth_sendRawTransaction', 'params': ['$signedTransaction'], 'id': $}",
       "curl POST {api-key:$APIkey, 'Content-Type':'application/json'} 2 1",

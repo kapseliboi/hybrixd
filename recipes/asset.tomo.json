@@ -47,6 +47,8 @@
       "atom",
       "form",
       "done",
+      "@failure",
+      "fail 'Could not parse balance response!'",
       "@failHost",
       "fail 'Could not connect to host'"
     ],

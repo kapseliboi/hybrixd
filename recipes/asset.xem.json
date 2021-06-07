@@ -83,7 +83,9 @@
       "tran {id:'.meta.hash.data',amount:'.transaction.amount',fee:'.transaction.fee',target:'.transaction.recipient',source:'.transaction.signer',data:'.transaction.message'} 1 @badObject",
       "poke 'reformatObj'",
       "with 'reformatData' ['data',$reformatObj] ['tran','.data',1,3] ['jstr'] ['flow','{}',1,2] ['data',null] ['done']",
-      "done $reformatData"
+      "done $reformatData",
+      "@badObject",
+      "fail 'Could not parse transaction data!'"
     ],
     "message" : [
       "call attachment/$1",
