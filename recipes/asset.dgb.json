@@ -2,14 +2,15 @@
   "symbol":"dgb",
   "name":"digibyte",
   "module":"quartz",
-  "import":"blockbook",
+  "import":"nownodes",
   "mode":"digibyte.livenet",
   "factor":8,
   "confirmed":6,
   "fee":0.001,
   "fee-symbol":"dgb",
   "host": {
-    "default": ["https://digiexplorer.info/api"],
+    "default": "https://dgb.nownodes.io",
+    "blockbook": "https://digiexplorer.info/api",
     "explorer": "https://chainz.cryptoid.info/dgb",
     "unspents": "https://explorerapi.digiassets.net/api"
   },
