@@ -25,7 +25,8 @@
     "securityRiskFactor" : {"default":"2"},
     "securityReleaseCron" : {"default":"1"},
     "securityMinimalDeposit" : {"default":10},
-    "allocationBalanceCacheTime" : {"default":600}
+    "allocationBalanceCacheTime" : {"default":600},
+    "allocationAddressCacheTime" : {"default":86400}
   },
   "quartz" : {
     "cron" : [
@@ -73,7 +74,7 @@
       "uniq",
       "sort"
     ],
-    
+
     "cronCompilePairStats" : [
       "time 60000",
       "peek local::accounts {}",
@@ -208,6 +209,7 @@
       "flow .value.deal.bid.symbol '$toSymbol' 1 2",
       "flow .value.deal.ask.symbol '$fromBase' 2 1",
       "done 0",
+      "true '${.value.deal.progress}==1' 1 -1",
       "tran .value.deal.ask.amount 1 -1"
     ],
 
@@ -222,13 +224,14 @@
     ],
     "statsPair/fromBase/toSymbol" : [
       "peek fromBase",
-      "flow 'undefined' 1 3",
+      "flow 'undefined' 1 @onePair",
       "peek local::pairstats {}",
       "done",
+      "@onePair",
       "peek local::pairstats {}",
       "poke pair '$fromBase:$toSymbol'",
       "tran .[${fromBase}:${toSymbol}] 2 1",
-      "fail 'Stats are currently not available for this pair! $fromBase'",
+      "fail 'Stats are currently not available for this pair!'",
       "done { '$pair' : $ }"
     ],
     "checkSignature/accountID/signature/message" : [
@@ -288,7 +291,7 @@
       "math '* $modifier'",
       "form $storageFactor",
       "push '%'"
-    ],    
+    ],
     "doRebalancePair/accountID/symbol/amount" :[
       "call validateAccount/$accountID",
       "with symbol case lower",
@@ -387,7 +390,7 @@
       "with feeModifier call getFeeModifier/$accountID/$toSymbol",
       "with .fee call modifyFee/$feeModifier"
     ],
-    
+
     "account/command/accountID/A/B/C/D/E/F" : [
       "flow command {list: 2} 1",
       "call validateAccount/$accountID",
@@ -460,10 +463,14 @@
     "getAddressAccount/accountID/symbol"  : [
       "with symbol case lower",
       "with keyHash [data,'allocationAddressCache $accountID $symbol'] [hash]",
+      "with timeNow date now",
+      "meta $keyHash",
+      "true '(${.time} + $conf::allocationAddressCacheTime) > $timeNow' @deriveAddress 1",
       "load $keyHash 1 @deriveAddress",
       "decr 1 @deriveAddress",
       "done",
       "@deriveAddress",
+      "logs 'deriving $symbol address for $accountID'",
       "with auth [flow,accountID,node,1,2] [done,{auth:node}] [call,keysAccount/$accountID]",
       "data {symbol:$symbol}",
       "bank getAddress $auth 2 1",
