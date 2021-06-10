@@ -5,6 +5,7 @@
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](https://github.com/feross/standard)
 
 <a name="module_reduce-unique"></a>
+
 ## reduce-unique
 Reduce an array to unique values, optionally into a separate array.
 
@@ -26,4 +27,4 @@ Reduce an array to unique values, optionally into a separate array.
 
 * * *
 
-&copy; 2016 Lloyd Brookes \<75pound@gmail.com\>. Documented by [jsdoc-to-markdown](https://github.com/jsdoc2md/jsdoc-to-markdown).
+&copy; 2016-18 Lloyd Brookes \<75pound@gmail.com\>. Documented by [jsdoc-to-markdown](https://github.com/jsdoc2md/jsdoc-to-markdown).
