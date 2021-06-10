@@ -209,6 +209,7 @@
       "flow .value.deal.bid.symbol '$toSymbol' 1 2",
       "flow .value.deal.ask.symbol '$fromBase' 2 1",
       "done 0",
+      "true '${.value.deal.progress}==1' 1 -1",
       "tran .value.deal.ask.amount 1 -1"
     ],
 
