@@ -206,11 +206,15 @@
       "math +"
     ],
     "getVolumeAmount/fromBase/toSymbol" : [
-      "flow .value.deal.bid.symbol '$toSymbol' 1 2",
-      "flow .value.deal.ask.symbol '$fromBase' 2 1",
-      "done 0",
-      "true '${.value.deal.progress}==1' 1 -1",
-      "tran .value.deal.ask.amount 1 -1"
+      "flow .value.deal.bid.symbol '$toSymbol' 1 @zero",
+      "flow .value.deal.ask.symbol '$fromBase' 1 @zero",
+      "void .value.deal.ask.txid any @zero",
+      "void .value.deal.bid.txid any @zero",
+      "void .value.deal.pushtime any @zero",
+      "tran .value.deal.ask.amount 1 @zero",
+      "done",
+      "@zero",
+      "done 0"
     ],
 
     "validateAccount/accountID" : [
@@ -221,6 +225,18 @@
 
     "pair/command/accountID/A/B/C/D/E/F" : [
       "call ${command}Pair/$accountID/$A/$B/$C/$D/$E/$F"
+    ],
+    "historyPair/fromBase/toSymbol" : [
+      "# get last 24 hour volume",
+      "call deal::readHistory/0/2592000",
+      "each getVolumeAmount/$fromBase/$toSymbol",
+      "with tradesMonthly [data,$] [size]",
+      "with tradesWeekly [math,'floor($tradesMonthly/7)']",
+      "with tradesDaily [math,'floor($tradesMonthly/30)']",
+      "with volumeMonthly [data,$] [math,+]",
+      "with volumeWeekly [math,'$volumeMonthly/7'] [form,5]",
+      "with volumeDaily [math,'$volumeMonthly/30'] [form,5]",
+      "done {symbol:$fromBase,allPairTrades:{daily:$tradesDaily,weekly:$tradesWeekly,monthly:$tradesMonthly},volume:{daily:$volumeDaily,weekly:$volumeWeekly,monthly:$volumeMonthly}}"
     ],
     "statsPair/fromBase/toSymbol" : [
       "peek fromBase",
@@ -702,6 +718,18 @@
       "stats" : {
         "_help" : "Show pairs allocation status information.",
         "_this" : "Specifying no symbols will return all pairs.",
+        "_ref" : {
+          "_list" : "fromBase",
+          "_this" : "Base source symbol for the pair.",
+          "_ref" : {
+            "_list" : "toSymbol",
+            "_this" : "Swap target symbol for the pair."
+          }
+        }
+      },
+      "history" : {
+        "_help" : "Show pairs history over the last 24 hours.",
+        "_this" : "Specifying pairs for this is mandatory.",
         "_ref" : {
           "_list" : "fromBase",
           "_this" : "Base source symbol for the pair.",
