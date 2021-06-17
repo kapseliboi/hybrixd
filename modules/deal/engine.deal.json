@@ -345,7 +345,7 @@
     ],
     "dealStatus": [
       "time 60000",
-      "with disputed [root,1,3] [peek,.dispute,null] [done] [data,'${.dispute.level}'] [ship,2,2,1,1] [done,null]",
+      "with disputed [root,1,3] [data,${.dispute}] [void,any,1,2] [done,null] [done] [data,${.dispute.level}] [ship,2,2,1,1] [done,null]",
       "tran .deal 1 @failure",
       "void .creation any @failure 1",
       "poke dealID ${.id}",
@@ -431,7 +431,7 @@
       "# check the dispute level",
       "void .dispute.level any @newDispute 1",
       "with .dispute.level math '+1'",
-      "fail 'Dispute to be escalated! This has not been implemented yet.'",
+      "fail 'Dispute cannot be escalated! This has not been implemented yet.'",
       "@escalation",
       "# write dispute status",
       "@saveData",
