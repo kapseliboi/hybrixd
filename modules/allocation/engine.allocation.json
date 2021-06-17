@@ -281,7 +281,7 @@
       "true >0 2 1 ",
       "fail 'A non zero balance of $toSymbol is required to setup this pair, currently only $ $toSymbol is available.'",
       "with type [flow,'undefined',1,2] [done,autonomous]",
-      "data {ask:'$fromBase',bid:'$toSymbol',fee:'${feePercent}%',type:'$type'}",
+      "data {ask:'$fromBase',bid:'$toSymbol',fee:'${feePercent}%',risk:'15%',type:'$type'}",
       "poke local::accounts[$accountID].pairs[$fromBase:$toSymbol]",
       "poke local::accounts[$accountID].feeModifiers[$toSymbol] 0"
     ],
@@ -395,7 +395,7 @@
     ],
     "addPairDetails/accountID/fromBase/toSymbol" : [
       "# decouple from locally stored vars",
-      "data {accountID:null,ask:${.ask},bid:${.bid},fee:${.fee},type:${.type},balance:${.balance},sufficiency:${.sufficiency},active:false}",
+      "data {accountID:null,ask:${.ask},bid:${.bid},fee:${.fee},risk:${.risk},type:${.type},balance:${.balance},sufficiency:${.sufficiency},active:false}",
       "with .accountID peek accountID",
       "# balance returned for deals is halved to promote pair balancing!",
       "with balanceSymbol [peek,supplyOverrideSymbols.$toSymbol,null] [void,1,2] [done,$toSymbol]",
@@ -481,6 +481,7 @@
       "with keyHash [data,'allocationAddressCache $accountID $symbol'] [hash]",
       "with timeNow date now",
       "meta $keyHash",
+      "test .time 1 @deriveAddress",
       "true '(${.time} + $conf::allocationAddressCacheTime) > $timeNow' @deriveAddress 1",
       "load $keyHash 1 @deriveAddress",
       "decr 1 @deriveAddress",
