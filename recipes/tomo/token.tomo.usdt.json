@@ -1,7 +1,6 @@
 {
   "symbol" : "tomo.usdt",
   "fee-symbol" : "tomo",
-  "fee" : 0.02,
   "name" : "US dollar Tether Stablecoin (TOMO)",
   "import" : "tomo",
   "mode" : "ethereum.token",
