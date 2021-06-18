@@ -206,11 +206,15 @@
       "math +"
     ],
     "getVolumeAmount/fromBase/toSymbol" : [
-      "flow .value.deal.bid.symbol '$toSymbol' 1 2",
-      "flow .value.deal.ask.symbol '$fromBase' 2 1",
-      "done 0",
-      "true '${.value.deal.progress}==1' 1 -1",
-      "tran .value.deal.ask.amount 1 -1"
+      "flow .value.deal.bid.symbol '$toSymbol' 1 @zero",
+      "flow .value.deal.ask.symbol '$fromBase' 1 @zero",
+      "void .value.deal.ask.txid any @zero",
+      "void .value.deal.bid.txid any @zero",
+      "void .value.deal.pushtime any @zero",
+      "tran .value.deal.ask.amount 1 @zero",
+      "done",
+      "@zero",
+      "done 0"
     ],
 
     "validateAccount/accountID" : [
@@ -221,6 +225,18 @@
 
     "pair/command/accountID/A/B/C/D/E/F" : [
       "call ${command}Pair/$accountID/$A/$B/$C/$D/$E/$F"
+    ],
+    "historyPair/fromBase/toSymbol" : [
+      "# get last 24 hour volume",
+      "call deal::readHistory/0/2592000",
+      "each getVolumeAmount/$fromBase/$toSymbol",
+      "with tradesMonthly [data,$] [size]",
+      "with tradesWeekly [math,'floor($tradesMonthly/7)']",
+      "with tradesDaily [math,'floor($tradesMonthly/30)']",
+      "with volumeMonthly [data,$] [math,+]",
+      "with volumeWeekly [math,'$volumeMonthly/7'] [form,5]",
+      "with volumeDaily [math,'$volumeMonthly/30'] [form,5]",
+      "done {symbol:$fromBase,allPairTrades:{daily:$tradesDaily,weekly:$tradesWeekly,monthly:$tradesMonthly},volume:{daily:$volumeDaily,weekly:$volumeWeekly,monthly:$volumeMonthly}}"
     ],
     "statsPair/fromBase/toSymbol" : [
       "peek fromBase",
@@ -260,12 +276,12 @@
       "fail 'Cannot provide two identical symbols.'",
       "call getSecurityDepositBalance/$accountID",
       "true <$conf::securityMinimalDeposit 1 2",
-      "fail 'A minimal security deposit of $conf::securityMinimalDeposit $conf::securitySymbol is required to setup this pair, currently only $ $conf::securitySymbol is available.'",
+      "fail 'A minimal security reserve of $conf::securityMinimalDeposit $conf::securitySymbol is required to setup this pair, currently only $ $conf::securitySymbol is available.'",
       "call getAccountBalance/$accountID/$toSymbol",
       "true >0 2 1 ",
       "fail 'A non zero balance of $toSymbol is required to setup this pair, currently only $ $toSymbol is available.'",
       "with type [flow,'undefined',1,2] [done,autonomous]",
-      "data {ask:'$fromBase',bid:'$toSymbol',fee:'${feePercent}%',type:'$type'}",
+      "data {ask:'$fromBase',bid:'$toSymbol',fee:'${feePercent}%',risk:'15%',type:'$type'}",
       "poke local::accounts[$accountID].pairs[$fromBase:$toSymbol]",
       "poke local::accounts[$accountID].feeModifiers[$toSymbol] 0"
     ],
@@ -379,7 +395,7 @@
     ],
     "addPairDetails/accountID/fromBase/toSymbol" : [
       "# decouple from locally stored vars",
-      "data {accountID:null,ask:${.ask},bid:${.bid},fee:${.fee},type:${.type},balance:${.balance},sufficiency:${.sufficiency},active:false}",
+      "data {accountID:null,ask:${.ask},bid:${.bid},fee:${.fee},risk:${.risk},type:${.type},balance:${.balance},sufficiency:${.sufficiency},active:false}",
       "with .accountID peek accountID",
       "# balance returned for deals is halved to promote pair balancing!",
       "with balanceSymbol [peek,supplyOverrideSymbols.$toSymbol,null] [void,1,2] [done,$toSymbol]",
@@ -395,17 +411,17 @@
       "flow command {list: 2} 1",
       "call validateAccount/$accountID",
       "flow command {securityReserve: 1} @other",
-      "flow A {withdraw:@withdraw,deposit:@deposit,details:@details,balance:@balance}",
+      "flow A {extract:@extract,reserve:@reserve,details:@details,balance:@balance}",
       "@balance",
       "call securityReserveAccountBalance/$accountID/$B",
       "done",
       "@details",
       "call securityReserveAccountDetails/$accountID/$B",
       "done",
-      "@withdraw",
+      "@extract",
       "call securityReserveAccountWithdraw/$accountID/$B/$C",
       "done",
-      "@deposit",
+      "@reserve",
       "call securityReserveAccountDeposit/$accountID/$B/$C",
       "done",
       "@other",
@@ -465,6 +481,7 @@
       "with keyHash [data,'allocationAddressCache $accountID $symbol'] [hash]",
       "with timeNow date now",
       "meta $keyHash",
+      "test .time 1 @deriveAddress",
       "true '(${.time} + $conf::allocationAddressCacheTime) > $timeNow' @deriveAddress 1",
       "load $keyHash 1 @deriveAddress",
       "decr 1 @deriveAddress",
@@ -525,9 +542,13 @@
       "fail 'You must specify a positive amount to deposit!'",
       "with target call getAddressAccount/node/${conf::securitySymbol}",
       "with auth call keysAccount/$accountID",
+      "call getAccountBalance/$accountID/${conf::securitySymbol}",
+      "true '< $amount' 1 3",
+      "with symbol [data,${conf::securitySymbol}] [case,upper]",
+      "fail 'You do not have that amount in your allocation account! Please deposit ${conf::securityMinimalDeposit} $symbol first, and then try again.'",
       "data {symbol:${conf::securitySymbol},amount:$amount,target:$target}",
       "bank transaction $auth 2 1",
-      "fail 'Security deposit error: $'",
+      "fail 'Security reserve transaction error: $'",
       "poke txid",
       "with regAmount math '$amount * (1 - (${conf::securityTransferFee} / 100))'",
       "with paidFee math '$amount - $regAmount'",
@@ -702,6 +723,18 @@
       "stats" : {
         "_help" : "Show pairs allocation status information.",
         "_this" : "Specifying no symbols will return all pairs.",
+        "_ref" : {
+          "_list" : "fromBase",
+          "_this" : "Base source symbol for the pair.",
+          "_ref" : {
+            "_list" : "toSymbol",
+            "_this" : "Swap target symbol for the pair."
+          }
+        }
+      },
+      "history" : {
+        "_help" : "Show pairs history over the last 24 hours.",
+        "_this" : "Specifying pairs for this is mandatory.",
         "_ref" : {
           "_list" : "fromBase",
           "_this" : "Base source symbol for the pair.",
