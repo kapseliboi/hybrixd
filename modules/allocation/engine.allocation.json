@@ -156,7 +156,7 @@
       "# neatly present fee(s)",
       "with minfee form $fromBase",
       "with maxfee form $fromBase",
-      "with feerange [true,'$minfee==$maxfee',2] [done,'$minfee%-$maxfee%'] [done,'$minfee%']",
+      "with feerange [true,'$minfee==$maxfee',2] [done,['$minfee%','$maxfee%']] [done,'$minfee%']",
       "# all done",
       "with timestamp [date,now] [math,round]",
       "done {'$pair':{base:'$fromBase',ask:'$ask',bid:'$bid',volume:'$volume',fee:'$feerange',sufficiency:'$sufficiency',liquidity:'$liquidity',updated:'$timestamp'}}"
@@ -535,7 +535,8 @@
       "done { symbol:${conf::securitySymbol}, balance:'$', locked:'$locked', fees: { contract:'${conf::securityContractFee}%', transfer:'${conf::securityTransferFee}%' }}"
     ],
     "securityReserveAccountDeposit/accountID/amount/signature":[
-      "call checkSignature/$accountID/$signature/securityReserveAccount-${accountID}-deposit-${amount}",
+      "time 60000",
+      "call checkSignature/$accountID/$signature/securityReserveAccount-${accountID}-reserve-${amount}",
       "with balance call getSecurityDepositBalance/$accountID",
       "with locked call getSecurityLockedBalance/$accountID",
       "ship amount 2 1 1 1",
@@ -559,7 +560,8 @@
       "# todo: keep track of txids to later check if balances are correct!"
     ],
     "securityReserveAccountWithdraw/accountID/amount/signature":[
-      "call checkSignature/$accountID/$signature/securityReserveAccount-${accountID}-withdraw-${amount}",
+      "time 60000",
+      "call checkSignature/$accountID/$signature/securityReserveAccount-${accountID}-extract-${amount}",
       "ship amount 2 1 1 1",
       "fail 'You must specify a positive amount to withdraw!'",
       "# is amount available to withdraw?",
