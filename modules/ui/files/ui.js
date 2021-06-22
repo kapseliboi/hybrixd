@@ -11,7 +11,7 @@ function setCookie (fields, exdays) {
   d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
   const expires = 'expires=' + d.toUTCString();
 
-  for (let key in fields) {
+  for (const key in fields) {
     document.cookie = key + '=' + fields[key] + ';' + expires + ';path=/';
   }
 }
@@ -21,7 +21,7 @@ function getCookie () {
   const fields = document.cookie.split(';');
   const r = {};
   for (let i = 0; i < fields.length; i++) {
-    let values = fields[i].split('=');
+    const values = fields[i].split('=');
     r[values[0].trim()] = values[1].trim();
   }
   return r;
@@ -46,7 +46,7 @@ function findNodes (obj, property) {
     .keys(obj)
     .reduce((obj_, key) => {
       const value = obj[key];
-      if (key === '_hidden' && value === true) for (let x in obj) delete obj[x]; // hide hidden _ui points
+      if (key === '_hidden' && value === true) for (const x in obj) delete obj[x]; // hide hidden _ui points
       if (typeof value === 'object' && value !== null) {
         obj_[key] = findNodes(value, p);
       } else if (key === p) {
@@ -86,10 +86,21 @@ function determineHost () {
   return window.location.origin + (window.location.pathname.startsWith('/api') ? '/api' : '');
 }
 
-const host = determineHost();
-
 function request (url, dataCallback, errorCallback, progressCallback, debug = false, retries) {
-  if (typeof retries === 'undefined') { retries = DEFAULT_RETRIES; }
+  let host;
+  if (!url.includes('://')) { // '/a/dummy/details'
+    host = determineHost();
+  } else if (url.includes('/api')) { // 'https://myhost.com/api/a/dummy/details'
+    [host, url] = url.split('/api');
+    host = +'/api';
+  } else { // 'https://myhost.com/a/dummy/details'
+    const [protocol, x] = url.split('://'); // ['https','myhost.com/a/dummy/details']
+    const path = x.split('/'); // ['myhost.com','a','dummy','details']
+    host = protocol + '://' + path[0]; // 'https://myhost.com'
+    url = '/' + path.slice(1).join('/'); // '/a/dummy/details'
+  }
+
+  if (typeof retries === 'undefined') retries = DEFAULT_RETRIES;
 
   const xhr = new XMLHttpRequest();
   xhr.open('GET', host + url, true);
@@ -129,7 +140,7 @@ function request (url, dataCallback, errorCallback, progressCallback, debug = fa
       }
 
       if (result.hasOwnProperty('id') && result.id === 'id') { // requires follow up
-        request('/p/' + (debug ? 'debug/' : '') + result.data, dataCallback, errorCallback, progressCallback, debug);
+        request(host + '/p/' + (debug ? 'debug/' : '') + result.data, dataCallback, errorCallback, progressCallback, debug);
       } else if (result.stopped !== null) { // done
         dataCallback(result.data);
       } else { // not yet finished
@@ -140,7 +151,7 @@ function request (url, dataCallback, errorCallback, progressCallback, debug = fa
           errorCallback('Timeout');
         } else { // retry
           setTimeout(() => {
-            request(url, dataCallback, errorCallback, progressCallback, debug, retries - 1);
+            request(host + url, dataCallback, errorCallback, progressCallback, debug, retries - 1);
           }, retries === DEFAULT_RETRIES ? FIRST_RETRY_DELAY : DEFAULT_RETRY_DELAY);
         }
       }
@@ -197,7 +208,7 @@ function addUIlinks (items) {
     if (item.hasOwnProperty('_ui')) {
       const a = document.createElement('A');
       a.innerHTML = key;
-      a.href = host + item['_ui'];
+      a.href = determineHost() + item._ui;
       NAV.insertAdjacentElement('afterbegin', a);
     } else addUIlinks(item);
   });
@@ -307,7 +318,7 @@ function mkLinks () {
     { path: '/s/web-blockexplorer/', name: 'explorer' }
   ];
 
-  return links.reduce((htmlStr, link) => `${htmlStr}<a href="${host + link.path}">${link.name}</a>`, '');
+  return links.reduce((htmlStr, link) => `${htmlStr}<a href="${determineHost() + link.path}">${link.name}</a>`, '');
 }
 
 function checkCookie () {
