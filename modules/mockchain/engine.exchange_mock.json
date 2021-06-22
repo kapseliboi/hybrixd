@@ -114,7 +114,6 @@
   "router" : {
     "_hidden":true,
     "_this": "Overview of the mock exchange",
-    "_ui" : "exchange_mock",
     "reset" : {
       "_ref" : {
         "_list" : "symbol",
