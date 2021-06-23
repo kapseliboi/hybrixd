@@ -421,6 +421,7 @@
       "@newDispute",
       "poke .dispute {level:1,timestamp:$timeNow,txid:$transactionID,comment:$@}",
       "with .dispute.comment [take,3] [join,'/']",
+      "with .deal.deadline math '$timeNow+3600'",
       "jump @saveData",
       "@alreadyDisputed",
       "# was this recently disputed?",
