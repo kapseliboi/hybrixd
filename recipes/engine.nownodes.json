@@ -86,8 +86,7 @@
     ],
     "transactionData/txId" : [
       "curl {api-key:$APIkey} /api/v2/tx/$txId 2 1",
-      "fail 'Could not connect to host'",
-      "logs"
+      "fail 'Could not connect to host'"
     ],
     "reformatTx" : [
       "tran .value 2 1",
