@@ -156,7 +156,7 @@
       "# neatly present fee(s)",
       "with minfee form $fromBase",
       "with maxfee form $fromBase",
-      "with feerange [true,'$minfee==$maxfee',2] [done,['$minfee%','$maxfee%']] [done,'$minfee%']",
+      "with feerange [true,'$minfee==$maxfee',2] [done,'R[$minfee%,$maxfee%]'] [done,'$minfee%']",
       "# all done",
       "with timestamp [date,now] [math,round]",
       "done {'$pair':{base:'$fromBase',ask:'$ask',bid:'$bid',volume:'$volume',fee:'$feerange',sufficiency:'$sufficiency',liquidity:'$liquidity',updated:'$timestamp'}}"
