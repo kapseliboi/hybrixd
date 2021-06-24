@@ -1,0 +1,22 @@
+{
+  "symbol" : "tomo.euro",
+  "fee-symbol" : "tomo.euro",
+  "fee" : 0.01,
+  "fee-override" : 0.01,
+  "name" : "Open Euro Stablecoin (TOMO)",
+  "import" : "tomo",
+  "mode" : "ethereum.trc21",
+  "contract" : "0x0005b4cF1bBF817c5d10fCE740a1a2474883134e",
+  "originator" : "0x5bd95780827fa7da98a9f60013e401373bede6ba",
+  "factor" : 2,
+  "notes": {
+    "send":"On every transaction (TRC21 standard) the open euro fee is 1 cent which pays for the decentralized network."
+  },
+  "quartz": {
+    "unspent/source/amount/target/publicKey" : [
+      "call unspentData/$source/$amount/$target/$publicKey",
+      "# here we override auto gas calculation, since that does not always work on TRC21 tokens!",
+      "poke .atomicGasPrice '250000000'"
+    ]
+  }
+}

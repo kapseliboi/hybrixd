@@ -7,6 +7,7 @@
   "factor":8,
   "confirmed":20,
   "fee":5,
+  "fee-symbol":"doge",
   "host": ["tcp://doge-2.indexer.coinomi.net:5003","tcp://doge-1.indexer.coinomi.net:5003"],
   "hostOLD":["tcp://doge-2.indexer.coinomi.net:5003","tcp://electrum2.cipig.net:10060","tcp://doge-1.indexer.coinomi.net:5003","tcp://electrum1.cipig.net:10060"],
   "cache":30000,
@@ -15,7 +16,7 @@
   "import":"electrum-tcp",
   "quartz":{
     "sample" : [
-      "done {address:'DRhyT81insMNXC4W9E2FtbHGNfLichnUzy',transaction:'eb59f547a4755c3d858561cd048527d7f4fdc34397492de6550e51b018765b28'}"
+      "done {address:'DRhyT81insMNXC4W9E2FtbHGNfLichnUzy',transaction:'b1126713da94499b9fbd3a9cdb6713293077a507886dc200f0cb2bdc0bad5731'}"
     ]
   }
 }

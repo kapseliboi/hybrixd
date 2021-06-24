@@ -1,3 +1,18 @@
+# v0.9.20
+## Merry Yellow Noodlefish
+## 10-06-2021
+
+* Improve conf defaults
+* Update transport and evm dependencies
+* Improve conf defaults
+* qrtz: Warn for missing labels and fixes for missing labels
+* hybrix-jslib: Improve unified transaction feedback and performance
+* swap: only count volume of completed swaps
+* swap: handle sufficiency at zero
+
+
+
+
 # v0.9.19
 ## Jolly Fuchsia Unicorn
 ## 05-06-2021

@@ -86,7 +86,9 @@ echo "[.] Retrieve web-wallet artifact from branch:  $BRANCH_WEB_WALLET"
 curl -s --location --header "PRIVATE-TOKEN:$HYBRIX_BOT_GITLAB_PIPELINE_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fweb-wallet/jobs/artifacts/$BRANCH_WEB_WALLET/download?job=web-wallet" -o artifacts-web-wallet.zip
 
 echo "[.] Retrieve cli-wallet artifact"
-curl -s --location  --header "PRIVATE-TOKEN:$HYBRIX_BOT_GITLAB_PIPELINE_TOKEN" "https://gitlab.com/api/v4/projects/hybrix%2Fhybrixd%2Fclient%2Fimplementations%2Fcli-wallet/jobs/artifacts/master/download?job=cli-wallet" -o artifacts-cli-wallet.zip
+curl -s --location "https://download.hybrix.io/releases/cli-wallet/latest/hybrix.cli-wallet.latest.zip" -o artifacts-cli-wallet.zip
+mkdir ../tmp.cli-wallet
+unzip -q -o artifacts-cli-wallet.zip -d ../cli-wallet
 
 echo "[.] Compile hybrixd"
 # run the build-script of the hybrixd-node
