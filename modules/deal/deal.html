@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>deal | hybrixd</title>
+    <meta charset="UTF-8">
+    <script src="./deal.js"></script>
+
+    <style>
+      body{
+        background-color: #f7fafc;
+        padding-left:2cm;
+        padding-right:2cm;
+      }
+
+      #search {
+        padding:5px;
+        margin-bottom: 10px;
+        width:100%;
+        border-radius: 25px;
+      }
+
+      tr:nth-child(even) {background-color: #EEE}
+      tr:nth-child(odd) {background-color: #FFF}
+      table tr.header {
+        background-color: #3da9b6;
+        color:white}
+
+      tr:nth-child(odd) {background-color: #FFF}
+
+      table {
+        border-collapse: collapse;
+      }
+      td {
+        white-space: nowrap;
+      }
+      td:nth-child(3), td:nth-child(4), td:nth-child(5),td:nth-child(6),td:nth-child(7),td:nth-child(8) {
+        text-align: right;
+      }
+
+
+    </style>
+  </head>
+
+  <body class="debug-body">
+    <INPUT id="search" placeholder="search">
+    <TABLE id="output"> </TABLE>
+  </body>
+</html>

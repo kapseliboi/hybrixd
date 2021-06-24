@@ -464,10 +464,24 @@
       "done",
       "@notUnifiedAddress",
       "peek address"
+    ],
+    "deal.js" : [
+      "serv modules/deal/deal.js"
+    ],
+    "swap" : [
+      "serv modules/deal/deal.html"
     ]
   },
   "router" : {
     "_help" : "Deal engine for deals between node and clients.",
+    "deal.js":{
+      "_this" : "Client side code for swap overview generation",
+      "hidden" : true
+    },
+    "swap" : {
+      "_this":"Swap Web UI.",
+      "_ui" : "deal/swap"
+    },
     "pairs": "List swappable pairs.",
     "estimate": {
       "_help" : "Estimate a deal.",

@@ -28,11 +28,22 @@
       "type" : "password"
     }
   },
+  "socks" : {
+    "proxyhost" : {
+      "default" :"127.0.0.1",
+      "type" : "host",
+      "info" : "(local) Proxy host for socks connections"
+    },
+    "proxyport" : {
+      "type" : "int",
+      "info" : "(local) Proxy port for socks connections"
+    }
+  },
   "scheduler" : {
     "procpurgetime" : {
       "default" : 300,
       "type" : "int",
-      "info" : "Amount of time before a stale process gets cleaned up",
+      "info" : "Amount of time before a stale process gets cleaned up.",
       "unit" : "seconds"
     },
     "maxparallelprocesses" :{
