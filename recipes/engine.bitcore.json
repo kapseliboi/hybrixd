@@ -21,12 +21,13 @@
   "quartz":{
     "sanitizeAddres":[
       "poke address",
-      "regx '^$prefix'",
+      "regx '^$prefix' 1 @nothingToDo",
       "peek prefix",
       "size",
       "poke prefixLength",
       "peek address",
-      "take $prefixLength"
+      "take $prefixLength",
+      "@nothingToDo"
     ],
     "balance/address" : [
       "with address call sanitizeAddres",
