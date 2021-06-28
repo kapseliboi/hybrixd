@@ -15,6 +15,7 @@
   "oldHosts": ["https://bch.blockdozer.com/api", "https://bch-insight.bitpay.com/api","https://api.bitcore.io/api/BCH/mainnet"],
   "cache":60000,
   "throttle":2,
+  "addPrefixForCurl": true,
   "prefix":"bitcoincash:",
   "import":"bitcore",
   "quartz":{
