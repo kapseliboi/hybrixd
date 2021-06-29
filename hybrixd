@@ -135,7 +135,7 @@ if [ "$1" = "" ]; then
       read -p "[?] Do you wish to continue? [y/N] " CONFIRM
       if [ "$CONFIRM" != "y" ]; then
           cd "$WHEREAMI"
-          export "PATH=$OLDPATH"
+          export PATH="$OLDPATH"
           logger "[.]" "hybrixd" "Stopped."
           exit 0
       fi
