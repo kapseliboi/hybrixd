@@ -179,7 +179,7 @@
       "rout /a/xrp/balance/$target",
       "true '$activationBalance > ($amount + $)' 1 2",
       "warn 'Target address $target will not be activated! Ripple ledger always requires at least $activationBalance XRP. Target currently holds only $ and will need more than $activationBalance XRP to be sent.'",
-      "#@noTarget",
+      "@noTarget",
       "with balance rout /a/xrp/balance/$address",
       "peek amount 0",
       "true '$balance >= ($activationBalance + $amount)' 2 1",
