@@ -61,9 +61,11 @@
       "done '${pair[0]}:${pair[1]}'"
     ],
     "estimate/fromBase/toSymbol/amount" : [
+      "time 30000",
       "call proposalCreate/$fromBase/$toSymbol/$amount"
     ],
     "proposal/fromBase/toSymbol/amount/target" : [
+      "time 60000",
       "call proposalCreate/$fromBase/$toSymbol/$amount/$target"
     ],
     "proposalHandler" : [
@@ -123,6 +125,7 @@
       "done null"
     ],
     "proposalCreate/fromBase/toSymbol/amount/target=null" : [
+      "time 60000",
       "ship amount 3 1 1 2",
       "fail 'Proposal amount must be higher than zero!'",
       "poke amount 1",
