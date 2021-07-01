@@ -7,7 +7,7 @@
   "cron" : 10,
   "TxidRegex" : "^[a-zA-Z0-9:.]+$",
   "claimDeadline" : 180,
-  "asktxDeadline" : 3600,
+  "asktxDeadline" : 10800,
   "purgeDeadline" : 10800,
   "retryPushTime" : 300,
   "txGracePeriod" : 120,
@@ -61,9 +61,11 @@
       "done '${pair[0]}:${pair[1]}'"
     ],
     "estimate/fromBase/toSymbol/amount" : [
+      "time 30000",
       "call proposalCreate/$fromBase/$toSymbol/$amount"
     ],
     "proposal/fromBase/toSymbol/amount/target" : [
+      "time 60000",
       "call proposalCreate/$fromBase/$toSymbol/$amount/$target"
     ],
     "proposalHandler" : [
@@ -123,6 +125,7 @@
       "done null"
     ],
     "proposalCreate/fromBase/toSymbol/amount/target=null" : [
+      "time 60000",
       "ship amount 3 1 1 2",
       "fail 'Proposal amount must be higher than zero!'",
       "poke amount 1",
@@ -417,10 +420,11 @@
       "true '(${.deal.deadline} + $purgeDeadline) > $timeNow' 1 2",
       "fail 'The deal you are trying to dispute is still pending! Please wait $waitHours hours for it to finalize, before disputing again.'",
       "# is this a new dispute?",
-      "void .dispute any @newDispute @alreadyDisputed",
+      "#void .dispute any @newDispute @alreadyDisputed",
       "@newDispute",
       "poke .dispute {level:1,timestamp:$timeNow,txid:$transactionID,comment:$@}",
       "with .dispute.comment [take,3] [join,'/']",
+      "with .deal.deadline math '$timeNow+3600'",
       "jump @saveData",
       "@alreadyDisputed",
       "# was this recently disputed?",

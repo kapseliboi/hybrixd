@@ -90,8 +90,7 @@
     ],
     "transactionData/txId" : [
       "curl {api-key:$APIkey} /api/v2/tx/$txId 2 1",
-      "fail 'Could not connect to host'",
-      "logs"
+      "fail 'Could not connect to host'"
     ],
     "reformatTx" : [
       "tran .value 2 1",
@@ -103,6 +102,8 @@
       "with targets [data,${.vout}] [tran,[].addresses] [flat] [uniq]",
       "with target [data,$targets] [excl,$sources,true] [void,'empty',1,2] [data,$targets] [join,',']",
       "with timestamp [data,${.blockTime}] [true,==0,1,2] [data,${.coinSpecificData.blocktime}]",
+      "ship timestamp 2 1 1 1",
+      "fail 'Transaction not yet mined - timestamp: $timestamp'",
       "with txAmount [data,$spends] [each,transactionValueFilter/$sources] [flat] [pick,-1] [math,'+']",
       "flow target '$source' 1 @skipSelfTarget",
       "with txValue [data,${.value}] [atom,false,$factor]",
