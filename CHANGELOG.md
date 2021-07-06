@@ -1,3 +1,20 @@
+# v0.9.21
+## Chirpy Fuchsia Pegasus
+## 29-06-2021
+
+* Added grape token, Thanks George! Gotta catch em all!
+* Implement socks connector. This enables hosting on TOR. Private and secure.
+* Curl connectors are modular and initialization is asynchronous. Who you gonna call? 
+* Improve cli-wallet documentation. Added (allocation) module syntax to help out aspiring allocators.
+* Handle sub properties for configuration values. Tweak everything to your heart's desire
+* swap: Pair liquidity overview page at /e/deal/swap
+* swap: Dispute handler
+* swap: Implement user defined risk per swap
+
+
+
+
+
 # v0.9.20
 ## Merry Yellow Noodlefish
 ## 10-06-2021
