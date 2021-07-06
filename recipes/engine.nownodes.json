@@ -176,11 +176,11 @@
       "data '$message'",
       "ship 2 2 2 1",
       "size",
-      "math '$*$feePerByte'",
+      "math '$ * $feePerByte'",
       "poke opreturnFee",
       "@finalize",
       "peek local::fee $fee",
-      "math '$+$opreturnFee'",
+      "math 'abs($ + $opreturnFee)'",
       "flow 'null' 1 2",
       "data '$fee'",
       "@feeDone"
