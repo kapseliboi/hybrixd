@@ -1,3 +1,16 @@
+# v0.9.22
+## Sparkling Green Hobgoblin
+## 09-07-2021
+
+* Disallow erroneous negative fees in nownodes engine. Keep things positive!
+* Enable sending of XRP even if remote account is not activated. 
+* Link node binaries in update script.
+* web-wallet: implement universal login. Next level deterministic! 
+* web-wallet: improve fee calculations for unified asset swaps.
+* web-wallet: cache valuation rates
+* hybrix-jslib: implement universal login in session method.
+
+
 # v0.9.21
 ## Chirpy Fuchsia Pegasus
 ## 29-06-2021
