@@ -185,7 +185,7 @@
       "poke opreturnFee",
       "@finalize",
       "peek local::fee $fee",
-      "math 'abs($ + $opreturnFee)'",
+      "math '$ + $opreturnFee'",
       "flow 'null' 1 2",
       "data '$fee'",
       "@feeDone"
@@ -208,8 +208,13 @@
       "tran '.result.feerate' 2 1",
       "done",
       "# Raising the fee: we want our transaction to be mined within 30 minutes!",
+      "ship @validFee 1 1 1",
+      "warn 'Illegal fee encountered: $'",
+      "done",
+      "@validFee",
       "math '*5'",
       "poke local::fee",
+      "logs 'Updating fee. Current fee: $local::fee'",
       "math '/100'",
       "poke local::feePerByte",
       "done"
