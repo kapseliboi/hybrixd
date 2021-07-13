@@ -125,7 +125,7 @@
       "# calculate sufficiency and liquidity values",
       "call getCalcStats/max/securityDepositBalances/$pair/$conf::securitySymbol",
       "rout /e/valuations/rate/$conf::securitySymbol/$fromBase/$ 2 1",
-      "data 0",
+      "fail 'Could not determine valuation of risk sufficiency!'",
       "math '/ $conf::securityRiskFactor'",
       "poke sufficiencyRisk",
       "peek dataObject",
