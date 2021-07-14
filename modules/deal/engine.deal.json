@@ -217,9 +217,9 @@
       "poke local::proposalList"
     ],
     "selectFromProposalList" : [
-      "# we increase the list size by 3 to ensure no race condition when handling few proposals",
-      "with listSize [peek,local::proposalList,[]] [size] [math,'+2']",
-      "true '($listSize - 2) < 1' @finished",
+      "# we increase the list size by 10 to ensure no race condition when handling few proposals",
+      "with listSize [peek,local::proposalList,[]] [size] [math,'+5']",
+      "true '($listSize - 5) < 1' @finished",
       "with listCount [peek,local::proposalCount,0]",
       "true '$listCount < $listSize' 2 1",
       "poke listCount 0",
