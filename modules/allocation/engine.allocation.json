@@ -406,7 +406,7 @@
       "with .accountID peek accountID",
       "# balance returned for deals is halved to promote pair balancing!",
       "with balanceSymbol [peek,supplyOverrideSymbols.$toSymbol,null] [void,1,2] [done,$toSymbol]",
-      "with .balance [call,getAccountBalance/$accountID/$balanceSymbol] [math,'* (${conf::liquidityPercentage} / 100)']",
+      "with .balance call getAccountBalance/$accountID/$balanceSymbol",
       "with .sufficiency call getSufficiency/$accountID/$toSymbol",
       "with .sufficiency [math,'min(${.sufficiency},${.balance})'] [ship,2,1,1,1] [done,0]",
       "with .active math '${.balance}>0.001 and ${.sufficiency}>0.001'",
