@@ -310,7 +310,7 @@
       "flow transactionID '_' @onlySetTime 1",
       "poke .deal.bid.txid $transactionID",
       "poke askAmount ${.deal.ask.amount}",
-      "poke bidAmount ${.deal.ask.amount}",
+      "poke bidAmount ${.deal.bid.amount}",
       "jump @saveData",
       "@onlySetTime",
       "poke .deal.bid.txid null",
@@ -323,7 +323,7 @@
       "flow transactionID '_' 1 2",
       "done 'no remittance transaction pushed for $proposalID!'",
       "fork rebalanceCall/${allocation.accountID}/$fromBase/$askAmount",
-      "fork rebalanceCall/${allocation.accountID}/$toSymbol/$bidAmount",
+      "fork rebalanceCall/${allocation.accountID}/$toSymbol/-$bidAmount",
       "fork securityReserveLock/${allocation.accountID}/$proposalID/unlockWithFee",
       "done 'pushed remittance transaction for $proposalID'"
     ],
