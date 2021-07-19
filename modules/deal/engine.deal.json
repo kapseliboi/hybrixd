@@ -46,6 +46,9 @@
       "excl null",
       "sort"
     ],
+    "ledgers" : [
+      "peek conf::ledgers"
+    ],
     "pairsEach" : [
       "with pair [data,'${.value}'] [splt,':']",
       "peek .meta",
@@ -543,6 +546,7 @@
         "_this" : "Specify the proposal or deal ID to check the status of."
       }
     },
+    "ledgers" : "List the supported ledgers for swap deals.",
     "dispute" : {
       "_help" : "Dispute a deal.",
       "_ref" : {
