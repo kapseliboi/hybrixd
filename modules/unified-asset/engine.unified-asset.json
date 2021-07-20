@@ -4,6 +4,7 @@
   "module":"unified-asset",
   "import":"transaction-history",
   "cache":15000,
+  "timeout":60000,
   "apiProvidesFullTx":true,
 
   "quartz":{
