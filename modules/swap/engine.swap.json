@@ -1,0 +1,22 @@
+{
+  "engine" : "swap",
+  "name" : "Relay a swap request to the swap host",
+  "conf" :{
+    "host" : {"default": "http://localhost:1111/", "type": "string"}
+  },
+  "router" : {
+    "_hidden":true,
+    "_ellipsis" : true
+  },
+  "quartz" : {
+    "_root" : [
+      "data $@",
+      "flow [0] {deal:@allowed, allocation:@allowed} @forbidden",
+      "@forbidden",
+      "fail 'NO'",
+      "@allowed",
+      "join /",
+      "rout /engine/$ '${conf::host}'"
+    ]
+  }
+}
