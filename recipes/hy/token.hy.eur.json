@@ -1,8 +1,8 @@
 {
-  "symbol":"eur",
+  "symbol":"hy.eur",
   "name":"hybrix unified asset European euro",
   "import":"unified-asset",
-  "unified-symbols" : {"tomo.euro":1,"eth.eurs":1},
+  "unified-symbols" : {"tomo.euro":1,"eth.eurs":1,"eth.eurt":1},
   "quartz": {
     "test" : ["done {hash:'5F9531DA'}"]
   }

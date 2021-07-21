@@ -1,5 +1,5 @@
 {
-  "symbol":"cny",
+  "symbol":"hy.cny",
   "name":"hybrix unified asset Chinese yuan",
   "import":"unified-asset",
   "unified-symbols" : {"tomo.cnyo":1,"eth.cnht":1},
