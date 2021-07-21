@@ -1,0 +1,29 @@
+{
+  "engine" : "swap",
+  "name" : "Relay a swap request to the swap host",
+  "conf" :{
+    "host" : {"default": [
+      "tor://57wcnwyusa4kibtsjsf277cyhedhjyyyvmrsjbar4wsaqfc4dpunwyid.onion",
+      "tor://ics74u7cg6zixtii62lrgbrfvpp3hwtlby3vxjkiilmatjea4bwpokid.onion",
+      "tor://aasv52ix53xwxs7w62dz7o7bupfjnokihztnkjxotp64hq4jpqscjjqd.onion",
+      "tor://3akw24wdagw7u4oyhnjuzpi6eicwtfg5ra5sobf3ocis77eilyi7k5ad.onion",
+      "tor://qhzv5ompgzedviakej3phbsy5gq7npd6mzowfjnuwwmtohikqafzfzyd.onion"
+      ], "type": "array"}
+  },
+  "router" : {
+    "_hidden":true,
+    "_ellipsis" : true
+  },
+  "quartz" : {
+    "_root" : [
+      "time 30000",
+      "data $@",
+      "flow [0] {deal:@allowed, allocation:@allowed} @forbidden",
+      "@forbidden",
+      "fail 'NO'",
+      "@allowed",
+      "join /",
+      "rout /engine/$ ${conf::host}"
+    ]
+  }
+}
