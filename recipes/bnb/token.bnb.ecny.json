@@ -1,0 +1,11 @@
+{
+  "symbol":"bnb.ecny",
+  "name":"Digital Yuan / Chinese Renminbi Stablecoin (BSC)",
+  "info":"Not much is known about this CNY stablecoin token on Binance Smart Chain, except that it is being used by several thousand people.",
+  "import":"bnb",
+  "mode":"ethereum.bep20",
+  "contract":"0x06f12925bda57c3f7b93ff27de94c134c30d23ad",
+  "originator":"0x39499268fbf19a1130393e210c2db08d39ba6a85",
+  "factor":18
+}
+
