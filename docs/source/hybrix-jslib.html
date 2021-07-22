@@ -212,7 +212,8 @@ const hybrix = new Hybrix.Interface({http:require('http'),https:require('https')
                setTimeout(function(){
                  var examples = document.getElementsByClassName('example');
                  var selectExample = document.getElementById('selectExample');
-                 for (let example of examples) {
+                 const sortedExamples = [...examples].sort((a,b) => a.title.localeCompare(b.title));
+                 for (let example of sortedExamples) {
                    var option = document.createElement('OPTION');
                    option.value= example.id;
                    option.innerHTML = example.title;
