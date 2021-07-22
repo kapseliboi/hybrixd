@@ -1,13 +1,32 @@
+# v0.9.23
+## Happy Indigo Ogre
+## 22-07-2021
+
+* Fixed Ripple private key import. Thanks AltcoinAdoption!
+* Disallow erroneous negative fees in nownodes engine. Keep things positive!
+* Enable sending of Ripple even if remote account is not activated. 
+* Link node binaries in update script.
+* Sort hybrix-jslib live examples in documentation
+* qrtz: implement rout to other host
+* web-wallet: implement universal login. Next level deterministic! 
+* web-wallet: improve fee calculations for unified asset swaps
+* web-wallet: fixed send asset modal not closing on error
+* web-wallet: cache valuation rates
+* web-wallet: allow send to deterministic offset address
+* swap: Add supported ledgers endpoint
+* swap: Update sufficiency calculations 
+* swap: Improvements to pair rebalance methods
+* hybrix-jslib: implement deterministic offset
+* hybrix-jslib: update pending on refreshAsset
+
+
+
+
+
 # v0.9.22
 ## Sparkling Green Hobgoblin
 ## 09-07-2021
 
-* Disallow erroneous negative fees in nownodes engine. Keep things positive!
-* Enable sending of XRP even if remote account is not activated. 
-* Link node binaries in update script.
-* web-wallet: implement universal login. Next level deterministic! 
-* web-wallet: improve fee calculations for unified asset swaps.
-* web-wallet: cache valuation rates
 * hybrix-jslib: implement universal login in session method.
 
 
