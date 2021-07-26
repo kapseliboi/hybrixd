@@ -402,13 +402,14 @@
     ],
     "addPairDetails/accountID/fromBase/toSymbol" : [
       "# decouple from locally stored vars",
-      "data {accountID:null,ask:${.ask},bid:${.bid},fee:${.fee},risk:${.risk},type:${.type},balance:${.balance},sufficiency:${.sufficiency},active:false}",
+      "data {accountID:null,ask:${.ask},bid:${.bid},fee:${.fee},risk:${.risk},type:${.type},base:${.bid},balance:${.balance},sufficiency:${.sufficiency},active:false}",
       "with .accountID peek accountID",
-      "# balance returned for deals is halved to promote pair balancing!",
       "with balanceSymbol [peek,supplyOverrideSymbols.$toSymbol,null] [void,1,2] [done,$toSymbol]",
       "with .balance call getAccountBalance/$accountID/$balanceSymbol",
+      "# available balance returned is reduced to promote pair balancing!",
+      "with availableBalance math '${.balance} * (${conf::liquidityPercentage} / 100)'",
       "with .sufficiency call getSufficiency/$accountID/$toSymbol",
-      "with .sufficiency [math,'min(${.sufficiency},${.balance})'] [ship,2,1,1,1] [done,0]",
+      "with .sufficiency [math,'min(${.sufficiency},${availableBalance})'] [ship,2,1,1,1] [done,0]",
       "with .active math '${.balance}>0.001 and ${.sufficiency}>0.001'",
       "with feeModifier call getFeeModifier/$accountID/$toSymbol",
       "with .fee call modifyFee/$feeModifier"
