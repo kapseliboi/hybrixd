@@ -265,7 +265,7 @@
       "data '${message}-${.secretKey}'",
       "hash",
       "flow '$signature' 2 1",
-      "fail 'Incorrect signature'"
+      "fail 'Incorrect signature for ${message}'"
     ],
     "deletePair/accountID/fromBase/toSymbol/signature" : [
       "call checkSignature/$accountID/$signature/deletePair-${accountID}-${fromBase}-${toSymbol}",
