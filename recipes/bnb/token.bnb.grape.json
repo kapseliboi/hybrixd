@@ -1,8 +1,9 @@
 {
   "symbol":"bnb.grape",
   "name":"Grapeswap (BSC)",
-  "import":"bnb",
   "info":"Grapeswap is a Lidia finance framework built on top of Binance Smart Chain (BSC).",
+  "import":"bnb",
+  "mode":"ethereum.bep20",
   "factor":"18",
   "contract":"0xb699390735ed74e2d89075b300761daE34b4b36B",
   "originator":"0x41825736928C58561c2E8A272cBdF34906fab1C1"
