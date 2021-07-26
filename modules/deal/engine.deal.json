@@ -6,11 +6,11 @@
   "proposalListPrefix" : "bf70896b41c1555612fb332d274d4e4b",
   "cron" : 10,
   "TxidRegex" : "^[a-zA-Z0-9:.]+$",
-  "claimDeadline" : 180,
+  "claimDeadline" : 600,
   "asktxDeadline" : 10800,
   "purgeDeadline" : 10800,
   "retryPushTime" : 300,
-  "txGracePeriod" : 120,
+  "txGracePeriod" : 180,
   "permissions":{
     "nodeKeys":true
   },
@@ -65,27 +65,29 @@
     ],
     "estimate/fromBase/toSymbol/amount" : [
       "time 30000",
+      "#prog 0 0.9 25",
       "call proposalCreate/$fromBase/$toSymbol/$amount"
     ],
     "proposal/fromBase/toSymbol/amount/target" : [
       "time 60000",
+      "#prog 0 0.9 55",
       "call proposalCreate/$fromBase/$toSymbol/$amount/$target"
     ],
     "proposalHandler" : [
       "call selectFromProposalList",
-      "void 'void' @notexist",
+      "void 'void' @notExist",
       "poke proposalKey",
-      "load $proposalKey 1 @removeFromQueue",
-      "decr 1 @removeFromQueue",
-      "jpar 1 @removeFromQueue",
-      "have .accountID 1 @removeFromQueue",
+      "load $proposalKey 1 @badObject",
+      "decr 1 @badObject",
+      "jpar 1 @badObject",
+      "have .accountID 1 @badObject",
       "poke accountID ${.accountID}",
       "# check if end-user has sent their transaction, and what the status is",
       "call dealStatus",
       "poke proposalID ${.id}",
       "with deadline [data,${.deadline}] [ship,2,1,1,1] [done,0]",
       "with timeNow date now",
-      "with txStasis [date,now] [true,'> ($deadline + $purgeDeadline)',1,2] [done,1] [done,0]",
+      "with txStasis [true,'$timeNow > ($deadline + $purgeDeadline)',1,2] [done,1] [done,0]",
       "with txTimeout [data,${.status}] [flow,'timeout',1,2] [done,1] [done,0]",
       "with txRejected [data,${.status}] [flow,'rejected',1,2] [done,1] [done,0]",
       "with txDone [data,${.status}] [flow,'done',2,1] [done,0] [true,'${.progress} == 1',1,-1] [done,1]",
@@ -124,7 +126,9 @@
       "call deleteFromProposalList/$proposalKey",
       "with itemSpec [data,$proposalID] [void,any,1,2] [done,'storage key $proposalKey'] [done,'proposal $proposalID']",
       "done '$itemSpec removed from queue'",
-      "@notexist",
+      "@badObject",
+      "done 'proposal $proposalID is missing object data!'",
+      "@notExist",
       "done null"
     ],
     "proposalCreate/fromBase/toSymbol/amount/target=null" : [
