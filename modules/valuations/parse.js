@@ -3,17 +3,25 @@ const ACCEPTED_RATE_RANGE_THRESHOLD = 1.2; // only a 20% difference between lowe
 const unifications = { // some more hardcoded sanitations
   usd: [
     'tusd', 'usdc', 'usdt',
+    'hy.usd','tomo.usdo', 'tomo.usdt',
     'eth.eusd', 'eth.tusd', 'eth.usdc', 'eth.usdt', 'trx.usdt', 'waves.usd', 'xrp.usd'
   ], // not included:  omni.usdt, tomo.usdt
   eur: [
+    'eurs', 'eurt',
+    'hy.eur','tomo.euro',
     'eth.eurs', 'eth.eurt', 'waves.eur'
   ], // not included omni.eurt
+  cny: [
+    'cnht', 'ecny',
+    'hy.cny','tomo.cnyo',
+    'eth.cnht', 'bnb.ecny'
+  ],
   hy: [
     'bnb.hy', 'eth.hy', 'tomo.hy'
   ]
 };
 
-const FIAT_SYMBOLS = ['usd', 'eur', 'aud', 'cad', 'gpb', 'jpy', 'rub', 'zar'];
+const FIAT_SYMBOLS = ['usd', 'eur', 'cny', 'aud', 'cad', 'gpb', 'jpy', 'rub', 'zar'];
 
 // if symbol = 'BLA' and hybrix symbol BLA does not exists but BASE.BLA does, then use that
 function sanitizeSymbol (symbol) {

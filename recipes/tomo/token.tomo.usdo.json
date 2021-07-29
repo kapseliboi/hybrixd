@@ -1,0 +1,22 @@
+{
+  "symbol" : "tomo.usdo",
+  "fee-symbol" : "tomo.usdo",
+  "fee" : 0.01,
+  "fee-override" : 0.01,
+  "name" : "Open USD Stablecoin (TOMO)",
+  "import" : "tomo",
+  "mode" : "ethereum.trc21",
+  "contract" : "0x6d2e9b8d65e4d260732d2786a4a86e22fcabd523",
+  "originator" : "0x5bd95780827fa7da98a9f60013e401373bede6ba",
+  "factor" : 2,
+  "notes": {
+    "send":"On every transaction (TRC21 standard) the open US dollar fee is 1 cent which pays for the decentralized network."
+  },
+  "quartz": {
+    "unspent/source/amount/target/publicKey" : [
+      "call unspentData/$source/$amount/$target/$publicKey",
+      "# here we override auto gas calculation, since that does not always work on TRC21 tokens!",
+      "poke .atomicGasPrice '250000000'"
+    ]
+  }
+}
