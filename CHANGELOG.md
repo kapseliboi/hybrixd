@@ -1,3 +1,15 @@
+# v0.9.24
+## Furry Indigo Goblin
+## 29-07-2021
+
+* Verify eth transaction after push
+* Improve error feedback for signature troubles
+* web-wallet: reduce calls when viewing single asset
+
+
+
+
+
 # v0.9.23
 ## Happy Indigo Ogre
 ## 22-07-2021
