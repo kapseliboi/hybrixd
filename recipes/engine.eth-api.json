@@ -23,6 +23,7 @@
   "import": "transaction-history",
   "historyThrottle": 0.2,
   "apiProvidesFullTx": false,
+  "pushVerification": false,
   "quartz": {
     "init" : [
       "flow contract '0x0000000000000000000000000000000000000000' 1 @skipTokens",
@@ -113,8 +114,9 @@
       "done {hash:dynamic}"
     ],
     "push/signedTransaction":[
+      "time $timeout",
       "@retryLoop",
-      "rand 1000",
+      "rand 10000",
       "data {'jsonrpc': '2.0', 'method': 'eth_sendRawTransaction', 'params': ['$signedTransaction'], 'id': $}",
       "curl POST {api-key:$APIkey, 'Content-Type':'application/json'} 2 1",
       "fail 'Could not connect to host'",
@@ -129,15 +131,24 @@
       "fail 'Error: Ethereum compatible network not responding. Cannot push transaction!'",
       "@success",
       "poke transactionId",
+      "#Try to retrieve transaction to see if it has been picked up",
+      "test pushVerification @verify @return",
+      "@verify",
+      "wait 5000",
+      "rand 10000",
+      "data {jsonrpc: '2.0', method: 'eth_getTransactionByHash', params: ['$transactionId'], id: $}",
+      "curl POST {api-key:$APIkey, 'Content-Type':'application/json'} 2 1",
+      "fail 'Could not connect to host'",
+      "tran .result.hash @return 1",
+      "fail 'Could not verify is transaction was succcesfully pushed'",
+      "@return",
       "call updateLocalNonce/$signedTransaction",
       "peek transactionId"
     ],
     "transactionData/transactionId" : [
       "time $timeout",
       "rand 10000",
-      "poke 'randomId'",
-      "data $symbol",
-      "data {jsonrpc: '2.0', method: 'eth_getTransactionByHash', params: ['$transactionId'], id: $randomId}",
+      "data {jsonrpc: '2.0', method: 'eth_getTransactionByHash', params: ['$transactionId'], id: $}",
       "curl POST {api-key:$APIkey, 'Content-Type':'application/json'} 2 1",
       "fail 'Could not connect to host'",
       "tran .result @success @fail",
