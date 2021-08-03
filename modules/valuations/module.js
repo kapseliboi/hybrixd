@@ -84,7 +84,9 @@ function rate (proc, data) {
   else if (data.mode === 'meta') mode = 'meta';
 
   let r;
-  if (mode === 'meta') {
+  if (sourceSymbol === targetSymbol && mode !== 'meta') {
+    r = amount;
+  } else if (mode === 'meta') {
     if (sourceSymbol.startsWith('MOCK.') && targetSymbol.startsWith('MOCK.')) {
       r = {
         min: {rate: amount, path: []},
