@@ -45,9 +45,10 @@
     ],
     "confirm/transactionId" : [
       "call confirmed/$transactionId",
-      "math 'round($ / $confirmed)'",
+      "flow 'true' 5 1",
       "ship 2 1 1 1",
       "data 0",
+      "math 'round($ / $confirmed)'",
       "true '>1' 1 2",
       "data 1"
     ],
