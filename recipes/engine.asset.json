@@ -45,9 +45,11 @@
     ],
     "confirm/transactionId" : [
       "call confirmed/$transactionId",
-      "true '$>=$confirmed' 1 2",
-      "done true",
-      "done false"
+      "math 'round($ / $confirmed)'",
+      "ship 2 1 1 1",
+      "data 0",
+      "true '>1' 1 2",
+      "data 1"
     ],
     "confirmed/transactionId" : [
       "test transactionId 2 1",
