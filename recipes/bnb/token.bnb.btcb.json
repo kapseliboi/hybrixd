@@ -1,0 +1,11 @@
+{
+  "symbol":"bnb.btcb",
+  "name":"Bitcoin Binance-Peg Token (BSC)",
+  "info":"Bitcoin Binance-Peg token is managed by Binance and represents Bitcoin on the Binance Smart Chain.",
+  "import":"bnb",
+  "mode":"ethereum.bep20",
+  "contract":"0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c",
+  "originator":"0xF07C30E4CD6cFff525791B4b601bD345bded7f47",
+  "factor":18
+}
+
