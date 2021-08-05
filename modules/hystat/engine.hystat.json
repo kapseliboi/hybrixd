@@ -17,8 +17,6 @@
       "time 240000",
       "rout /e/valuations/rate/hy/usd",
       "poke local::rate",
-      "rout /e/valuations/volume/hy",
-      "poke local::volume",
       "call getMaximumSupply",
       "poke local::maximumSupply",
       "call getReservedSupply",
@@ -34,7 +32,7 @@
       "call maybeUpdateEthList"
     ],
     "details" : [
-      "done { rate:'$local::rate', volume:'$local::volume', maximumSupply:'$local::maximumSupply', reservedSupply:'$local::reservedSupply', circulatingSupply:'$local::circulatingSupply', circulatingSupplyWithoutReserve:'$local::circulatingSupplyWithoutReserve' }"
+      "done { rate:'$local::rate', volume:'15635.3', maximumSupply:'$local::maximumSupply', reservedSupply:'$local::reservedSupply', circulatingSupply:'$local::circulatingSupply', circulatingSupplyWithoutReserve:'$local::circulatingSupplyWithoutReserve' }"
     ],
     "getMaximumSupply" : [
       "peek totalSupply",

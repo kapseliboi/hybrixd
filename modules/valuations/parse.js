@@ -3,17 +3,17 @@ const ACCEPTED_RATE_RANGE_THRESHOLD = 1.2; // only a 20% difference between lowe
 const unifications = { // some more hardcoded sanitations
   usd: [
     'tusd', 'usdc', 'usdt',
-    'hy.usd','tomo.usdo', 'tomo.usdt',
+    'hy.usd', 'tomo.usdo', 'tomo.usdt',
     'eth.eusd', 'eth.tusd', 'eth.usdc', 'eth.usdt', 'trx.usdt', 'waves.usd', 'xrp.usd'
   ], // not included:  omni.usdt, tomo.usdt
   eur: [
     'eurs', 'eurt',
-    'hy.eur','tomo.euro',
+    'hy.eur', 'tomo.euro',
     'eth.eurs', 'eth.eurt', 'waves.eur'
   ], // not included omni.eurt
   cny: [
     'cnht', 'ecny',
-    'hy.cny','tomo.cnyo',
+    'hy.cny', 'tomo.cnyo',
     'eth.cnht', 'bnb.ecny'
   ],
   hy: [
@@ -77,17 +77,6 @@ function parseCoinmarketcap (obj) {
     addBiQuote(quotes, 'USD', targetSymbol, 1 / price);
   });
   return {name: name, quotes};
-}
-
-function parseBiki (obj) {
-  // {"code":"0","msg":"suc","data":{"amount":"50834.305317","high":"3.4206","vol":"15804.03","last":3.2491000000000000,"low":"3.02","buy":3.0899,"sell":3.2734,"rose":"0.0338233422","time":1590480524000},"message":null}
-  const name = 'biki';
-  const quotes = {};
-  if (typeof obj === 'object' && obj !== null && (obj.code === 0 || obj.code === '0')) {
-    const price = (Number(obj.data.high) + Number(obj.data.low) + Number(obj.data.buy) + Number(obj.data.sell)) * 0.25; // average over all available data
-    addBiQuote(quotes, 'HY', 'USD', price);
-  }
-  return {name, quotes};
 }
 
 function parseCoinbase (obj) {
@@ -276,15 +265,6 @@ function createAndStoreSymbolList (proc, enrichedExchangeRates) {
   proc.poke('local::symbols', symbols);
 }
 
-function storeBikiHyVolume (proc, data) {
-  if (typeof data.biki_hyusdt === 'object' && data.biki_hyusdt !== null && (data.biki_hyusdt.code === 0 || data.biki_hyusdt.code === '0') &&
-      typeof data.biki_hyusdt.data === 'object' && data.biki_hyusdt.data !== null && data.biki_hyusdt.data.hasOwnProperty('vol')
-  ) {
-    const hyVolume = data.biki_hyusdt.data.vol;
-    proc.poke('local::hy-volume', hyVolume);
-  }
-}
-
 function parse (proc, data) {
   proc.logs('Updating sources.');
 
@@ -296,14 +276,12 @@ function parse (proc, data) {
     parseBinance(data.binance),
     parseCoinmarketcap(data.coinmarketcap),
     parseCoinbase(data.coinbase),
-    parseBiki(data.biki_hyusdt),
     parseDefault(data.uni_swap, 'uni_swap'),
     parseDefault(data.tomo_dex, 'tomo_dex')
   ]);
 
   const enrichedExchangeRates = enrichExchangeRatesWithMinMaxAndMedians(updatedExchangeRates, proc);
 
-  storeBikiHyVolume(proc, data);
   createAndStoreSymbolList(proc, enrichedExchangeRates);
 
   proc.done(enrichedExchangeRates);
