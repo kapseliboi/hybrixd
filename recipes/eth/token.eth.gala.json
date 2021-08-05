@@ -1,0 +1,9 @@
+{
+  "symbol":"eth.gala",
+  "name":"Gala",
+  "import":"eth",
+  "info":"Making blockchain games you'll actually want to play.",
+  "factor":"18",
+  "contract":"0x15D4c048F83bd7e37d49eA4C83a07267Ec4203dA",
+  "originator":"0x15D4c048F83bd7e37d49eA4C83a07267Ec4203dA"
+}
