@@ -47,7 +47,7 @@
       "sort"
     ],
     "ledgers" : [
-      "peek conf::ledgers"
+      "done $conf::ledgers"
     ],
     "pairsEach" : [
       "with pair [data,'${.value}'] [splt,':']",
