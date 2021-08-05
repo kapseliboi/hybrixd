@@ -4,8 +4,8 @@
   "info":"Binance pegged stablecoin representing the US dollar on Binance Smart Chain.",
   "import":"bnb",
   "mode":"ethereum.bep20",
-  "contract":"0x55d398326f99059fF775485246999027B3197955",
-  "originator":"0x970609bA2C160a1b491b90867681918BDc9773aF",
+  "contract":"0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
+  "originator":"0xF07C30E4CD6cFff525791B4b601bD345bded7f47",
   "factor":18
 }
 
