@@ -77,6 +77,7 @@
     ],
 
     "handleSource" : [
+      "time 30000",
       "poke source ${.key}",
       "poke qrtzFunction ${.value.qrtz} none",
       "poke parsing ${.value.parsing} json",

@@ -13,7 +13,7 @@
   "confirmed":12,
   "fee":"0.0005",
   "feeContractTx":"0.0025",
-  "gasPriceDefault":"0.000000020",
+  "gasPriceDefault":"0.000000035",
   "gasPerByte":625,
   "gasBaseUsage":21000,
   "gasErc20Usage":35000,
