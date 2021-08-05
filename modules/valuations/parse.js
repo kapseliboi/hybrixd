@@ -4,6 +4,7 @@ const unifications = { // some more hardcoded sanitations
   usd: [
     'tusd', 'usdc', 'usdt',
     'hy.usd', 'tomo.usdo', 'tomo.usdt',
+    'bnb.busd', 'bnb.vusdt',
     'eth.eusd', 'eth.tusd', 'eth.usdc', 'eth.usdt', 'trx.usdt', 'waves.usd', 'xrp.usd'
   ], // not included:  omni.usdt, tomo.usdt
   eur: [
