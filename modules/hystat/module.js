@@ -19,7 +19,7 @@ function hystat (proc) {
     case 'circulatingSupplyWithoutReserveAtom': proc.done(proc.peek('local::circulatingSupplyWithoutReserveAtom', DEFAULT_SUPPLYATOM)); return;
     case 'supplyFactor': proc.done(proc.peek('factor', DEFAULT_FACTOR)); return;
     case 'currentPrice': proc.done(proc.peek('local::rate', DEFAULT_RATE)); return;
-    case 'currentVolume': proc.done(proc.peek('local::volume', DEFAULT_VOLUME)); return;
+    case 'currentVolume': proc.done(DEFAULT_VOLUME); return;
     case 'ethTokenList': proc.done(proc.peek('local::ethTokenList', null)); return;
   }
   proc.fail('Unknown command!');

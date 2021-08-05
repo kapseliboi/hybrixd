@@ -161,8 +161,6 @@
       "# calculate 24 hour volume",
       "with volume call getVolume/$fromBase/$toSymbol",
       "# neatly present fee(s)",
-      "with minfee form $fromBase",
-      "with maxfee form $fromBase",
       "with feerange [true,'$minfee==$maxfee',2] [done,'R[$minfee%,$maxfee%]'] [done,'$minfee%']",
       "# all done",
       "with timestamp [date,now] [math,round]",
@@ -278,6 +276,7 @@
     ],
     "setPair/accountID/fromBase/toSymbol/feePercent/type/signature" : [
       "call checkSignature/$accountID/$signature/setPair-${accountID}-${fromBase}-${toSymbol}-${feePercent}-${type}",
+      "time 30000",
       "with [fromBase,toSymbol] case lower",
       "flow toSymbol {$fromBase:1} 2",
       "fail 'Cannot provide two identical symbols.'",
@@ -293,8 +292,8 @@
       "poke local::accounts[$accountID].feeModifiers[$toSymbol] 0"
     ],
     "getPair/accountID/fromBase/toSymbol/signature" : [
-      "time 30000",
       "call checkSignature/$accountID/$signature/getPair-${accountID}-${fromBase}-${toSymbol}",
+      "time 30000",
       "with [fromBase,toSymbol] case lower",
       "flow toSymbol {$fromBase:1} 2",
       "fail 'Cannot provide two identical symbols.'",
@@ -358,6 +357,7 @@
       "poke local::accounts[$accountID].feeModifiers[$symbol]"
     ],
     "selectPair/fromBase/toSymbol/amount" : [
+      "time 30000",
       "call findPair/$fromBase/$toSymbol",
       "void 1 2",
       "fail 'This pair does not exist!'",
@@ -383,6 +383,7 @@
       "call pairListCompiler/$accountID"
     ],
     "findPair/fromBase/toSymbol" : [
+      "time 30000",
       "with [fromBase,toSymbol] case lower",
       "flow toSymbol {$fromBase:1} 2",
       "fail 'Cannot provide two identical symbols.'",
@@ -402,13 +403,14 @@
     ],
     "addPairDetails/accountID/fromBase/toSymbol" : [
       "# decouple from locally stored vars",
-      "data {accountID:null,ask:${.ask},bid:${.bid},fee:${.fee},risk:${.risk},type:${.type},balance:${.balance},sufficiency:${.sufficiency},active:false}",
+      "data {accountID:null,ask:${.ask},bid:${.bid},fee:${.fee},risk:${.risk},type:${.type},base:${.bid},balance:${.balance},sufficiency:${.sufficiency},active:false}",
       "with .accountID peek accountID",
-      "# balance returned for deals is halved to promote pair balancing!",
       "with balanceSymbol [peek,supplyOverrideSymbols.$toSymbol,null] [void,1,2] [done,$toSymbol]",
       "with .balance call getAccountBalance/$accountID/$balanceSymbol",
+      "# available balance returned is reduced to promote pair balancing!",
+      "with availableBalance math '${.balance} * (${conf::liquidityPercentage} / 100)'",
       "with .sufficiency call getSufficiency/$accountID/$toSymbol",
-      "with .sufficiency [math,'min(${.sufficiency},${.balance})'] [ship,2,1,1,1] [done,0]",
+      "with .sufficiency [math,'min(${.sufficiency},${availableBalance})'] [ship,2,1,1,1] [done,0]",
       "with .active math '${.balance}>0.001 and ${.sufficiency}>0.001'",
       "with feeModifier call getFeeModifier/$accountID/$toSymbol",
       "with .fee call modifyFee/$feeModifier"
