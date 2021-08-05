@@ -27,10 +27,6 @@
       "notes" : "hitbtc: https://api.hitbtc.com/",
       "url" : "https://api.hitbtc.com/api/2/public/ticker"
     },
-    "biki_hyusdt" : {
-      "notes" : "https://github.com/code-biki/open-api/blob/master/README.us-en.md",
-      "url" : "https://openapi.biki.com/open/api/get_ticker?symbol=hyusdt"
-    },
     "uni_swap" : {
       "url": "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2",
       "data" : "{\"query\":\"{\\n  pairs(first: 1000) {\\n    token0 { symbol }\\n    token1 { symbol }\\n    token0Price\\n  }\\n}\\n\",\"variables\":null}",
@@ -94,11 +90,6 @@
       "call $qrtzFunction",
       "with [].source peek source"
     ],
-
-    "volume/symbol=hy": [
-      "peek local::hy-volume"
-    ],
-
     "rate/from/to/amount=1/mode=median" : [
       "data {source: '$from', target:'$to', amount:'$amount', mode: '$mode',  prices: $local::prices}",
       "func rate",
@@ -112,9 +103,6 @@
     ]
   },
   "router" : {
-    "volume" : {
-      "hy" : "get hy volume"
-    },
     "_help" : "Valuation engine for calculating price conversion rates.",
     "list" : "List available symbols.",
     "rate": {
