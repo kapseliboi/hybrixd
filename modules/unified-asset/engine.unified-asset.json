@@ -352,8 +352,9 @@
     ],
 
     "transaction-details/source/amount/target/bytes/publicKey" : [
-      "test target @validateTarget @noTarget",
+      "time 60000",
       "flow target undefined @noTarget @validateTarget ",
+      "test target @validateTarget @noTarget",
       "@noTarget",
       "call transaction-details2/$source/$amount/$bytes/$publicKey",
       "done",
