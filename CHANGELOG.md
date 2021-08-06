@@ -1,3 +1,20 @@
+# v0.9.25
+## Little Indigo Leprechaun
+## 06-08-2021
+
+* Safeguard close api connection
+* Added GALA and GPXS token. Thanks AltcoinAdoption and Jamid Arboleda Gomez!
+* add BNB USD stablecoins
+* Remove biki from stats
+* Implement socks header and chunk parsing
+* Also confirm chains that report only true/false confirms
+* Reflect amount of confirmations
+* Add shortcut for identical valuations
+* Added wrapped ETH and BTC tokens on Binance chain
+
+
+
+
 # v0.9.24
 ## Furry Indigo Goblin
 ## 29-07-2021
