@@ -1,3 +1,13 @@
+# v0.9.26
+## Cosy Indigo Kobold
+## 07-08-2021
+
+* Fix transaction details for unifieds
+
+
+
+
+
 # v0.9.25
 ## Little Indigo Leprechaun
 ## 06-08-2021
