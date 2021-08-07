@@ -1,5 +1,6 @@
 {
   "symbol":"hy.usd",
+  "fee-symbol":"hy.usd",
   "name":"hybrix unified asset United States dollar",
   "import":"unified-asset",
   "unified-symbols" : {"tomo.usdo":1},
