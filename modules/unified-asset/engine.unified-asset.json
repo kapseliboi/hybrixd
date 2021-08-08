@@ -285,10 +285,16 @@
       "done {$subSymbol: $}"
     ],
 
+    "joinSubAddress":[
+      "done '${.key}:${.value}'"
+    ],
+
     "transaction-details3/source/amount/target/bytes/publicKey" :[
       "with fee-balance call fee-balance/$source",
       "call multiAddressToObject/$source",
       "poke sourceObject",
+      "each joinSubAddress",
+      "poke unpackedSource",
       "call getFeeObject/$bytes",
       "isct $sourceObject",
       "poke fee-object",
@@ -302,15 +308,15 @@
       "poke max-amount",
       "jump @getBalances",
       "@sufficientFee",
-      "peek source",
-      "splt ,",
+      "peek unpackedSource",
+      "type array",
       "each getSubBalance3 $fee-object",
       "type array",
       "math sum",
       "poke max-amount",
       "@getBalances",
-      "peek source",
-      "splt ,",
+      "peek unpackedSource",
+      "type array",
       "each getSubBalance4 {}",
       "merg",
       "poke balances",
