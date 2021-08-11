@@ -343,6 +343,8 @@
       "call validateAccount/$accountID",
       "call getAccountBalance/$accountID/$symbol",
       "math '+$amount'",
+      "ship 2 2 1 1",
+      "data 0",
       "poke local::accounts[$accountID].balances[$symbol]"
     ],
     "feeModifierMutate/accountID/symbol/amount/total" : [
