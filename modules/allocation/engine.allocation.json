@@ -8,7 +8,10 @@
   "storageFactor" : 8,
   "accountIdRegex" : "^[a-zA-Z0-9]{44}$",
   "supplyOverrideSymbols" : {
-    "hy" : "tomo.hy"
+    "hy" : "tomo.hy",
+    "hy.cny" : "tomo.cnyo",
+    "hy.eur" : "tomo.euro",
+    "hy.usd" : "tomo.usdo"
   },
   "permissions":{
   "nodeKeys" : true
@@ -377,7 +380,7 @@
       "# take along transaction fee and then some 5% for the network fee",
       "with feeFloat [data,${.fee}] [trim,'%'] [math,'/100']",
       "with needed math '($amount * (1 + $conf::securityTransferFee + $feeFloat))'",
-      "true '${.balance} >= $needed and ${.sufficiency} >= $needed' 1 2",
+      "true '${.balance} >= $needed and ${.sufficiency} >= $amount' 1 2",
       "done",
       "done null"
     ],
