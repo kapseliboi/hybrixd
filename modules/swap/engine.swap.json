@@ -1,13 +1,14 @@
 {
   "engine" : "swap",
   "name" : "Relay a swap request to the swap host",
+  "timeout" : 60000,
   "conf" :{
     "host" : {"default": [
-      "tor://57wcnwyusa4kibtsjsf277cyhedhjyyyvmrsjbar4wsaqfc4dpunwyid.onion",
-      "tor://ics74u7cg6zixtii62lrgbrfvpp3hwtlby3vxjkiilmatjea4bwpokid.onion",
-      "tor://aasv52ix53xwxs7w62dz7o7bupfjnokihztnkjxotp64hq4jpqscjjqd.onion",
-      "tor://3akw24wdagw7u4oyhnjuzpi6eicwtfg5ra5sobf3ocis77eilyi7k5ad.onion",
-      "tor://qhzv5ompgzedviakej3phbsy5gq7npd6mzowfjnuwwmtohikqafzfzyd.onion"
+        "tor://57wcnwyusa4kibtsjsf277cyhedhjyyyvmrsjbar4wsaqfc4dpunwyid.onion",
+        "tor://ics74u7cg6zixtii62lrgbrfvpp3hwtlby3vxjkiilmatjea4bwpokid.onion",
+        "tor://aasv52ix53xwxs7w62dz7o7bupfjnokihztnkjxotp64hq4jpqscjjqd.onion",
+        "tor://3akw24wdagw7u4oyhnjuzpi6eicwtfg5ra5sobf3ocis77eilyi7k5ad.onion",
+        "tor://qhzv5ompgzedviakej3phbsy5gq7npd6mzowfjnuwwmtohikqafzfzyd.onion"
       ], "type": "array"}
   },
   "router" : {
@@ -23,7 +24,8 @@
       "fail 'NO'",
       "@allowed",
       "join /",
-      "rout /engine/$ ${conf::host}"
+      "rout /e/$ ${conf::host} 2 1",
+      "fail"
     ]
   }
 }
