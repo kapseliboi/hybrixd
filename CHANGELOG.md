@@ -1,3 +1,10 @@
+# v1.0.0
+## Fluffy White Kitten
+## 08-08-2021
+
+* v1.0.0
+
+
 # v0.9.26
 ## Cosy Indigo Kobold
 ## 07-08-2021

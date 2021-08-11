@@ -16,7 +16,7 @@
   },
   "quartz" : {
     "_root" : [
-      "time 30000",
+      "time 60000",
       "data $@",
       "flow [0] {deal:@allowed, allocation:@allowed} @forbidden",
       "@forbidden",
