@@ -319,6 +319,7 @@
     ],
     "doRebalancePair/accountID/symbol/amount" :[
       "call validateAccount/$accountID",
+      "time 60000",
       "with symbol case lower",
       "rout /a/$symbol/details",
       "poke feeSymbol ${.fee-symbol}",
