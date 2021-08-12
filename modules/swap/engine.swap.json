@@ -2,6 +2,7 @@
   "engine" : "swap",
   "name" : "Relay a swap request to the swap host",
   "timeout" : 60000,
+  "cron" : 300,
   "conf" :{
     "host" : {"default": [
         "tor://57wcnwyusa4kibtsjsf277cyhedhjyyyvmrsjbar4wsaqfc4dpunwyid.onion",
@@ -16,13 +17,43 @@
     "_ellipsis" : true
   },
   "quartz" : {
-    "_root" : [
+    "cron" : [
+      "time 120000",
+      "call getAllocationPairStats",
+      "call getDealPairs"
+    ],
+    "getDealPairs" : [
       "time 60000",
+      "rout /e/deal/pairs ${conf::host} 2 1",
+      "data []",
+      "poke local::dealPairs"
+    ],
+    "getAllocationPairStats" : [
+      "time 60000",
+      "rout /e/allocation/pair/stats ${conf::host} 1 2",
+      "poke local::allocationPairStats"
+    ],
+    "_root" : [
       "data $@",
-      "flow [0] {deal:@allowed, allocation:@allowed} @forbidden",
+      "flow [0] {deal:@pathDeal, allocation:@pathAllocation} @forbidden",
       "@forbidden",
-      "fail 'NO'",
-      "@allowed",
+      "fail 'Inaccessible path!'",
+      "@pathAllocation",
+      "flow [1] pair 1 @getData",
+      "flow [2] stats 1 @getData",
+      "peek local::allocationPairStats null",
+      "done",
+      "@pathDeal",
+      "flow [1] pairs 1 @getData",
+      "peek local::dealPairs null",
+      "done",
+      "# TODO: we can improve on retrieving status data by caching all done deals and those with timeout",
+      "#       only to be deleted when disputed, etc.",
+      "# @cacheData",
+      "# with cacheKey [data,'$[1] $[2]'] [hash]",
+      "# logs $cacheKey",
+      "@getData",
+      "time 60000",
       "join /",
       "rout /e/$ ${conf::host} 2 1",
       "fail"
