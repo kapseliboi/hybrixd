@@ -2,8 +2,7 @@
   "symbol":"hy.cny",
   "name":"hybrix unified asset Chinese yuan",
   "import":"unified-asset",
-  "unified-symbols" : {"tomo.cnyo":1},
-  "unified-symbols-TODO" : {"tomo.cnyo":1,"eth.cnht":1,"bnb.ecny":1},
+  "unified-symbols" : {"tomo.cnyo":1,"eth.cnht":1,"bnb.ecny":1},
   "quartz": {
     "test" : ["done {hash:'5F9531DA'}"]
   }

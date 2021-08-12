@@ -1,13 +1,15 @@
 {
   "engine" : "swap",
   "name" : "Relay a swap request to the swap host",
+  "timeout" : 60000,
+  "cron" : 300,
   "conf" :{
     "host" : {"default": [
-      "tor://57wcnwyusa4kibtsjsf277cyhedhjyyyvmrsjbar4wsaqfc4dpunwyid.onion",
-      "tor://ics74u7cg6zixtii62lrgbrfvpp3hwtlby3vxjkiilmatjea4bwpokid.onion",
-      "tor://aasv52ix53xwxs7w62dz7o7bupfjnokihztnkjxotp64hq4jpqscjjqd.onion",
-      "tor://3akw24wdagw7u4oyhnjuzpi6eicwtfg5ra5sobf3ocis77eilyi7k5ad.onion",
-      "tor://qhzv5ompgzedviakej3phbsy5gq7npd6mzowfjnuwwmtohikqafzfzyd.onion"
+        "tor://57wcnwyusa4kibtsjsf277cyhedhjyyyvmrsjbar4wsaqfc4dpunwyid.onion",
+        "tor://ics74u7cg6zixtii62lrgbrfvpp3hwtlby3vxjkiilmatjea4bwpokid.onion",
+        "tor://aasv52ix53xwxs7w62dz7o7bupfjnokihztnkjxotp64hq4jpqscjjqd.onion",
+        "tor://3akw24wdagw7u4oyhnjuzpi6eicwtfg5ra5sobf3ocis77eilyi7k5ad.onion",
+        "tor://qhzv5ompgzedviakej3phbsy5gq7npd6mzowfjnuwwmtohikqafzfzyd.onion"
       ], "type": "array"}
   },
   "router" : {
@@ -15,15 +17,46 @@
     "_ellipsis" : true
   },
   "quartz" : {
-    "_root" : [
+    "cron" : [
+      "time 120000",
+      "call getAllocationPairStats",
+      "call getDealPairs"
+    ],
+    "getDealPairs" : [
       "time 60000",
+      "rout /e/deal/pairs ${conf::host} 2 1",
+      "data []",
+      "poke local::dealPairs"
+    ],
+    "getAllocationPairStats" : [
+      "time 60000",
+      "rout /e/allocation/pair/stats ${conf::host} 1 2",
+      "poke local::allocationPairStats"
+    ],
+    "_root" : [
       "data $@",
-      "flow [0] {deal:@allowed, allocation:@allowed} @forbidden",
+      "flow [0] {deal:@pathDeal, allocation:@pathAllocation} @forbidden",
       "@forbidden",
-      "fail 'NO'",
-      "@allowed",
+      "fail 'Inaccessible path!'",
+      "@pathAllocation",
+      "flow [1] pair 1 @getData",
+      "flow [2] stats 1 @getData",
+      "peek local::allocationPairStats null",
+      "done",
+      "@pathDeal",
+      "flow [1] pairs 1 @getData",
+      "peek local::dealPairs null",
+      "done",
+      "# TODO: we can improve on retrieving status data by caching all done deals and those with timeout",
+      "#       only to be deleted when disputed, etc.",
+      "# @cacheData",
+      "# with cacheKey [data,'$[1] $[2]'] [hash]",
+      "# logs $cacheKey",
+      "@getData",
+      "time 60000",
       "join /",
-      "rout /engine/$ ${conf::host}"
+      "rout /e/$ ${conf::host} 2 1",
+      "fail"
     ]
   }
 }
