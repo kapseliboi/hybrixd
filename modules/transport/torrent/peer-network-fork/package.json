@@ -1,0 +1,72 @@
+{
+  "_from": "@agent725/peer-network-fork",
+  "_id": "@agent725/peer-network-fork@0.0.2",
+  "_inBundle": false,
+  "_integrity": "sha512-bjtjt+lopXfIF8lbm1NtLRGkn9rS4et7QYrh680eamqgPK76mYVI47InnWl+SLM4N+Ka3uTd07CDJnODfz7ozQ==",
+  "_location": "/@agent725/peer-network-fork",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "@@agent725/peer-network-fork",
+    "name": "@@agent725/peer-network-fork",
+    "escapedName": "@agent725%2fpeer-network-fork",
+    "scope": "@agent725",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/@agent725/peer-network-fork/-/peer-network-fork-0.0.2.tgz",
+  "_spec": "@agent725/peer-network-fork",
+  "_where": "/home/user/Build/IoC/hybrixd/node",
+  "author": {
+    "name": "Josaias Moura and Agent725",
+    "email": "agent725@725.be"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "bencode": "^2.0.0",
+    "bittorrent-dht": "^8.4.0",
+    "debug": "^3.1.0",
+    "ed25519-supercop": "^1.2.0",
+    "k-rpc": "^5.0.0",
+    "k-rpc-socket": "^1.7.2",
+    "nat-upnp": "^1.1.1",
+    "netmask": "^2.0.2",
+    "network-address": "^1.1.2",
+    "sax": "^1.2.4",
+    "supercop": "*"
+  },
+  "deprecated": false,
+  "description": "A module for direct P2P (peer-to-peer) communication using Bittorrent DHT nodes like a rendezvous server.",
+  "devDependencies": {
+    "documentation": "^13.2.5",
+    "eslint": "^5.0.0",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.8.0",
+    "eslint-plugin-standard": "^3.1.0",
+    "jsdoc-to-markdown": "^7.0.1",
+    "tap-spec": "^2.2.2",
+    "tape": "^4.9.1"
+  },
+  "keywords": [
+    "peer-to-peer",
+    "dht",
+    "iot"
+  ],
+  "license": "MIT",
+  "main": "./index.js",
+  "name": "@agent725/peer-network-fork",
+  "scripts": {
+    "docs:build": "documentation build lib/peer-network.js -f md -o api.md",
+    "mininet": "mn -c 2> /dev/null && cd test/mininet && python start.py",
+    "test": "tape test/**/*.test.js | tap-spec && eslint lib/**/*.js"
+  },
+  "version": "0.0.2"
+}
