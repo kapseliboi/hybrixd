@@ -1,0 +1,14 @@
+{
+  "name": "hybrixd_validatormodule",
+  "dependencies": {
+    "crc": "3.8.0",
+    "wallet-address-validator": "^0.2.4",
+    "base32.js": "0.1.0"
+  },
+  "author": "Internet of Coins",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://gitlab.com/iochq/hybrixd/issues"
+  },
+  "homepage": "https://gitlab.com/iochq/hybrixd#README"
+}
